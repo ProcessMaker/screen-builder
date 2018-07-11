@@ -1,28 +1,31 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <vue-form-builder/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import VueFormBuilder from './components/vue-form-builder.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    VueFormBuilder
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+@import '~bootstrap/dist/css/bootstrap';
+
+html, body {
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  height: 100%;
 }
 </style>
