@@ -64,7 +64,8 @@ import {
   FormInput,
   FormSelect,
   FormTextArea,
-  FormCheckbox
+  FormCheckbox,
+  FormRadioButtonGroup
 } from "@processmaker/vue-form-elements/src/components";
 
 export default {
@@ -73,7 +74,8 @@ export default {
     FormInput,
     FormSelect,
     OptionsList,
-    FormCheckbox
+    FormCheckbox,
+    FormRadioButtonGroup,
   },
   data() {
     return {
@@ -125,26 +127,6 @@ export default {
             label: "New Select",
             placeholder: "",
             options: [
-              {
-                value: 'one',
-                content: 'Value One'
-              },
-              {
-                value: 'two',
-                content: 'Value Two'
-              },
-              {
-                value: 'three',
-                content: 'Value Three'
-              },
-              {
-                value: 'four',
-                content: 'Value Four'
-              },
-              {
-                value: 'five',
-                content: 'Value Five'
-              },
             ],
             helper: null,
           },
@@ -176,6 +158,44 @@ export default {
             }
           ]
         },
+        {
+          label: "Radio Group",
+          "editor-component": FormRadioButtonGroup,
+          config: {
+            label: "New Radio Button Group",
+            options: [
+            ],
+            helper: null,
+          },
+          inspector: [
+            {
+              type: "FormInput",
+              field: "label",
+              config: {
+                label: "Field Label",
+                helper: "The label describes the fields name"
+              }
+            },
+           {
+              type: "FormInput",
+              field: "helper",
+              config: {
+                label: "Help Text",
+                helper:
+                  "Help text is meant to provide additional guidance on the field's value"
+              }
+            },
+            {
+              type: "OptionsList",
+              field: "options",
+              config: {
+                label: 'Options List',
+                helper: "List of options available in the select drop down"
+              }
+            }
+          ]
+        },
+ 
         {
           label: "Checkbox",
           "editor-component": FormCheckbox,
@@ -223,8 +243,6 @@ export default {
             }
          ]
         },
-
-
 
         {
           label: "Textarea",
