@@ -9,15 +9,17 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="(option, index) in options" :key="index">
+                <draggable @update="updateSort" :element="'tbody'" v-model="existingOptions" :options="{group:'options'}" @start="drag=true" @end="drag=false">
+
+
+                <tr v-for="(option, index) in existingOptions" :key="index">
                     <td>{{option.value}}</td>
                     <td>{{option.content}}</td>
                     <td>
                         <button @click="removeOption(index)" class="btn btn-danger btn-sm">x</button>
                     </td>
                 </tr>
-            </tbody>
+                </draggable>
 
         </table>
         <b-btn v-b-modal.addOptionModal>Add Option</b-btn>
@@ -31,18 +33,30 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
+
 import { FormInput } from "@processmaker/vue-form-elements/src/components";
 
 export default {
   components: {
-    FormInput
+    FormInput,
+    draggable
   },
   data() {
     return {
       addValue: "",
       addContent: "",
-      addError: ""
+      addError: "",
+      existingOptions: []
     };
+  },
+  mounted() {
+          this.existingOptions = JSON.parse(JSON.stringify(this.options));
+  },
+  watch: {
+      options() {
+          this.existingOptions = JSON.parse(JSON.stringify(this.options));
+      }
   },
   props: ["label", "options", "helper"],
   model: {
@@ -50,6 +64,10 @@ export default {
     event: "change"
   },
   methods: {
+      updateSort() {
+        let newOptions = JSON.parse(JSON.stringify(this.existingOptions))
+        this.$emit('change', newOptions)
+      },
     resetAdd() {
       this.addValue = "";
       this.addContent = "";
