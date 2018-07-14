@@ -63,7 +63,8 @@ Vue.use(BootstrapVue)
 import {
   FormInput,
   FormSelect,
-  FormTextArea
+  FormTextArea,
+  FormCheckbox
 } from "@processmaker/vue-form-elements/src/components";
 
 export default {
@@ -71,7 +72,8 @@ export default {
     draggable,
     FormInput,
     FormSelect,
-    OptionsList
+    OptionsList,
+    FormCheckbox
   },
   data() {
     return {
@@ -174,6 +176,54 @@ export default {
             }
           ]
         },
+        {
+          label: "Checkbox",
+          "editor-component": FormCheckbox,
+          config: {
+            label: "New Checkbox",
+            helper: null,
+            name: null,
+            checked: false,
+          },
+          inspector: [
+            {
+              type: "FormInput",
+              field: "label",
+              config: {
+                label: "Field Label",
+                helper: "The label describes the fields name"
+              }
+            },
+           {
+              type: "FormInput",
+              field: "helper",
+              config: {
+                label: "Help Text",
+                helper:
+                  "Help text is meant to provide additional guidance on the field's value"
+              }
+            },
+           {
+              type: "FormCheckbox",
+              field: "checked",
+              config: {
+                label: "Initially Checked?",
+                helper:
+                  "Should the checkbox be checked by default"
+              }
+            },
+           {
+              type: "FormInput",
+              field: "name",
+              config: {
+                label: "Name Group",
+                helper:
+                  "The name of the group for the checkbox. All checkboxes which share the same name will work together."
+              }
+            }
+         ]
+        },
+
 
 
         {
