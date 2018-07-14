@@ -1,64 +1,71 @@
 <template>
-    <div class="dynaform-builder">
+  <div class="dynaform-builder">
 
-        <div class="palette-container">
-            <div class="card-header">
-                Controls
-            </div>
-            <draggable v-model="controls" :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}" :clone="cloneControl">
-                <div v-for="(element, index) in controls" :key="index">{{element.label}}</div>
-            </draggable>
-        </div>
-
-        <div class="form-canvas-container">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" @click="display = 'editor'" :class="{active: display == 'editor'}">Editor</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" @click="display = 'preview'" :class="{active: display == 'preview'}">Preview</a>
-                </li>
-            </ul>
-            <div class="editor-canvas" v-if="display == 'editor'">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm">
-                            <draggable class="editor-draggable" v-model="config" :options="{group: {name: 'controls'}}">
-                                <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config" :key="index">
-                                    <component v-bind="element.config" :is="element['editor-component']"></component>
-                                    <div @click="inspect(index)" class="mask"></div>
-                                </div>
-                            </draggable>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="preview-canvas" v-if="display == 'preview'">
-                Preview
-            </div>
-        </div>
-
-        <div class="inspector-container">
-            <div class="card-header">
-                Inspector
-            </div>
-            <div class="container-fluid">
-                <component v-for="(item, index) in inspection.inspector" :key="index" :is="item.type" v-bind="item.config" v-model="inspection.config[item.field]" />
-            </div>
-        </div>
-
+    <div class="palette-container">
+      <div class="card-header">
+        Controls
+      </div>
+      <draggable v-model="controls" :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}" :clone="cloneControl">
+        <div v-for="(element, index) in controls" :key="index">{{element.label}}</div>
+      </draggable>
     </div>
+
+    <div class="form-canvas-container">
+      <draggable :element="'ul'" class="nav nav-tabs" v-model="config" :options="{draggable:'.page-item'}" @change="handlePageSort">
+        <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
+          <a class="nav-link" href="#" @click="currentPage = page" :class="{active: currentPage == page}">{{data.name}}
+            <button class="btn btn-sm btn-danger" @click="deletePage(page)">x</button>
+          </a>
+        </li>
+        <li slot="footer" class="nav-item">
+          <a class="nav-link" href="#">
+            <b-btn variant="success" size="sm" v-b-modal.addPageModal>+ Add Page</b-btn>
+          </a>
+        </li>
+      </draggable>
+      <div class="editor-canvas">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm">
+              <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
+                <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
+                  <component v-bind="element.config" :is="element['editor-component']"></component>
+                  <div @click="inspect(currentPage, index)" class="mask"></div>
+                </div>
+              </draggable>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inspector-container">
+      <div class="card-header">
+        Inspector
+      </div>
+      <div class="container-fluid">
+        <component v-for="(item, index) in inspection.inspector" :key="index" :is="item.type" v-bind="item.config" v-model="inspection.config[item.field]" />
+      </div>
+    </div>
+
+    <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
+      <form-input v-model="addPageName" label="Page Name" helper="The name of the new page to add"></form-input>
+    </b-modal>
+
+  </div>
 </template>
 
 <script>
-import Vue from 'vue'
+import Vue from "vue";
 import draggable from "vuedraggable";
 
-import OptionsList from "./inspector/options-list"
+import OptionsList from "./inspector/options-list";
 
-import BootstrapVue from 'bootstrap-vue'
+import BootstrapVue from "bootstrap-vue";
 
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue);
+
+import controlConfig from "../form-builder-controls"
 
 import {
   FormInput,
@@ -76,229 +83,44 @@ export default {
     OptionsList,
     FormCheckbox,
     FormRadioButtonGroup,
+    FormTextArea
   },
   data() {
     return {
+      currentPage: 0,
       selected: null,
       display: "editor",
       inspection: {},
-      controls: [
-        {
-          label: "Line Input",
-          "editor-component": FormInput,
-          config: {
-            label: "New Input",
-            placeholder: "",
-            helper: null
-          },
-          inspector: [
-            {
-              type: "FormInput",
-              field: "label",
-              config: {
-                label: "Field Label",
-                helper: "The label describes the fields name"
-              }
-            },
-            {
-              type: "FormInput",
-              field: "placeholder",
-              config: {
-                label: "Placeholder",
-                helper:
-                  "The placeholder is what is shown in the field when no value is provided yet"
-              }
-            },
-            {
-              type: "FormInput",
-              field: "helper",
-              config: {
-                label: "Help Text",
-                helper:
-                  "Help text is meant to provide additional guidance on the field's value"
-              }
-            }
-          ]
-        },
-        {
-          label: "Select",
-          "editor-component": FormSelect,
-          config: {
-            label: "New Select",
-            placeholder: "",
-            options: [
-            ],
-            helper: null,
-          },
-          inspector: [
-            {
-              type: "FormInput",
-              field: "label",
-              config: {
-                label: "Field Label",
-                helper: "The label describes the fields name"
-              }
-            },
-           {
-              type: "FormInput",
-              field: "helper",
-              config: {
-                label: "Help Text",
-                helper:
-                  "Help text is meant to provide additional guidance on the field's value"
-              }
-            },
-            {
-              type: "OptionsList",
-              field: "options",
-              config: {
-                label: 'Options List',
-                helper: "List of options available in the select drop down"
-              }
-            }
-          ]
-        },
-        {
-          label: "Radio Group",
-          "editor-component": FormRadioButtonGroup,
-          config: {
-            label: "New Radio Button Group",
-            options: [
-            ],
-            helper: null,
-          },
-          inspector: [
-            {
-              type: "FormInput",
-              field: "label",
-              config: {
-                label: "Field Label",
-                helper: "The label describes the fields name"
-              }
-            },
-           {
-              type: "FormInput",
-              field: "helper",
-              config: {
-                label: "Help Text",
-                helper:
-                  "Help text is meant to provide additional guidance on the field's value"
-              }
-            },
-            {
-              type: "OptionsList",
-              field: "options",
-              config: {
-                label: 'Options List',
-                helper: "List of options available in the select drop down"
-              }
-            }
-          ]
-        },
- 
-        {
-          label: "Checkbox",
-          "editor-component": FormCheckbox,
-          config: {
-            label: "New Checkbox",
-            helper: null,
-            name: null,
-            checked: false,
-          },
-          inspector: [
-            {
-              type: "FormInput",
-              field: "label",
-              config: {
-                label: "Field Label",
-                helper: "The label describes the fields name"
-              }
-            },
-           {
-              type: "FormInput",
-              field: "helper",
-              config: {
-                label: "Help Text",
-                helper:
-                  "Help text is meant to provide additional guidance on the field's value"
-              }
-            },
-           {
-              type: "FormCheckbox",
-              field: "checked",
-              config: {
-                label: "Initially Checked?",
-                helper:
-                  "Should the checkbox be checked by default"
-              }
-            },
-           {
-              type: "FormInput",
-              field: "name",
-              config: {
-                label: "Name Group",
-                helper:
-                  "The name of the group for the checkbox. All checkboxes which share the same name will work together."
-              }
-            }
-         ]
-        },
-
-        {
-          label: "Textarea",
-          "editor-component": FormTextArea,
-          config: {
-            label: "New TextArea",
-            placeholder: "",
-            helper: null,
-            rows: 2
-          },
-          inspector: [
-            {
-              type: "FormInput",
-              field: "label",
-              config: {
-                label: "Field Label",
-                helper: "The label describes the fields name"
-              }
-            },
-            {
-              type: "FormInput",
-              field: "rows",
-              config: {
-                label: "Rows",
-                helper: "The number of rows to provide for input"
-              }
-            },
-            {
-              type: "FormInput",
-              field: "placeholder",
-              config: {
-                label: "Placeholder",
-                helper:
-                  "The placeholder is what is shown in the field when no value is provided yet"
-              }
-            },
-            {
-              type: "FormInput",
-              field: "helper",
-              config: {
-                label: "Help Text",
-                helper:
-                  "Help text is meant to provide additional guidance on the field's value"
-              }
-            }
-          ]
-        },
-
+      controls: controlConfig,
+      config: [
+          {
+            name: 'Default',
+            items: []
+          }
       ],
-      config: []
+      pageAddModal: false,
+      addPageName: ''
     };
   },
   methods: {
-    inspect(index) {
-      this.inspection = this.config[index];
-      this.selected = this.config[index];
+    handlePageSort(data) {
+      this.currentPage = data.moved.newIndex
+
+    },
+    addPage() {
+      this.config.push({
+        name: this.addPageName,
+        items: []
+      });
+      this.currentPage = this.config.length - 1;
+      this.addPageName = '';
+    },
+    deletePage(page) {
+      this.config.splice(page, 1);
+    },
+    inspect(page, index) {
+      this.inspection = this.config[page]['items'][index];
+      this.selected = this.config[page]['items'][index];
     },
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
@@ -363,9 +185,8 @@ export default {
   position: relative;
 
   &.selected {
-
     .mask {
-        border: 1px solid red;
+      border: 1px solid red;
     }
   }
 
@@ -380,7 +201,6 @@ export default {
     &:hover {
       border: 1px solid red;
     }
-
   }
 }
 </style>
