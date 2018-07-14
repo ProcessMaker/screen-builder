@@ -1,5 +1,72 @@
 export default [
     {
+        label: 'Text',
+        'editor-component': 'FormText',
+        config: {
+            value: 'New Text',
+            fontSize: '1em',
+            fontWeight: 'normal'
+        },
+        inspector: [
+             {
+                type: "FormInput",
+                field: "value",
+                config: {
+                    label: "Value of Text",
+                    helper: "The text to display",
+                }
+            },
+             {
+                type: "FormSelect",
+                field: "fontWeight",
+                config: {
+                    label: "Font Weight",
+                    helper: "The weight of the text",
+                    options: [
+                        {
+                            value: 'normal',
+                            content: 'Normal'
+                        },
+                        {
+                            value: 'bold',
+                            content: 'Bold'
+                        }
+                    ]
+                }
+            },
+
+
+             {
+                type: "FormSelect",
+                field: "fontSize",
+                config: {
+                    label: "Font Size",
+                    helper: "The size of the text in em",
+                    options: [
+                        {
+                            value: '0.5em',
+                            content: '0.5'
+                        },
+                        {
+                            value: '1em',
+                            content: '1'
+                        },
+                        {
+                            value: '1.5em',
+                            content: '1.5'
+                        },
+                        {
+                            value: '2em',
+                            content: '2'
+                        },
+                    ]
+                }
+            },
+
+
+        ]
+    },
+    {
         label: "Line Input",
         "editor-component": "FormInput",
         config: {

@@ -61,6 +61,8 @@ import draggable from "vuedraggable";
 
 import OptionsList from "./inspector/options-list";
 
+import FormText from "./renderer/form-text";
+
 import BootstrapVue from "bootstrap-vue";
 
 Vue.use(BootstrapVue);
@@ -83,7 +85,8 @@ export default {
     OptionsList,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormTextArea
+    FormTextArea,
+    FormText
   },
   data() {
     return {
