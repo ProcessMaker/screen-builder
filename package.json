@@ -20,6 +20,7 @@
     "@vue/cli-plugin-babel": "^3.0.0-beta.15",
     "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
     "@vue/cli-service": "^3.0.0-beta.15",
+    "bootstrap-vue": "^2.0.0-rc.11",
     "vue-template-compiler": "^2.5.16"
   },
   "eslintConfig": {

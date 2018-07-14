@@ -51,9 +51,14 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import draggable from "vuedraggable";
 
 import OptionsList from "./inspector/options-list"
+
+import BootstrapVue from 'bootstrap-vue'
+
+Vue.use(BootstrapVue)
 
 import {
   FormInput,
