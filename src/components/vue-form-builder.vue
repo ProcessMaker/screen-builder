@@ -53,19 +53,20 @@
 <script>
 import draggable from "vuedraggable";
 
-import Text from "./builder/mock/text";
-import SubmitButton from "./builder/mock/submit-button";
+import OptionsList from "./inspector/options-list"
 
 import {
   FormInput,
-  FormSelect
+  FormSelect,
+  FormTextArea
 } from "@processmaker/vue-form-elements/src/components";
 
 export default {
   components: {
     draggable,
     FormInput,
-    FormSelect
+    FormSelect,
+    OptionsList
   },
   data() {
     return {
@@ -73,24 +74,6 @@ export default {
       display: "editor",
       inspection: {},
       controls: [
-        {
-          label: "Text",
-          "editor-component": Text,
-          config: {
-            text: "Hello World"
-          },
-          inspector: [
-            {
-              type: FormInput,
-              field: "text",
-              config: {
-                label: "Display Text",
-                placeholder: "Enter your text here",
-                helper: "Your customized text will be displayed"
-              }
-            }
-          ]
-        },
         {
           label: "Line Input",
           "editor-component": FormInput,
@@ -101,7 +84,7 @@ export default {
           },
           inspector: [
             {
-              type: FormInput,
+              type: "FormInput",
               field: "label",
               config: {
                 label: "Field Label",
@@ -109,7 +92,7 @@ export default {
               }
             },
             {
-              type: FormInput,
+              type: "FormInput",
               field: "placeholder",
               config: {
                 label: "Placeholder",
@@ -118,7 +101,7 @@ export default {
               }
             },
             {
-              type: FormInput,
+              type: "FormInput",
               field: "helper",
               config: {
                 label: "Help Text",
@@ -129,22 +112,112 @@ export default {
           ]
         },
         {
-          label: "Submit Button",
-          "editor-component": SubmitButton,
+          label: "Select",
+          "editor-component": FormSelect,
           config: {
-            label: "Submit"
+            label: "New Select",
+            placeholder: "",
+            options: [
+              {
+                value: 'one',
+                content: 'Value One'
+              },
+              {
+                value: 'two',
+                content: 'Value Two'
+              },
+              {
+                value: 'three',
+                content: 'Value Three'
+              },
+              {
+                value: 'four',
+                content: 'Value Four'
+              },
+              {
+                value: 'five',
+                content: 'Value Five'
+              },
+            ],
+            helper: null,
           },
           inspector: [
             {
-              type: FormInput,
+              type: "FormInput",
               field: "label",
               config: {
-                label: "Button Label",
-                helper: "The label to be displayed on the button"
+                label: "Field Label",
+                helper: "The label describes the fields name"
+              }
+            },
+           {
+              type: "FormInput",
+              field: "helper",
+              config: {
+                label: "Help Text",
+                helper:
+                  "Help text is meant to provide additional guidance on the field's value"
+              }
+            },
+            {
+              type: "OptionsList",
+              field: "options",
+              config: {
+                label: 'Options List',
+                helper: "List of options available in the select drop down"
               }
             }
           ]
-        }
+        },
+
+
+        {
+          label: "Textarea",
+          "editor-component": FormTextArea,
+          config: {
+            label: "New TextArea",
+            placeholder: "",
+            helper: null,
+            rows: 2
+          },
+          inspector: [
+            {
+              type: "FormInput",
+              field: "label",
+              config: {
+                label: "Field Label",
+                helper: "The label describes the fields name"
+              }
+            },
+            {
+              type: "FormInput",
+              field: "rows",
+              config: {
+                label: "Rows",
+                helper: "The number of rows to provide for input"
+              }
+            },
+            {
+              type: "FormInput",
+              field: "placeholder",
+              config: {
+                label: "Placeholder",
+                helper:
+                  "The placeholder is what is shown in the field when no value is provided yet"
+              }
+            },
+            {
+              type: "FormInput",
+              field: "helper",
+              config: {
+                label: "Help Text",
+                helper:
+                  "Help text is meant to provide additional guidance on the field's value"
+              }
+            }
+          ]
+        },
+
       ],
       config: []
     };
@@ -159,7 +232,7 @@ export default {
     cloneControl(control) {
       let copy = {
         config: JSON.parse(JSON.stringify(control.config)),
-        inspector: control.inspector,
+        inspector: JSON.parse(JSON.stringify(control.inspector)),
         "editor-component": control["editor-component"],
         label: control.label
       };
@@ -185,10 +258,11 @@ export default {
   }
 
   .inspector-container {
-    min-width: 240px;
-    width: 240px;
-    max-width: 240px;
+    min-width: 340px;
+    width: 340px;
+    max-width: 340px;
     border-left: 1px solid #e9edf1;
+    overflow: auto;
   }
 
   .form-canvas-container {
