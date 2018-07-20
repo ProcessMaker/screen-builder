@@ -7,13 +7,13 @@
       </div>
       <draggable id="controls" v-model="controls" :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}" :clone="cloneControl">
         <div class="control" v-for="(element, index) in controls" :key="index">
-            <div class="icon">
-              <img v-if="element['editor-icon']" :src="element['editor-icon']" />
-            </div>
-            <div class="label">
-              {{element.label}}
-            </div>
+          <div class="icon">
+            <img v-if="element['editor-icon']" :src="element['editor-icon']" />
           </div>
+          <div class="label">
+            {{element.label}}
+          </div>
+        </div>
       </draggable>
     </div>
 
@@ -37,9 +37,16 @@
             <div class="col-sm">
               <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
-                  <component v-bind="element.config" :is="element['editor-component']"></component>
-                  <div @click="inspect(currentPage, index)" class="mask"></div>
-                  <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                  <div v-if="element.container">
+                    <component @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
+                    <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                  </div>
+
+                  <div v-else>
+                    <component v-bind="element.config" :is="element['editor-component']"></component>
+                    <div @click="inspect(element)" class="mask"></div>
+                    <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                  </div>
                 </div>
               </draggable>
             </div>
@@ -65,8 +72,6 @@
       <form-input v-model="editPageName" label="Page Name" helper="The new name of the page"></form-input>
     </b-modal>
 
-
-
   </div>
 </template>
 
@@ -76,6 +81,9 @@ import draggable from "vuedraggable";
 
 import OptionsList from "./inspector/options-list";
 import PageSelect from "./inspector/page-select";
+
+import FormMultiColumn from "./renderer/form-multi-column"
+import MultiColumn from "./editor/multi-column";
 
 import FormText from "./renderer/form-text";
 import FormButton from "./renderer/form-button";
@@ -105,7 +113,9 @@ export default {
     FormTextArea,
     FormText,
     FormButton,
-    PageSelect
+    PageSelect,
+    MultiColumn,
+    FormMultiColumn
   },
   data() {
     return {
@@ -117,7 +127,7 @@ export default {
       pageAddModal: false,
       addPageName: "",
       editPageIndex: null,
-      editPageName: '',
+      editPageName: "",
       config: [
         {
           name: "Default",
@@ -149,10 +159,10 @@ export default {
     openEditPageModal(index) {
       this.editPageIndex = index;
       this.editPageName = this.config[index].name;
-      this.$refs.editPageModal.show()
+      this.$refs.editPageModal.show();
     },
     editPage() {
-      this.config[this.editPageIndex].name = this.editPageName
+      this.config[this.editPageIndex].name = this.editPageName;
     },
     addPage() {
       this.config.push({
@@ -165,9 +175,9 @@ export default {
     deletePage(page) {
       this.config.splice(page, 1);
     },
-    inspect(page, index) {
-      this.inspection = this.config[page]["items"][index];
-      this.selected = this.config[page]["items"][index];
+    inspect(element) {
+      this.inspection = element;
+      this.selected = element;
     },
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
@@ -179,6 +189,11 @@ export default {
         "editor-component": control["editor-component"],
         label: control.label
       };
+      // If it's a container, let's add an items property, with the default of items in the control
+      if(control.container) {
+        copy['items'] = JSON.parse(JSON.stringify(control.items));
+        copy.container = true
+      }
       return copy;
     }
   }
@@ -211,10 +226,11 @@ export default {
         align-items: center;
 
         .icon {
+          width: 42px;
           margin-right: 8px;
           img {
-          max-width: 42px;
-          max-height: 42px;
+            max-width: 42px;
+            max-height: 21px;
           }
         }
 
@@ -226,7 +242,6 @@ export default {
         }
       }
     }
-
   }
 
   .inspector-container {
@@ -235,7 +250,6 @@ export default {
     max-width: 340px;
     border-left: 1px solid #e9edf1;
     overflow: auto;
-
   }
 
   .form-canvas-container {

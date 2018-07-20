@@ -525,6 +525,30 @@ export default [
  
         ]
         
+    },
+    {
+        label: "Multi Column",
+        component: 'FormMultiColumn',
+        "editor-component": "MultiColumn",
+        'editor-icon': require('./assets/icons/Button.png'),
+        container: true,
+        // Default items container
+        items: [
+            [],
+            []
+        ],
+        config: {
+       },
+        inspector: [
+            {
+                 type: "FormText",
+                config: {
+                    label: "MultiColumn",
+                }
+            }
+
+        ]
     }
+ 
 
 ]

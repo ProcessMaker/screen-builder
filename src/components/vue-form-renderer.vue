@@ -1,13 +1,22 @@
 <template>
-    <div>
-        <component @submit="submit" @pageNavigate="pageNavigate" :validationData="data" v-model="data[element.config.name]" v-for="(element,index) in config[currentPage]['items']" :key="index" v-bind="element.config" :is="element['editor-component']"></component>
+  <div>
+    <div v-for="(element,index) in config[currentPage]['items']" :key="index">
+      <div v-if="element.container">
+        <component :selected="selected" v-model="element.items" v-bind="element.config" :is="element['component']"></component>
+      </div>
+
+      <div v-else>
+        <component :validationData="data" v-model="data[element.config.name]" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
+      </div>
     </div>
+
+  </div>
 </template>
 
 <script>
 import FormText from "./renderer/form-text";
 import FormButton from "./renderer/form-button";
-
+import FormMultiColumn from "./renderer/form-multi-column";
 
 import {
   FormInput,
@@ -26,7 +35,8 @@ export default {
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormButton
+    FormButton,
+    FormMultiColumn
   },
   data() {
     return {
@@ -43,7 +53,7 @@ export default {
     },
     data: {
       handler: function() {
-        this.$emit('update', this.data)
+        this.$emit("update", this.data);
       },
       deep: true,
       immediate: true
@@ -51,16 +61,16 @@ export default {
   },
   methods: {
     submit() {
-      this.$emit('submit', this.data)
+      this.$emit("submit", this.data);
     },
     pageNavigate(page) {
-      this.currentPage = page
+      this.currentPage = page;
     },
     updateDataModel() {
       // Iterate through config
       // If item has a name property, then we store that as a name in the data
-      this.config.forEach((page) => {
-        page.items.forEach((item) => {
+      this.config.forEach(page => {
+        page.items.forEach(item => {
           // @todo Check if empty string or blank?
           if (item.config.name) {
             // Field has a name, add it to our data object
@@ -68,7 +78,7 @@ export default {
           }
         });
       });
-      this.$emit('update', this.data)
+      this.$emit("update", this.data);
     }
   }
 };
