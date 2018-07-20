@@ -3,6 +3,7 @@ export default [
         label: 'Text',
         component: 'FormText',
         'editor-component': 'FormText',
+        'editor-icon': require('./assets/icons/Label.png'),
         config: {
             label: 'New Text',
             fontSize: '1em',
@@ -71,6 +72,7 @@ export default [
         label: "Line Input",
         component: 'FormInput',
         "editor-component": "FormInput",
+        'editor-icon': require('./assets/icons/TextField.png'),
         config: {
             label: "New Input",
             name: '',
@@ -151,6 +153,7 @@ export default [
         label: "Select",
         component: 'FormSelect',
         "editor-component": "FormSelect",
+        'editor-icon': require('./assets/icons/Dropdown.png'),
         config: {
             label: "New Select",
             placeholder: "",
@@ -213,6 +216,7 @@ export default [
         label: "Radio Group",
         component: 'FormRadioButtonGroup',
         "editor-component": "FormRadioButtonGroup",
+        'editor-icon': require('./assets/icons/RadioButton.png'),
         config: {
             label: "New Radio Button Group",
             options: [
@@ -256,6 +260,7 @@ export default [
         label: "Checkbox",
         component: 'FormCheckbox',
         "editor-component": "FormCheckbox",
+        'editor-icon': require('./assets/icons/Checkbox.png'),
         config: {
             label: "New Checkbox",
             helper: null,
@@ -306,6 +311,7 @@ export default [
         label: "Textarea",
         component: 'FormTextArea',
         "editor-component": "FormTextArea",
+        'editor-icon': require('./assets/icons/TextArea.png'),
         config: {
             label: "New TextArea",
             placeholder: "",
@@ -372,6 +378,7 @@ export default [
         label: "Submit Button",
         component: 'FormButton',
         "editor-component": "FormButton",
+        'editor-icon': require('./assets/icons/SubmitButton.png'),
         config: {
             label: "New Submit",
             variant: 'primary',
@@ -442,6 +449,7 @@ export default [
         label: "Page Navigation",
         component: 'FormButton',
         "editor-component": "FormButton",
+        'editor-icon': require('./assets/icons/Button.png'),
         config: {
             label: "New Page Navigation",
             variant: 'primary',

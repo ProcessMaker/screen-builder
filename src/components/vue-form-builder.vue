@@ -5,8 +5,15 @@
       <div class="card-header">
         Controls
       </div>
-      <draggable v-model="controls" :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}" :clone="cloneControl">
-        <div v-for="(element, index) in controls" :key="index">{{element.label}}</div>
+      <draggable id="controls" v-model="controls" :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}" :clone="cloneControl">
+        <div class="control" v-for="(element, index) in controls" :key="index">
+            <div class="icon">
+              <img v-if="element['editor-icon']" :src="element['editor-icon']" />
+            </div>
+            <div class="label">
+              {{element.label}}
+            </div>
+          </div>
       </draggable>
     </div>
 
@@ -191,6 +198,35 @@ export default {
     width: 240px;
     max-width: 240px;
     border-right: 1px solid #e9edf1;
+
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+
+      .control {
+        margin: 8px;
+        width: 100%;
+        height: 32px;
+        display: flex;
+        align-items: center;
+
+        .icon {
+          margin-right: 8px;
+          img {
+          max-width: 42px;
+          max-height: 42px;
+          }
+        }
+
+        .label {
+          font-weight: bold;
+          text-align: center;
+          vertical-align: middle;
+          font-size: 14px;
+        }
+      }
+    }
+
   }
 
   .inspector-container {
@@ -199,6 +235,7 @@ export default {
     max-width: 340px;
     border-left: 1px solid #e9edf1;
     overflow: auto;
+
   }
 
   .form-canvas-container {
