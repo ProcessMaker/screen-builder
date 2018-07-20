@@ -4,16 +4,16 @@ export default [
         component: 'FormText',
         'editor-component': 'FormText',
         config: {
-            value: 'New Text',
+            label: 'New Text',
             fontSize: '1em',
             fontWeight: 'normal'
         },
         inspector: [
              {
                 type: "FormInput",
-                field: "value",
+                field: "label",
                 config: {
-                    label: "Value of Text",
+                    label: "Text Label",
                     helper: "The text to display",
                 }
             },

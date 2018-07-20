@@ -14,6 +14,7 @@
       <draggable :element="'ul'" class="nav nav-tabs" v-model="config" :options="{draggable:'.page-item'}" @change="handlePageSort">
         <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
           <a class="nav-link" href="#" @click="currentPage = page" :class="{active: currentPage == page}">{{data.name}}
+            <button class="btn btn-sm btn-primary" @click="openEditPageModal(page)">Edit</button>
             <button class="btn btn-sm btn-danger" @click="deletePage(page)">x</button>
           </a>
         </li>
@@ -31,6 +32,7 @@
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
                   <component v-bind="element.config" :is="element['editor-component']"></component>
                   <div @click="inspect(currentPage, index)" class="mask"></div>
+                  <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
                 </div>
               </draggable>
             </div>
@@ -52,6 +54,12 @@
       <form-input v-model="addPageName" label="Page Name" helper="The name of the new page to add"></form-input>
     </b-modal>
 
+    <b-modal ref="editPageModal" @ok="editPage" title="Edit Page Title">
+      <form-input v-model="editPageName" label="Page Name" helper="The new name of the page"></form-input>
+    </b-modal>
+
+
+
   </div>
 </template>
 
@@ -60,7 +68,7 @@ import Vue from "vue";
 import draggable from "vuedraggable";
 
 import OptionsList from "./inspector/options-list";
-import PageSelect from "./inspector/page-select"
+import PageSelect from "./inspector/page-select";
 
 import FormText from "./renderer/form-text";
 import FormButton from "./renderer/form-button";
@@ -69,7 +77,7 @@ import BootstrapVue from "bootstrap-vue";
 
 Vue.use(BootstrapVue);
 
-import controlConfig from "../form-builder-controls"
+import controlConfig from "../form-builder-controls";
 
 import {
   FormInput,
@@ -92,7 +100,7 @@ export default {
     FormButton,
     PageSelect
   },
- data() {
+  data() {
     return {
       currentPage: 0,
       selected: null,
@@ -100,35 +108,44 @@ export default {
       inspection: {},
       controls: controlConfig,
       pageAddModal: false,
-      addPageName: '',
+      addPageName: "",
+      editPageIndex: null,
+      editPageName: '',
       config: [
-          {
-            name: 'Default',
-            items: []
-          }
-      ],
- 
+        {
+          name: "Default",
+          items: []
+        }
+      ]
     };
   },
   watch: {
     config: {
       handler: function() {
         // @todo, remove inspector stuffs
-        this.$emit('change', this.config)
+        this.$emit("change", this.config);
       },
       deep: true
     },
     currentPage() {
-      this.inspection = {}
+      this.inspection = {};
     }
   },
-  mounted() {
-    this.config = this.config;
-  },
   methods: {
+    deleteItem(index) {
+      // Remove the item from the array in currentPage
+      this.config[this.currentPage].items.splice(index, 1);
+    },
     handlePageSort(data) {
-      this.currentPage = data.moved.newIndex
-
+      this.currentPage = data.moved.newIndex;
+    },
+    openEditPageModal(index) {
+      this.editPageIndex = index;
+      this.editPageName = this.config[index].name;
+      this.$refs.editPageModal.show()
+    },
+    editPage() {
+      this.config[this.editPageIndex].name = this.editPageName
     },
     addPage() {
       this.config.push({
@@ -136,14 +153,14 @@ export default {
         items: []
       });
       this.currentPage = this.config.length - 1;
-      this.addPageName = '';
+      this.addPageName = "";
     },
     deletePage(page) {
       this.config.splice(page, 1);
     },
     inspect(page, index) {
-      this.inspection = this.config[page]['items'][index];
-      this.selected = this.config[page]['items'][index];
+      this.inspection = this.config[page]["items"][index];
+      this.selected = this.config[page]["items"][index];
     },
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
@@ -208,9 +225,20 @@ export default {
 .control-item {
   position: relative;
 
-  &.selected {
+  .delete {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: none;
+  }
+
+  &.selected,
+  &:hover {
     .mask {
       border: 1px solid red;
+    }
+    .delete {
+      display: inline-block;
     }
   }
 
@@ -221,10 +249,6 @@ export default {
     background-color: rgba(0, 0, 0, 0);
     width: 100%;
     height: 100%;
-
-    &:hover {
-      border: 1px solid red;
-    }
   }
 }
 </style>
