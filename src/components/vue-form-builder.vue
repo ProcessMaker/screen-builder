@@ -62,6 +62,7 @@ import draggable from "vuedraggable";
 import OptionsList from "./inspector/options-list";
 
 import FormText from "./renderer/form-text";
+import FormSubmitButton from "./renderer/form-submit-button";
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -86,24 +87,38 @@ export default {
     FormCheckbox,
     FormRadioButtonGroup,
     FormTextArea,
-    FormText
+    FormText,
+    FormSubmitButton
   },
-  data() {
+ data() {
     return {
       currentPage: 0,
       selected: null,
       display: "editor",
       inspection: {},
       controls: controlConfig,
+      pageAddModal: false,
+      addPageName: '',
       config: [
           {
             name: 'Default',
             items: []
           }
       ],
-      pageAddModal: false,
-      addPageName: ''
+ 
     };
+  },
+  watch: {
+    config: {
+      handler: function() {
+        // @todo, remove inspector stuffs
+        this.$emit('change', this.config)
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.config = this.config;
   },
   methods: {
     handlePageSort(data) {
@@ -131,6 +146,7 @@ export default {
       let copy = {
         config: JSON.parse(JSON.stringify(control.config)),
         inspector: JSON.parse(JSON.stringify(control.inspector)),
+        component: control.component,
         "editor-component": control["editor-component"],
         label: control.label
       };

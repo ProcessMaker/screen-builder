@@ -1,6 +1,7 @@
 export default [
     {
         label: 'Text',
+        component: 'FormText',
         'editor-component': 'FormText',
         config: {
             value: 'New Text',
@@ -68,13 +69,47 @@ export default [
     },
     {
         label: "Line Input",
+        component: 'FormInput',
         "editor-component": "FormInput",
         config: {
             label: "New Input",
-            placeholder: "",
-            helper: null
+            name: '',
+            placeholder: '',
+            validation: '',
+            helper: null,
+            type: 'text'
         },
         inspector: [
+            {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    validation: 'required',
+                    helper: "The data name for this field"
+                }
+            },
+            {
+                type: "FormSelect",
+                field: "type",
+                config: {
+                    label: "Field Type",
+                    name: 'Field Type',
+                    helper: "The type for this field",
+                    options: [
+                        {
+                            value: 'text',
+                            content: 'Text'
+                        },
+                        {
+                            value: 'password',
+                            content: 'Password'
+                        }
+                    ]
+                }
+            },
+ 
             {
                 type: "FormInput",
                 field: "label",
@@ -83,6 +118,15 @@ export default [
                     helper: "The label describes the fields name"
                 }
             },
+            {
+                type: "FormInput",
+                field: "validation",
+                config: {
+                    label: "Validation",
+                    helper: "The validation rules needed for this field"
+                }
+            },
+ 
             {
                 type: "FormInput",
                 field: "placeholder",
@@ -105,10 +149,12 @@ export default [
     },
     {
         label: "Select",
+        component: 'FormSelect',
         "editor-component": "FormSelect",
         config: {
             label: "New Select",
             placeholder: "",
+            validation: '',
             options: [
                 {
                     value: 'new',
@@ -121,12 +167,29 @@ export default [
         inspector: [
             {
                 type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    helper: "The data name for this field"
+                }
+            },
+            {
+                type: "FormInput",
                 field: "label",
                 config: {
                     label: "Field Label",
                     helper: "The label describes the fields name"
                 }
             },
+            {
+                type: "FormInput",
+                field: "validation",
+                config: {
+                    label: "Validation",
+                    helper: "The validation rules needed for this field"
+                }
+            },
+ 
             {
                 type: "FormInput",
                 field: "helper",
@@ -148,6 +211,7 @@ export default [
     },
     {
         label: "Radio Group",
+        component: 'FormRadioButtonGroup',
         "editor-component": "FormRadioButtonGroup",
         config: {
             label: "New Radio Button Group",
@@ -190,14 +254,25 @@ export default [
 
     {
         label: "Checkbox",
+        component: 'FormCheckbox',
         "editor-component": "FormCheckbox",
         config: {
             label: "New Checkbox",
             helper: null,
             name: null,
             checked: false,
+            validation: '',
         },
         inspector: [
+            {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    helper:
+                        "The name of the group for the checkbox. All checkboxes which share the same name will work together."
+                }
+            },
             {
                 type: "FormInput",
                 field: "label",
@@ -224,20 +299,12 @@ export default [
                         "Should the checkbox be checked by default"
                 }
             },
-            {
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "Name Group",
-                    helper:
-                        "The name of the group for the checkbox. All checkboxes which share the same name will work together."
-                }
-            }
-        ]
+       ]
     },
 
     {
         label: "Textarea",
+        component: 'FormTextArea',
         "editor-component": "FormTextArea",
         config: {
             label: "New TextArea",
@@ -248,12 +315,31 @@ export default [
         inspector: [
             {
                 type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    validation: 'required',
+                    helper: "The data name for this field"
+                }
+            },
+            {
+                type: "FormInput",
                 field: "label",
                 config: {
                     label: "Field Label",
                     helper: "The label describes the fields name"
                 }
             },
+            {
+                type: "FormInput",
+                field: "validation",
+                config: {
+                    label: "Validation",
+                    helper: "The validation rules needed for this field"
+                }
+            },
+ 
             {
                 type: "FormInput",
                 field: "rows",
@@ -282,5 +368,74 @@ export default [
             }
         ]
     },
+    {
+        label: "Submit Button",
+        component: 'FormSubmitButton',
+        "editor-component": "FormSubmitButton",
+        config: {
+            label: "New Submit",
+            variant: 'primary'
+        },
+        inspector: [
+            {
+                type: "FormInput",
+                field: "label",
+                config: {
+                    label: "Field Label",
+                    helper: "The label describes the button's text"
+                }
+            },
+            {
+                type: "FormSelect",
+                field: "variant",
+                config: {
+                    label: "Variant",
+                    helper: "The variant determines the appearance of the button",
+                    options: [
+                        {
+                            value: 'primary',
+                            content: 'Primary'
+                        },
+                        {
+                            value: 'secondary',
+                            content: 'Secondary'
+                        },
+                        {
+                            value: 'success',
+                            content: 'Success'
+                        },
+                        {
+                            value: 'danger',
+                            content: 'Danger'
+                        },
+                        {
+                            value: 'warning',
+                            content: 'Warning'
+                        },
+                        {
+                            value: 'info',
+                            content: 'Info'
+                        },
+                        {
+                            value: 'light',
+                            content: 'Light'
+                        },
+
+                        {
+                            value: 'dark',
+                            content: 'Dark'
+                        },
+
+                        {
+                            value: 'link',
+                            content: 'Link'
+                        }
+                    ]
+                }
+            }
+ 
+        ]
+        
+    }
 
 ]
