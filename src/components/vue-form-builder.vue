@@ -44,7 +44,7 @@
         Inspector
       </div>
       <div class="container-fluid">
-        <component v-for="(item, index) in inspection.inspector" :key="index" :is="item.type" v-bind="item.config" v-model="inspection.config[item.field]" />
+        <component v-for="(item, index) in inspection.inspector" :formConfig="config" :key="index" :is="item.type" v-bind="item.config" v-model="inspection.config[item.field]" />
       </div>
     </div>
 
@@ -60,9 +60,10 @@ import Vue from "vue";
 import draggable from "vuedraggable";
 
 import OptionsList from "./inspector/options-list";
+import PageSelect from "./inspector/page-select"
 
 import FormText from "./renderer/form-text";
-import FormSubmitButton from "./renderer/form-submit-button";
+import FormButton from "./renderer/form-button";
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -88,7 +89,8 @@ export default {
     FormRadioButtonGroup,
     FormTextArea,
     FormText,
-    FormSubmitButton
+    FormButton,
+    PageSelect
   },
  data() {
     return {
@@ -115,6 +117,9 @@ export default {
         this.$emit('change', this.config)
       },
       deep: true
+    },
+    currentPage() {
+      this.inspection = {}
     }
   },
   mounted() {

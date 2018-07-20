@@ -1,12 +1,12 @@
 <template>
     <div>
-        <component @submit="submit" :validationData="data" v-model="data[element.config.name]" v-for="(element,index) in config[currentPage]['items']" :key="index" v-bind="element.config" :is="element['editor-component']"></component>
+        <component @submit="submit" @pageNavigate="pageNavigate" :validationData="data" v-model="data[element.config.name]" v-for="(element,index) in config[currentPage]['items']" :key="index" v-bind="element.config" :is="element['editor-component']"></component>
     </div>
 </template>
 
 <script>
 import FormText from "./renderer/form-text";
-import FormSubmitButton from "./renderer/form-submit-button";
+import FormButton from "./renderer/form-button";
 
 
 import {
@@ -26,7 +26,7 @@ export default {
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormSubmitButton
+    FormButton
   },
   data() {
     return {
@@ -52,6 +52,9 @@ export default {
   methods: {
     submit() {
       this.$emit('submit', this.data)
+    },
+    pageNavigate(page) {
+      this.currentPage = page
     },
     updateDataModel() {
       // Iterate through config

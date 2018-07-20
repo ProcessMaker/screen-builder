@@ -370,11 +370,12 @@ export default [
     },
     {
         label: "Submit Button",
-        component: 'FormSubmitButton',
-        "editor-component": "FormSubmitButton",
+        component: 'FormButton',
+        "editor-component": "FormButton",
         config: {
             label: "New Submit",
-            variant: 'primary'
+            variant: 'primary',
+            event: 'submit'
         },
         inspector: [
             {
@@ -431,6 +432,86 @@ export default [
                             content: 'Link'
                         }
                     ]
+                }
+            }
+ 
+        ]
+        
+    },
+    {
+        label: "Page Navigation",
+        component: 'FormButton',
+        "editor-component": "FormButton",
+        config: {
+            label: "New Page Navigation",
+            variant: 'primary',
+            event: 'pageNavigate',
+            eventData: 0
+
+        },
+        inspector: [
+            {
+                type: "FormInput",
+                field: "label",
+                config: {
+                    label: "Field Label",
+                    helper: "The label describes the button's text"
+                }
+            },
+            {
+                type: "FormSelect",
+                field: "variant",
+                config: {
+                    label: "Variant",
+                    helper: "The variant determines the appearance of the button",
+                    options: [
+                        {
+                            value: 'primary',
+                            content: 'Primary'
+                        },
+                        {
+                            value: 'secondary',
+                            content: 'Secondary'
+                        },
+                        {
+                            value: 'success',
+                            content: 'Success'
+                        },
+                        {
+                            value: 'danger',
+                            content: 'Danger'
+                        },
+                        {
+                            value: 'warning',
+                            content: 'Warning'
+                        },
+                        {
+                            value: 'info',
+                            content: 'Info'
+                        },
+                        {
+                            value: 'light',
+                            content: 'Light'
+                        },
+
+                        {
+                            value: 'dark',
+                            content: 'Dark'
+                        },
+
+                        {
+                            value: 'link',
+                            content: 'Link'
+                        }
+                    ]
+                }
+            },
+            {
+                type: "PageSelect",
+                field: "eventData",
+                config: {
+                    label: "Destination",
+                    helper: "The destination page to navigate to"
                 }
             }
  

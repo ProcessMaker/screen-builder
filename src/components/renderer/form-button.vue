@@ -8,7 +8,9 @@
 export default {
     props: [
         'variant',
-        'label'
+        'label',
+        'event',
+        'eventData'
     ],
     computed: {
         classList() {
@@ -21,7 +23,7 @@ export default {
     },
     methods: {
         click() {
-            this.$emit('submit')
+            this.$emit(this.event, this.eventData)
         }
     }
 
