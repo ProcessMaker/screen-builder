@@ -1,7 +1,6 @@
 {
   "name": "@processmaker/vue-form-builder",
   "version": "0.1.0",
-  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
