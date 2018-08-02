@@ -1,18 +1,20 @@
 {
   "name": "@processmaker/vue-form-builder",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@processmaker/vue-form-elements": "^0.2.0",
+    "@processmaker/vue-form-elements": "^0.2.2",
     "bootstrap": "^4.1.3",
     "node-sass": "^4.9.1",
     "sass-loader": "^7.0.3",
+    "v-calendar": "^0.9.7",
     "validatorjs": "^3.14.2",
     "vue": "^2.5.16",
+    "vue-deepset": "^0.6.3",
     "vue-uniq-ids": "^1.0.0",
     "vuedraggable": "^2.16.0"
   },

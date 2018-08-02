@@ -2,11 +2,11 @@
   <div>
     <div v-for="(element,index) in config[currentPage]['items']" :key="index">
       <div v-if="element.container">
-        <component :selected="selected" v-model="element.items" v-bind="element.config" :is="element['component']"></component>
+        <component :selected="selected" v-model="element.items" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
       </div>
 
       <div v-else>
-        <component :validationData="transientData" v-model="transientData[element.config.name]" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
+        <component :validationData="transientData" v-model="model[element.config.name]" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
       </div>
     </div>
 
@@ -17,13 +17,18 @@
 import FormText from "./renderer/form-text";
 import FormButton from "./renderer/form-button";
 import FormMultiColumn from "./renderer/form-multi-column";
+import Vue from 'vue'
+import * as VueDeepSet from 'vue-deepset'
+
+Vue.use(VueDeepSet)
 
 import {
   FormInput,
   FormSelect,
   FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup
+  FormRadioButtonGroup,
+  FormDatePicker
 } from "@processmaker/vue-form-elements/src/components";
 
 export default {
@@ -40,7 +45,13 @@ export default {
     FormCheckbox,
     FormRadioButtonGroup,
     FormButton,
-    FormMultiColumn
+    FormMultiColumn,
+    FormDatePicker
+  },
+  computed: {
+    model () {
+        return this.$deepModel(this.transientData)
+    }
   },
   data() {
     return {
@@ -64,8 +75,9 @@ export default {
       deep: true
     }
   },
+
   methods: {
-    submit() {
+   submit() {
       this.$emit("submit", this.transientData);
     },
     pageNavigate(page) {

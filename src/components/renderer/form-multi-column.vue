@@ -5,11 +5,11 @@
                 <div class="col">
                     <div v-for="(element,index) in items[0]" :key="index">
                         <div v-if="element.container" class="container">
-                            <component v-model="element.items" v-bind="element.config" :is="element['component']"></component>
+                            <component v-model="element.items" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
                         </div>
 
                         <div v-else>
-                            <component v-bind="element.config" :is="element['component']"></component>
+                            <component @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
                         </div>
                     </div>
                 </div>
@@ -17,11 +17,11 @@
                 <div class="col">
                     <div v-for="(element,index) in items[1]" :key="index">
                         <div v-if="element.container" class="container">
-                            <component v-model="element.items" v-bind="element.config" :is="element['component']"></component>
+                            <component v-model="element.items" v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate" :is="element['component']"></component>
                         </div>
 
                         <div v-else>
-                            <component v-bind="element.config" :is="element['component']"></component>
+                            <component v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate" :is="element['component']"></component>
                         </div>
                     </div>
                 </div>
@@ -80,6 +80,15 @@ export default {
   methods: {
       inspect(element) {
           this.$emit('inspect', element)
+      },
+      submit() {
+          // Just bubble up
+          this.$emit('submit')
+      },
+      pageNavigate(page) {
+          // Just bubble up
+          this.$emit('pageNavigate', page)
+
       }
   }
 };

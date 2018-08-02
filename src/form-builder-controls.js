@@ -375,6 +375,39 @@ export default [
         ]
     },
     {
+        label: "Date Picker",
+        component: 'FormDatePicker',
+        "editor-component": "FormDatePicker",
+        'editor-icon': require('./assets/icons/Date.png'),
+        config: {
+            label: "New Date Picker",
+            type: 'date',
+            name: ''
+        },
+        inspector: [
+            {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    validation: 'required',
+                    helper: "The data name for this field"
+                }
+            },
+            {
+                type: "FormInput",
+                field: "placeholder",
+                config: {
+                    label: "Placeholder",
+                    helper:
+                        "The placeholder is what is shown in the field when no value is provided yet"
+                }
+            }
+        ]
+    },
+
+    {
         label: "Submit Button",
         component: 'FormButton',
         "editor-component": "FormButton",
