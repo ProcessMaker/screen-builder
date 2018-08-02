@@ -2,7 +2,7 @@
     <div class="form-group">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm">
+                <div class="col">
                     <div v-for="(element,index) in items[0]" :key="index">
                         <div v-if="element.container" class="container">
                             <component v-model="element.items" v-bind="element.config" :is="element['component']"></component>
@@ -14,7 +14,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm">
+                <div class="col">
                     <div v-for="(element,index) in items[1]" :key="index">
                         <div v-if="element.container" class="container">
                             <component v-model="element.items" v-bind="element.config" :is="element['component']"></component>

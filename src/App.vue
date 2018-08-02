@@ -12,11 +12,22 @@
     </nav>
     <vue-form-builder @change="updateConfig" :class="{invisible: mode != 'editor'}" />
     <div id="preview" v-if="mode == 'preview'">
+      <div id="data-input">
+        <div class="card-header">
+          Data Input
+        </div>
+        <div class="alert" :class="{'alert-success': previewInputValid, 'alert-danger': !previewInputValid}">
+          <span v-if="previewInputValid">Valid JSON Data Object</span>
+          <span v-else>Invalid JSON Data Object</span>
+        </div>
+        <form-text-area rows="20" v-model="previewInput"></form-text-area>
+
+      </div>
       <div id="renderer-container">
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <vue-form-renderer @submit="previewSubmit" @update="updatePreview" v-if="mode == 'preview'" :config="config" />
+              <vue-form-renderer v-model="previewData" @submit="previewSubmit" v-if="mode == 'preview'" :config="config" />
             </div>
           </div>
         </div>
@@ -36,6 +47,10 @@ import VueFormBuilder from "./components/vue-form-builder.vue";
 import VueFormRenderer from "./components/vue-form-renderer.vue";
 import VueJsonPretty from 'vue-json-pretty'
 
+import {
+  FormTextArea,
+} from "@processmaker/vue-form-elements/src/components";
+
 
 export default {
   name: "app",
@@ -48,13 +63,35 @@ export default {
           items: []
         }
       ],
-      previewData: null
+      previewData: null,
+      previewInput: null
     };
   },
   components: {
     VueFormBuilder,
     VueFormRenderer,
-    VueJsonPretty
+    VueJsonPretty,
+    FormTextArea
+  },
+  watch: {
+    previewInput() {
+      if(this.previewInputValid) {
+        // Copy data over
+        this.previewData = JSON.parse(this.previewInput)
+      } else {
+        this.previewData = null
+      }
+    }
+  },
+  computed: {
+    previewInputValid() {
+      try {
+        JSON.parse(this.previewInput)
+        return true
+      } catch(err) {
+        return false
+      }
+    }
   },
   methods: {
     updateConfig(newConfig) {
@@ -103,6 +140,15 @@ nav {
     flex-grow: 1;
     padding-top: 32px;
   }
+
+  #data-input {
+    min-width: 340px;
+    width: 340px;
+    max-width: 340px;
+    border-right: 1px solid #e9edf1;
+    overflow: auto;
+  }
+
 
   #data-preview {
     min-width: 340px;

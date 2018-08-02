@@ -6,7 +6,7 @@
       </div>
 
       <div v-else>
-        <component :validationData="data" v-model="data[element.config.name]" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
+        <component :validationData="transientData" v-model="transientData[element.config.name]" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
       </div>
     </div>
 
@@ -27,7 +27,11 @@ import {
 } from "@processmaker/vue-form-elements/src/components";
 
 export default {
-  props: ["config"],
+  props: ["config", "data"],
+  model: {
+    prop: 'data',
+    event: 'update'
+  },
   components: {
     FormText,
     FormInput,
@@ -41,31 +45,33 @@ export default {
   data() {
     return {
       currentPage: 0,
-      data: {}
+      transientData: JSON.parse(JSON.stringify(this.data))
     };
   },
   watch: {
-    config: {
-      handler: function() {
-        this.updateDataModel();
-      },
-      immediate: true
+    data() {
+      this.transientData = JSON.parse(JSON.stringify(this.data))
     },
-    data: {
+   transientData: {
       handler: function() {
-        this.$emit("update", this.data);
+        // Only emit the update message if transientData does NOT equal this.data
+        // Instead of deep object property comparison, we'll just compare the JSON representations of both
+        if(JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
+          this.$emit("update", this.transientData);
+          return;
+        }
       },
-      deep: true,
-      immediate: true
+      deep: true
     }
   },
   methods: {
     submit() {
-      this.$emit("submit", this.data);
+      this.$emit("submit", this.transientData);
     },
     pageNavigate(page) {
       this.currentPage = page;
     },
+    /*
     updateDataModel() {
       // Iterate through config
       // If item has a name property, then we store that as a name in the data
@@ -80,6 +86,7 @@ export default {
       });
       this.$emit("update", this.data);
     }
+    */
   }
 };
 </script>
