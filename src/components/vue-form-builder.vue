@@ -87,6 +87,7 @@ import MultiColumn from "./editor/multi-column";
 
 import FormText from "./renderer/form-text";
 import FormButton from "./renderer/form-button";
+import FormRecordList from "./renderer/form-record-list";
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -117,7 +118,8 @@ export default {
     PageSelect,
     MultiColumn,
     FormMultiColumn,
-    FormDatePicker
+    FormDatePicker,
+    FormRecordList
   },
   data() {
     return {

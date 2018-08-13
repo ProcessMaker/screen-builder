@@ -32,7 +32,8 @@ import {
 } from "@processmaker/vue-form-elements/src/components";
 
 export default {
-  props: ["config", "data"],
+  name: 'VueFormRenderer',
+  props: ["config", "data", "page"],
   model: {
     prop: 'data',
     event: 'update'
@@ -46,7 +47,8 @@ export default {
     FormRadioButtonGroup,
     FormButton,
     FormMultiColumn,
-    FormDatePicker
+    FormDatePicker,
+    FormRecordList: () => import('./renderer/form-record-list.vue')
   },
   computed: {
     model () {
@@ -55,7 +57,7 @@ export default {
   },
   data() {
     return {
-      currentPage: 0,
+      currentPage: this.page ? this.page : 0,
       transientData: JSON.parse(JSON.stringify(this.data))
     };
   },
