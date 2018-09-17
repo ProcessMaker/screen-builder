@@ -581,7 +581,68 @@ export default [
             }
 
         ]
-    }
+    },
+     {
+        label: "Record List",
+        component: 'FormRecordList',
+        "editor-component": "FormText",
+        'editor-icon': require('./assets/icons/Table.png'),
+        config: {
+            name: '',
+            label: "New Record List",
+            editable: false,
+            fields: [],
+            form: ''
+        },
+        inspector: [
+            {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "List Name",
+                    name: 'List Name',
+                    validation: 'required',
+                    helper: "The data name for this list"
+                }
+            },
+            {
+                type: "FormInput",
+                field: "label",
+                config: {
+                    label: "List Label",
+                    helper: "The label describes this record list"
+                }
+            },
+            {
+                type: "FormCheckbox",
+                field: "editable",
+                config: {
+                    label: "Editable?",
+                    helper:
+                        "Should records be editable/removable and can new records be added"
+                }
+            },
+
+            {
+                type: "OptionsList",
+                field: "fields",
+                config: {
+                    label: 'Fields List',
+                    helper: "List of fields to display in the record list"
+                }
+            },
+            {
+                type: "PageSelect",
+                field: "form",
+                config: {
+                    label: "Record Form",
+                    helper: "The form to use for adding/editing records"
+                }
+            }
  
+        ]
+        
+    },
+
 
 ]
