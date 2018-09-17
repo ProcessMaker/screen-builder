@@ -14,22 +14,10 @@
 </template>
 
 <script>
-import FormText from "./renderer/form-text";
-import FormButton from "./renderer/form-button";
-import FormMultiColumn from "./renderer/form-multi-column";
 import Vue from 'vue'
 import * as VueDeepSet from 'vue-deepset'
 
 Vue.use(VueDeepSet)
-
-import {
-  FormInput,
-  FormSelect,
-  FormTextArea,
-  FormCheckbox,
-  FormRadioButtonGroup,
-  FormDatePicker
-} from "@processmaker/vue-form-elements/src/components";
 
 export default {
   name: 'VueFormRenderer',
@@ -37,18 +25,6 @@ export default {
   model: {
     prop: 'data',
     event: 'update'
-  },
-  components: {
-    FormText,
-    FormInput,
-    FormSelect,
-    FormTextArea,
-    FormCheckbox,
-    FormRadioButtonGroup,
-    FormButton,
-    FormMultiColumn,
-    FormDatePicker,
-    FormRecordList: () => import('./renderer/form-record-list.vue')
   },
   computed: {
     model () {

@@ -93,8 +93,6 @@ import BootstrapVue from "bootstrap-vue";
 
 Vue.use(BootstrapVue);
 
-import controlConfig from "../form-builder-controls";
-
 import {
   FormInput,
   FormSelect,
@@ -127,7 +125,8 @@ export default {
       selected: null,
       display: "editor",
       inspection: {},
-      controls: controlConfig,
+      // Blank at start, assume the parent component will call addControl for each control
+      controls: [],
       pageAddModal: false,
       addPageName: "",
       editPageIndex: null,
@@ -153,6 +152,9 @@ export default {
     }
   },
   methods: {
+    addControl(control) {
+      this.controls.push(control)
+    },
     deleteItem(index) {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
