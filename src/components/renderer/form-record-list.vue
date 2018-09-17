@@ -61,7 +61,7 @@ export default {
       editItem: {},
       editIndex: null,
       currentPage: 0,
-      perPage: 1
+      perPage: 50
     };
   },
   computed: {
