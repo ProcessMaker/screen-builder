@@ -10,8 +10,8 @@
         </li>
       </ul>
     </nav>
-    <vue-form-builder @change="updateConfig" :class="{invisible: mode != 'editor'}" />
-    <div id="preview" v-if="mode == 'preview'">
+    <vue-form-builder ref="builder" @change="updateConfig" :class="{invisible: mode != 'editor'}" />
+    <div id="preview" :class="{invisible: mode != 'preview'}">
       <div id="data-input">
         <div class="card-header">
           Data Input
@@ -27,7 +27,7 @@
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <vue-form-renderer v-model="previewData" @submit="previewSubmit" v-if="mode == 'preview'" :config="config" />
+              <vue-form-renderer ref="renderer" v-model="previewData" @submit="previewSubmit" :config="config" />
             </div>
           </div>
         </div>
@@ -45,7 +45,11 @@
 <script>
 import VueFormBuilder from "./components/vue-form-builder.vue";
 import VueFormRenderer from "./components/vue-form-renderer.vue";
-import VueJsonPretty from 'vue-json-pretty'
+import VueJsonPretty from 'vue-json-pretty';
+// Bring in our initial set of controls
+
+import controlConfig from "./form-builder-controls";
+
 
 import {
   FormTextArea,
@@ -63,8 +67,8 @@ export default {
           items: []
         }
       ],
-      previewData: null,
-      previewInput: null
+      previewData: {},
+      previewInput: '{}'
     };
   },
   components: {
@@ -74,6 +78,11 @@ export default {
     FormTextArea
   },
   watch: {
+    config() {
+      // Reset the preview data with clean object to start
+      this.previewData = {}
+
+    },
     previewInput() {
       if(this.previewInputValid) {
         // Copy data over
@@ -93,6 +102,18 @@ export default {
       }
     }
   },
+  mounted() {
+    // Iterate through our initial config set, calling this.addControl
+    for(var i = 0; i < controlConfig.length; i++) {
+      this.addControl(
+        controlConfig[i].control, 
+        controlConfig[i].rendererComponent, 
+        controlConfig[i].rendererBinding, 
+        controlConfig[i].builderComponent,
+        controlConfig[i].builderBinding
+        )
+    }
+  },
   methods: {
     updateConfig(newConfig) {
       this.config = newConfig
@@ -102,6 +123,13 @@ export default {
     },
     previewSubmit() {
       alert("Preview Form was Submitted")
+    },
+    addControl(control, rendererComponent, rendererBinding, builderComponent, builderBinding)
+    {
+      // Add it to the renderer
+      this.$refs.renderer.$options.components[rendererBinding] = rendererComponent;
+      // Add it to the form builder
+      this.$refs.builder.addControl(control, builderComponent, builderBinding)
     }
   }
 };
