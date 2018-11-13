@@ -6,24 +6,20 @@
 
 <script>
 export default {
-    props: [
-        'label',
-        'fontSize',
-        'fontWeight'
-    ],
-    computed: {
-        styles() {
-            return {
-                fontSize: this.fontSize,
-                fontWeight: this.fontWeight
-            }
-        }
+  props: ["label", "fontSize", "fontWeight", "textAlign"],
+  computed: {
+    styles() {
+      return {
+        fontSize: this.fontSize,
+        fontWeight: this.fontWeight,
+        textAlign: this.textAlign
+      };
     }
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>
 
 
