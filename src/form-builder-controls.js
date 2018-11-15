@@ -19,10 +19,10 @@ export default [{
         rendererComponent: FormText,
         rendererBinding: 'FormText',
         control: {
-            label: 'Text',
+            label: 'Text Box',
             component: 'FormText',
             'editor-component': 'FormText',
-            'editor-icon': require('./assets/icons/square-regular.svg'),
+            'editor-icon': require('./assets/icons/font-solid.svg'),
             config: {
                 label: 'New Text',
                 fontSize: '1em',
@@ -94,7 +94,7 @@ export default [{
             label: "Line Input",
             component: 'FormInput',
             "editor-component": "FormInput",
-            'editor-icon': require('./assets/icons/font-solid.svg'),
+            'editor-icon': require('./assets/icons/square-regular.svg'),
             config: {
                 label: "New Input",
                 name: '',
