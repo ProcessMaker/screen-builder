@@ -270,6 +270,14 @@ export default {
     background-color: #f7f9fa;
     flex-grow: 1;
     padding: 48px;
+    .icon {
+      width: 42px;
+      margin-right: 8px;
+      img {
+        max-width: 42px;
+        max-height: 21px;
+      }
+    }
   }
 }
 
