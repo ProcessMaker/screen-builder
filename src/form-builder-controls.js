@@ -19,21 +19,23 @@ export default [{
         rendererComponent: FormText,
         rendererBinding: 'FormText',
         control: {
-            label: 'Text',
+            label: 'Text Box',
             component: 'FormText',
             'editor-component': 'FormText',
-            'editor-icon': require('./assets/icons/Label.png'),
+            'editor-icon': require('./assets/icons/font-solid.svg'),
             config: {
                 label: 'New Text',
                 fontSize: '1em',
                 fontWeight: 'normal',
                 textAlign: 'left'
             },
-            inspector: [{
-                    type: "FormInput",
+            inspector: [
+                {
+                    type: "FormTextArea",
                     field: "label",
                     config: {
-                        label: "Text Label",
+                        rows: 5,
+                        label: "Text Content",
                         helper: "The text to display",
                     }
                 },
@@ -79,7 +81,31 @@ export default [{
                         ]
                     }
                 },
-
+                {
+                    type: "FormSelect",
+                    field: "fontSize",
+                    config: {
+                        label: "Font Size",
+                        helper: "The size of the text in em",
+                        options: [{
+                                value: '0.5em',
+                                content: '0.5'
+                            },
+                            {
+                                value: '1em',
+                                content: '1'
+                            },
+                            {
+                                value: '1.5em',
+                                content: '1.5'
+                            },
+                            {
+                                value: '2em',
+                                content: '2'
+                            },
+                        ]
+                    }
+                },
 
             ]
         }
@@ -93,7 +119,7 @@ export default [{
             label: "Line Input",
             component: 'FormInput',
             "editor-component": "FormInput",
-            'editor-icon': require('./assets/icons/TextField.png'),
+            'editor-icon': require('./assets/icons/square-regular.svg'),
             config: {
                 label: "New Input",
                 name: '',
@@ -176,7 +202,7 @@ export default [{
             label: "Select",
             component: 'FormSelect',
             "editor-component": "FormSelect",
-            'editor-icon': require('./assets/icons/Dropdown.png'),
+            'editor-icon': require('./assets/icons/caret-square-down-solid.svg'),
             config: {
                 label: "New Select",
                 placeholder: "",
@@ -242,7 +268,7 @@ export default [{
             label: "Radio Group",
             component: 'FormRadioButtonGroup',
             "editor-component": "FormRadioButtonGroup",
-            'editor-icon': require('./assets/icons/RadioButton.png'),
+            'editor-icon': require('./assets/icons/list-ul-solid.svg'),
             config: {
                 label: "New Radio Button Group",
                 options: [{
@@ -287,7 +313,7 @@ export default [{
             label: "Checkbox",
             component: 'FormCheckbox',
             "editor-component": "FormCheckbox",
-            'editor-icon': require('./assets/icons/Checkbox.png'),
+            'editor-icon': require('./assets/icons/check-square-solid.svg'),
             config: {
                 label: "New Checkbox",
                 helper: null,
@@ -339,7 +365,7 @@ export default [{
             label: "Textarea",
             component: 'FormTextArea',
             "editor-component": "FormTextArea",
-            'editor-icon': require('./assets/icons/TextArea.png'),
+            'editor-icon': require('./assets/icons/paragraph-solid.svg'),
             config: {
                 label: "New TextArea",
                 placeholder: "",
@@ -409,7 +435,7 @@ export default [{
             label: "Date Picker",
             component: 'FormDatePicker',
             "editor-component": "FormDatePicker",
-            'editor-icon': require('./assets/icons/Date.png'),
+            'editor-icon': require('./assets/icons/calendar-regular.svg'),
             config: {
                 label: "New Date Picker",
                 type: 'date',
@@ -453,7 +479,7 @@ export default [{
             label: "Submit Button",
             component: 'FormButton',
             "editor-component": "FormButton",
-            'editor-icon': require('./assets/icons/SubmitButton.png'),
+            'editor-icon': require('./assets/icons/share-square-solid.svg'),
             config: {
                 label: "New Submit",
                 variant: 'primary',
@@ -527,7 +553,7 @@ export default [{
             label: "Page Navigation",
             component: 'FormButton',
             "editor-component": "FormButton",
-            'editor-icon': require('./assets/icons/Button.png'),
+            'editor-icon': require('./assets/icons/angle-double-right-solid.svg'),
             config: {
                 label: "New Page Navigation",
                 variant: 'primary',
@@ -611,7 +637,7 @@ export default [{
             label: "Multi Column",
             component: 'FormMultiColumn',
             "editor-component": "MultiColumn",
-            'editor-icon': require('./assets/icons/Button.png'),
+            'editor-icon': require('./assets/icons/columns-solid.svg'),
             container: true,
             // Default items container
             items: [
@@ -638,7 +664,7 @@ export default [{
             label: "Record List",
             component: 'FormRecordList',
             "editor-component": "FormText",
-            'editor-icon': require('./assets/icons/Table.png'),
+            'editor-icon': require('./assets/icons/th-list-solid.svg'),
             config: {
                 name: '',
                 label: "New Record List",
