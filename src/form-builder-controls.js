@@ -31,10 +31,11 @@ export default [
             },
             inspector: [
                 {
-                    type: "FormInput",
+                    type: "FormTextArea",
                     field: "label",
                     config: {
-                        label: "Text Label",
+                        rows: 5,
+                        label: "Text Content",
                         helper: "The text to display",
                     }
                 },
