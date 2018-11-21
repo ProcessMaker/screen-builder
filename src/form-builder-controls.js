@@ -28,11 +28,13 @@ export default [{
                 fontSize: '1em',
                 fontWeight: 'normal'
             },
-            inspector: [{
-                    type: "FormInput",
+            inspector: [
+                {
+                    type: "FormTextArea",
                     field: "label",
                     config: {
-                        label: "Text Label",
+                        rows: 5,
+                        label: "Text Content",
                         helper: "The text to display",
                     }
                 },
