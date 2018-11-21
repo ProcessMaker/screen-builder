@@ -1,19 +1,37 @@
 <template>
 <div class="form-group">
-<div :style="styles">{{label}}</div>
+<div :style="styles" v-html="rendered"></div>
 </div>
 </template>
 
 <script>
+import Mustache from "mustache";
+
 export default {
-  props: ["label", "fontSize", "fontWeight", "color"],
-  computed: {
-    styles() {
-      return {
-        fontSize: this.fontSize,
-        fontWeight: this.fontWeight,
-        color: this.color
-      };
+    props: [
+        'label',
+        'fontSize',
+        'fontWeight',
+        'textAlign',
+        'validationData',
+        'color'
+    ],
+    computed: {
+        styles() {
+            return {
+                fontSize: this.fontSize,
+                fontWeight: this.fontWeight,
+                textAlign: this.textAlign,
+                color: this.color
+            }
+        },
+        rendered() {
+            try {
+                return Mustache.render(this.label, this.validationData)
+            } catch(e) {
+                return this.label;
+            }
+        }
     }
   }
 };
