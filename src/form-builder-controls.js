@@ -26,7 +26,8 @@ export default [{
             config: {
                 label: 'New Text',
                 fontSize: '1em',
-                fontWeight: 'normal'
+                fontWeight: 'normal',
+                textAlign: 'left'
             },
             inspector: [
                 {
@@ -55,8 +56,31 @@ export default [{
                         ]
                     }
                 },
-
-
+                {
+                    type: "FormSelect",
+                    field: "textAlign",
+                    config: {
+                        label: "Text Alignment",
+                        helper: "The Alignment of the text",
+                        options: [{
+                                value: 'center',
+                                content: 'Center'
+                            },
+                            {
+                                value: 'left',
+                                content: 'Left'
+                            },
+                            {
+                                value: 'right',
+                                content: 'Right'
+                            },
+                            {
+                                value: 'justify',
+                                content: 'Justify'
+                            },
+                        ]
+                    }
+                },
                 {
                     type: "FormSelect",
                     field: "fontSize",
@@ -82,7 +106,6 @@ export default [{
                         ]
                     }
                 },
-
 
             ]
         }
