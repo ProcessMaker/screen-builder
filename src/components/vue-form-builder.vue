@@ -82,7 +82,7 @@ import draggable from "vuedraggable";
 import OptionsList from "./inspector/options-list";
 import PageSelect from "./inspector/page-select";
 
-import FormMultiColumn from "./renderer/form-multi-column"
+import FormMultiColumn from "./renderer/form-multi-column";
 import MultiColumn from "./editor/multi-column";
 
 import FormText from "./renderer/form-text";
@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     addControl(control) {
-      this.controls.push(control)
+      this.controls.push(control);
     },
     deleteItem(index) {
       // Remove the item from the array in currentPage
@@ -196,9 +196,9 @@ export default {
         label: control.label
       };
       // If it's a container, let's add an items property, with the default of items in the control
-      if(control.container) {
-        copy['items'] = JSON.parse(JSON.stringify(control.items));
-        copy.container = true
+      if (control.container) {
+        copy["items"] = JSON.parse(JSON.stringify(control.items));
+        copy.container = true;
       }
       return copy;
     }
@@ -270,6 +270,14 @@ export default {
     background-color: #f7f9fa;
     flex-grow: 1;
     padding: 48px;
+    .icon {
+      width: 42px;
+      margin-right: 8px;
+      img {
+        max-width: 42px;
+        max-height: 21px;
+      }
+    }
   }
 }
 
