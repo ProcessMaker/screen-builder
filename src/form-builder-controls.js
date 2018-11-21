@@ -57,6 +57,14 @@ export default [{
                     }
                 },
                 {
+                    type: "FormInput",
+                    field: "color",
+                    config: {
+                        label: "Text Color",
+                        helper: "Accepts all HTML colors and hex codes"
+                    }
+                },
+                {
                     type: "FormSelect",
                     field: "textAlign",
                     config: {

@@ -13,14 +13,16 @@ export default {
         'fontSize',
         'fontWeight',
         'textAlign',
-        'validationData'
+        'validationData',
+        'color'
     ],
     computed: {
         styles() {
             return {
                 fontSize: this.fontSize,
                 fontWeight: this.fontWeight,
-                textAlign: this.textAlign
+                textAlign: this.textAlign,
+                color: this.color
             }
         },
         rendered() {
