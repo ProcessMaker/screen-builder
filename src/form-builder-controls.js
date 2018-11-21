@@ -27,7 +27,7 @@ export default [{
                 label: 'New Text',
                 fontSize: '1em',
                 fontWeight: 'normal',
-                textAlignment: 'left'
+                textAlign: 'left'
             },
             inspector: [{
                     type: "FormInput",
