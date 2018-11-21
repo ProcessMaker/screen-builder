@@ -12,13 +12,15 @@ export default {
         'label',
         'fontSize',
         'fontWeight',
+        'textAlign',
         'validationData'
     ],
     computed: {
         styles() {
             return {
                 fontSize: this.fontSize,
-                fontWeight: this.fontWeight
+                fontWeight: this.fontWeight,
+                textAlign: this.textAlign
             }
         },
         rendered() {
@@ -29,11 +31,11 @@ export default {
             }
         }
     }
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>
 
 
