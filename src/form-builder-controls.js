@@ -29,7 +29,8 @@ export default [{
                 fontWeight: 'normal',
                 textAlign: 'left'
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormTextArea",
                     field: "label",
                     config: {
@@ -490,9 +491,7 @@ export default [{
             config: {
                 label: "New Submit",
                 variant: 'primary',
-                event: 'submit',
-                name: null,
-                value: null
+                event: 'submit'
             },
             inspector: [{
                     type: "FormInput",
@@ -500,22 +499,6 @@ export default [{
                     config: {
                         label: "Field Label",
                         helper: "The label describes the button's text"
-                    }
-                },
-                {
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        helper: "The name of the button"
-                    }
-                },
-                {
-                    type: "FormInput",
-                    field: "value",
-                    config: {
-                        label: "Field Value",
-                        helper: "The value being submitted"
                     }
                 },
                 {
