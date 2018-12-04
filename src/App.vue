@@ -8,8 +8,12 @@
         <li class="nav-item">
           <a class="nav-link" @click="mode = 'preview'" href="#">Preview</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" @click="openComputedProperties" href="#">Computed Properties</a>
+        </li>
       </ul>
     </nav>
+    <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
     <vue-form-builder ref="builder" @change="updateConfig" :class="{invisible: mode != 'editor'}" />
     <div id="preview" :class="{invisible: mode != 'preview'}">
       <div id="data-input">
@@ -27,7 +31,7 @@
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <vue-form-renderer ref="renderer" v-model="previewData" @submit="previewSubmit" :config="config" />
+              <vue-form-renderer ref="renderer" v-model="previewData" @submit="previewSubmit" :config="config" :computed="computed" />
             </div>
           </div>
         </div>
@@ -43,6 +47,7 @@
 </template>
 
 <script>
+import ComputedProperties from "./components/computed-properties.vue";
 import VueFormBuilder from "./components/vue-form-builder.vue";
 import VueFormRenderer from "./components/vue-form-renderer.vue";
 import VueJsonPretty from 'vue-json-pretty';
@@ -61,9 +66,12 @@ export default {
   data() {
     return {
       mode: "editor",
+      // Computed properties
+      computed: [],
       config: [
         {
           name: "Default",
+          computed: [],
           items: []
         }
       ],
@@ -72,6 +80,7 @@ export default {
     };
   },
   components: {
+    ComputedProperties,
     VueFormBuilder,
     VueFormRenderer,
     VueJsonPretty,
@@ -115,6 +124,10 @@ export default {
     }
   },
   methods: {
+    openComputedProperties() {
+      this.$refs.computedProperties.show();
+
+    },
     updateConfig(newConfig) {
       this.config = newConfig
     },
