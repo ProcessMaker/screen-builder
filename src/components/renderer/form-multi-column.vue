@@ -9,7 +9,7 @@
                         </div>
 
                         <div v-else>
-                            <component @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
+                            <component v-model="model[element.config.name]" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
                         </div>
                     </div>
                 </div>
@@ -21,7 +21,7 @@
                         </div>
 
                         <div v-else>
-                            <component v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate" :is="element['component']"></component>
+                            <component v-model="model[element.config.name]" v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate" :is="element['component']"></component>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@ import {
 
 export default {
     name: 'FormMultiColumn',
-  props: ["value", "selected"],
+  props: ["value", "selected", "validationData"],
   components: {
     draggable,
     FormInput,
@@ -66,6 +66,11 @@ export default {
       items: []
     };
   },
+    computed: {
+        model () {
+            return this.$parent.model;
+        }
+    },
   watch: {
     value: {
       handler: function() {

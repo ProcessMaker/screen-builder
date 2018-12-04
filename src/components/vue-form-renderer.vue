@@ -2,7 +2,7 @@
   <div>
     <div v-for="(element,index) in config[currentPage]['items']" :key="index">
       <div v-if="element.container">
-        <component :selected="selected" v-model="element.items" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
+        <component selected="selected" v-model="element.items" @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']"></component>
       </div>
 
       <div v-else>
