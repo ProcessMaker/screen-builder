@@ -16,12 +16,14 @@
 <script>
 import Vue from 'vue'
 import * as VueDeepSet from 'vue-deepset'
+var Parser = require('expr-eval').Parser;
+
 
 Vue.use(VueDeepSet)
 
 export default {
   name: 'VueFormRenderer',
-  props: ["config", "data", "page"],
+  props: ["config", "data", "page", "computed"],
   model: {
     prop: 'data',
     event: 'update'
@@ -43,6 +45,22 @@ export default {
     },
    transientData: {
       handler: function() {
+        // Calculate computed properties
+        if(this.computed) {
+          this.computed.forEach((prop) => {
+            /*
+            try {
+              this.transientData[prop.property] = Parser.evaluate(prop.formula, this.transientData);
+            } catch(e) {
+              console.log("Error in expression");
+            }
+            */
+            var func = new Function(prop.formula);
+            this.transientData[prop.property] = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
+          });
+        }
+
+
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
         if(JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
