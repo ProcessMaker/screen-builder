@@ -12,7 +12,7 @@
                         </div>
 
                         <div v-else>
-                            <component v-model="model[element.config.name]" :transientData="transientData"
+                            <component v-model="model[element.config.name]" :validationData="transientData"
                                        @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
                                        :is="element['component']">
                             </component>
@@ -30,7 +30,7 @@
                         </div>
 
                         <div v-else>
-                            <component v-model="model[element.config.name]" :transientData="transientData"
+                            <component v-model="model[element.config.name]" :validationData="transientData"
                                        v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate"
                                        :is="element['component']">
                             </component>
