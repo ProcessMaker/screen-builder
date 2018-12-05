@@ -87,7 +87,7 @@
             isValid()
             {
                 this.errors= [];
-                this.validation = true;
+                this.valid = true;
 
                 if (this.$refs && this.$refs.elements) {
                     this.validateElements(this.$refs.elements);
@@ -96,7 +96,7 @@
                 if (this.$refs && this.$refs.container) {
                     this.validateContainer(this.$refs.container);
                 }
-                return this.validation;
+                return this.valid;
             },
             pageNavigate(page) {
                 this.currentPage = page;
