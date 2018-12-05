@@ -5,14 +5,14 @@
                 <div class="col">
                     <div v-for="(element,index) in items[0]" :key="index">
                         <div v-if="element.container" class="container">
-                            <component v-model="element.items" :transientData="transientData" @submit="submit"
+                            <component ref="container" v-model="element.items" :transientData="transientData" @submit="submit"
                                        @pageNavigate="pageNavigate" v-bind="element.config"
                                        :is="element['component']">
                             </component>
                         </div>
 
                         <div v-else>
-                            <component v-model="model[element.config.name]" :validationData="transientData"
+                            <component ref="elements" v-model="model[element.config.name]" :validationData="transientData"
                                        @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
                                        :is="element['component']">
                             </component>
@@ -23,14 +23,14 @@
                 <div class="col">
                     <div v-for="(element,index) in items[1]" :key="index">
                         <div v-if="element.container" class="container">
-                            <component v-model="element.items" :transientData="transientData" v-bind="element.config"
+                            <component ref="container" v-model="element.items" :transientData="transientData" v-bind="element.config"
                                        @submit="submit" @pageNavigate="pageNavigate"
                                        :is="element['component']">
                             </component>
                         </div>
 
                         <div v-else>
-                            <component v-model="model[element.config.name]" :validationData="transientData"
+                            <component ref="elements" v-model="model[element.config.name]" :validationData="transientData"
                                        v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate"
                                        :is="element['component']">
                             </component>
