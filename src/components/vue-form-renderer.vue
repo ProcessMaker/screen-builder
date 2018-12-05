@@ -2,13 +2,13 @@
     <div>
         <div v-for="(element,index) in config[currentPage]['items']" :key="index">
             <div v-if="element.container">
-                <component selected="selected" :transientData="transientData" v-model="element.items" @submit="submit"
+                <component ref="container" selected="selected" :transientData="transientData" v-model="element.items" @submit="submit"
                            @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
 
             <div v-else>
-                <component :validationData="transientData" v-model="model[element.config.name]" @submit="submit"
+                <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit"
                            @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
@@ -37,6 +37,8 @@
         },
         data() {
             return {
+                valid: true,
+                errors: [],
                 currentPage: this.page ? this.page : 0,
                 transientData: JSON.parse(JSON.stringify(this.data))
             };
@@ -60,7 +62,41 @@
 
         methods: {
             submit() {
-                this.$emit("submit", this.transientData);
+                if (this.isValid()) {
+                    this.$emit("submit", this.transientData);
+                }
+            },
+            validateElements(elements) {
+                elements.forEach(element => {
+                    if (element.validator && element.validator.errorCount !== 0) {
+                        this.valid = false;
+                        this.errors.push(element.validator.errors.errors);
+                    }
+                });
+            },
+            validateContainer(container) {
+                if (container.$refs && container.$refs.container) {
+                    this.validateContainer(container.$refs.container);
+                }
+                container.forEach(element => {
+                    if (element.$refs && element.$refs.elements) {
+                        this.validateElements(element.$refs.elements);
+                    }
+                });
+            },
+            isValid()
+            {
+                this.errors= [];
+                this.validation = true;
+
+                if (this.$refs && this.$refs.elements) {
+                    this.validateElements(this.$refs.elements);
+                }
+
+                if (this.$refs && this.$refs.container) {
+                    this.validateContainer(this.$refs.container);
+                }
+                return this.validation;
             },
             pageNavigate(page) {
                 this.currentPage = page;
