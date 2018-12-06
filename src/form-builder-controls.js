@@ -13,110 +13,115 @@ import {
     FormDatePicker
 } from "@processmaker/vue-form-elements/src/components";
 
-export default [{
-    builderComponent: FormText,
-    builderBinding: 'FormText',
-    rendererComponent: FormText,
-    rendererBinding: 'FormText',
-    control: {
-        label: 'Text Box',
-        component: 'FormText',
-        'editor-component': 'FormText',
-        'editor-icon': require('./assets/icons/font-solid.svg'),
-        config: {
-            label: 'New Text',
-            fontSize: '1em',
-            fontWeight: 'normal',
-            textAlign: 'left'
-        },
-        inspector: [{
-            type: "FormTextArea",
-            field: "label",
+export default [
+    {
+        builderComponent: FormText,
+        builderBinding: 'FormText',
+        rendererComponent: FormText,
+        rendererBinding: 'FormText',
+        control: {
+            label: 'Text Box',
+            component: 'FormText',
+            'editor-component': 'FormText',
+            'editor-icon': require('./assets/icons/font-solid.svg'),
             config: {
-                rows: 5,
-                label: "Text Content",
-                helper: "The text to display",
-            }
-        },
-            {
-                type: "FormSelect",
-                field: "fontWeight",
-                config: {
-                    label: "Font Weight",
-                    helper: "The weight of the text",
-                    options: [{
-                        value: 'normal',
-                        content: 'Normal'
-                    },
-                        {
-                            value: 'bold',
-                            content: 'Bold'
-                        }
-                    ]
-                }
+                label: 'New Text',
+                fontSize: '1em',
+                fontWeight: 'normal',
+                textAlign: 'left'
             },
-            {
-                type: "FormInput",
-                field: "color",
-                config: {
-                    label: "Text Color",
-                    helper: "Accepts all HTML colors and hex codes"
-                }
-            },
-            {
-                type: "FormSelect",
-                field: "textAlign",
-                config: {
-                    label: "Text Alignment",
-                    helper: "The Alignment of the text",
-                    options: [{
-                        value: 'center',
-                        content: 'Center'
-                    },
-                        {
-                            value: 'left',
-                            content: 'Left'
-                        },
-                        {
-                            value: 'right',
-                            content: 'Right'
-                        },
-                        {
-                            value: 'justify',
-                            content: 'Justify'
-                        },
-                    ]
-                }
-            },
-            {
-                type: "FormSelect",
-                field: "fontSize",
-                config: {
-                    label: "Font Size",
-                    helper: "The size of the text in em",
-                    options: [{
-                        value: '0.5em',
-                        content: '0.5'
-                    },
-                        {
-                            value: '1em',
-                            content: '1'
-                        },
-                        {
-                            value: '1.5em',
-                            content: '1.5'
-                        },
-                        {
-                            value: '2em',
-                            content: '2'
-                        },
-                    ]
-                }
-            },
+            inspector: [
+                {
+                    type: "FormTextArea",
+                    field: "label",
+                    config: {
+                        rows: 5,
+                        label: "Text Content",
+                        helper: "The text to display",
+                    }
+                },
+                {
+                    type: "FormSelect",
+                    field: "fontWeight",
+                    config: {
+                        label: "Font Weight",
+                        helper: "The weight of the text",
+                        options: [
+                            {
+                                value: 'normal',
+                                content: 'Normal'
+                            },
+                            {
+                                value: 'bold',
+                                content: 'Bold'
+                            }
+                        ]
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "color",
+                    config: {
+                        label: "Text Color",
+                        helper: "Accepts all HTML colors and hex codes"
+                    }
+                },
+                {
+                    type: "FormSelect",
+                    field: "textAlign",
+                    config: {
+                        label: "Text Alignment",
+                        helper: "The Alignment of the text",
+                        options: [
+                            {
+                                value: 'center',
+                                content: 'Center'
+                            },
+                            {
+                                value: 'left',
+                                content: 'Left'
+                            },
+                            {
+                                value: 'right',
+                                content: 'Right'
+                            },
+                            {
+                                value: 'justify',
+                                content: 'Justify'
+                            },
+                        ]
+                    }
+                },
+                {
+                    type: "FormSelect",
+                    field: "fontSize",
+                    config: {
+                        label: "Font Size",
+                        helper: "The size of the text in em",
+                        options: [
+                            {
+                                value: '0.5em',
+                                content: '0.5'
+                            },
+                            {
+                                value: '1em',
+                                content: '1'
+                            },
+                            {
+                                value: '1.5em',
+                                content: '1.5'
+                            },
+                            {
+                                value: '2em',
+                                content: '2'
+                            },
+                        ]
+                    }
+                },
 
-        ]
-    }
-},
+            ]
+        }
+    },
     {
         builderComponent: FormInput,
         builderBinding: 'FormInput',
@@ -135,16 +140,17 @@ export default [{
                 helper: null,
                 type: 'text'
             },
-            inspector: [{
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "Field Name",
-                    name: 'Field Name',
-                    validation: 'required',
-                    helper: "The data name for this field"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
+                    }
+                },
                 {
                     type: "FormSelect",
                     field: "type",
@@ -152,10 +158,11 @@ export default [{
                         label: "Field Type",
                         name: 'Field Type',
                         helper: "The type for this field",
-                        options: [{
-                            value: 'text',
-                            content: 'Text'
-                        },
+                        options: [
+                            {
+                                value: 'text',
+                                content: 'Text'
+                            },
                             {
                                 value: 'password',
                                 content: 'Password'
@@ -214,22 +221,24 @@ export default [{
                 label: "New Select",
                 placeholder: "",
                 validation: '',
-                options: [{
-                    value: 'new',
-                    content: 'New Option'
-                }
+                options: [
+                    {
+                        value: 'new',
+                        content: 'New Option'
+                    }
 
                 ],
                 helper: null,
             },
-            inspector: [{
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "Field Name",
-                    helper: "The data name for this field"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        helper: "The data name for this field"
+                    }
+                },
                 {
                     type: "FormInput",
                     field: "label",
@@ -278,20 +287,22 @@ export default [{
             'editor-icon': require('./assets/icons/list-ul-solid.svg'),
             config: {
                 label: "New Radio Button Group",
-                options: [{
-                    value: 'new',
-                    content: 'New Option'
-                }],
+                options: [
+                    {
+                        value: 'new',
+                        content: 'New Option'
+                    }],
                 helper: null,
             },
-            inspector: [{
-                type: "FormInput",
-                field: "label",
-                config: {
-                    label: "Field Label",
-                    helper: "The label describes the fields name"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "label",
+                    config: {
+                        label: "Field Label",
+                        helper: "The label describes the fields name"
+                    }
+                },
                 {
                     type: "FormInput",
                     field: "helper",
@@ -328,14 +339,15 @@ export default [{
                 checked: false,
                 validation: '',
             },
-            inspector: [{
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "Field Name",
-                    helper: "The name of the group for the checkbox. All checkboxes which share the same name will work together."
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        helper: "The name of the group for the checkbox. All checkboxes which share the same name will work together."
+                    }
+                },
                 {
                     type: "FormInput",
                     field: "label",
@@ -379,16 +391,17 @@ export default [{
                 helper: null,
                 rows: 2
             },
-            inspector: [{
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "Field Name",
-                    name: 'Field Name',
-                    validation: 'required',
-                    helper: "The data name for this field"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
+                    }
+                },
                 {
                     type: "FormInput",
                     field: "label",
@@ -448,16 +461,17 @@ export default [{
                 type: 'date',
                 name: ''
             },
-            inspector: [{
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "Field Name",
-                    name: 'Field Name',
-                    validation: 'required',
-                    helper: "The data name for this field"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
+                    }
+                },
                 {
                     type: "FormInput",
                     field: "label",
@@ -491,9 +505,18 @@ export default [{
                 label: "New Submit",
                 variant: 'primary',
                 event: 'submit',
-                name: 'submit'
+                name: null,
+                value: null
             },
             inspector: [
+                {
+                    type: "FormInput",
+                    field: "label",
+                    config: {
+                        label: "Field Label",
+                        helper: "The label describes the button's text"
+                    }
+                },
                 {
                     type: "FormInput",
                     field: "name",
@@ -504,10 +527,10 @@ export default [{
                 },
                 {
                     type: "FormInput",
-                    field: "label",
+                    field: "value",
                     config: {
-                        label: "Field Label",
-                        helper: "The label describes the button's text"
+                        label: "Field Value",
+                        helper: "The value being submitted"
                     }
                 },
                 {
@@ -516,10 +539,11 @@ export default [{
                     config: {
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
-                        options: [{
-                            value: 'primary',
-                            content: 'Primary'
-                        },
+                        options: [
+                            {
+                                value: 'primary',
+                                content: 'Primary'
+                            },
                             {
                                 value: 'secondary',
                                 content: 'Secondary'
@@ -578,24 +602,26 @@ export default [{
                 eventData: 0
 
             },
-            inspector: [{
-                type: "FormInput",
-                field: "label",
-                config: {
-                    label: "Field Label",
-                    helper: "The label describes the button's text"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "label",
+                    config: {
+                        label: "Field Label",
+                        helper: "The label describes the button's text"
+                    }
+                },
                 {
                     type: "FormSelect",
                     field: "variant",
                     config: {
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
-                        options: [{
-                            value: 'primary',
-                            content: 'Primary'
-                        },
+                        options: [
+                            {
+                                value: 'primary',
+                                content: 'Primary'
+                            },
                             {
                                 value: 'secondary',
                                 content: 'Secondary'
@@ -662,12 +688,13 @@ export default [{
                 []
             ],
             config: {},
-            inspector: [{
-                type: "FormText",
-                config: {
-                    label: "MultiColumn",
+            inspector: [
+                {
+                    type: "FormText",
+                    config: {
+                        label: "MultiColumn",
+                    }
                 }
-            }
 
             ]
         },
@@ -689,16 +716,17 @@ export default [{
                 fields: [],
                 form: ''
             },
-            inspector: [{
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "List Name",
-                    name: 'List Name',
-                    validation: 'required',
-                    helper: "The data name for this list"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "List Name",
+                        name: 'List Name',
+                        validation: 'required',
+                        helper: "The data name for this list"
+                    }
+                },
                 {
                     type: "FormInput",
                     field: "label",
