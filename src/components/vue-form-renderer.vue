@@ -9,7 +9,7 @@
 
             <div v-else>
                 <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit"
-                           @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']" eventData="element.config.value">
+                           @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
         </div>
