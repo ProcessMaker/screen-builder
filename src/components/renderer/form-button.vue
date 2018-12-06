@@ -19,8 +19,15 @@
             },
         },
         methods: {
+            setValue(parent, name, value) {
+                if (parent.items) {
+                    this.setValue(parent.$parent, name, value);
+                } else {
+                    Vue.set(parent.data, name, value);
+                }
+            },
             click() {
-                Vue.set(this.$parent.data, this.name, this.$attrs.value);
+                this.setValue(this.$parent, this.name, this.$attrs.value);
                 this.$emit(this.event, this.eventData);
             }
         }
