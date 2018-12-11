@@ -58,7 +58,7 @@
                     if (that.computed) {
                         that.computed.forEach((prop) => {
                             try {
-                                Vue.set(that.data, prop.property, Parser.evaluate(prop.formula, that.transientData));
+                                Vue.set(that.transientData, prop.property, Parser.evaluate(prop.formula, that.transientData));
                             } catch(e) {
                               console.log("Error in expression");
                             }
