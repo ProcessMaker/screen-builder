@@ -54,23 +54,20 @@
             },
             transientData: {
                 handler: function () {
-                    if (this.computed) {
-                        this.computed.forEach((prop) => {
-                            /*
+                    let that = this;
+                    if (that.computed) {
+                        that.computed.forEach((prop) => {
                             try {
-                              this.transientData[prop.property] = Parser.evaluate(prop.formula, this.transientData);
+                                Vue.set(that.data, prop.property, Parser.evaluate(prop.formula, that.transientData));
                             } catch(e) {
                               console.log("Error in expression");
                             }
-                            */
-                            let func = new Function(prop.formula);
-                            this.transientData[prop.property] = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
                         });
                     }
                     // Only emit the update message if transientData does NOT equal this.data
                     // Instead of deep object property comparison, we'll just compare the JSON representations of both
-                    if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
-                        this.$emit("update", this.transientData);
+                    if (JSON.stringify(that.transientData) != JSON.stringify(that.data)) {
+                        that.$emit("update", that.transientData);
                         return;
                     }
                 },
