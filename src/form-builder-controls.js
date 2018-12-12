@@ -13,7 +13,8 @@ import {
     FormDatePicker
 } from "@processmaker/vue-form-elements/src/components";
 
-export default [{
+export default [
+    {
         builderComponent: FormText,
         builderBinding: 'FormText',
         rendererComponent: FormText,
@@ -29,7 +30,8 @@ export default [{
                 fontWeight: 'normal',
                 textAlign: 'left'
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormTextArea",
                     field: "label",
                     config: {
@@ -44,7 +46,8 @@ export default [{
                     config: {
                         label: "Font Weight",
                         helper: "The weight of the text",
-                        options: [{
+                        options: [
+                            {
                                 value: 'normal',
                                 content: 'Normal'
                             },
@@ -69,7 +72,8 @@ export default [{
                     config: {
                         label: "Text Alignment",
                         helper: "The Alignment of the text",
-                        options: [{
+                        options: [
+                            {
                                 value: 'center',
                                 content: 'Center'
                             },
@@ -94,7 +98,8 @@ export default [{
                     config: {
                         label: "Font Size",
                         helper: "The size of the text in em",
-                        options: [{
+                        options: [
+                            {
                                 value: '0.5em',
                                 content: '0.5'
                             },
@@ -135,7 +140,8 @@ export default [{
                 helper: null,
                 type: 'text'
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -152,7 +158,8 @@ export default [{
                         label: "Field Type",
                         name: 'Field Type',
                         helper: "The type for this field",
-                        options: [{
+                        options: [
+                            {
                                 value: 'text',
                                 content: 'Text'
                             },
@@ -214,7 +221,8 @@ export default [{
                 label: "New Select",
                 placeholder: "",
                 validation: '',
-                options: [{
+                options: [
+                    {
                         value: 'new',
                         content: 'New Option'
                     }
@@ -222,7 +230,8 @@ export default [{
                 ],
                 helper: null,
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -278,13 +287,15 @@ export default [{
             'editor-icon': require('./assets/icons/list-ul-solid.svg'),
             config: {
                 label: "New Radio Button Group",
-                options: [{
-                    value: 'new',
-                    content: 'New Option'
-                }],
+                options: [
+                    {
+                        value: 'new',
+                        content: 'New Option'
+                    }],
                 helper: null,
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "label",
                     config: {
@@ -328,7 +339,8 @@ export default [{
                 checked: false,
                 validation: '',
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -379,7 +391,8 @@ export default [{
                 helper: null,
                 rows: 2
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -448,7 +461,8 @@ export default [{
                 type: 'date',
                 name: ''
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -494,7 +508,8 @@ export default [{
                 name: null,
                 value: null
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "label",
                     config: {
@@ -524,7 +539,8 @@ export default [{
                     config: {
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
-                        options: [{
+                        options: [
+                            {
                                 value: 'primary',
                                 content: 'Primary'
                             },
@@ -586,7 +602,8 @@ export default [{
                 eventData: 0
 
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "label",
                     config: {
@@ -600,7 +617,8 @@ export default [{
                     config: {
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
-                        options: [{
+                        options: [
+                            {
                                 value: 'primary',
                                 content: 'Primary'
                             },
@@ -670,7 +688,8 @@ export default [{
                 []
             ],
             config: {},
-            inspector: [{
+            inspector: [
+                {
                     type: "FormText",
                     config: {
                         label: "MultiColumn",
@@ -697,7 +716,8 @@ export default [{
                 fields: [],
                 form: ''
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "name",
                     config: {
