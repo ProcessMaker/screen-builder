@@ -1,6 +1,9 @@
 <template>
     <b-modal ref="modal" size="lg" id="computed-properties" centered hide-footer title="Computed Properties" @hidden="displayTableList">
 
+        <b-alert :variant="alertVariant" dismissible :show="showDismissibleAlert" @dismissed="showDismissibleAlert=false">
+            {{ message }}
+        </b-alert>
         <template v-if="displayList">
             <b-row class="float-right">
                 <b-col md="6" class="m-2">
@@ -71,6 +74,9 @@
         ],
         data() {
             return {
+                showDismissibleAlert: false,
+                alertVariant:'danger',
+                message:'',
                 required: true,
                 numberItem: 0,
                 displayList: true,
@@ -139,6 +145,7 @@
                         name: this.add.name,
                         formula: this.add.formula
                     });
+                    this.showAlert('Property Saved', 'success');
                 } else {
                     let that = this;
                     this.current.forEach(item => {
@@ -148,6 +155,7 @@
                             item.formula = that.add.formula;
                         }
                     });
+                    this.showAlert('Property Edited', 'success');
                 }
 
                 this.$emit('input', this.current);
@@ -166,7 +174,13 @@
                     return val.id !== item.id
                 });
                 this.$emit('input', this.current);
+                this.showAlert('Property deleted', 'success');
                 this.displayTableList();
+            },
+            showAlert(message, variant) {
+                this.alertVariant = variant || 'success';
+                this.message = message || '';
+                this.showDismissibleAlert = true;
             }
 
         }
