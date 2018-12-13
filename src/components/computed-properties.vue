@@ -27,11 +27,11 @@
                 </template>
                 <template slot="row-details" slot-scope="row">
                     <b-card>
-                        <b-row class="mb-2">
+                        <b-row class="mb-1">
                             <b-col sm="3" class="text-sm-right"><b>Field:</b></b-col>
                             <b-col>{{ row.item.property }}</b-col>
                         </b-row>
-                        <b-row class="mb-2">
+                        <b-row class="mb-1">
                             <b-col sm="3" class="text-sm-right"><b>Formula (javascript):</b></b-col>
                             <b-col>{{ row.item.formula }}</b-col>
                         </b-row>
@@ -74,21 +74,6 @@
                 required: true,
                 displayList: true,
                 current: this.value,
-                formProperty: [
-                    {
-                        type: "FormInput",
-                        field: "name",
-                        config: {
-                            label: "Field Name",
-                            name: 'Field Name',
-                            validation: 'required',
-                            helper: "The data name for this field"
-                        }
-                    }
-                ],
-                config: {
-                    validation: 'required',
-                },
                 add: {
                     name: '',
                     property: '',
@@ -131,6 +116,7 @@
             emptyForm() {
                 this.add.name = '';
                 this.add.property = '';
+                this.add.type= 'expression';
                 this.add.formula = '';
             },
             displayTableList() {
@@ -142,7 +128,6 @@
                 this.displayList = false;
             },
             addProperty() {
-                console.log('ADd property');
                 this.current.push({
                     property: this.add.property,
                     name: this.add.name,
