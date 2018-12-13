@@ -1,5 +1,5 @@
 <template>
-    <b-modal ref="modal" size="lg" id="computed-properties" centered hide-footer title="Computed Properties">
+    <b-modal ref="modal" size="lg" id="computed-properties" centered hide-footer title="Computed Properties" @hidden="displayTableList">
 
         <template v-if="displayList">
             <b-row class="float-right">
@@ -17,11 +17,11 @@
                     <b-btn size="sm" variant="action" @click.stop="row.toggleDetails" class="mr-2">
                         {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
                     </b-btn>
-                    <b-btn size="sm" variant="action" class="mr-2" @click.stop="edit( props.rowData, props.rowIndex)">
+                    <b-btn size="sm" variant="action" class="mr-2" @click.stop="editProperty(row.item)">
                         Edit
                     </b-btn>
                     <b-btn size="sm" variant="action" class="mr-2"
-                           @click.stop="delete('edit-item', props.rowData, props.rowIndex)">
+                           @click.stop="deleteProperty(row.item)">
                         Delete
                     </b-btn>
                 </template>
@@ -48,7 +48,7 @@
                         validation="required"></form-input>
             <form-text-area v-model="add.formula" label="Formula (javascript)" name="formula"
                             validation="required"></form-text-area>
-            <button class="btn btn-success float-right m-1" @click="addProperty" :disabled="disabled">Add Property
+            <button class="btn btn-success float-right m-1" @click="saveProperty" :disabled="disabled">Add Property
             </button>
             <button class="btn btn-secondary float-right m-1" @click="displayTableList">Cancel</button>
         </template>
@@ -72,9 +72,11 @@
         data() {
             return {
                 required: true,
+                numberItem: 0,
                 displayList: true,
                 current: this.value,
                 add: {
+                    id:0,
                     name: '',
                     property: '',
                     type: 'expression',
@@ -114,6 +116,7 @@
                 this.$refs.modal.show()
             },
             emptyForm() {
+                this.add.name = 0;
                 this.add.name = '';
                 this.add.property = '';
                 this.add.type= 'expression';
@@ -127,14 +130,37 @@
                 this.emptyForm();
                 this.displayList = false;
             },
-            addProperty() {
-                this.current.push({
-                    property: this.add.property,
-                    name: this.add.name,
-                    formula: this.add.formula
-                });
+            saveProperty() {
+                if (this.add.id === 0) {
+                    this.numberItem++;
+                    this.current.push({
+                        id: this.numberItem,
+                        property: this.add.property,
+                        name: this.add.name,
+                        formula: this.add.formula
+                    });
+                } else {
+                    let that = this;
+                    this.current.forEach(item => {
+                        if (item.id === that.add.id) {
+                            item.name = that.add.name;
+                            item.property = that.add.property;
+                            item.formula = that.add.formula;
+                        }
+                    });
+                }
+
                 this.$emit('input', this.current);
                 this.displayTableList();
+            },
+            editProperty(item) {
+                console.log(item);
+                this.add.id = item.id;
+                this.add.name = item.name;
+                this.add.property = item.property;
+                this.add.type= 'expression';
+                this.add.formula = item.formula;
+                this.displayList = false;
             }
         }
 
