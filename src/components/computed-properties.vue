@@ -116,7 +116,7 @@
                 this.$refs.modal.show()
             },
             emptyForm() {
-                this.add.name = 0;
+                this.add.id = 0;
                 this.add.name = '';
                 this.add.property = '';
                 this.add.type= 'expression';
@@ -154,14 +154,21 @@
                 this.displayTableList();
             },
             editProperty(item) {
-                console.log(item);
                 this.add.id = item.id;
                 this.add.name = item.name;
                 this.add.property = item.property;
                 this.add.type= 'expression';
                 this.add.formula = item.formula;
                 this.displayList = false;
+            },
+            deleteProperty(item) {
+                this.current = this.current.filter(val => {
+                    return val.id !== item.id
+                });
+                this.$emit('input', this.current);
+                this.displayTableList();
             }
+
         }
 
     }
