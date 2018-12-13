@@ -51,7 +51,7 @@
                         validation="required"></form-input>
             <form-text-area v-model="add.formula" label="Formula (javascript)" name="formula"
                             validation="required"></form-text-area>
-            <button class="btn btn-success float-right m-1" @click="saveProperty" :disabled="disabled">Add Property
+            <button class="btn btn-success float-right m-1" @click="validateData" :disabled="disabled">Add Property
             </button>
             <button class="btn btn-secondary float-right m-1" @click="displayTableList">Cancel</button>
         </template>
@@ -135,6 +135,19 @@
             displayFormProperty() {
                 this.emptyForm();
                 this.displayList = false;
+            },
+            validateData() {
+                let validation = true;
+                let that = this;
+                this.current.forEach(item => {
+                    if (item.property === that.add.property) {
+                        validation= false;
+                        this.showAlert('Property already exists', 'danger');
+                    }
+                });
+                if (validation) {
+                    this.saveProperty();
+                }
             },
             saveProperty() {
                 if (this.add.id === 0) {
