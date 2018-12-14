@@ -51,7 +51,7 @@
                         validation="required"></form-input>
             <form-text-area v-model="add.formula" label="Formula (javascript)" name="formula"
                             validation="required"></form-text-area>
-            <button class="btn btn-success float-right m-1" @click="validateData" :disabled="disabled">Add Property
+            <button class="btn btn-success float-right m-1" @click="validateData" :disabled="disabled">Save Property
             </button>
             <button class="btn btn-secondary float-right m-1" @click="displayTableList">Cancel</button>
         </template>
@@ -90,22 +90,17 @@
                 },
                 fields: [
                     {
-                        key: 'property',
+                        key: 'name',
                         label: 'Property Name',
                         class: 'text-center',
                         sortable: true,
-                    }, {
+                    },
+                    {
                         key: 'actions',
                         label: '',
                         class: 'text-center',
                         sortable: false,
                     }
-                ],
-                items: [
-                    {isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald'},
-                    {isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw'},
-                    {isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson', _showDetails: true},
-                    {isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney'}
                 ]
             }
         },
@@ -140,7 +135,7 @@
                 let validation = true;
                 let that = this;
                 this.current.forEach(item => {
-                    if (item.property === that.add.property) {
+                    if (item.property === that.add.property && item.id !== that.add.id) {
                         validation= false;
                         this.showAlert('Property already exists', 'danger');
                     }
