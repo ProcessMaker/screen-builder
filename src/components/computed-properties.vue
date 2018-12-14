@@ -1,7 +1,9 @@
 <template>
-    <b-modal ref="modal" size="lg" id="computed-properties" centered hide-footer title="Computed Properties" @hidden="displayTableList">
+    <b-modal ref="modal" size="lg" id="computed-properties" centered hide-footer title="Computed Properties"
+             @hidden="displayTableList">
 
-        <b-alert :variant="alertVariant" dismissible :show="showDismissibleAlert" @dismissed="showDismissibleAlert=false">
+        <b-alert :variant="alertVariant" dismissible :show="showDismissibleAlert"
+                 @dismissed="showDismissibleAlert=false">
             {{ message }}
         </b-alert>
         <template v-if="displayList">
@@ -75,14 +77,14 @@
         data() {
             return {
                 showDismissibleAlert: false,
-                alertVariant:'danger',
-                message:'',
+                alertVariant: 'danger',
+                message: '',
                 required: true,
                 numberItem: 0,
                 displayList: true,
-                current: this.value,
+                current: [],
                 add: {
-                    id:0,
+                    id: 0,
                     name: '',
                     property: '',
                     type: 'expression',
@@ -104,6 +106,16 @@
                 ]
             }
         },
+        watch: {
+            value() {
+                let that = this;
+                that.value.forEach(item => {
+                    this.numberItem++;
+                    item.id = this.numberItem;
+                });
+                this.current = this.value;
+            }
+        },
         computed: {
             disabled() {
                 if (this.add.name.trim() === '' || this.add.property.trim() === '' || this.add.formula.trim() === '') {
@@ -120,7 +132,7 @@
                 this.add.id = 0;
                 this.add.name = '';
                 this.add.property = '';
-                this.add.type= 'expression';
+                this.add.type = 'expression';
                 this.add.formula = '';
             },
             displayTableList() {
@@ -136,7 +148,7 @@
                 let that = this;
                 this.current.forEach(item => {
                     if (item.property === that.add.property && item.id !== that.add.id) {
-                        validation= false;
+                        validation = false;
                         this.showAlert('Property already exists', 'danger');
                     }
                 });
@@ -173,7 +185,7 @@
                 this.add.id = item.id;
                 this.add.name = item.name;
                 this.add.property = item.property;
-                this.add.type= 'expression';
+                this.add.type = 'expression';
                 this.add.formula = item.formula;
                 this.displayList = false;
             },
@@ -190,11 +202,8 @@
                 this.message = message || '';
                 this.showDismissibleAlert = true;
             }
-
         }
-
     }
-
 </script>
 
 <style lang="scss" scoped>
