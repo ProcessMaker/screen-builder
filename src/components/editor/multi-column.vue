@@ -4,15 +4,15 @@
             <div class="row">
                 <draggable class="col-sm column-draggable" v-model="items[0]" :options="{group: {name: 'controls'}}">
                     <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in items[0]" :key="index">
-                        <div v-if="element.container">
+                         <div v-if="element.container">
                             <component @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
-                            <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                            <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
                         </div>
 
                         <div v-else>
                             <component v-bind="element.config" :is="element['editor-component']"></component>
                             <div @click="inspect(element)" class="mask"></div>
-                            <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                            <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
                         </div>
                     </div>
 
@@ -20,15 +20,15 @@
 
                 <draggable class="col-sm column-draggable" v-model="items[1]" :options="{group: {name: 'controls'}}">
                     <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in items[1]" :key="index">
-                        <div v-if="element.container">
+                         <div v-if="element.container">
                             <component @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
-                            <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                            <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
                         </div>
 
                         <div v-else>
                             <component v-bind="element.config" :is="element['editor-component']"></component>
                             <div @click="inspect(element)" class="mask"></div>
-                            <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                            <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
                         </div>
                     </div>
 
@@ -47,15 +47,15 @@ import FormText from "../renderer/form-text";
 import FormButton from "../renderer/form-button";
 
 import {
-  FormInput,
+FormInput,
   FormSelect,
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup
-} from "@processmaker/vue-form-elements/src/components";
+  } from "@processmaker/vue-form-elements/src/components";
 
 export default {
-    name: 'MultiColumn',
+  name: 'MultiColumn',
   props: ["value", "selected"],
   components: {
     draggable,
@@ -75,7 +75,7 @@ export default {
   },
   watch: {
     value: {
-      handler: function() {
+      handler: function () {
         this.items = this.value;
       },
       immediate: true
@@ -85,9 +85,13 @@ export default {
     }
   },
   methods: {
-      inspect(element) {
-          this.$emit('inspect', element)
-      }
+    inspect(element) {
+      this.$emit('inspect', element)
+    },
+    deleteItem(col, index) {
+      // Remove the item from the array in currentPage
+      this.items[col].splice(index, 1);
+    },
   }
 };
 </script>
@@ -130,5 +134,3 @@ export default {
 }
 
 </style>
-
-
