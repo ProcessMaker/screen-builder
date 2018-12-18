@@ -36,7 +36,7 @@
                             <b-col>{{ row.item.property }}</b-col>
                         </b-row>
                         <b-row class="mb-1">
-                            <b-col sm="3" class="text-sm-right"><b>Formula (javascript):</b></b-col>
+                            <b-col sm="3" class="text-sm-right"><b>Formula:</b></b-col>
                             <b-col>{{ row.item.formula }}</b-col>
                         </b-row>
                         <b-button class="float-right" size="sm" @click="row.toggleDetails">Hide Details</b-button>
