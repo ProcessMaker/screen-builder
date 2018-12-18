@@ -10,7 +10,7 @@
             <b-row class="float-right">
                 <b-col md="6" class="m-2">
                     <b-btn size="sm" variant="primary" @click.stop="displayFormProperty">
-                        Add Property
+                        <i class="fas fa-plus"></i> Add Property
                     </b-btn>
                 </b-col>
 
