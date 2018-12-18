@@ -20,8 +20,8 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import * as VueDeepSet from 'vue-deepset'
+    import Vue from 'vue';
+    import * as VueDeepSet from 'vue-deepset';
 
     var Parser = require('expr-eval').Parser;
 
@@ -45,7 +45,17 @@
                 valid: true,
                 errors: [],
                 currentPage: this.page ? this.page : 0,
-                transientData: JSON.parse(JSON.stringify(this.data))
+                transientData: JSON.parse(JSON.stringify(this.data)),
+                defaultValues: {
+                    'FormInput': '',
+                    'FormSelect': null,
+                    'FormCheckbox': false,
+                    'FormRadioButtonGroup': null,
+                    'FormTextArea': '',
+                    'FormText': '',
+                    'FormDatePicker': null,
+                    'FormRecordList': [],
+                },
             };
         },
         watch: {
@@ -78,6 +88,7 @@
         methods: {
             submit() {
                 if (this.isValid()) {
+                    this.setDefaultValues();
                     this.$emit("submit", this.transientData);
                 }
             },
@@ -115,26 +126,21 @@
             pageNavigate(page) {
                 this.currentPage = page;
             },
-            /*
-            updateDataModel() {
-              // Iterate through config
-              // If item has a name property, then we store that as a name in the data
-              this.config.forEach(page => {
-                page.items.forEach(item => {
-                  // @todo Check if empty string or blank?
-                  if (item.config.name) {
-                    // Field has a name, add it to our data object
-                    this.$set(this.data, item.config.name, "");
-                  }
+            setDefaultValues() {
+                // Iterate through config, if item has a name property,
+                // then we set the default value
+                this.config.forEach(page => {
+                    page.items.forEach(item => {
+                        if (item.config.name && this.defaultValues[item.component] !== undefined) {
+                            this.data[item.config.name] === undefined ? this.$set(this.data, item.config.name, this.defaultValues[item.component]) : null;
+                            this.transientData[item.config.name] === undefined ? this.$set(this.transientData, item.config.name, this.defaultValues[item.component]) : null;
+                        }
+                    });
                 });
-              });
-              this.$emit("update", this.data);
-            }
-            */
+            },
         }
     };
 </script>
 
 <style lang="scss" scoped>
 </style>
-
