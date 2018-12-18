@@ -19,15 +19,15 @@
             <b-table :items="current" :fields="fields" responsive striped bordered small hover fixed>
                 <template slot="actions" slot-scope="row">
                     <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
-                    <b-btn size="lg" variant="action" @click.stop="row.toggleDetails" class="p-0 mr-2 border-0 bg-transparent" title="Details">
+                    <a variant="action" @click.stop="row.toggleDetails" class="btn btn-lg p-0 mr-2 border-0 bg-transparent" title="Details">
                         <i class="fa fa-list-alt fa-1x"></i>
-                    </b-btn>
-                    <b-btn size="lg" variant="action" title="edit" class="p-0 mr-2 border-0 bg-transparent" @click.stop="editProperty(row.item)">
+                    </a>
+                    <a size="lg" variant="action" title="edit" class="btn btn-lg p-0 mr-2 border-0 bg-transparent" @click.stop="editProperty(row.item)">
                         <i class="fa fa-edit fa-1x"></i>
-                    </b-btn>
-                    <b-btn size="lg" variant="action" title="Delete" class="p-0 mr-2 border-0 bg-transparent" @click.stop="deleteProperty(row.item)">
+                    </a>
+                    <a size="lg" variant="action" title="Delete" class="btn btn-lg p-0 mr-2 border-0 bg-transparent" @click.stop="deleteProperty(row.item)">
                         <i class="fa fa-trash fa-1x"></i>
-                    </b-btn>
+                    </a>
                 </template>
                 <template slot="row-details" slot-scope="row">
                     <b-card>
