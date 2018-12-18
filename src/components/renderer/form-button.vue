@@ -27,7 +27,9 @@
                 }
             },
             click() {
-                this.setValue(this.$parent, this.name, this.$attrs.value);
+                if (this.name) {
+                    this.setValue(this.$parent, this.name, this.$attrs.value);
+                }
                 this.$emit(this.event, this.eventData);
             }
         }
