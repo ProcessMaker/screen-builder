@@ -91,7 +91,7 @@
                 },
                 fields: [
                     {
-                        key: 'name',
+                        key: 'property',
                         label: 'Property Name',
                         class: 'text-center',
                         sortable: true,
