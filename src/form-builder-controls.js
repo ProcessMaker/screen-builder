@@ -297,6 +297,14 @@ export default [
             inspector: [
                 {
                     type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        helper: "The data name for this field"
+                    }
+                },
+                {
+                    type: "FormInput",
                     field: "label",
                     config: {
                         label: "Field Label",
