@@ -67,11 +67,14 @@
                     let that = this;
                     if (that.computed) {
                         that.computed.forEach((prop) => {
+                            let value;
                             try {
-                                Vue.set(that.transientData, prop.property, Parser.evaluate(prop.formula, that.transientData));
+                                value = Parser.evaluate(prop.formula, that.transientData);
                             } catch(e) {
-                              console.log("Error in expression");
+                                value = String(e);
                             }
+                            this.$set(that.transientData, prop.property, value);
+                            this.$set(that.data, prop.property, value);
                         });
                     }
                     // Only emit the update message if transientData does NOT equal this.data
