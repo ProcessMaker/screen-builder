@@ -2,7 +2,8 @@
     <div>
         <div v-for="(element,index) in config[currentPage]['items']" :key="index">
             <div v-if="element.container">
-                <component ref="container" selected="selected" :transientData="transientData" v-model="element.items" @submit="submit"
+                <component ref="container" selected="selected" :transientData="transientData" v-model="element.items"
+                           @submit="submit"
                            @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
@@ -21,11 +22,14 @@
     import Vue from 'vue';
     import * as VueDeepSet from 'vue-deepset';
 
+    var Parser = require('expr-eval').Parser;
+
+
     Vue.use(VueDeepSet);
 
     export default {
         name: 'VueFormRenderer',
-        props: ["config", "data", "page"],
+        props: ["config", "data", "page", "computed"],
         model: {
             prop: 'data',
             event: 'update'
@@ -59,10 +63,23 @@
             },
             transientData: {
                 handler: function () {
+                    let that = this;
+                    if (that.computed) {
+                        that.computed.forEach((prop) => {
+                            let value;
+                            try {
+                                value = Parser.evaluate(prop.formula, that.transientData);
+                            } catch(e) {
+                                value = String(e);
+                            }
+                            this.$set(that.transientData, prop.property, value);
+                            this.$set(that.data, prop.property, value);
+                        });
+                    }
                     // Only emit the update message if transientData does NOT equal this.data
                     // Instead of deep object property comparison, we'll just compare the JSON representations of both
-                    if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
-                        this.$emit("update", this.transientData);
+                    if (JSON.stringify(that.transientData) != JSON.stringify(that.data)) {
+                        that.$emit("update", that.transientData);
                         return;
                     }
                 },
@@ -95,9 +112,8 @@
                     }
                 });
             },
-            isValid()
-            {
-                this.errors= [];
+            isValid() {
+                this.errors = [];
                 this.valid = true;
 
                 if (this.$refs && this.$refs.elements) {
@@ -117,12 +133,22 @@
                 // then we set the default value
                 this.config.forEach(page => {
                     page.items.forEach(item => {
-                        if (item.config.name && this.defaultValues[item.component] !== undefined) {
-                            this.data[item.config.name] === undefined ? this.$set(this.data, item.config.name, this.defaultValues[item.component]) : null;
-                            this.transientData[item.config.name] === undefined ? this.$set(this.transientData, item.config.name, this.defaultValues[item.component]) : null;
-                        }
+                        this.setDefaultValueItem(item);
                     });
                 });
+            },
+            setDefaultValueItem(item) {
+                if (item.component === 'FormMultiColumn') {
+                    item.items.forEach((column) => {
+                        column.forEach((innerItem) => {
+                            this.setDefaultValueItem(innerItem);
+                        });
+                    });
+                }
+                if (item.config.name && this.defaultValues[item.component] !== undefined) {
+                    this.data[item.config.name] === undefined ? this.$set(this.data, item.config.name, this.defaultValues[item.component]) : null;
+                    this.transientData[item.config.name] === undefined ? this.$set(this.transientData, item.config.name, this.defaultValues[item.component]) : null;
+                }
             },
         }
     };
