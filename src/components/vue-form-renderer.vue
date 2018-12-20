@@ -134,12 +134,22 @@
                 // then we set the default value
                 this.config.forEach(page => {
                     page.items.forEach(item => {
-                        if (item.config.name && this.defaultValues[item.component] !== undefined) {
-                            this.data[item.config.name] === undefined ? this.$set(this.data, item.config.name, this.defaultValues[item.component]) : null;
-                            this.transientData[item.config.name] === undefined ? this.$set(this.transientData, item.config.name, this.defaultValues[item.component]) : null;
-                        }
+                        this.setDefaultValueItem(item);
                     });
                 });
+            },
+            setDefaultValueItem(item) {
+                if (item.component === 'FormMultiColumn') {
+                    item.items.forEach((column) => {
+                        column.forEach((innerItem) => {
+                            this.setDefaultValueItem(innerItem);
+                        });
+                    });
+                }
+                if (item.config.name && this.defaultValues[item.component] !== undefined) {
+                    this.data[item.config.name] === undefined ? this.$set(this.data, item.config.name, this.defaultValues[item.component]) : null;
+                    this.transientData[item.config.name] === undefined ? this.$set(this.transientData, item.config.name, this.defaultValues[item.component]) : null;
+                }
             },
         }
     };
