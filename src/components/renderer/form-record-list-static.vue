@@ -1,10 +1,10 @@
 <template>
     <div>
         <h4>{{label}}</h4>
-        <table style="width:100%; text-align:left; padding:0.3em;">
+        <table style="width:100%; text-align:left; padding:0.3em; border-collapse: collapse;">
             <thead style="border-bottom:1px solid black; background-color:lightgrey; font-weight:bold;">
                 <tr>
-                    <th v-for="field in fields" style="padding:0.3em; margin:0">
+                    <th v-for="field in fields" style="padding:0.3em; margin:0;">
                         {{ field.content }}
                     </th>
                 </tr>
