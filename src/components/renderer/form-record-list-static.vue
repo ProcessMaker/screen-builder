@@ -1,17 +1,17 @@
 <template>
-    <div>
+    <div class="record-list">
         <h4>{{label}}</h4>
-        <table style="width:100%; text-align:left; padding:0.3em; border-collapse: collapse;">
-            <thead style="border-bottom:1px solid black; background-color:lightgrey; font-weight:bold;">
+        <table>
+            <thead>
                 <tr>
-                    <th v-for="field in fields" style="padding:0.3em; margin:0;">
+                    <th v-for="field in fields">
                         {{ field.content }}
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="val in value" style="border-bottom: 1px solid lightgrey;">
-                    <td v-for="field in fields" style="padding:0.3em; margin:0">
+                <tr v-for="val in value">
+                    <td v-for="field in fields">
                         {{ val[field.value] }}
                     </td>
                 </tr>
