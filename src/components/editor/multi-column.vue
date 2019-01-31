@@ -51,7 +51,8 @@ FormInput,
   FormSelect,
   FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup
+  FormRadioButtonGroup,
+  FormDatePicker
   } from "@processmaker/vue-form-elements/src/components";
 
 export default {
@@ -66,7 +67,8 @@ export default {
     FormRadioButtonGroup,
     FormText,
     FormButton,
-    MultiColumn
+    MultiColumn,
+    FormDatePicker
   },
   data() {
     return {
