@@ -11,9 +11,13 @@
         <li class="nav-item">
           <a class="nav-link" @click="openComputedProperties" href="#">Computed Properties</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" @click="openCustomCSS" href="#">Custom CSS</a>
+        </li>
       </ul>
     </nav>
     <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
+    <custom-CSS v-model="customCSS" ref="customCSS" />
     <vue-form-builder ref="builder" @change="updateConfig" :class="{invisible: mode != 'editor'}" />
     <div id="preview" :class="{invisible: mode != 'preview'}">
       <div id="data-input">
@@ -48,6 +52,7 @@
 
 <script>
 import ComputedProperties from "./components/computed-properties.vue";
+import CustomCSS from "./components/custom-css.vue";
 import VueFormBuilder from "./components/vue-form-builder.vue";
 import VueFormRenderer from "./components/vue-form-renderer.vue";
 import VueJsonPretty from 'vue-json-pretty';
@@ -76,11 +81,13 @@ export default {
         }
       ],
       previewData: {},
-      previewInput: '{}'
+      previewInput: '{}',
+      customCSS: "",
     };
   },
   components: {
     ComputedProperties,
+    CustomCSS,
     VueFormBuilder,
     VueFormRenderer,
     VueJsonPretty,
@@ -131,7 +138,9 @@ export default {
   methods: {
     openComputedProperties() {
       this.$refs.computedProperties.show();
-
+    },
+    openCustomCSS() {
+      this.$refs.customCSS.show();
     },
     updateConfig(newConfig) {
       this.config = newConfig
