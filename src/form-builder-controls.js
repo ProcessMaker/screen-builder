@@ -118,6 +118,14 @@ export default [
                         ]
                     }
                 },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
+                }
 
             ]
         }
@@ -203,6 +211,14 @@ export default [
                         label: "Help Text",
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
                 }
             ]
         },
@@ -271,6 +287,14 @@ export default [
                         label: 'Options List',
                         helper: "List of options available in the select drop down"
                     }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
                 }
             ]
         },
@@ -326,6 +350,14 @@ export default [
                         label: 'Options List',
                         helper: "List of options available in the select drop down"
                     }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
                 }
             ]
         },
@@ -380,6 +412,14 @@ export default [
                         helper: "Should the checkbox be checked by default"
                     }
                 },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
+                }
             ]
         },
     },
@@ -450,6 +490,14 @@ export default [
                         label: "Help Text",
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
                 }
             ]
         },
@@ -494,6 +542,14 @@ export default [
                     config: {
                         label: "Placeholder",
                         helper: "The placeholder is what is shown in the field when no value is provided yet"
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
                     }
                 }
             ]
@@ -588,6 +644,14 @@ export default [
                             }
                         ]
                     }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
                 }
 
             ]
@@ -674,6 +738,14 @@ export default [
                         label: "Destination",
                         helper: "The destination page to navigate to"
                     }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
+                    }
                 }
 
             ]
@@ -701,6 +773,14 @@ export default [
                     type: "FormText",
                     config: {
                         label: "MultiColumn",
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
                     }
                 }
 
@@ -766,6 +846,14 @@ export default [
                     config: {
                         label: "Record Form",
                         helper: "The form to use for adding/editing records"
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionHide",
+                    config: {
+                        label: "Hide If:",
+                        helper: "Hide this control unless the following expression is true"
                     }
                 }
 
