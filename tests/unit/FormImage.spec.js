@@ -15,10 +15,10 @@ describe('Test FormImage with an image and size', () => {
   const wrapper = mount(FormImage, {sync: false})
   // Image
   const image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH4wIEEw0K4r2NwQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY/j//z8ABf4C/tzMWecAAAAASUVORK5CYII=';
-  wrapper.setProps({image: image, width: '32', height: '32'})
+  wrapper.setProps({image: image, width: '32', height: '32', id:'banner'})
 
   it('renders the image', () => {
-    expect(wrapper.html()).toContain('<div class="form-group form-image"><img src="' + image + '" width="32" height="32"></div>')
+    expect(wrapper.html()).toContain('<div class="form-group form-image"><img src="' + image + '" width="32" height="32" id="banner"></div>')
   })
 
   // it's also easy to check for the existence of elements
