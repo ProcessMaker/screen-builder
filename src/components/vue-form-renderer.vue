@@ -39,19 +39,15 @@
                 return this.$deepModel(this.transientData)
             },
             showElement() {
-                console.log(this);
                 let display = {} ;
                 let that = this;
                 let value, name;
                 that.config[0].items.forEach(item => {
-                    console.log(item);
                     name = item.config.name;
                     display[name]  = true;
-                    if (item.config.conditionHide) {
+                    if (item.config.conditionalHide) {
                         try {
-                            value = Parser.evaluate(item.config.conditionHide, that.transientData);
-                            console.log(item.config.conditionHide);
-                            console.log(value);
+                            value = Parser.evaluate(item.config.conditionalHide, that.transientData);
                             display[name] =  !(Boolean(value) === true);
                         } catch (e) {
                             display[name]  = true
