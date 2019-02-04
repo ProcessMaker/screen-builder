@@ -29,7 +29,8 @@
     "vue-deepset": "^0.6.3",
     "vue-uniq-ids": "^1.0.0",
     "vuedraggable": "^2.16.0",
-    "vuetable-2": "^1.7.5"
+    "vuetable-2": "^1.7.5",
+    "vue-upload-component": "^2.8.14"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-rc.9",
