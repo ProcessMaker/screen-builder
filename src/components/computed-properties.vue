@@ -92,6 +92,10 @@
         name="formula"
         validation="required"
       ></form-text-area>
+      <div class="editor-container">
+          <monaco-editor :options="monacoOptions" v-model="add.formula"
+              language="javascript" class="editor"></monaco-editor>
+      </div>
       <button
         class="btn btn-success float-right m-1"
         @click="validateData"
@@ -107,11 +111,13 @@ import {
   FormInput,
   FormTextArea
 } from "@processmaker/vue-form-elements/src/components";
+import MonacoEditor from "vue-monaco";
 
 export default {
   components: {
     FormInput,
-    FormTextArea
+    FormTextArea,
+    MonacoEditor,
   },
   props: ["value"],
   data() {
@@ -143,7 +149,10 @@ export default {
           class: "text-center",
           sortable: false
         }
-      ]
+      ],
+      monacoOptions: {
+          automaticLayout: true,
+      },
     };
   },
   watch: {
@@ -251,4 +260,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .editor-container .editor{
+        height: 48em;
+    }
 </style>
