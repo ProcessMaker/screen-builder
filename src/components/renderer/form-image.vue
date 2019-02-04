@@ -1,5 +1,5 @@
 <template>
-    <div class="form-group" style="overflow-x: hidden;">
+    <div class="form-group form-image">
       <img v-if="image" :src="image" :width="width" :height="height" :id="id">
       <i v-else class="empty-image far fa-image"></i>
     </div>
@@ -40,5 +40,8 @@
 <style lang="scss" scoped>
   .empty-image {
     font-size: 2em;
+  }
+  .form-image {
+    overflow-x: hidden;
   }
 </style>
