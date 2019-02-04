@@ -9,7 +9,7 @@
     import Vue from 'vue';
 
     export default {
-        props: ["image", "width", "height"],
+        props: ["id", "image", "width", "height"],
         computed: {
             classList() {
                 let variant = this.variant || "primary";
