@@ -120,7 +120,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -214,7 +214,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -290,7 +290,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -353,7 +353,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -414,7 +414,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -493,7 +493,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -546,7 +546,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -647,7 +647,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -741,7 +741,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -777,7 +777,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
@@ -850,7 +850,7 @@ export default [
                 },
                 {
                     type: "FormInput",
-                    field: "conditionHide",
+                    field: "conditionalHide",
                     config: {
                         label: "Hide If:",
                         helper: "Hide this control unless the following expression is true"
