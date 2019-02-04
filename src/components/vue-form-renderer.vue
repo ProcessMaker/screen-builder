@@ -9,7 +9,7 @@
             </div>
 
             <div v-else>
-                <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit"
+                <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name]"
                            @pageNavigate="pageNavigate" v-bind:name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
@@ -37,7 +37,29 @@
         computed: {
             model() {
                 return this.$deepModel(this.transientData)
-            }
+            },
+            showElement() {
+                console.log(this);
+                let display = {} ;
+                let that = this;
+                let value, name;
+                that.config[0].items.forEach(item => {
+                    console.log(item);
+                    name = item.config.name;
+                    display[name]  = true;
+                    if (item.config.conditionHide) {
+                        try {
+                            value = Parser.evaluate(item.config.conditionHide, that.transientData);
+                            console.log(item.config.conditionHide);
+                            console.log(value);
+                            display[name] =  !(Boolean(value) === true);
+                        } catch (e) {
+                            display[name]  = true
+                        }
+                    }
+                });
+                return that.$deepModel(display);
+            },
         },
         data() {
             return {
