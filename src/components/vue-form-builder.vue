@@ -9,6 +9,7 @@
         <div class="control" v-for="(element, index) in controls" :key="index">
           <div class="icon">
             <img v-if="element['editor-icon']" :src="element['editor-icon']" />
+            <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
           </div>
           <div class="label">
             {{element.label}}
@@ -81,6 +82,7 @@ import draggable from "vuedraggable";
 
 import OptionsList from "./inspector/options-list";
 import PageSelect from "./inspector/page-select";
+import ImageUpload from './inspector/image-upload'
 
 import FormMultiColumn from "./renderer/form-multi-column";
 import MultiColumn from "./editor/multi-column";
@@ -88,6 +90,7 @@ import MultiColumn from "./editor/multi-column";
 import FormText from "./renderer/form-text";
 import FormButton from "./renderer/form-button";
 import FormRecordList from "./renderer/form-record-list";
+import FormImage from "./renderer/form-image";
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -117,7 +120,9 @@ export default {
     MultiColumn,
     FormMultiColumn,
     FormDatePicker,
-    FormRecordList
+    FormRecordList,
+    FormImage,
+    ImageUpload,
   },
   data() {
     return {
@@ -237,6 +242,11 @@ export default {
           img {
             max-width: 42px;
             max-height: 21px;
+          }
+          text-align: right;
+          i {
+            font-size: 24px;
+            margin-right: 8px;
           }
         }
 
