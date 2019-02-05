@@ -86,15 +86,23 @@
         name="property description"
         validation="required"
       ></form-text-area>
-      <form-text-area
-        v-model="add.formula"
-        label="Formula (javascript)"
-        name="formula"
-        validation="required"
-      ></form-text-area>
-      <div class="editor-container">
-          <monaco-editor :options="monacoOptions" v-model="add.formula"
-              language="javascript" class="editor"></monaco-editor>
+      <div class="form-group" style='position: relative;'>
+        <label>Formula</label>
+        <div class="float-right btn-group">
+          <a class='btn btn-sm' :class="{
+             'btn-outline-secondary': isJS,
+             'text-dark': isJS,
+             'btn-outline-light': !isJS,
+             'text-secondary': !isJS
+          }" @click="isJS=!isJS">
+             <i class="fab fa-js-square"></i>
+          </a>
+        </div>
+        <textarea v-show="!isJS" name="formula" v-model="add.formula" class="form-control" :class="{'is-invalid':!add.formula}"></textarea>
+        <div v-show="isJS" class="editor-border" :class="{'is-invalid':!add.formula}"></div>
+        <monaco-editor v-show="isJS" :options="monacoOptions" :minimap="{enabled:false}" class="editor" v-model="add.formula" language="javascript">
+        </monaco-editor>
+        <div v-if="!add.formula" class="invalid-feedback"><div>The property formula field is required.</div></div>
       </div>
       <button
         class="btn btn-success float-right m-1"
@@ -122,6 +130,7 @@ export default {
   props: ["value"],
   data() {
     return {
+      isJS: true,
       showDismissibleAlert: false,
       alertVariant: "danger",
       message: "",
@@ -152,6 +161,8 @@ export default {
       ],
       monacoOptions: {
           automaticLayout: true,
+          lineNumbers: 'off',
+          minimap: false,
       },
     };
   },
@@ -166,6 +177,9 @@ export default {
     }
   },
   computed: {
+    toggleJS() {
+      this.isJS = !this.isJS;
+    },
     disabled() {
       if (
         this.add.name.trim() === "" ||
@@ -260,7 +274,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .editor-container .editor{
-        height: 48em;
+    .editor{
+        height: 4em;
+        z-index: 0;
+    }
+    .editor-border {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        overflow: hidden;
+        height: 4em;
+        position: absolute;
+        pointer-events: none;
+        width: 100%;
+        z-index: 1;
+    }
+    .editor-border.is-invalid {
+        border-color: #dc3545;
     }
 </style>
