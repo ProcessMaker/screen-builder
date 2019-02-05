@@ -41,18 +41,8 @@
             showElement() {
                 let display = {} ;
                 let that = this;
-                let value, name;
                 that.config[0].items.forEach(item => {
-                    name = item.config.name;
-                    display[name]  = true;
-                    if (item.config.conditionalHide) {
-                        try {
-                            value = Parser.evaluate(item.config.conditionalHide, that.transientData);
-                            display[name] =  !(Boolean(value) === true);
-                        } catch (e) {
-                            display[name]  = true
-                        }
-                    }
+                    Object.assign(display, this.exploreItems(item, that))
                 });
                 return that.$deepModel(display);
             },
@@ -111,6 +101,27 @@
                     this.setDefaultValues();
                     this.$emit("submit", this.transientData);
                 }
+            },
+            exploreItems(element, context) {
+                let value, name;
+                let fields = {};
+                if (element.component === "FormMultiColumn") {
+                    element.items.forEach(container => {
+                        Object.assign(fields, this.exploreItems(container[0], context))
+                    });
+                } else {
+                    name = element.config.name;
+                    fields[name]  = true;
+                    if (element.config.conditionalHide) {
+                        try {
+                            value = Parser.evaluate(element.config.conditionalHide, context.transientData);
+                            fields[name] =  !(Boolean(value) === true);
+                        } catch (e) {
+                            fields[name]  = true
+                        }
+                    }
+                }
+                return fields;
             },
             validateElements(elements) {
                 elements.forEach(element => {
