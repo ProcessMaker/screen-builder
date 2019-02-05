@@ -174,12 +174,13 @@ export default {
         item.id = this.numberItem;
       });
       this.current = this.value;
-    }
+    },
+    'add.formula'(formula) {
+      const isComplex = formula.length > 64 || formula.split("\n").length > 1;
+      this.isJS = isComplex || this.isJS;
+    },
   },
   computed: {
-    toggleJS() {
-      this.isJS = !this.isJS;
-    },
     disabled() {
       if (
         this.add.name.trim() === "" ||
