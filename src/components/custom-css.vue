@@ -5,11 +5,12 @@
     id="custom-css"
     centered
     title="Custom CSS"
+    @ok="save"
+    @cancel="close"
+    @hide="hide"
   >
-    <textarea v-bind:value="value" v-on:input="$emit('input', $event.target.value)" />
-  <div slot="modal-footer">
-    <b-btn @click="close">Close</b-btn>
-  </div>
+    <textarea v-model="innerValue"></textarea>
+    <div slot="modal-ok">Save</div>
   </b-modal>
 </template>
 
@@ -17,13 +18,31 @@
 export default {
   props: ["value"],
   data() {
-    return {}
+    return {
+      saveValue: '',
+      innerValue: '',
+    }
+  },
+  watch: {
+    innerValue(value) {
+      this.$emit('input', value);
+    },
   },
   methods: {
     show() {
+      this.innerValue = this.value;
+      this.saveValue = this.value;
       this.$refs.modal.show();
     },
     close() {
+      this.$refs.modal.hide();
+    },
+    hide() {
+      this.innerValue = this.saveValue;
+      this.$emit('input', this.innerValue);
+    },
+    save() {
+      this.saveValue = this.innerValue;
       this.$refs.modal.hide();
     }
   }
@@ -35,8 +54,5 @@ textarea {
   width: 100%;
   height: 300px;
   font-family: monospace;
-}
-.popup-buttons {
-    margin-bottom: 0.5em;
 }
 </style>
