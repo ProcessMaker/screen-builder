@@ -17,7 +17,7 @@
       </ul>
     </nav>
     <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
-    <custom-CSS v-model="customCSS" ref="customCSS" />
+    <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors" />
     <vue-form-builder ref="builder" @change="updateConfig" :class="{invisible: mode != 'editor'}" />
     <div id="preview" :class="{invisible: mode != 'preview'}">
       <div id="data-input">
@@ -35,7 +35,7 @@
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <vue-form-renderer ref="renderer" v-model="previewData" @submit="previewSubmit" :config="config" :computed="computed" :custom-css="customCSS" />
+              <vue-form-renderer ref="renderer" v-model="previewData" @submit="previewSubmit" :config="config" :computed="computed" :custom-css="customCSS" v-on:css-errors="cssErrors = $event" />
             </div>
           </div>
         </div>
@@ -83,6 +83,7 @@ export default {
       previewData: {},
       previewInput: '{}',
       customCSS: "",
+      cssErrors: '',
     };
   },
   components: {

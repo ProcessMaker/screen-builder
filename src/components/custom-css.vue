@@ -12,13 +12,18 @@
     ok-variant="btn btn-secondary ml-2"
   >
     <textarea v-model="innerValue"></textarea>
+
+    <b-alert :show="cssErrors != ''" variant="danger">
+      <pre>{{ cssErrors }}</pre>
+    </b-alert>
+
     <div slot="modal-ok">Save</div>
   </b-modal>
 </template>
 
 <script>
 export default {
-  props: ["value"],
+  props: ["value", "cssErrors"],
   data() {
     return {
       saveValue: '',

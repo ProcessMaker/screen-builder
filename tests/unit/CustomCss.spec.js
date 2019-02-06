@@ -41,15 +41,15 @@ describe('Test custom css', () => {
 
   it('Test custom CSS inclusion', () => {
     // Test if the rendered form contains the custom CSS
-    expect(wrapper.html()).toMatch(/<style>.*div {background: green;}.*.form-control {color: gray;}.*<\/style>/);
+    expect(wrapper.html()).toMatch(/<style>.*div{background:green}.*.form-control{color:gray}.*<\/style>/);
 
   });
 
   it('Test custom CSS rules are scoped', () => {
     
     // Test if the rendered form contains the custom CSS
-    expect(wrapper.html()).toContain('div#renderer-container div {background: green;}');
-    expect(wrapper.html()).toContain('div#renderer-container .form-control {color: gray;}');
+    expect(wrapper.html()).toContain('div#renderer-container div{background:green}');
+    expect(wrapper.html()).toContain('div#renderer-container .form-control{color:gray}');
 
   });
 });
