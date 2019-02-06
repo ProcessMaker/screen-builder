@@ -8,6 +8,7 @@
     title="Custom CSS"
   >
   <textarea v-bind:value="value" v-on:input="$emit('input', $event.target.value)" />
+  <br>
   <b-btn @click="close">Close</b-btn>
   </b-modal>
 </template>
