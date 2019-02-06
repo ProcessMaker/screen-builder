@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="renderer-container">
         <div v-for="(element,index) in config[currentPage]['items']" :key="index">
             <div v-if="element.container">
                 <component ref="container" selected="selected" :transientData="transientData" v-model="element.items"
@@ -14,7 +14,7 @@
                 </component>
             </div>
         </div>
-
+        <custom-css>{{ customCssWrapped }}</custom-css>
     </div>
 </template>
 
@@ -24,12 +24,17 @@
 
     var Parser = require('expr-eval').Parser;
 
+    Vue.component('custom-css', {
+        render: function(createElement) {
+            return createElement('style', this.$slots.default); 
+        }
+    });
 
     Vue.use(VueDeepSet);
 
     export default {
         name: 'VueFormRenderer',
-        props: ["config", "data", "page", "computed"],
+        props: ["config", "data", "page", "computed", "customCss"],
         model: {
             prop: 'data',
             event: 'update'
@@ -37,6 +42,23 @@
         computed: {
             model() {
                 return this.$deepModel(this.transientData)
+            },
+            customCssWrapped() {
+                let prefixed = this.customCss;
+                // Determine if an ending bracket is needed
+                // First see if the css has an opening bracket
+                if (prefixed.includes('{')) {
+                    // get the last non-whitespace character in the css
+                    let lastChar = prefixed.match(/([^\s])\s*$/)
+
+                    // If it's not a closing bracket, add one
+                    if (lastChar && lastChar[1] != "}") {
+                        prefixed += "}"
+                    }
+                }
+
+                // Prefix all css declarations with div#renderer-container
+                return prefixed.replace(/(.*?\{.*?\}) ?/g, "div#renderer-container $1 ")
             }
         },
         data() {
