@@ -35,7 +35,7 @@
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <vue-form-renderer ref="renderer" v-model="previewData" @submit="previewSubmit" :config="config" :computed="computed" />
+              <vue-form-renderer ref="renderer" v-model="previewData" @submit="previewSubmit" :config="config" :computed="computed" :custom-css="customCSS" />
             </div>
           </div>
         </div>
