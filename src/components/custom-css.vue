@@ -8,8 +8,9 @@
     title="Custom CSS"
   >
   <textarea v-bind:value="value" v-on:input="$emit('input', $event.target.value)" />
-  <br>
-  <b-btn @click="close">Close</b-btn>
+  <div class="popup-buttons">
+    <b-btn @click="close">Close</b-btn>
+  </div>
   </b-modal>
 </template>
 
@@ -35,5 +36,8 @@ textarea {
   width: 100%;
   height: 300px;
   font-family: monospace;
+}
+.popup-buttons {
+    margin-bottom: 0.5em;
 }
 </style>
