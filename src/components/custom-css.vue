@@ -8,8 +8,8 @@
     @ok="save"
     @cancel="close"
     @hide="hide"
-    cancel-variant="btn btn-outline-success"
-    ok-variant="btn btn-success ml-2"
+    cancel-variant="btn btn-outline-secondary"
+    ok-variant="btn btn-secondary ml-2"
   >
     <textarea v-model="innerValue"></textarea>
     <div slot="modal-ok">Save</div>
