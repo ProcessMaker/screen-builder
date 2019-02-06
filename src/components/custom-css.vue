@@ -4,11 +4,10 @@
     size="lg"
     id="custom-css"
     centered
-    hide-footer
     title="Custom CSS"
   >
-  <textarea v-bind:value="value" v-on:input="$emit('input', $event.target.value)" />
-  <div class="popup-buttons">
+    <textarea v-bind:value="value" v-on:input="$emit('input', $event.target.value)" />
+  <div slot="modal-footer">
     <b-btn @click="close">Close</b-btn>
   </div>
   </b-modal>
