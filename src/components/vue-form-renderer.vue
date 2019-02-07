@@ -41,8 +41,10 @@
             showElement() {
                 let display = {} ;
                 let that = this;
-                that.config[0].items.forEach(item => {
-                    Object.assign(display, this.exploreItems(item, that))
+                that.config.forEach(page => {
+                    page.items.forEach(item => {
+                        Object.assign(display, this.exploreItems(item, that, {}))
+                    });
                 });
                 return that.$deepModel(display);
             },
@@ -102,12 +104,13 @@
                     this.$emit("submit", this.transientData);
                 }
             },
-            exploreItems(element, context) {
+            exploreItems(element, context, fields) {
                 let value, name;
-                let fields = {};
-                if (element.component === "FormMultiColumn") {
+                if (element && element.component && element.component === "FormMultiColumn") {
                     element.items.forEach(container => {
-                        Object.assign(fields, this.exploreItems(container[0], context))
+                        container.forEach(itemsContainer => {
+                            Object.assign(fields, this.exploreItems(itemsContainer, context, fields))
+                        });
                     });
                 } else {
                     name = element.config.name;
