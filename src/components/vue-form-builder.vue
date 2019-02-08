@@ -60,7 +60,7 @@
       <div class="card-header">
         Inspector
       </div>
-      <div class="container-fluid">
+      <div class="container-fluid editor-draggable mb-3">
         <component v-for="(item, index) in inspection.inspector" :formConfig="config" :key="index" :is="item.type" v-bind="item.config" v-model="inspection.config[item.field]" />
       </div>
     </div>
