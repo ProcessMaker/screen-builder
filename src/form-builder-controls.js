@@ -118,7 +118,6 @@ export default [
                         ]
                     }
                 },
-
             ]
         }
     },
@@ -170,7 +169,6 @@ export default [
                         ]
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "label",
@@ -187,7 +185,6 @@ export default [
                         helper: "The validation rules needed for this field"
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "placeholder",
@@ -203,7 +200,7 @@ export default [
                         label: "Help Text",
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
-                }
+                },
             ]
         },
     },
@@ -255,7 +252,6 @@ export default [
                         helper: "The validation rules needed for this field"
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "helper",
@@ -271,7 +267,7 @@ export default [
                         label: 'Options List',
                         helper: "List of options available in the select drop down"
                     }
-                }
+                },
             ]
         },
     },
@@ -326,7 +322,7 @@ export default [
                         label: 'Options List',
                         helper: "List of options available in the select drop down"
                     }
-                }
+                },
             ]
         },
     },
@@ -426,7 +422,6 @@ export default [
                         helper: "The validation rules needed for this field"
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "rows",
@@ -450,7 +445,7 @@ export default [
                         label: "Help Text",
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
-                }
+                },
             ]
         },
     },
@@ -495,7 +490,7 @@ export default [
                         label: "Placeholder",
                         helper: "The placeholder is what is shown in the field when no value is provided yet"
                     }
-                }
+                },
             ]
         },
     },
@@ -588,8 +583,7 @@ export default [
                             }
                         ]
                     }
-                }
-
+                },
             ]
         },
     },
@@ -674,8 +668,7 @@ export default [
                         label: "Destination",
                         helper: "The destination page to navigate to"
                     }
-                }
-
+                },
             ]
         },
     },
@@ -701,6 +694,14 @@ export default [
                     type: "FormText",
                     config: {
                         label: "MultiColumn",
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionalHide",
+                    config: {
+                        label: "Show If:",
+                        helper: "Hide this control unless the following expression is true"
                     }
                 }
 
@@ -767,8 +768,7 @@ export default [
                         label: "Record Form",
                         helper: "The form to use for adding/editing records"
                     }
-                }
-
+                },
             ]
 
         },
