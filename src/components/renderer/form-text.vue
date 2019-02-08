@@ -14,7 +14,8 @@ export default {
     "fontWeight",
     "textAlign",
     "validationData",
-    "color"
+    "color",
+    "name"
   ],
   computed: {
     styles() {
