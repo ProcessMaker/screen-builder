@@ -118,15 +118,6 @@ export default [
                         ]
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
-
             ]
         }
     },
@@ -178,7 +169,6 @@ export default [
                         ]
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "label",
@@ -195,7 +185,6 @@ export default [
                         helper: "The validation rules needed for this field"
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "placeholder",
@@ -212,14 +201,6 @@ export default [
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
             ]
         },
     },
@@ -271,7 +252,6 @@ export default [
                         helper: "The validation rules needed for this field"
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "helper",
@@ -288,14 +268,6 @@ export default [
                         helper: "List of options available in the select drop down"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
             ]
         },
     },
@@ -351,14 +323,6 @@ export default [
                         helper: "List of options available in the select drop down"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
             ]
         },
     },
@@ -412,14 +376,6 @@ export default [
                         helper: "Should the checkbox be checked by default"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
             ]
         },
     },
@@ -466,7 +422,6 @@ export default [
                         helper: "The validation rules needed for this field"
                     }
                 },
-
                 {
                     type: "FormInput",
                     field: "rows",
@@ -491,14 +446,6 @@ export default [
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
             ]
         },
     },
@@ -544,14 +491,6 @@ export default [
                         helper: "The placeholder is what is shown in the field when no value is provided yet"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
             ]
         },
     },
@@ -645,15 +584,6 @@ export default [
                         ]
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
-
             ]
         },
     },
@@ -739,15 +669,6 @@ export default [
                         helper: "The destination page to navigate to"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
-
             ]
         },
     },
@@ -779,7 +700,7 @@ export default [
                     type: "FormInput",
                     field: "conditionalHide",
                     config: {
-                        label: "Hide If:",
+                        label: "Show If:",
                         helper: "Hide this control unless the following expression is true"
                     }
                 }
@@ -848,15 +769,6 @@ export default [
                         helper: "The form to use for adding/editing records"
                     }
                 },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Hide If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                }
-
             ]
 
         },
