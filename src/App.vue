@@ -40,7 +40,7 @@
         <div class="card-header">
           Data Preview
         </div>
-        <vue-json-pretty :data="previewData"></vue-json-pretty> 
+        <vue-json-pretty :data="previewData"></vue-json-pretty>
       </div>
     </div>
   </div>
@@ -54,6 +54,7 @@ import VueJsonPretty from 'vue-json-pretty';
 // Bring in our initial set of controls
 
 import controlConfig from "./form-builder-controls";
+import globalProperties from "./global-properties";
 
 
 import {
@@ -119,10 +120,12 @@ export default {
   mounted() {
     // Iterate through our initial config set, calling this.addControl
     for(var i = 0; i < controlConfig.length; i++) {
+      //Add new properties global to inspector
+      Array.prototype.push.apply(controlConfig[i].control.inspector, globalProperties[0].inspector);
       this.addControl(
-        controlConfig[i].control, 
-        controlConfig[i].rendererComponent, 
-        controlConfig[i].rendererBinding, 
+        controlConfig[i].control,
+        controlConfig[i].rendererComponent,
+        controlConfig[i].rendererBinding,
         controlConfig[i].builderComponent,
         controlConfig[i].builderBinding
         )

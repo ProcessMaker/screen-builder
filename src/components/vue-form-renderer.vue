@@ -9,7 +9,7 @@
             </div>
 
             <div v-else>
-                <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name] ? showElement[element.config.name] : true"
+                <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
                            @pageNavigate="pageNavigate" v-bind:name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
@@ -105,7 +105,7 @@
                 }
             },
             exploreItems(element, context, fields) {
-                let value, name;
+                let name;
                 if (element && element.component && element.component === "FormMultiColumn") {
                     element.items.forEach(container => {
                         container.forEach(itemsContainer => {
@@ -114,13 +114,17 @@
                     });
                 } else {
                     name = element.config.name;
+                    //Element always visible when not have field conditional hide.
                     fields[name]  = true;
                     if (element.config.conditionalHide) {
                         try {
-                            value = Parser.evaluate(element.config.conditionalHide, context.transientData);
-                            fields[name] =  !(Boolean(value) === true);
+                            //when conditional is evaluated
+                            //evaluation is true field is displayed
+                            //evaluation is false field is hidden.
+                            fields[name] =  (Boolean(Parser.evaluate(element.config.conditionalHide, context.transientData)) === true);
                         } catch (e) {
-                            fields[name]  = true
+                            //conditional can't be evaluated, element hidden.
+                            fields[name]  = false
                         }
                     }
                 }
