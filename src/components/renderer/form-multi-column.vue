@@ -14,7 +14,7 @@
                         <div v-else>
                             <component ref="elements" v-model="model[element.config.name]" :validationData="transientData"
                                        @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
-                                       :is="element['component']">
+                                       :is="element['component']" v-show="showElement[element.config.name]">
                             </component>
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                         <div v-else>
                             <component ref="elements" v-model="model[element.config.name]" :validationData="transientData"
                                        v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate"
-                                       :is="element['component']">
+                                       :is="element['component']" v-show="showElement[element.config.name]">
                             </component>
                         </div>
                     </div>
@@ -85,6 +85,9 @@
         computed: {
             model() {
                 return this.$parent.model;
+            },
+            showElement() {
+                return this.$parent.showElement;
             }
         },
         watch: {

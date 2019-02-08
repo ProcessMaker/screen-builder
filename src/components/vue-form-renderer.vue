@@ -9,7 +9,7 @@
             </div>
 
             <div v-else>
-                <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit"
+                <component ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
                            @pageNavigate="pageNavigate" v-bind:name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
@@ -28,7 +28,7 @@
 
     Vue.component('custom-css', {
         render: function(createElement) {
-            return createElement('style', this.$slots.default); 
+            return createElement('style', this.$slots.default);
         }
     });
 
@@ -44,6 +44,16 @@
         computed: {
             model() {
                 return this.$deepModel(this.transientData)
+            },
+            showElement() {
+                let display = {} ;
+                let that = this;
+                that.config.forEach(page => {
+                    page.items.forEach(item => {
+                        Object.assign(display, this.exploreItems(item, that, {}))
+                    });
+                });
+                return that.$deepModel(display);
             },
         },
         data() {
@@ -106,6 +116,32 @@
                     this.setDefaultValues();
                     this.$emit("submit", this.transientData);
                 }
+            },
+            exploreItems(element, context, fields) {
+                let name;
+                if (element && element.component && element.component === "FormMultiColumn") {
+                    element.items.forEach(container => {
+                        container.forEach(itemsContainer => {
+                            Object.assign(fields, this.exploreItems(itemsContainer, context, fields))
+                        });
+                    });
+                } else {
+                    name = element.config.name;
+                    //Element always visible when not have field conditional hide.
+                    fields[name]  = true;
+                    if (element.config.conditionalHide) {
+                        try {
+                            //when conditional is evaluated
+                            //evaluation is true field is displayed
+                            //evaluation is false field is hidden.
+                            fields[name] =  (Boolean(Parser.evaluate(element.config.conditionalHide, context.transientData)) === true);
+                        } catch (e) {
+                            //conditional can't be evaluated, element hidden.
+                            fields[name]  = false
+                        }
+                    }
+                }
+                return fields;
             },
             validateElements(elements) {
                 elements.forEach(element => {
@@ -192,10 +228,10 @@
                     });
 
                     this.customCssWrapped = csstree.generate(ast);
-                    
+
                     // clear errors
                     this.$emit('css-errors', '');
-                
+
                 } catch(error) {
                     this.$emit('css-errors', error);
                 }
