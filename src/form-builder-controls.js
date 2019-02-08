@@ -28,7 +28,8 @@ export default [
                 label: 'New Text',
                 fontSize: '1em',
                 fontWeight: 'normal',
-                textAlign: 'left'
+                textAlign: 'left',
+                name: ''
             },
             inspector: [
                 {
@@ -116,6 +117,14 @@ export default [
                                 content: '2'
                             },
                         ]
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "CSS Class name",
+                        helper: "Set a class name for custom css"
                     }
                 },
             ]

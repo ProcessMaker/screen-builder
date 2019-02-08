@@ -11,6 +11,7 @@
     cancel-variant="btn btn-outline-secondary"
     ok-variant="btn btn-secondary ml-2"
   >
+    <p>You can use field names as css class selectors (prefixed by a ".")</p>
     <textarea v-model="innerValue"></textarea>
 
     <b-alert :show="cssErrors != ''" variant="danger">
