@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="renderer-container">
         <div v-for="(element,index) in config[currentPage]['items']" :key="index">
             <div v-if="element.container">
                 <component ref="container" selected="selected" :transientData="transientData" v-model="element.items"
@@ -14,22 +14,29 @@
                 </component>
             </div>
         </div>
-
+        <custom-css>{{ customCssWrapped }}</custom-css>
     </div>
 </template>
 
 <script>
     import Vue from 'vue';
     import * as VueDeepSet from 'vue-deepset';
+    import _ from 'lodash';
 
     var Parser = require('expr-eval').Parser;
+    var csstree = require('css-tree');
 
+    Vue.component('custom-css', {
+        render: function(createElement) {
+            return createElement('style', this.$slots.default); 
+        }
+    });
 
     Vue.use(VueDeepSet);
 
     export default {
         name: 'VueFormRenderer',
-        props: ["config", "data", "page", "computed"],
+        props: ["config", "data", "page", "computed", "customCss"],
         model: {
             prop: 'data',
             event: 'update'
@@ -37,7 +44,7 @@
         computed: {
             model() {
                 return this.$deepModel(this.transientData)
-            }
+            },
         },
         data() {
             return {
@@ -55,6 +62,7 @@
                     'FormDatePicker': null,
                     'FormRecordList': [],
                 },
+                customCssWrapped: '',
             };
         },
         watch: {
@@ -84,9 +92,14 @@
                     }
                 },
                 deep: true
+            },
+            customCss() {
+                this.parseCssDebounce();
             }
         },
-
+        mounted() {
+            this.parseCss();
+        },
         methods: {
             submit() {
                 if (this.isValid()) {
@@ -150,6 +163,43 @@
                     this.transientData[item.config.name] === undefined ? this.$set(this.transientData, item.config.name, this.defaultValues[item.component]) : null;
                 }
             },
+            parseCssDebounce: _.debounce(function() {
+                this.parseCss();
+            }, 500),
+            parseCss() {
+                let containerSelector = 'div#renderer-container';
+                try {
+                    var ast = csstree.parse(this.customCss, {
+                        onParseError: function(error) {
+                            // throw "CSS has the following errors:\n\n" + error.formattedMessage
+                            throw error.formattedMessage;
+                        }
+                    });
+                    var i = 0;
+                    csstree.walk(ast, function(node, item, list) {
+                        if (node.type === 'Atrule' && list) {
+                            throw "CSS 'At-Rules' (starting with @) are not allowed."
+                        }
+                        if (node.type.match(/^.+Selector$/) && node.name !== containerSelector && list) {
+                            // Wait until we get to the first item before prepending our container selector
+                            if (!item.prev) {
+                                list.prependData({type: "WhiteSpace",   loc: null, value: " "});
+                                list.prependData({type: "TypeSelector", loc: null, name: containerSelector});
+                            }
+                        }
+                        if (i > 5000) { throw "CSS is too big" }
+                        i = i+1;
+                    });
+
+                    this.customCssWrapped = csstree.generate(ast);
+                    
+                    // clear errors
+                    this.$emit('css-errors', '');
+                
+                } catch(error) {
+                    this.$emit('css-errors', error);
+                }
+            }
         }
     };
 </script>
