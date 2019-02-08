@@ -16,7 +16,8 @@ let editor = {
 
 let inspector = {
     OptionsList,
-    PageSelect
+    PageSelect,
+    ImageUpload
 }
 
 let renderer = {
