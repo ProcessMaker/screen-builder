@@ -45,6 +45,7 @@ import MultiColumn from "../editor/multi-column";
 
 import FormText from "../renderer/form-text";
 import FormButton from "../renderer/form-button";
+import FormImage from "../renderer/form-image";
 
 import {
 FormInput,
@@ -68,7 +69,8 @@ export default {
     FormText,
     FormButton,
     MultiColumn,
-    FormDatePicker
+    FormDatePicker,
+    FormImage,
   },
   data() {
     return {
