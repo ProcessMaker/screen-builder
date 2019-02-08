@@ -50,6 +50,7 @@
 
     import FormText from "../renderer/form-text";
     import FormButton from "../renderer/form-button";
+    import FormImage from "../renderer/form-image";
 
     import {
         FormInput,
@@ -73,7 +74,8 @@
             FormText,
             FormButton,
             FormMultiColumn,
-            FormDatePicker
+            FormDatePicker,
+            FormImage,
         },
         data() {
             return {
