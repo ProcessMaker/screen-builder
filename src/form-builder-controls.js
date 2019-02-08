@@ -2,7 +2,7 @@ import FormText from "./components/renderer/form-text";
 import FormButton from "./components/renderer/form-button"
 import FormMultiColumn from "./components/renderer/form-multi-column"
 import FormRecordList from "./components/renderer/form-record-list"
-
+import FormImage from "./components/renderer/form-image"
 
 import {
     FormInput,
@@ -10,7 +10,7 @@ import {
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormDatePicker
+    FormDatePicker,
 } from "@processmaker/vue-form-elements/src/components";
 
 export default [
@@ -774,6 +774,60 @@ export default [
         },
 
 
+    },
+    {
+        editorComponent: FormImage,
+        editorBinding: 'FormImage',
+        rendererComponent: FormImage,
+        rendererBinding: 'FormImage',
+        control: {
+            label: "Image",
+            component: 'FormImage',
+            "editor-component": "FormImage",
+            'fa-icon': 'far fa-image',
+            config: {
+                label: "Image",
+                variant: 'primary',
+                event: 'submit',
+                name: null,
+                value: null
+            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "id",
+                    config: {
+                        label: "Id",
+                        helper: "Image id"
+                    }
+                },
+                {
+                    type: 'ImageUpload',
+                    field: "image",
+                    config: {
+                        label: "Upload image",
+                        helper: "Upload image"
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "width",
+                    config: {
+                        label: "Width",
+                        helper: "image width",
+                        type: "number",
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "height",
+                    config: {
+                        label: "Height",
+                        helper: "Image height",
+                        type: "number",
+                    }
+                },
+            ]
+        },
     }
-
 ]
