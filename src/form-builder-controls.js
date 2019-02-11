@@ -13,6 +13,91 @@ import {
     FormDatePicker,
 } from "@processmaker/vue-form-elements/src/components";
 
+const bgcolorProperty = {
+  type: "ColorSelect",
+  field: "bgcolor",
+  config: {
+    label: "Background color",
+    helper: "Set the element's background color",
+    options: [
+      {
+        value: 'alert alert-primary',
+        content: 'primary'
+      },
+      {
+        value: 'alert alert-secondary',
+        content: 'secondary'
+      },
+      {
+        value: 'alert alert-success',
+        content: 'success'
+      },
+      {
+        value: 'alert alert-danger',
+        content: 'danger'
+      },
+      {
+        value: 'alert alert-warning',
+        content: 'warning'
+      },
+      {
+        value: 'alert alert-info',
+        content: 'info'
+      },
+      {
+        value: 'alert alert-light',
+        content: 'light'
+      },
+      {
+        value: 'alert alert-dark',
+        content: 'dark'
+      },
+    ]
+  }
+};
+const colorProperty = {
+  type: "ColorSelect",
+  field: "color",
+  config: {
+    label: "Text color",
+    helper: "Set the element's text color",
+    options: [
+      {
+        value: 'text-primary',
+        content: 'primary'
+      },
+      {
+        value: 'text-secondary',
+        content: 'secondary'
+      },
+      {
+        value: 'text-success',
+        content: 'success'
+      },
+      {
+        value: 'text-danger',
+        content: 'danger'
+      },
+      {
+        value: 'text-warning',
+        content: 'warning'
+      },
+      {
+        value: 'text-info',
+        content: 'info'
+      },
+      {
+        value: 'text-light',
+        content: 'light'
+      },
+      {
+        value: 'text-dark',
+        content: 'dark'
+      },
+    ]
+  }
+};
+
 export default [
     {
         builderComponent: FormText,
@@ -118,6 +203,8 @@ export default [
                         ]
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
         }
     },
@@ -201,6 +288,8 @@ export default [
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     },
@@ -268,6 +357,8 @@ export default [
                         helper: "List of options available in the select drop down"
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     },
@@ -323,6 +414,8 @@ export default [
                         helper: "List of options available in the select drop down"
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     },
@@ -376,6 +469,8 @@ export default [
                         helper: "Should the checkbox be checked by default"
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     },
@@ -446,6 +541,8 @@ export default [
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     },
@@ -491,6 +588,8 @@ export default [
                         helper: "The placeholder is what is shown in the field when no value is provided yet"
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     },
@@ -703,8 +802,9 @@ export default [
                         label: "Show If:",
                         helper: "Hide this control unless the following expression is true"
                     }
-                }
-
+                },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     },
@@ -769,6 +869,8 @@ export default [
                         helper: "The form to use for adding/editing records"
                     }
                 },
+                bgcolorProperty,
+                colorProperty,
             ]
 
         },
