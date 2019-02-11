@@ -39,12 +39,12 @@
               <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
                   <div v-if="element.container">
-                    <component @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
+                    <component :class="eletentCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
                     <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
                   </div>
 
                   <div v-else>
-                    <component v-bind="element.config" :is="element['editor-component']"></component>
+                    <component :class="eletentCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
                     <div @click="inspect(element)" class="mask"></div>
                     <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
                   </div>
@@ -157,7 +157,13 @@ export default {
     }
   },
   methods: {
-    addControl(control) {
+   eletentCssClass(element) {
+     const css = [];
+     element.config.bgcolor ? css.push(element.config.bgcolor) : null;
+     element.config.color ? css.push(element.config.color) : null;
+     return css.join(' ');
+   },
+   addControl(control) {
       this.controls.push(control);
     },
     deleteItem(index) {
