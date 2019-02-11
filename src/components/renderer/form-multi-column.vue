@@ -5,14 +5,14 @@
                 <div class="col">
                     <div v-for="(element,index) in items[0]" :key="index">
                         <div v-if="element.container" class="container">
-                            <component ref="container" v-model="element.items" :transientData="transientData" @submit="submit"
+                            <component :class="elementCssClass(element)" ref="container" v-model="element.items" :transientData="transientData" @submit="submit"
                                        @pageNavigate="pageNavigate" v-bind="element.config"
                                        :is="element['component']">
                             </component>
                         </div>
 
                         <div v-else>
-                            <component ref="elements" v-model="model[element.config.name]" :validationData="transientData"
+                            <component :class="elementCssClass(element)" ref="elements" v-model="model[element.config.name]" :validationData="transientData"
                                        @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
                                        :is="element['component']" v-show="showElement[element.config.name]">
                             </component>
@@ -23,14 +23,14 @@
                 <div class="col">
                     <div v-for="(element,index) in items[1]" :key="index">
                         <div v-if="element.container" class="container">
-                            <component ref="container" v-model="element.items" :transientData="transientData" v-bind="element.config"
+                            <component :class="elementCssClass(element)" ref="container" v-model="element.items" :transientData="transientData" v-bind="element.config"
                                        @submit="submit" @pageNavigate="pageNavigate"
                                        :is="element['component']">
                             </component>
                         </div>
 
                         <div v-else>
-                            <component ref="elements" v-model="model[element.config.name]" :validationData="transientData"
+                            <component :class="elementCssClass(element)" ref="elements" v-model="model[element.config.name]" :validationData="transientData"
                                        v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate"
                                        :is="element['component']" v-show="showElement[element.config.name]">
                             </component>
@@ -47,6 +47,7 @@
     import draggable from "vuedraggable";
 
     import FormMultiColumn from "./form-multi-column"
+    import HasColorProperty from "../../mixins/HasColorProperty"
 
     import FormText from "../renderer/form-text";
     import FormButton from "../renderer/form-button";
@@ -63,6 +64,7 @@
 
     export default {
         name: 'FormMultiColumn',
+        mixins: [HasColorProperty],
         props: ["value", "selected", "transientData"],
         components: {
             draggable,
