@@ -39,12 +39,12 @@
               <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
                   <div v-if="element.container">
-                    <component @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
+                    <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
                     <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
                   </div>
 
                   <div v-else>
-                    <component v-bind="element.config" :is="element['editor-component']"></component>
+                    <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
                     <div @click="inspect(element)" class="mask"></div>
                     <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
                   </div>
@@ -83,6 +83,8 @@ import draggable from "vuedraggable";
 import OptionsList from "./inspector/options-list";
 import PageSelect from "./inspector/page-select";
 import ImageUpload from './inspector/image-upload'
+import ColorSelect from "./inspector/color-select"
+import HasColorProperty from "../mixins/HasColorProperty"
 
 import FormMultiColumn from "./renderer/form-multi-column";
 import MultiColumn from "./editor/multi-column";
@@ -106,6 +108,7 @@ import {
 } from "@processmaker/vue-form-elements/src/components";
 
 export default {
+  mixins: [HasColorProperty],
   components: {
     draggable,
     FormInput,
@@ -123,6 +126,7 @@ export default {
     FormRecordList,
     FormImage,
     ImageUpload,
+    ColorSelect,
   },
   data() {
     return {
@@ -157,7 +161,7 @@ export default {
     }
   },
   methods: {
-    addControl(control) {
+   addControl(control) {
       this.controls.push(control);
     },
     deleteItem(index) {
