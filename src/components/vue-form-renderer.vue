@@ -2,14 +2,14 @@
     <div id="renderer-container">
         <div v-for="(element,index) in config[currentPage]['items']" :key="index">
             <div v-if="element.container">
-                <component :class="eletentCssClass(element)" ref="container" selected="selected" :transientData="transientData" v-model="element.items"
+                <component :class="elementCssClass(element)" ref="container" selected="selected" :transientData="transientData" v-model="element.items"
                            @submit="submit"
                            @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
 
             <div v-else>
-                <component :class="eletentCssClass(element)" ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
+                <component :class="elementCssClass(element)" ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
                            @pageNavigate="pageNavigate" v-bind:name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
@@ -22,6 +22,7 @@
     import Vue from 'vue';
     import * as VueDeepSet from 'vue-deepset';
     import _ from 'lodash';
+    import HasColorProperty from "../mixins/HasColorProperty"
 
     var Parser = require('expr-eval').Parser;
     var csstree = require('css-tree');
@@ -41,6 +42,7 @@
             prop: 'data',
             event: 'update'
         },
+        mixins: [HasColorProperty],
         computed: {
             model() {
                 return this.$deepModel(this.transientData)
@@ -111,12 +113,6 @@
             this.parseCss();
         },
         methods: {
-            eletentCssClass(element) {
-                const css = [];
-                element.config.bgcolor ? css.push(element.config.bgcolor) : null;
-                element.config.color ? css.push(element.config.color) : null;
-                return css.join(' ');
-            },
             submit() {
                 if (this.isValid()) {
                     this.setDefaultValues();
