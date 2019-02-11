@@ -201,6 +201,44 @@ export default [
                         helper: "Help text is meant to provide additional guidance on the field's value"
                     }
                 },
+                {
+                    type: "ColorSelect",
+                    field: "bgcolor",
+                    config: {
+                        label: "Background color",
+                        helper: "Set the element's background color",
+                        options: [
+                            {
+                                value: 'alert alert-primary',
+                                content: 'primary'
+                            },
+                            {
+                                value: 'alert alert-secondary',
+                                content: 'secondary'
+                            },
+                            {
+                                value: 'alert alert-success',
+                                content: 'success'
+                            },
+                            {
+                                value: 'alert alert-warning',
+                                content: 'warning'
+                            },
+                            {
+                                value: 'alert alert-info',
+                                content: 'info'
+                            },
+                            {
+                                value: 'alert alert-light',
+                                content: 'light'
+                            },
+                            {
+                                value: 'alert alert-dark',
+                                content: 'dark'
+                            },
+                        ]
+                    }
+                },
             ]
         },
     },
