@@ -60,7 +60,7 @@ const colorProperty = {
   field: "color",
   config: {
     label: "Text color",
-    helper: "Set the element's fore color",
+    helper: "Set the element's text color",
     options: [
       {
         value: 'text-primary',
