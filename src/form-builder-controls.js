@@ -59,7 +59,7 @@ const colorProperty = {
   type: "ColorSelect",
   field: "color",
   config: {
-    label: "Fore color",
+    label: "Text color",
     helper: "Set the element's fore color",
     options: [
       {
