@@ -33,6 +33,10 @@ const bgcolorProperty = {
         content: 'success'
       },
       {
+        value: 'alert alert-danger',
+        content: 'danger'
+      },
+      {
         value: 'alert alert-warning',
         content: 'warning'
       },
@@ -69,6 +73,10 @@ const colorProperty = {
       {
         value: 'text-success',
         content: 'success'
+      },
+      {
+        value: 'text-danger',
+        content: 'danger'
       },
       {
         value: 'text-warning',
