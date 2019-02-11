@@ -83,6 +83,7 @@ import draggable from "vuedraggable";
 import OptionsList from "./inspector/options-list";
 import PageSelect from "./inspector/page-select";
 import ImageUpload from './inspector/image-upload'
+import ColorSelect from "./inspector/color-select"
 
 import FormMultiColumn from "./renderer/form-multi-column";
 import MultiColumn from "./editor/multi-column";
@@ -123,6 +124,7 @@ export default {
     FormRecordList,
     FormImage,
     ImageUpload,
+    ColorSelect,
   },
   data() {
     return {
