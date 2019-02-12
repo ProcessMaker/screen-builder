@@ -60,7 +60,7 @@
       <div class="card-header">
         Inspector
       </div>
-      <div class="container-fluid editor-draggable mb-3">
+      <div class="card-body editor-draggable">
         <component v-for="(item, index) in inspection.inspector" :formConfig="config" :key="index" :is="item.type" v-bind="item.config" v-model="inspection.config[item.field]" />
       </div>
     </div>
@@ -269,7 +269,14 @@ export default {
     width: 340px;
     max-width: 340px;
     border-left: 1px solid #e9edf1;
+    overflow: hidden;
+    padding-bottom: 5%;
+  }
+
+  .inspector-container > .card-body {
     overflow: auto;
+    height: 95%;
+    padding-bottom: 20px;
   }
 
   .form-canvas-container {
