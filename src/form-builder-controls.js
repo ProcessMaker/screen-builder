@@ -7,7 +7,6 @@ import FormMultiselect from "./components/inspector/form-multiselect.vue"
 
 import {
     FormInput,
-    FormSelect,
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
@@ -173,7 +172,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "fontSize",
                     config: {
                         label: "Font Size",
@@ -231,7 +230,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "type",
                     config: {
                         label: "Field Type",
@@ -286,14 +285,14 @@ export default [{
         },
     },
     {
-        editorComponent: FormSelect,
-        editorBinding: 'FormSelect',
-        rendererComponent: FormSelect,
-        rendererBinding: 'FormSelect',
+        editorComponent: FormMultiselect,
+        editorBinding: 'FormMultiselect',
+        rendererComponent: FormMultiselect,
+        rendererBinding: 'FormMultiselect',
         control: {
             label: "Select",
-            component: 'FormSelect',
-            "editor-component": "FormSelect",
+            component: 'FormMultiselect',
+            "editor-component": "FormMultiselect",
             'editor-icon': require('./assets/icons/caret-square-down-solid.svg'),
             config: {
                 label: "New Select",
@@ -620,7 +619,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "variant",
                     config: {
                         label: "Variant",
@@ -695,7 +694,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "variant",
                     config: {
                         label: "Variant",
