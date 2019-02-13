@@ -38,16 +38,18 @@
             <div class="col-sm">
               <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
-                  <div v-if="element.container">
+                  <div v-if="element.container" @click="inspect(element)">
                     <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
-                    <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                    <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                   </div>
 
                   <div v-else>
                     <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
                     <div @click="inspect(element)" class="mask"></div>
-                    <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                    <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                   </div>
+                  <!--<div @click="inspect(element)" class="mask"></div>
+                  <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>-->
                 </div>
               </draggable>
             </div>

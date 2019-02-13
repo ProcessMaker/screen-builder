@@ -785,27 +785,10 @@ export default [
             // Default items container
             items: [
                 [],
-                [],
-                [],
-                [],
                 []
             ],
             config: {},
             inspector: [
-                {
-                    type: "FormText",
-                    config: {
-                        label: "MultiColumn",
-                    }
-                },
-                {
-                    type: "FormInput",
-                    field: "conditionalHide",
-                    config: {
-                        label: "Show If:",
-                        helper: "Hide this control unless the following expression is true"
-                    }
-                },
                 bgcolorProperty,
                 colorProperty,
             ]
