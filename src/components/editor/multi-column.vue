@@ -2,37 +2,22 @@
     <div class="form-group">
         <div class="container-fluid">
             <div class="row">
-                <draggable class="col-sm column-draggable" v-model="items[0]" :options="{group: {name: 'controls'}}">
-                    <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in items[0]" :key="index">
-                         <div v-if="element.container">
-                            <component :class="elementCssClass(element)" @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
-                            <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                <template v-for="(item, index) in items">
+                    <draggable class="col-sm column-draggable" v-model="items[index]" :options="{group: {name: 'controls'}}">
+                        <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in item" :key="index">
+                            <div v-if="element.container">
+                                <component :class="elementCssClass(element)" @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
+                                <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                            </div>
+
+                            <div v-else>
+                                <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
+                                <div @click="inspect(element)" class="mask"></div>
+                                <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                            </div>
                         </div>
-
-                        <div v-else>
-                            <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
-                            <div @click="inspect(element)" class="mask"></div>
-                            <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
-                        </div>
-                    </div>
-
-                </draggable>
-
-                <draggable class="col-sm column-draggable" v-model="items[1]" :options="{group: {name: 'controls'}}">
-                    <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in items[1]" :key="index">
-                         <div v-if="element.container">
-                            <component :class="elementCssClass(element)" @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
-                            <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
-                        </div>
-
-                        <div v-else>
-                            <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
-                            <div @click="inspect(element)" class="mask"></div>
-                            <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
-                        </div>
-                    </div>
-
-                </draggable>
+                    </draggable>
+                </template>
             </div>
         </div>
     </div>
