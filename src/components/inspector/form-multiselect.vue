@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-2">
     <label class="typo__label">Select with search</label>
     <multiselect
       @input="updateValue"
@@ -7,7 +7,6 @@
       placeholder="Select one"
       label="content"
       track-by="value"
-      :value="options[0]"
     ></multiselect>
   </div>
 </template>
@@ -37,12 +36,6 @@ export default {
     "controlClass",
     "multiple"
   ],
-  //   mounted() {
-  //     if (!this.value && this.options) {
-  //       this.content = this.options[0].value;
-  //       this.$emit("input", this.content);
-  //     }
-  //   },
   data() {
     return {
       mutiOptions: this.$props.options,
