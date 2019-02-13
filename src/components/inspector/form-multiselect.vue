@@ -7,6 +7,7 @@
       placeholder="Select one"
       label="content"
       track-by="value"
+      v-model="multiSelected"
     ></multiselect>
   </div>
 </template>
@@ -39,8 +40,15 @@ export default {
   data() {
     return {
       mutiOptions: this.$props.options,
-      content: ""
+      content: "",
+      multiSelected: this.options[0].value
     };
+  },
+  mounted() {
+    if (!this.value && this.options) {
+      this.content = this.options[0].value;
+      this.$emit("input", this.content);
+    }
   },
   methods: {
     updateValue(value) {
