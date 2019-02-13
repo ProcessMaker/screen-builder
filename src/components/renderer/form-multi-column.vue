@@ -3,6 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
+                    {{items}}
                     <div v-for="(element,index) in items[0]" :key="index">
                         <div v-if="element.container" class="container">
                             <component :class="elementCssClass(element)" ref="container" v-model="element.items" :transientData="transientData" @submit="submit"

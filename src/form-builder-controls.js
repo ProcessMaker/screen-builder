@@ -783,12 +783,32 @@ export default [
             'editor-icon': require('./assets/icons/columns-solid.svg'),
             container: true,
             // Default items container
-            items: [
-                [],
-                []
-            ],
-            config: {},
+            items: [[],[],[]],
+            config: {
+                options: [
+                    {
+                        value: '1',
+                        content: '2'
+                    },
+                    {
+                        value: '2',
+                        content: '8'
+                    },
+                    {
+                        value: '3',
+                        content: '2'
+                    }
+                ],
+                helper: 'veamos que ponemos aqui',
+            },
             inspector: [
+                {
+                    type: "ContainerColumns",
+                    field: "options",
+                    config: {
+                        label: 'Setting one column width',
+                    }
+                },
                 bgcolorProperty,
                 colorProperty,
             ]
