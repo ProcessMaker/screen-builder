@@ -91,9 +91,9 @@
       </div>
     </div>
 
-    <div class="inspector-container">
+    <div class="d-flex flex-row flex-column">
       <div class="card-header">Inspector</div>
-      <div class="container-fluid editor-draggable mb-3">
+      <div class="card-body">
         <component
           v-for="(item, index) in inspection.inspector"
           :formConfig="config"
@@ -305,12 +305,17 @@ export default {
     }
   }
 
-  .inspector-container {
+  .dynaform-builder .d-flex {
+    border-left: 1px solid #e9edf1;
+    overflow: hidden;
+  }
+
+  .d-flex > .card-body {
     min-width: 340px;
     width: 340px;
     max-width: 340px;
-    border-left: 1px solid #e9edf1;
     overflow: auto;
+    padding-bottom: 50px;
   }
 
   .form-canvas-container {
