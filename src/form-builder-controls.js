@@ -785,6 +785,9 @@ export default [
             // Default items container
             items: [
                 [],
+                [],
+                [],
+                [],
                 []
             ],
             config: {},
