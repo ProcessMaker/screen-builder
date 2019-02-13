@@ -3,27 +3,32 @@
         <div class="container-fluid">
             <div class="row">
                 <template v-for="(item, index) in items">
-                    <draggable class="col-sm column-draggable" v-model="items[index]"
+
+                    <draggable :class="classColumn(index)" v-model="items[index]"
                                :options="{group: {name: 'controls'}}">
-                        <div class="control-item" :class="{selected: selected === element}"
-                             v-for="(element,index) in item" :key="index">
+
+                        <div class="control-item" :class="{selectedElement: selected === element}"
+                             v-for="(element,row) in item" :key="row">
+
                             <div v-if="element.container">
-                                <component :class="elementCssClass(element)" @inspect="inspect" v-model="element.items"
+                                <component :class="elementCssClass(element)" :selected="selectedElement"
+                                           @inspect="inspect" v-model="element.items"
                                            v-bind="element.config" :is="element['editor-component']"></component>
-                                <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                                <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
                             </div>
 
                             <div v-else>
                                 <component :class="elementCssClass(element)" v-bind="element.config"
                                            :is="element['editor-component']"></component>
                                 <div @click.stop="inspect(element)" class="mask"></div>
-                                <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                                <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
                             </div>
+
                         </div>
 
                     </draggable>
+
                 </template>
-                <button class="btn btn-sm btn-success">+</button>
             </div>
         </div>
     </div>
@@ -50,7 +55,7 @@
     export default {
         name: 'MultiColumn',
         mixins: [HasColorProperty],
-        props: ["value", "selected"],
+        props: ["value", "config", "selected"],
         components: {
             draggable,
             FormInput,
@@ -81,6 +86,9 @@
             }
         },
         methods: {
+            classColumn(index) {
+                return 'col-sm-' + this.config.options[index].content + ' column-draggable';
+            },
             inspect(element) {
                 this.$emit('inspect', element)
             },
