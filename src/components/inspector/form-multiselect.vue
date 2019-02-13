@@ -1,6 +1,6 @@
 <template>
   <div class="mb-2">
-    <label class="typo__label">Select with search</label>
+    <label class="typo__label">{{label}}</label>
     <multiselect
       @input="updateValue"
       :options="mutiOptions"
@@ -9,6 +9,7 @@
       track-by="value"
       v-model="multiSelected"
     ></multiselect>
+    <small v-if="helper" class="form-text text-muted">{{helper}}</small>
   </div>
 </template>
 
