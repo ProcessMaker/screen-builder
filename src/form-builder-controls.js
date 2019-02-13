@@ -210,8 +210,8 @@ export default [
                     type: "FormInput",
                     field: "name",
                     config: {
-                        label: "CSS Class name",
-                        helper: "Set a class name for custom css"
+                        label: "CSS ID",
+                        helper: "Set an ID for custom css"
                     }
                 },
             ]
