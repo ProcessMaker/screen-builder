@@ -8,6 +8,7 @@ import FormMultiselect from "./components/inspector/form-multiselect.vue"
 import {
     FormInput,
     FormTextArea,
+    FormSelect,
     FormCheckbox,
     FormRadioButtonGroup,
     FormDatePicker,
@@ -285,14 +286,14 @@ export default [{
         },
     },
     {
-        editorComponent: FormMultiselect,
-        editorBinding: 'FormMultiselect',
-        rendererComponent: FormMultiselect,
-        rendererBinding: 'FormMultiselect',
+        editorComponent: FormSelect,
+        editorBinding: 'FormSelect',
+        rendererComponent: FormSelect,
+        rendererBinding: 'FormSelect',
         control: {
             label: "Select",
-            component: 'FormMultiselect',
-            "editor-component": "FormMultiselect",
+            component: 'FormSelect',
+            "editor-component": "FormSelect",
             'editor-icon': require('./assets/icons/caret-square-down-solid.svg'),
             config: {
                 label: "New Select",
