@@ -120,7 +120,8 @@
                     item.value = index + 1;
                 });
                 this.$emit("change", newOptions);
-                this.$emit("delete", index);
+                //delete column in multiple column
+                this.$parent.selected.items.splice(index, 1)
             },
             showAddOptionModal() {
             }
