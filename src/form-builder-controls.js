@@ -783,20 +783,16 @@ export default [
             'editor-icon': require('./assets/icons/columns-solid.svg'),
             container: true,
             // Default items container
-            items: [[],[],[]],
+            items: [[],[]],
             config: {
                 options: [
                     {
                         value: '1',
-                        content: '2'
+                        content: '6'
                     },
                     {
                         value: '2',
-                        content: '8'
-                    },
-                    {
-                        value: '3',
-                        content: '2'
+                        content: '6'
                     }
                 ],
             },

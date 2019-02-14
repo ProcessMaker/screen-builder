@@ -3,14 +3,14 @@
         <div v-for="(element,index) in config[currentPage]['items']" :key="index">
             <div v-if="element.container">
                 <component :class="elementCssClass(element)" ref="container" selected="selected" :transientData="transientData" v-model="element.items"
-                           @submit="submit"
+                           @submit="submit" :config="element.config"
                            @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
 
             <div v-else>
                 <component :class="elementCssClass(element)" ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
-                           @pageNavigate="pageNavigate" v-bind:name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']">
+                           @pageNavigate="pageNavigate" :name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
         </div>
