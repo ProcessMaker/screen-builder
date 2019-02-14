@@ -1,11 +1,11 @@
 <template>
-    <div class="form-group">
+    <div class="form-group column-draggable"> <!--style="min-height: 50px; border: .2px dashed #000;"-->
         <div class="container-fluid">
             <div class="row">
                 <template v-for="(item, index) in items">
 
                     <draggable :class="classColumn(index)" v-model="items[index]"
-                               :options="{group: {name: 'controls'}}">
+                               :options="{group: {name: 'controls'}}" >
 
                         <div class="control-item" :class="{selectedElement: selected === element}"
                              v-for="(element,row) in item" :key="row">
@@ -55,7 +55,7 @@
     export default {
         name: 'MultiColumn',
         mixins: [HasColorProperty],
-        props: ["value", "config", "selected"],
+        props: ["value", "name", "config", "selected"],
         components: {
             draggable,
             FormInput,

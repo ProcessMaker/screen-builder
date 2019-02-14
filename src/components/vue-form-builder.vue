@@ -153,8 +153,6 @@ export default {
     config: {
       handler: function() {
         // @todo, remove inspector stuffs
-        console.log('handler config');
-        console.log(this.config);
         this.$emit("change", this.config);
       },
       deep: true

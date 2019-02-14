@@ -2,42 +2,27 @@
     <div class="form-group">
         <div class="container-fluid">
             <div class="row">
-                <div class="col">
-                    <div v-for="(element,index) in items[0]" :key="index">
-                        <div v-if="element.container" class="container">
-                            <component :class="elementCssClass(element)" ref="container" v-model="element.items" :transientData="transientData" @submit="submit"
-                                       @pageNavigate="pageNavigate" v-bind="element.config"
-                                       :is="element['component']">
-                            </component>
-                        </div>
+                <template v-for="(item, key) in items">
+                    <div :class="classColumn(key)">
+                        <div v-for="(element,index) in item" :key="index">
+                            <template v-if="element.container">
+                                <component :class="elementCssClass(element)" ref="container" v-model="element.items"
+                                           :transientData="transientData" @submit="submit"
+                                           @pageNavigate="pageNavigate" v-bind="element.config"
+                                           :is="element['component']">
+                                </component>
+                            </template>
 
-                        <div v-else>
-                            <component :class="elementCssClass(element)" ref="elements" v-model="model[element.config.name]" :validationData="transientData"
-                                       @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
-                                       :is="element['component']" v-show="showElement[element.config.name]">
-                            </component>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div v-for="(element,index) in items[1]" :key="index">
-                        <div v-if="element.container" class="container">
-                            <component :class="elementCssClass(element)" ref="container" v-model="element.items" :transientData="transientData" v-bind="element.config"
-                                       @submit="submit" @pageNavigate="pageNavigate"
-                                       :is="element['component']">
-                            </component>
-                        </div>
-
-                        <div v-else>
-                            <component :class="elementCssClass(element)" ref="elements" v-model="model[element.config.name]" :validationData="transientData"
-                                       v-bind="element.config" @submit="submit" @pageNavigate="pageNavigate"
-                                       :is="element['component']" v-show="showElement[element.config.name]">
-                            </component>
+                            <template v-else>
+                                <component :class="elementCssClass(element)" ref="elements"
+                                           v-model="model[element.config.name]" :validationData="transientData"
+                                           @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
+                                           :is="element['component']" v-show="showElement[element.config.name]">
+                                </component>
+                            </template>
                         </div>
                     </div>
-                </div>
-
+                </template>
             </div>
         </div>
     </div>
@@ -65,7 +50,7 @@
     export default {
         name: 'FormMultiColumn',
         mixins: [HasColorProperty],
-        props: ["value", "selected", "transientData"],
+        props: ["value", "selected", "name", "config", "transientData"],
         components: {
             draggable,
             FormInput,
@@ -104,6 +89,16 @@
             }
         },
         methods: {
+            classColumn(index) {
+                let column = 1;
+                if (this.items.length < this.config.options.length) {
+                    this.items.push([]);
+                }
+                if (this.config.options[index] && this.config.options[index].content) {
+                    column = this.config.options[index].content;
+                }
+                return 'col-sm-' + column + ' column-draggable';
+            },
             inspect(element) {
                 this.$emit('inspect', element)
             },
