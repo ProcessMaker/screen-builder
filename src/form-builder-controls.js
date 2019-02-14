@@ -799,7 +799,6 @@ export default [
                         content: '2'
                     }
                 ],
-                helper: 'veamos que ponemos aqui',
             },
             inspector: [
                 {
