@@ -801,7 +801,7 @@ export default [
                     type: "ContainerColumns",
                     field: "options",
                     config: {
-                        label: 'Setting one column width',
+                        label: 'Column widths',
                     }
                 },
                 bgcolorProperty,

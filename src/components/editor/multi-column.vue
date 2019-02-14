@@ -1,5 +1,5 @@
 <template>
-    <div class="form-group column-draggable"> <!--style="min-height: 50px; border: .2px dashed #000;"-->
+    <div :class="classContainer">
         <div class="container-fluid">
             <div class="row">
                 <template v-for="(item, index) in items">
@@ -85,6 +85,11 @@
                 this.$emit("input", this.items);
             }
         },
+        computed : {
+            classContainer() {
+                return this.items.length > 0 ? 'form-group': 'column-draggable';
+            }
+        },
         methods: {
             classColumn(index) {
                 let column = 1;
@@ -102,11 +107,6 @@
             deleteItem(col, index) {
                 // Remove the item from the array in currentPage
                 this.items[col].splice(index, 1);
-            },
-            deleteColumn(index) {
-                console.log('remove column');
-                console.log(index);
-                delete this.items[index];
             }
         }
     };

@@ -6,7 +6,7 @@
             <tr>
                 <th>Column</th>
                 <th>Colspan</th>
-                <th>Actions</th>
+                <th>Remove</th>
             </tr>
             </thead>
             <draggable @update="updateSort" :element="'tbody'" v-model="existingOptions" :options="{group:'options'}"
@@ -15,7 +15,7 @@
                     <td>{{option.value}}</td>
                     <td>{{option.content}}</td>
                     <td>
-                        <button @click="removeOption(index)" class="btn btn-danger btn-sm">x</button>
+                        <button @click="removeOption(index)" class="btn btn-danger btn-sm" v-if="deleteIf">x</button>
                     </td>
                 </tr>
             </draggable>
@@ -24,9 +24,8 @@
         <b-btn v-b-modal.addOptionModal>Add Column</b-btn>
         <small v-if="helper" class="form-text text-muted">{{helper}}</small>
 
-        <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" title="Add New Option">
-            <!--<form-input label="Option Value" v-model="addValue" :error="this.addError"></form-input>-->
-            <form-input label="Option Label" v-model="addContent" validate="required|numeric|between:1,12" :error="this.addError"></form-input>
+        <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" title="Add New Column">
+            <form-input label="Column Width" v-model="addContent" validate="required|numeric|between:1,12" :error="this.addError"></form-input>
         </b-modal>
     </div>
 </template>
@@ -61,6 +60,12 @@
         model: {
             prop: "options",
             event: "change",
+        },
+        computed: {
+            deleteIf() {
+                //must have at least one column
+                return this.options.length > 1;
+            }
         },
         methods: {
             updateSort() {
@@ -122,8 +127,6 @@
                 this.$emit("change", newOptions);
                 //delete column in multiple column
                 this.$parent.selected.items.splice(index, 1)
-            },
-            showAddOptionModal() {
             }
         }
     };
