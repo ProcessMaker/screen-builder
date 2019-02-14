@@ -39,7 +39,7 @@
               <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
                   <div v-if="element.container" @click="inspect(element)">
-                    <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" v-bind:config="element.config" :is="element['editor-component']"></component>
+                    <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" :config="element.config" :is="element['editor-component']"></component>
                   </div>
 
                   <div v-else>

@@ -60,20 +60,14 @@
         props: ["label", "options", "helper"],
         model: {
             prop: "options",
-            event: "change"
+            event: "change",
         },
         methods: {
             updateSort() {
                 this.existingOptions.forEach((item, index) => {
-                   console.log(item);
-                    console.log(index);
                     item.value = index + 1;
                 });
-
-                let newOptions = JSON.parse(JSON.stringify(this.existingOptions))
-                console.log('update Sort');
-                console.log(newOptions);
-
+                let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
                 this.$emit('change', newOptions)
             },
             resetAdd() {
@@ -83,17 +77,34 @@
             },
             addNewOption(event) {
                 let newOptions = JSON.parse(JSON.stringify(this.options));
-                // Iterate through each element, and if the value already exists, then fail out
-                for (var existingOption of newOptions) {
-                    if (existingOption.value == this.addValue) {
-                        // Found, let's return cancel?
-                        this.addError = "This value already exists in the list of options";
-                        event.preventDefault();
-                        return;
-                    }
+
+                if(isNaN(this.addContent)) {
+                    this.addError = "This value must be numeric";
+                    event.preventDefault();
+                    return;
                 }
+
+                if (!(0 < this.addContent && this.addContent < 13)) {
+                    this.addError = "This value must be between 1-12";
+                    event.preventDefault();
+                    return;
+                }
+                let newIndex=0,
+                    sum = 0;
+                this.existingOptions.forEach((item, index) => {
+                    newIndex++;
+                    sum += Number(item.content);
+                    item.value = newIndex;
+                });
+
+                if ((sum + Number(this.addContent)) > 12) {
+                    this.addError = "The total size of the columns exceeds 12.";
+                    event.preventDefault();
+                    return;
+                }
+
                 newOptions.push({
-                    value: this.addValue,
+                    value: newIndex+1,
                     content: this.addContent
                 });
                 this.$emit("change", newOptions);
@@ -105,7 +116,11 @@
                 let newOptions = JSON.parse(JSON.stringify(this.options));
                 // Remove index from array
                 newOptions.splice(index, 1);
+                newOptions.forEach((item, index) => {
+                    item.value = index + 1;
+                });
                 this.$emit("change", newOptions);
+                this.$emit("delete", index);
             },
             showAddOptionModal() {
             }

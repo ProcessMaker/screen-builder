@@ -87,7 +87,14 @@
         },
         methods: {
             classColumn(index) {
-                return 'col-sm-' + this.config.options[index].content + ' column-draggable';
+                let column = 1;
+                if (this.items.length < this.config.options.length) {
+                    this.items.push([]);
+                }
+                if (this.config.options[index] && this.config.options[index].content) {
+                    column = this.config.options[index].content;
+                }
+                return 'col-sm-' + column + ' column-draggable';
             },
             inspect(element) {
                 this.$emit('inspect', element)
@@ -96,6 +103,11 @@
                 // Remove the item from the array in currentPage
                 this.items[col].splice(index, 1);
             },
+            deleteColumn(index) {
+                console.log('remove column');
+                console.log(index);
+                delete this.items[index];
+            }
         }
     };
 </script>
