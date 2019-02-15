@@ -3,7 +3,6 @@ import FormButton from "./components/renderer/form-button"
 import FormMultiColumn from "./components/renderer/form-multi-column"
 import FormRecordList from "./components/renderer/form-record-list"
 import FormImage from "./components/renderer/form-image"
-import FormMultiselect from "./components/inspector/form-multiselect.vue"
 
 import {
     FormInput,
