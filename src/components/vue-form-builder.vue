@@ -38,16 +38,15 @@
             <div class="col-sm">
               <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
-                  <div v-if="element.container">
-                    <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
-                    <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                  <div v-if="element.container" @click="inspect(element)">
+                    <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" :config="element.config" :is="element['editor-component']"></component>
                   </div>
 
                   <div v-else>
                     <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
                     <div @click="inspect(element)" class="mask"></div>
-                    <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
                   </div>
+                  <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                 </div>
               </draggable>
             </div>
@@ -81,6 +80,7 @@ import Vue from "vue";
 import draggable from "vuedraggable";
 
 import OptionsList from "./inspector/options-list";
+import ContainerColumns from "./inspector/container-columns";
 import PageSelect from "./inspector/page-select";
 import ImageUpload from './inspector/image-upload'
 import ColorSelect from "./inspector/color-select"
@@ -114,6 +114,7 @@ export default {
     FormInput,
     FormSelect,
     OptionsList,
+    ContainerColumns,
     FormCheckbox,
     FormRadioButtonGroup,
     FormTextArea,
