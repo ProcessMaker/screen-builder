@@ -36,7 +36,7 @@
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
+              <draggable class="editor-draggable" @start="onStartDrag" @end="onEndDrag" v-model="config[currentPage]['items']" :options="{handle: '.handle', animation: 150, group: {name: 'controls'}}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
                   <div v-if="element.container">
                     <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
@@ -44,9 +44,18 @@
                   </div>
 
                   <div v-else>
-                    <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
-                    <div @click="inspect(element)" class="mask"></div>
-                    <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                    <div v-if="element.component == 'FormText'" @click="inspect(element)" class="text-wrapper">
+                      <div class="handle">
+                        <i class="fas fa-arrows-alt"></i>
+                      </div>
+                      <component :editable="textEditable" :class="elementCssClass(element)" @onUpdate="gotUpdate($event, element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
+                      <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                    </div>
+                    <div v-else class="mask-wrapper">
+                      <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
+                      <div @click="inspect(element)" class="mask handle"></div>
+                      <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
+                    </div>
                   </div>
                 </div>
               </draggable>
@@ -145,7 +154,8 @@ export default {
           name: "Default",
           items: []
         }
-      ]
+      ],
+      textEditable: true,
     };
   },
   watch: {
@@ -161,7 +171,18 @@ export default {
     }
   },
   methods: {
-   addControl(control) {
+    onStartDrag() {
+      this.textEditable = false;
+    },
+
+    onEndDrag() {
+      this.textEditable = true;
+    },
+    gotUpdate(html, element) {
+      element.config.label = html;
+      element.config.value = html;
+    },
+    addControl(control) {
       this.controls.push(control);
     },
     deleteItem(index) {
@@ -307,22 +328,38 @@ export default {
 }
 
 .control-item {
-  position: relative;
+  // position: relative;
 
   .delete {
     position: absolute;
     top: 0px;
     right: 0px;
+    float: right;
     display: none;
+  }
+
+  .mask-wrapper, .text-wrapper {
+    position: relative;
   }
 
   &.selected,
   &:hover {
-    .mask {
+    .mask, .text-wrapper {
       border: 1px solid red;
+    }
+    .text-wrapper {
+      margin: -1px;
     }
     .delete {
       display: inline-block;
+    }
+  }
+
+  .text-wrapper .handle { 
+    cursor: grab;
+    text-align: center;
+    &:hover {
+      background-color: rgba(0, 0, 0, .1);
     }
   }
 

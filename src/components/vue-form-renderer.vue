@@ -10,7 +10,8 @@
 
             <div v-else>
                 <component :class="elementCssClass(element)" ref="elements" :validationData="transientData" v-model="model[element.config.name]" @submit="submit" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
-                           @pageNavigate="pageNavigate" v-bind:name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']">
+                           @pageNavigate="pageNavigate" v-bind:name="element.config.name !== undefined ? element.config.name : null" v-bind="element.config" :is="element['component']"
+                           mode="preview">
                 </component>
             </div>
         </div>
@@ -209,7 +210,6 @@
                 try {
                     var ast = csstree.parse(this.customCss, {
                         onParseError: function(error) {
-                            // throw "CSS has the following errors:\n\n" + error.formattedMessage
                             throw error.formattedMessage;
                         }
                     });
