@@ -20,9 +20,9 @@ const bgcolorProperty = {
         label: "Background color",
         helper: "Set the element's background color",
         options: [{
-                value: 'alert alert-primary',
-                content: 'primary'
-            },
+            value: 'alert alert-primary',
+            content: 'primary'
+        },
             {
                 value: 'alert alert-secondary',
                 content: 'secondary'
@@ -61,9 +61,9 @@ const colorProperty = {
         label: "Text color",
         helper: "Set the element's text color",
         options: [{
-                value: 'text-primary',
-                content: 'primary'
-            },
+            value: 'text-primary',
+            content: 'primary'
+        },
             {
                 value: 'text-secondary',
                 content: 'secondary'
@@ -97,119 +97,130 @@ const colorProperty = {
 };
 
 export default [{
-        builderComponent: FormText,
-        builderBinding: 'FormText',
-        rendererComponent: FormText,
-        rendererBinding: 'FormText',
-        control: {
-            label: 'Text Box',
-            component: 'FormText',
-            'editor-component': 'FormText',
-            'editor-icon': require('./assets/icons/font-solid.svg'),
-            config: {
-                label: 'New Text',
-                fontSize: '1em',
-                fontWeight: 'normal',
-                textAlign: 'left',
-                name: ''
+    builderComponent: FormText,
+    builderBinding: 'FormText',
+    rendererComponent: FormText,
+    rendererBinding: 'FormText',
+    control: {
+        label: 'Text Box',
+        component: 'FormText',
+        'editor-component': 'FormText',
+        'editor-icon': require('./assets/icons/font-solid.svg'),
+        config: {
+            label: 'New Text',
+            fontSize: '1em',
+            fontWeight: 'normal',
+            textAlign: 'left',
+            name: ''
+        },
+        inspector: [
+            {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    validation: 'required',
+                    helper: "The data name for this field"
+                }
             },
-            inspector: [{
-                    type: "FormTextArea",
-                    field: "label",
-                    config: {
-                        rows: 5,
-                        label: "Text Content",
-                        helper: "The text to display",
-                    }
-                },
-                {
-                    type: "FormMultiselect",
-                    field: "fontWeight",
-                    config: {
-                        label: "Font Weight",
-                        helper: "The weight of the text",
-                        options: [{
-                                value: 'normal',
-                                content: 'Normal'
-                            },
-                            {
-                                value: 'bold',
-                                content: 'Bold'
-                            }
-                        ]
-                    }
-                },
-                {
-                    type: "FormInput",
-                    field: "color",
-                    config: {
-                        label: "Text Color",
-                        helper: "Accepts all HTML colors and hex codes"
-                    }
-                },
-                {
-                    type: "FormMultiselect",
-                    field: "textAlign",
-                    config: {
-                        label: "Text Alignment",
-                        helper: "The Alignment of the text",
-                        options: [{
-                                value: 'center',
-                                content: 'Center'
-                            },
-                            {
-                                value: 'left',
-                                content: 'Left'
-                            },
-                            {
-                                value: 'right',
-                                content: 'Right'
-                            },
-                            {
-                                value: 'justify',
-                                content: 'Justify'
-                            },
-                        ]
-                    }
-                },
-                {
-                    type: "FormMultiselect",
-                    field: "fontSize",
-                    config: {
-                        label: "Font Size",
-                        helper: "The size of the text in em",
-                        options: [{
-                                value: '0.5em',
-                                content: '0.5'
-                            },
-                            {
-                                value: '1em',
-                                content: '1'
-                            },
-                            {
-                                value: '1.5em',
-                                content: '1.5'
-                            },
-                            {
-                                value: '2em',
-                                content: '2'
-                            },
-                        ]
-                    }
-                },
-                bgcolorProperty,
-                colorProperty,
-                {
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "CSS ID",
-                        helper: "Set an ID for custom css"
-                    }
-                },
-            ]
-        }
-    },
+            {
+                type: "FormTextArea",
+                field: "label",
+                config: {
+                    rows: 5,
+                    label: "Text Content",
+                    helper: "The text to display",
+                }
+            },
+            {
+                type: "FormMultiselect",
+                field: "fontWeight",
+                config: {
+                    label: "Font Weight",
+                    helper: "The weight of the text",
+                    options: [{
+                        value: 'normal',
+                        content: 'Normal'
+                    },
+                        {
+                            value: 'bold',
+                            content: 'Bold'
+                        }
+                    ]
+                }
+            },
+            {
+                type: "FormInput",
+                field: "color",
+                config: {
+                    label: "Text Color",
+                    helper: "Accepts all HTML colors and hex codes"
+                }
+            },
+            {
+                type: "FormMultiselect",
+                field: "textAlign",
+                config: {
+                    label: "Text Alignment",
+                    helper: "The Alignment of the text",
+                    options: [{
+                        value: 'center',
+                        content: 'Center'
+                    },
+                        {
+                            value: 'left',
+                            content: 'Left'
+                        },
+                        {
+                            value: 'right',
+                            content: 'Right'
+                        },
+                        {
+                            value: 'justify',
+                            content: 'Justify'
+                        },
+                    ]
+                }
+            },
+            {
+                type: "FormMultiselect",
+                field: "fontSize",
+                config: {
+                    label: "Font Size",
+                    helper: "The size of the text in em",
+                    options: [{
+                        value: '0.5em',
+                        content: '0.5'
+                    },
+                        {
+                            value: '1em',
+                            content: '1'
+                        },
+                        {
+                            value: '1.5em',
+                            content: '1.5'
+                        },
+                        {
+                            value: '2em',
+                            content: '2'
+                        },
+                    ]
+                }
+            },
+            bgcolorProperty,
+            colorProperty,
+            {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "CSS ID",
+                    helper: "Set an ID for custom css"
+                }
+            },
+        ]
+    }
+},
     {
         builderComponent: FormInput,
         builderBinding: 'FormInput',
@@ -229,15 +240,15 @@ export default [{
                 type: 'text'
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field"
-                    }
-                },
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    validation: 'required',
+                    helper: "The data name for this field"
+                }
+            },
                 {
                     type: "FormMultiselect",
                     field: "type",
@@ -246,9 +257,9 @@ export default [{
                         name: 'Field Type',
                         helper: "The type for this field",
                         options: [{
-                                value: 'text',
-                                content: 'Text'
-                            },
+                            value: 'text',
+                            content: 'Text'
+                        },
                             {
                                 value: 'password',
                                 content: 'Password'
@@ -308,21 +319,21 @@ export default [{
                 placeholder: "",
                 validation: '',
                 options: [{
-                        value: 'new',
-                        content: 'New Option'
-                    }
+                    value: 'new',
+                    content: 'New Option'
+                }
 
                 ],
                 helper: null,
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        helper: "The data name for this field"
-                    }
-                },
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    helper: "The data name for this field"
+                }
+            },
                 {
                     type: "FormInput",
                     field: "label",
@@ -379,13 +390,13 @@ export default [{
                 helper: null,
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        helper: "The data name for this field"
-                    }
-                },
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    helper: "The data name for this field"
+                }
+            },
                 {
                     type: "FormInput",
                     field: "label",
@@ -433,13 +444,13 @@ export default [{
                 validation: '',
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        helper: "The name of the group for the checkbox. All checkboxes which share the same name will work together."
-                    }
-                },
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    helper: "The name of the group for the checkbox. All checkboxes which share the same name will work together."
+                }
+            },
                 {
                     type: "FormInput",
                     field: "label",
@@ -486,15 +497,15 @@ export default [{
                 rows: 2
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field"
-                    }
-                },
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    validation: 'required',
+                    helper: "The data name for this field"
+                }
+            },
                 {
                     type: "FormInput",
                     field: "label",
@@ -556,15 +567,15 @@ export default [{
                 name: ''
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field"
-                    }
-                },
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    validation: 'required',
+                    helper: "The data name for this field"
+                }
+            },
                 {
                     type: "FormInput",
                     field: "label",
@@ -604,13 +615,13 @@ export default [{
                 value: null
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "label",
-                    config: {
-                        label: "Field Label",
-                        helper: "The label describes the button's text"
-                    }
-                },
+                type: "FormInput",
+                field: "label",
+                config: {
+                    label: "Field Label",
+                    helper: "The label describes the button's text"
+                }
+            },
                 {
                     type: "FormInput",
                     field: "name",
@@ -634,9 +645,9 @@ export default [{
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
                         options: [{
-                                value: 'primary',
-                                content: 'Primary'
-                            },
+                            value: 'primary',
+                            content: 'Primary'
+                        },
                             {
                                 value: 'secondary',
                                 content: 'Secondary'
@@ -695,13 +706,13 @@ export default [{
 
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "label",
-                    config: {
-                        label: "Field Label",
-                        helper: "The label describes the button's text"
-                    }
-                },
+                type: "FormInput",
+                field: "label",
+                config: {
+                    label: "Field Label",
+                    helper: "The label describes the button's text"
+                }
+            },
                 {
                     type: "FormMultiselect",
                     field: "variant",
@@ -709,9 +720,9 @@ export default [{
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
                         options: [{
-                                value: 'primary',
-                                content: 'Primary'
-                            },
+                            value: 'primary',
+                            content: 'Primary'
+                        },
                             {
                                 value: 'secondary',
                                 content: 'Secondary'
@@ -772,23 +783,35 @@ export default [{
             'editor-icon': require('./assets/icons/columns-solid.svg'),
             container: true,
             // Default items container
-            items: [
-                [],
-                []
-            ],
-            config: {},
-            inspector: [{
-                    type: "FormText",
+            items: [[], []],
+            config: {
+                options: [
+                    {
+                        value: '1',
+                        content: '6'
+                    },
+                    {
+                        value: '2',
+                        content: '6'
+                    }
+                ],
+            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
                     config: {
-                        label: "MultiColumn",
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
                     }
                 },
                 {
-                    type: "FormInput",
-                    field: "conditionalHide",
+                    type: "ContainerColumns",
+                    field: "options",
                     config: {
-                        label: "Show If:",
-                        helper: "Hide this control unless the following expression is true"
+                        label: 'Column widths',
                     }
                 },
                 bgcolorProperty,
@@ -813,7 +836,8 @@ export default [{
                 fields: [],
                 form: ''
             },
-            inspector: [{
+            inspector: [
+                {
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -861,8 +885,6 @@ export default [{
             ]
 
         },
-
-
     },
     {
         editorComponent: FormImage,
@@ -882,13 +904,13 @@ export default [{
                 value: null
             },
             inspector: [{
-                    type: "FormInput",
-                    field: "id",
-                    config: {
-                        label: "Id",
-                        helper: "Image id"
-                    }
-                },
+                type: "FormInput",
+                field: "id",
+                config: {
+                    label: "Id",
+                    helper: "Image id"
+                }
+            },
                 {
                     type: 'ImageUpload',
                     field: "image",
