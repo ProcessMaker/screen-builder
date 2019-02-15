@@ -48,7 +48,7 @@
                       <div class="handle">
                         <i class="fas fa-arrows-alt"></i>
                       </div>
-                      <component :editable="textEditable" :class="elementCssClass(element)" @onUpdate="gotUpdate($event, element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
+                      <component :editable="textEditable" :class="elementCssClass(element)" @onUpdate="gotUpdate($event, element)" @focused="inspect(element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
                       <button class="delete btn btn-danger" @click="deleteItem(index)">x</button>
                     </div>
                     <div v-else class="mask-wrapper">
