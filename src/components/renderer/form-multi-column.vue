@@ -17,7 +17,7 @@
                                 <component :class="elementCssClass(element)" ref="elements"
                                            v-model="model[element.config.name]" :validationData="transientData"
                                            @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
-                                           :is="element['component']" v-show="showElement[element.config.name]">
+                                           :is="element['component']" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true">
                                 </component>
                             </template>
                         </div>
