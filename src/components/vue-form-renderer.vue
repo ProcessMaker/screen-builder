@@ -1,9 +1,9 @@
 <template>
     <div id="renderer-container">
         <div v-for="(element,index) in config[currentPage]['items']" :key="index">
-            <div v-if="element.container">
+            <div v-if="element.container" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true">
                 <component :class="elementCssClass(element)" ref="container" selected="selected" :transientData="transientData" v-model="element.items"
-                           @submit="submit" :config="element.config"
+                           @submit="submit" :config="element.config" :name="element.config.name !== undefined ? element.config.name : null"
                            @pageNavigate="pageNavigate" v-bind="element.config" :is="element['component']">
                 </component>
             </div>
@@ -127,20 +127,19 @@
                             Object.assign(fields, this.exploreItems(itemsContainer, context, fields))
                         });
                     });
-                } else {
-                    name = element.config.name;
-                    //Element always visible when not have field conditional hide.
-                    fields[name]  = true;
-                    if (element.config.conditionalHide) {
-                        try {
-                            //when conditional is evaluated
-                            //evaluation is true field is displayed
-                            //evaluation is false field is hidden.
-                            fields[name] =  (Boolean(Parser.evaluate(element.config.conditionalHide, context.transientData)) === true);
-                        } catch (e) {
-                            //conditional can't be evaluated, element hidden.
-                            fields[name]  = false
-                        }
+                }
+                name = element.config.name;
+                //Element always visible when not have field conditional hide.
+                fields[name]  = true;
+                if (element.config.conditionalHide) {
+                    try {
+                        //when conditional is evaluated
+                        //evaluation is true field is displayed
+                        //evaluation is false field is hidden.
+                        fields[name] =  (Boolean(Parser.evaluate(element.config.conditionalHide, context.transientData)) === true);
+                    } catch (e) {
+                        //conditional can't be evaluated, element hidden.
+                        fields[name]  = false
                     }
                 }
                 return fields;
