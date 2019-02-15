@@ -117,6 +117,16 @@ export default [
             },
             inspector: [
                 {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
+                    }
+                },
+                {
                     type: "FormTextArea",
                     field: "label",
                     config: {
@@ -797,6 +807,16 @@ export default [
                 ],
             },
             inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
+                    }
+                },
                 {
                     type: "ContainerColumns",
                     field: "options",
