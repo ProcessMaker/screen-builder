@@ -113,7 +113,8 @@ export default [
                 label: 'New Text',
                 fontSize: '1em',
                 fontWeight: 'normal',
-                textAlign: 'left'
+                textAlign: 'left',
+                name: ''
             },
             inspector: [
                 {
@@ -205,6 +206,14 @@ export default [
                 },
                 bgcolorProperty,
                 colorProperty,
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "CSS ID",
+                        helper: "Set an ID for custom css"
+                    }
+                },
             ]
         }
     },
