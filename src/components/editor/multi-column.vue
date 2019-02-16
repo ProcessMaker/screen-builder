@@ -5,7 +5,8 @@
                 <template v-for="(item, index) in items">
 
                     <draggable :class="classColumn(index)" v-model="items[index]"
-                               :options="{group: {name: 'controls'}}" :key="index">
+                               :options="{group: {name: 'controls'}}" :key="index"
+                               @start="onStartDrag" @end="onEndDrag">
 
                         <div class="control-item" :class="{selectedElement: selected === element}"
                              v-for="(element,row) in item" :key="row">
@@ -79,7 +80,8 @@
         },
         data() {
             return {
-                items: []
+                items: [],
+                textEditable: true,
             };
         },
         watch: {
@@ -155,6 +157,14 @@
 
             .delete {
                 display: inline-block;
+            }
+        }
+
+        .text-wrapper .handle { 
+            cursor: grab;
+            text-align: center;
+            &:hover {
+            background-color: rgba(0, 0, 0, .1);
             }
         }
 

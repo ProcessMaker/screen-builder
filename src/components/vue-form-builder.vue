@@ -51,7 +51,8 @@
                     <div class="row">
                         <div class="col-sm">
                             <draggable class="editor-draggable" v-model="config[currentPage]['items']"
-                                       :options="{group: {name: 'controls'}}">
+                                       :options="{group: {name: 'controls'}}"
+                                       @start="onStartDrag" @end="onEndDrag">
                                 <div class="control-item" :class="{selected: selected === element}"
                                      v-for="(element,index) in config[currentPage]['items']" :key="index">
                                     <div v-if="element.container" @click="inspect(element)">
@@ -178,7 +179,8 @@
                         name: "Default",
                         items: []
                     }
-                ]
+                ],
+                textEditable: true,
             };
         },
         watch: {
@@ -378,6 +380,14 @@
             .delete {
                 display: inline-block;
             }
+        }
+
+        .text-wrapper .handle { 
+          cursor: grab;
+          text-align: center;
+          &:hover {
+            background-color: rgba(0, 0, 0, .1);
+          }
         }
 
         .mask {
