@@ -2,33 +2,51 @@
     <div class="form-group">
         <div class="container-fluid">
             <div class="row">
-                <draggable class="col-sm column-draggable" v-model="items[0]" :options="{group: {name: 'controls'}}">
+                <draggable @start="onStartDrag" @end="onEndDrag"  class="col-sm column-draggable" v-model="items[0]" :options="{group: {name: 'controls'}}">
                     <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in items[0]" :key="index">
                          <div v-if="element.container">
-                            <component :class="elementCssClass(element)" @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
+                            <component :class="elementCssClass(element)" :mode="mode" @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
                             <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
                         </div>
 
                         <div v-else>
-                            <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
-                            <div @click="inspect(element)" class="mask"></div>
-                            <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                          <div v-if="element.component == 'FormText'" @click="inspect(element)" class="text-wrapper">
+                              <div class="handle">
+                                  <i class="fas fa-arrows-alt"></i>
+                              </div>
+                              <component :editable="textEditable" :class="elementCssClass(element)" @onUpdate="gotUpdate($event, element)" @focused="inspect(element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
+                              <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                          </div>
+                          <div v-else>
+                              <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
+                              <div @click="inspect(element)" class="mask"></div>
+                              <button class="delete btn btn-danger" @click="deleteItem(0, index)">x</button>
+                          </div>
                         </div>
                     </div>
 
                 </draggable>
 
-                <draggable class="col-sm column-draggable" v-model="items[1]" :options="{group: {name: 'controls'}}">
+                <draggable @start="onStartDrag" @end="onEndDrag" class="col-sm column-draggable" v-model="items[1]" :options="{group: {name: 'controls'}}">
                     <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in items[1]" :key="index">
                          <div v-if="element.container">
-                            <component :class="elementCssClass(element)" @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
+                            <component :class="elementCssClass(element)" :mode="mode" @inspect="inspect" v-model="element.items" v-bind="element.config" :is="element['editor-component']"></component>
                             <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
                         </div>
 
                         <div v-else>
-                            <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
-                            <div @click="inspect(element)" class="mask"></div>
-                            <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
+                          <div v-if="element.component == 'FormText'" @click="inspect(element)" class="text-wrapper">
+                              <div class="handle">
+                                  <i class="fas fa-arrows-alt"></i>
+                              </div>
+                              <component :editable="textEditable" :class="elementCssClass(element)" @onUpdate="gotUpdate($event, element)" @focused="inspect(element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
+                              <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
+                          </div>
+                          <div v-else>
+                              <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
+                              <div @click="inspect(element)" class="mask"></div>
+                              <button class="delete btn btn-danger" @click="deleteItem(1, index)">x</button>
+                          </div>
                         </div>
                     </div>
 
@@ -60,7 +78,7 @@ FormInput,
 export default {
   name: 'MultiColumn',
   mixins: [HasColorProperty],
-  props: ["value", "selected"],
+  props: ["value", "selected", "mode"],
   components: {
     draggable,
     FormInput,
@@ -76,7 +94,8 @@ export default {
   },
   data() {
     return {
-      items: []
+      items: [],
+      textEditable: true,
     };
   },
   watch: {
@@ -91,6 +110,16 @@ export default {
     }
   },
   methods: {
+    onStartDrag() {
+      this.textEditable = false;
+    },
+    onEndDrag() {
+      this.textEditable = true;
+    },
+    gotUpdate(html, element) {
+      element.config.label = html;
+      element.config.value = html;
+    },
     inspect(element) {
       this.$emit('inspect', element)
     },

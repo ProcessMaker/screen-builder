@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div v-if="mode == 'preview'" class="form-group">
-        <div :style="styles" v-html="rendered"></div>
-    </div>
     <div v-if="mode == 'editor'" class="editor">
       <editor @onFocus="onFocus" @onBlur="onBlur" v-model="content" :init="editorSettings" v-bind:disabled="disabled"></editor>
+    </div>
+    <div v-else class="form-group">
+        <div :style="styles" v-html="rendered"></div>
     </div>
   </div>
 </template>
@@ -13,7 +13,12 @@
 import Mustache from "mustache";
 import Editor from '@tinymce/tinymce-vue';
 import 'tinymce/tinymce';
-import 'tinymce/themes/silver/theme';
+
+import 'tinymce/themes/silver';
+// import "tinymce/skins/ui/oxide/skin.min.css"
+// import "tinymce/skins/ui/oxide/content.min.css"
+// import "tinymce/skins/content/default/content.css"
+
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 
@@ -88,8 +93,4 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
-
 
