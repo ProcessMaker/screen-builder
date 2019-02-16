@@ -31,6 +31,7 @@ export default {
     "color",
     "mode",
     "editable",
+    "name"
   ],
   data() {
     return {
