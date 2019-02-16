@@ -13,11 +13,7 @@
 import Mustache from "mustache";
 import Editor from '@tinymce/tinymce-vue';
 import 'tinymce/tinymce';
-
 import 'tinymce/themes/silver';
-// import "tinymce/skins/ui/oxide/skin.min.css"
-// import "tinymce/skins/ui/oxide/content.min.css"
-// import "tinymce/skins/content/default/content.css"
 
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
@@ -42,6 +38,9 @@ export default {
         menubar: false,
         plugins: [ 'link', 'lists' ],
         toolbar: "undo redo | link | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+        skin: "oxide",
+        skin_url: '/tinymce/skins/ui/oxide',
+        content_css : '/tinymce/skins/content/default/content.min.css'
       },
       content: '',
       disabled: false,
