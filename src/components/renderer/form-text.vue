@@ -4,7 +4,7 @@
       <editor @onFocus="onFocus" @onBlur="onBlur" v-model="content" :init="editorSettings" v-bind:disabled="disabled"></editor>
     </div>
     <div v-else class="form-group">
-        <div :style="styles" v-html="rendered"></div>
+        <div v-html="rendered"></div>
     </div>
   </div>
 </template>
@@ -24,11 +24,7 @@ export default {
   },
   props: [
     "label",
-    "fontSize",
-    "fontWeight",
-    "textAlign",
     "validationData",
-    "color",
     "mode",
     "editable",
     "name"
@@ -38,7 +34,7 @@ export default {
       editorSettings: {
         menubar: false,
         plugins: [ 'link', 'lists' ],
-        toolbar: "undo redo | link | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+        toolbar: "undo redo | link | styleselect | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
         skin: "oxide",
         skin_url: '/tinymce/skins/ui/oxide',
         content_css : '/tinymce/skins/content/default/content.min.css'
@@ -75,14 +71,6 @@ export default {
     }
   },
   computed: {
-    styles() {
-      return {
-        fontSize: this.fontSize,
-        fontWeight: this.fontWeight,
-        textAlign: this.textAlign,
-        color: this.color
-      };
-    },
     rendered() {
       try {
         return Mustache.render(this.label, this.validationData);
