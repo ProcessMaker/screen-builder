@@ -12,23 +12,43 @@
                              v-for="(element,row) in item" :key="row">
 
                             <div v-if="element.container">
-                                <component :class="elementCssClass(element)" :selected="selectedElement"
-                                           @inspect="inspect" v-model="element.items"
-                                           v-bind="element.config" :is="element['editor-component']"></component>
+                                <component :class="elementCssClass(element)"
+                                           :selected="selectedElement"
+                                           @inspect="inspect"
+                                           v-model="element.items"
+                                           v-bind="element.config"
+                                           :is="element['editor-component']"
+                                           :name="element.config.name"
+                                           :id="element.config.name">
+                                           </component>
                                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
                             </div>
 
                             <div v-else>
-                                <div v-if="element.component == 'FormText'" @click="inspect(element)" class="text-wrapper">
+                                <div v-if="element.component == 'FormText'" @click.stop="inspect(element)" class="text-wrapper">
                                     <div class="handle">
                                         <i class="fas fa-arrows-alt"></i>
                                     </div>
-                                    <component :editable="textEditable" :class="elementCssClass(element)" @onUpdate="gotUpdate($event, element)" @focused="inspect(element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
+                                    <component :editable="textEditable"
+                                               :name="element.config.name"
+                                               :id="element.config.name"
+                                               :class="elementCssClass(element)"
+                                               @onUpdate="gotUpdate($event, element)"
+                                               @focused="inspect(element)"
+                                               v-bind="element.config"
+                                               :is="element['editor-component']"
+                                               mode="editor">
+                                               </component>
                                     <button class="delete btn btn-danger" @click="deleteItem(index, row)">x</button>
                                 </div>
-                                <div v-else>
-                                    <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
-                                    <div @click="inspect(element)" class="mask"></div>
+                                <div v-else class="mask-wrapper">
+                                    <component :class="elementCssClass(element)"
+                                               v-bind="element.config"
+                                               :is="element['editor-component']"
+                                               :name="element.config.name"
+                                               :id="element.config.name">
+                                               </component>
+                                    <div @click.stop="inspect(element)" class="mask"></div>
                                     <button class="delete btn btn-danger" @click="deleteItem(index, row)">x</button>
                                 </div>
                             </div>
@@ -140,7 +160,9 @@
     }
 
     .control-item {
-        position: relative;
+        .mask-wrapper, .text-wrapper {
+          position: relative;
+        }
 
         .delete {
             position: absolute;
@@ -151,8 +173,11 @@
 
         &.selected,
         &:hover {
-            .mask {
+            .mask, .text-wrapper {
                 border: 1px solid red;
+            }
+            .text-wrapper {
+              margin: -1px;
             }
 
             .delete {
@@ -164,7 +189,7 @@
             cursor: grab;
             text-align: center;
             &:hover {
-            background-color: rgba(0, 0, 0, .1);
+                background-color: rgba(0, 0, 0, .1);
             }
         }
 

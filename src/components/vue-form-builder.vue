@@ -55,10 +55,15 @@
                                        @start="onStartDrag" @end="onEndDrag">
                                 <div class="control-item" :class="{selected: selected === element}"
                                      v-for="(element,index) in config[currentPage]['items']" :key="index">
+                                    
                                     <div v-if="element.container" @click="inspect(element)">
-                                        <component :class="elementCssClass(element)" @inspect="inspect"
-                                                   :selected="selected" v-model="element.items" :config="element.config"
-                                                   :is="element['editor-component']"></component>
+                                        <component :class="elementCssClass(element)"
+                                                   @inspect="inspect"
+                                                   :selected="selected"
+                                                   v-model="element.items"
+                                                   :config="element.config"
+                                                   :is="element['editor-component']">
+                                                   </component>
                                     </div>
 
                                     <div v-else>
@@ -66,13 +71,23 @@
                                         <div class="handle">
                                           <i class="fas fa-arrows-alt"></i>
                                         </div>
-                                        <component :editable="textEditable" :class="elementCssClass(element)" @onUpdate="gotUpdate($event, element)" @focused="inspect(element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
+                                        <component :editable="textEditable"
+                                                   :class="elementCssClass(element)"
+                                                   @onUpdate="gotUpdate($event, element)"
+                                                   @focused="inspect(element)"
+                                                   v-bind="element.config"
+                                                   :is="element['editor-component']" mode="editor">
+                                                   </component>
                                       </div>
                                       <div v-else class="mask-wrapper">
-                                        <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']" mode="editor"></component>
-                                        <div @click="inspect(element)" class="mask handle"></div>
+                                        <component :class="elementCssClass(element)"
+                                                   v-bind="element.config"
+                                                   :is="element['editor-component']" mode="editor">
+                                                   </component>
+                                        <div @click="inspect(element)" class="mask"></div>
                                       </div>
                                     </div>
+
                                     <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                                 </div>
                             </draggable>
