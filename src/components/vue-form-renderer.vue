@@ -138,6 +138,11 @@
                         });
                     });
                 }
+                if (element && element.component && element.component === "FormAccordion") {
+                    element.items.forEach(formComponent => {
+                        Object.assign(fields, this.exploreItems(formComponent, context, fields))
+                    });
+                }
                 name = element.config.name;
                 //Element always visible when not have field conditional hide.
                 fields[name] = true;
@@ -198,6 +203,11 @@
                 });
             },
             setDefaultValueItem(item) {
+                if (item.component === 'FormAccordion') {
+                    item.items.forEach((formComponent) => {
+                        this.setDefaultValueItem(formComponent);
+                    });
+                }
                 if (item.component === 'FormMultiColumn') {
                     item.items.forEach((column) => {
                         column.forEach((innerItem) => {
