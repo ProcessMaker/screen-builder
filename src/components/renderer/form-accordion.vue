@@ -51,8 +51,7 @@ export default {
 
 <style scoped lang="scss">
 .form-accordtion-container {
-  padding: 0.25rem 0;
-  margin-bottom: .25rem;
+  padding-bottom: 0.25rem;
 
   .accordion-button {
     display: flex;
@@ -63,7 +62,7 @@ export default {
     cursor: pointer;
     border: none;
     background: none;
-    margin-bottom: 0.25rem;
+    padding: 0.25rem;
 
     .button-label {
       margin-right: auto;
@@ -81,6 +80,7 @@ export default {
 
   .accordion-wrapper {
     border-bottom: 1px solid #aaa;
+    padding-top: 0.5rem;
   }
 }
 </style>
