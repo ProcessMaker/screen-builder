@@ -64,31 +64,31 @@
                                                    :config="element.config"
                                                    :is="element['editor-component']">
                                                    </component>
+                                        <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                                     </div>
-
                                     <div v-else>
-                                      <div v-if="element.component == 'FormText'" @click="inspect(element)" class="text-wrapper">
-                                        <div class="handle">
-                                          <i class="fas fa-arrows-alt"></i>
+                                        <div v-if="element.component == 'FormText'" @click="inspect(element)" class="text-wrapper">
+                                            <div class="handle">
+                                                <i class="fas fa-arrows-alt"></i>
+                                            </div>
+                                            <component :editable="textEditable"
+                                                    :class="elementCssClass(element)"
+                                                    @onUpdate="gotUpdate($event, element)"
+                                                    @focused="inspect(element)"
+                                                    v-bind="element.config"
+                                                    :is="element['editor-component']" mode="editor">
+                                                    </component>
+                                            <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                                         </div>
-                                        <component :editable="textEditable"
-                                                   :class="elementCssClass(element)"
-                                                   @onUpdate="gotUpdate($event, element)"
-                                                   @focused="inspect(element)"
-                                                   v-bind="element.config"
-                                                   :is="element['editor-component']" mode="editor">
-                                                   </component>
-                                      </div>
-                                      <div v-else class="mask-wrapper">
-                                        <component :class="elementCssClass(element)"
-                                                   v-bind="element.config"
-                                                   :is="element['editor-component']" mode="editor">
-                                                   </component>
-                                        <div @click="inspect(element)" class="mask"></div>
-                                      </div>
+                                        <div v-else class="mask-wrapper">
+                                            <component :class="elementCssClass(element)"
+                                                    v-bind="element.config"
+                                                    :is="element['editor-component']" mode="editor">
+                                                    </component>
+                                            <div @click="inspect(element)" class="mask"></div>
+                                            <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
+                                        </div>
                                     </div>
-
-                                    <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                                 </div>
                             </draggable>
                         </div>
@@ -373,7 +373,7 @@
 
     .control-item {
         .mask-wrapper, .text-wrapper {
-          position: relative;
+            position: relative;
         }
 
         .delete {
@@ -381,6 +381,7 @@
             top: 0px;
             right: 0px;
             display: none;
+            cursor: pointer;
         }
 
         &.selected,
