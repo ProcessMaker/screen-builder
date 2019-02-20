@@ -169,6 +169,7 @@
             top: 0px;
             right: 0px;
             display: none;
+            cursor: pointer;
         }
 
         &.selected,
