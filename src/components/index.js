@@ -8,6 +8,7 @@ import FormButton from './renderer/form-button'
 import FormMultiColumn from './renderer/form-multi-column'
 import FormRecordList from './renderer/form-record-list'
 import FormText from './renderer/form-text'
+import FormAccordion from './renderer/form-accordion'
 import ControlsConfiguration from '../form-builder-controls'
 
 let editor = {
@@ -16,15 +17,15 @@ let editor = {
 
 let inspector = {
     OptionsList,
-    PageSelect,
-    ImageUpload
+    PageSelect
 }
 
 let renderer = {
     FormButton,
     FormMultiColumn,
     FormRecordList,
-    FormText
+    FormText,
+    FormAccordion
 }
 
 // Export our named exports
