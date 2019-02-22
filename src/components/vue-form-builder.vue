@@ -51,43 +51,23 @@
                     <div class="row">
                         <div class="col-sm">
                             <draggable class="editor-draggable" v-model="config[currentPage]['items']"
-                                       :options="{group: {name: 'controls'}}"
-                                       @start="onStartDrag" @end="onEndDrag">
+                                       :options="{group: {name: 'controls'}}">
                                 <div class="control-item" :class="{selected: selected === element}"
                                      v-for="(element,index) in config[currentPage]['items']" :key="index">
-                                    
                                     <div v-if="element.container" @click="inspect(element)">
-                                        <component :class="elementCssClass(element)"
-                                                   @inspect="inspect"
-                                                   :selected="selected"
-                                                   v-model="element.items"
-                                                   :config="element.config"
-                                                   :is="element['editor-component']">
-                                                   </component>
+                                        <component :class="elementCssClass(element)" @inspect="inspect"
+                                                   :selected="selected" v-model="element.items" :config="element.config"
+                                                   :is="element['editor-component']"></component>
                                     </div>
 
                                     <div v-else>
-                                      <div v-if="element.component == 'FormText'" @click="inspect(element)" class="text-wrapper">
-                                        <div class="handle">
-                                          <i class="fas fa-arrows-alt"></i>
-                                        </div>
-                                        <component :editable="textEditable"
-                                                   :class="elementCssClass(element)"
-                                                   @onUpdate="gotUpdate($event, element)"
-                                                   @focused="inspect(element)"
-                                                   v-bind="element.config"
-                                                   :is="element['editor-component']" mode="editor">
-                                                   </component>
-                                      </div>
-                                      <div v-else class="mask-wrapper">
-                                        <component :class="elementCssClass(element)"
-                                                   v-bind="element.config"
-                                                   :is="element['editor-component']" mode="editor">
-                                                   </component>
+                                        <component
+                                                :class="elementCssClass(element)"
+                                                v-bind="element.config"
+                                                :is="element['editor-component']"
+                                        ></component>
                                         <div @click="inspect(element)" class="mask"></div>
-                                      </div>
                                     </div>
-
                                     <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                                 </div>
                             </draggable>
@@ -194,8 +174,7 @@
                         name: "Default",
                         items: []
                     }
-                ],
-                textEditable: true,
+                ]
             };
         },
         watch: {
@@ -211,16 +190,6 @@
             }
         },
         methods: {
-            onStartDrag() {
-              this.textEditable = false;
-            },
-            onEndDrag() {
-              this.textEditable = true;
-            },
-            gotUpdate(html, element) {
-              element.config.label = html;
-              element.config.value = html;
-            },
             addControl(control) {
                 this.controls.push(control);
             },
@@ -372,9 +341,7 @@
     }
 
     .control-item {
-        .mask-wrapper, .text-wrapper {
-          position: relative;
-        }
+        position: relative;
 
         .delete {
             position: absolute;
@@ -385,24 +352,13 @@
 
         &.selected,
         &:hover {
-            .mask, .text-wrapper {
-              border: 1px solid red;
-            }
-            .text-wrapper {
-              margin: -1px;
+            .mask {
+                border: 1px solid red;
             }
 
             .delete {
                 display: inline-block;
             }
-        }
-
-        .text-wrapper .handle { 
-          cursor: grab;
-          text-align: center;
-          &:hover {
-            background-color: rgba(0, 0, 0, .1);
-          }
         }
 
         .mask {

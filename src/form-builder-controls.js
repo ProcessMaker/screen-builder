@@ -108,6 +108,9 @@ export default [{
         'editor-icon': require('./assets/icons/font-solid.svg'),
         config: {
             label: 'New Text',
+            fontSize: '1em',
+            fontWeight: 'normal',
+            textAlign: 'left',
             name: ''
         },
         inspector: [
@@ -130,7 +133,91 @@ export default [{
                     helper: "The text to display",
                 }
             },
+            {
+                type: "FormMultiselect",
+                field: "fontWeight",
+                config: {
+                    label: "Font Weight",
+                    helper: "The weight of the text",
+                    options: [{
+                        value: 'normal',
+                        content: 'Normal'
+                    },
+                        {
+                            value: 'bold',
+                            content: 'Bold'
+                        }
+                    ]
+                }
+            },
+            {
+                type: "FormInput",
+                field: "color",
+                config: {
+                    label: "Text Color",
+                    helper: "Accepts all HTML colors and hex codes"
+                }
+            },
+            {
+                type: "FormMultiselect",
+                field: "textAlign",
+                config: {
+                    label: "Text Alignment",
+                    helper: "The Alignment of the text",
+                    options: [{
+                        value: 'center',
+                        content: 'Center'
+                    },
+                        {
+                            value: 'left',
+                            content: 'Left'
+                        },
+                        {
+                            value: 'right',
+                            content: 'Right'
+                        },
+                        {
+                            value: 'justify',
+                            content: 'Justify'
+                        },
+                    ]
+                }
+            },
+            {
+                type: "FormMultiselect",
+                field: "fontSize",
+                config: {
+                    label: "Font Size",
+                    helper: "The size of the text in em",
+                    options: [{
+                        value: '0.5em',
+                        content: '0.5'
+                    },
+                        {
+                            value: '1em',
+                            content: '1'
+                        },
+                        {
+                            value: '1.5em',
+                            content: '1.5'
+                        },
+                        {
+                            value: '2em',
+                            content: '2'
+                        },
+                    ]
+                }
+            },
             bgcolorProperty,
+            colorProperty,
+            {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "CSS ID",
+                    helper: "Set an ID for custom css"
+                }
+            },
         ]
     }
 },
