@@ -96,7 +96,7 @@
                 }
                 let newIndex=0,
                     sum = 0;
-                this.existingOptions.forEach(item => {
+                this.existingOptions.forEach((item, index) => {
                     newIndex++;
                     sum += Number(item.content);
                     item.value = newIndex;

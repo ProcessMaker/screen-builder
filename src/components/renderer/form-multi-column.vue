@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <template v-for="(item, key) in items">
-                    <div :class="classColumn(key)" :key="key">
+                    <div :class="classColumn(key)">
                         <div v-for="(element,index) in item" :key="index">
                             <template v-if="element.container">
                                 <component :class="elementCssClass(element)" ref="container" v-model="element.items"
@@ -17,7 +17,7 @@
                                 <component :class="elementCssClass(element)" ref="elements"
                                            v-model="model[element.config.name]" :validationData="transientData"
                                            @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
-                                           :is="element['component']" v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true">
+                                           :is="element['component']" v-show="showElement[element.config.name]">
                                 </component>
                             </template>
                         </div>
