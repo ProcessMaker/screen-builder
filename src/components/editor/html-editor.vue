@@ -1,6 +1,6 @@
 <template>
-  <div class="wrapper" :class="{'is-selected':selected}">
-    <div class="draggable-handle" @click="$emit('inspect')">
+  <div class="wrapper">
+    <div class="draggable-handle" @click.stop="$emit('inspect')">
       <i class="fas fa-arrows-alt"></i>
     </div>
     <form-html-editor @onFocus="onFocus" @onBlur="onBlur" label="Html Editor" v-model="content" validation="required|max:300" />
@@ -20,7 +20,6 @@ export default {
   props: [
     "label",
     "validationData",
-    "selected"
   ],
   computed: {
   },
@@ -59,9 +58,6 @@ export default {
   &:hover {
     border: 1px solid red;
   }
-}
-.is-selected {
-  border: 1px solid red;
 }
 </style>
 

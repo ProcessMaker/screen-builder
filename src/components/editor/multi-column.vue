@@ -5,7 +5,7 @@
                 <template v-for="(item, index) in items">
 
                     <draggable :class="classColumn(index)" v-model="items[index]"
-                               :options="{group: {name: 'controls'}}" :key="index" >
+                               :options="{group: {name: 'controls'}, handle: '.draggable-handle', animation: 150}" :key="index" >
 
                         <div class="control-item" :class="{selectedElement: selected === element}"
                              v-for="(element,row) in item" :key="row">
@@ -17,10 +17,16 @@
                                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
                             </div>
 
-                            <div v-else>
-                                <component :class="elementCssClass(element)" v-bind="element.config"
-                                           :is="element['editor-component']"></component>
-                                <div @click.stop="inspect(element)" class="mask"></div>
+                            <div v-else class="component" :class="{selected: selected === element}">
+                                <component
+                                    :class="elementCssClass(element)"
+                                    @inspect="inspect(element)"
+                                    :selected="selected === element"
+                                    v-bind="element.config"
+                                    @labelUpdated="element.config.label = $event"
+                                    :is="element['editor-component']">
+                                </component>
+                                <div v-if="!element.config.interactive" @click.stop="inspect(element)" class="mask draggable-handle"></div>
                                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
                             </div>
 
@@ -42,6 +48,7 @@
     import FormButton from "../renderer/form-button";
     import FormImage from "../renderer/form-image";
     import HasColorProperty from "../../mixins/HasColorProperty"
+    import HtmlEditor from "../editor/html-editor";
 
     import {
         FormInput,
@@ -68,6 +75,7 @@
             MultiColumn,
             FormDatePicker,
             FormImage,
+            HtmlEditor
         },
         data() {
             return {
@@ -129,14 +137,16 @@
             display: none;
         }
 
-        &.selected,
-        &:hover {
-            .mask {
-                border: 1px solid red;
-            }
+        .component {
+            &.selected,
+            &.component:hover {
+                .mask {
+                    border: 1px solid red;
+                }
 
-            .delete {
-                display: inline-block;
+                .delete {
+                    display: inline-block;
+                }
             }
         }
 
