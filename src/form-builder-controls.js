@@ -209,6 +209,33 @@ export default [
         }
     },
     {
+        builderComponent: FormText,
+        builderBinding: 'FormText',
+        rendererComponent: FormText,
+        rendererBinding: 'FormText',
+        control: {
+            label: 'HTML Text',
+            component: 'FormText',
+            'editor-component': 'HtmlEditor',
+            'editor-icon': require('./assets/icons/font-solid.svg'),
+            config: {
+                label: 'Modify This Text Directly In The Editor',
+                interactive: true,
+            },
+            inspector: [
+                {
+                    type: "FormTextArea",
+                    field: "label",
+                    config: {
+                        rows: 5,
+                        label: "Text Content",
+                        helper: "HTML",
+                    }
+                }
+            ]
+        }
+    },
+    {
         builderComponent: FormInput,
         builderBinding: 'FormInput',
         rendererComponent: FormInput,
