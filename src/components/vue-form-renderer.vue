@@ -48,7 +48,7 @@
                 return this.$deepModel(this.transientData)
             },
             showElement() {
-                let display = {} ;
+                let display = {};
                 let that = this;
                 that.config.forEach(page => {
                     page.items.forEach(item => {
@@ -71,6 +71,7 @@
                     'FormRadioButtonGroup': null,
                     'FormTextArea': '',
                     'FormText': '',
+                    'FormHtmlEditor': '<p></p>',
                     'FormDatePicker': null,
                     'FormRecordList': [],
                 },

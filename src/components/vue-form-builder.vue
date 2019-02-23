@@ -36,15 +36,15 @@
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
+              <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}, handle: '.draggable-handle', animation: 150}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
                   <div v-if="element.container" @click="inspect(element)">
                     <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" :config="element.config" :is="element['editor-component']"></component>
                   </div>
 
                   <div v-else>
-                    <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
-                    <div @click="inspect(element)" class="mask"></div>
+                    <component :class="elementCssClass(element)" @inspect="inspect(element)" :selected="selected === element" v-bind="element.config" @labelUpdated="element.config.label = $event" :is="element['editor-component']"></component>
+                    <div v-if="!element.config.interactive" @click="inspect(element)" class="mask draggable-handle"></div>
                   </div>
                   <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                 </div>
@@ -88,6 +88,7 @@ import HasColorProperty from "../mixins/HasColorProperty"
 
 import FormMultiColumn from "./renderer/form-multi-column";
 import MultiColumn from "./editor/multi-column";
+import HtmlEditor from "./editor/html-editor";
 
 import FormText from "./renderer/form-text";
 import FormButton from "./renderer/form-button";
@@ -128,6 +129,7 @@ export default {
     FormImage,
     ImageUpload,
     ColorSelect,
+    HtmlEditor,
   },
   data() {
     return {
@@ -162,7 +164,7 @@ export default {
     }
   },
   methods: {
-   addControl(control) {
+    addControl(control) {
       this.controls.push(control);
     },
     deleteItem(index) {
