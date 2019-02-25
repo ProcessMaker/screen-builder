@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <template v-for="(item, key) in items">
-                    <div :class="classColumn(key)">
+                    <div :class="classColumn(key)" :key="'div-' + key">
                         <div v-for="(element,index) in item" :key="index">
                             <template v-if="element.container">
                                 <component :class="elementCssClass(element)" ref="container" v-model="element.items"
