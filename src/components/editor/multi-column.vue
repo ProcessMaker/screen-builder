@@ -10,14 +10,14 @@
             :key="'drag-' + index">
             <div
               class="control-item"
-              :class="{selectedElement: selected === element}"
+              :class="{selected: selected === element}"
               v-for="(element,row) in item"
               :key="row"
             >
               <div v-if="element.container" class="draggable-handle">
                 <component
                   :class="elementCssClass(element)"
-                  :selected="selectedElement"
+                  :selected="selected"
                   @inspect="inspect"
                   v-model="element.items"
                   v-bind="element.config"
@@ -31,8 +31,10 @@
                   :class="elementCssClass(element)"
                   v-bind="element.config"
                   :is="element['editor-component']"
+                  @inspect="inspect(element)"
+                  @labelUpdated="element.config.label = $event"
                 ></component>
-                <div v-if="!element.config.interactive" @click="inspect(element)" class="mask highlight draggable-handle"></div>
+                <div v-if="!element.config.interactive" @click.stop="inspect(element)" class="mask highlight draggable-handle"></div>
                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
               </div>
             </div>
@@ -140,43 +142,36 @@ export default {
     display: none;
   }
 
-  &.selected,
-  &:hover {
-    .mask {
-      border: 1px solid red;
+  .control-item {
+    position: relative;
+
+    .delete {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        display: none;
     }
 
-    .control-item {
-        position: relative;
-
-        .delete {
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            display: none;
-        }
-
+    .highlight {
+        border: 1px solid transparent;
+    }
+    
+    &.selected,
+    &:hover {
         .highlight {
-            border: 1px solid transparent;
+            border: 1px solid red;
         }
-        
-        &.selected,
-        &:hover {
-            .highlight {
-                border: 1px solid red;
-            }
-            .delete {
-                display: inline-block;
-            }
+        .delete {
+            display: inline-block;
         }
-        .mask {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            background-color: rgba(0, 0, 0, 0);
-            width: 100%;
-            height: 100%;
-        }
+    }
+    .mask {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        background-color: rgba(0, 0, 0, 0);
+        width: 100%;
+        height: 100%;
     }
   }
 
