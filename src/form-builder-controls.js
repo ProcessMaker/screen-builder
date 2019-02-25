@@ -6,8 +6,8 @@ import FormImage from "./components/renderer/form-image"
 
 import {
     FormInput,
-    FormSelect,
     FormTextArea,
+    FormSelect,
     FormCheckbox,
     FormRadioButtonGroup,
     FormDatePicker,
@@ -114,6 +114,16 @@ export default [{
                 name: ''
             },
             inspector: [{
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
+                    }
+                },
+                {
                     type: "FormTextArea",
                     field: "label",
                     config: {
@@ -123,7 +133,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "fontWeight",
                     config: {
                         label: "Font Weight",
@@ -148,7 +158,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "textAlign",
                     config: {
                         label: "Text Alignment",
@@ -173,7 +183,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "fontSize",
                     config: {
                         label: "Font Size",
@@ -266,7 +276,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "type",
                     config: {
                         label: "Field Type",
@@ -655,7 +665,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "variant",
                     config: {
                         label: "Variant",
@@ -730,7 +740,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "variant",
                     config: {
                         label: "Variant",
@@ -803,19 +813,32 @@ export default [{
                 [],
                 []
             ],
-            config: {},
+            config: {
+                options: [{
+                        value: '1',
+                        content: '6'
+                    },
+                    {
+                        value: '2',
+                        content: '6'
+                    }
+                ],
+            },
             inspector: [{
-                    type: "FormText",
+                    type: "FormInput",
+                    field: "name",
                     config: {
-                        label: "MultiColumn",
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
                     }
                 },
                 {
-                    type: "FormInput",
-                    field: "conditionalHide",
+                    type: "ContainerColumns",
+                    field: "options",
                     config: {
-                        label: "Show If:",
-                        helper: "Hide this control unless the following expression is true"
+                        label: 'Column widths',
                     }
                 },
                 bgcolorProperty,
@@ -888,8 +911,6 @@ export default [{
             ]
 
         },
-
-
     },
     {
         editorComponent: FormImage,
