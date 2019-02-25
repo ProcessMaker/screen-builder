@@ -1,9 +1,9 @@
 <template>
-  <div class="wrapper">
-    <div class="draggable-handle" @click.stop="$emit('inspect')">
+  <div class="highlight form-group" @click.stop="$emit('inspect')">
+    <div class="draggable-handle">
       <i class="fas fa-arrows-alt"></i>
     </div>
-    <form-html-editor @onFocus="onFocus" @onBlur="onBlur" label="Html Editor" v-model="content" validation="required|max:300" />
+    <form-html-editor name="htmlEditor" @onFocus="onFocus" @onBlur="onBlur" label="Html Editor" v-model="content" />
   </div>
 </template>
 
@@ -19,7 +19,6 @@ export default {
   components: { FormHtmlEditor },
   props: [
     "label",
-    "validationData",
   ],
   computed: {
   },
@@ -53,12 +52,6 @@ export default {
   }
 }
 
-.wrapper {
-  border: 1px solid transparent;
-  &:hover {
-    border: 1px solid red;
-  }
-}
 </style>
 
 

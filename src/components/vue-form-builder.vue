@@ -44,7 +44,7 @@
 
                   <div v-else>
                     <component :class="elementCssClass(element)" @inspect="inspect(element)" :selected="selected === element" v-bind="element.config" @labelUpdated="element.config.label = $event" :is="element['editor-component']"></component>
-                    <div v-if="!element.config.interactive" @click="inspect(element)" class="mask draggable-handle"></div>
+                    <div v-if="!element.config.interactive" @click="inspect(element)" class="mask highlight draggable-handle"></div>
                   </div>
                   <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                 </div>
@@ -319,9 +319,14 @@ export default {
     display: none;
   }
 
+
+  .highlight {
+      border: 1px solid transparent;
+  }
+
   &.selected,
   &:hover {
-    .mask {
+    .highlight {
       border: 1px solid red;
     }
     .delete {
