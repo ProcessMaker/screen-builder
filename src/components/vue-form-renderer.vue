@@ -20,7 +20,7 @@
         ></component>
       </div>
 
-      <div v-else>
+      <div v-else :id="element.config.name ? element.config.name : undefined">
         <component
           :class="elementCssClass(element)"
           ref="elements"
