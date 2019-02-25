@@ -92,7 +92,7 @@
 
     <div class="d-flex flex-row flex-column">
       <div class="card-header">Inspector</div>
-      <div class="card-body">
+      <div class="card-body mb-3">
         <component
           v-for="(item, index) in inspection.inspector"
           :formConfig="config"
