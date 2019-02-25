@@ -6,8 +6,8 @@ import FormImage from "./components/renderer/form-image"
 
 import {
     FormInput,
-    FormSelect,
     FormTextArea,
+    FormSelect,
     FormCheckbox,
     FormRadioButtonGroup,
     FormDatePicker,
@@ -133,7 +133,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "fontWeight",
                     config: {
                         label: "Font Weight",
@@ -158,7 +158,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "textAlign",
                     config: {
                         label: "Text Alignment",
@@ -183,7 +183,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "fontSize",
                     config: {
                         label: "Font Size",
@@ -249,7 +249,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "type",
                     config: {
                         label: "Field Type",
@@ -638,7 +638,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "variant",
                     config: {
                         label: "Variant",
@@ -713,7 +713,7 @@ export default [{
                     }
                 },
                 {
-                    type: "FormSelect",
+                    type: "FormMultiselect",
                     field: "variant",
                     config: {
                         label: "Variant",
@@ -884,8 +884,6 @@ export default [{
             ]
 
         },
-
-
     },
     {
         editorComponent: FormImage,
