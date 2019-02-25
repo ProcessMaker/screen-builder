@@ -11,7 +11,10 @@
     cancel-variant="btn btn-outline-secondary"
     ok-variant="btn btn-secondary ml-2"
   >
-    <textarea v-model="innerValue"></textarea>
+    <p>You can use field names as css ID selectors (prefixed by a "#")</p>
+    <div class="editor">
+      <monaco-editor :options="monacoOptions" class="monaco" v-model="innerValue"/>
+    </div>
 
     <b-alert :show="cssErrors != ''" variant="danger">
       <pre>{{ cssErrors }}</pre>
@@ -22,18 +25,25 @@
 </template>
 
 <script>
+import MonacoEditor from "vue-monaco";
 export default {
   props: ["value", "cssErrors"],
+  components: { MonacoEditor },
   data() {
     return {
-      saveValue: '',
-      innerValue: '',
-    }
+      saveValue: "",
+      innerValue: "",
+      monacoOptions: {
+        language: "css",
+        automaticLayout: true,
+        minimap: { enabled: false }
+      }
+    };
   },
   watch: {
     innerValue(value) {
-      this.$emit('input', value);
-    },
+      this.$emit("input", value);
+    }
   },
   methods: {
     show() {
@@ -46,7 +56,7 @@ export default {
     },
     hide() {
       this.innerValue = this.saveValue;
-      this.$emit('input', this.innerValue);
+      this.$emit("input", this.innerValue);
     },
     save() {
       this.saveValue = this.innerValue;
@@ -57,9 +67,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-textarea {
+.editor {
   width: 100%;
   height: 300px;
-  font-family: monospace;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
+
+  .monaco {
+    height: 97%;
+    margin: 3px;
+  }
 }
 </style>
