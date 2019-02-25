@@ -27,7 +27,7 @@
                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
               </div>
 
-              <div v-else>
+              <div v-else :id="element.config.name ? element.config.name : undefined">
                 <component
                   :class="elementCssClass(element)"
                   v-bind="element.config"
