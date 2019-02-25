@@ -7,17 +7,17 @@
                     <draggable :class="classColumn(index)" v-model="items[index]"
                                :options="{group: {name: 'controls'}, handle: '.draggable-handle', animation: 150}" :key="index" >
 
-                        <div class="control-item" :class="{selectedElement: selected === element}"
+                        <div class="control-item" :class="{selected: selected === element}"
                              v-for="(element,row) in item" :key="row">
 
                             <div v-if="element.container">
-                                <component :class="elementCssClass(element)" :selected="selectedElement"
+                                <component :class="elementCssClass(element)" :selected="selected"
                                            @inspect="inspect" v-model="element.items"
                                            v-bind="element.config" :is="element['editor-component']"></component>
                                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
                             </div>
 
-                            <div v-else class="component" :class="{selected: selected === element}">
+                            <div>
                                 <component
                                     :class="elementCssClass(element)"
                                     @inspect="inspect(element)"
@@ -26,7 +26,7 @@
                                     @labelUpdated="element.config.label = $event"
                                     :is="element['editor-component']">
                                 </component>
-                                <div v-if="!element.config.interactive" @click.stop="inspect(element)" class="mask draggable-handle"></div>
+                                <div v-if="!element.config.interactive" @click.stop="inspect(element)" class="mask highlight draggable-handle"></div>
                                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
                             </div>
 
@@ -137,19 +137,19 @@
             display: none;
         }
 
-        .component {
-            &.selected,
-            &.component:hover {
-                .mask {
-                    border: 1px solid red;
-                }
-
-                .delete {
-                    display: inline-block;
-                }
+        .highlight {
+            border: 1px solid transparent;
+        }
+        
+        &.selected,
+        &:hover {
+            .highlight {
+                border: 1px solid red;
+            }
+            .delete {
+                display: inline-block;
             }
         }
-
         .mask {
             position: absolute;
             top: 0px;
