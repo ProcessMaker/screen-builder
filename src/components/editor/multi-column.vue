@@ -5,7 +5,8 @@
                 <template v-for="(item, index) in items">
 
                     <draggable :class="classColumn(index)" v-model="items[index]"
-                               :options="{group: {name: 'controls'}}" >
+                               :options="{group: {name: 'controls'}}"
+                               :key="'drag-' + index">
 
                         <div class="control-item" :class="{selectedElement: selected === element}"
                              v-for="(element,row) in item" :key="row">
