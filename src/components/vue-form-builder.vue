@@ -269,7 +269,6 @@ export default {
     min-width: 240px;
     width: 240px;
     max-width: 240px;
-    border-right: 1px solid #e9edf1;
 
     #controls {
       display: flex;
