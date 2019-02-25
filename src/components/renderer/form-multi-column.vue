@@ -1,123 +1,130 @@
 <template>
-    <div class="form-group">
-        <div class="container-fluid">
-            <div class="row">
-                <template v-for="(item, key) in items">
-                    <div :class="classColumn(key)" :key="'div-' + key">
-                        <div v-for="(element,index) in item" :key="index">
-                            <template v-if="element.container">
-                                <component :class="elementCssClass(element)" ref="container" v-model="element.items"
-                                           :transientData="transientData" @submit="submit"
-                                           @pageNavigate="pageNavigate" v-bind="element.config"
-                                           :is="element['component']">
-                                </component>
-                            </template>
+  <div class="form-group">
+    <div class="container-fluid">
+      <div class="row">
+        <template v-for="(item, key) in items">
+          <div :class="classColumn(key)" :key="key">
+            <div v-for="(element,index) in item" :key="index">
+              <template v-if="element.container">
+                <component
+                  :class="elementCssClass(element)"
+                  ref="container"
+                  v-model="element.items"
+                  :transientData="transientData"
+                  @submit="submit"
+                  @pageNavigate="pageNavigate"
+                  v-bind="element.config"
+                  :is="element['component']"
+                ></component>
+              </template>
 
-                            <template v-else>
-                                <component :class="elementCssClass(element)" ref="elements"
-                                           v-model="model[element.config.name]" :validationData="transientData"
-                                           @submit="submit" @pageNavigate="pageNavigate" v-bind="element.config"
-                                           :is="element['component']" v-show="showElement[element.config.name]">
-                                </component>
-                            </template>
-                        </div>
-                    </div>
-                </template>
+              <template v-else>
+                <component
+                  :class="elementCssClass(element)"
+                  ref="elements"
+                  v-model="model[element.config.name]"
+                  :validationData="transientData"
+                  @submit="submit"
+                  @pageNavigate="pageNavigate"
+                  v-bind="element.config"
+                  :is="element['component']"
+                  v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
+                ></component>
+              </template>
             </div>
-        </div>
+          </div>
+        </template>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-    import draggable from "vuedraggable";
+import draggable from "vuedraggable";
 
-    import FormMultiColumn from "./form-multi-column"
-    import HasColorProperty from "../../mixins/HasColorProperty"
+import FormMultiColumn from "./form-multi-column";
+import HasColorProperty from "../../mixins/HasColorProperty";
 
-    import FormText from "../renderer/form-text";
-    import FormButton from "../renderer/form-button";
-    import FormImage from "../renderer/form-image";
+import FormText from "../renderer/form-text";
+import FormButton from "../renderer/form-button";
+import FormImage from "../renderer/form-image";
 
-    import {
-        FormInput,
-        FormSelect,
-        FormTextArea,
-        FormCheckbox,
-        FormRadioButtonGroup,
-        FormDatePicker
-    } from "@processmaker/vue-form-elements/src/components";
+import {
+  FormInput,
+  FormSelect,
+  FormTextArea,
+  FormCheckbox,
+  FormRadioButtonGroup,
+  FormDatePicker
+} from "@processmaker/vue-form-elements/src/components";
 
-    export default {
-        name: 'FormMultiColumn',
-        mixins: [HasColorProperty],
-        props: ["value", "selected", "name", "config", "transientData"],
-        components: {
-            draggable,
-            FormInput,
-            FormSelect,
-            FormTextArea,
-            FormCheckbox,
-            FormRadioButtonGroup,
-            FormText,
-            FormButton,
-            FormMultiColumn,
-            FormDatePicker,
-            FormImage,
-        },
-        data() {
-            return {
-                items: []
-            };
-        },
-        computed: {
-            model() {
-                return this.$parent.model;
-            },
-            showElement() {
-                return this.$parent.showElement;
-            }
-        },
-        watch: {
-            value: {
-                handler: function () {
-                    this.items = this.value;
-                },
-                immediate: true
-            },
-            items() {
-                this.$emit("input", this.items);
-            }
-        },
-        methods: {
-            classColumn(index) {
-                let column = 1;
-                if (this.items.length < this.config.options.length) {
-                    this.items.push([]);
-                }
-                if (this.config.options[index] && this.config.options[index].content) {
-                    column = this.config.options[index].content;
-                }
-                return 'col-sm-' + column + ' column-draggable';
-            },
-            inspect(element) {
-                this.$emit('inspect', element)
-            },
-            submit() {
-                // Just bubble up
-                this.$emit('submit')
-            },
-            pageNavigate(page) {
-                // Just bubble up
-                this.$emit('pageNavigate', page)
-
-            }
-        }
+export default {
+  name: "FormMultiColumn",
+  mixins: [HasColorProperty],
+  props: ["value", "selected", "name", "config", "transientData"],
+  components: {
+    draggable,
+    FormInput,
+    FormSelect,
+    FormTextArea,
+    FormCheckbox,
+    FormRadioButtonGroup,
+    FormText,
+    FormButton,
+    FormMultiColumn,
+    FormDatePicker,
+    FormImage
+  },
+  data() {
+    return {
+      items: []
     };
+  },
+  computed: {
+    model() {
+      return this.$parent.model;
+    },
+    showElement() {
+      return this.$parent.showElement;
+    }
+  },
+  watch: {
+    value: {
+      handler: function() {
+        this.items = this.value;
+      },
+      immediate: true
+    },
+    items() {
+      this.$emit("input", this.items);
+    }
+  },
+  methods: {
+    classColumn(index) {
+      let column = 1;
+      if (this.items.length < this.config.options.length) {
+        this.items.push([]);
+      }
+      if (this.config.options[index] && this.config.options[index].content) {
+        column = this.config.options[index].content;
+      }
+      return "col-sm-" + column + " column-draggable";
+    },
+    inspect(element) {
+      this.$emit("inspect", element);
+    },
+    submit() {
+      // Just bubble up
+      this.$emit("submit");
+    },
+    pageNavigate(page) {
+      // Just bubble up
+      this.$emit("pageNavigate", page);
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-
-
 </style>
-
 
