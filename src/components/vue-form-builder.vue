@@ -92,7 +92,7 @@
 
     <div class="d-flex flex-row flex-column">
       <div class="card-header">Inspector</div>
-      <div class="card-body mb-3">
+      <div class="card-body mb-3" id="inspector">
         <component
           v-for="(item, index) in inspection.inspector"
           :formConfig="config"
@@ -345,6 +345,9 @@ export default {
       }
     }
   }
+}
+#inspector {
+  border-left: 1px solid #e9edf1;
 }
 
 .editor-draggable {
