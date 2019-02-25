@@ -1,28 +1,43 @@
 <template>
   <div class="dynaform-builder">
-
     <div class="palette-container">
-      <div class="card-header">
-        Controls
-      </div>
-      <draggable id="controls" v-model="controls" :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}" :clone="cloneControl">
+      <div class="card-header">Controls</div>
+      <draggable
+        id="controls"
+        v-model="controls"
+        :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+        :clone="cloneControl"
+      >
         <div class="control" v-for="(element, index) in controls" :key="index">
           <div class="icon">
-            <img v-if="element['editor-icon']" :src="element['editor-icon']" />
+            <img v-if="element['editor-icon']" :src="element['editor-icon']">
             <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
           </div>
-          <div class="label">
-            {{element.label}}
-          </div>
+          <div class="label">{{element.label}}</div>
         </div>
       </draggable>
     </div>
 
     <div class="form-canvas-container">
-      <draggable :element="'ul'" class="nav nav-tabs" v-model="config" :options="{draggable:'.page-item'}" @change="handlePageSort">
+      <draggable
+        :element="'ul'"
+        class="nav nav-tabs"
+        v-model="config"
+        :options="{draggable:'.page-item'}"
+        @change="handlePageSort"
+      >
         <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
-          <a class="nav-link" href="#" @click="currentPage = page" :class="{active: currentPage == page}">{{data.name}}
-            <button class="btn btn-sm btn-primary" @click="openEditPageModal(page)">Edit</button>
+          <a
+            class="nav-link"
+            href="#"
+            @click="currentPage = page"
+            :class="{active: currentPage == page}"
+          >
+            {{data.name}}
+            <button
+              class="btn btn-sm btn-primary"
+              @click="openEditPageModal(page)"
+            >Edit</button>
             <button class="btn btn-sm btn-danger" @click="deletePage(page)">x</button>
           </a>
         </li>
@@ -36,14 +51,34 @@
         <div class="container">
           <div class="row">
             <div class="col-sm">
-              <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}}">
-                <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
+              <draggable
+                class="editor-draggable"
+                v-model="config[currentPage]['items']"
+                :options="{group: {name: 'controls'}}"
+              >
+                <div
+                  class="control-item"
+                  :class="{selected: selected === element}"
+                  v-for="(element,index) in config[currentPage]['items']"
+                  :key="index"
+                >
                   <div v-if="element.container" @click="inspect(element)">
-                    <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" :config="element.config" :is="element['editor-component']"></component>
+                    <component
+                      :class="elementCssClass(element)"
+                      @inspect="inspect"
+                      :selected="selected"
+                      v-model="element.items"
+                      :config="element.config"
+                      :is="element['editor-component']"
+                    ></component>
                   </div>
 
                   <div v-else>
-                    <component :class="elementCssClass(element)" v-bind="element.config" :is="element['editor-component']"></component>
+                    <component
+                      :class="elementCssClass(element)"
+                      v-bind="element.config"
+                      :is="element['editor-component']"
+                    ></component>
                     <div @click="inspect(element)" class="mask"></div>
                   </div>
                   <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
@@ -56,11 +91,16 @@
     </div>
 
     <div class="d-flex flex-row flex-column">
-      <div class="card-header">
-        Inspector
-      </div>
+      <div class="card-header">Inspector</div>
       <div class="card-body">
-        <component v-for="(item, index) in inspection.inspector" :formConfig="config" :key="index" :is="item.type" v-bind="item.config" v-model="inspection.config[item.field]" />
+        <component
+          v-for="(item, index) in inspection.inspector"
+          :formConfig="config"
+          :key="index"
+          :is="item.type"
+          v-bind="item.config"
+          v-model="inspection.config[item.field]"
+        />
       </div>
     </div>
 
@@ -71,7 +111,6 @@
     <b-modal ref="editPageModal" @ok="editPage" title="Edit Page Title">
       <form-input v-model="editPageName" label="Page Name" helper="The new name of the page"></form-input>
     </b-modal>
-
   </div>
 </template>
 
@@ -82,9 +121,9 @@ import draggable from "vuedraggable";
 import OptionsList from "./inspector/options-list";
 import ContainerColumns from "./inspector/container-columns";
 import PageSelect from "./inspector/page-select";
-import ImageUpload from './inspector/image-upload'
-import ColorSelect from "./inspector/color-select"
-import HasColorProperty from "../mixins/HasColorProperty"
+import ImageUpload from "./inspector/image-upload";
+import ColorSelect from "./inspector/color-select";
+import HasColorProperty from "../mixins/HasColorProperty";
 
 import FormMultiColumn from "./renderer/form-multi-column";
 import MultiColumn from "./editor/multi-column";
@@ -127,7 +166,7 @@ export default {
     FormRecordList,
     FormImage,
     ImageUpload,
-    ColorSelect,
+    ColorSelect
   },
   data() {
     return {
@@ -162,7 +201,7 @@ export default {
     }
   },
   methods: {
-   addControl(control) {
+    addControl(control) {
       this.controls.push(control);
     },
     deleteItem(index) {
@@ -265,7 +304,7 @@ export default {
     }
   }
 
-  .dynaform-builder .d-flex{
+  .dynaform-builder .d-flex {
     border-left: 1px solid #e9edf1;
     overflow: hidden;
   }
@@ -337,5 +376,4 @@ export default {
   }
 }
 </style>
-
 
