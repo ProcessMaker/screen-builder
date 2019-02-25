@@ -38,7 +38,7 @@
             <div class="col-sm">
               <draggable class="editor-draggable" v-model="config[currentPage]['items']" :options="{group: {name: 'controls'}, handle: '.draggable-handle', animation: 150}">
                 <div class="control-item" :class="{selected: selected === element}" v-for="(element,index) in config[currentPage]['items']" :key="index">
-                  <div v-if="element.container" @click="inspect(element)">
+                  <div v-if="element.container" @click="inspect(element)" class="draggable-handle">
                     <component :class="elementCssClass(element)" @inspect="inspect" :selected="selected" v-model="element.items" :config="element.config" :is="element['editor-component']"></component>
                   </div>
 

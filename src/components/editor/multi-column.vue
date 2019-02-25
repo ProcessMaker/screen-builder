@@ -11,7 +11,7 @@
                              v-for="(element,row) in item" :key="row">
 
                             <div v-if="element.container">
-                                <component :class="elementCssClass(element)" :selected="selected"
+                                <component :class="elementCssClass(element)" :selected="selected" class="draggable-handle"
                                            @inspect="inspect" v-model="element.items"
                                            v-bind="element.config" :is="element['editor-component']"></component>
                                 <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
