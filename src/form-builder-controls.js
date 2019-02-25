@@ -14,92 +14,89 @@ import {
 } from "@processmaker/vue-form-elements/src/components";
 
 const bgcolorProperty = {
-  type: "ColorSelect",
-  field: "bgcolor",
-  config: {
-    label: "Background color",
-    helper: "Set the element's background color",
-    options: [
-      {
-        value: 'alert alert-primary',
-        content: 'primary'
-      },
-      {
-        value: 'alert alert-secondary',
-        content: 'secondary'
-      },
-      {
-        value: 'alert alert-success',
-        content: 'success'
-      },
-      {
-        value: 'alert alert-danger',
-        content: 'danger'
-      },
-      {
-        value: 'alert alert-warning',
-        content: 'warning'
-      },
-      {
-        value: 'alert alert-info',
-        content: 'info'
-      },
-      {
-        value: 'alert alert-light',
-        content: 'light'
-      },
-      {
-        value: 'alert alert-dark',
-        content: 'dark'
-      },
-    ]
-  }
+    type: "ColorSelect",
+    field: "bgcolor",
+    config: {
+        label: "Background color",
+        helper: "Set the element's background color",
+        options: [{
+                value: 'alert alert-primary',
+                content: 'primary'
+            },
+            {
+                value: 'alert alert-secondary',
+                content: 'secondary'
+            },
+            {
+                value: 'alert alert-success',
+                content: 'success'
+            },
+            {
+                value: 'alert alert-danger',
+                content: 'danger'
+            },
+            {
+                value: 'alert alert-warning',
+                content: 'warning'
+            },
+            {
+                value: 'alert alert-info',
+                content: 'info'
+            },
+            {
+                value: 'alert alert-light',
+                content: 'light'
+            },
+            {
+                value: 'alert alert-dark',
+                content: 'dark'
+            },
+        ]
+    }
 };
 const colorProperty = {
-  type: "ColorSelect",
-  field: "color",
-  config: {
-    label: "Text color",
-    helper: "Set the element's text color",
-    options: [
-      {
-        value: 'text-primary',
-        content: 'primary'
-      },
-      {
-        value: 'text-secondary',
-        content: 'secondary'
-      },
-      {
-        value: 'text-success',
-        content: 'success'
-      },
-      {
-        value: 'text-danger',
-        content: 'danger'
-      },
-      {
-        value: 'text-warning',
-        content: 'warning'
-      },
-      {
-        value: 'text-info',
-        content: 'info'
-      },
-      {
-        value: 'text-light',
-        content: 'light'
-      },
-      {
-        value: 'text-dark',
-        content: 'dark'
-      },
-    ]
-  }
+    type: "ColorSelect",
+    field: "color",
+    config: {
+        label: "Text color",
+        helper: "Set the element's text color",
+        options: [{
+                value: 'text-primary',
+                content: 'primary'
+            },
+            {
+                value: 'text-secondary',
+                content: 'secondary'
+            },
+            {
+                value: 'text-success',
+                content: 'success'
+            },
+            {
+                value: 'text-danger',
+                content: 'danger'
+            },
+            {
+                value: 'text-warning',
+                content: 'warning'
+            },
+            {
+                value: 'text-info',
+                content: 'info'
+            },
+            {
+                value: 'text-light',
+                content: 'light'
+            },
+            {
+                value: 'text-dark',
+                content: 'dark'
+            },
+        ]
+    }
 };
 
-export default [
-    {
+export default [{
         builderComponent: FormText,
         builderBinding: 'FormText',
         rendererComponent: FormText,
@@ -113,10 +110,10 @@ export default [
                 label: 'New Text',
                 fontSize: '1em',
                 fontWeight: 'normal',
-                textAlign: 'left'
+                textAlign: 'left',
+                name: ''
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormTextArea",
                     field: "label",
                     config: {
@@ -131,8 +128,7 @@ export default [
                     config: {
                         label: "Font Weight",
                         helper: "The weight of the text",
-                        options: [
-                            {
+                        options: [{
                                 value: 'normal',
                                 content: 'Normal'
                             },
@@ -157,8 +153,7 @@ export default [
                     config: {
                         label: "Text Alignment",
                         helper: "The Alignment of the text",
-                        options: [
-                            {
+                        options: [{
                                 value: 'center',
                                 content: 'Center'
                             },
@@ -183,8 +178,7 @@ export default [
                     config: {
                         label: "Font Size",
                         helper: "The size of the text in em",
-                        options: [
-                            {
+                        options: [{
                                 value: '0.5em',
                                 content: '0.5'
                             },
@@ -205,6 +199,14 @@ export default [
                 },
                 bgcolorProperty,
                 colorProperty,
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "CSS ID",
+                        helper: "Set an ID for custom css"
+                    }
+                },
             ]
         }
     },
@@ -253,8 +255,7 @@ export default [
                 helper: null,
                 type: 'text'
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -271,8 +272,7 @@ export default [
                         label: "Field Type",
                         name: 'Field Type',
                         helper: "The type for this field",
-                        options: [
-                            {
+                        options: [{
                                 value: 'text',
                                 content: 'Text'
                             },
@@ -334,8 +334,7 @@ export default [
                 label: "New Select",
                 placeholder: "",
                 validation: '',
-                options: [
-                    {
+                options: [{
                         value: 'new',
                         content: 'New Option'
                     }
@@ -343,8 +342,7 @@ export default [
                 ],
                 helper: null,
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -401,15 +399,13 @@ export default [
             'editor-icon': require('./assets/icons/list-ul-solid.svg'),
             config: {
                 label: "New Radio Button Group",
-                options: [
-                    {
-                        value: 'new',
-                        content: 'New Option'
-                    }],
+                options: [{
+                    value: 'new',
+                    content: 'New Option'
+                }],
                 helper: null,
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -463,8 +459,7 @@ export default [
                 checked: false,
                 validation: '',
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -517,8 +512,7 @@ export default [
                 helper: null,
                 rows: 2
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -588,8 +582,7 @@ export default [
                 type: 'date',
                 name: ''
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -637,8 +630,7 @@ export default [
                 name: null,
                 value: null
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "label",
                     config: {
@@ -668,8 +660,7 @@ export default [
                     config: {
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
-                        options: [
-                            {
+                        options: [{
                                 value: 'primary',
                                 content: 'Primary'
                             },
@@ -730,8 +721,7 @@ export default [
                 eventData: 0
 
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "label",
                     config: {
@@ -745,8 +735,7 @@ export default [
                     config: {
                         label: "Variant",
                         helper: "The variant determines the appearance of the button",
-                        options: [
-                            {
+                        options: [{
                                 value: 'primary',
                                 content: 'Primary'
                             },
@@ -810,25 +799,23 @@ export default [
             'editor-icon': require('./assets/icons/columns-solid.svg'),
             container: true,
             // Default items container
-            items: [[],[]],
-            config: {
-                options: [
-                    {
-                        value: '1',
-                        content: '6'
-                    },
-                    {
-                        value: '2',
-                        content: '6'
-                    }
-                ],
-            },
-            inspector: [
-                {
-                    type: "ContainerColumns",
-                    field: "options",
+            items: [
+                [],
+                []
+            ],
+            config: {},
+            inspector: [{
+                    type: "FormText",
                     config: {
-                        label: 'Column widths',
+                        label: "MultiColumn",
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "conditionalHide",
+                    config: {
+                        label: "Show If:",
+                        helper: "Hide this control unless the following expression is true"
                     }
                 },
                 bgcolorProperty,
@@ -853,8 +840,7 @@ export default [
                 fields: [],
                 form: ''
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "name",
                     config: {
@@ -922,8 +908,7 @@ export default [
                 name: null,
                 value: null
             },
-            inspector: [
-                {
+            inspector: [{
                     type: "FormInput",
                     field: "id",
                     config: {
