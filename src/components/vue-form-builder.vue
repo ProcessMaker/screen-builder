@@ -78,8 +78,10 @@
                       :class="elementCssClass(element)"
                       v-bind="element.config"
                       :is="element['editor-component']"
+                      @inspect="inspect(element)"
+                      @labelUpdated="element.config.label = $event"
                     ></component>
-                    <div v-if="!element.config.interactive" @click="inspect(element)" class="mask highlight draggable-handle"></div>
+                    <div v-if="!element.config.interactive" @click.stop="inspect(element)" class="mask highlight draggable-handle"></div>
                   </div>
                   <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
                 </div>
