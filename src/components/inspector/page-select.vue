@@ -22,15 +22,19 @@ export default {
   watch: {
     value: {
       handler: function() {
-        if (this.target != this.value) {
-          this.target = this.value;
+        const value = this.target ? this.target.value : '';
+        if (value !== this.value) {
+          this.target = this.options.find(item => {
+            return item.value === this.value;
+          });
         }
       },
       immediate: true
     },
     target: function() {
-      if (this.value != this.target) {
-        this.$emit("input", this.target);
+      const value = this.target ? this.target.value : '';
+      if (this.value !== value) {
+        this.$emit("input", value);
       }
     }
   },
