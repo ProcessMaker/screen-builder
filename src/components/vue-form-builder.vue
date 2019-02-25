@@ -118,6 +118,7 @@
 import Vue from "vue";
 import draggable from "vuedraggable";
 
+import FormMultiselect from "./inspector/form-multiselect";
 import OptionsList from "./inspector/options-list";
 import ContainerColumns from "./inspector/container-columns";
 import PageSelect from "./inspector/page-select";
@@ -152,6 +153,7 @@ export default {
     draggable,
     FormInput,
     FormSelect,
+    FormMultiselect,
     OptionsList,
     ContainerColumns,
     FormCheckbox,
@@ -283,11 +285,14 @@ export default {
         .icon {
           width: 42px;
           margin-right: 8px;
+
           img {
             max-width: 42px;
             max-height: 21px;
           }
+
           text-align: right;
+
           i {
             font-size: 24px;
             margin-right: 8px;
@@ -329,9 +334,11 @@ export default {
     background-color: #f7f9fa;
     flex-grow: 1;
     padding: 48px;
+
     .icon {
       width: 42px;
       margin-right: 8px;
+
       img {
         max-width: 42px;
         max-height: 21px;
@@ -361,6 +368,7 @@ export default {
     .mask {
       border: 1px solid red;
     }
+
     .delete {
       display: inline-block;
     }
@@ -376,4 +384,3 @@ export default {
   }
 }
 </style>
-
