@@ -1,7 +1,7 @@
 <template>
-    <div class="form-group">
-        <div :style="styles" v-html="rendered"></div>
-    </div>
+  <div class="form-group">
+    <div :style="styles" v-html="rendered"></div>
+  </div>
 </template>
 
 <script>
@@ -14,7 +14,8 @@ export default {
     "fontWeight",
     "textAlign",
     "validationData",
-    "color"
+    "color",
+    "name"
   ],
   computed: {
     styles() {
@@ -38,5 +39,4 @@ export default {
 
 <style lang="scss" scoped>
 </style>
-
 
