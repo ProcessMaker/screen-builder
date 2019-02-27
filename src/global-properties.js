@@ -6,8 +6,8 @@ export default [
                     type: "FormInput",
                     field: "conditionalHide",
                     config: {
-                        label: "Show If:",
-                        helper: "Hide this control unless the following expression is true"
+                        label: "Show If: => Visibility Rule",
+                        helper: "This control is hidden until this expression is true"
                     }
                 }
             ]
