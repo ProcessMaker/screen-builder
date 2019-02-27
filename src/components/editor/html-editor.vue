@@ -3,7 +3,7 @@
     <div class="draggable-handle">
       <i class="fas fa-arrows-alt"></i>
     </div>
-    <form-html-editor name="htmlEditor" @onFocus="onFocus" @onBlur="onBlur" label="Html Editor" v-model="content" />
+    <form-html-editor name="htmlEditor" @onFocus="$emit('inspect')" label="Html Editor" v-model="content" />
   </div>
 </template>
 
@@ -32,13 +32,6 @@ export default {
   },
   mounted() {
     this.content = this.label;
-  },
-  methods: {
-    onFocus() {
-      this.$emit('inspect');
-    },
-    onBlur() {
-    }
   }
 };
 </script>
