@@ -29,7 +29,7 @@
           <span v-if="previewInputValid">Valid JSON Data Object</span>
           <span v-else>Invalid JSON Data Object</span>
         </div>
-        <form-text-area rows="20" v-model="previewInput"></form-text-area>
+        <form-text-area rows="18" v-model="previewInput"></form-text-area>
 
       </div>
       <div id="renderer-container">
