@@ -269,7 +269,7 @@
                 padding: 4px;
 
                 .control {
-                    margin: 0 8px;
+                    margin: 8px;
                     width: 100%;
                     height: 32px;
                     display: flex;
