@@ -19,6 +19,7 @@
     <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors" />
     <vue-form-builder ref="builder" @change="updateConfig" :class="{invisible: mode != 'editor'}" />
+
     <div id="preview" :class="{invisible: mode != 'preview'}">
       <div id="data-input">
         <div class="card-header">
@@ -111,7 +112,7 @@ export default {
         // Copy data over
         this.previewData = JSON.parse(this.previewInput)
       } else {
-        this.previewData = null
+        this.previewData = {}
       }
     }
   },
@@ -198,6 +199,8 @@ nav {
   #renderer-container {
     flex-grow: 1;
     padding-top: 32px;
+    height: 100%;
+    overflow-y: auto;
   }
 
   #data-input {
