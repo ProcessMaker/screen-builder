@@ -915,7 +915,7 @@ export default [{
                     field: "name",
                     config: {
                         label: "Field Name",
-                        helper: "The name of the button"
+                        helper: "The name of the immage"
                     }
                 },
                 {
