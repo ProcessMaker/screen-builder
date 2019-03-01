@@ -38,12 +38,16 @@
           ["btn-" + variant]: true
         };
       },
+      owner() {
+        return this.$parent.inspection.config;
+      },
     },
     methods: {
       editSave(fileObject) {
         var reader = new FileReader();
         reader.readAsDataURL(fileObject.file);
         reader.addEventListener("load",  () => {
+          this.owner.name = fileObject.file.name;
           this.$emit('input', reader.result);
         }, false);
       },
