@@ -911,6 +911,14 @@ export default [{
                     }
                 },
                 {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        helper: "The name of the button"
+                    }
+                },
+                {
                     type: 'ImageUpload',
                     field: "image",
                     config: {
