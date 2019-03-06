@@ -1,30 +1,32 @@
 <template>
-    <div class="dynaform-builder">
-        <div class="palette-container">
+    <div class="d-flex min-vh-100 mb-3">
+
+        <div class="w-25 border overflow-auto">
             <div class="card-header">Controls</div>
-            <draggable
-                    id="controls"
-                    v-model="controls"
-                    :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
-                    :clone="cloneControl"
-                    class="mb-3">
-                <div class="control" v-for="(element, index) in controls" :key="index">
-                    <div class="icon">
-                        <img v-if="element['editor-icon']" :src="element['editor-icon']">
-                        <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
+            <div class="card-body flex-wrap mb-5">
+                <draggable id="controls"
+                           v-model="controls"
+                           :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+                           :clone="cloneControl">
+                    <div class="d-flex p-2 align-middle"
+                         v-for="(element, index) in controls"
+                         :key="index">
+                        <div class="control-icon">
+                            <img v-if="element['editor-icon']" :src="element['editor-icon']">
+                            <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
+                        </div>
+                        <div class="font-weight-normal text-capitalize">{{element.label}}</div>
                     </div>
-                    <div class="label">{{element.label}}</div>
-                </div>
-            </draggable>
+                </draggable>
+            </div>
         </div>
 
-        <div class="form-canvas-container">
-            <draggable
-                    :element="'ul'"
-                    class="nav nav-tabs"
-                    v-model="config"
-                    :options="{draggable:'.page-item'}"
-                    @change="handlePageSort">
+        <div class="w-75 flex-grow-1 overflow-auto">
+            <draggable :element="'ul'"
+                       class="nav nav-tabs"
+                       v-model="config"
+                       :options="{draggable:'.page-item'}"
+                       @change="handlePageSort">
                 <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
                     <a class="nav-link"
                        href="#"
@@ -32,10 +34,10 @@
                        :class="{active: currentPage == page}">
                         {{data.name}}
                         <button class="btn btn-sm btn-primary mr-1"
-                                @click="openEditPageModal(page)"
-                        >Edit
+                                @click="openEditPageModal(page)">
+                            Edit
                         </button>
-                        <button class="btn btn-sm btn-danger" @click="deletePage(page)">x</button>
+                        <button class="btn btn-sm btn-danger mr-1" @click="deletePage(page)">x</button>
                     </a>
                 </li>
                 <li slot="footer" class="nav-item">
@@ -44,55 +46,53 @@
                     </a>
                 </li>
             </draggable>
-            <div class="editor-canvas">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm">
-                            <draggable class="editor-draggable"
-                                       v-model="config[currentPage]['items']"
-                                       :options="{group: {name: 'controls'}}">
-                                <div class="control-item"
-                                     :class="{selected: selected === element}"
-                                     v-for="(element,index) in config[currentPage]['items']"
-                                     :key="index">
-                                    <div v-if="element.container" @click="inspect(element)">
-                                        <component :class="elementCssClass(element)"
-                                                   @inspect="inspect"
-                                                   :selected="selected"
-                                                   v-model="element.items"
-                                                   :config="element.config"
-                                                   :is="element['editor-component']">
-                                        </component>
-                                    </div>
 
-                                    <div v-else>
-                                        <component :class="elementCssClass(element)"
-                                                   v-bind="element.config"
-                                                   :is="element['editor-component']"
-                                        >
-                                        </component>
-                                        <div @click="inspect(element)" class="mask"></div>
-                                    </div>
-                                    <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
+            <div class="container p-4">
+                <div class="row">
+                    <div class="col-sm">
+                        <draggable class="p-4"
+                                   style="border: 1px dashed #000;"
+                                   v-model="config[currentPage]['items']"
+                                   :options="{group: {name: 'controls'}}">
+                            <div class="control-item"
+                                 :class="{selected: selected === element}"
+                                 v-for="(element,index) in config[currentPage]['items']"
+                                 :key="index">
+                                <div v-if="element.container" @click="inspect(element)">
+                                    <component :class="elementCssClass(element)"
+                                               @inspect="inspect"
+                                               :selected="selected"
+                                               v-model="element.items"
+                                               :config="element.config"
+                                               :is="element['editor-component']">
+                                    </component>
                                 </div>
-                            </draggable>
-                        </div>
+
+                                <div v-else>
+                                    <component :class="elementCssClass(element)"
+                                               v-bind="element.config"
+                                               :is="element['editor-component']">
+                                    </component>
+                                    <div @click="inspect(element)" class="mask"></div>
+                                </div>
+
+                                <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
+                            </div>
+                        </draggable>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="d-flex flex-row flex-column">
-            <div class="card-header">Inspector</div>
-            <div class="card-body mb-3" id="inspector">
-                <component
-                        v-for="(item, index) in inspection.inspector"
-                        :formConfig="config"
-                        :key="index"
-                        :is="item.type"
-                        v-bind="item.config"
-                        v-model="inspection.config[item.field]"
-                />
+        <div class="w-25 border overflow-auto">
+            <div class="card-header header-fixed">Inspector</div>
+            <div class="card-body flex-wrap mb-5" id="inspector">
+                <component v-for="(item, index) in inspection.inspector"
+                           :formConfig="config"
+                           :key="index"
+                           :is="item.type"
+                           v-bind="item.config"
+                           v-model="inspection.config[item.field]"/>
             </div>
         </div>
 
@@ -250,114 +250,21 @@
 </script>
 
 <style lang="scss" scoped>
-    .dynaform-builder {
-        display: flex;
-        align-content: stretch;
-        height: 100%;
-        min-height: 100%;
-        max-height: 100%;
+    .control-icon {
+        width: 42px;
+        margin-right: 3px;
 
-        .palette-container {
-            min-width: 220px;
-            width: 220px;
-            max-width: 220px;
-            border-right: 1px solid #e9edf1;
-
-            #controls {
-                display: flex;
-                flex-wrap: wrap;
-                padding: 4px;
-
-                .control {
-                    margin: 8px;
-                    width: 100%;
-                    height: 32px;
-                    display: flex;
-                    align-items: center;
-
-                    .icon {
-                        width: 42px;
-                        margin-right: 8px;
-
-                        img {
-                            max-width: 42px;
-                            max-height: 21px;
-                        }
-
-                        text-align: right;
-
-                        i {
-                            font-size: 24px;
-                            margin-right: 8px;
-                        }
-                    }
-
-                    .label {
-                        font-weight: bold;
-                        text-align: center;
-                        vertical-align: middle;
-                        font-size: 14px;
-                    }
-                }
-            }
+        img {
+            max-width: 42px;
+            max-height: 21px;
         }
 
-        .dynaform-builder .d-flex {
-            border-left: 1px solid #e9edf1;
-            overflow: hidden;
+        text-align: right;
+
+        i {
+            font-size: 24px;
+            margin-right: 8px;
         }
-
-        .d-flex > .card-body {
-            min-width: 340px;
-            width: 340px;
-            max-width: 340px;
-            overflow: auto;
-            padding-bottom: 50px;
-        }
-
-        #controls {
-            flex-grow: 1;
-            height: 100%;
-            padding-bottom: 100px !important;
-            overflow: auto;
-        }
-
-        .form-canvas-container {
-            flex-grow: 1;
-            display: flex;
-            align-content: stretch;
-            flex-direction: column;
-        }
-
-        .preview-canvas,
-        .editor-canvas {
-            background-color: #f7f9fa;
-            flex-grow: 1;
-            padding: 48px;
-            height: 100%;
-            overflow: auto;
-            padding-bottom: 100px !important;
-
-            .icon {
-                width: 42px;
-                margin-right: 8px;
-
-                img {
-                    max-width: 42px;
-                    max-height: 21px;
-                }
-            }
-        }
-    }
-
-    #inspector {
-        border-left: 1px solid #e9edf1;
-    }
-
-    .editor-draggable {
-        border: 1px dashed #000;
-        min-height: 48px;
-        content: "Drag Controls";
     }
 
     .control-item {
