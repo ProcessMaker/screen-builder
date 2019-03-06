@@ -18,9 +18,9 @@
     </nav>
     <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors" />
-    <vue-form-builder ref="builder" @change="updateConfig" :class="{invisible: mode != 'editor'}" />
+    <vue-form-builder ref="builder" @change="updateConfig" :style="displayBuilder" />
 
-    <div id="preview" :class="{invisible: mode != 'preview'}">
+    <div id="preview" :style="displayPreview">
       <div id="data-input">
         <div class="card-header">
           Data Input
@@ -105,7 +105,6 @@ export default {
     config() {
       // Reset the preview data with clean object to start
       this.previewData = {}
-
     },
     previewInput() {
       if(this.previewInputValid) {
@@ -124,6 +123,12 @@ export default {
       } catch(err) {
         return false
       }
+    },
+    displayBuilder() {
+      return this.mode === 'editor' ? '' : 'display:none !important;';
+    },
+    displayPreview() {
+      return this.mode === 'preview' ? '' : 'display:none !important;';
     }
   },
   mounted() {
@@ -158,6 +163,7 @@ export default {
     },
     addControl(control, rendererComponent, rendererBinding, builderComponent, builderBinding)
     {
+      console.log('add control');
       // Add it to the renderer
       this.$refs.renderer.$options.components[rendererBinding] = rendererComponent;
       // Add it to the form builder
