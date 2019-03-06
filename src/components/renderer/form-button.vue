@@ -1,6 +1,6 @@
 <template>
     <div class="form-group">
-        <button @click="click" :class="classList" :name="name" :value="value">{{label}}</button>
+        <button @click="click" :class="classList" :name="name" v-model="fieldValue">{{label}}</button>
     </div>
 </template>
 
@@ -8,7 +8,7 @@
     import Vue from 'vue';
 
     export default {
-        props: ["variant", "label", "event", "eventData", "name", "value"],
+        props: ["variant", "label", "event", "eventData", "name", "fieldValue"],
         computed: {
             classList() {
                 let variant = this.variant || "primary";
@@ -28,7 +28,7 @@
             },
             click() {
                 if (this.name) {
-                    this.setValue(this.$parent, this.name, this.$attrs.value);
+                    this.setValue(this.$parent, this.name, this.fieldValue);
                 }
                 this.$emit(this.event, this.eventData);
             }

@@ -16,11 +16,11 @@
     >{{ message }}</b-alert>
     <template v-if="displayList">
       <b-row class="float-right">
-        <b-col md="6" class="m-2">
+        <div class="m-2">
           <b-btn size="sm" variant="primary" @click.stop="displayFormProperty">
             <i class="fas fa-plus"></i> Add Property
           </b-btn>
-        </b-col>
+        </div>
       </b-row>
 
       <b-table :items="current" :fields="fields" responsive striped bordered small hover fixed>
@@ -88,17 +88,15 @@
       ></form-text-area>
       <div class="form-group" style='position: relative;'>
         <label>Formula</label>
-        <div class="float-right btn-group">
-          <a class='btn btn-sm' :class="{
-             'btn-outline-secondary': isJS,
-             'text-dark': isJS,
-             'btn-outline-light': !isJS,
-             'text-secondary': !isJS
-          }" @click="isJS=!isJS">
+        <div class="float-right">
+          <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType">
+            <i class="fas fa-square-root-alt"></i>
+          </a>
+          <a class='btn btn-sm' :class="javascriptTypeClass" @click="switchExpressionType">
              <i class="fab fa-js-square"></i>
           </a>
         </div>
-        <textarea v-show="!isJS" name="formula" v-model="add.formula" class="form-control" :class="{'is-invalid':!add.formula}"></textarea>
+        <textarea v-show="!isJS" name="formula" v-model="add.formula" class="form-control editor" :class="{'is-invalid':!add.formula}"></textarea>
         <div v-show="isJS" class="editor-border" :class="{'is-invalid':!add.formula}"></div>
         <monaco-editor v-show="isJS" :options="monacoOptions" :minimap="{enabled:false}" class="editor" v-model="add.formula" language="javascript">
         </monaco-editor>
@@ -130,7 +128,6 @@ export default {
   props: ["value"],
   data() {
     return {
-      isJS: true,
       showDismissibleAlert: false,
       alertVariant: "danger",
       message: "",
@@ -175,12 +172,29 @@ export default {
       });
       this.current = this.value;
     },
-    'add.formula'(formula) {
-      const isComplex = formula.length > 64 || formula.split("\n").length > 1;
-      this.isJS = isComplex || this.isJS;
-    },
   },
   computed: {
+    javascriptTypeClass() {
+      const isJS = this.isJS;
+      return {
+        'btn-outline-secondary': isJS,
+        'text-dark': isJS,
+        'btn-outline-light': !isJS,
+        'text-secondary': !isJS
+      };
+    },
+    expressionTypeClass() {
+      const isJS = !this.isJS;
+      return {
+        'btn-outline-secondary': isJS,
+        'text-dark': isJS,
+        'btn-outline-light': !isJS,
+        'text-secondary': !isJS
+      };
+    },
+    isJS() {
+      return this.add.type === 'javascript';
+    },
     disabled() {
       if (
         this.add.name.trim() === "" ||
@@ -193,6 +207,9 @@ export default {
     }
   },
   methods: {
+    switchExpressionType() {
+      this.add.type = this.add.type === 'expression' ? 'javascript' : 'expression';
+    },
     show() {
       this.$refs.modal.show();
     },
@@ -231,7 +248,8 @@ export default {
           id: this.numberItem,
           property: this.add.property,
           name: this.add.name,
-          formula: this.add.formula
+          formula: this.add.formula,
+          type: this.add.type,
         });
         this.showAlert("Property Saved", "success");
       } else {
@@ -241,6 +259,7 @@ export default {
             item.name = that.add.name;
             item.property = that.add.property;
             item.formula = that.add.formula;
+            item.type = that.add.type;
           }
         });
         this.showAlert("Property Edited", "success");
@@ -253,7 +272,7 @@ export default {
       this.add.id = item.id;
       this.add.name = item.name;
       this.add.property = item.property;
-      this.add.type = "expression";
+      this.add.type = item.type ? item.type : "expression";
       this.add.formula = item.formula;
       this.displayList = false;
     },
@@ -276,14 +295,14 @@ export default {
 
 <style lang="scss" scoped>
     .editor{
-        height: 4em;
+        height: 6em;
         z-index: 0;
     }
     .editor-border {
         border: 1px solid #ced4da;
         border-radius: 4px;
         overflow: hidden;
-        height: 4em;
+        height: 6em;
         position: absolute;
         pointer-events: none;
         width: 100%;

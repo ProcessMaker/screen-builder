@@ -109,7 +109,11 @@ export default {
           that.computed.forEach(prop => {
             let value;
             try {
-              value = Parser.evaluate(prop.formula, that.transientData);
+              if (prop.type==='expression') {
+                value = Parser.evaluate(prop.formula, that.transientData);
+              } else if(prop.type==='javascript') {
+                value = this.javascriptEval(prop.formula, that.transientData);
+              }
             } catch (e) {
               value = String(e);
             }
@@ -134,6 +138,15 @@ export default {
     this.parseCss();
   },
   methods: {
+    javascriptEval() {
+      let $key;
+      const expression = [];
+      for($key of Object.keys(arguments[1])) {
+        expression.push('var ' + $key + '=arguments[1][' + JSON.stringify($key) + ']');
+      }
+      expression.push(arguments[0]);
+      return eval(expression.join("\n"));
+    },
     submit() {
       if (this.isValid()) {
         this.setDefaultValues();
