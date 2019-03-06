@@ -165,8 +165,7 @@ export default {
   },
   watch: {
     value() {
-      let that = this;
-      that.value.forEach(item => {
+      this.value.forEach(item => {
         this.numberItem++;
         item.id = this.numberItem;
       });
@@ -230,9 +229,8 @@ export default {
     },
     validateData() {
       let validation = true;
-      let that = this;
       this.current.forEach(item => {
-        if (item.property === that.add.property && item.id !== that.add.id) {
+        if (item.property === this.add.property && item.id !== this.add.id) {
           validation = false;
           this.showAlert("Property already exists", "danger");
         }
@@ -253,13 +251,12 @@ export default {
         });
         this.showAlert("Property Saved", "success");
       } else {
-        let that = this;
         this.current.forEach(item => {
-          if (item.id === that.add.id) {
-            item.name = that.add.name;
-            item.property = that.add.property;
-            item.formula = that.add.formula;
-            item.type = that.add.type;
+          if (item.id === this.add.id) {
+            item.name = this.add.name;
+            item.property = this.add.property;
+            item.formula = this.add.formula;
+            item.type = this.add.type;
           }
         });
         this.showAlert("Property Edited", "success");
