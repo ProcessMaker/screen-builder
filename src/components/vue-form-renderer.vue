@@ -104,13 +104,12 @@ export default {
     },
     transientData: {
       handler: function() {
-        let that = this;
-        if (that.computed) {
-          that.computed.forEach(prop => {
+        if (this.computed) {
+          this.computed.forEach(prop => {
             let value;
             try {
               if (prop.type==='expression') {
-                value = Parser.evaluate(prop.formula, that.transientData);
+                value = Parser.evaluate(prop.formula, this.transientData);
               } else if(prop.type==='javascript') {
                 var func = new Function(prop.formula);
                 value = this.transientData[prop.property] = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
@@ -118,14 +117,14 @@ export default {
             } catch (e) {
               value = String(e);
             }
-            this.$set(that.transientData, prop.property, value);
-            this.$set(that.data, prop.property, value);
+            this.$set(this.transientData, prop.property, value);
+            this.$set(this.data, prop.property, value);
           });
         }
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
-        if (JSON.stringify(that.transientData) != JSON.stringify(that.data)) {
-          that.$emit("update", that.transientData);
+        if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
+          this.$emit("update", this.transientData);
           return;
         }
       },
