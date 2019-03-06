@@ -611,7 +611,7 @@ export default [{
                 variant: 'primary',
                 event: 'submit',
                 name: null,
-                value: null
+                fieldValue: null
             },
             inspector: [{
                     type: "FormInput",
@@ -631,7 +631,7 @@ export default [{
                 },
                 {
                     type: "FormInput",
-                    field: "value",
+                    field: "fieldValue",
                     config: {
                         label: "Field Value",
                         helper: "The value being submitted"
@@ -908,6 +908,14 @@ export default [{
                     config: {
                         label: "Id",
                         helper: "Image id"
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        helper: "The name of the image"
                     }
                 },
                 {
