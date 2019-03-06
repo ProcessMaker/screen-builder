@@ -3,7 +3,7 @@
     <div class="palette-container">
       <div class="card-header">Controls</div>
       <draggable
-        id="controls"
+        class="controls"
         v-model="controls"
         :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
         :clone="cloneControl"
@@ -271,7 +271,7 @@ export default {
     max-width: 240px;
     border-right: 1px solid #e9edf1;
 
-    #controls {
+    .controls {
       display: flex;
       flex-wrap: wrap;
 
