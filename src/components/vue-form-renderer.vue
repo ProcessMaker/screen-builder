@@ -70,13 +70,12 @@ export default {
     },
     showElement() {
       let display = {};
-      let that = this;
-      that.config.forEach(page => {
+      this.config.forEach(page => {
         page.items.forEach(item => {
-          Object.assign(display, this.exploreItems(item, that, {}));
+          Object.assign(display, this.exploreItems(item, this, {}));
         });
       });
-      return that.$deepModel(display);
+      return this.$deepModel(display);
     }
   },
   data() {
@@ -104,27 +103,26 @@ export default {
     },
     transientData: {
       handler: function() {
-        let that = this;
-        if (that.computed) {
-          that.computed.forEach(prop => {
+        if (this.computed) {
+          this.computed.forEach(prop => {
             let value;
             try {
               if (prop.type==='expression') {
-                value = Parser.evaluate(prop.formula, that.transientData);
+                value = Parser.evaluate(prop.formula, this.transientData);
               } else if(prop.type==='javascript') {
-                value = this.javascriptEval(prop.formula, that.transientData);
+                value = this.javascriptEval(prop.formula, this.transientData);
               }
             } catch (e) {
               value = String(e);
             }
-            this.$set(that.transientData, prop.property, value);
-            this.$set(that.data, prop.property, value);
+            this.$set(this.transientData, prop.property, value);
+            this.$set(this.data, prop.property, value);
           });
         }
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
-        if (JSON.stringify(that.transientData) != JSON.stringify(that.data)) {
-          that.$emit("update", that.transientData);
+        if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
+          this.$emit("update", this.transientData);
           return;
         }
       },
