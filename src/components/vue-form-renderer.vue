@@ -110,7 +110,8 @@ export default {
               if (prop.type==='expression') {
                 value = Parser.evaluate(prop.formula, this.transientData);
               } else if(prop.type==='javascript') {
-                value = this.javascriptEval(prop.formula, this.transientData);
+                var func = new Function(prop.formula);
+                value = this.transientData[prop.property] = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
               }
             } catch (e) {
               value = String(e);
@@ -136,15 +137,6 @@ export default {
     this.parseCss();
   },
   methods: {
-    javascriptEval() {
-      let $key;
-      const expression = [];
-      for($key of Object.keys(arguments[1])) {
-        expression.push('var ' + $key + '=arguments[1][' + JSON.stringify($key) + ']');
-      }
-      expression.push(arguments[0]);
-      return eval(expression.join("\n"));
-    },
     submit() {
       if (this.isValid()) {
         this.setDefaultValues();
