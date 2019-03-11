@@ -7,9 +7,6 @@ module.exports = {
       new MonocoEditorPlugin({
         languages: ['javascript', 'typescript', 'css']
       })
-    ],
-    externals: {
-      subtract: ['bootstrap']
-    }
+    ]
   }
 }
