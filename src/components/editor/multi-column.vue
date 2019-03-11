@@ -11,14 +11,14 @@
           >
             <div
               class="control-item"
-              :class="{selectedElement: selected === element}"
+              :class="{selected: selected === element}"
               v-for="(element,row) in item"
               :key="row"
             >
               <div v-if="element.container">
                 <component
                   :class="elementCssClass(element)"
-                  :selected="selectedElement"
+                  :selected="selected"
                   @inspect="inspect"
                   v-model="element.items"
                   v-bind="element.config"

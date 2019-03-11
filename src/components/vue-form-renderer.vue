@@ -70,13 +70,12 @@ export default {
     },
     showElement() {
       let display = {};
-      let that = this;
-      that.config.forEach(page => {
+      this.config.forEach(page => {
         page.items.forEach(item => {
-          Object.assign(display, this.exploreItems(item, that, {}));
+          Object.assign(display, this.exploreItems(item, this, {}));
         });
       });
-      return that.$deepModel(display);
+      return this.$deepModel(display);
     }
   },
   data() {

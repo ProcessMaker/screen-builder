@@ -2,14 +2,12 @@
   <div class="mb-2">
     <label class="typo__label">{{label}}</label>
     <multiselect
-      @input="updateValue"
-      :options="multiOptions"
+      :options="options"
       selectedLabel="Primary"
       placeholder="Select one"
       label="content"
       track-by="value"
-      :value="getValue"
-      v-model="multiSelected"
+      v-model="selected"
     ></multiselect>
     <small v-if="helper" class="form-text text-muted">{{helper}}</small>
   </div>
@@ -29,7 +27,6 @@ export default {
   props: [
     "label",
     "error",
-    "selected",
     "value",
     "options",
     "helper",
@@ -42,24 +39,28 @@ export default {
   ],
   data() {
     return {
-      multiOptions: this.$props.options,
-      content: "",
-      multiSelected: {}
+      // The v-model for the multiselect. Should be prepopulated with the 
+      // object that represents the selected value, pulled from our options
+      initialValue: null,
+      selected: null,
     };
   },
-  computed: {
-    getValue() {
-      let that = this;
-      let index = 0;
-      that.options.forEach((item, key) => {
-        if (item.value === that.value) {
-          index = key;
-        }
-      });
-      that.multiSelected = that.options[index];
-      return that.options[index];
+	watch: {
+    selected() {
+      this.$emit("input", this.selected.value);
     }
   },
+  mounted() {
+    // We go through our options for a first-match of our options 
+    // to our value, if there is one
+    for(let i = 0; i < this.options.length; i++) {
+      if(this.options[i].value == this.value) {
+        this.selected = JSON.parse(JSON.stringify(this.options[i]));
+        // Get out of for loop
+        break;
+      }
+    }
+	},
   methods: {
     updateValue(value) {
       this.content = value.value;
