@@ -150,14 +150,6 @@ export default [{
                     }
                 },
                 {
-                    type: "FormInput",
-                    field: "color",
-                    config: {
-                        label: "Text Color",
-                        helper: "Accepts all HTML colors and hex codes"
-                    }
-                },
-                {
                     type: "FormMultiselect",
                     field: "textAlign",
                     config: {
@@ -209,14 +201,6 @@ export default [{
                 },
                 bgcolorProperty,
                 colorProperty,
-                {
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "CSS ID",
-                        helper: "Set an ID for custom css"
-                    }
-                },
             ]
         }
     },
