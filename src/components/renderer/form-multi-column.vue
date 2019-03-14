@@ -111,7 +111,33 @@
         if (this.config.options[index] && this.config.options[index].content) {
           column = this.config.options[index].content;
         }
-        return "col-sm-" + column + " column-draggable";
+
+        return "col-sm-" + column + " column-draggable " + this.columnVerticalAlign(index);
+      },
+      columnVerticalAlign (index) {
+        let verticalAlignClass = '';
+
+        if (this.items.length > 0
+           && this.items[index].length > 0) {
+            let formTexts  = this.items[0].filter(item => item.component === 'FormText');
+            if (formTexts.length === 0) {
+               return '';
+            }
+
+            let formText = formTexts[0];
+            switch (formText.config.verticalAlign) {
+                case 'top':
+                    verticalAlignClass = 'd-flex align-items-start';
+                    break;
+                case 'middle':
+                    verticalAlignClass = 'd-flex align-items-center';
+                    break;
+                case 'bottom':
+                    verticalAlignClass = 'd-flex align-items-end';
+                    break;
+            }
+        }
+        return verticalAlignClass;
       },
       inspect(element) {
         this.$emit("inspect", element);
