@@ -111,6 +111,7 @@ export default [{
                 fontSize: '1em',
                 fontWeight: 'normal',
                 textAlign: 'left',
+                verticalAlign: 'top',
                 name: ''
             },
             inspector: [{
@@ -153,8 +154,8 @@ export default [{
                     type: "FormMultiselect",
                     field: "textAlign",
                     config: {
-                        label: "Text Alignment",
-                        helper: "The Alignment of the text",
+                        label: "Text Horizontal Alignment",
+                        helper: "Horizontal alignment of the text",
                         options: [{
                                 value: 'center',
                                 content: 'Center'
@@ -171,6 +172,27 @@ export default [{
                                 value: 'justify',
                                 content: 'Justify'
                             },
+                        ]
+                    }
+                },
+                {
+                    type: "FormMultiselect",
+                    field: "verticalAlign",
+                    config: {
+                        label: "Text Vertical Alignment",
+                        helper: "Vertical alignment of the text",
+                        options: [ {
+                                value: 'top',
+                                content: 'Top'
+                            },
+                            {
+                                value: 'middle',
+                                content: 'Middle'
+                            },
+                            {
+                                value: 'bottom',
+                                content: 'Bottom'
+                            }
                         ]
                     }
                 },
