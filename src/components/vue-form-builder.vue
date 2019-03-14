@@ -86,7 +86,22 @@
             </div>
 
             <div class="w-25 border overflow-auto">
-                <div class="card-header header-fixed">Inspector</div>
+                <div class="card-header header-fixed">
+                    Inspector
+                    <div class="float-right dropdown">
+                        <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
+                            <i class="fas fa-check-circle text-success"></i>
+                        </button>
+                        <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button" @click="showValidationErrors=!showValidationErrors">
+                            <i class="fas fa-times-circle text-danger"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" :class="{'d-block':showValidationErrors}">
+                          <a v-for="(validation,index) in validationErrors" :key="index" class="dropdown-item" @click="focusInspector(validation)">
+                              [{{validation.item.component}}] {{validation.message}}
+                          </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body flex-wrap mb-5" id="inspector">
                     <component v-for="(item, index) in inspection.inspector"
                                :formConfig="config"
@@ -134,6 +149,8 @@
 
   Vue.use(BootstrapVue);
 
+  let Validator = require('validatorjs');
+
   import {
     FormInput,
     FormSelect,
@@ -168,6 +185,7 @@
     },
     data() {
       return {
+        showValidationErrors: false,
         currentPage: 0,
         selected: null,
         display: "editor",
@@ -186,6 +204,36 @@
         ]
       };
     },
+    computed: {
+      validationErrors() {
+        const validationErrors = [];
+        this.config.forEach(page => {
+          page.items.forEach(item => {
+            let data = item.config ? item.config : {};
+            let rules = {};
+            item.inspector.forEach(property => {
+              if (property.config.validation) {
+                rules[property.field] = property.config.validation;
+              }
+            });
+            let validator = new Validator(data, rules);
+            // Validation will not run until you call passes/fails on it
+            if(!validator.passes()) {
+              Object.keys(validator.errors.errors).forEach(field => {
+                validator.errors.errors[field].forEach(error => {
+                  validationErrors.push({
+                    message: error,
+                    page: page,
+                    item: item,
+                  });
+                });
+              });
+            }
+          });
+        });
+        return validationErrors;
+      },
+    },
     watch: {
       config: {
         handler: function () {
@@ -199,6 +247,11 @@
       }
     },
     methods: {
+      focusInspector(validation) {
+        this.currentPage = this.config.indexOf(validation.page);
+        this.inspect(validation.item);
+        return validation;
+      },
       addControl(control) {
         this.controls.push(control);
       },
