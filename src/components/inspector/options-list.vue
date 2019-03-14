@@ -10,7 +10,7 @@
         </form-checkbox>
 
         <template v-if="displayList">
-            <div class="alert-sm"
+            <div class="alert"
                  :class="{'alert-success': isValidJson, 'alert-danger': !isValidJson}">
                 <span v-if="isValidJson">Valid JSON Data Object</span>
                 <span v-else>Invalid JSON Data Object</span>
