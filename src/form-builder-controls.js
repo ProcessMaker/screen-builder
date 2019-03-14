@@ -321,7 +321,8 @@ export default [{
                     field: "name",
                     config: {
                         label: "Field Name",
-                        helper: "The data name for this field"
+                        helper: "The data name for this field",
+                        validation: 'required',
                     }
                 },
                 {
