@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="w-25 border overflow-auto">
+            <div class="w-25 border d-flex flex-column">
                 <div class="card-header header-fixed">
                     Inspector
                     <div class="float-right dropdown">
@@ -95,14 +95,18 @@
                         <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button" @click="showValidationErrors=!showValidationErrors">
                             <i class="fas fa-times-circle text-danger"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right" :class="{'d-block':showValidationErrors}">
-                          <a v-for="(validation,index) in validationErrors" :key="index" class="dropdown-item" @click="focusInspector(validation)">
-                              [{{validation.item.component}}] {{validation.message}}
-                          </a>
+                        <div class="dropdown-menu dropdown-menu-right" :class="{'d-block':showValidationErrors && validationErrors.length}">
+                            <a v-for="(validation,index) in validationErrors" :key="index"
+                                href="javascript:void()"
+                                class="dropdown-item" @click="focusInspector(validation)">
+                                <i class="fas fa-times-circle text-danger"></i>
+                                <b>{{validation.item.component}}</b>
+                                {{validation.message}}
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="card-body flex-wrap mb-5" id="inspector">
+                <div class="card-body flex-wrap mb-5 overflow-auto box-flex-1" id="inspector">
                     <component v-for="(item, index) in inspection.inspector"
                                :formConfig="config"
                                :key="index"
@@ -249,8 +253,9 @@
     methods: {
       focusInspector(validation) {
         this.currentPage = this.config.indexOf(validation.page);
-        this.inspect(validation.item);
-        return validation;
+        this.$nextTick(() => {
+          this.inspect(validation.item);
+        });
       },
       addControl(control) {
         this.controls.push(control);
@@ -353,5 +358,15 @@
             width: 100%;
             height: 100%;
         }
+    }
+    .box-flex-1 {
+        -webkit-box-flex: 1;
+           -moz-box-flex: 1;
+            -ms-box-flex: 1;
+                box-flex: 1;
+        -webkit-flex: 1;
+           -moz-flex: 1;
+            -ms-flex: 1;
+                flex: 1;
     }
 </style>
