@@ -111,6 +111,7 @@ export default [{
                 fontSize: '1em',
                 fontWeight: 'normal',
                 textAlign: 'left',
+                verticalAlign: 'top',
                 name: ''
             },
             inspector: [
@@ -141,19 +142,11 @@ export default [{
                     }
                 },
                 {
-                    type: "FormInput",
-                    field: "color",
-                    config: {
-                        label: "Text Color",
-                        helper: "Accepts all HTML colors and hex codes"
-                    }
-                },
-                {
                     type: "FormMultiselect",
                     field: "textAlign",
                     config: {
-                        label: "Text Alignment",
-                        helper: "The Alignment of the text",
+                        label: "Text Horizontal Alignment",
+                        helper: "Horizontal alignment of the text",
                         options: [{
                                 value: 'center',
                                 content: 'Center'
@@ -170,6 +163,27 @@ export default [{
                                 value: 'justify',
                                 content: 'Justify'
                             },
+                        ]
+                    }
+                },
+                {
+                    type: "FormMultiselect",
+                    field: "verticalAlign",
+                    config: {
+                        label: "Text Vertical Alignment",
+                        helper: "Vertical alignment of the text",
+                        options: [ {
+                                value: 'top',
+                                content: 'Top'
+                            },
+                            {
+                                value: 'middle',
+                                content: 'Middle'
+                            },
+                            {
+                                value: 'bottom',
+                                content: 'Bottom'
+                            }
                         ]
                     }
                 },
@@ -200,14 +214,6 @@ export default [{
                 },
                 bgcolorProperty,
                 colorProperty,
-                {
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "CSS ID",
-                        helper: "Set an ID for custom css"
-                    }
-                },
             ]
         }
     },
