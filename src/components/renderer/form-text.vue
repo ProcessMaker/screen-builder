@@ -13,6 +13,7 @@ export default {
     "fontSize",
     "fontWeight",
     "textAlign",
+    "verticalAlign",
     "validationData",
     "color",
     "name"
@@ -23,6 +24,7 @@ export default {
         fontSize: this.fontSize,
         fontWeight: this.fontWeight,
         textAlign: this.textAlign,
+        verticalAlign: this.verticalAlign,
         color: this.color
       };
     },
