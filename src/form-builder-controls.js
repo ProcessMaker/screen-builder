@@ -155,7 +155,7 @@ export default [{
                     field: "textAlign",
                     config: {
                         label: "Text Horizontal Alignment",
-                        helper: "The Alignment of the text",
+                        helper: "Horizontal alignment of the text",
                         options: [{
                                 value: 'center',
                                 content: 'Center'
@@ -180,7 +180,7 @@ export default [{
                     field: "verticalAlign",
                     config: {
                         label: "Text Vertical Alignment",
-                        helper: "The Alignment of the text",
+                        helper: "Vertical alignment of the text",
                         options: [ {
                                 value: 'top',
                                 content: 'Top'
