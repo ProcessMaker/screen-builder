@@ -113,16 +113,7 @@ export default [{
                 textAlign: 'left',
                 name: ''
             },
-            inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field"
-                    }
-                },
+            inspector: [
                 {
                     type: "FormTextArea",
                     field: "label",
@@ -797,16 +788,7 @@ export default [{
                     }
                 ],
             },
-            inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field"
-                    }
-                },
+            inspector: [
                 {
                     type: "ContainerColumns",
                     field: "options",
