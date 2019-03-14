@@ -201,14 +201,6 @@ export default [{
                 },
                 bgcolorProperty,
                 colorProperty,
-                {
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "CSS ID",
-                        helper: "Set an ID for custom css"
-                    }
-                },
             ]
         }
     },
