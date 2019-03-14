@@ -38,7 +38,10 @@
                                     @click="openEditPageModal(page)">
                                 Edit
                             </button>
-                            <button class="btn btn-sm btn-danger mr-1" @click="deletePage(page)">x</button>
+                            <button class="btn btn-sm btn-danger mr-1"
+                                    @click="confirmDelete(page)"
+                                    v-show="displayDelete">x
+                            </button>
                         </a>
                     </li>
                     <li slot="footer" class="nav-item">
@@ -105,6 +108,17 @@
 
             <b-modal ref="editPageModal" @ok="editPage" title="Edit Page Title">
                 <form-input v-model="editPageName" label="Page Name" helper="The new name of the page"></form-input>
+            </b-modal>
+
+            <b-modal ref="confirm"
+                     centered
+                     title="Confirm delete"
+                     @ok="deletePage"
+                     @cancel="hideConfirmModal"
+                     cancel-variant="btn btn-outline-secondary"
+                     ok-variant="btn btn-secondary ml-2">
+                <p>{{confirmMessage}}</p>
+                <div slot="modal-ok">Save</div>
             </b-modal>
         </div>
     </div>
@@ -183,8 +197,15 @@
             name: "Default",
             items: []
           }
-        ]
+        ],
+        confirmMessage: '',
+        pageDelete: 0
       };
+    },
+    computed: {
+      displayDelete() {
+        return this.config.length > 1;
+      }
     },
     watch: {
       config: {
@@ -199,6 +220,14 @@
       }
     },
     methods: {
+      confirmDelete(page) {
+        this.confirmMessage = 'Are you sure to delete the page ' + this.config[page].name + '?';
+        this.pageDelete = page;
+        this.$refs.confirm.show();
+      },
+      hideConfirmModal() {
+        this.$refs.confirm.hide();
+      },
       addControl(control) {
         this.controls.push(control);
       },
@@ -225,8 +254,9 @@
         this.currentPage = this.config.length - 1;
         this.addPageName = "";
       },
-      deletePage(page) {
-        this.config.splice(page, 1);
+      deletePage() {
+        this.currentPage = 0;
+        this.config.splice(this.pageDelete, 1);
       },
       inspect(element) {
         this.inspection = element;
