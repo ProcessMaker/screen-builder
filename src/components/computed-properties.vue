@@ -103,11 +103,11 @@
         <div v-if="!add.formula" class="invalid-feedback"><div>The property formula field is required.</div></div>
       </div>
       <button
-        class="btn btn-success float-right m-1"
+        class="btn btn-secondary float-right ml-2"
         @click="validateData"
         :disabled="disabled"
       >Save Property</button>
-      <button class="btn btn-secondary float-right m-1" @click="displayTableList">Cancel</button>
+      <button class="btn btn-outline-secondary float-right" @click="displayTableList">Cancel</button>
     </template>
   </b-modal>
 </template>
