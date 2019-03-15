@@ -114,16 +114,7 @@ export default [{
                 verticalAlign: 'top',
                 name: ''
             },
-            inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field"
-                    }
-                },
+            inspector: [
                 {
                     type: "FormTextArea",
                     field: "label",
@@ -336,7 +327,8 @@ export default [{
                     field: "name",
                     config: {
                         label: "Field Name",
-                        helper: "The data name for this field"
+                        helper: "The data name for this field",
+                        validation: 'required',
                     }
                 },
                 {
@@ -399,7 +391,8 @@ export default [{
                     field: "name",
                     config: {
                         label: "Field Name",
-                        helper: "The data name for this field"
+                        helper: "The data name for this field",
+                        validation: 'required',
                     }
                 },
                 {
@@ -453,6 +446,7 @@ export default [{
                     field: "name",
                     config: {
                         label: "Field Name",
+                        validation: 'required',
                         helper: "The name of the group for the checkbox. All checkboxes which share the same name will work together."
                     }
                 },
@@ -632,6 +626,7 @@ export default [{
                     field: "name",
                     config: {
                         label: "Field Name",
+                        validation: 'required',
                         helper: "The name of the button"
                     }
                 },
@@ -803,16 +798,7 @@ export default [{
                     }
                 ],
             },
-            inspector: [{
-                    type: "FormInput",
-                    field: "name",
-                    config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field"
-                    }
-                },
+            inspector: [
                 {
                     type: "ContainerColumns",
                     field: "options",
