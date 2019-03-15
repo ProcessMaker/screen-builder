@@ -424,7 +424,7 @@ export default [{
                     type: "FormCheckbox",
                     field: "toggle",
                     config: {
-                        label: "Bootstrap Toggle?",
+                        label: "Toggle Style?",
                         helper: ""
                     }
                 },
@@ -480,7 +480,7 @@ export default [{
                     type: "FormCheckbox",
                     field: "toggle",
                     config: {
-                        label: "Bootstrap Toggle?",
+                        label: "Toggle Style?",
                         helper: ""
                     }
                 },
