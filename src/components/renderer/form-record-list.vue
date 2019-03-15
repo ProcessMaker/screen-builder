@@ -123,7 +123,14 @@ export default {
       this.$refs.vuetable.changePage(page);
     },
     fetchFormConfig() {
-      return JSON.parse(JSON.stringify(this.$parent.config));
+      //Only if you have a one page set
+      let config = JSON.parse(JSON.stringify(this.$parent.config));
+      for (let index = 0; index < config.length; index++) {
+        if (index != this.form) {
+          config[index].items = [];
+        }
+      }
+      return config;
     },
     showEditForm(index) {
       // Reset edit to be a copy of our data model item
