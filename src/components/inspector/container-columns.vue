@@ -105,11 +105,6 @@
       event: "change"
     },
     computed: {
-      saveDataJson() {
-        if (this.isValidJson) {
-          this.$emit('change', JSON.parse(this.dataJson));
-        }
-      },
       deleteIf() {
         //must have at least one column
         return this.options.length > 1;
@@ -124,6 +119,11 @@
       },
     },
     methods: {
+      saveDataJson() {
+        if (this.isValidJson) {
+          this.$emit('change', JSON.parse(this.dataJson));
+        }
+      },
       updateSort() {
         this.existingOptions.forEach((item, index) => {
           item.value = index + 1;
