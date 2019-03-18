@@ -384,6 +384,7 @@ export default [{
                     value: 'new',
                     content: 'New Option'
                 }],
+                toggle: false,
                 helper: null,
             },
             inspector: [{
@@ -419,6 +420,14 @@ export default [{
                         helper: "List of options available in the select drop down"
                     }
                 },
+                {
+                    type: "FormCheckbox",
+                    field: "toggle",
+                    config: {
+                        label: "Toggle Style?",
+                        helper: ""
+                    }
+                },
                 bgcolorProperty,
                 colorProperty,
             ]
@@ -440,6 +449,7 @@ export default [{
                 name: null,
                 checked: false,
                 validation: '',
+                toggle: false
             },
             inspector: [{
                     type: "FormInput",
@@ -464,6 +474,14 @@ export default [{
                     config: {
                         label: "Help Text",
                         helper: "Help text is meant to provide additional guidance on the field's value"
+                    }
+                },
+                {
+                    type: "FormCheckbox",
+                    field: "toggle",
+                    config: {
+                        label: "Toggle Style?",
+                        helper: ""
                     }
                 },
                 {
