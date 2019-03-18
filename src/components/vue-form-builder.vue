@@ -175,7 +175,8 @@
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormDatePicker
+    FormDatePicker,
+    FormHtmlEditor
   } from "@processmaker/vue-form-elements/src/components";
 
   export default {
@@ -191,6 +192,7 @@
       FormRadioButtonGroup,
       FormTextArea,
       FormText,
+      FormHtmlEditor,
       FormButton,
       PageSelect,
       MultiColumn,

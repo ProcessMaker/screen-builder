@@ -11,6 +11,7 @@ import {
     FormCheckbox,
     FormRadioButtonGroup,
     FormDatePicker,
+    FormHtmlEditor,
 } from "@processmaker/vue-form-elements/src/components";
 
 const bgcolorProperty = {
@@ -96,7 +97,8 @@ const colorProperty = {
     }
 };
 
-export default [{
+export default [
+    {
         builderComponent: FormText,
         builderBinding: 'FormText',
         rendererComponent: FormText,
@@ -210,6 +212,37 @@ export default [{
                                 content: '2'
                             },
                         ]
+                    }
+                },
+                bgcolorProperty,
+                colorProperty,
+            ]
+        }
+    },
+    {
+        builderComponent: FormHtmlEditor,
+        builderBinding: 'FormHtmlEditor',
+        rendererComponent: FormHtmlEditor,
+        rendererBinding: 'FormHtmlEditor',
+        control: {
+            label: 'Rich Text Box ',
+            component: 'FormHtmlEditor',
+            'editor-component': 'FormHtmlEditor',
+            'fa-icon': 'fas fa-pencil-ruler fa-w-16 fa-2x',
+            config: {
+                label: 'Text Box',
+                value: 'Rich Text Box',
+                name: '',
+            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
                     }
                 },
                 bgcolorProperty,
