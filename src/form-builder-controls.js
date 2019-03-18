@@ -228,7 +228,7 @@ export default [
             label: 'Rich Text Box ',
             component: 'FormHtmlEditor',
             'editor-component': 'FormHtmlEditor',
-            'fa-icon': 'fas fa-pencil-ruler fa-w-16 fa-2x',
+            'fa-icon': 'fas fa-pencil-ruler',
             config: {
                 label: 'Text Box',
                 value: 'Rich Text Box',

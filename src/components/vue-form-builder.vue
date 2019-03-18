@@ -354,7 +354,7 @@
         text-align: right;
 
         i {
-            font-size: 24px;
+            font-size: 21px;
             margin-right: 8px;
         }
     }
