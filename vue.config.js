@@ -1,7 +1,7 @@
 const MonocoEditorPlugin = require('monaco-editor-webpack-plugin');
 
-// vue.config.js
 module.exports = {
+  transpileDependencies: ['vuetable-2'],
   configureWebpack: {
     plugins: [
       new MonocoEditorPlugin({
