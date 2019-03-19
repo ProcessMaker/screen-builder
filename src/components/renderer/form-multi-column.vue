@@ -59,7 +59,7 @@
     FormCheckbox,
     FormRadioButtonGroup,
     FormDatePicker
-  } from "@processmaker/vue-form-elements/src/components";
+  } from "@processmaker/vue-form-elements";
 
   export default {
     name: "FormMultiColumn",
