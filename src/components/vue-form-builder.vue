@@ -175,8 +175,9 @@
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormDatePicker
-  } from "@processmaker/vue-form-elements/src/components";
+    FormDatePicker,
+    FormHtmlEditor
+  } from "@processmaker/vue-form-elements";
 
   export default {
     mixins: [HasColorProperty],
@@ -199,7 +200,8 @@
       FormRecordList,
       FormImage,
       ImageUpload,
-      ColorSelect
+      ColorSelect,
+      FormHtmlEditor
     },
     data() {
       return {
