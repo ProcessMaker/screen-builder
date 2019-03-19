@@ -11,7 +11,8 @@ import {
     FormCheckbox,
     FormRadioButtonGroup,
     FormDatePicker,
-} from "@processmaker/vue-form-elements/src/components";
+    FormHtmlEditor,
+} from "@processmaker/vue-form-elements";
 
 const bgcolorProperty = {
     type: "ColorSelect",
@@ -508,7 +509,7 @@ export default [{
             "editor-component": "FormTextArea",
             'editor-icon': require('./assets/icons/paragraph-solid.svg'),
             config: {
-                label: "New TextArea",
+                label: "New Textarea",
                 placeholder: "",
                 helper: null,
                 rows: 2
@@ -954,6 +955,46 @@ export default [{
                         type: "number",
                     }
                 },
+            ]
+        },
+    },
+    {
+        editorComponent: FormHtmlEditor,
+        editorBinding: 'FormHtmlEditor',
+        rendererComponent: FormHtmlEditor,
+        rendererBinding: 'FormHtmlEditor',
+        control: {
+            label: 'Rich Text',
+            component: 'FormHtmlEditor',
+            'editor-component': 'FormHtmlEditor',
+            'fa-icon': 'fas fa-pencil-ruler',
+            config: {
+                label: 'Rich Text',
+                helper: null,
+                value: '<p>Rich text editor</p>',
+                content: '<p>Rich text editor</p>',
+            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Field Name",
+                        name: 'Field Name',
+                        validation: 'required',
+                        helper: "The data name for this field",
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "helper",
+                    config: {
+                        label: "Help Text",
+                        helper: "Help text is meant to provide additional guidance on the field's value"
+                    }
+                },
+                bgcolorProperty,
+                colorProperty,
             ]
         },
     }
