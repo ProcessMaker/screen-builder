@@ -45,26 +45,13 @@
     "babel-core": "7.0.0-bridge.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.14",
+    "eslint-plugin-jest": "^22.4.1",
     "vue-json-pretty": "^1.4.0",
     "vue-template-compiler": "^2.5.16"
   },
   "peerDependencies": {
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.14"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
   },
   "postcss": {
     "plugins": {
