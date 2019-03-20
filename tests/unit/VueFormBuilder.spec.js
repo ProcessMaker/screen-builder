@@ -3,7 +3,7 @@ import VueFormBuilder from '@/components/vue-form-builder';
 import controlConfig from '@/form-builder-controls';
 
 function isFormHtmlEditor(config) {
-  return config.editorBinding === 'FormHtmlEditor';
+  return config.control.component === 'FormHtmlEditor';
 }
 
 describe('App', () => {

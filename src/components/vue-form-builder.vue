@@ -61,7 +61,8 @@
                                 <div class="control-item"
                                      :class="{selected: selected === element}"
                                      v-for="(element,index) in config[currentPage]['items']"
-                                     :key="index">
+                                     :key="index"
+                                     @click="inspect(element)">
                                     <div v-if="element.container" @click="inspect(element)">
                                         <component :class="elementCssClass(element)"
                                                    @inspect="inspect"
@@ -73,11 +74,13 @@
                                     </div>
 
                                     <div v-else>
-                                        <component :class="elementCssClass(element)"
-                                                   v-bind="element.config"
-                                                   :is="element['editor-component']">
-                                        </component>
-                                        <div @click="inspect(element)" class="mask"></div>
+                                        <component
+                                          :class="elementCssClass(element)"
+                                          v-bind="element.config"
+                                          :is="element['editor-component']"
+                                          @input="element.config.interactive ? element.config.content = $event : null"
+                                        />
+                                        <div v-if="!element.config.interactive" class="mask"></div>
                                     </div>
 
                                     <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
@@ -330,7 +333,8 @@
           inspector: JSON.parse(JSON.stringify(control.inspector)),
           component: control.component,
           "editor-component": control["editor-component"],
-          label: control.label
+          label: control.label,
+          value: control.value
         };
         // If it's a container, let's add an items property, with the default of items in the control
         if (control.container) {
@@ -363,6 +367,7 @@
 
     .control-item {
         position: relative;
+        border: 1px solid transparent;
 
         .delete {
             position: absolute;
@@ -373,9 +378,7 @@
 
         &.selected,
         &:hover {
-            .mask {
-                border: 1px solid red;
-            }
+            border: 1px solid red;
 
             .delete {
                 display: inline-block;

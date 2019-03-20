@@ -969,32 +969,21 @@ export default [{
             'editor-component': 'FormHtmlEditor',
             'fa-icon': 'fas fa-pencil-ruler',
             config: {
-                label: 'Rich Text',
-                helper: null,
-                value: '<p>Rich text editor</p>',
+                interactive: true,
                 content: '<p>Rich text editor</p>',
             },
             inspector: [
                 {
-                    type: "FormInput",
-                    field: "name",
+                    type: "FormTextArea",
+                    field: "content",
                     config: {
-                        label: "Field Name",
-                        name: 'Field Name',
-                        validation: 'required',
-                        helper: "The data name for this field",
-                    }
-                },
-                {
-                    type: "FormInput",
-                    field: "helper",
-                    config: {
-                        label: "Help Text",
-                        helper: "Help text is meant to provide additional guidance on the field's value"
+                        rows: 5,
+                        label: "Rich Text Content",
+                        helper: "The HTML text to display",
+                        value: '',
                     }
                 },
                 bgcolorProperty,
-                colorProperty,
             ]
         },
     }
