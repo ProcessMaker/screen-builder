@@ -120,21 +120,22 @@
           Errors {{ validationErrors.length }}
           <button
             v-if="!validationErrors.length"
-            class="btn btn-sm btn-outline-light"
+            class="btn btn-sm"
             type="button"
             @click="showValidationErrors=!showValidationErrors"
           >
             <i class="fas fa-check-circle text-success"></i>
           </button>
-          <button
-            v-if="validationErrors.length"
-            class="btn btn-sm ml-2"
-            type="button"
-            @click="showValidationErrors=!showValidationErrors"
-          >
-            <i class="fas fa-times-circle text-danger mr-3"></i>
-            <i class="fas fa-ellipsis-v"></i>
-          </button>
+          <span v-if="validationErrors.length" class="d-flex align-items-center">
+            <i class="fas fa-times-circle text-danger ml-2 mr-2"></i>
+            <button
+              class="btn btn-sm"
+              type="button"
+              @click="showValidationErrors=!showValidationErrors"
+            >
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+          </span>
           <div
             v-if="showValidationErrors && validationErrors.length"
             class="inspector-footer__error w-100 p-2"
@@ -144,14 +145,14 @@
               v-for="(validation,index) in validationErrors"
               :key="index"
               href="javascript:void()"
-              class="dropdown-item mb-3"
+              class="dropdown-item p-0 mb-4 mt-2 d-flex align-items-center"
               @click="focusInspector(validation)"
             >
-              <i class="fas fa-times-circle text-danger"></i>
-              <span>
-                <span class="font-weight-bold ml-2">{{ validation.item.component }}</span>
+              <i class="fas fa-times-circle text-danger ml-2 mr-3"></i>
+              <div>
+                <span class="font-weight-bold">{{ validation.item.component }}</span>
                 <span class="d-block">{{ validation.message }}</span>
-              </span>
+              </div>
             </a>
           </div>
         </div>
