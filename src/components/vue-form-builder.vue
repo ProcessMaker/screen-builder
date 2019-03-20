@@ -457,7 +457,7 @@ $border-color: #dee2e6;
     position: absolute;
     top: $inspectorTopPosition;
     left: $inspectorLeftPosition;
-    overflow: scroll;
+    overflow: auto;
     height: $inspectorErrorDrawerHeight;
     border: 1px solid $border-color;
     border-right: 0;
