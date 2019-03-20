@@ -115,8 +115,9 @@
         </div>
 
         <div
-          class="card-footer position-absolute w-100 inspector-footer d-flex justify-content-end"
+          class="card-footer position-absolute w-100 inspector-footer d-flex justify-content-end align-items-center"
         >
+          Errors {{ validationErrors.length }}
           <button
             v-if="!validationErrors.length"
             class="btn btn-sm btn-outline-light"
@@ -127,12 +128,12 @@
           </button>
           <button
             v-if="validationErrors.length"
-            class="btn btn-sm btn-outline-danger"
+            class="btn btn-sm ml-2"
             type="button"
             @click="showValidationErrors=!showValidationErrors"
           >
-            Errors {{ validationErrors.length }}
-            <i class="fas fa-times-circle text-danger"></i>
+            <i class="fas fa-times-circle text-danger mr-3"></i>
+            <i class="fas fa-ellipsis-v"></i>
           </button>
           <div
             v-if="showValidationErrors && validationErrors.length"
