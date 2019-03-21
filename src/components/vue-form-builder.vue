@@ -136,11 +136,7 @@
             <i
               class="fas fa-times-circle text-danger ml-2 mr-2"
             ></i>
-            <button
-              class="btn btn-sm"
-              type="button"
-              @click="showValidationErrors=!showValidationErrors"
-            >
+            <button class="btn btn-sm" type="button">
               <i class="fas fa-ellipsis-v"></i>
             </button>
           </span>
