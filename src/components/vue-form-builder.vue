@@ -117,17 +117,25 @@
         <div
           class="card-footer position-absolute w-100 inspector-footer d-flex justify-content-end align-items-center"
         >
-          Errors {{ validationErrors.length }}
-          <button
-            v-if="!validationErrors.length"
-            class="btn btn-sm"
-            type="button"
+          <div v-if="!validationErrors.length">
+            Errors {{ validationErrors.length }}
+            <button
+              class="btn btn-sm"
+              type="button"
+              @click="showValidationErrors=!showValidationErrors"
+            >
+              <i class="fas fa-check-circle text-success"></i>
+            </button>
+          </div>
+          <span
+            v-if="validationErrors.length"
             @click="showValidationErrors=!showValidationErrors"
+            class="errors-container d-flex align-items-center"
           >
-            <i class="fas fa-check-circle text-success"></i>
-          </button>
-          <span v-if="validationErrors.length" class="d-flex align-items-center">
-            <i class="fas fa-times-circle text-danger ml-2 mr-2"></i>
+            Errors {{ validationErrors.length }}
+            <i
+              class="fas fa-times-circle text-danger ml-2 mr-2"
+            ></i>
             <button
               class="btn btn-sm"
               type="button"
@@ -445,6 +453,10 @@ $border-color: #dee2e6;
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
+}
+
+.errors-container {
+    cursor: pointer;
 }
 
 .inspector-footer {
