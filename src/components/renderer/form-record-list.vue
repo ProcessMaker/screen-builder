@@ -69,7 +69,7 @@
             <p>The form to be displayed is not assigned..</p>
         </b-modal>
         <div v-if="editable && selfReferenced" class="alert alert-danger">
-            The add/edit form referencing our own form which is not allowed
+            The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.
         </div>
     </div>
 </template>
