@@ -116,6 +116,15 @@ export default [{
         },
         inspector: [
             {
+                type: "FormInput",
+                field: "name",
+                config: {
+                    label: "Field Name",
+                    name: 'Field Name',
+                    helper: "ID of the text wrapper. You can use it for CSS Styling"
+                }
+            },
+            {
                 type: "FormTextArea",
                 field: "label",
                 config: {
