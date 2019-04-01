@@ -50,9 +50,9 @@
             </table>
             <b-btn v-b-modal.addOptionModal>Add Option</b-btn>
 
-            <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" title="Add New Option">
-                <form-input label="Option Value" v-model="addValue" :error="this.addError"></form-input>
-                <form-input label="Option Label" v-model="addContent"></form-input>
+            <b-modal centered @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" title="Add New Option">
+                <form-input label="Field Name" v-model="addValue" :error="this.addError"></form-input>
+                <form-input label="Field Label" v-model="addContent"></form-input>
             </b-modal>
         </template>
 
