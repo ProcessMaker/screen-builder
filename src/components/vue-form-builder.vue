@@ -9,10 +9,10 @@
                                v-model="controls"
                                :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                                :clone="cloneControl">
-                        <div class="d-flex align-content-center flex-wrap p-2"
+                        <div class="d-flex align-items-center flex-wrap m-2 mb-3"
                              v-for="(element, index) in controls"
                              :key="index">
-                            <div class="control-icon">
+                            <div class="control-icon d-flex align-items-center">
                                 <img v-if="element['editor-icon']" :src="element['editor-icon']">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
                             </div>
@@ -349,19 +349,11 @@
 
 <style lang="scss" scoped>
     .control-icon {
-        width: 20px;
-        margin-right: 8px;
+        width: 30px;
+        font-size: 20px;
 
         img {
-            max-width: 20px;
-            max-height: 20px;
-        }
-
-        text-align: right;
-
-        i {
-            font-size: 24px;
-            margin-right: 8px;
+          height: 20px;
         }
     }
 
