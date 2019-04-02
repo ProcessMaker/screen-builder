@@ -5,7 +5,7 @@
     id="computed-properties"
     centered
     hide-footer
-    title="Computed Properties"
+    :title="$t('Computed Properties')"
     @hidden="displayTableList"
   >
     <b-alert
@@ -13,31 +13,38 @@
       dismissible
       :show="showDismissibleAlert"
       @dismissed="showDismissibleAlert=false"
-    >{{ message }}</b-alert>
+    >{{ $t(message) }}</b-alert>
     <template v-if="displayList">
       <b-row class="float-right">
         <div class="m-2">
           <b-btn size="sm" variant="primary" @click.stop="displayFormProperty">
-            <i class="fas fa-plus"></i> Add Property
+            <i class="fas fa-plus"></i> {{ $t('Add Property') }}
           </b-btn>
         </div>
       </b-row>
 
       <b-table :items="current" :fields="fields" responsive striped bordered small hover fixed>
+      <template slot="HEAD_property" slot-scope="data">
+      {{ $t(data.label) }}
+      </template>
+      <template slot="HEAD_actions" slot-scope="data">
+      {{ $t(data.label) }}
+      </template>
+
         <template slot="actions" slot-scope="row">
           <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
           <a
             variant="action"
             @click.stop="row.toggleDetails"
             class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-            title="Details"
+            :title="$t('Details')"
           >
             <i class="fa fa-list-alt fa-1x"></i>
           </a>
           <a
             size="lg"
             variant="action"
-            title="edit"
+            :title="$t('edit')"
             class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
             @click.stop="editProperty(row.item)"
           >
@@ -46,7 +53,7 @@
           <a
             size="lg"
             variant="action"
-            title="Delete"
+            :title="$t('Delete')"
             class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
             @click.stop="deleteProperty(row.item)"
           >
@@ -57,17 +64,17 @@
           <b-card>
             <b-row class="mb-1">
               <b-col sm="3" class="text-sm-right">
-                <b>Field:</b>
+                <b>{{$t('Field:')}}</b>
               </b-col>
-              <b-col>{{ row.item.property }}</b-col>
+              <b-col>{{ $t(row.item.property) }}</b-col>
             </b-row>
             <b-row class="mb-1">
               <b-col sm="3" class="text-sm-right">
-                <b>Formula:</b>
+                <b>{{$t('Formula:')}}</b>
               </b-col>
-              <b-col>{{ row.item.formula }}</b-col>
+              <b-col>{{ $t(row.item.formula) }}</b-col>
             </b-row>
-            <b-button class="float-right" size="sm" @click="row.toggleDetails">Hide Details</b-button>
+            <b-button class="float-right" size="sm" @click="row.toggleDetails">{{$t('Hide Details')}}</b-button>
           </b-card>
         </template>
       </b-table>
@@ -76,18 +83,18 @@
     <template v-else>
       <form-input
         v-model="add.property"
-        label="Property Name"
+        :label="$t('Property Name')"
         name="property name"
         validation="required"
       ></form-input>
       <form-text-area
         v-model="add.name"
-        label="Description"
+        :label="$t('Description')"
         name="property description"
         validation="required"
       ></form-text-area>
       <div class="form-group" style='position: relative;'>
-        <label>Formula</label>
+        <label>{{$t('Formula')}}</label>
         <div class="float-right">
           <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType">
             <i class="fas fa-square-root-alt"></i>
@@ -100,14 +107,14 @@
         <div v-show="isJS" class="editor-border" :class="{'is-invalid':!add.formula}"></div>
         <monaco-editor v-show="isJS" :options="monacoOptions" :minimap="{enabled:false}" class="editor" v-model="add.formula" language="javascript">
         </monaco-editor>
-        <div v-if="!add.formula" class="invalid-feedback"><div>The property formula field is required.</div></div>
+        <div v-if="!add.formula" class="invalid-feedback"><div>{{$t('The property formula field is required.')}}</div></div>
       </div>
       <button
         class="btn btn-secondary float-right ml-2"
         @click="validateData"
         :disabled="disabled"
       >Save Property</button>
-      <button class="btn btn-outline-secondary float-right" @click="displayTableList">Cancel</button>
+      <button class="btn btn-outline-secondary float-right" @click="displayTableList">{{$t('Cancel')}}</button>
     </template>
   </b-modal>
 </template>
