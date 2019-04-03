@@ -113,7 +113,7 @@
         class="btn btn-secondary float-right ml-2"
         @click="validateData"
         :disabled="disabled"
-      >Save Property</button>
+      >{{$t('Save Property')}}</button>
       <button class="btn btn-outline-secondary float-right" @click="displayTableList">{{$t('Cancel')}}</button>
     </template>
   </b-modal>
