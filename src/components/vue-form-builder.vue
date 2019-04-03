@@ -103,7 +103,7 @@
                                 href="javascript:void()"
                                 class="dropdown-item" @click="focusInspector(validation)">
                                 <i class="fas fa-times-circle text-danger"></i>
-                                <b>{{$t(validation.item.component)}}</b>
+                                <b>{{$t(validation.item.label)}}</b>
                                 {{$t(validation.message)}}
                             </a>
                         </div>
