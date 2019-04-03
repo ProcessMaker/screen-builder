@@ -270,6 +270,17 @@
       },
       currentPage() {
         this.inspection = {};
+      },
+      inspection(e) {
+        for (var i in e.inspector) {
+          e.inspector[i].config.label = this.$t(e.inspector[i].config.label)
+          e.inspector[i].config.helper = this.$t(e.inspector[i].config.helper)
+          if (e.inspector[i].config.options) {
+            for (var io in e.inspector[i].config.options) {
+              e.inspector[i].config.options[io].content = this.$t(e.inspector[i].config.options[io].content)
+            }
+          }
+        }
       }
     },
     methods: {
