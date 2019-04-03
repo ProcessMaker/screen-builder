@@ -1,6 +1,6 @@
 <template>
     <div class="form-group">
-        <button @click="click" :class="classList" :name="name" v-model="fieldValue">dddddd {{ $t(label) }}</button>
+        <button @click="click" :class="classList" :name="name" v-model="fieldValue">{{ $t(label) }}</button>
     </div>
 </template>
 

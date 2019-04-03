@@ -1,6 +1,6 @@
 <template>
     <div class="record-list">
-        <h4>{{label}}</h4>
+        <h4>{{ $t(label) }}</h4>
         <table>
             <thead>
                 <tr>

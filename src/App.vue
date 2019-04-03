@@ -3,16 +3,16 @@
         <nav class="navbar  navbar-expand-lg  navbar navbar-dark bg-dark">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" @click="mode = 'editor'" href="#">Editor</a>
+                    <a class="nav-link" @click="mode = 'editor'" href="#">{{$t('Editor')}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" @click="mode = 'preview'" href="#">Preview</a>
+                    <a class="nav-link" @click="mode = 'preview'" href="#">{{$t('Preview')}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" @click="openComputedProperties" href="#">Computed Properties</a>
+                    <a class="nav-link" @click="openComputedProperties" href="#">{{$t('Computed Properties')}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" @click="openCustomCSS" href="#">Custom CSS</a>
+                    <a class="nav-link" @click="openCustomCSS" href="#">{{$t('Custom CSS')}}</a>
                 </li>
             </ul>
         </nav>
@@ -24,13 +24,13 @@
 
             <div id="data-input" class="w-25 border overflow-auto">
                 <div class="card-header">
-                    Data Input
+                    {{$t('Data Input')}}
                 </div>
                 <div class="card-body mb-5">
                     <div class="alert"
                          :class="{'alert-success': previewInputValid, 'alert-danger': !previewInputValid}">
-                        <span v-if="previewInputValid">Valid JSON Data Object</span>
-                        <span v-else>Invalid JSON Data Object</span>
+                        <span v-if="previewInputValid">{{$t('Valid JSON Data Object')}}</span>
+                        <span v-else>{{$t('Invalid JSON Data Object')}}</span>
                     </div>
                     <form-text-area rows="18" v-model="previewInput"></form-text-area>
                 </div>
@@ -54,7 +54,7 @@
 
             <div id="data-preview" class="w-25 border overflow-auto mb-5">
                 <div class="card-header">
-                    Data Preview
+                    {{$t('Data Preview')}}
                 </div>
                 <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
             </div>
