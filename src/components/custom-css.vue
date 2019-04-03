@@ -11,7 +11,7 @@
     cancel-variant="btn btn-outline-secondary"
     ok-variant="btn btn-secondary ml-2"
   >
-    <p>You can use field names as css ID selectors (prefixed by a "#")</p>
+    <p>You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']</p>
     <div class="editor">
       <monaco-editor :options="monacoOptions" class="monaco" v-model="innerValue"/>
     </div>
