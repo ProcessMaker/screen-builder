@@ -213,7 +213,10 @@ import BootstrapVue from 'bootstrap-vue'
 
 Vue.use(BootstrapVue)
 
-let Validator = require('validatorjs')
+  let Validator = require('validatorjs');
+  Validator.register('attr-value', value => {
+    return value.match(/^[a-zA-Z0-9-_]+$/);
+  }, 'Must be letters, numbers, underscores or dashes');
 
 import {
     FormInput,
