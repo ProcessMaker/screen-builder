@@ -180,6 +180,7 @@
     FormRadioButtonGroup,
     FormDatePicker
   } from "@processmaker/vue-form-elements/src/components";
+import { constants } from 'fs';
 
   export default {
     mixins: [HasColorProperty],
@@ -346,8 +347,16 @@
           inspector: JSON.parse(JSON.stringify(control.inspector)),
           component: control.component,
           "editor-component": control["editor-component"],
-          label: control.label
+          label: control.label,
         };
+
+        copy.config.label = this.$t(copy.config.label)
+        if (copy.config.options) {
+          for (var io in copy.config.options) {
+            copy.config.options[io].content = this.$t(copy.config.options[io].content)
+          }
+        }
+
         // If it's a container, let's add an items property, with the default of items in the control
         if (control.container) {
           copy["items"] = JSON.parse(JSON.stringify(control.items));
