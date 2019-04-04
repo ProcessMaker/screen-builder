@@ -9,7 +9,7 @@
          class="btn btn-sm"
          :class="{'btn-outline-light': option.value!==value  , 'btn-outline-secondary': option.value===value}"
          @click="selectColor(option.value)">
-         <i class="fas fa-square" :class="'text-' + option.content"></i>
+         <i class="fas fa-square" :class="'text-' + option.value"></i>
       </a>
     </div>
     <small class="form-text text-muted">{{helper}}</small>
