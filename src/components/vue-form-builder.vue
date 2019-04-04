@@ -224,7 +224,8 @@
           }
         ],
         confirmMessage: '',
-        pageDelete: 0
+        pageDelete: 0,
+        translated: [],
       };
     },
     computed: {
@@ -272,6 +273,10 @@
         this.inspection = {};
       },
       inspection(e) {
+        if (this.translated.includes(e)) {
+          // already translated, don't translate again!
+          return
+        }
         for (var i in e.inspector) {
           e.inspector[i].config.label = this.$t(e.inspector[i].config.label)
           e.inspector[i].config.helper = this.$t(e.inspector[i].config.helper)
@@ -281,6 +286,7 @@
             }
           }
         }
+        this.translated.push(e);
       }
     },
     methods: {
