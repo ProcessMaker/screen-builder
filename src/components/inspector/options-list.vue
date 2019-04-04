@@ -4,7 +4,7 @@
         <h3>{{label}}</h3>
         <form-checkbox name="type"
                        toggle="true"
-                       label="Show in Json Format "
+                       :label="$t('Show in Json Format')"
                        v-model="displayList"
                        helper="">
         </form-checkbox>
@@ -12,25 +12,25 @@
         <template v-if="displayList">
             <div class="alert"
                  :class="{'alert-success': isValidJson, 'alert-danger': !isValidJson}">
-                <span v-if="isValidJson">Valid JSON Data Object</span>
-                <span v-else>Invalid JSON Data Object</span>
+                <span v-if="isValidJson">{{ $t('Valid JSON Data Object') }}</span>
+                <span v-else>{{ $t('Invalid JSON Data Object') }}</span>
             </div>
             <form-text-area name="dataJson"
                             label="Json Options"
                             rows="8"
-                            helper="It must be a correct json format."
+                            :helper="$t('It must be a correct json format')"
                             v-model="dataJson">
             </form-text-area>
-            <b-btn @click="saveDataJson" :disabled="!isValidJson">Save</b-btn>
+            <b-btn @click="saveDataJson" :disabled="!isValidJson">{{ $t('Save') }}</b-btn>
         </template>
 
         <template v-else>
             <table class="table table-sm">
                 <thead class="thead-dark">
                 <tr>
-                    <th>Value</th>
-                    <th>Content</th>
-                    <th>Actions</th>
+                    <th>{{ $t('Value') }}</th>
+                    <th>{{ $t('Content') }}</th>
+                    <th>{{ $t('Actions') }}</th>
                 </tr>
                 </thead>
                 <draggable @update="updateSort"
@@ -48,11 +48,11 @@
                     </tr>
                 </draggable>
             </table>
-            <b-btn v-b-modal.addOptionModal>Add Option</b-btn>
+            <b-btn v-b-modal.addOptionModal>{{ $t('Add Option') }}</b-btn>
 
-            <b-modal centered @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" title="Add New Option">
-                <form-input label="Field Name" v-model="addValue" :error="this.addError"></form-input>
-                <form-input label="Field Label" v-model="addContent"></form-input>
+            <b-modal centered @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" :title="$t('Add New Option')">
+                <form-input :label="$t('Field Name')" v-model="addValue" :error="this.addError"></form-input>
+                <form-input :label="$t('Field Label')" v-model="addContent"></form-input>
             </b-modal>
         </template>
 
@@ -130,7 +130,7 @@
         for (var existingOption of newOptions) {
           if (existingOption.value === this.addValue) {
             // Found, let's return cancel?
-            this.addError = "This value already exists in the list of options";
+            this.addError = this.$t("This value already exists in the list of options");
             event.preventDefault();
             return;
           }

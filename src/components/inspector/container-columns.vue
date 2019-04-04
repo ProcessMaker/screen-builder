@@ -4,7 +4,7 @@
         <h3>{{label}}</h3>
         <form-checkbox name="type"
                        toggle="true"
-                       label="Show in Json Format "
+                       :label="$t('Show in Json Format')"
                        v-model="displayList"
                        helper="">
         </form-checkbox>
@@ -21,16 +21,16 @@
                             helper="It must be a correct json format."
                             v-model="dataJson">
             </form-text-area>
-            <b-btn @click="saveDataJson" :disabled="!isValidJson">Save</b-btn>
+            <b-btn @click="saveDataJson" :disabled="!isValidJson">{{ $t('Save') }}</b-btn>
         </template>
 
         <template v-else>
             <table class="table table-sm">
                 <thead class="thead-dark">
                 <tr>
-                    <th>Column</th>
-                    <th>Colspan</th>
-                    <th>Remove</th>
+                    <th>{{ $t('Column') }}</th>
+                    <th>{{ $t('Colspan') }}</th>
+                    <th>{{ $t('Remove') }}</th>
                 </tr>
                 </thead>
                 <draggable
@@ -50,12 +50,12 @@
                     </tr>
                 </draggable>
             </table>
-            <b-btn v-b-modal.addOptionModal>Add Column</b-btn>
+            <b-btn v-b-modal.addOptionModal>{{ $t('Add Column') }}</b-btn>
             <small v-if="helper" class="form-text text-muted">{{helper}}</small>
 
-            <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" title="Add New Column">
+            <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" :title="$t('Add New Column')">
                 <form-input
-                        label="Column Width"
+                        :label="$t('Column Width')"
                         v-model="addContent"
                         validate="required|numeric|between:1,12"
                         :error="this.addError"
@@ -140,13 +140,13 @@
         let newOptions = JSON.parse(JSON.stringify(this.options));
 
         if (isNaN(this.addContent)) {
-          this.addError = "This value must be numeric";
+          this.addError = $t("This value must be numeric");
           event.preventDefault();
           return;
         }
 
         if (!(0 < this.addContent && this.addContent < 13)) {
-          this.addError = "This value must be between 1-12";
+          this.addError = $t("This value must be between 1-12");
           event.preventDefault();
           return;
         }
@@ -159,7 +159,7 @@
         });
 
         if (sum + Number(this.addContent) > 12) {
-          this.addError = "The total size of the columns exceeds 12.";
+          this.addError = $t("The total size of the columns exceeds 12");
           event.preventDefault();
           return;
         }
