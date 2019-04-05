@@ -12,7 +12,7 @@
          <i class="fas fa-square" :class="'text-' + option.value"></i>
       </a>
     </div>
-    <small class="form-text text-muted">{{helper}}</small>
+    <small class="form-text text-muted">{{$t(helper)}}</small>
   </div>
 </template>
 
