@@ -51,7 +51,7 @@
                 </draggable>
             </table>
             <b-btn v-b-modal.addOptionModal>{{ $t('Add Column') }}</b-btn>
-            <small v-if="helper" class="form-text text-muted">{{helper}}</small>
+            <small v-if="helper" class="form-text text-muted">{{$t(helper)}}</small>
 
             <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" :title="$t('Add New Column')">
                 <form-input
