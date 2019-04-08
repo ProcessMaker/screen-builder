@@ -4,14 +4,14 @@
     size="lg"
     id="custom-css"
     centered
-    title="Custom CSS"
+    :title="$t('Custom CSS')"
     @ok="save"
     @cancel="close"
     @hide="hide"
     cancel-variant="btn btn-outline-secondary"
     ok-variant="btn btn-secondary ml-2"
   >
-    <p>You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']</p>
+    <p>{{$t("You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']")}}</p>
     <div class="editor">
       <monaco-editor :options="monacoOptions" class="monaco" v-model="innerValue"/>
     </div>
@@ -19,8 +19,8 @@
     <b-alert :show="cssErrors != ''" variant="danger">
       <pre>{{ cssErrors }}</pre>
     </b-alert>
-
-    <div slot="modal-ok">Save</div>
+    <div slot="modal-cancel">{{$t('Cancel')}}</div>
+    <div slot="modal-ok">{{$t('Save')}}</div>
   </b-modal>
 </template>
 

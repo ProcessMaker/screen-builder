@@ -6,12 +6,12 @@
             </div>
             <div class="col text-right">
                 <button class="btn btn-primary" v-if="editable && !selfReferenced" @click="showAddForm">
-                    Add Record
+                    {{ $t('Add Record') }}
                 </button>
             </div>
         </div>
         <div class="alert alert-danger" v-if="!value">
-            There is no records in this list or the data is invalid.
+            {{ $t('There is no records in this list or the data is invalid.') }}
         </div>
         <template v-else>
             <vuetable :per-page="perPage" ref="vuetable" :data-manager="dataManager" :fields="tableFields"
@@ -22,7 +22,7 @@
                         <div class="btn-group" role="group" aria-label="Actions">
                             <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">Edit</button>
                             <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-primary">
-                                Delete
+                                {{ $t('Delete') }}
                             </button>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                  size="lg"
                  v-if="editable && !selfReferenced"
                  ref="addModal"
-                 title="Add Record">
+                 :title="$t('Add Record')">
             <vue-form-renderer :page="form"
                                ref="addRenderer"
                                v-model="addItem"
@@ -46,7 +46,7 @@
                  size="lg"
                  v-if="editable && !selfReferenced"
                  ref="editModal"
-                 title="Edit Record">
+                 :title="$t('Edit Record')">
             <vue-form-renderer :page="form"
                                ref="editRenderer"
                                v-model="editItem"
@@ -57,19 +57,19 @@
                  size="lg"
                  v-if="editable && !selfReferenced"
                  ref="deleteModal"
-                 title="Delete Record">
-            <p>Are you sure you want to remove this record?</p>
+                 :title="$t('Delete Record')">
+            <p>{{ $t('Are you sure you want to remove this record?') }}</p>
         </b-modal>
         <b-modal @ok="hideInformation"
                  size="sm"
                  v-if="editable && !selfReferenced"
                  ref="infoModal"
-                 title="Information form"
+                 :title="$t('Information form')"
                  ok-only>
-            <p>The form to be displayed is not assigned..</p>
+            <p>{{$t('The form to be displayed is not assigned..')}}</p>
         </b-modal>
         <div v-if="editable && selfReferenced" class="alert alert-danger">
-            The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.
+            {{$t('The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.')}}
         </div>
     </div>
 </template>

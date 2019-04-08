@@ -3,7 +3,7 @@
         <div class="d-flex h-100 mb-5">
 
             <div class="w-25 border overflow-auto">
-                <div class="card-header">Controls</div>
+                <div class="card-header">{{$t('Controls')}}</div>
                 <div class="card-body d-flex flex-wrap mb-5">
                     <draggable id="controls"
                                v-model="controls"
@@ -16,7 +16,7 @@
                                 <img v-if="element['editor-icon']" :src="element['editor-icon']">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
                             </div>
-                            <div class="font-weight-normal text-capitalize">{{element.label}}</div>
+                            <div class="font-weight-normal text-capitalize">{{$t(element.label)}}</div>
                         </div>
                     </draggable>
                 </div>
@@ -36,7 +36,7 @@
                             {{data.name}}
                             <button class="btn btn-sm btn-primary mr-1"
                                     @click="openEditPageModal(page)">
-                                Edit
+                                {{$t('Edit')}}
                             </button>
                             <button class="btn btn-sm btn-danger mr-1"
                                     @click="confirmDelete(page)"
@@ -46,7 +46,7 @@
                     </li>
                     <li slot="footer" class="nav-item">
                         <a class="nav-link" href="#">
-                            <b-btn variant="success" size="sm" v-b-modal.addPageModal>+ Add Page</b-btn>
+                            <b-btn variant="success" size="sm" v-b-modal.addPageModal>{{$t('+ Add Page')}}</b-btn>
                         </a>
                     </li>
                 </draggable>
@@ -93,7 +93,7 @@
 
             <div class="w-25 border d-flex flex-column">
                 <div class="card-header header-fixed">
-                    Inspector
+                    {{$t('Inspector')}}
                     <div class="float-right dropdown">
                         <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
                             <i class="fas fa-check-circle text-success"></i>
@@ -106,8 +106,8 @@
                                 href="javascript:void()"
                                 class="dropdown-item" @click="focusInspector(validation)">
                                 <i class="fas fa-times-circle text-danger"></i>
-                                <b>{{validation.item.component}}</b>
-                                {{validation.message}}
+                                <b>{{$t(validation.item.label)}}</b>
+                                {{$t(validation.message)}}
                             </a>
                         </div>
                     </div>
@@ -122,14 +122,14 @@
                 </div>
             </div>
 
-            <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
+            <b-modal id="addPageModal" @ok="addPage" :title="$t('Add New Page')">
                 <form-input v-model="addPageName"
-                            label="Page Name"
-                            helper="The name of the new page to add"></form-input>
+                            :label="$t('Page Name')"
+                            :helper="$t('The name of the new page to add')"></form-input>
             </b-modal>
 
-            <b-modal ref="editPageModal" @ok="editPage" title="Edit Page Title">
-                <form-input v-model="editPageName" label="Page Name" helper="The new name of the page"></form-input>
+            <b-modal ref="editPageModal" @ok="editPage" :title="$t('Edit Page Title')">
+                <form-input v-model="editPageName" :label="$t('Page Name')" :helper="$t('The new name of the page')"></form-input>
             </b-modal>
 
             <b-modal ref="confirm"
@@ -139,8 +139,8 @@
                      @cancel="hideConfirmModal"
                      cancel-variant="btn btn-outline-secondary"
                      ok-variant="btn btn-secondary ml-2">
-                <p>{{confirmMessage}}</p>
-                <div slot="modal-ok">Save</div>
+                <p>{{$t(confirmMessage)}}</p>
+                <div slot="modal-ok">{{$t('Save')}}</div>
             </b-modal>
         </div>
     </div>
@@ -185,7 +185,8 @@
     FormRadioButtonGroup,
     FormDatePicker,
     FormHtmlEditor
-  } from "@processmaker/vue-form-elements";
+  } from "@processmaker/vue-form-elements/src/components";
+import { constants } from 'fs';
 
   export default {
     mixins: [HasColorProperty],
@@ -231,7 +232,8 @@
           }
         ],
         confirmMessage: '',
-        pageDelete: 0
+        pageDelete: 0,
+        translated: [],
       };
     },
     computed: {
@@ -277,6 +279,22 @@
       },
       currentPage() {
         this.inspection = {};
+      },
+      inspection(e) {
+        if (this.translated.includes(e)) {
+          // already translated, don't translate again!
+          return
+        }
+        for (var i in e.inspector) {
+          e.inspector[i].config.label = this.$t(e.inspector[i].config.label)
+          e.inspector[i].config.helper = this.$t(e.inspector[i].config.helper)
+          if (e.inspector[i].config.options) {
+            for (var io in e.inspector[i].config.options) {
+              e.inspector[i].config.options[io].content = this.$t(e.inspector[i].config.options[io].content)
+            }
+          }
+        }
+        this.translated.push(e);
       }
     },
     methods: {
@@ -339,6 +357,14 @@
           label: control.label,
           value: control.value
         };
+
+        copy.config.label = this.$t(copy.config.label)
+        if (copy.config.options) {
+          for (var io in copy.config.options) {
+            copy.config.options[io].content = this.$t(copy.config.options[io].content)
+          }
+        }
+
         // If it's a container, let's add an items property, with the default of items in the control
         if (control.container) {
           copy["items"] = JSON.parse(JSON.stringify(control.items));
