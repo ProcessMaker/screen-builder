@@ -97,7 +97,37 @@ const colorProperty = {
     }
 };
 
-export default [{
+export default [
+{
+    editorComponent: FormHtmlEditor,
+    editorBinding: 'FormHtmlEditor',
+    rendererComponent: FormHtmlEditor,
+    rendererBinding: 'FormHtmlEditor',
+    control: {
+        label: 'Rich Text',
+        component: 'FormHtmlEditor',
+        'editor-component': 'FormHtmlEditor',
+        'fa-icon': 'fas fa-pencil-ruler',
+        config: {
+            interactive: true,
+            content: '<p>Rich text editor</p>',
+        },
+        inspector: [
+            {
+                type: "FormTextArea",
+                field: "content",
+                config: {
+                    rows: 5,
+                    label: "Rich Text Content",
+                    helper: "The HTML text to display",
+                    value: '',
+                }
+            },
+            bgcolorProperty,
+        ]
+    },
+},
+{
     builderComponent: FormText,
     builderBinding: 'FormText',
     rendererComponent: FormText,
@@ -955,35 +985,6 @@ export default [{
                 type: "number",
             }
         },
-        ]
-    },
-},
-{
-    editorComponent: FormHtmlEditor,
-    editorBinding: 'FormHtmlEditor',
-    rendererComponent: FormHtmlEditor,
-    rendererBinding: 'FormHtmlEditor',
-    control: {
-        label: 'Rich Text',
-        component: 'FormHtmlEditor',
-        'editor-component': 'FormHtmlEditor',
-        'fa-icon': 'fas fa-pencil-ruler',
-        config: {
-            interactive: true,
-            content: '<p>Rich text editor</p>',
-        },
-        inspector: [
-            {
-                type: "FormTextArea",
-                field: "content",
-                config: {
-                    rows: 5,
-                    label: "Rich Text Content",
-                    helper: "The HTML text to display",
-                    value: '',
-                }
-            },
-            bgcolorProperty,
         ]
     },
 }
