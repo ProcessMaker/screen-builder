@@ -9,10 +9,10 @@
                                v-model="controls"
                                :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                                :clone="cloneControl">
-                        <div class="d-flex align-content-center flex-wrap p-2"
+                        <div class="d-flex align-items-center flex-wrap m-2 mb-3"
                              v-for="(element, index) in controls"
                              :key="index">
-                            <div class="control-icon">
+                            <div class="control-icon d-flex align-items-center">
                                 <img v-if="element['editor-icon']" :src="element['editor-icon']">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
                             </div>
@@ -61,7 +61,8 @@
                                 <div class="control-item"
                                      :class="{selected: selected === element}"
                                      v-for="(element,index) in config[currentPage]['items']"
-                                     :key="index">
+                                     :key="index"
+                                     @click="inspect(element)">
                                     <div v-if="element.container" @click="inspect(element)">
                                         <component :class="elementCssClass(element)"
                                                    @inspect="inspect"
@@ -73,11 +74,13 @@
                                     </div>
 
                                     <div v-else>
-                                        <component :class="elementCssClass(element)"
-                                                   v-bind="element.config"
-                                                   :is="element['editor-component']">
-                                        </component>
-                                        <div @click="inspect(element)" class="mask"></div>
+                                        <component
+                                          :class="elementCssClass(element)"
+                                          v-bind="element.config"
+                                          :is="element['editor-component']"
+                                          @input="element.config.interactive ? element.config.content = $event : null"
+                                        />
+                                        <div v-if="!element.config.interactive" class="mask"></div>
                                     </div>
 
                                     <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
@@ -165,6 +168,8 @@
 
   import BootstrapVue from "bootstrap-vue";
 
+  import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+
   Vue.use(BootstrapVue);
 
   let Validator = require('validatorjs');
@@ -178,8 +183,9 @@
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormDatePicker
-  } from "@processmaker/vue-form-elements/src/components";
+    FormDatePicker,
+    FormHtmlEditor
+  } from "@processmaker/vue-form-elements";
 
   export default {
     mixins: [HasColorProperty],
@@ -202,7 +208,8 @@
       FormRecordList,
       FormImage,
       ImageUpload,
-      ColorSelect
+      ColorSelect,
+      FormHtmlEditor
     },
     data() {
       return {
@@ -329,7 +336,8 @@
           inspector: JSON.parse(JSON.stringify(control.inspector)),
           component: control.component,
           "editor-component": control["editor-component"],
-          label: control.label
+          label: control.label,
+          value: control.value
         };
         // If it's a container, let's add an items property, with the default of items in the control
         if (control.container) {
@@ -344,24 +352,17 @@
 
 <style lang="scss" scoped>
     .control-icon {
-        width: 20px;
-        margin-right: 8px;
+        width: 30px;
+        font-size: 20px;
 
         img {
-            max-width: 20px;
-            max-height: 20px;
-        }
-
-        text-align: right;
-
-        i {
-            font-size: 24px;
-            margin-right: 8px;
+          height: 20px;
         }
     }
 
     .control-item {
         position: relative;
+        border: 1px solid transparent;
 
         .delete {
             position: absolute;
@@ -372,9 +373,7 @@
 
         &.selected,
         &:hover {
-            .mask {
-                border: 1px solid red;
-            }
+            border: 1px solid red;
 
             .delete {
                 display: inline-block;
