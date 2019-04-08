@@ -23,33 +23,34 @@
             </div>
 
             <div class="w-75 flex-grow-1 overflow-auto">
-                <draggable :element="'ul'"
-                           class="nav nav-tabs"
-                           v-model="config"
-                           :options="{draggable:'.page-item'}"
-                           @change="handlePageSort">
-                    <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
-                        <a class="nav-link"
-                           href="#"
-                           @click="currentPage = page"
-                           :class="{active: currentPage == page}">
-                            {{data.name}}
-                            <button class="btn btn-sm btn-primary mr-1"
-                                    @click="openEditPageModal(page)">
-                                Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger mr-1"
-                                    @click="confirmDelete(page)"
-                                    v-show="displayDelete">x
-                            </button>
-                        </a>
-                    </li>
-                    <li slot="footer" class="nav-item">
-                        <a class="nav-link" href="#">
-                            <b-btn variant="success" size="sm" v-b-modal.addPageModal>+ Add Page</b-btn>
-                        </a>
-                    </li>
+                <draggable
+                  class="d-flex align-items-center m-4"
+                  v-model="config"
+                  :options="{draggable:'.page-item'}"
+                  @change="handlePageSort"
+                  v-for="(data, page) in config" :key="page">
+                    <div>
+                      <b-dropdown :text="data.name" button-content="btn-outline-secondary">
+                          <b-dropdown-item active @click="currentPage = page">{{ currentPage }}</b-dropdown-item>
+                      </b-dropdown>
+                    </div>
+                    <div class="ml-auto">
+                      <button type="button" class="btn btn-light" v-b-modal.addPageModal>
+                        <i class="fas fa-plus"></i>
+                        <!-- Add Page -->
+                      </button>
+                      <button type="button" class="btn btn-light"
+                        @click="openEditPageModal(page)">
+                        <i class="far fa-edit"></i>
+                        <!-- Edit -->
+                      </button>
+                      <button type="button" class="btn btn-light" @click="confirmDelete(page)">
+                        <i class="far fa-trash-alt"></i>
+                      </button>
+                    </div>
                 </draggable>
+
+                <hr class="w-100">
 
                 <div class="container p-4 mb-5">
                     <div class="row">
