@@ -32,6 +32,7 @@
           :name="element.config.name !== undefined ? element.config.name : null"
           v-bind="element.config"
           :is="element['component']"
+          :disabled="element.config.interactive"
         ></component>
       </div>
     </div>
