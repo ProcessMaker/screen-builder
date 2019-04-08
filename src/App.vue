@@ -1,21 +1,31 @@
 <template>
     <div id="app" class="h-100 mb-3">
-        <nav class="navbar  navbar-expand-lg  navbar navbar-dark bg-dark">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" @click="mode = 'editor'" href="#">Editor</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" @click="mode = 'preview'" href="#">Preview</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" @click="openComputedProperties" href="#">Computed Properties</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" @click="openCustomCSS" href="#">Custom CSS</a>
-                </li>
-            </ul>
-        </nav>
+        <div class="d-flex m-3">
+            <div>
+              <button type="button" class="btn btn-light" :class="isBuilderActive" @click="mode = 'editor'">
+                <i class="fas fa-drafting-compass pr-1"></i>
+                Design
+              </button>
+              <button type="button" class="btn btn-light"  :class="isPreviewActive" @click="mode = 'preview'">
+                <i class="fas fa-cog pr-1"></i>
+                Preview
+              </button>
+            </div>
+            <div class="ml-auto">
+              <button type="button" class="btn btn-light" @click="openComputedProperties">
+                <i class="fas fa-flask pr-1"></i>
+                Calcs
+              </button>
+              <button type="button" class="btn btn-light" @click="openCustomCSS">
+                <i class="fab fa-css3 pr-1"></i>
+                CSS
+              </button>
+              <button type="button" class="btn btn-light">
+                <i class="far fa-save"></i>
+              </button>
+            </div>
+        </div>
+
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
@@ -127,6 +137,12 @@
       }
     },
     computed: {
+      isBuilderActive() {
+        return this.displayBuilder ? 'bg-secondary text-white' : null
+      },
+      isPreviewActive() {
+        return this.displayPreview ? 'bg-secondary text-white' : null
+      },
       previewInputValid() {
         try {
           JSON.parse(this.previewInput)
