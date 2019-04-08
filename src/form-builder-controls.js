@@ -136,7 +136,7 @@ export default [
         label: 'Text Box',
         component: 'FormText',
         'editor-component': 'FormText',
-        'editor-icon': require('./assets/icons/font-solid.svg'),
+        'fa-icon': 'fas fa-font',
         config: {
             label: 'New Text',
             fontSize: '1em',
@@ -257,7 +257,7 @@ export default [
         label: "Line Input",
         component: 'FormInput',
         "editor-component": "FormInput",
-        'editor-icon': require('./assets/icons/square-regular.svg'),
+        'fa-icon': 'far fa-square',
         config: {
             label: "New Input",
             name: '',
@@ -340,7 +340,7 @@ export default [
         label: "Select",
         component: 'FormSelect',
         "editor-component": "FormSelect",
-        'editor-icon': require('./assets/icons/caret-square-down-solid.svg'),
+        'fa-icon': 'far fa-caret-square-down',
         config: {
             label: "New Select",
             placeholder: "",
@@ -408,7 +408,7 @@ export default [
         label: "Radio Group",
         component: 'FormRadioButtonGroup',
         "editor-component": "FormRadioButtonGroup",
-        'editor-icon': require('./assets/icons/list-ul-solid.svg'),
+        'fa-icon': 'fas fa-list',
         config: {
             label: "New Radio Button Group",
             options: [{
@@ -473,7 +473,7 @@ export default [
         label: "Checkbox",
         component: 'FormCheckbox',
         "editor-component": "FormCheckbox",
-        'editor-icon': require('./assets/icons/check-square-solid.svg'),
+        'fa-icon': 'far fa-check-square',
         config: {
             label: "New Checkbox",
             helper: null,
@@ -537,7 +537,7 @@ export default [
         label: "Textarea",
         component: 'FormTextArea',
         "editor-component": "FormTextArea",
-        'editor-icon': require('./assets/icons/paragraph-solid.svg'),
+        'fa-icon': 'fas fa-paragraph',
         config: {
             label: "New Textarea",
             placeholder: "",
@@ -608,7 +608,7 @@ export default [
         label: "Date Picker",
         component: 'FormDatePicker',
         "editor-component": "FormDatePicker",
-        'editor-icon': require('./assets/icons/calendar-regular.svg'),
+        'fa-icon': 'far fa-calendar',
         config: {
             label: "New Date Picker",
             type: 'date',
@@ -654,7 +654,7 @@ export default [
         label: "Submit Button",
         component: 'FormButton',
         "editor-component": "FormButton",
-        'editor-icon': require('./assets/icons/share-square-solid.svg'),
+        'fa-icon': 'fas fa-share-square',
         config: {
             label: "New Submit",
             variant: 'primary',
@@ -746,7 +746,7 @@ export default [
         label: "Page Navigation",
         component: 'FormButton',
         "editor-component": "FormButton",
-        'editor-icon': require('./assets/icons/angle-double-right-solid.svg'),
+        'fa-icon': 'fas fa-chevron-right',
         config: {
             label: "New Page Navigation",
             variant: 'primary',
@@ -829,7 +829,7 @@ export default [
         label: "Multi Column",
         component: 'FormMultiColumn',
         "editor-component": "MultiColumn",
-        'editor-icon': require('./assets/icons/columns-solid.svg'),
+        'fa-icon': 'fas fa-columns',
         container: true,
         // Default items container
         items: [
@@ -869,7 +869,7 @@ export default [
         label: "Record List",
         component: 'FormRecordList',
         "editor-component": "FormText",
-        'editor-icon': require('./assets/icons/th-list-solid.svg'),
+        'fa-icon': 'fas fa-th-list',
         config: {
             name: '',
             label: "New Record List",

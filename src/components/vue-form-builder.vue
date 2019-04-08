@@ -13,8 +13,7 @@
                              v-for="(element, index) in controls"
                              :key="index">
                             <div class="control-icon d-flex align-items-center">
-                                <img v-if="element['editor-icon']" :src="element['editor-icon']">
-                                <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
+                                <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
                             </div>
                             <div class="font-weight-normal text-capitalize">{{element.label}}</div>
                         </div>
