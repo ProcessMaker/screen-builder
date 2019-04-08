@@ -76,7 +76,7 @@
 
   import {
     FormTextArea,
-  } from "@processmaker/vue-form-elements/src/components";
+  } from "@processmaker/vue-form-elements";
 
 
   export default {
@@ -144,17 +144,17 @@
     },
     mounted() {
       // Iterate through our initial config set, calling this.addControl
-      for (var i = 0; i < controlConfig.length; i++) {
-        //Add new properties global to inspector
-        Array.prototype.push.apply(controlConfig[i].control.inspector, globalProperties[0].inspector);
+      controlConfig.forEach(config => {
+        config.control.inspector.push(...globalProperties[0].inspector);
+
         this.addControl(
-          controlConfig[i].control,
-          controlConfig[i].rendererComponent,
-          controlConfig[i].rendererBinding,
-          controlConfig[i].builderComponent,
-          controlConfig[i].builderBinding
-        )
-      }
+          config.control,
+          config.rendererComponent,
+          config.rendererBinding,
+          config.builderComponent,
+          config.builderBinding
+        );
+      });
     },
     methods: {
       openComputedProperties() {

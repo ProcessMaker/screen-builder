@@ -123,7 +123,7 @@
 import {
   FormInput,
   FormTextArea
-} from "@processmaker/vue-form-elements/src/components";
+} from "@processmaker/vue-form-elements";
 import MonacoEditor from "vue-monaco";
 
 export default {
