@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <hr class="w-100">
+
 
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>

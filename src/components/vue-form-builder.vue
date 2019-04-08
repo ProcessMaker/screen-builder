@@ -2,9 +2,9 @@
     <div class="h-100 mb-3">
         <div class="d-flex h-100 mb-5">
 
-            <div class="w-25 border overflow-auto">
+            <div class="w-25 overflow shadow border">
                 <div class="card-header">Controls</div>
-                <div class="card-body d-flex flex-wrap mb-5">
+                <div class="card-body d-flex flex-wrap">
                     <draggable id="controls"
                                v-model="controls"
                                :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
@@ -24,7 +24,7 @@
 
             <div class="w-75 flex-grow-1 overflow-auto">
                 <draggable
-                  class="d-flex align-items-center m-4"
+                  class="d-flex align-items-center mr-4 ml-4 mb-2 mt-2"
                   v-model="config"
                   :options="{draggable:'.page-item'}"
                   @change="handlePageSort"
@@ -49,8 +49,6 @@
                       </button>
                     </div>
                 </draggable>
-
-                <hr class="w-100">
 
                 <div class="container p-4 mb-5">
                     <div class="row">
