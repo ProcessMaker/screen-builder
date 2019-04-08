@@ -1,8 +1,8 @@
 <template>
     <div class="h-100 mb-3">
-        <div class="d-flex h-100 mb-5">
+        <div class="d-flex mb-5">
 
-            <div class="w-25 overflow shadow border">
+            <div class="w-25 overflow shadow-sm border ml-3">
                 <div class="card-header">Controls</div>
                 <div class="card-body d-flex flex-wrap">
                     <draggable id="controls"
@@ -89,7 +89,7 @@
                 </div>
             </div>
 
-            <div class="w-25 border d-flex flex-column">
+            <div class="w-25 border d-flex flex-column shadow-sm mr-3">
                 <div class="card-header header-fixed">
                     Inspector
                     <div class="float-right dropdown">
@@ -110,7 +110,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body flex-wrap mb-5 overflow-auto box-flex-1" id="inspector">
+                <div class="card-body flex-wrap overflow-auto box-flex-1" id="inspector">
                     <component v-for="(item, index) in inspection.inspector"
                                :formConfig="config"
                                :key="index"
