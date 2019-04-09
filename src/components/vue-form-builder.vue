@@ -1,8 +1,7 @@
 <template>
     <div class="h-100 mb-3">
-        <div class="d-flex mb-5">
-
-            <div class="w-25 overflow shadow-sm border ml-3">
+        <div class="form-builder d-flex">
+            <div class="form-builder__controls w-25 shadow-sm border ml-3">
                 <div class="card-header">Controls</div>
                 <div class="card-body d-flex flex-wrap">
                     <draggable id="controls"
@@ -21,9 +20,9 @@
                 </div>
             </div>
 
-            <div class="w-75 flex-grow-1 overflow-auto">
+            <div class="form-builder__designer w-75 flex-grow-1 overflow-auto h-0">
                 <draggable
-                  class="d-flex align-items-center mr-4 ml-4 mb-2 mt-2"
+                  class="d-flex align-items-center mr-4 ml-4 mb-2 mt-2 sticky-top bg-white shadow-sm p-2"
                   v-model="config"
                   :options="{draggable:'.page-item'}"
                   @change="handlePageSort"
@@ -89,7 +88,7 @@
                 </div>
             </div>
 
-            <div class="w-25 border d-flex flex-column shadow-sm mr-3">
+            <div class="form-builder__inspector w-25 border d-flex flex-column shadow-sm mr-3">
                 <div class="card-header header-fixed">
                     Inspector
                     <div class="float-right dropdown">
@@ -138,7 +137,7 @@
                      cancel-variant="btn btn-outline-secondary"
                      ok-variant="btn btn-secondary ml-2">
                 <p>{{confirmMessage}}</p>
-                <div slot="modal-ok">Save</div>
+                <div slot="modal-ok">Delete</div>
             </b-modal>
         </div>
     </div>
@@ -396,5 +395,9 @@
            -moz-flex: 1;
             -ms-flex: 1;
                 flex: 1;
+    }
+
+    .form-builder {
+      height: 50rem;
     }
 </style>
