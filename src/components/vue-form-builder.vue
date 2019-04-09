@@ -105,24 +105,36 @@
               </div>
             </div>
 
-            <footer class="footer mt-auto py-3">
-               <div class="float-right dropdown">
-                        <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
-                            <i class="fas fa-check-circle text-success"></i>
-                        </button>
-                        <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button" @click="showValidationErrors=!showValidationErrors">
-                            <i class="fas fa-times-circle text-danger"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" :class="{'d-block':showValidationErrors && validationErrors.length}">
-                            <a v-for="(validation,index) in validationErrors" :key="index"
-                                href="javascript:void()"
-                                class="dropdown-item" @click="focusInspector(validation)">
-                                <i class="fas fa-times-circle text-danger"></i>
-                                <b>{{validation.item.component}}</b>
-                                {{validation.message}}
-                            </a>
-                        </div>
-                </div>
+            <footer class="footer mt-auto p-2 mr-2 ml-3 d-flex justify-content-end align-items-center">
+              <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+                  <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void()"
+                    class="validation__message d-flex align-items-center p-3"
+                    @click="focusInspector(validation)"
+                  >
+                    <i class="fas fa-times-circle text-danger d-block mr-3"></i>
+                    <span class="ml-2 text-dark font-weight-bold">
+                      {{validation.item.component}}
+                      <span class="d-block font-weight-normal">{{ validation.message }}</span>
+                    </span>
+                  </a>
+                  <span v-if="!validationErrors.length" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
+              </div>
+
+              <b-form-checkbox switch>Auto validate</b-form-checkbox>
+
+              <div class="divider"/>
+
+              <div @click="showValidationErrors=!showValidationErrors" class="d-flex align-items-center">
+                <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-*" type="button">
+                    <i class="fas fa-check-circle text-success"></i>
+                </button>
+
+                <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button">
+                    <i class="fas fa-times-circle text-danger"></i>
+                    {{ validationErrors.length }}
+                </button>
+                <i class="ellipsis-icon fas fa-ellipsis-v ml-2 mr-1"></i>
+              </div>
             </footer>
 
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
@@ -402,4 +414,32 @@
       background: #f7f7f7;
     }
 
+    .validation-panel {
+      background: #f7f7f7;
+      height: 10rem;
+      width: 21.35rem;
+      bottom: 3rem;
+    }
+
+    .validation__message {
+      text-decoration: none;
+
+      &:hover {
+        background: rgba(51,151,225,0.30);
+      }
+    }
+
+    .ellipsis-icon {
+      &:hover {
+        cursor: pointer;
+        color: rgba(51,151,225,0.30);
+      }
+    }
+
+    .divider {
+      height: 1.25rem;
+      width: 2px;
+      background: #d4d4d4;
+      margin: 0 0.75rem;
+    }
 </style>
