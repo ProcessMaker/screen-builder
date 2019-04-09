@@ -31,23 +31,9 @@
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
 
-        <div id="preview" v-show="displayPreview" class="d-flex h-100">
-
-            <div id="data-input" class="w-25 border overflow-auto">
-                <div class="card-header">
-                    Data Input
-                </div>
-                <div class="card-body mb-5">
-                    <div class="alert"
-                         :class="{'alert-success': previewInputValid, 'alert-danger': !previewInputValid}">
-                        <span v-if="previewInputValid">Valid JSON Data Object</span>
-                        <span v-else>Invalid JSON Data Object</span>
-                    </div>
-                    <form-text-area rows="18" v-model="previewInput"></form-text-area>
-                </div>
-            </div>
-
-            <div id="renderer-container" class="w-50 p-4 pt-5 overflow-auto mb-5">
+        <div id="preview" v-show="displayPreview" class="h-100">
+          <div class="row">
+            <div id="renderer-container" class="col-6 p-4 pt-5 overflow-auto mb-5">
                 <div class="container">
                     <div class="row">
                         <div class="col-sm">
@@ -63,12 +49,34 @@
                 </div>
             </div>
 
-            <div id="data-preview" class="w-25 border overflow-auto mb-5">
-                <div class="card-header">
-                    Data Preview
-                </div>
-                <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
+            <div class="data-container col-6">
+              <div id="data-input" class="h-50 border overflow-auto">
+                  <div class="card-header d-flex align-items-center">
+                      Data Input
+                      <div class="ml-auto">
+                          <span v-if="previewInputValid">
+                            Valid JSON Data Object
+                            <i class="fas fa-check-circle text-success"></i>
+                          </span>
+                          <span v-else>
+                            Invalid JSON Data Object
+                            <i class="fas fa-times-circle text-danger"></i>
+                          </span>
+                      </div>
+                  </div>
+                  <div class="card-body mb-5">
+                      <form-text-area rows="18" v-model="previewInput"></form-text-area>
+                  </div>
+              </div>
+              <div id="data-preview" class="h-50 border overflow-auto mb-5">
+                  <div class="card-header">
+                      Data Preview
+                  </div>
+                  <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
+              </div>
             </div>
+
+          </div>
         </div>
     </div>
 </template>
