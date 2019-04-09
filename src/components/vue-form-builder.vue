@@ -36,12 +36,10 @@
                       <div class="ml-auto">
                         <button type="button" class="btn btn-light" v-b-modal.addPageModal>
                           <i class="fas fa-plus"></i>
-                          <!-- Add Page -->
                         </button>
                         <button type="button" class="btn btn-light"
                           @click="openEditPageModal(page)">
                           <i class="far fa-edit"></i>
-                          <!-- Edit -->
                         </button>
                         <button type="button" class="btn btn-light" @click="confirmDelete(page)">
                           <i class="far fa-trash-alt"></i>
@@ -93,7 +91,7 @@
               </div>
 
               <div class="form-builder__inspector h-50rem col border shadow-sm overflow-auto pl-0 pr-0">
-                  <div class="card-header header-fixed">
+                  <div class="card-header sticky-top inspector-header">
                       Inspector
                   </div>
                   <div class="card-body flex-wrap overflow-auto" id="inspector">
@@ -108,7 +106,7 @@
             </div>
 
             <footer class="footer mt-auto py-3">
-               <!-- <div class="float-right dropdown">
+               <div class="float-right dropdown">
                         <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
                             <i class="fas fa-check-circle text-success"></i>
                         </button>
@@ -124,7 +122,7 @@
                                 {{validation.message}}
                             </a>
                         </div>
-                </div> -->
+                </div>
             </footer>
 
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
@@ -395,18 +393,13 @@
             height: 100%;
         }
     }
-    .box-flex-1 {
-        -webkit-box-flex: 1;
-           -moz-box-flex: 1;
-            -ms-box-flex: 1;
-                box-flex: 1;
-        -webkit-flex: 1;
-           -moz-flex: 1;
-            -ms-flex: 1;
-                flex: 1;
-    }
 
     .h-50rem {
       height: 50rem;
     }
+
+    .inspector-header {
+      background: #f7f7f7;
+    }
+
 </style>
