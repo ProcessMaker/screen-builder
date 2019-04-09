@@ -67,12 +67,12 @@
                                                    :config="element.config"
                                                    :is="element['editor-component']">
                                         </component>
-
                                     </div>
 
-                                    <div v-else>
+                                    <div v-else class="card mb-5">
+                                        <span class="card-header">{{ element.config.name || 'Field Name' }}</span>
                                         <component
-                                          class="border p-4 mb-5"
+                                          class="card-body"
                                           :class="elementCssClass(element)"
                                           v-bind="element.config"
                                           :is="element['editor-component']"
@@ -80,7 +80,7 @@
                                         />
                                         <div v-if="!element.config.interactive" class="mask"></div>
                                     </div>
-                                    <button class="delete btn btn-outline-* mt-3 mr-3" @click="deleteItem(index)">
+                                    <button class="delete btn btn-outline-* mt-2 mr-3" @click="deleteItem(index)">
                                       <i class="far fa-trash-alt text-danger"></i>
                                     </button>
                                 </div>
