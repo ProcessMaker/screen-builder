@@ -362,7 +362,6 @@
 
     .control-item {
         position: relative;
-        border: 1px solid transparent;
 
         .delete {
             position: absolute;
@@ -374,6 +373,7 @@
         &.selected,
         &:hover,{
             box-shadow: 0 3px 6px rgba(51,151,225,0.30), 0 3px 6px rgba(51,151,225,0.60);
+            border-radius: 5px;
             border: none;
 
             .delete {
