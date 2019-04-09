@@ -1,100 +1,114 @@
 <template>
     <div class="h-100 mb-3">
-        <div class="form-builder d-flex">
-            <div class="form-builder__controls w-25 shadow-sm border ml-3">
-                <div class="card-header">Controls</div>
-                <div class="card-body d-flex flex-wrap">
-                    <draggable id="controls"
-                               v-model="controls"
-                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
-                               :clone="cloneControl">
-                        <div class="d-flex align-items-center flex-wrap m-2 mb-3"
-                             v-for="(element, index) in controls"
-                             :key="index">
-                            <div class="control-icon d-flex align-items-center">
-                                <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
-                            </div>
-                            <div class="font-weight-normal text-capitalize">{{element.label}}</div>
-                        </div>
-                    </draggable>
-                </div>
+        <div class="form-builder">
+            <div class="row ml-3 mr-3">
+              <div class="form-builder__controls h-50rem col shadow-sm border pr-0 pl-0">
+                  <div class="card-header">Controls</div>
+                  <div class="card-body">
+                      <draggable id="controls"
+                                v-model="controls"
+                                :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+                                :clone="cloneControl">
+                          <div class="d-flex align-items-center flex-wrap m-2 mb-3"
+                              v-for="(element, index) in controls"
+                              :key="index">
+                              <div class="control-icon d-flex align-items-center">
+                                  <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
+                              </div>
+                              <div class="font-weight-normal text-capitalize">{{element.label}}</div>
+                          </div>
+                      </draggable>
+                  </div>
+              </div>
+
+              <div class="form-builder__designer h-50rem col-7 overflow-auto">
+                  <draggable
+                    class="d-flex align-items-center mr-4 ml-4 mb-2 sticky-top bg-white shadow-sm p-2"
+                    v-model="config"
+                    :options="{draggable:'.page-item'}"
+                    @change="handlePageSort"
+                    v-for="(data, page) in config" :key="page">
+                      <div>
+                        <b-dropdown :text="data.name" button-content="btn-outline-secondary">
+                            <b-dropdown-item active @click="currentPage = page">{{ currentPage }}</b-dropdown-item>
+                        </b-dropdown>
+                      </div>
+                      <div class="ml-auto">
+                        <button type="button" class="btn btn-light" v-b-modal.addPageModal>
+                          <i class="fas fa-plus"></i>
+                          <!-- Add Page -->
+                        </button>
+                        <button type="button" class="btn btn-light"
+                          @click="openEditPageModal(page)">
+                          <i class="far fa-edit"></i>
+                          <!-- Edit -->
+                        </button>
+                        <button type="button" class="btn btn-light" @click="confirmDelete(page)">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                      </div>
+                  </draggable>
+
+                  <div class="container">
+                      <div class="row">
+                          <div class="col-sm">
+                              <draggable class="p-4"
+                                        v-model="config[currentPage]['items']"
+                                        :options="{group: {name: 'controls'}}">
+                                  <div class="control-item"
+                                      :class="{selected: selected === element}"
+                                      v-for="(element,index) in config[currentPage]['items']"
+                                      :key="index"
+                                      @click="inspect(element)">
+                                      <div v-if="element.container" @click="inspect(element)">
+                                          <component :class="elementCssClass(element)"
+                                                    @inspect="inspect"
+                                                    :selected="selected"
+                                                    v-model="element.items"
+                                                    :config="element.config"
+                                                    :is="element['editor-component']">
+                                          </component>
+                                      </div>
+
+                                      <div v-else class="card mb-5">
+                                          <span class="card-header">{{ element.config.name || 'Field Name' }}</span>
+                                          <component
+                                            class="card-body"
+                                            :class="elementCssClass(element)"
+                                            v-bind="element.config"
+                                            :is="element['editor-component']"
+                                            @input="element.config.interactive ? element.config.content = $event : null"
+                                          />
+                                          <div v-if="!element.config.interactive" class="mask"></div>
+                                      </div>
+                                      <button class="delete btn btn-outline-* mt-2 mr-3" @click="deleteItem(index)">
+                                        <i class="far fa-trash-alt text-danger"></i>
+                                      </button>
+                                  </div>
+                                  <span class="d-flex justify-content-center">Drag an item here.</span>
+                              </draggable>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="form-builder__inspector h-50rem col border shadow-sm overflow-auto pl-0 pr-0">
+                  <div class="card-header header-fixed">
+                      Inspector
+                  </div>
+                  <div class="card-body flex-wrap overflow-auto" id="inspector">
+                      <component v-for="(item, index) in inspection.inspector"
+                                :formConfig="config"
+                                :key="index"
+                                :is="item.type"
+                                v-bind="item.config"
+                                v-model="inspection.config[item.field]"/>
+                  </div>
+              </div>
             </div>
 
-            <div class="form-builder__designer w-75 flex-grow-1 overflow-auto h-0">
-                <draggable
-                  class="d-flex align-items-center mr-4 ml-4 mb-2 mt-2 sticky-top bg-white shadow-sm p-2"
-                  v-model="config"
-                  :options="{draggable:'.page-item'}"
-                  @change="handlePageSort"
-                  v-for="(data, page) in config" :key="page">
-                    <div>
-                      <b-dropdown :text="data.name" button-content="btn-outline-secondary">
-                          <b-dropdown-item active @click="currentPage = page">{{ currentPage }}</b-dropdown-item>
-                      </b-dropdown>
-                    </div>
-                    <div class="ml-auto">
-                      <button type="button" class="btn btn-light" v-b-modal.addPageModal>
-                        <i class="fas fa-plus"></i>
-                        <!-- Add Page -->
-                      </button>
-                      <button type="button" class="btn btn-light"
-                        @click="openEditPageModal(page)">
-                        <i class="far fa-edit"></i>
-                        <!-- Edit -->
-                      </button>
-                      <button type="button" class="btn btn-light" @click="confirmDelete(page)">
-                        <i class="far fa-trash-alt"></i>
-                      </button>
-                    </div>
-                </draggable>
-
-                <div class="container p-4 mb-5">
-                    <div class="row">
-                        <div class="col-sm">
-                            <draggable class="p-4"
-                                       v-model="config[currentPage]['items']"
-                                       :options="{group: {name: 'controls'}}">
-                                <div class="control-item"
-                                     :class="{selected: selected === element}"
-                                     v-for="(element,index) in config[currentPage]['items']"
-                                     :key="index"
-                                     @click="inspect(element)">
-                                    <div v-if="element.container" @click="inspect(element)">
-                                        <component :class="elementCssClass(element)"
-                                                   @inspect="inspect"
-                                                   :selected="selected"
-                                                   v-model="element.items"
-                                                   :config="element.config"
-                                                   :is="element['editor-component']">
-                                        </component>
-                                    </div>
-
-                                    <div v-else class="card mb-5">
-                                        <span class="card-header">{{ element.config.name || 'Field Name' }}</span>
-                                        <component
-                                          class="card-body"
-                                          :class="elementCssClass(element)"
-                                          v-bind="element.config"
-                                          :is="element['editor-component']"
-                                          @input="element.config.interactive ? element.config.content = $event : null"
-                                        />
-                                        <div v-if="!element.config.interactive" class="mask"></div>
-                                    </div>
-                                    <button class="delete btn btn-outline-* mt-2 mr-3" @click="deleteItem(index)">
-                                      <i class="far fa-trash-alt text-danger"></i>
-                                    </button>
-                                </div>
-                                <span class="d-flex justify-content-center">Drag an item here.</span>
-                            </draggable>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-builder__inspector w-25 border d-flex flex-column shadow-sm mr-3">
-                <div class="card-header header-fixed">
-                    Inspector
-                    <div class="float-right dropdown">
+            <footer class="footer mt-auto py-3">
+               <!-- <div class="float-right dropdown">
                         <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
                             <i class="fas fa-check-circle text-success"></i>
                         </button>
@@ -110,17 +124,8 @@
                                 {{validation.message}}
                             </a>
                         </div>
-                    </div>
-                </div>
-                <div class="card-body flex-wrap overflow-auto box-flex-1" id="inspector">
-                    <component v-for="(item, index) in inspection.inspector"
-                               :formConfig="config"
-                               :key="index"
-                               :is="item.type"
-                               v-bind="item.config"
-                               v-model="inspection.config[item.field]"/>
-                </div>
-            </div>
+                </div> -->
+            </footer>
 
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
                 <form-input v-model="addPageName"
@@ -401,7 +406,7 @@
                 flex: 1;
     }
 
-    .form-builder {
+    .h-50rem {
       height: 50rem;
     }
 </style>
