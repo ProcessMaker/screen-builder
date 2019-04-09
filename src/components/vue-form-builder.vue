@@ -52,7 +52,6 @@
                     <div class="row">
                         <div class="col-sm">
                             <draggable class="p-4"
-                                       style="border: 1px dashed #000;"
                                        v-model="config[currentPage]['items']"
                                        :options="{group: {name: 'controls'}}">
                                 <div class="control-item"
@@ -68,10 +67,12 @@
                                                    :config="element.config"
                                                    :is="element['editor-component']">
                                         </component>
+
                                     </div>
 
                                     <div v-else>
                                         <component
+                                          class="border p-4 mb-5"
                                           :class="elementCssClass(element)"
                                           v-bind="element.config"
                                           :is="element['editor-component']"
@@ -79,9 +80,11 @@
                                         />
                                         <div v-if="!element.config.interactive" class="mask"></div>
                                     </div>
-
-                                    <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
+                                    <button class="delete btn btn-outline-* mt-3 mr-3" @click="deleteItem(index)">
+                                      <i class="far fa-trash-alt text-danger"></i>
+                                    </button>
                                 </div>
+                                <span class="d-flex justify-content-center">Drag an item here.</span>
                             </draggable>
                         </div>
                     </div>
@@ -369,8 +372,9 @@
         }
 
         &.selected,
-        &:hover {
-            border: 1px solid red;
+        &:hover,{
+            box-shadow: 0 3px 6px rgba(51,151,225,0.30), 0 3px 6px rgba(51,151,225,0.60);
+            border: none;
 
             .delete {
                 display: inline-block;
