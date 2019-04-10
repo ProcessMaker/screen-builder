@@ -32,7 +32,7 @@ export default {
       try {
         return Mustache.render(this.label, this.validationData);
       } catch (e) {
-        return this.label;
+        return this.$t(this.label);
       }
     }
   }
