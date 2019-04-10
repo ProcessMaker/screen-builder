@@ -26,7 +26,6 @@
             </div>
         </div>
 
-
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
@@ -88,16 +87,13 @@
   import VueFormBuilder from "./components/vue-form-builder.vue";
   import VueFormRenderer from "./components/vue-form-renderer.vue";
   import VueJsonPretty from 'vue-json-pretty';
-  // Bring in our initial set of controls
 
+  // Bring in our initial set of controls
   import controlConfig from "./form-builder-controls";
   import globalProperties from "./global-properties";
-
-
   import {
     FormTextArea,
   } from "@processmaker/vue-form-elements";
-
 
   export default {
     name: "app",
