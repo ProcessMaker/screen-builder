@@ -15,7 +15,7 @@
                               <div class="control-icon d-flex align-items-center">
                                   <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
                               </div>
-                              <div class="font-weight-normal text-capitalize">{{element.label}}</div>
+                              <div class="font-weight-normal text-capitalize">{{$t(element.label)}}</div>
                           </div>
                       </draggable>
                   </div>
@@ -144,12 +144,12 @@
 
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
                 <form-input v-model="addPageName"
-                            label="Page Name"
-                            helper="The name of the new page to add"></form-input>
+                            :label="$t('Page Name')"
+                            :helper="$t('The name of the new page to add')"></form-input>
             </b-modal>
 
-            <b-modal ref="editPageModal" @ok="editPage" title="Edit Page Title">
-                <form-input v-model="editPageName" label="Page Name" helper="The new name of the page"></form-input>
+            <b-modal ref="editPageModal" @ok="editPage" :title="$t('Edit Page Title')">
+                <form-input v-model="editPageName" :label="$t('Page Name')" :helper="$t('The new name of the page')"></form-input>
             </b-modal>
 
             <b-modal ref="confirm"
@@ -205,7 +205,8 @@
     FormRadioButtonGroup,
     FormDatePicker,
     FormHtmlEditor
-  } from "@processmaker/vue-form-elements";
+  } from "@processmaker/vue-form-elements/src/components";
+import { constants } from 'fs';
 
   export default {
     mixins: [HasColorProperty],
@@ -251,7 +252,8 @@
           }
         ],
         confirmMessage: '',
-        pageDelete: 0
+        pageDelete: 0,
+        translated: [],
       };
     },
     computed: {
@@ -297,6 +299,22 @@
       },
       currentPage() {
         this.inspection = {};
+      },
+      inspection(e) {
+        if (this.translated.includes(e)) {
+          // already translated, don't translate again!
+          return
+        }
+        for (var i in e.inspector) {
+          e.inspector[i].config.label = this.$t(e.inspector[i].config.label)
+          e.inspector[i].config.helper = this.$t(e.inspector[i].config.helper)
+          if (e.inspector[i].config.options) {
+            for (var io in e.inspector[i].config.options) {
+              e.inspector[i].config.options[io].content = this.$t(e.inspector[i].config.options[io].content)
+            }
+          }
+        }
+        this.translated.push(e);
       }
     },
     methods: {
@@ -359,6 +377,14 @@
           label: control.label,
           value: control.value
         };
+
+        copy.config.label = this.$t(copy.config.label)
+        if (copy.config.options) {
+          for (var io in copy.config.options) {
+            copy.config.options[io].content = this.$t(copy.config.options[io].content)
+          }
+        }
+
         // If it's a container, let's add an items property, with the default of items in the control
         if (control.container) {
           copy["items"] = JSON.parse(JSON.stringify(control.items));

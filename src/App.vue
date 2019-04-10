@@ -54,11 +54,11 @@
                       Data Input
                       <div class="ml-auto">
                           <span v-if="previewInputValid">
-                            Valid JSON Data Object
+                            {{$t('Valid JSON Data Object')}}
                             <i class="fas fa-check-circle text-success"></i>
                           </span>
                           <span v-else>
-                            Invalid JSON Data Object
+                            {{$t('Invalid JSON Data Object')}}
                             <i class="fas fa-times-circle text-danger"></i>
                           </span>
                       </div>
