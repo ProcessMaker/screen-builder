@@ -27,12 +27,17 @@
                     v-model="config"
                     :options="{draggable:'.page-item'}"
                     @change="handlePageSort"
-                    v-for="(data, page) in config" :key="page">
-                      <div>
-                        <b-dropdown :text="data.name" button-content="btn-outline-secondary">
-                            <b-dropdown-item active @click="currentPage = page">{{ currentPage }}</b-dropdown-item>
-                        </b-dropdown>
-                      </div>
+                  >
+                    <ul class="nav nav-tabs" v-for="(data, page) in config" :key="page">
+                      <li class="nav-item">
+                        <a class="nav-link"
+                           href="#"
+                           @click="currentPage = page"
+                           :class="{ active: currentPage != page }">
+                            {{data.name}}
+                        </a>
+                      </li>
+                    </ul>
                       <div class="ml-auto">
                         <button type="button" class="btn btn-light" v-b-modal.addPageModal>
                           <i class="fas fa-plus"></i>
@@ -441,5 +446,12 @@
       width: 2px;
       background: #d4d4d4;
       margin: 0 0.75rem;
+    }
+    .nav-tabs > li > a{
+      border: medium none;
+
+      &:hover {
+        color: rgb(51,151,225);
+      }
     }
 </style>
