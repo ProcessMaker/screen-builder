@@ -1,7 +1,7 @@
 <template>
     <div id="app" class="h-100 mb-3">
         <div class="d-flex m-3">
-            <div>
+            <div class="btn-group btn-group-toggle">
               <button type="button" class="btn btn-light" :class="isBuilderActive" @click="mode = 'editor'">
                 <i class="fas fa-drafting-compass pr-1"></i>
                 Design
