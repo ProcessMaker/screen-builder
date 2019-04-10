@@ -49,9 +49,9 @@
                 </div>
             </div>
 
-            <div class="data-container col-6">
-              <div id="data-input" class="h-50 border overflow-auto">
-                  <div class="card-header d-flex align-items-center">
+            <div class="data-container col-6 shadow-sm pl-0">
+              <div id="data-input" class="h-25rem border overflow-auto">
+                  <div class="card-header d-flex align-items-center sticky-top header-bg">
                       Data Input
                       <div class="ml-auto">
                           <span v-if="previewInputValid">
@@ -65,11 +65,12 @@
                       </div>
                   </div>
                   <div class="card-body mb-5">
-                      <form-text-area rows="18" v-model="previewInput"></form-text-area>
+                      <form-text-area rows="8" v-model="previewInput"></form-text-area>
                   </div>
               </div>
-              <div id="data-preview" class="h-50 border overflow-auto mb-5">
-                  <div class="card-header">
+
+              <div id="data-preview" class="h-25rem border overflow-auto">
+                  <div class="card-header sticky-top header-bg">
                       Data Preview
                   </div>
                   <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
@@ -216,5 +217,13 @@
         min-height: 100%;
         max-height: 100%;
         overflow: hidden;
+    }
+
+    .h-25rem {
+      height: 25rem;
+    }
+
+    .header-bg {
+      background: #f7f7f7;
     }
 </style>
