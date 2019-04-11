@@ -1,30 +1,35 @@
 <template>
-    <div id="app" class="h-100 mb-3">
-        <div class="d-flex m-3">
-            <div class="btn-group btn-group-toggle">
+    <div id="app" class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-light" :class="isBuilderActive" @click="mode = 'editor'">
                 <i class="fas fa-drafting-compass pr-1"></i>
                 Design
               </button>
-              <button type="button" class="btn btn-light"  :class="isPreviewActive" @click="mode = 'preview'">
+              <button type="button" class="btn btn-light" :class="isPreviewActive" @click="mode = 'preview'">
                 <i class="fas fa-cog pr-1"></i>
                 Preview
               </button>
             </div>
-            <div class="ml-auto">
-              <button type="button" class="btn btn-light" @click="openComputedProperties">
-                <i class="fas fa-flask pr-1"></i>
+          </div>
+
+          <div class="col text-right">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
+                <i class="fas fa-flask"></i>
                 Calcs
               </button>
-              <button type="button" class="btn btn-light" @click="openCustomCSS">
-                <i class="fab fa-css3 pr-1"></i>
+              <button type="button" class="btn btn-secondary mr-2" title="Custom CSS" @click="openCustomCSS">
+                <i class="fab fa-css3"></i>
                 CSS
               </button>
-              <button type="button" class="btn btn-light">
-                <i class="far fa-save"></i>
-              </button>
             </div>
+            <button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-save"></i></button>
+          </div>
         </div>
+      </div>
 
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
