@@ -1,6 +1,6 @@
 <template>
     <div class="h-100 mb-3">
-          <div class="form-builder card-body row">
+          <div class="form-builder card-body row pl-1">
             <div class="form-builder__controls col-2">
               <div class="card">
                 <div class="card-header">
@@ -104,10 +104,9 @@
                       </div>
                   </div>
                   </div>
-
             </div>
 
-            <div class="form-builder__inspector h-50rem col-2 border shadow-sm overflow-auto pl-0 pr-0">
+            <div class="form-builder__inspector h-50rem col-2 border shadow-sm overflow-auto pl-0 pr-0 card">
                 <div class="card-header sticky-top inspector-header">
                     Inspector
                 </div>
@@ -119,9 +118,12 @@
                               v-bind="item.config"
                               v-model="inspection.config[item.field]"/>
                 </div>
+                <div class="card-footer d-flex pt-3 pb-3">
+                  <div class="col" style="white-space:nowrap"><i class="fas fa-user-alt"></i> Assignment</div>
+                  <div class="col text-right"><i class="fas fa-angle-right"></i></div>
+                </div>
             </div>
           </div>
-
 
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
                 <form-input v-model="addPageName"
