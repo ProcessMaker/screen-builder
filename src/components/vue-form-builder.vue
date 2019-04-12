@@ -1,68 +1,64 @@
 <template>
     <div class="h-100 mb-3">
-        <div class="form-builder">
-            <div class="row">
-              <div class="col-2">
-                <div class="card">
-                  <div class="card-header">
-                    Controls
-                  </div>
-                  <div class="input-group input-group-sm" style="margin:-1px 0">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
-                  </div>
-
-                  <draggable id="controls"
-                                v-model="controls"
-                                :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
-                                :clone="cloneControl">
-                              <ul class="list-group list-group-flush" v-for="(element, index) in controls"
-                              :key="index">
-                                <li class="list-group-item">
-                                  <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
-                                  {{$t(element.label)}}
-                                </li>
-                              </ul>
-                  </draggable>
+          <div class="form-builder card-body row">
+            <div class="form-builder__controls col-2">
+              <div class="card">
+                <div class="card-header">
+                  Controls
                 </div>
-              </div>
+                <div class="input-group input-group-sm mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
+                  </div>
+                  <input type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
 
-              <div class="form-builder__designer h-50rem col-8 overflow-auto">
-                  <draggable
-                    class="d-flex align-items-center mr-4 ml-4 mb-2 sticky-top bg-white shadow-sm p-2"
-                    v-model="config"
-                    :options="{draggable:'.page-item'}"
-                    @change="handlePageSort"
-                  >
-                    <ul class="nav nav-tabs" v-for="(data, page) in config" :key="page">
-                      <li class="nav-item">
+                <draggable id="controls"
+                              v-model="controls"
+                              :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+                              :clone="cloneControl">
+                            <ul class="list-group list-group-flush" v-for="(element, index) in controls"
+                            :key="index">
+                              <li class="list-group-item">
+                                <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
+                                {{$t(element.label)}}
+                              </li>
+                            </ul>
+                </draggable>
+              </div>
+            </div>
+
+            <div class="form-builder__designer h-50rem col-8 overflow-auto">
+                 <div class="row">
+                <draggable :element="'ul'"
+                           class="nav nav-tabs d-flex"
+                           v-model="config"
+                           :options="{draggable:'.page-item'}"
+                           @change="handlePageSort">
+                    <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
                         <a class="nav-link"
                            href="#"
                            @click="currentPage = page"
-                           :class="{ active: currentPage != page }">
+                           :class="{active: currentPage != page}">
                             {{data.name}}
+                            <button class="btn btn-sm mr-1 btn-outline-*"
+                                @click="openEditPageModal(page)">
+                                <i class="far fa-edit"></i>
+                            </button>
+                             <button v-show="displayDelete" class="delete btn btn-outline-* mr-2" @click="confirmDelete(page)">
+                                      <i class="far fa-trash-alt text-danger"></i>
+                            </button>
                         </a>
-                      </li>
-                    </ul>
-                      <div class="ml-auto">
-                        <button type="button" class="btn btn-light" v-b-modal.addPageModal>
-                          <i class="fas fa-plus"></i>
-                        </button>
-                        <button type="button" class="btn btn-light"
-                          @click="openEditPageModal(page)">
-                          <i class="far fa-edit"></i>
-                        </button>
-                        <button type="button" class="btn btn-light" @click="confirmDelete(page)">
-                          <i class="far fa-trash-alt"></i>
-                        </button>
-                      </div>
-                  </draggable>
+                    </li>
+                </draggable>
+                <b-btn variant="outline-success" size="sm" v-b-modal.addPageModal>
+                  <i class="fas fa-plus mr-2"></i>
+                  {{$t('Add Page')}}
+                </b-btn>
 
-                  <div class="container">
+                <div class="container p-4 m-0">
                       <div class="row">
-                          <div class="col-sm">
+                          <div class="col">
                               <draggable class="p-4"
                                         v-model="config[currentPage]['items']"
                                         :options="{group: {name: 'controls'}}">
@@ -92,33 +88,40 @@
                                           />
                                           <div v-if="!element.config.interactive" class="mask"></div>
                                       </div>
-                                      <button class="delete btn btn-outline-* mt-2 mr-3" @click="deleteItem(index)">
-                                        <i class="far fa-trash-alt text-danger"></i>
-                                      </button>
+
+                                    <button class="delete btn btn-outline-* mt-2 mr-3" @click="deleteItem(index)">
+                                      <i class="far fa-trash-alt text-danger"></i>
+                                    </button>
+
                                   </div>
-                                  <span class="d-flex justify-content-center">Drag an item here.</span>
                               </draggable>
+                              <div class="card">
+                              <div class="card-body text-center">
+                                Drag an element here
+                              </div>
+                            </div>
                           </div>
                       </div>
                   </div>
-              </div>
-
-              <div class="form-builder__inspector h-50rem col-2 border shadow-sm overflow-auto pl-0 pr-0">
-                  <div class="card-header sticky-top inspector-header">
-                      Inspector
                   </div>
-                  <div class="card-body flex-wrap overflow-auto" id="inspector">
-                      <component v-for="(item, index) in inspection.inspector"
-                                :formConfig="config"
-                                :key="index"
-                                :is="item.type"
-                                v-bind="item.config"
-                                v-model="inspection.config[item.field]"/>
-                  </div>
-              </div>
-              </div>
 
             </div>
+
+            <div class="form-builder__inspector h-50rem col-2 border shadow-sm overflow-auto pl-0 pr-0">
+                <div class="card-header sticky-top inspector-header">
+                    Inspector
+                </div>
+                <div class="card-body flex-wrap overflow-auto" id="inspector">
+                    <component v-for="(item, index) in inspection.inspector"
+                              :formConfig="config"
+                              :key="index"
+                              :is="item.type"
+                              v-bind="item.config"
+                              v-model="inspection.config[item.field]"/>
+                </div>
+            </div>
+          </div>
+
 
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
                 <form-input v-model="addPageName"
@@ -140,7 +143,6 @@
                 <p>{{confirmMessage}}</p>
                 <div slot="modal-ok">Delete</div>
             </b-modal>
-        </div>
     </div>
 </template>
 
@@ -368,7 +370,7 @@ import { constants } from 'fs';
 
         &.selected,
         &:hover,{
-            box-shadow: 0 3px 6px rgba(51,151,225,0.30), 0 3px 6px rgba(51,151,225,0.60);
+            box-shadow: 0 3px 6px rgba(255,0,0,0.30), 0 3px 6px rgba(255,0,0,0.60);
             border-radius: 5px;
             border: none;
 
@@ -410,19 +412,6 @@ import { constants } from 'fs';
       }
     }
 
-    .ellipsis-icon {
-      &:hover {
-        cursor: pointer;
-        color: rgba(51,151,225,0.30);
-      }
-    }
-
-    .divider {
-      height: 1.25rem;
-      width: 2px;
-      background: #d4d4d4;
-      margin: 0 0.75rem;
-    }
     .nav-tabs > li > a{
       border: medium none;
 
