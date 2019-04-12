@@ -110,18 +110,32 @@
                 <div class="card-header sticky-top inspector-header">
                     Inspector
                 </div>
-                <div class="card-body flex-wrap overflow-auto" id="inspector">
-                    <component v-for="(item, index) in inspection.inspector"
-                              :formConfig="config"
-                              :key="index"
-                              :is="item.type"
-                              v-bind="item.config"
-                              v-model="inspection.config[item.field]"/>
-                </div>
-                <div class="card-footer d-flex pt-3 pb-3">
-                  <div class="col" style="white-space:nowrap"><i class="fas fa-user-alt"></i> Assignment</div>
-                  <div class="col text-right"><i class="fas fa-angle-right"></i></div>
-                </div>
+                <b-button variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showConfiguration = !showConfiguration">
+                  <i class="fas fa-cog mr-2"></i>
+                  Configuration
+                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : showConfiguration }"></i>
+                </b-button>
+
+                <b-collapse v-model="showConfiguration" class="mt-2">
+                  <div class="card-body flex-wrap overflow-auto">
+                      <component v-for="(item, index) in inspection.inspector"
+                                :formConfig="config"
+                                :key="index"
+                                :is="item.type"
+                                v-bind="item.config"
+                                v-model="inspection.config[item.field]"/>
+                  </div>
+                </b-collapse>
+                  <b-button variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showAssignment = !showAssignment">
+                    <i class="fas fa-user-alt mr-2"></i>
+                    Assignment
+                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : showAssignment }"></i>
+                  </b-button>
+                  <b-collapse v-model="showAssignment" class="mt-2">
+                  <div class="card-body flex-wrap overflow-auto">
+                    <span>Assign User</span>
+                  </div>
+                </b-collapse>
             </div>
           </div>
 
@@ -216,7 +230,6 @@ import { constants } from 'fs';
     },
     data() {
       return {
-        showValidationErrors: false,
         currentPage: 0,
         selected: null,
         display: "editor",
@@ -236,6 +249,9 @@ import { constants } from 'fs';
         confirmMessage: '',
         pageDelete: 0,
         translated: [],
+        showValidationErrors: false,
+        showAssignment: false,
+        showConfiguration: true
       };
     },
     computed: {
@@ -273,6 +289,7 @@ import { constants } from 'fs';
     },
     methods: {
       focusInspector(validation) {
+        this.showConfiguration = true;
         this.currentPage = this.config.indexOf(validation.page);
         this.$nextTick(() => {
           this.inspect(validation.item);
