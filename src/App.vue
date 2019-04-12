@@ -112,7 +112,12 @@
               <button type="button" class="btn btn-light btn-sm">
                 <i class="fas fa-angle-double-up"></i>
                 Open Console
-                <span class="badge badge-danger">
+                <span v-if="!validationErrors.length" class="badge badge-success">
+                  <i class="fas fa-check-circle "></i>
+                  {{ validationErrors.length }}
+                </span>
+
+                <span v-else class="badge badge-danger">
                   <i class="fas fa-times-circle "></i>
                   {{ validationErrors.length }}
                 </span>
