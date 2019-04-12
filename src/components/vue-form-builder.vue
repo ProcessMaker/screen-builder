@@ -110,38 +110,6 @@
               </div>
             </div>
 
-            <footer class="footer mt-auto p-2 mr-2 ml-3 d-flex justify-content-end align-items-center">
-              <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
-                  <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void()"
-                    class="validation__message d-flex align-items-center p-3"
-                    @click="focusInspector(validation)"
-                  >
-                    <i class="fas fa-times-circle text-danger d-block mr-3"></i>
-                    <span class="ml-2 text-dark font-weight-bold">
-                      {{validation.item.component}}
-                      <span class="d-block font-weight-normal">{{ validation.message }}</span>
-                    </span>
-                  </a>
-                  <span v-if="!validationErrors.length" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
-              </div>
-
-              <b-form-checkbox switch>Auto validate</b-form-checkbox>
-
-              <div class="divider"/>
-
-              <div @click="showValidationErrors=!showValidationErrors" class="d-flex align-items-center">
-                <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-*" type="button">
-                    <i class="fas fa-check-circle text-success"></i>
-                </button>
-
-                <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button">
-                    <i class="fas fa-times-circle text-danger"></i>
-                    {{ validationErrors.length }}
-                </button>
-                <i class="ellipsis-icon fas fa-ellipsis-v ml-2 mr-1"></i>
-              </div>
-            </footer>
-
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">
                 <form-input v-model="addPageName"
                             :label="$t('Page Name')"
@@ -257,34 +225,6 @@ import { constants } from 'fs';
       };
     },
     computed: {
-      validationErrors() {
-        const validationErrors = [];
-        this.config.forEach(page => {
-          page.items.forEach(item => {
-            let data = item.config ? item.config : {};
-            let rules = {};
-            item.inspector.forEach(property => {
-              if (property.config.validation) {
-                rules[property.field] = property.config.validation;
-              }
-            });
-            let validator = new Validator(data, rules);
-            // Validation will not run until you call passes/fails on it
-            if(!validator.passes()) {
-              Object.keys(validator.errors.errors).forEach(field => {
-                validator.errors.errors[field].forEach(error => {
-                  validationErrors.push({
-                    message: error,
-                    page: page,
-                    item: item,
-                  });
-                });
-              });
-            }
-          });
-        });
-        return validationErrors;
-      },
       displayDelete() {
         return this.config.length > 1;
       }
