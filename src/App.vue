@@ -31,8 +31,6 @@
         </div>
       </div>
 
-
-
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
@@ -95,7 +93,7 @@
             </div>
 
             <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
-                <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void()"
+                <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void(0)"
                   class="validation__message d-flex align-items-center p-3"
                   @click="focusInspector(validation)"
                 >
@@ -260,6 +258,9 @@ let Validator = require('validatorjs');
       });
     },
     methods: {
+      focusInspector(validate) {
+        this.$refs.builder.focusInspector(validate);
+      },
       openComputedProperties() {
         this.$refs.computedProperties.show();
       },
@@ -280,16 +281,6 @@ let Validator = require('validatorjs');
         this.$refs.renderer.$options.components[rendererBinding] = rendererComponent;
         // Add it to the form builder
         this.$refs.builder.addControl(control, builderComponent, builderBinding)
-      },
-      focusInspector(validation) {
-        this.currentPage = this.config.indexOf(validation.page);
-        this.$nextTick(() => {
-          this.inspect(validation.item);
-        });
-      },
-      inspect(element) {
-        this.inspection = element;
-        this.selected = element;
       },
     }
   };
