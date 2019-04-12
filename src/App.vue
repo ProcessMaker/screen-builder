@@ -85,48 +85,40 @@
           </div>
         </div>
 
-        <div class="card-footer text-muted">
-        <div class="row">
-          <div class="col"></div>
-          <div class="col-md-5">
-            <div class="row">
-
-              <div class="col-6 align-middle pt-1">
-                    <span class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
-                    <label class="custom-control-label" for="customSwitch1"> Screen Validation
-                    </label>
-                  </span>
-              </div>
-
-              <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
-                  <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void()"
-                    class="validation__message d-flex align-items-center p-3"
-                    @click="focusInspector(validation)"
-                  >
-                    <i class="fas fa-times-circle text-danger d-block mr-3"></i>
-                    <span class="ml-2 text-dark font-weight-bold">
-                      {{validation.item.component}}
-                      <span class="d-block font-weight-normal">{{ validation.message }}</span>
-                    </span>
-                  </a>
-                  <span v-if="!validationErrors.length" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
-              </div>
-
-              <div class="col-6 align-middle" @click="showValidationErrors =! showValidationErrors">
-                <button type="button" class="btn btn-light btn-sm">
-                  <i class="fas fa-angle-double-up"></i>
-                  Open Console
-                  <span class="badge badge-danger">
-                    <i class="fas fa-times-circle "></i>
-                    {{ validationErrors.length }}
-                  </span>
-                </button>
-              </div>
+        <div class="card-footer text-muted d-flex justify-content-end align-items-center">
+            <div>
+              <span class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
+              <label class="custom-control-label" for="customSwitch1"> Screen Validation
+              </label>
+              </span>
             </div>
-          </div>
+
+            <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+                <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void()"
+                  class="validation__message d-flex align-items-center p-3"
+                  @click="focusInspector(validation)"
+                >
+                  <i class="fas fa-times-circle text-danger d-block mr-3"></i>
+                  <span class="ml-2 text-dark font-weight-bold">
+                    {{validation.item.component}}
+                    <span class="d-block font-weight-normal">{{ validation.message }}</span>
+                  </span>
+                </a>
+                <span v-if="!validationErrors.length" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
+            </div>
+
+            <div class="ml-3" @click="showValidationErrors =! showValidationErrors">
+              <button type="button" class="btn btn-light btn-sm">
+                <i class="fas fa-angle-double-up"></i>
+                Open Console
+                <span class="badge badge-danger">
+                  <i class="fas fa-times-circle "></i>
+                  {{ validationErrors.length }}
+                </span>
+              </button>
+            </div>
         </div>
-      </div>
     </div>
 </template>
 
@@ -321,7 +313,7 @@ let Validator = require('validatorjs');
       background: #f7f7f7;
       height: 10rem;
       width: 21.35rem;
-      bottom: 3rem;
+      bottom: 3.5rem;
       right: 0;
     }
 </style>
