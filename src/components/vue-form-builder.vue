@@ -1,27 +1,35 @@
 <template>
     <div class="h-100 mb-3">
         <div class="form-builder">
-            <div class="row ml-3 mr-3">
-              <div class="form-builder__controls h-50rem col shadow-sm border pr-0 pl-0">
-                  <div class="card-header">Controls</div>
-                  <div class="card-body">
-                      <draggable id="controls"
+            <div class="row">
+              <div class="col-2">
+                <div class="card">
+                  <div class="card-header">
+                    Controls
+                  </div>
+                  <div class="input-group input-group-sm" style="margin:-1px 0">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
+                  </div>
+
+                  <draggable id="controls"
                                 v-model="controls"
                                 :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                                 :clone="cloneControl">
-                          <div class="d-flex align-items-center flex-wrap m-2 mb-3"
-                              v-for="(element, index) in controls"
+                              <ul class="list-group list-group-flush" v-for="(element, index) in controls"
                               :key="index">
-                              <div class="control-icon d-flex align-items-center">
+                                <li class="list-group-item">
                                   <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
-                              </div>
-                              <div class="font-weight-normal text-capitalize">{{$t(element.label)}}</div>
-                          </div>
-                      </draggable>
-                  </div>
+                                  {{$t(element.label)}}
+                                </li>
+                              </ul>
+                  </draggable>
+                </div>
               </div>
 
-              <div class="form-builder__designer h-50rem col-7 overflow-auto">
+              <div class="form-builder__designer h-50rem col-8 overflow-auto">
                   <draggable
                     class="d-flex align-items-center mr-4 ml-4 mb-2 sticky-top bg-white shadow-sm p-2"
                     v-model="config"
@@ -95,7 +103,7 @@
                   </div>
               </div>
 
-              <div class="form-builder__inspector h-50rem col border shadow-sm overflow-auto pl-0 pr-0">
+              <div class="form-builder__inspector h-50rem col-2 border shadow-sm overflow-auto pl-0 pr-0">
                   <div class="card-header sticky-top inspector-header">
                       Inspector
                   </div>
@@ -108,6 +116,8 @@
                                 v-model="inspection.config[item.field]"/>
                   </div>
               </div>
+              </div>
+
             </div>
 
             <b-modal id="addPageModal" @ok="addPage" title="Add New Page">

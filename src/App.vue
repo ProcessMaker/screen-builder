@@ -91,8 +91,8 @@
           <div class="col-md-5">
             <div class="row">
 
-              <div class="col-6 align-middle">
-                  <span class="custom-control custom-switch">
+              <div class="col-6 align-middle pt-1">
+                    <span class="custom-control custom-switch">
                     <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
                     <label class="custom-control-label" for="customSwitch1"> Screen Validation
                     </label>
