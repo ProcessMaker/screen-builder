@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="card">
+    <div id="app" class="card h-100">
       <div class="card-header">
         <div class="row">
           <div class="col">
@@ -31,10 +31,11 @@
         </div>
       </div>
 
+
+
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
-
         <div id="preview" v-show="displayPreview" class="h-100">
           <div class="row">
             <div id="renderer-container" class="col-6 p-4 pt-5 overflow-auto mb-5">
@@ -83,6 +84,49 @@
 
           </div>
         </div>
+
+        <div class="card-footer text-muted">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col-md-5">
+            <div class="row">
+
+              <div class="col-6 align-middle">
+                  <span class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
+                    <label class="custom-control-label" for="customSwitch1"> Screen Validation
+                    </label>
+                  </span>
+              </div>
+
+              <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+                  <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void()"
+                    class="validation__message d-flex align-items-center p-3"
+                    @click="focusInspector(validation)"
+                  >
+                    <i class="fas fa-times-circle text-danger d-block mr-3"></i>
+                    <span class="ml-2 text-dark font-weight-bold">
+                      {{validation.item.component}}
+                      <span class="d-block font-weight-normal">{{ validation.message }}</span>
+                    </span>
+                  </a>
+                  <span v-if="!validationErrors.length" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
+              </div>
+
+              <div class="col-6 align-middle" @click="showValidationErrors =! showValidationErrors">
+                <button type="button" class="btn btn-light btn-sm">
+                  <i class="fas fa-angle-double-up"></i>
+                  Open Console
+                  <span class="badge badge-danger">
+                    <i class="fas fa-times-circle "></i>
+                    {{ validationErrors.length }}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -99,6 +143,12 @@
   import {
     FormTextArea,
   } from "@processmaker/vue-form-elements";
+
+let Validator = require('validatorjs');
+  Validator.register('attr-value', value => {
+    return value.match(/^[a-zA-Z0-9-_]+$/);
+  }, 'Must be letters, numbers, underscores or dashes');
+
 
   export default {
     name: "app",
@@ -118,6 +168,7 @@
         previewInput: '{}',
         customCSS: "",
         cssErrors: '',
+        showValidationErrors: false,
       };
     },
     components: {
@@ -167,7 +218,35 @@
       },
       displayPreview() {
         return this.mode === 'preview';
-      }
+      },
+      validationErrors() {
+        const validationErrors = [];
+        this.config.forEach(page => {
+          page.items.forEach(item => {
+            let data = item.config ? item.config : {};
+            let rules = {};
+            item.inspector.forEach(property => {
+              if (property.config.validation) {
+                rules[property.field] = property.config.validation;
+              }
+            });
+            let validator = new Validator(data, rules);
+            // Validation will not run until you call passes/fails on it
+            if(!validator.passes()) {
+              Object.keys(validator.errors.errors).forEach(field => {
+                validator.errors.errors[field].forEach(error => {
+                  validationErrors.push({
+                    message: error,
+                    page: page,
+                    item: item,
+                  });
+                });
+              });
+            }
+          });
+        });
+        return validationErrors;
+      },
     },
     mounted() {
       // Iterate through our initial config set, calling this.addControl
@@ -204,7 +283,17 @@
         this.$refs.renderer.$options.components[rendererBinding] = rendererComponent;
         // Add it to the form builder
         this.$refs.builder.addControl(control, builderComponent, builderBinding)
-      }
+      },
+      focusInspector(validation) {
+        this.currentPage = this.config.indexOf(validation.page);
+        this.$nextTick(() => {
+          this.inspect(validation.item);
+        });
+      },
+      inspect(element) {
+        this.inspection = element;
+        this.selected = element;
+      },
     }
   };
 </script>
@@ -226,5 +315,13 @@
 
     .header-bg {
       background: #f7f7f7;
+    }
+
+    .validation-panel {
+      background: #f7f7f7;
+      height: 10rem;
+      width: 21.35rem;
+      bottom: 3rem;
+      right: 0;
     }
 </style>
