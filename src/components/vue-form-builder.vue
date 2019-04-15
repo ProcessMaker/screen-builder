@@ -110,13 +110,15 @@
                 <div class="card-header sticky-top inspector-header">
                     Inspector
                 </div>
-                <b-button variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showConfiguration = !showConfiguration">
+
+                <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showConfiguration = !showConfiguration">
                   <i class="fas fa-cog mr-2"></i>
-                  Configuration
-                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : showConfiguration }"></i>
+                    Configuration
+                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : !showConfiguration }"></i>
+
                 </b-button>
 
-                <b-collapse v-model="showConfiguration" class="mt-2">
+                <b-collapse id="configuration" class="mt-2">
                   <div class="card-body flex-wrap overflow-auto">
                       <component v-for="(item, index) in inspection.inspector"
                                 :formConfig="config"
@@ -126,12 +128,14 @@
                                 v-model="inspection.config[item.field]"/>
                   </div>
                 </b-collapse>
-                  <b-button variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showAssignment = !showAssignment">
-                    <i class="fas fa-user-alt mr-2"></i>
+
+                <b-button v-b-toggle.assignment  variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showAssignment = !showAssignment">
+                  <i class="fas fa-user-alt mr-2"></i>
                     Assignment
-                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : showAssignment }"></i>
-                  </b-button>
-                  <b-collapse v-model="showAssignment" class="mt-2">
+                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : showAssignment }"></i>
+                </b-button>
+
+                <b-collapse id="assignment" class="mt-2">
                   <div class="card-body flex-wrap overflow-auto">
                     <span>Assign User</span>
                   </div>
