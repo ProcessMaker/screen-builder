@@ -39,6 +39,7 @@
     "vuetable-2": "^1.7.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.3",
     "@vue/cli-plugin-babel": "^3.0.0-rc.9",
     "@vue/cli-plugin-eslint": "^3.0.0-rc.9",
     "@vue/cli-plugin-unit-jest": "^3.0.5",
