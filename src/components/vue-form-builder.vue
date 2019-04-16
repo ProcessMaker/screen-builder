@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <div class="w-75 flex-grow-1 overflow-auto">
+            <div class="w-75 flex-grow-1 overflow-auto nav-tabs-container">
                 <draggable :element="'ul'"
                            class="nav nav-tabs"
                            v-model="config"
@@ -51,23 +51,29 @@
                     </li>
                 </draggable>
 
+                <div class="undo-redo-buttons">
+                  <button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</button>
+                  <button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</button>
+                </div>
+
                 <div class="container p-4 mb-5">
                     <div class="row">
                         <div class="col-sm">
                             <draggable class="p-4"
                                        style="border: 1px dashed #000;"
-                                       v-model="config[currentPage]['items']"
+                                       :value="config[currentPage].items"
+                                       @input="updateConfig"
                                        :options="{group: {name: 'controls'}}">
                                 <div class="control-item"
                                      :class="{selected: selected === element}"
-                                     v-for="(element,index) in config[currentPage]['items']"
+                                     v-for="(element,index) in config[currentPage].items"
                                      :key="index"
                                      @click="inspect(element)">
                                     <div v-if="element.container" @click="inspect(element)">
                                         <component :class="elementCssClass(element)"
                                                    @inspect="inspect"
                                                    :selected="selected"
-                                                   v-model="element.items"
+                                                    v-model="element.items"
                                                    :config="element.config"
                                                    :is="element['editor-component']">
                                         </component>
@@ -76,8 +82,8 @@
                                     <div v-else>
                                         <component
                                           :class="elementCssClass(element)"
-                                          v-bind="element.config"
                                           :is="element['editor-component']"
+                                          v-bind="element.config"
                                           @input="element.config.interactive ? element.config.content = $event : null"
                                         />
                                         <div v-if="!element.config.interactive" class="mask"></div>
@@ -118,7 +124,8 @@
                                :key="index"
                                :is="item.type"
                                v-bind="item.config"
-                               v-model="inspection.config[item.field]"/>
+                               v-model="inspection.config[item.field]"
+                               @focusout.native="updateState"/>
                 </div>
             </div>
 
@@ -169,6 +176,7 @@
   import BootstrapVue from "bootstrap-vue";
 
   import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+  import undoRedoModule from '../undoRedoModule';
 
   Vue.use(BootstrapVue);
 
@@ -186,7 +194,6 @@
     FormDatePicker,
     FormHtmlEditor
   } from "@processmaker/vue-form-elements/src/components";
-import { constants } from 'fs';
 
   export default {
     mixins: [HasColorProperty],
@@ -225,18 +232,19 @@ import { constants } from 'fs';
         addPageName: "",
         editPageIndex: null,
         editPageName: "",
-        config: [
-          {
-            name: "Default",
-            items: []
-          }
-        ],
+        config: [],
         confirmMessage: '',
         pageDelete: 0,
         translated: [],
       };
     },
     computed: {
+      canUndo() {
+        return this.$store.getters[`page-${this.currentPage}/canUndo`];
+      },
+      canRedo() {
+        return this.$store.getters[`page-${this.currentPage}/canRedo`];
+      },
       validationErrors() {
         const validationErrors = [];
         this.config.forEach(page => {
@@ -271,14 +279,14 @@ import { constants } from 'fs';
     },
     watch: {
       config: {
-        handler: function () {
+        handler() {
           // @todo, remove inspector stuffs
           this.$emit("change", this.config);
         },
         deep: true
       },
       currentPage() {
-        this.inspection = {};
+        this.inspect();
       },
       inspection(e) {
         if (this.translated.includes(e)) {
@@ -298,6 +306,24 @@ import { constants } from 'fs';
       }
     },
     methods: {
+      updateState() {
+        const items = this.config[this.currentPage].items;
+        this.$store.dispatch(`page-${this.currentPage}/pushState`, JSON.stringify(items));
+      },
+      undo() {
+        this.inspect();
+        this.$store.dispatch(`page-${this.currentPage}/undo`);
+        this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+      },
+      redo() {
+        this.inspect();
+        this.$store.dispatch(`page-${this.currentPage}/redo`);
+        this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+      },
+      updateConfig(items) {
+        this.config[this.currentPage].items = items;
+        this.updateState();
+      },
       focusInspector(validation) {
         this.currentPage = this.config.indexOf(validation.page);
         this.$nextTick(() => {
@@ -331,18 +357,19 @@ import { constants } from 'fs';
         this.config[this.editPageIndex].name = this.editPageName;
       },
       addPage() {
-        this.config.push({
-          name: this.addPageName,
-          items: []
-        });
+        this.config.push({ name: this.addPageName, items: [] });
         this.currentPage = this.config.length - 1;
         this.addPageName = "";
+
+        this.$store.registerModule(`page-${this.currentPage}`, undoRedoModule);
+        this.updateState();
       },
       deletePage() {
+        this.$store.unregisterModule(`page-${this.currentPage}`);
         this.currentPage = 0;
         this.config.splice(this.pageDelete, 1);
       },
-      inspect(element) {
+      inspect(element = {}) {
         this.inspection = element;
         this.selected = element;
       },
@@ -371,12 +398,31 @@ import { constants } from 'fs';
           copy.container = true;
         }
         return copy;
-      }
+      },
+    },
+    created() {
+      this.addPageName = 'Default';
+      this.addPage();
     }
   };
 </script>
 
 <style lang="scss" scoped>
+.nav-tabs-container {
+  position: relative;
+}
+
+.undo-redo-buttons {
+  position: absolute;
+  z-index: 1;
+  top: 1rem;
+  right: 1rem;
+
+  > button {
+    cursor: pointer;
+  }
+}
+
     .control-icon {
         width: 30px;
         font-size: 20px;
