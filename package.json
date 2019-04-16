@@ -36,8 +36,7 @@
     "vue-uniq-ids": "^1.0.0",
     "vue-upload-component": "^2.8.14",
     "vuedraggable": "^2.16.0",
-    "vuetable-2": "^1.7.5",
-    "vuex": "^3.1.0"
+    "vuetable-2": "^1.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -52,11 +51,13 @@
     "eslint-plugin-jest": "^22.4.1",
     "identity-obj-proxy": "^3.0.0",
     "vue-json-pretty": "^1.4.0",
-    "vue-template-compiler": "^2.5.16"
+    "vue-template-compiler": "^2.5.16",
+    "vuex": "^3.1.0"
   },
   "peerDependencies": {
     "bootstrap": "^4.3.1",
-    "bootstrap-vue": "^2.0.0-rc.14"
+    "bootstrap-vue": "^2.0.0-rc.14",
+    "vuex": "^3.1.0"
   },
   "postcss": {
     "plugins": {
