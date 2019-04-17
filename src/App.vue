@@ -34,29 +34,47 @@
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
+
         <div id="preview" v-show="displayPreview" class="h-100">
           <div class="row">
-            <div id="renderer-container" class="col-6 p-4 pt-5 overflow-auto mb-5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm">
-                            <vue-form-renderer ref="renderer"
-                                               v-model="previewData"
-                                               @submit="previewSubmit"
-                                               :config="config"
-                                               :computed="computed"
-                                               :custom-css="customCSS"
-                                               v-on:css-errors="cssErrors = $event"/>
-                        </div>
-                    </div>
-                </div>
+            <div id="renderer-container" class="col-8">
+              <div class="row">
+                  <div class="card-body border p-4 m-4 h-80 overflow-auto">
+                      <vue-form-renderer ref="renderer"
+                                          v-model="previewData"
+                                          @submit="previewSubmit"
+                                          :config="config"
+                                          :computed="computed"
+                                          :custom-css="customCSS"
+                                          v-on:css-errors="cssErrors = $event"/>
+                  </div>
+              </div>
             </div>
 
-            <div class="data-container col-6 shadow-sm pl-0">
-              <div id="data-input" class="h-25rem border overflow-auto">
-                  <div class="card-header d-flex align-items-center sticky-top header-bg">
+            <div class="data-container col-4 pl-0 mt-4 border h-80">
+              <div id="data-preview" class="overflow-auto">
+                <div class="card-header">Inspector</div>
+                <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
+                  <i class="far fa-file-code mr-2"></i>
+                    Data Preview
+                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
+                </b-button>
+
+                <b-collapse id="dataPreview" class="mt-2">
+                  <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
+                </b-collapse>
+              </div>
+
+              <div id="data-input" class="overflow-auto">
+                  <b-button v-b-toggle.dataInput variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataInput = !showDataInput">
+                    <i class="fas fa-file-import mr-2"></i>
                       Data Input
-                      <div class="ml-auto">
+                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
+                  </b-button>
+
+                  <b-collapse id="dataInput">
+                      <form-text-area class="dataInput" rows="8" v-model="previewInput"></form-text-area>
+                      <div class="m-3 text-right">
                           <span v-if="previewInputValid">
                             {{$t('Valid JSON Data Object')}}
                             <i class="fas fa-check-circle text-success"></i>
@@ -66,17 +84,7 @@
                             <i class="fas fa-times-circle text-danger"></i>
                           </span>
                       </div>
-                  </div>
-                  <div class="card-body mb-5">
-                      <form-text-area rows="8" v-model="previewInput"></form-text-area>
-                  </div>
-              </div>
-
-              <div id="data-preview" class="h-25rem border overflow-auto">
-                  <div class="card-header sticky-top header-bg">
-                      Data Preview
-                  </div>
-                  <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
+                  </b-collapse>
               </div>
             </div>
 
@@ -164,7 +172,9 @@ let Validator = require('validatorjs');
         customCSS: "",
         cssErrors: '',
         showValidationErrors: false,
-        toggleValidation: true
+        toggleValidation: true,
+        showDataPreview: false,
+        showDataInput: false,
       };
     },
     components: {
@@ -312,5 +322,12 @@ let Validator = require('validatorjs');
       width: 21.35rem;
       bottom: 3.5rem;
       right: 0;
+    }
+    .dataInput {
+      margin-top: -25px;
+    }
+
+    .h-80 {
+      height: 80vh;
     }
 </style>
