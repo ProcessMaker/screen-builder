@@ -1,22 +1,25 @@
 <template>
     <div class="h-100 mb-3">
           <div class="form-builder card-body row pl-1">
-            <div class="form-builder__controls col-2">
+            <div class="form-builder__controls  card-height col-2 overflow-auto">
               <div class="card">
+              <div class="sticky-top">
                 <div class="card-header">
                   Controls
                 </div>
-                <div class="input-group input-group-sm mb-1">
+                <div class="input-group input-group-sm mb-1 sticky-top">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
                   </div>
                   <input type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
+              </div>
 
                 <draggable id="controls"
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
-                              :clone="cloneControl">
+                              :clone="cloneControl"
+                            >
                             <ul class="list-group list-group-flush" v-for="(element, index) in controls"
                             :key="index">
                               <li class="list-group-item">
@@ -28,7 +31,7 @@
               </div>
             </div>
 
-            <div class="form-builder__designer h-50rem col-8 overflow-auto">
+            <div class="form-builder__designer card-height col-8 overflow-auto">
                  <div class="row">
                 <draggable :element="'ul'"
                            class="nav nav-tabs d-flex"
@@ -59,10 +62,10 @@
                 <div class="container p-4 m-0">
                       <div class="row">
                           <div class="col">
-                              <draggable class="p-4"
+                              <draggable
                                         v-model="config[currentPage]['items']"
                                         :options="{group: {name: 'controls'}}">
-                                  <div class="control-item"
+                                  <div class="control-item mb-4"
                                       :class="{selected: selected === element}"
                                       v-for="(element,index) in config[currentPage]['items']"
                                       :key="index"
@@ -77,8 +80,14 @@
                                           </component>
                                       </div>
 
-                                      <div v-else class="card mb-5">
-                                          <span class="card-header">{{ element.config.name || 'Field Name' }}</span>
+                                      <div v-else class="card">
+                                          <span class="card-header p-3 pt-4 pb-4">
+                                            {{ element.config.name || 'Field Name' }}
+                                            <button class="delete btn btn btn-secondary mr-3 mt-3" @click="deleteItem(index)">
+                                              <i class="far fa-trash-alt text-light"></i>
+                                            </button>
+                                          </span>
+
                                           <component
                                             class="card-body"
                                             :class="elementCssClass(element)"
@@ -89,9 +98,7 @@
                                           <div v-if="!element.config.interactive" class="mask"></div>
                                       </div>
 
-                                    <button class="delete btn btn-outline-* mt-2 mr-3" @click="deleteItem(index)">
-                                      <i class="far fa-trash-alt text-danger"></i>
-                                    </button>
+
 
                                   </div>
                               </draggable>
@@ -106,7 +113,7 @@
                   </div>
             </div>
 
-            <div class="form-builder__inspector h-50rem col-2 border shadow-sm overflow-auto pl-0 pr-0 card">
+            <div class="form-builder__inspector card-height col-2 border shadow-sm overflow-auto pl-0 pr-0 card">
                 <div class="card-header sticky-top inspector-header">
                     Inspector
                 </div>
@@ -126,18 +133,6 @@
                                 :is="item.type"
                                 v-bind="item.config"
                                 v-model="inspection.config[item.field]"/>
-                  </div>
-                </b-collapse>
-
-                <b-button v-b-toggle.assignment  variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showAssignment = !showAssignment">
-                  <i class="fas fa-user-alt mr-2"></i>
-                    Assignment
-                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : showAssignment }"></i>
-                </b-button>
-
-                <b-collapse id="assignment" class="mt-2">
-                  <div class="card-body flex-wrap overflow-auto">
-                    <span>Assign User</span>
                   </div>
                 </b-collapse>
             </div>
@@ -261,7 +256,7 @@ import { constants } from 'fs';
     computed: {
       displayDelete() {
         return this.config.length > 1;
-      }
+      },
     },
     watch: {
       config: {
@@ -391,15 +386,13 @@ import { constants } from 'fs';
             display: none;
         }
 
-        &.selected,
-        &:hover,{
-            box-shadow: 0 3px 6px rgba(255,0,0,0.30), 0 3px 6px rgba(255,0,0,0.60);
-            border-radius: 5px;
-            border: none;
+        &.selected, &:hover {
+          border-radius: 5px;
+          border: 1px solid rgb(255,0,0);
 
-            .delete {
-                display: inline-block;
-            }
+          .delete {
+              display: inline-block;
+          }
         }
 
         .mask {
@@ -412,8 +405,8 @@ import { constants } from 'fs';
         }
     }
 
-    .h-50rem {
-      height: 50rem;
+    .card-height {
+      height: 46rem;
     }
 
     .inspector-header {
