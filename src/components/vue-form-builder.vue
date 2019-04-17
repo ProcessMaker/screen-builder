@@ -180,8 +180,6 @@
 
   import BootstrapVue from "bootstrap-vue";
 
-  import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
-
   Vue.use(BootstrapVue);
 
   let Validator = require('validatorjs');
