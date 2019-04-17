@@ -123,7 +123,7 @@
                 <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showConfiguration = !showConfiguration">
                   <i class="fas fa-cog mr-2"></i>
                     Configuration
-                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-up' : !showConfiguration }"></i>
+                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showConfiguration }"></i>
 
                 </b-button>
 
