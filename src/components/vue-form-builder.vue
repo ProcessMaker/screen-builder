@@ -73,7 +73,7 @@
                                         <component :class="elementCssClass(element)"
                                                    @inspect="inspect"
                                                    :selected="selected"
-                                                    v-model="element.items"
+                                                   v-model="element.items"
                                                    :config="element.config"
                                                    :is="element['editor-component']">
                                         </component>
@@ -85,6 +85,7 @@
                                           :is="element['editor-component']"
                                           v-bind="element.config"
                                           @input="element.config.interactive ? element.config.content = $event : null"
+                                          @focusout.native="updateState"
                                         />
                                         <div v-if="!element.config.interactive" class="mask"></div>
                                     </div>
