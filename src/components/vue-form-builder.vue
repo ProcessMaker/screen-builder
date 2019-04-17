@@ -122,9 +122,9 @@
                 </div>
             </div>
 
-            <b-modal id="addPageModal" 
+            <b-modal id="addPageModal"
                      centered
-                     @ok="addPage" 
+                     @ok="addPage"
                      :ok-title="$t('Save')"
                      cancel-variant="btn btn-outline-secondary"
                      ok-variant="btn btn-secondary ml-2"
@@ -135,9 +135,9 @@
             </b-modal>
 
             <b-modal ref="editPageModal"
-                     centered 
-                     @ok="editPage" 
-                     :title="$t('Edit Page Title')" 
+                     centered
+                     @ok="editPage"
+                     :title="$t('Edit Page Title')"
                      :ok-title="$t('Save')"
                      cancel-variant="btn btn-outline-secondary"
                      ok-variant="btn btn-secondary ml-2">
@@ -197,7 +197,7 @@
     FormRadioButtonGroup,
     FormDatePicker,
     FormHtmlEditor
-  } from "@processmaker/vue-form-elements/src/components";
+  } from "@processmaker/vue-form-elements";
 import { constants } from 'fs';
 
   export default {
