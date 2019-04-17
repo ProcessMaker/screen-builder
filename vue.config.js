@@ -5,11 +5,12 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new MonocoEditorPlugin({
+        features: [],
         languages: ['javascript', 'typescript', 'css']
       })
     ],
     externals: {
-      subtract: ['bootstrap']
+      subtract: ['bootstrap', '@processmaker/vue-form-elements']
     }
   },
 }
