@@ -36,32 +36,27 @@
             </div>
 
             <div class="form-builder__designer card-height col-8 overflow-auto">
-                 <div class="row">
-                <draggable :element="'ul'"
-                           class="nav nav-tabs d-flex"
-                           v-model="config"
-                           :options="{draggable:'.page-item'}"
-                           @change="handlePageSort">
-                    <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
-                        <a class="nav-link"
-                           href="#"
-                           @click="currentPage = page"
-                           :class="{active: currentPage != page}">
-                            {{data.name}}
-                            <button class="btn btn-sm mr-1 btn-outline-*"
-                                @click="openEditPageModal(page)">
-                                <i class="far fa-edit"></i>
-                            </button>
-                             <button v-show="displayDelete" class="delete btn btn-outline-* mr-2" @click="confirmDelete(page)">
-                                      <i class="far fa-trash-alt text-danger"></i>
-                            </button>
-                        </a>
-                    </li>
-                </draggable>
-                <b-btn variant="outline-success" size="sm" v-b-modal.addPageModal>
-                  <i class="fas fa-plus mr-2"></i>
-                  {{$t('Add Page')}}
-                </b-btn>
+              <div class="row">
+                <div class="d-flex align-items-center">
+                  <b-form-select v-model="currentPage" class="mr-2 screen-select">
+                    <option
+                      v-for="(data, page) in config"
+                      :key="page"
+                      :value="page"
+                    >
+                      {{ data.name }}
+                    </option>
+                  </b-form-select>
+
+                  <b-button class="mr-2 flex-shrink-0" size="sm" v-b-modal.addPageModal>
+                    <i class="fas fa-plus mr-2" />
+                    {{$t('Add Screen')}}
+                  </b-button>
+
+                  <b-button size="sm" @click="confirmDelete()" :disabled="!displayDelete">
+                    <i class="far fa-trash-alt" />
+                  </b-button>
+                </div>
 
                 <div class="container p-4 m-0">
                       <div class="row">
@@ -112,7 +107,7 @@
                           </div>
                       </div>
                   </div>
-                  </div>
+                </div>
             </div>
 
             <div class="form-builder__inspector card-height col-2 border shadow-sm overflow-auto pl-0 pr-0 card">
@@ -302,9 +297,9 @@ import { constants } from 'fs';
           this.inspect(validation.item);
         });
       },
-      confirmDelete(page) {
-        this.confirmMessage = 'Are you sure to delete the page ' + this.config[page].name + '?';
-        this.pageDelete = page;
+      confirmDelete() {
+        this.confirmMessage = 'Are you sure to delete the page ' + this.config[this.currentPage].name + '?';
+        this.pageDelete = this.currentPage;
         this.$refs.confirm.show();
       },
       hideConfirmModal() {
@@ -375,6 +370,10 @@ import { constants } from 'fs';
 </script>
 
 <style lang="scss" scoped>
+.screen-select {
+  min-width: 16rem;
+}
+
     .control-icon {
         width: 30px;
         font-size: 20px;
