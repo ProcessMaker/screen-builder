@@ -22,38 +22,40 @@
                 </div>
             </div>
 
-            <div class="w-75 flex-grow-1 overflow-auto nav-tabs-container">
-                <draggable :element="'ul'"
-                           class="nav nav-tabs"
-                           v-model="config"
-                           :options="{draggable:'.page-item'}"
-                           @change="handlePageSort">
-                    <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
-                        <a class="nav-link"
-                           href="#"
-                           @click="currentPage = page"
-                           :class="{active: currentPage == page}">
-                            {{data.name}}
-                            <button class="btn btn-sm btn-primary mr-1"
-                                    @click="openEditPageModal(page)">
-                                {{$t('Edit')}}
-                            </button>
-                            <button class="btn btn-sm btn-danger mr-1"
-                                    @click="confirmDelete(page)"
-                                    v-show="displayDelete">x
-                            </button>
-                        </a>
-                    </li>
-                    <li slot="footer" class="nav-item">
-                        <a class="nav-link" href="#">
-                            <b-btn variant="success" size="sm" v-b-modal.addPageModal>{{$t('+ Add Page')}}</b-btn>
-                        </a>
-                    </li>
-                </draggable>
+            <div class="w-75 flex-grow-1 overflow-auto">
+                <div class="nav-tabs-container">
+                  <draggable :element="'ul'"
+                             class="nav nav-tabs"
+                             v-model="config"
+                             :options="{draggable:'.page-item'}"
+                             @change="handlePageSort">
+                      <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
+                          <a class="nav-link"
+                             href="#"
+                             @click="currentPage = page"
+                             :class="{active: currentPage == page}">
+                              {{data.name}}
+                              <button class="btn btn-sm btn-primary mr-1"
+                                      @click="openEditPageModal(page)">
+                                  {{$t('Edit')}}
+                              </button>
+                              <button class="btn btn-sm btn-danger mr-1"
+                                      @click="confirmDelete(page)"
+                                      v-show="displayDelete">x
+                              </button>
+                          </a>
+                      </li>
+                      <li slot="footer" class="nav-item">
+                          <a class="nav-link" href="#">
+                              <b-btn variant="success" size="sm" v-b-modal.addPageModal>{{$t('+ Add Page')}}</b-btn>
+                          </a>
+                      </li>
+                  </draggable>
 
-                <div class="undo-redo-buttons">
-                  <button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</button>
-                  <button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</button>
+                  <b-button-group size="sm" class="undo-redo-buttons">
+                    <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
+                    <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
+                  </b-button-group>
                 </div>
 
                 <div class="container p-4 mb-5">
@@ -410,17 +412,18 @@
 
 <style lang="scss" scoped>
 .nav-tabs-container {
+  display: flex;
+  align-items: center;
   position: relative;
-}
 
-.undo-redo-buttons {
-  position: absolute;
-  z-index: 1;
-  top: 1rem;
-  right: 1rem;
+  > .nav-tabs {
+    flex: 1;
+  }
 
-  > button {
-    cursor: pointer;
+  > .undo-redo-buttons {
+    position: absolute;
+    right: 0;
+    margin-right: 1rem;
   }
 }
 
