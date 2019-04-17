@@ -11,7 +11,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
                   </div>
-                  <input type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
+                  <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
               </div>
 
@@ -20,13 +20,17 @@
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl"
                             >
-                            <ul class="list-group list-group-flush" v-for="(element, index) in controls"
+                            <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
                             :key="index">
                               <li class="list-group-item">
                                 <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
                                 {{$t(element.label)}}
                               </li>
                             </ul>
+
+                            <li v-if="!filteredControls.length" class="list-group-item">
+                              <span>Control Does Not Exist</span>
+                            </li>
                 </draggable>
               </div>
             </div>
@@ -250,13 +254,19 @@ import { constants } from 'fs';
         translated: [],
         showValidationErrors: false,
         showAssignment: false,
-        showConfiguration: true
+        showConfiguration: true,
+        filterQuery: ''
       };
     },
     computed: {
       displayDelete() {
         return this.config.length > 1;
       },
+      filteredControls() {
+        return this.controls.filter(control => {
+          return control.label.toLowerCase().includes(this.filterQuery.toLowerCase())
+        });
+      }
     },
     watch: {
       config: {
