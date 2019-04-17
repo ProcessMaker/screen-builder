@@ -122,13 +122,25 @@
                 </div>
             </div>
 
-            <b-modal id="addPageModal" @ok="addPage" :title="$t('Add New Page')">
+            <b-modal id="addPageModal" 
+                     centered
+                     @ok="addPage" 
+                     :ok-title="$t('Save')"
+                     cancel-variant="btn btn-outline-secondary"
+                     ok-variant="btn btn-secondary ml-2"
+                     :title="$t('Add New Page')">
                 <form-input v-model="addPageName"
                             :label="$t('Page Name')"
                             :helper="$t('The name of the new page to add')"></form-input>
             </b-modal>
 
-            <b-modal ref="editPageModal" @ok="editPage" :title="$t('Edit Page Title')">
+            <b-modal ref="editPageModal"
+                     centered 
+                     @ok="editPage" 
+                     :title="$t('Edit Page Title')" 
+                     :ok-title="$t('Save')"
+                     cancel-variant="btn btn-outline-secondary"
+                     ok-variant="btn btn-secondary ml-2">
                 <form-input v-model="editPageName" :label="$t('Page Name')" :helper="$t('The new name of the page')"></form-input>
             </b-modal>
 
