@@ -86,7 +86,7 @@
         <div class="card-footer text-muted d-flex justify-content-end align-items-center">
             <div>
               <span class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
+              <input v-model="toggleValidation" type="checkbox" class="custom-control-input" id="customSwitch1" checked>
               <label class="custom-control-label" for="customSwitch1"> Screen Validation
               </label>
               </span>
@@ -164,6 +164,7 @@ let Validator = require('validatorjs');
         customCSS: "",
         cssErrors: '',
         showValidationErrors: false,
+        toggleValidation: true
       };
     },
     components: {

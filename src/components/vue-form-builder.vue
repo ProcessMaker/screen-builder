@@ -29,7 +29,7 @@
                             </ul>
 
                             <li v-if="!filteredControls.length" class="list-group-item">
-                              <span>Control Does Not Exist</span>
+                              <span class="text-danger">Control Does Not Exist</span>
                             </li>
                 </draggable>
               </div>
@@ -87,9 +87,6 @@
                                       <div v-else class="card">
                                           <span class="card-header p-3 pt-4 pb-4">
                                             {{ element.config.name || 'Field Name' }}
-                                            <button class="delete btn btn btn-secondary mr-3 mt-3" @click="deleteItem(index)">
-                                              <i class="far fa-trash-alt text-light"></i>
-                                            </button>
                                           </span>
 
                                           <component
@@ -99,11 +96,12 @@
                                             :is="element['editor-component']"
                                             @input="element.config.interactive ? element.config.content = $event : null"
                                           />
+
                                           <div v-if="!element.config.interactive" class="mask"></div>
-                                      </div>
-
-
-
+                                            <button class="delete btn btn btn-secondary mr-3 mt-3" @click="deleteItem(index)">
+                                              <i class="far fa-trash-alt text-light"></i>
+                                            </button>
+                                           </div>
                                   </div>
                               </draggable>
                               <div class="card">
