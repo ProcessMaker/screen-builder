@@ -107,7 +107,7 @@
                 >
                   <i class="fas fa-times-circle text-danger d-block mr-3"></i>
                   <span class="ml-2 text-dark font-weight-bold">
-                    {{validation.item.component}}
+                    {{ validation.item.component }}
                     <span class="d-block font-weight-normal">{{ validation.message }}</span>
                   </span>
                 </a>
@@ -251,7 +251,7 @@ let Validator = require('validatorjs');
             }
           });
         });
-        return validationErrors;
+        return this.toggleValidation ? validationErrors : [] ;
       },
     },
     mounted() {
