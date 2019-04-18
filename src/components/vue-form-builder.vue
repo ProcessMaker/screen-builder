@@ -29,7 +29,7 @@
                             </ul>
 
                             <li v-if="!filteredControls.length" class="list-group-item">
-                              <span class="text-danger">Control Does Not Exist</span>
+                              <span class="text-danger">Control Not Found</span>
                             </li>
                 </draggable>
               </div>
