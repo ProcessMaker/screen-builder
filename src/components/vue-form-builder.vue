@@ -1,9 +1,9 @@
 <template>
     <div class="h-100 mb-3">
           <div class="form-builder card-body row p-4 pr-5">
-            <div class="form-builder__controls h-70vh col-2 overflow-auto">
-              <div class="card">
-              <div class="sticky-top">
+            <div class="form-builder__controls col-2 overflow-auto">
+              <div class="card card-height border">
+              <div class="sticky-top header-bg">
                 <div class="card-header">
                   Controls
                 </div>
@@ -15,7 +15,7 @@
                 </div>
               </div>
 
-                <draggable id="controls h-70vh"
+                <draggable id="controls card-height border"
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl"
@@ -35,7 +35,7 @@
               </div>
             </div>
 
-            <div class="form-builder__designer  col-7 overflow-auto">
+            <div class="form-builder__designer col-7 overflow-auto">
               <div class="row">
                 <div class="d-flex align-items-center w-100 ml-4 mr-4">
                   <b-form-select v-model="currentPage" class="mr-2 screen-select w-50">
@@ -63,7 +63,7 @@
                   </b-button>
                 </div>
 
-                <div class="w-100 p-4 m-0 h-70vh">
+                <div class="w-100 p-4 m-0 card-height">
                       <div class="row">
                           <div class="col">
                               <draggable
@@ -116,7 +116,7 @@
                 </div>
             </div>
 
-            <div class="form-builder__inspector col-3 shadow-sm overflow-auto pl-0 pr-0 card h-70vh">
+            <div class="form-builder__inspector col-3 shadow-sm overflow-auto pl-0 pr-0 card card-height">
                 <div class="card-header sticky-top inspector-header">
                     Inspector
                 </div>
@@ -448,10 +448,7 @@ import { constants } from 'fs';
     }
 
     .card-height {
-      height: 85vh;
-    }
-    .h-70vh {
-      height: 80vh;
+      height: 83vh;
     }
 
     .inspector-header {
@@ -479,5 +476,13 @@ import { constants } from 'fs';
       &:hover {
         color: rgb(51,151,225);
       }
+    }
+
+    .list-group:last-child {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .header-bg {
+      background: #f7f7f7;
     }
 </style>
