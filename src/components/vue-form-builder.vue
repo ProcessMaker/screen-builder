@@ -53,6 +53,10 @@
                     {{$t('Add Screen')}}
                   </b-button>
 
+                  <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
+                    <i class="far fa-edit" />
+                  </b-button>
+
                   <b-button size="sm" @click="confirmDelete()" :disabled="!displayDelete">
                     <i class="far fa-trash-alt" />
                   </b-button>
