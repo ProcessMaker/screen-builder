@@ -37,8 +37,8 @@
 
             <div class="form-builder__designer card-height col-8 overflow-auto">
               <div class="row">
-                <div class="d-flex align-items-center">
-                  <b-form-select v-model="currentPage" class="mr-2 screen-select">
+                <div class="d-flex align-items-center w-100 ml-4 mr-4">
+                  <b-form-select v-model="currentPage" class="mr-2 screen-select w-25">
                     <option
                       v-for="(data, page) in config"
                       :key="page"
@@ -48,7 +48,7 @@
                     </option>
                   </b-form-select>
 
-                  <b-button class="mr-2 flex-shrink-0" size="sm" v-b-modal.addPageModal>
+                  <b-button class="mr-2 ml-auto flex-shrink-0" size="sm" v-b-modal.addPageModal>
                     <i class="fas fa-plus mr-2" />
                     {{$t('Add Screen')}}
                   </b-button>
