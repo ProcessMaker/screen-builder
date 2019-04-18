@@ -35,11 +35,11 @@
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" v-show="displayBuilder"/>
 
-        <div id="preview" v-show="displayPreview" class="h-100">
+        <div id="preview" v-show="displayPreview" class="h-100 pt-4 pr-5 pl-5">
           <div class="row">
             <div id="renderer-container" class="col-8">
               <div class="row">
-                  <div class="card-body border p-4 m-4 h-80 overflow-auto">
+                  <div class="card-body border h-80 overflow-auto mr-5">
                       <vue-form-renderer ref="renderer"
                                           v-model="previewData"
                                           @submit="previewSubmit"
@@ -51,7 +51,7 @@
               </div>
             </div>
 
-            <div class="data-container col-4 pl-0 mt-4 border h-80 overflow-auto">
+            <div class="data-container col-4 border h-80 overflow-auto pr-0 pl-0">
               <div id="data-preview" class="overflow-auto">
                 <div class="card-header">Inspector</div>
                 <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
@@ -60,7 +60,7 @@
                   <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
                 </b-button>
 
-                <b-collapse id="dataPreview" class="mt-2">
+                <b-collapse id="dataPreview" class="">
                   <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
                 </b-collapse>
               </div>
@@ -80,7 +80,7 @@
           </div>
         </div>
 
-        <div class="card-footer text-muted d-flex justify-content-end align-items-center fixed-bottom">
+        <div class="card-footer text-muted d-flex justify-content-end align-items-center fixed-bottom header-bg">
             <div>
               <span class="custom-control custom-switch">
               <input v-model="toggleValidation" type="checkbox" class="custom-control-input" id="customSwitch1" checked>
@@ -311,10 +311,6 @@ let Validator = require('validatorjs');
         min-height: 100%;
         max-height: 100%;
         overflow: hidden;
-    }
-
-    .h-25rem {
-      height: 25rem;
     }
 
     .header-bg {
