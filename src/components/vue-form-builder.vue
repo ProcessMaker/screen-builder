@@ -1,7 +1,7 @@
 <template>
     <div class="h-100 mb-3">
-          <div class="form-builder card-body row pl-1">
-            <div class="form-builder__controls  card-height col-2 overflow-auto">
+          <div class="form-builder card-body row p-4 pr-5">
+            <div class="form-builder__controls h-70vh col-2 overflow-auto">
               <div class="card">
               <div class="sticky-top">
                 <div class="card-header">
@@ -15,7 +15,7 @@
                 </div>
               </div>
 
-                <draggable id="controls"
+                <draggable id="controls h-70vh"
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl"
@@ -35,10 +35,10 @@
               </div>
             </div>
 
-            <div class="form-builder__designer card-height col-8 overflow-auto">
+            <div class="form-builder__designer  col-7 overflow-auto">
               <div class="row">
                 <div class="d-flex align-items-center w-100 ml-4 mr-4">
-                  <b-form-select v-model="currentPage" class="mr-2 screen-select w-25">
+                  <b-form-select v-model="currentPage" class="mr-2 screen-select w-50">
                     <option
                       v-for="(data, page) in config"
                       :key="page"
@@ -48,10 +48,6 @@
                     </option>
                   </b-form-select>
 
-                  <b-button class="mr-2 ml-auto flex-shrink-0" size="sm" v-b-modal.addPageModal>
-                    <i class="fas fa-plus mr-2" />
-                    {{$t('Add Screen')}}
-                  </b-button>
 
                   <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
                     <i class="far fa-edit" />
@@ -60,9 +56,14 @@
                   <b-button size="sm" @click="confirmDelete()" :disabled="!displayDelete">
                     <i class="far fa-trash-alt" />
                   </b-button>
+
+                  <b-button class="mr-2 flex-shrink-0 ml-auto" size="sm" v-b-modal.addPageModal>
+                    <i class="fas fa-plus mr-2" />
+                    {{$t('Add Screen')}}
+                  </b-button>
                 </div>
 
-                <div class="container p-4 m-0">
+                <div class="w-100 p-4 m-0 h-70vh">
                       <div class="row">
                           <div class="col">
                               <draggable
@@ -84,7 +85,8 @@
                                       </div>
 
                                       <div v-else class="card">
-                                          <span class="card-header p-3 pt-4 pb-4">
+                                          <span class="card-header form-element-header p-3 pt-4 pb-4">
+                                            <i class="fas fa-arrows-alt-v"></i>
                                             {{ element.config.name || 'Field Name' }}
                                           </span>
 
@@ -114,11 +116,10 @@
                 </div>
             </div>
 
-            <div class="form-builder__inspector card-height col-2 border shadow-sm overflow-auto pl-0 pr-0 card">
+            <div class="form-builder__inspector col-3 shadow-sm overflow-auto pl-0 pr-0 card h-70vh">
                 <div class="card-header sticky-top inspector-header">
                     Inspector
                 </div>
-
                 <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showConfiguration = !showConfiguration">
                   <i class="fas fa-cog mr-2"></i>
                     Configuration
@@ -217,6 +218,7 @@
 import { constants } from 'fs';
 
   export default {
+    props: ['validationErrors'],
     mixins: [HasColorProperty],
     components: {
       draggable,
@@ -275,7 +277,7 @@ import { constants } from 'fs';
         return this.controls.filter(control => {
           return control.label.toLowerCase().includes(this.filterQuery.toLowerCase())
         });
-      }
+      },
     },
     watch: {
       config: {
@@ -409,9 +411,26 @@ import { constants } from 'fs';
             display: none;
         }
 
-        &.selected, &:hover {
+        &:hover {
           border-radius: 5px;
           border: 1px solid rgb(255,0,0);
+          cursor: move;
+
+          .delete {
+              display: inline-block;
+          }
+
+        }
+
+        &.selected {
+          border-radius: 5px;
+          border: 1px solid rgb(255,0,0);
+          cursor: move;
+
+          .form-element-header {
+            color: red;
+            border-bottom: 1px solid rgb(255,0,0);
+          }
 
           .delete {
               display: inline-block;
@@ -429,7 +448,10 @@ import { constants } from 'fs';
     }
 
     .card-height {
-      height: 46rem;
+      height: 85vh;
+    }
+    .h-70vh {
+      height: 80vh;
     }
 
     .inspector-header {

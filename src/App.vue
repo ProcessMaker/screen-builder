@@ -33,7 +33,7 @@
 
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
-        <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
+        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" v-show="displayBuilder"/>
 
         <div id="preview" v-show="displayPreview" class="h-100">
           <div class="row">
@@ -51,7 +51,7 @@
               </div>
             </div>
 
-            <div class="data-container col-4 pl-0 mt-4 border h-80">
+            <div class="data-container col-4 pl-0 mt-4 border h-80 overflow-auto">
               <div id="data-preview" class="overflow-auto">
                 <div class="card-header">Inspector</div>
                 <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
@@ -74,24 +74,13 @@
 
                   <b-collapse id="dataInput">
                       <form-text-area class="dataInput" rows="8" v-model="previewInput"></form-text-area>
-                      <div class="m-3 text-right">
-                          <span v-if="previewInputValid">
-                            {{$t('Valid JSON Data Object')}}
-                            <i class="fas fa-check-circle text-success"></i>
-                          </span>
-                          <span v-else>
-                            {{$t('Invalid JSON Data Object')}}
-                            <i class="fas fa-times-circle text-danger"></i>
-                          </span>
-                      </div>
                   </b-collapse>
               </div>
             </div>
-
           </div>
         </div>
 
-        <div class="card-footer text-muted d-flex justify-content-end align-items-center">
+        <div class="card-footer text-muted d-flex justify-content-end align-items-center fixed-bottom">
             <div>
               <span class="custom-control custom-switch">
               <input v-model="toggleValidation" type="checkbox" class="custom-control-input" id="customSwitch1" checked>
@@ -101,6 +90,10 @@
             </div>
 
             <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+                <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
+                  <i class="fas fa-times-circle text-danger mr-3"></i>
+                  {{$t('Invalid JSON Data Object')}}
+                </div>
                 <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void(0)"
                   class="validation__message d-flex align-items-center p-3"
                   @click="focusInspector(validation)"
@@ -111,21 +104,23 @@
                     <span class="d-block font-weight-normal">{{ validation.message }}</span>
                   </span>
                 </a>
-                <span v-if="!validationErrors.length" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
+
+
+                <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
             </div>
 
             <div class="ml-3" @click="showValidationErrors =! showValidationErrors">
               <button type="button" class="btn btn-light btn-sm">
                 <i class="fas fa-angle-double-up"></i>
                 Open Console
-                <span v-if="!validationErrors.length" class="badge badge-success">
+                <span v-if="allErrors === 0" class="badge badge-success">
                   <i class="fas fa-check-circle "></i>
-                  {{ validationErrors.length }}
+                  {{ allErrors }}
                 </span>
 
                 <span v-else class="badge badge-danger">
                   <i class="fas fa-times-circle "></i>
-                  {{ validationErrors.length }}
+                  {{ allErrors }}
                 </span>
               </button>
             </div>
@@ -198,6 +193,7 @@ let Validator = require('validatorjs');
       previewInput() {
         if (this.previewInputValid) {
           // Copy data over
+          JSON.stringify(this.previewInput)
           this.previewData = JSON.parse(this.previewInput)
         } else {
           this.previewData = {}
@@ -224,6 +220,15 @@ let Validator = require('validatorjs');
       },
       displayPreview() {
         return this.mode === 'preview';
+      },
+      allErrors() {
+        let errorCount = 0;
+
+        if(!this.previewInputValid) {
+          errorCount++;
+        }
+
+        return this.validationErrors.length + errorCount
       },
       validationErrors() {
         const validationErrors = [];
