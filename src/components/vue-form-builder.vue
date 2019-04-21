@@ -66,6 +66,11 @@
                 <div class="w-100 p-4 m-0 card-height">
                       <div class="row">
                           <div class="col">
+                              <div v-if="!formBuilderCount > 0" class="card">
+                                <div  class="card-body text-center">
+                                  Drag an element here
+                                </div>
+                              </div>
                               <draggable
                                         v-model="config[currentPage]['items']"
                                         :options="{group: {name: 'controls'}}">
@@ -74,6 +79,7 @@
                                       v-for="(element,index) in config[currentPage]['items']"
                                       :key="index"
                                       @click="inspect(element)">
+
                                       <div v-if="element.container" @click="inspect(element)">
                                           <component :class="elementCssClass(element)"
                                                     @inspect="inspect"
@@ -105,11 +111,6 @@
                                            </div>
                                   </div>
                               </draggable>
-                              <div class="card">
-                              <div class="card-body text-center">
-                                Drag an element here
-                              </div>
-                            </div>
                           </div>
                       </div>
                   </div>
@@ -278,6 +279,9 @@ import { constants } from 'fs';
           return control.label.toLowerCase().includes(this.filterQuery.toLowerCase())
         });
       },
+      formBuilderCount() {
+        return this.config[0].items.length
+      }
     },
     watch: {
       config: {
@@ -383,7 +387,7 @@ import { constants } from 'fs';
         }
         return copy;
       }
-    }
+    },
   };
 </script>
 
