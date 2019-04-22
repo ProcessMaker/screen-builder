@@ -80,7 +80,7 @@
           </div>
         </div>
 
-        <div class="card-footer text-muted d-flex justify-content-end align-items-center fixed-bottom header-bg">
+        <div class="card-footer text-muted d-flex justify-content-end align-items-center">
             <div>
               <span class="custom-control custom-switch">
               <input v-model="toggleValidation" type="checkbox" class="custom-control-input" id="customSwitch1" checked>
