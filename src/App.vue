@@ -94,18 +94,16 @@
                   <i class="fas fa-times-circle text-danger mr-3"></i>
                   {{$t('Invalid JSON Data Object')}}
                 </div>
-                <a v-for="(validation,index) in validationErrors" :key="index" href="javascript:void(0)"
-                  class="validation__message d-flex align-items-center p-3"
-                  @click="focusInspector(validation)"
-                >
+                <b-button variant="link" class="validation__message d-flex align-items-center p-3"
+                          v-for="(validation,index) in validationErrors"
+                          :key="index"
+                          @click="focusInspector(validation)">
                   <i class="fas fa-times-circle text-danger d-block mr-3"></i>
-                  <span class="ml-2 text-dark font-weight-bold">
+                  <span class="ml-2 text-dark font-weight-bold text-left">
                     {{ validation.item.component }}
                     <span class="d-block font-weight-normal">{{ validation.message }}</span>
                   </span>
-                </a>
-
-
+                </b-button>
                 <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
             </div>
 
