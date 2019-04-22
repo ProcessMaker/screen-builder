@@ -126,14 +126,13 @@
                   </b-button>
 
                   <b-collapse id="configuration" class="mt-2">
-                    <div class="card-body flex-wrap overflow-auto">
                         <component v-for="(item, index) in inspection.inspector"
                                   :formConfig="config"
                                   :key="index"
                                   :is="item.type"
+                                  class="border-bottom pt-1 pb-3 pr-4 pl-4"
                                   v-bind="item.config"
                                   v-model="inspection.config[item.field]"/>
-                    </div>
                   </b-collapse>
                 </div>
             </div>
