@@ -19,6 +19,7 @@
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl"
                               class="overflow-auto"
+
                             >
                             <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
                             :key="index">
@@ -90,24 +91,24 @@
                         </div>
 
                         <div v-else class="card">
-                            <span class="card-header form-element-header p-3 pt-4 pb-4">
-                              <i class="fas fa-arrows-alt-v"></i>
-                              {{ element.config.name || 'Field Name' }}
-                            </span>
+                          <span v-if="selected === element" class="card-header p-3 pt-4 pb-4">
+                            <i class="fas fa-arrows-alt-v" />
+                            {{ element.config.name || 'Field Name' }}
+                          </span>
 
-                            <component
-                              class="card-body"
-                              :class="elementCssClass(element)"
-                              v-bind="element.config"
-                              :is="element['editor-component']"
-                              @input="element.config.interactive ? element.config.content = $event : null"
-                            />
+                          <component
+                            class="card-body"
+                            :class="elementCssClass(element)"
+                            v-bind="element.config"
+                            :is="element['editor-component']"
+                            @input="element.config.interactive ? element.config.content = $event : null"
+                          />
 
-                            <div v-if="!element.config.interactive" class="mask"></div>
-                              <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
-                                <i class="far fa-trash-alt text-light"></i>
-                              </button>
-                              </div>
+                          <div v-if="!element.config.interactive" class="mask"></div>
+                          <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
+                            <i class="far fa-trash-alt text-light"></i>
+                          </button>
+                        </div>
                     </div>
                 </draggable>
             </div>
@@ -413,7 +414,6 @@ import { constants } from 'fs';
 
     .control-item {
         position: relative;
-        border: 1px solid transparent;
 
         &:not(:last-child) {
           margin-bottom: 1.5rem;
@@ -427,28 +427,20 @@ import { constants } from 'fs';
         }
 
         &:hover {
-          border-radius: 5px;
-          border: 1px solid rgb(255,0,0);
           cursor: move;
-
-          .delete {
-              display: inline-block;
-          }
-
         }
 
         &.selected {
           border-radius: 5px;
-          border: 1px solid #1c7ed6;
           cursor: move;
 
-          .form-element-header {
-            border-bottom: 1px solid #1c7ed6;
-          }
-
           .delete {
-              display: inline-block;
+            display: initial;
           }
+        }
+
+        &:not(.selected) .card {
+          border: none;
         }
 
         .mask {
