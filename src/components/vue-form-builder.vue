@@ -1,5 +1,5 @@
 <template>
-    <div class="card-body overflow-hidden d-flex">
+    <div class="card-body overflow-hidden">
             <div class="form-builder__controls d-flex p-0">
               <div class="card border d-flex">
                 <div class="header-bg">
@@ -75,7 +75,7 @@
                       </div>
                     </div>
                     <div class="control-item"
-                        :class="{selected: selected === element }"
+                        :class="{selected: selected === element, hasError: hasError(element)  }"
                         v-for="(element,index) in config[currentPage]['items']"
                         :key="index"
                         @click="inspect(element)">
@@ -91,7 +91,7 @@
                         </div>
 
                         <div v-else class="card">
-                          <span v-if="selected === element" class="card-header p-3 pt-4 pb-4">
+                          <span v-if="selected === element" class="card-header form-element-header p-3 pt-4 pb-4">
                             <i class="fas fa-arrows-alt-v" />
                             {{ element.config.name || 'Field Name' }}
                           </span>
@@ -279,9 +279,6 @@ import { constants } from 'fs';
       formBuilderCount() {
         return this.config[0].items.length
       },
-      focusedError() {
-        return Validator.length;
-      }
     },
     watch: {
       config: {
@@ -312,6 +309,9 @@ import { constants } from 'fs';
       }
     },
     methods: {
+      hasError(element) {
+        return this.validationErrors.some(({ item }) => item === element);
+      },
       focusInspector(validation) {
         this.showConfiguration = true;
         this.currentPage = this.config.indexOf(validation.page);
@@ -451,6 +451,16 @@ import { constants } from 'fs';
             width: 100%;
             height: 100%;
         }
+    }
+
+    .hasError {
+      border: 1px solid red;
+      border-radius: 0.25rem;
+
+      .form-element-header {
+        border-bottom: 1px solid red;
+        color: red;
+      }
     }
 
     .inspector-header {
