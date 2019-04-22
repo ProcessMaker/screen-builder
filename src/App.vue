@@ -33,13 +33,13 @@
 
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
-        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" v-show="displayBuilder"/>
+        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
 
-        <div id="preview" v-show="displayPreview" class="h-100 pt-4 pr-5 pl-5">
-          <div class="row">
+        <div id="preview" v-show="displayPreview" class="flex-grow-1 p-4 pl-5 pr-5">
+          <div class="row h-100">
             <div id="renderer-container" class="col-8">
-              <div class="row">
-                  <div class="card-body border h-80 overflow-auto mr-5">
+              <div class="row h-100">
+                  <div class="card-body border overflow-auto mr-5">
                       <vue-form-renderer ref="renderer"
                                           v-model="previewData"
                                           @submit="previewSubmit"
@@ -51,7 +51,7 @@
               </div>
             </div>
 
-            <div class="data-container col-4 border h-80 overflow-auto pr-0 pl-0">
+            <div class="data-container col-4 border overflow-auto pr-0 pl-0">
               <div id="data-preview" class="overflow-auto">
                 <div class="card-header">Inspector</div>
                 <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
