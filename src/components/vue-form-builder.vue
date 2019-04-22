@@ -1,24 +1,24 @@
 <template>
-    <div class="h-100 mb-3">
-          <div class="form-builder card-body row p-4 pr-5">
-            <div class="form-builder__controls col-2 overflow-auto">
-              <div class="card card-height border">
-              <div class="sticky-top header-bg">
-                <div class="card-header">
-                  Controls
-                </div>
-                <div class="input-group input-group-sm mb-1 sticky-top">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
+    <div class="card-body overflow-hidden d-flex">
+            <div class="form-builder__controls d-flex p-0">
+              <div class="card border d-flex">
+                <div class="header-bg">
+                  <div class="card-header">
+                    Controls
                   </div>
-                  <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
+                  <div class="input-group input-group-sm mb-1 sticky-top">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
+                    </div>
+                    <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
+                  </div>
                 </div>
-              </div>
 
-                <draggable id="controls card-height border"
+                <draggable id="controls"
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl"
+                              class="overflow-auto"
                             >
                             <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
                             :key="index">
@@ -35,9 +35,9 @@
               </div>
             </div>
 
-            <div class="form-builder__designer col-7 overflow-auto">
-              <div class="row sticky-top bg-white">
-                <div class="d-flex align-items-center w-100 ml-4 mr-4">
+            <div class="form-builder__designer">
+              <div class="bg-white">
+                <div class="d-flex align-items-center w-100">
                   <b-form-select v-model="currentPage" class="mr-2 screen-select">
                     <option
                       v-for="(data, page) in config"
@@ -62,88 +62,80 @@
                   </b-button>
 
                 </div>
-                <hr class="sticky-top w-100 mb-0 mt-4 ml-4 mr-4" />
+                <hr class="w-100 mb-0 mt-4 mb-4" />
               </div>
-              <div class="row">
-
-
-                <div class="w-100 p-4 m-0 card-height">
-                      <div class="row">
-                          <div class="col">
-                              <div v-if="!formBuilderCount > 0" class="card">
-                                <div  class="card-body text-center">
-                                  Drag an element here
-                                </div>
-                              </div>
-                              <draggable
-                                        v-model="config[currentPage]['items']"
-                                        :options="{group: {name: 'controls'}}">
-                                  <div class="control-item mb-4"
-                                      :class="{selected: selected === element }"
-                                      v-for="(element,index) in config[currentPage]['items']"
-                                      :key="index"
-                                      @click="inspect(element)">
-
-                                      <div v-if="element.container" @click="inspect(element)">
-                                          <component :class="elementCssClass(element)"
-                                                    @inspect="inspect"
-                                                    :selected="selected"
-                                                    v-model="element.items"
-                                                    :config="element.config"
-                                                    :is="element['editor-component']">
-                                          </component>
-                                      </div>
-
-                                      <div v-else class="card">
-                                          <span class="card-header form-element-header p-3 pt-4 pb-4">
-                                            <i class="fas fa-arrows-alt-v"></i>
-                                            {{ element.config.name || 'Field Name' }}
-                                          </span>
-
-                                          <component
-                                            class="card-body"
-                                            :class="elementCssClass(element)"
-                                            v-bind="element.config"
-                                            :is="element['editor-component']"
-                                            @input="element.config.interactive ? element.config.content = $event : null"
-                                          />
-
-                                          <div v-if="!element.config.interactive" class="mask"></div>
-                                            <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
-                                              <i class="far fa-trash-alt text-light"></i>
-                                            </button>
-                                           </div>
-                                  </div>
-                              </draggable>
-                          </div>
+                <draggable
+                          class="overflow-auto"
+                          v-model="config[currentPage]['items']"
+                          :options="{group: {name: 'controls'}}">
+                    <div v-if="!formBuilderCount > 0" class="card">
+                      <div  class="card-body text-center">
+                        Drag an element here
                       </div>
-                  </div>
-                </div>
+                    </div>
+                    <div class="control-item"
+                        :class="{selected: selected === element }"
+                        v-for="(element,index) in config[currentPage]['items']"
+                        :key="index"
+                        @click="inspect(element)">
+
+                        <div v-if="element.container" @click="inspect(element)">
+                            <component :class="elementCssClass(element)"
+                                      @inspect="inspect"
+                                      :selected="selected"
+                                      v-model="element.items"
+                                      :config="element.config"
+                                      :is="element['editor-component']">
+                            </component>
+                        </div>
+
+                        <div v-else class="card">
+                            <span class="card-header form-element-header p-3 pt-4 pb-4">
+                              <i class="fas fa-arrows-alt-v"></i>
+                              {{ element.config.name || 'Field Name' }}
+                            </span>
+
+                            <component
+                              class="card-body"
+                              :class="elementCssClass(element)"
+                              v-bind="element.config"
+                              :is="element['editor-component']"
+                              @input="element.config.interactive ? element.config.content = $event : null"
+                            />
+
+                            <div v-if="!element.config.interactive" class="mask"></div>
+                              <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
+                                <i class="far fa-trash-alt text-light"></i>
+                              </button>
+                              </div>
+                    </div>
+                </draggable>
             </div>
 
-            <div class="form-builder__inspector col-3 shadow-sm overflow-auto pl-0 pr-0 card card-height">
-                <div class="card-header sticky-top inspector-header">
+            <div class="form-builder__inspector shadow-sm pl-0 pr-0 card">
+                <div class="card-header inspector-header">
                     Inspector
                 </div>
-                <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center" @click="showConfiguration = !showConfiguration">
-                  <i class="fas fa-cog mr-2"></i>
-                    Configuration
-                  <i class="fas fa-chevron-down ml-auto" :class="{ 'fas fa-chevron-right' : showConfiguration }"></i>
+                <div class="overflow-auto">
+                  <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center w-100" @click="showConfiguration = !showConfiguration">
+                    <i class="fas fa-cog mr-2"></i>
+                      Configuration
+                    <i class="fas fa-chevron-down ml-auto" :class="{ 'fas fa-chevron-right' : showConfiguration }"></i>
 
-                </b-button>
+                  </b-button>
 
-                <b-collapse id="configuration" class="mt-2">
-                  <div class="card-body flex-wrap overflow-auto">
-                      <component v-for="(item, index) in inspection.inspector"
-                                :formConfig="config"
-                                :key="index"
-                                :is="item.type"
-                                v-bind="item.config"
-                                v-model="inspection.config[item.field]"/>
-                  </div>
-                </b-collapse>
+                  <b-collapse id="configuration" class="mt-2">
+                    <div class="card-body flex-wrap overflow-auto">
+                        <component v-for="(item, index) in inspection.inspector"
+                                  :formConfig="config"
+                                  :key="index"
+                                  :is="item.type"
+                                  v-bind="item.config"
+                                  v-model="inspection.config[item.field]"/>
+                    </div>
+                  </b-collapse>
+                </div>
             </div>
-          </div>
 
             <b-modal id="addPageModal"
                      centered
@@ -399,6 +391,17 @@ import { constants } from 'fs';
 </script>
 
 <style lang="scss" scoped>
+.form-builder__designer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0 1.5rem;
+}
+
+.form-builder__inspector {
+  width: 18rem;
+}
+
     .control-icon {
         width: 30px;
         font-size: 20px;
@@ -411,6 +414,10 @@ import { constants } from 'fs';
     .control-item {
         position: relative;
         border: 1px solid transparent;
+
+        &:not(:last-child) {
+          margin-bottom: 1.5rem;
+        }
 
         .delete {
             position: absolute;
@@ -452,10 +459,6 @@ import { constants } from 'fs';
             width: 100%;
             height: 100%;
         }
-    }
-
-    .card-height {
-      height: 83vh;
     }
 
     .inspector-header {
