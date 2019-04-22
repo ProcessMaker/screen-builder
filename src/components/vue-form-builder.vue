@@ -37,8 +37,8 @@
 
             <div class="form-builder__designer col-7 overflow-auto">
               <div class="row">
-                <div class="d-flex align-items-center w-100 ml-4 mr-4">
-                  <b-form-select v-model="currentPage" class="mr-2 screen-select w-50">
+                <div class="d-flex align-items-center w-100 ml-4 mr-4 sticky-top flex-wrap bg-white">
+                  <b-form-select v-model="currentPage" class="mr-2 screen-select w-75">
                     <option
                       v-for="(data, page) in config"
                       :key="page"
@@ -48,20 +48,23 @@
                     </option>
                   </b-form-select>
 
+                  <div class="ml-auto">
+                    <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
+                      <i class="far fa-edit" />
+                    </b-button>
 
-                  <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
-                    <i class="far fa-edit" />
-                  </b-button>
+                    <b-button class="mr-2" size="sm" @click="confirmDelete()" :disabled="!displayDelete">
+                      <i class="far fa-trash-alt" />
+                    </b-button>
 
-                  <b-button size="sm" @click="confirmDelete()" :disabled="!displayDelete">
-                    <i class="far fa-trash-alt" />
-                  </b-button>
-
-                  <b-button class="mr-2 flex-shrink-0 ml-auto" size="sm" v-b-modal.addPageModal>
-                    <i class="fas fa-plus mr-2" />
-                    {{$t('Add Screen')}}
-                  </b-button>
+                    <b-button class="flex-shrink-0" size="sm" v-b-modal.addPageModal>
+                      <i class="fas fa-plus mr-2" />
+                      {{$t('Add Screen')}}
+                    </b-button>
+                  </div>
+                  <hr class="sticky-top w-100 mb-0 mt-4" />
                 </div>
+
 
                 <div class="w-100 p-4 m-0 card-height">
                       <div class="row">
@@ -75,7 +78,7 @@
                                         v-model="config[currentPage]['items']"
                                         :options="{group: {name: 'controls'}}">
                                   <div class="control-item mb-4"
-                                      :class="{selected: selected === element}"
+                                      :class="{selected: selected === element }"
                                       v-for="(element,index) in config[currentPage]['items']"
                                       :key="index"
                                       @click="inspect(element)">
@@ -105,7 +108,7 @@
                                           />
 
                                           <div v-if="!element.config.interactive" class="mask"></div>
-                                            <button class="delete btn btn btn-secondary mr-3 mt-3" @click="deleteItem(index)">
+                                            <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
                                               <i class="far fa-trash-alt text-light"></i>
                                             </button>
                                            </div>
@@ -281,6 +284,9 @@ import { constants } from 'fs';
       },
       formBuilderCount() {
         return this.config[0].items.length
+      },
+      focusedError() {
+        return Validator.length;
       }
     },
     watch: {
@@ -428,12 +434,11 @@ import { constants } from 'fs';
 
         &.selected {
           border-radius: 5px;
-          border: 1px solid rgb(255,0,0);
+          border: 1px solid #1c7ed6;
           cursor: move;
 
           .form-element-header {
-            color: red;
-            border-bottom: 1px solid rgb(255,0,0);
+            border-bottom: 1px solid #1c7ed6;
           }
 
           .delete {
