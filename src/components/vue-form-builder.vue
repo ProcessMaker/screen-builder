@@ -66,7 +66,7 @@
                 <hr class="w-100 mb-0 mt-4 mb-4" />
               </div>
                 <draggable
-                          class="overflow-auto"
+                          class="overflow-auto h-100"
                           v-model="config[currentPage]['items']"
                           :options="{group: {name: 'controls'}}">
                     <div v-if="!formBuilderCount > 0" class="card">
