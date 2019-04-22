@@ -3,16 +3,16 @@
       <div class="card-header">
         <div class="row">
           <div class="col">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-light" :class="isBuilderActive" @click="mode = 'editor'">
+            <b-button-group size="sm">
+              <b-button :variant="displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'editor'">
                 <i class="fas fa-drafting-compass pr-1"></i>
-                Design
-              </button>
-              <button type="button" class="btn btn-light" :class="isPreviewActive" @click="mode = 'preview'">
+                {{ $t('Design') }}
+              </b-button>
+              <b-button :variant="!displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'preview'">
                 <i class="fas fa-cog pr-1"></i>
-                Preview
-              </button>
-            </div>
+                {{ $t('Preview') }}
+              </b-button>
+            </b-button-group>
           </div>
 
           <div class="col text-right">
@@ -142,11 +142,11 @@
     FormTextArea,
   } from "@processmaker/vue-form-elements";
 
-let Validator = require('validatorjs');
+import Validator from "validatorjs";
+
   Validator.register('attr-value', value => {
     return value.match(/^[a-zA-Z0-9-_]+$/);
   }, 'Must be letters, numbers, underscores or dashes');
-
 
   export default {
     name: "app",
@@ -193,7 +193,6 @@ let Validator = require('validatorjs');
       previewInput() {
         if (this.previewInputValid) {
           // Copy data over
-          JSON.stringify(this.previewInput)
           this.previewData = JSON.parse(this.previewInput)
         } else {
           this.previewData = {}
@@ -201,12 +200,6 @@ let Validator = require('validatorjs');
       }
     },
     computed: {
-      isBuilderActive() {
-        return this.displayBuilder ? 'bg-secondary text-white' : null
-      },
-      isPreviewActive() {
-        return this.displayPreview ? 'bg-secondary text-white' : null
-      },
       previewInputValid() {
         try {
           JSON.parse(this.previewInput)
@@ -324,11 +317,8 @@ let Validator = require('validatorjs');
       bottom: 3.5rem;
       right: 0;
     }
+
     .dataInput {
       margin-top: -25px;
-    }
-
-    .h-80 {
-      height: 80vh;
     }
 </style>
