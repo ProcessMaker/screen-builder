@@ -410,6 +410,7 @@ import { constants } from 'fs';
 
     .control-item {
         position: relative;
+        border: 1px solid transparent;
 
         .delete {
             position: absolute;
