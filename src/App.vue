@@ -10,7 +10,7 @@
                 {{ $t('Design') }}
               </b-button>
               <b-button :variant="!displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'preview'">
-                <i class="fas fa-cog pr-1"></i>
+                <i class="fas fa-cogs pr-1"></i>
                 {{ $t('Preview') }}
               </b-button>
             </b-button-group>
