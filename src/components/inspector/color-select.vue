@@ -4,18 +4,23 @@
     <label>{{label}}</label>
       <b-button-toolbar>
         <b-button-group size="sm">
-          <b-button size="sm" variant="link"
+          <b-button size="sm"
+            variant="outline-light"
             v-for="option in options"
             :key="option.value"
-            class="btn btn-sm mr-1 pr-1 pl-1 pt-0 pb-0"
-            :class="'bg-' + parsedColor(option.value)"
-            @click="selectColor(option.value)">
-            <i class="fas fa-check text-white"></i>
+            :pressed.sync="activeColor"
+            class="btn btn-sm mr-1 pr-1 pl-1 pt-0 pb-0 btn-outline-none"
+            :class="['bg-' + parsedColor(option.value)]"
+            >
+              <i class="fas fa-check"
+                :class="[option.value === value ? 'text-light' : 'text-' + parsedColor(option.value)]"
+                @click="selectColor(option.value)">
+              </i>
           </b-button>
         </b-button-group>
       </b-button-toolbar>
-      <small>
-        <i class="fas fa-ban" @click="checkColor"></i>
+      <small @click="checkColor">
+        <i class="fas fa-ban"></i>
         Clear Color Selection
       </small>
     </div>
@@ -30,7 +35,7 @@
     },
     data() {
       return {
-        newColor: ''
+        newColor: '',
       };
     },
     computed: {
@@ -47,7 +52,7 @@
       },
       parsedColor(color) {
         return color.split('-')[1]
-      }
+      },
     },
   };
 </script>

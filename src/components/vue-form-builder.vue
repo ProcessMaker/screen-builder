@@ -1,6 +1,6 @@
 <template>
     <div class="card-body overflow-hidden">
-            <div class="form-builder__controls d-flex col-2">
+            <div class="form-builder__controls d-flex col-2 pl-0">
               <div class="card border d-flex">
                 <div class="header-bg">
                   <div class="card-header">
@@ -50,15 +50,15 @@
                   </b-form-select>
 
                   <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
-                    <i class="far fa-edit" />
+                    <i class="far fa-edit pb-2 pt-2" />
                   </b-button>
 
                   <b-button size="sm" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
-                    <i class="far fa-trash-alt" />
+                    <i class="far fa-trash-alt pb-2 pt-2" />
                   </b-button>
 
                   <b-button size="sm" class="flex-shrink-0 ml-5" v-b-modal.addPageModal>
-                    <i class="fas fa-plus mr-2" />
+                    <i class="fas fa-plus mr-2 pb-2 pt-2" />
                     {{$t('Add Screen')}}
                   </b-button>
 
@@ -92,7 +92,7 @@
                           </span>
 
                           <component
-                            class="card-body"
+                            class="card-body m-0 pb-4"
                             :class="elementCssClass(element)"
                             v-bind="element.config"
                             :is="element['editor-component']"

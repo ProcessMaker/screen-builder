@@ -18,7 +18,7 @@ const bgcolorProperty = {
     type: "ColorSelect",
     field: "bgcolor",
     config: {
-        label: "Background color",
+        label: "Element Background color",
         helper: "Set the element's background color",
         options: [{
             value: 'alert alert-primary',
