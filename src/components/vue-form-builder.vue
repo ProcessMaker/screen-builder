@@ -122,10 +122,9 @@
                     <i class="fas fa-cog mr-2"></i>
                       Configuration
                     <i class="fas fa-chevron-down ml-auto" :class="{ 'fas fa-chevron-right' : showConfiguration }"></i>
-
                   </b-button>
 
-                  <b-collapse id="configuration" class="mt-2">
+                  <b-collapse id="configuration" visible class="mt-2">
                         <component v-for="(item, index) in inspection.inspector"
                                   :formConfig="config"
                                   :key="index"
@@ -262,7 +261,7 @@ import { constants } from 'fs';
         translated: [],
         showValidationErrors: false,
         showAssignment: false,
-        showConfiguration: true,
+        showConfiguration: false,
         filterQuery: ''
       };
     },
