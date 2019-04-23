@@ -99,35 +99,6 @@ const colorProperty = {
 
 export default [
 {
-    editorComponent: FormHtmlEditor,
-    editorBinding: 'FormHtmlEditor',
-    rendererComponent: FormHtmlEditor,
-    rendererBinding: 'FormHtmlEditor',
-    control: {
-        label: 'Rich Text',
-        component: 'FormHtmlEditor',
-        'editor-component': 'FormHtmlEditor',
-        'fa-icon': 'fas fa-pencil-ruler',
-        config: {
-            interactive: true,
-            content: '<p>Rich text editor</p>',
-        },
-        inspector: [
-            {
-                type: "FormTextArea",
-                field: "content",
-                config: {
-                    rows: 5,
-                    label: "Rich Text Content",
-                    helper: "The HTML text to display",
-                    value: '',
-                }
-            },
-            bgcolorProperty,
-        ]
-    },
-},
-{
     builderComponent: FormText,
     builderBinding: 'FormText',
     rendererComponent: FormText,
@@ -136,7 +107,7 @@ export default [
         label: 'Text Box',
         component: 'FormText',
         'editor-component': 'FormText',
-        'fa-icon': 'fas fa-font',
+        'fa-icon': 'fas fa-align-justify',
         config: {
             label: 'New Text',
             fontSize: '1em',
@@ -249,87 +220,105 @@ export default [
     }
 },
 {
-    builderComponent: FormInput,
-    builderBinding: 'FormInput',
-    rendererComponent: FormInput,
-    rendererBinding: 'FormInput',
+    editorComponent: FormHtmlEditor,
+    editorBinding: 'FormHtmlEditor',
+    rendererComponent: FormHtmlEditor,
+    rendererBinding: 'FormHtmlEditor',
     control: {
-        label: "Line Input",
-        component: 'FormInput',
-        "editor-component": "FormInput",
-        'fa-icon': 'far fa-square',
+        label: 'Rich Text',
+        component: 'FormHtmlEditor',
+        'editor-component': 'FormHtmlEditor',
+        'fa-icon': 'fas fa-pencil-ruler',
         config: {
-            label: "New Input",
-            name: '',
-            placeholder: '',
-            validation: '',
-            helper: null,
-            type: 'text'
+            interactive: true,
+            content: '<p>Rich text editor</p>',
         },
-        inspector: [{
-            type: "FormInput",
-            field: "name",
-            config: {
-                label: "Field Name",
-                name: 'Field Name',
-                validation: 'required',
-                helper: "The data name for this field"
-            }
-        },
-        {
-            type: "FormMultiselect",
-            field: "type",
-            config: {
-                label: "Field Type",
-                name: 'Field Type',
-                helper: "The type for this field",
-                options: [{
-                    value: 'text',
-                    content: 'Text'
-                },
-                {
-                    value: 'password',
-                    content: 'Password'
+        inspector: [
+            {
+                type: "FormTextArea",
+                field: "content",
+                config: {
+                    rows: 5,
+                    label: "Rich Text Content",
+                    helper: "The HTML text to display",
+                    value: '',
                 }
-                ]
-            }
-        },
-        {
-            type: "FormInput",
-            field: "label",
-            config: {
-                label: "Field Label",
-                helper: "The label describes the fields name"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "validation",
-            config: {
-                label: "Validation",
-                helper: "The validation rules needed for this field"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "placeholder",
-            config: {
-                label: "Placeholder",
-                helper: "The placeholder is what is shown in the field when no value is provided yet"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "helper",
-            config: {
-                label: "Help Text",
-                helper: "Help text is meant to provide additional guidance on the field's value"
-            }
-        },
+            },
             bgcolorProperty,
-            colorProperty,
         ]
     },
+},
+
+{
+  editorComponent: FormTextArea,
+  editorBinding: 'FormTextArea',
+  rendererComponent: FormTextArea,
+  rendererBinding: 'FormTextArea',
+  control: {
+      label: "Textarea",
+      component: 'FormTextArea',
+      "editor-component": "FormTextArea",
+      'fa-icon': 'fas fa-paragraph',
+      config: {
+          label: "New Textarea",
+          placeholder: "",
+          helper: null,
+          rows: 2
+      },
+      inspector: [{
+          type: "FormInput",
+          field: "name",
+          config: {
+              label: "Field Name",
+              name: 'Field Name',
+              validation: 'required',
+              helper: "The data name for this field"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "label",
+          config: {
+              label: "Field Label",
+              helper: "The label describes the fields name"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "validation",
+          config: {
+              label: "Validation",
+              helper: "The validation rules needed for this field"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "rows",
+          config: {
+              label: "Rows",
+              helper: "The number of rows to provide for input"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "placeholder",
+          config: {
+              label: "Placeholder",
+              helper: "The placeholder is what is shown in the field when no value is provided yet"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "helper",
+          config: {
+              label: "Help Text",
+              helper: "Help text is meant to provide additional guidance on the field's value"
+          }
+      },
+          bgcolorProperty,
+          colorProperty,
+      ]
+  },
 },
 {
     editorComponent: FormSelect,
@@ -340,7 +329,7 @@ export default [
         label: "Select",
         component: 'FormSelect',
         "editor-component": "FormSelect",
-        'fa-icon': 'far fa-caret-square-down',
+        'fa-icon': 'fas fa-chevron-circle-down',
         config: {
             label: "New Select",
             placeholder: "",
@@ -408,7 +397,7 @@ export default [
         label: "Radio Group",
         component: 'FormRadioButtonGroup',
         "editor-component": "FormRadioButtonGroup",
-        'fa-icon': 'fas fa-list',
+        'fa-icon': 'fas fa-list-ul',
         config: {
             label: "New Radio Button Group",
             options: [{
@@ -473,7 +462,7 @@ export default [
         label: "Checkbox",
         component: 'FormCheckbox',
         "editor-component": "FormCheckbox",
-        'fa-icon': 'far fa-check-square',
+        'fa-icon': 'fas fa-check-square',
         config: {
             label: "New Checkbox",
             helper: null,
@@ -529,77 +518,6 @@ export default [
     },
 },
 {
-    editorComponent: FormTextArea,
-    editorBinding: 'FormTextArea',
-    rendererComponent: FormTextArea,
-    rendererBinding: 'FormTextArea',
-    control: {
-        label: "Textarea",
-        component: 'FormTextArea',
-        "editor-component": "FormTextArea",
-        'fa-icon': 'fas fa-paragraph',
-        config: {
-            label: "New Textarea",
-            placeholder: "",
-            helper: null,
-            rows: 2
-        },
-        inspector: [{
-            type: "FormInput",
-            field: "name",
-            config: {
-                label: "Field Name",
-                name: 'Field Name',
-                validation: 'required',
-                helper: "The data name for this field"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "label",
-            config: {
-                label: "Field Label",
-                helper: "The label describes the fields name"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "validation",
-            config: {
-                label: "Validation",
-                helper: "The validation rules needed for this field"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "rows",
-            config: {
-                label: "Rows",
-                helper: "The number of rows to provide for input"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "placeholder",
-            config: {
-                label: "Placeholder",
-                helper: "The placeholder is what is shown in the field when no value is provided yet"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "helper",
-            config: {
-                label: "Help Text",
-                helper: "Help text is meant to provide additional guidance on the field's value"
-            }
-        },
-            bgcolorProperty,
-            colorProperty,
-        ]
-    },
-},
-{
     editorComponent: FormDatePicker,
     editorBinding: 'FormDatePicker',
     rendererComponent: FormDatePicker,
@@ -608,7 +526,7 @@ export default [
         label: "Date Picker",
         component: 'FormDatePicker',
         "editor-component": "FormDatePicker",
-        'fa-icon': 'far fa-calendar',
+        'fa-icon': 'far fa-calendar-alt',
         config: {
             label: "New Date Picker",
             type: 'date',
@@ -646,179 +564,87 @@ export default [
     },
 },
 {
-    editorComponent: FormButton,
-    editorBinding: 'FormButton',
-    rendererComponent: FormButton,
-    rendererBinding: 'FormButton',
-    control: {
-        label: "Submit Button",
-        component: 'FormButton',
-        "editor-component": "FormButton",
-        'fa-icon': 'fas fa-share-square',
-        config: {
-            label: "New Submit",
-            variant: 'primary',
-            event: 'submit',
-            name: null,
-            fieldValue: null
-        },
-        inspector: [{
-            type: "FormInput",
-            field: "label",
-            config: {
-                label: "Field Label",
-                helper: "The label describes the button's text"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "name",
-            config: {
-                label: "Field Name",
-                validation: 'required',
-                helper: "The name of the button"
-            }
-        },
-        {
-            type: "FormInput",
-            field: "fieldValue",
-            config: {
-                label: "Field Value",
-                helper: "The value being submitted"
-            }
-        },
-        {
-            type: "FormMultiselect",
-            field: "variant",
-            config: {
-                label: "Variant",
-                helper: "The variant determines the appearance of the button",
-                options: [{
-                    value: 'primary',
-                    content: 'Primary'
-                },
-                {
-                    value: 'secondary',
-                    content: 'Secondary'
-                },
-                {
-                    value: 'success',
-                    content: 'Success'
-                },
-                {
-                    value: 'danger',
-                    content: 'Danger'
-                },
-                {
-                    value: 'warning',
-                    content: 'Warning'
-                },
-                {
-                    value: 'info',
-                    content: 'Info'
-                },
-                {
-                    value: 'light',
-                    content: 'Light'
-                },
+  editorComponent: FormButton,
+  editorBinding: 'FormButton',
+  rendererComponent: FormButton,
+  rendererBinding: 'FormButton',
+  control: {
+      label: "Navigation",
+      component: 'FormButton',
+      "editor-component": "FormButton",
+      'fa-icon': 'far fa-compass',
+      config: {
+          label: "Page Navigation",
+          variant: 'primary',
+          event: 'pageNavigate',
+          eventData: 0
 
-                {
-                    value: 'dark',
-                    content: 'Dark'
-                },
+      },
+      inspector: [{
+          type: "FormInput",
+          field: "label",
+          config: {
+              label: "Field Label",
+              helper: "The label describes the button's text"
+          }
+      },
+      {
+          type: "FormMultiselect",
+          field: "variant",
+          config: {
+              label: "Variant",
+              helper: "The variant determines the appearance of the button",
+              options: [{
+                  value: 'primary',
+                  content: 'Primary'
+              },
+              {
+                  value: 'secondary',
+                  content: 'Secondary'
+              },
+              {
+                  value: 'success',
+                  content: 'Success'
+              },
+              {
+                  value: 'danger',
+                  content: 'Danger'
+              },
+              {
+                  value: 'warning',
+                  content: 'Warning'
+              },
+              {
+                  value: 'info',
+                  content: 'Info'
+              },
+              {
+                  value: 'light',
+                  content: 'Light'
+              },
 
-                {
-                    value: 'link',
-                    content: 'Link'
-                }
-                ]
-            }
-        },
-        ]
-    },
-},
-{
-    editorComponent: FormButton,
-    editorBinding: 'FormButton',
-    rendererComponent: FormButton,
-    rendererBinding: 'FormButton',
-    control: {
-        label: "Page Navigation",
-        component: 'FormButton',
-        "editor-component": "FormButton",
-        'fa-icon': 'fas fa-chevron-right',
-        config: {
-            label: "New Page Navigation",
-            variant: 'primary',
-            event: 'pageNavigate',
-            eventData: 0
+              {
+                  value: 'dark',
+                  content: 'Dark'
+              },
 
-        },
-        inspector: [{
-            type: "FormInput",
-            field: "label",
-            config: {
-                label: "Field Label",
-                helper: "The label describes the button's text"
-            }
-        },
-        {
-            type: "FormMultiselect",
-            field: "variant",
-            config: {
-                label: "Variant",
-                helper: "The variant determines the appearance of the button",
-                options: [{
-                    value: 'primary',
-                    content: 'Primary'
-                },
-                {
-                    value: 'secondary',
-                    content: 'Secondary'
-                },
-                {
-                    value: 'success',
-                    content: 'Success'
-                },
-                {
-                    value: 'danger',
-                    content: 'Danger'
-                },
-                {
-                    value: 'warning',
-                    content: 'Warning'
-                },
-                {
-                    value: 'info',
-                    content: 'Info'
-                },
-                {
-                    value: 'light',
-                    content: 'Light'
-                },
-
-                {
-                    value: 'dark',
-                    content: 'Dark'
-                },
-
-                {
-                    value: 'link',
-                    content: 'Link'
-                }
-                ]
-            }
-        },
-        {
-            type: "PageSelect",
-            field: "eventData",
-            config: {
-                label: "Destination",
-                helper: "The destination page to navigate to"
-            }
-        },
-        ]
-    },
+              {
+                  value: 'link',
+                  content: 'Link'
+              }
+              ]
+          }
+      },
+      {
+          type: "PageSelect",
+          field: "eventData",
+          config: {
+              label: "Destination",
+              helper: "The destination page to navigate to"
+          }
+      },
+      ]
+  },
 },
 {
     editorComponent: FormMultiColumn,
@@ -826,10 +652,10 @@ export default [
     rendererComponent: FormMultiColumn,
     rendererBinding: 'FormMultiColumn',
     control: {
-        label: "Multi Column",
+        label: "Table",
         component: 'FormMultiColumn',
         "editor-component": "MultiColumn",
-        'fa-icon': 'fas fa-columns',
+        'fa-icon': 'fas fa-table',
         container: true,
         // Default items container
         items: [
@@ -935,7 +761,7 @@ export default [
         label: "Image",
         component: 'FormImage',
         "editor-component": "FormImage",
-        'fa-icon': 'far fa-image',
+        'fa-icon': 'fas fa-image',
         config: {
             label: "Image",
             variant: 'primary',
@@ -987,5 +813,180 @@ export default [
         },
         ]
     },
-}
+},
+{
+  editorComponent: FormButton,
+  editorBinding: 'FormButton',
+  rendererComponent: FormButton,
+  rendererBinding: 'FormButton',
+  control: {
+      label: "Submit",
+      component: 'FormButton',
+      "editor-component": "FormButton",
+      'fa-icon': 'fas fa-share-square',
+      config: {
+          label: "New Submit",
+          variant: 'primary',
+          event: 'submit',
+          name: null,
+          fieldValue: null
+      },
+      inspector: [{
+          type: "FormInput",
+          field: "label",
+          config: {
+              label: "Field Label",
+              helper: "The label describes the button's text"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "name",
+          config: {
+              label: "Field Name",
+              validation: 'required',
+              helper: "The name of the button"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "fieldValue",
+          config: {
+              label: "Field Value",
+              helper: "The value being submitted"
+          }
+      },
+      {
+          type: "FormMultiselect",
+          field: "variant",
+          config: {
+              label: "Variant",
+              helper: "The variant determines the appearance of the button",
+              options: [{
+                  value: 'primary',
+                  content: 'Primary'
+              },
+              {
+                  value: 'secondary',
+                  content: 'Secondary'
+              },
+              {
+                  value: 'success',
+                  content: 'Success'
+              },
+              {
+                  value: 'danger',
+                  content: 'Danger'
+              },
+              {
+                  value: 'warning',
+                  content: 'Warning'
+              },
+              {
+                  value: 'info',
+                  content: 'Info'
+              },
+              {
+                  value: 'light',
+                  content: 'Light'
+              },
+
+              {
+                  value: 'dark',
+                  content: 'Dark'
+              },
+
+              {
+                  value: 'link',
+                  content: 'Link'
+              }
+              ]
+          }
+      },
+      ]
+  },
+},
+{
+  builderComponent: FormInput,
+  builderBinding: 'FormInput',
+  rendererComponent: FormInput,
+  rendererBinding: 'FormInput',
+  control: {
+      label: "Line Input",
+      component: 'FormInput',
+      "editor-component": "FormInput",
+      'fa-icon': 'far fa-square',
+      config: {
+          label: "New Input",
+          name: '',
+          placeholder: '',
+          validation: '',
+          helper: null,
+          type: 'text'
+      },
+      inspector: [{
+          type: "FormInput",
+          field: "name",
+          config: {
+              label: "Field Name",
+              name: 'Field Name',
+              validation: 'required',
+              helper: "The data name for this field"
+          }
+      },
+      {
+          type: "FormMultiselect",
+          field: "type",
+          config: {
+              label: "Field Type",
+              name: 'Field Type',
+              helper: "The type for this field",
+              options: [{
+                  value: 'text',
+                  content: 'Text'
+              },
+              {
+                  value: 'password',
+                  content: 'Password'
+              }
+              ]
+          }
+      },
+      {
+          type: "FormInput",
+          field: "label",
+          config: {
+              label: "Field Label",
+              helper: "The label describes the fields name"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "validation",
+          config: {
+              label: "Validation",
+              helper: "The validation rules needed for this field"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "placeholder",
+          config: {
+              label: "Placeholder",
+              helper: "The placeholder is what is shown in the field when no value is provided yet"
+          }
+      },
+      {
+          type: "FormInput",
+          field: "helper",
+          config: {
+              label: "Help Text",
+              helper: "Help text is meant to provide additional guidance on the field's value"
+          }
+      },
+          bgcolorProperty,
+          colorProperty,
+      ]
+  },
+},
 ]
