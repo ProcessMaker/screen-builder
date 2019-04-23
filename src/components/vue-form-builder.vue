@@ -10,7 +10,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
                     </div>
-                    <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls" aria-label="Username" aria-describedby="basic-addon1">
+                    <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls">
                   </div>
                 </div>
 
@@ -24,7 +24,7 @@
                             <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
                             :key="index">
                               <li class="list-group-item">
-                                <i v-if="element['fa-icon']" class="text-secondary" :class="element['fa-icon']"></i>
+                                <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
                                 {{$t(element.label)}}
                               </li>
                             </ul>
