@@ -91,7 +91,7 @@
                         </div>
 
                         <div v-else class="card">
-                          <span v-if="selected === element" class="card-header form-element-header p-3 pt-4 pb-4">
+                          <span v-if="selected === element" class="card-header form-element-header p-3 pt-3 pb-3">
                             <i class="fas fa-arrows-alt-v" />
                             {{ element.config.name || 'Field Name' }}
                           </span>
