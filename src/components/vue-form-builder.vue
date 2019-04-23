@@ -1,6 +1,6 @@
 <template>
     <div class="card-body overflow-hidden">
-            <div class="form-builder__controls d-flex p-0">
+            <div class="form-builder__controls d-flex col-2">
               <div class="card border d-flex">
                 <div class="header-bg">
                   <div class="card-header">
@@ -36,7 +36,7 @@
               </div>
             </div>
 
-            <div class="form-builder__designer">
+            <div class="form-builder__designer col-7 p-0">
               <div class="bg-white">
                 <div class="d-flex align-items-center w-100">
                   <b-form-select v-model="currentPage" class="mr-2 screen-select">
@@ -53,11 +53,11 @@
                     <i class="far fa-edit" />
                   </b-button>
 
-                  <b-button class="mr-2" size="sm" @click="confirmDelete()" :disabled="!displayDelete">
+                  <b-button size="sm" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
                     <i class="far fa-trash-alt" />
                   </b-button>
 
-                  <b-button class="flex-shrink-0 ml-5" size="sm" v-b-modal.addPageModal>
+                  <b-button size="sm" class="flex-shrink-0 ml-5" v-b-modal.addPageModal>
                     <i class="fas fa-plus mr-2" />
                     {{$t('Add Screen')}}
                   </b-button>
@@ -113,7 +113,7 @@
                 </draggable>
             </div>
 
-            <div class="form-builder__inspector shadow-sm pl-0 pr-0 card">
+            <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 ml-3 card">
                 <div class="card-header inspector-header">
                     Inspector
                 </div>

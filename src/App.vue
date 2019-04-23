@@ -1,10 +1,10 @@
 <template>
-  <div class="container h-100">
+  <div class="container h-100 pt-4">
     <div id="app" class="card h-100">
       <div class="card-header">
         <div class="row">
           <div class="col">
-            <b-button-group size="md">
+            <b-button-group size="sm">
               <b-button :variant="displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'editor'">
                 <i class="fas fa-drafting-compass pr-1"></i>
                 {{ $t('Design') }}
@@ -17,7 +17,7 @@
           </div>
 
           <div class="col text-right">
-            <div class="btn-group btn-group-md" role="group" aria-label="Basic example">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
                 <i class="fas fa-flask"></i>
                 Calcs
@@ -27,7 +27,7 @@
                 CSS
               </button>
             </div>
-            <button type="button" class="btn btn-secondary btn-md"><i class="fas fa-save"></i></button>
+            <button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-save"></i></button>
           </div>
         </div>
       </div>
@@ -108,7 +108,7 @@
                 <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
             </div>
 
-            <div class="ml-3" @click="showValidationErrors =! showValidationErrors">
+            <div class="ml-3" @click="showValidationErrors = !showValidationErrors">
               <button type="button" class="btn btn-light btn-sm">
                 <i class="fas fa-angle-double-up"></i>
                 Open Console

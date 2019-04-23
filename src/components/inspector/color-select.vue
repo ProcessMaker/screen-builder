@@ -1,18 +1,24 @@
 <template>
   <div class="form-group">
-    <label>
-      {{label}} <input type="checkbox" @click="checkColor" :checked="hasColor">
-    </label>
     <div>
-      <a v-for="option in options"
-         :key="option.value"
-         class="btn btn-sm"
-         :class="{'btn-outline-light': option.value!==value  , 'btn-outline-secondary': option.value===value}"
-         @click="selectColor(option.value)">
-         <i class="fas fa-square" :class="'text-' + parsedColor(option.value)"></i>
-      </a>
+    <label>{{label}}</label>
+      <b-button-toolbar>
+        <b-button-group size="sm">
+          <b-button size="sm" variant="link"
+            v-for="option in options"
+            :key="option.value"
+            class="btn btn-sm mr-1 pr-1 pl-1 pt-0 pb-0"
+            :class="'bg-' + parsedColor(option.value)"
+            @click="selectColor(option.value)">
+            <i class="fas fa-check text-white"></i>
+          </b-button>
+        </b-button-group>
+      </b-button-toolbar>
+      <small>
+        <i class="fas fa-ban" @click="checkColor"></i>
+        Clear Color Selection
+      </small>
     </div>
-    <small class="form-text text-muted">{{$t(helper)}}</small>
   </div>
 </template>
 
@@ -42,7 +48,7 @@
       parsedColor(color) {
         return color.split('-')[1]
       }
-    }
+    },
   };
 </script>
 
