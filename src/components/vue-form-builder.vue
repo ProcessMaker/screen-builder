@@ -69,11 +69,6 @@
                           class="overflow-auto h-100"
                           v-model="config[currentPage]['items']"
                           :options="{group: {name: 'controls'}}">
-                    <div v-if="!formBuilderCount > 0" class="card">
-                      <div  class="card-body text-center">
-                        Drag an element here
-                      </div>
-                    </div>
                     <div class="control-item"
                         :class="{selected: selected === element, hasError: hasError(element)  }"
                         v-for="(element,index) in config[currentPage]['items']"
@@ -110,9 +105,13 @@
                           </button>
                         </div>
                     </div>
+                    <div class="card">
+                      <div  class="card-body text-center">
+                        Drag an element here
+                      </div>
+                    </div>
                 </draggable>
             </div>
-
             <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 ml-3 card">
                 <div class="card-header inspector-header">
                     Inspector
