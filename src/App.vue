@@ -59,7 +59,7 @@
                   <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
                 </b-button>
 
-                <b-collapse id="dataPreview" class="">
+                <b-collapse id="dataPreview">
                   <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
                 </b-collapse>
               </div>
@@ -312,7 +312,7 @@ import Validator from "validatorjs";
       background: #f7f7f7;
       height: 10rem;
       width: 21.35rem;
-      bottom: 3.5rem;
+      bottom: 4rem;
       right: 0;
     }
 
