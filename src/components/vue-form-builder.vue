@@ -34,9 +34,8 @@
             </div>
 
             <div class="form-builder__designer col-7 pl-3">
-              <div class="bg-white">
-                <div class="d-flex align-items-center w-100">
-                  <b-form-select v-model="currentPage" class="mr-2 screen-select">
+                <div class="input-group bg-white">
+                  <b-form-select v-model="currentPage" class="mr-2 screen-select form-builder__designer--select">
                     <option
                       v-for="(data, page) in config"
                       :key="page"
@@ -47,20 +46,19 @@
                   </b-form-select>
 
                   <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
-                    <i class="far fa-edit pb-2 pt-2" />
+                    <i class="far fa-edit" />
                   </b-button>
 
                   <b-button size="sm" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
-                    <i class="far fa-trash-alt pb-2 pt-2" />
+                    <i class="far fa-trash-alt" />
                   </b-button>
 
                   <b-button size="sm" class="flex-shrink-0 ml-5" v-b-modal.addPageModal>
-                    <i class="fas fa-plus mr-2 pb-2 pt-2" />
+                    <i class="fas fa-plus mr-2" />
                     {{$t('Add Screen')}}
                   </b-button>
 
-                </div>
-                <hr class="w-100 mb-0 mt-3 mb-3" />
+                  <hr class="w-100 mb-0 mt-3 mb-3" />
               </div>
                 <draggable
                           class="overflow-auto h-100"
@@ -386,13 +384,18 @@ import { constants } from 'fs';
 </script>
 
 <style lang="scss" scoped>
+$header-bg: #f7f7f7;
+
 .form-builder__designer {
   display: flex;
   flex-direction: column;
   flex: 1;
   padding: 0 1.5rem;
-}
 
+  &--select {
+    border-radius: 5px !important;
+  }
+}
     .control-icon {
         width: 30px;
         font-size: 20px;
@@ -454,11 +457,11 @@ import { constants } from 'fs';
     }
 
     .inspector-header {
-      background: #f7f7f7;
+      background: $header-bg;
     }
 
     .validation-panel {
-      background: #f7f7f7;
+      background: $header-bg;
       height: 10rem;
       width: 21.35rem;
       bottom: 3rem;
@@ -472,14 +475,6 @@ import { constants } from 'fs';
       }
     }
 
-    .nav-tabs > li > a{
-      border: medium none;
-
-      &:hover {
-        color: rgb(51,151,225);
-      }
-    }
-
     .list-group:last-child {
       border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     }
@@ -489,6 +484,6 @@ import { constants } from 'fs';
     }
 
     .header-bg {
-      background: #f7f7f7;
+      background: $header-bg;
     }
 </style>
