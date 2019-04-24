@@ -15,7 +15,7 @@
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl"
-                              class="overflow-auto"
+                              class="overflow-auto controls"
 
                             >
                             <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
@@ -485,5 +485,9 @@ $header-bg: #f7f7f7;
 
     .header-bg {
       background: $header-bg;
+    }
+
+    .controls {
+      cursor: move;
     }
 </style>
