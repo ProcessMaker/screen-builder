@@ -489,5 +489,6 @@ $header-bg: #f7f7f7;
 
     .controls {
       cursor: move;
+      user-select: none;
     }
 </style>
