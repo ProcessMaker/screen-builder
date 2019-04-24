@@ -6,12 +6,10 @@
           <div class="col">
             <b-button-group size="sm">
               <b-button :variant="displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'editor'">
-                <i class="fas fa-drafting-compass pr-1"></i>
-                {{ $t('Design') }}
+                <i class="fas fa-drafting-compass pr-1"></i>{{ $t('Design') }}
               </b-button>
               <b-button :variant="!displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'preview'">
-                <i class="fas fa-cogs pr-1"></i>
-                {{ $t('Preview') }}
+                <i class="fas fa-cogs pr-1"></i>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
           </div>
@@ -27,7 +25,7 @@
                 CSS
               </button>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-save"></i></button>
+            <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"></i></button>
           </div>
         </div>
       </div>
@@ -56,7 +54,7 @@
               <div id="data-preview" class="overflow-auto">
                 <div class="card-header">Inspector</div>
                 <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
-                  <i class="far fa-file-code mr-2"></i>
+                  <i class="fas fa-file-code mr-2"></i>
                     Data Preview
                   <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
                 </b-button>

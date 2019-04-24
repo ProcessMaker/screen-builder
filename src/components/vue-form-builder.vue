@@ -1,19 +1,16 @@
 <template>
-    <div class="card-body overflow-hidden">
-            <div class="form-builder__controls d-flex col-2 pl-0">
+    <div class="card-body overflow-hidden pl-1 pr-1">
+            <div class="form-builder__controls d-flex col-2">
               <div class="card border d-flex">
-                <div class="header-bg">
-                  <div class="card-header">
+                  <div class="card-header controls-header">
                     Controls
                   </div>
-                  <div class="input-group input-group-sm mb-1 sticky-top">
+                  <div class="input-group input-group-sm sticky-top">
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
                     </div>
                     <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls">
                   </div>
-                </div>
-
                 <draggable id="controls"
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
@@ -36,7 +33,7 @@
               </div>
             </div>
 
-            <div class="form-builder__designer col-7 p-0">
+            <div class="form-builder__designer col-7 pl-3">
               <div class="bg-white">
                 <div class="d-flex align-items-center w-100">
                   <b-form-select v-model="currentPage" class="mr-2 screen-select">
@@ -63,7 +60,7 @@
                   </b-button>
 
                 </div>
-                <hr class="w-100 mb-0 mt-4 mb-4" />
+                <hr class="w-100 mb-0 mt-3 mb-3" />
               </div>
                 <draggable
                           class="overflow-auto h-100"
@@ -112,7 +109,7 @@
                     </div>
                 </draggable>
             </div>
-            <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 ml-3 card">
+            <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 mr-3 card">
                 <div class="card-header inspector-header">
                     Inspector
                 </div>
@@ -120,7 +117,7 @@
                   <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center w-100" @click="showConfiguration = !showConfiguration">
                     <i class="fas fa-cog mr-2"></i>
                       Configuration
-                    <i class="fas fa-chevron-down ml-auto" :class="{ 'fas fa-chevron-right' : showConfiguration }"></i>
+                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
                   </b-button>
 
                   <b-collapse id="configuration" visible class="mt-2">
@@ -396,10 +393,6 @@ import { constants } from 'fs';
   padding: 0 1.5rem;
 }
 
-.form-builder__inspector {
-  width: 18rem;
-}
-
     .control-icon {
         width: 30px;
         font-size: 20px;
@@ -489,6 +482,10 @@ import { constants } from 'fs';
 
     .list-group:last-child {
       border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .controls-header {
+      border-bottom: none;
     }
 
     .header-bg {
