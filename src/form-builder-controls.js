@@ -104,7 +104,7 @@ export default [
     rendererComponent: FormText,
     rendererBinding: 'FormText',
     control: {
-        label: 'Text Box',
+        label: 'Text',
         component: 'FormText',
         'editor-component': 'FormText',
         'fa-icon': 'fas fa-align-justify',
