@@ -256,7 +256,6 @@
         confirmMessage: '',
         pageDelete: 0,
         translated: [],
-        showValidationErrors: false,
         showAssignment: false,
         showConfiguration: false,
         filterQuery: ''
@@ -367,7 +366,7 @@
       addPage() {
         this.config.push({ name: this.addPageName, items: [] });
         this.currentPage = this.config.length - 1;
-        this.addPageName = "";
+        this.addPageName = '';
 
         this.$store.registerModule(`page-${this.currentPage}`, undoRedoModule);
         this.updateState();
