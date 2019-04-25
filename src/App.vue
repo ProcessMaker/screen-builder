@@ -5,10 +5,10 @@
         <div class="row">
           <div class="col">
             <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'editor'">
+              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'">
                 <i class="fas fa-drafting-compass pr-1"></i>{{ $t('Design') }}
               </b-button>
-              <b-button :variant="!displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'preview'">
+              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'">
                 <i class="fas fa-cogs pr-1"></i>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
