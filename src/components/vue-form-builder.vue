@@ -1,124 +1,132 @@
 <template>
-    <div class="h-100 mb-3">
-        <div class="d-flex h-100 mb-5">
+    <div class="card-body overflow-hidden pl-1 pr-1">
+            <div class="form-builder__controls d-flex col-2">
+              <div class="card border d-flex">
+                  <div class="card-header controls-header">
+                    Controls
+                  </div>
+                  <div class="input-group input-group-sm sticky-top">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
+                    </div>
+                    <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls">
+                  </div>
+                <draggable id="controls"
+                              v-model="controls"
+                              :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+                              :clone="cloneControl"
+                              class="overflow-auto controls"
 
-            <div class="w-25 border overflow-auto">
-                <div class="card-header">{{$t('Controls')}}</div>
-                <div class="card-body d-flex flex-wrap mb-5">
-                    <draggable id="controls"
-                               v-model="controls"
-                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
-                               :clone="cloneControl">
-                        <div class="d-flex align-items-center flex-wrap m-2 mb-3"
-                             v-for="(element, index) in controls"
-                             :key="index">
-                            <div class="control-icon d-flex align-items-center">
-                                <img v-if="element['editor-icon']" :src="element['editor-icon']">
+                            >
+                            <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
+                            :key="index">
+                              <li class="list-group-item">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
-                            </div>
-                            <div class="font-weight-normal text-capitalize">{{$t(element.label)}}</div>
-                        </div>
-                    </draggable>
-                </div>
-            </div>
+                                {{$t(element.label)}}
+                              </li>
+                            </ul>
 
-            <div class="w-75 flex-grow-1 overflow-auto">
-                <draggable :element="'ul'"
-                           class="nav nav-tabs"
-                           v-model="config"
-                           :options="{draggable:'.page-item'}"
-                           @change="handlePageSort">
-                    <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
-                        <a class="nav-link"
-                           href="#"
-                           @click="currentPage = page"
-                           :class="{active: currentPage == page}">
-                            {{data.name}}
-                            <button class="btn btn-sm btn-primary mr-1"
-                                    @click="openEditPageModal(page)">
-                                {{$t('Edit')}}
-                            </button>
-                            <button class="btn btn-sm btn-danger mr-1"
-                                    @click="confirmDelete(page)"
-                                    v-show="displayDelete">x
-                            </button>
-                        </a>
-                    </li>
-                    <li slot="footer" class="nav-item">
-                        <a class="nav-link" href="#">
-                            <b-btn variant="success" size="sm" v-b-modal.addPageModal>{{$t('+ Add Page')}}</b-btn>
-                        </a>
-                    </li>
+                            <li v-if="!filteredControls.length" class="list-group-item">
+                              <span class="text-danger">Control Not Found</span>
+                            </li>
                 </draggable>
-
-                <div class="container p-4 mb-5">
-                    <div class="row">
-                        <div class="col-sm">
-                            <draggable class="p-4"
-                                       style="border: 1px dashed #000;"
-                                       v-model="config[currentPage]['items']"
-                                       :options="{group: {name: 'controls'}}">
-                                <div class="control-item"
-                                     :class="{selected: selected === element}"
-                                     v-for="(element,index) in config[currentPage]['items']"
-                                     :key="index"
-                                     @click="inspect(element)">
-                                    <div v-if="element.container" @click="inspect(element)">
-                                        <component :class="elementCssClass(element)"
-                                                   @inspect="inspect"
-                                                   :selected="selected"
-                                                   v-model="element.items"
-                                                   :config="element.config"
-                                                   :is="element['editor-component']">
-                                        </component>
-                                    </div>
-
-                                    <div v-else>
-                                        <component
-                                          :class="elementCssClass(element)"
-                                          v-bind="element.config"
-                                          :is="element['editor-component']"
-                                          @input="element.config.interactive ? element.config.content = $event : null"
-                                        />
-                                        <div v-if="!element.config.interactive" class="mask"></div>
-                                    </div>
-
-                                    <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
-                                </div>
-                            </draggable>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
 
-            <div class="w-25 border d-flex flex-column">
-                <div class="card-header header-fixed">
-                    {{$t('Inspector')}}
-                    <div class="float-right dropdown">
-                        <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
-                            <i class="fas fa-check-circle text-success"></i>
-                        </button>
-                        <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button" @click="showValidationErrors=!showValidationErrors">
-                            <i class="fas fa-times-circle text-danger"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" :class="{'d-block':showValidationErrors && validationErrors.length}">
-                            <a v-for="(validation,index) in validationErrors" :key="index"
-                                href="javascript:void()"
-                                class="dropdown-item" @click="focusInspector(validation)">
-                                <i class="fas fa-times-circle text-danger"></i>
-                                <b>{{$t(validation.item.label)}}</b>
-                                {{$t(validation.message)}}
-                            </a>
+            <div class="form-builder__designer col-7 pl-3">
+                <div class="input-group bg-white">
+                  <b-form-select v-model="currentPage" class="mr-2 screen-select form-builder__designer--select">
+                    <option
+                      v-for="(data, page) in config"
+                      :key="page"
+                      :value="page"
+                    >
+                      {{ data.name }}
+                    </option>
+                  </b-form-select>
+
+                  <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
+                    <i class="far fa-edit" />
+                  </b-button>
+
+                  <b-button size="sm" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
+                    <i class="far fa-trash-alt" />
+                  </b-button>
+
+                  <b-button size="sm" class="flex-shrink-0 ml-5" v-b-modal.addPageModal>
+                    <i class="fas fa-plus mr-2" />
+                    {{$t('Add Screen')}}
+                  </b-button>
+
+                  <hr class="w-100 mb-0 mt-3 mb-3" />
+              </div>
+                <draggable
+                          class="overflow-auto h-100"
+                          v-model="config[currentPage]['items']"
+                          :options="{group: {name: 'controls'}}">
+                    <div class="control-item"
+                        :class="{selected: selected === element, hasError: hasError(element)  }"
+                        v-for="(element,index) in config[currentPage]['items']"
+                        :key="index"
+                        @click="inspect(element)">
+
+                        <div v-if="element.container" @click="inspect(element)">
+                            <component :class="elementCssClass(element)"
+                                      @inspect="inspect"
+                                      :selected="selected"
+                                      v-model="element.items"
+                                      :config="element.config"
+                                      :is="element['editor-component']">
+                            </component>
+                        </div>
+
+                        <div v-else class="card">
+                          <span v-if="selected === element" class="card-header form-element-header p-3 pt-3 pb-3">
+                            <i class="fas fa-arrows-alt-v" />
+                            {{ element.config.name || 'Field Name' }}
+                          </span>
+
+                          <component
+                            class="card-body m-0 pb-4"
+                            :class="elementCssClass(element)"
+                            v-bind="element.config"
+                            :is="element['editor-component']"
+                            @input="element.config.interactive ? element.config.content = $event : null"
+                          />
+
+                          <div v-if="!element.config.interactive" class="mask"></div>
+                          <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
+                            <i class="far fa-trash-alt text-light"></i>
+                          </button>
                         </div>
                     </div>
+                    <div class="card">
+                      <div  class="card-body text-center">
+                        Drag an element here
+                      </div>
+                    </div>
+                </draggable>
+            </div>
+            <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 mr-3 card">
+                <div class="card-header inspector-header">
+                    Inspector
                 </div>
-                <div class="card-body flex-wrap mb-5 overflow-auto box-flex-1" id="inspector">
-                    <component v-for="(item, index) in inspection.inspector"
-                               :formConfig="config"
-                               :key="index"
-                               :is="item.type"
-                               v-bind="item.config"
-                               v-model="inspection.config[item.field]"/>
+                <div class="overflow-auto">
+                  <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center w-100" @click="showConfiguration = !showConfiguration">
+                    <i class="fas fa-cog mr-2"></i>
+                      Configuration
+                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
+                  </b-button>
+
+                  <b-collapse id="configuration" visible class="mt-2">
+                        <component v-for="(item, index) in inspection.inspector"
+                                  :formConfig="config"
+                                  :key="index"
+                                  :is="item.type"
+                                  class="border-bottom pt-1 pb-3 pr-4 pl-4"
+                                  v-bind="item.config"
+                                  v-model="inspection.config[item.field]"/>
+                  </b-collapse>
                 </div>
             </div>
 
@@ -151,10 +159,9 @@
                      @cancel="hideConfirmModal"
                      cancel-variant="btn btn-outline-secondary"
                      ok-variant="btn btn-secondary ml-2">
-                <p>{{$t(confirmMessage)}}</p>
-                <div slot="modal-ok">{{$t('Save')}}</div>
+                <p>{{confirmMessage}}</p>
+                <div slot="modal-ok">Delete</div>
             </b-modal>
-        </div>
     </div>
 </template>
 
@@ -199,6 +206,7 @@
 import { constants } from 'fs';
 
   export default {
+    props: ['validationErrors'],
     mixins: [HasColorProperty],
     components: {
       draggable,
@@ -224,7 +232,6 @@ import { constants } from 'fs';
     },
     data() {
       return {
-        showValidationErrors: false,
         currentPage: 0,
         selected: null,
         display: "editor",
@@ -244,40 +251,24 @@ import { constants } from 'fs';
         confirmMessage: '',
         pageDelete: 0,
         translated: [],
+        showValidationErrors: false,
+        showAssignment: false,
+        showConfiguration: false,
+        filterQuery: ''
       };
     },
     computed: {
-      validationErrors() {
-        const validationErrors = [];
-        this.config.forEach(page => {
-          page.items.forEach(item => {
-            let data = item.config ? item.config : {};
-            let rules = {};
-            item.inspector.forEach(property => {
-              if (property.config.validation) {
-                rules[property.field] = property.config.validation;
-              }
-            });
-            let validator = new Validator(data, rules);
-            // Validation will not run until you call passes/fails on it
-            if(!validator.passes()) {
-              Object.keys(validator.errors.errors).forEach(field => {
-                validator.errors.errors[field].forEach(error => {
-                  validationErrors.push({
-                    message: error,
-                    page: page,
-                    item: item,
-                  });
-                });
-              });
-            }
-          });
-        });
-        return validationErrors;
-      },
       displayDelete() {
         return this.config.length > 1;
-      }
+      },
+      filteredControls() {
+        return this.controls.filter(control => {
+          return control.label.toLowerCase().includes(this.filterQuery.toLowerCase())
+        });
+      },
+      formBuilderCount() {
+        return this.config[0].items.length
+      },
     },
     watch: {
       config: {
@@ -308,15 +299,19 @@ import { constants } from 'fs';
       }
     },
     methods: {
+      hasError(element) {
+        return this.validationErrors.some(({ item }) => item === element);
+      },
       focusInspector(validation) {
+        this.showConfiguration = true;
         this.currentPage = this.config.indexOf(validation.page);
         this.$nextTick(() => {
           this.inspect(validation.item);
         });
       },
-      confirmDelete(page) {
-        this.confirmMessage = 'Are you sure to delete the page ' + this.config[page].name + '?';
-        this.pageDelete = page;
+      confirmDelete() {
+        this.confirmMessage = 'Are you sure to delete the page ' + this.config[this.currentPage].name + '?';
+        this.pageDelete = this.currentPage;
         this.$refs.confirm.show();
       },
       hideConfirmModal() {
@@ -382,11 +377,23 @@ import { constants } from 'fs';
         }
         return copy;
       }
-    }
+    },
   };
 </script>
 
 <style lang="scss" scoped>
+$header-bg: #f7f7f7;
+
+.form-builder__designer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0 1.5rem;
+
+  &--select {
+    border-radius: 5px !important;
+  }
+}
     .control-icon {
         width: 30px;
         font-size: 20px;
@@ -398,7 +405,10 @@ import { constants } from 'fs';
 
     .control-item {
         position: relative;
-        border: 1px solid transparent;
+
+        &:not(:last-child) {
+          margin-bottom: 1.5rem;
+        }
 
         .delete {
             position: absolute;
@@ -407,13 +417,21 @@ import { constants } from 'fs';
             display: none;
         }
 
-        &.selected,
         &:hover {
-            border: 1px solid red;
+          cursor: move;
+        }
 
-            .delete {
-                display: inline-block;
-            }
+        &.selected {
+          border-radius: 5px;
+          cursor: move;
+
+          .delete {
+            display: initial;
+          }
+        }
+
+        &:not(.selected) .card {
+          border: none;
         }
 
         .mask {
@@ -425,14 +443,50 @@ import { constants } from 'fs';
             height: 100%;
         }
     }
-    .box-flex-1 {
-        -webkit-box-flex: 1;
-           -moz-box-flex: 1;
-            -ms-box-flex: 1;
-                box-flex: 1;
-        -webkit-flex: 1;
-           -moz-flex: 1;
-            -ms-flex: 1;
-                flex: 1;
+
+    .hasError {
+      border: 1px solid red;
+      border-radius: 0.25rem;
+
+      .form-element-header {
+        border-bottom: 1px solid red;
+        color: red;
+      }
+    }
+
+    .inspector-header {
+      background: $header-bg;
+    }
+
+    .validation-panel {
+      background: $header-bg;
+      height: 10rem;
+      width: 21.35rem;
+      bottom: 3rem;
+    }
+
+    .validation__message {
+      text-decoration: none;
+
+      &:hover {
+        background: rgba(51,151,225,0.30);
+      }
+    }
+
+    .list-group:last-child {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .controls-header {
+      border-bottom: none;
+    }
+
+    .header-bg {
+      background: $header-bg;
+    }
+
+    .controls {
+      cursor: move;
+      user-select: none;
     }
 </style>
