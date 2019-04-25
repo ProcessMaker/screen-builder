@@ -58,7 +58,7 @@
                     {{$t('Add Screen')}}
                   </b-button>
 
-                  <b-button-group size="sm" class="undo-redo-buttons">
+                  <b-button-group size="sm" class="ml-1">
                     <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
                     <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
                   </b-button-group>
