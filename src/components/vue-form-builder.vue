@@ -58,15 +58,21 @@
                     {{$t('Add Screen')}}
                   </b-button>
 
+                  <b-button-group size="sm" class="ml-1">
+                    <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
+                    <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
+                  </b-button-group>
+
                   <hr class="w-100 mb-0 mt-3 mb-3" />
               </div>
                 <draggable
                           class="overflow-auto h-100"
-                          v-model="config[currentPage]['items']"
+                          :value="config[currentPage].items"
+                          @input="updateConfig"
                           :options="{group: {name: 'controls'}}">
                     <div class="control-item"
                         :class="{selected: selected === element, hasError: hasError(element)  }"
-                        v-for="(element,index) in config[currentPage]['items']"
+                        v-for="(element,index) in config[currentPage].items"
                         :key="index"
                         @click="inspect(element)">
 
@@ -92,6 +98,7 @@
                             v-bind="element.config"
                             :is="element['editor-component']"
                             @input="element.config.interactive ? element.config.content = $event : null"
+                            @focusout.native="updateState"
                           />
 
                           <div v-if="!element.config.interactive" class="mask"></div>
@@ -125,7 +132,8 @@
                                   :is="item.type"
                                   class="border-bottom pt-1 pb-3 pr-4 pl-4"
                                   v-bind="item.config"
-                                  v-model="inspection.config[item.field]"/>
+                                  v-model="inspection.config[item.field]"
+                                  @focusout.native="updateState"/>
                   </b-collapse>
                 </div>
             </div>
@@ -188,6 +196,7 @@
   import BootstrapVue from "bootstrap-vue";
 
   import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+  import undoRedoModule from '../undoRedoModule';
 
   Vue.use(BootstrapVue);
 
@@ -205,7 +214,6 @@
     FormDatePicker,
     FormHtmlEditor
   } from "@processmaker/vue-form-elements/src/components";
-import { constants } from 'fs';
 
   export default {
     props: ['validationErrors'],
@@ -244,22 +252,22 @@ import { constants } from 'fs';
         addPageName: "",
         editPageIndex: null,
         editPageName: "",
-        config: [
-          {
-            name: "Default",
-            items: []
-          }
-        ],
+        config: [],
         confirmMessage: '',
         pageDelete: 0,
         translated: [],
-        showValidationErrors: false,
         showAssignment: false,
         showConfiguration: false,
         filterQuery: ''
       };
     },
     computed: {
+      canUndo() {
+        return this.$store.getters[`page-${this.currentPage}/canUndo`];
+      },
+      canRedo() {
+        return this.$store.getters[`page-${this.currentPage}/canRedo`];
+      },
       displayDelete() {
         return this.config.length > 1;
       },
@@ -274,14 +282,14 @@ import { constants } from 'fs';
     },
     watch: {
       config: {
-        handler: function () {
+        handler() {
           // @todo, remove inspector stuffs
           this.$emit("change", this.config);
         },
         deep: true
       },
       currentPage() {
-        this.inspection = {};
+        this.inspect();
       },
       inspection(e) {
         if (this.translated.includes(e)) {
@@ -301,6 +309,24 @@ import { constants } from 'fs';
       }
     },
     methods: {
+      updateState() {
+        const items = this.config[this.currentPage].items;
+        this.$store.dispatch(`page-${this.currentPage}/pushState`, JSON.stringify(items));
+      },
+      undo() {
+        this.inspect();
+        this.$store.dispatch(`page-${this.currentPage}/undo`);
+        this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+      },
+      redo() {
+        this.inspect();
+        this.$store.dispatch(`page-${this.currentPage}/redo`);
+        this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+      },
+      updateConfig(items) {
+        this.config[this.currentPage].items = items;
+        this.updateState();
+      },
       hasError(element) {
         return this.validationErrors.some(({ item }) => item === element);
       },
@@ -338,18 +364,19 @@ import { constants } from 'fs';
         this.config[this.editPageIndex].name = this.editPageName;
       },
       addPage() {
-        this.config.push({
-          name: this.addPageName,
-          items: []
-        });
+        this.config.push({ name: this.addPageName, items: [] });
         this.currentPage = this.config.length - 1;
-        this.addPageName = "";
+        this.addPageName = '';
+
+        this.$store.registerModule(`page-${this.currentPage}`, undoRedoModule);
+        this.updateState();
       },
       deletePage() {
+        this.$store.unregisterModule(`page-${this.currentPage}`);
         this.currentPage = 0;
         this.config.splice(this.pageDelete, 1);
       },
-      inspect(element) {
+      inspect(element = {}) {
         this.inspection = element;
         this.selected = element;
       },
@@ -378,8 +405,12 @@ import { constants } from 'fs';
           copy.container = true;
         }
         return copy;
-      }
+      },
     },
+    created() {
+      this.addPageName = 'Default';
+      this.addPage();
+    }
   };
 </script>
 
