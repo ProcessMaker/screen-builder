@@ -47,7 +47,8 @@
         var reader = new FileReader();
         reader.readAsDataURL(fileObject.file);
         reader.addEventListener("load",  () => {
-          this.owner.name = fileObject.file.name;
+          let name = fileObject.file.name.split('.');
+          this.owner.name = escape(name[0]);
           this.$emit('input', reader.result);
         }, false);
       },
