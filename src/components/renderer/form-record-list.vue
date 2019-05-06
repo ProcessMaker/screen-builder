@@ -157,7 +157,10 @@
         this.$refs.vuetable.changePage(page);
       },
       fetchFormConfig() {
-        //Only if you have a one page set
+        if (this.form === '') {
+          // User has not chosen an add/edit page yet
+          return [{items: []}];
+        }
         let config = JSON.parse(JSON.stringify(this.$parent.config));
         for (let index = 0; index < config.length; index++) {
           if (index != this.form) {
