@@ -53,15 +53,14 @@
                     <i class="far fa-trash-alt" />
                   </b-button>
 
-                  <b-button size="sm" class="flex-shrink-0 ml-5" v-b-modal.addPageModal>
-                    <i class="fas fa-plus mr-2" />
-                    {{$t('Add Screen')}}
+                  <b-button size="sm" class="flex-shrink-0 ml-2" v-b-modal.addPageModal>
+                    <i class="fas fa-plus" />
                   </b-button>
 
-                  <b-button-group size="sm" class="ml-1">
+                  <!-- <b-button-group size="sm" class="ml-1">
                     <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
                     <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
-                  </b-button-group>
+                  </b-button-group> -->
 
                   <hr class="w-100 mb-0 mt-3 mb-3" />
               </div>
@@ -87,10 +86,13 @@
                         </div>
 
                         <div v-else class="card">
-                          <span v-if="selected === element" class="card-header form-element-header p-3 pt-3 pb-3">
-                            <i class="fas fa-arrows-alt-v" />
+                          <div v-if="selected === element" class="card-header form-element-header d-flex align-items-center">
+                            <i class="fas fa-arrows-alt-v mr-1" />
                             {{ element.config.name || 'Field Name' }}
-                          </span>
+                            <button class="btn btn-sm btn-danger ml-auto" @click="deleteItem(index)">
+                              <i class="far fa-trash-alt text-light" />
+                            </button>
+                          </div>
 
                           <component
                             class="card-body m-0 pb-4"
@@ -101,10 +103,7 @@
                             @focusout.native="updateState"
                           />
 
-                          <div v-if="!element.config.interactive" class="mask"></div>
-                          <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
-                            <i class="far fa-trash-alt text-light"></i>
-                          </button>
+                          <!-- <div v-if="!element.config.interactive" class="mask"></div> -->
                         </div>
                     </div>
                     <div class="card">
@@ -457,10 +456,6 @@ $header-bg: #f7f7f7;
         &.selected {
           border-radius: 5px;
           cursor: move;
-
-          .delete {
-            display: initial;
-          }
         }
 
         &:not(.selected) .card {
