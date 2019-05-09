@@ -213,7 +213,9 @@
     FormRadioButtonGroup,
     FormDatePicker,
     FormHtmlEditor
-  } from "@processmaker/vue-form-elements/src/components";
+  } from "@processmaker/vue-form-elements";
+
+  import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 
   export default {
     props: ['validationErrors'],
