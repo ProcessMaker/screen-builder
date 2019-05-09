@@ -14,7 +14,7 @@
             </b-button-group>
           </div>
 
-          <div class="col text-right">
+          <div class="col text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
                 <i class="fas fa-flask"></i>
