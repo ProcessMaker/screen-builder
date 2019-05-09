@@ -103,7 +103,7 @@
                             @focusout.native="updateState"
                           />
 
-                          <!-- <div v-if="!element.config.interactive" class="mask"></div> -->
+                          <div v-if="!element.config.interactive" class="mask"></div>
                         </div>
                     </div>
                     <div class="card">
@@ -120,7 +120,7 @@
                 <div class="overflow-auto">
                   <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center w-100" @click="showConfiguration = !showConfiguration">
                     <i class="fas fa-cog mr-2"></i>
-                      Configuration
+                      {{ $t('Configuration') }}
                     <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
                   </b-button>
 
