@@ -1,9 +1,9 @@
 <template>
-  <div class="container h-100 pt-4">
-    <div id="app" class="card h-100">
-      <div class="card-header">
-        <div class="row">
-          <div class="col">
+  <b-container class="h-100 pt-4">
+    <b-card no-body id="app" class="h-100">
+      <b-card-header>
+        <b-row>
+          <b-col>
             <b-button-group size="sm">
               <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'">
                 <i class="fas fa-drafting-compass pr-1"></i>{{ $t('Design') }}
@@ -12,9 +12,9 @@
                 <i class="fas fa-cogs pr-1"></i>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
-          </div>
+          </b-col>
 
-          <div class="col text-right" v-if="displayBuilder && !displayPreview">
+          <b-col class="text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
                 <i class="fas fa-flask"></i>
@@ -26,58 +26,65 @@
               </button>
             </div>
             <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"></i></button>
-          </div>
-        </div>
-      </div>
+          </b-col>
+        </b-row>
+      </b-card-header>
 
         <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
+        <b-card-body no-body class="p-0">
         <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
 
-        <b-row id="preview" v-show="displayPreview" class="flex-grow-1 p-4 pl-5 pr-5">
-            <b-col id="renderer-container" cols="8">
-              <div class="row h-100">
-                  <div class="card-body border overflow-auto mr-5 rounded">
-                      <vue-form-renderer ref="renderer"
-                                          v-model="previewData"
-                                          @submit="previewSubmit"
-                                          :config="config"
-                                          :computed="computed"
-                                          :custom-css="customCSS"
-                                          v-on:css-errors="cssErrors = $event"/>
-                  </div>
-              </div>
-            </b-col>
+          <b-row id="preview" v-show="displayPreview" class="h-100 p-3 pb-4 mt-1">
+              <b-col id="renderer-container" cols="8">
+                <div class="row h-100">
+                    <div class="card-body border overflow-auto rounded ml-3">
+                        <vue-form-renderer ref="renderer"
+                                            v-model="previewData"
+                                            @submit="previewSubmit"
+                                            :config="config"
+                                            :computed="computed"
+                                            :custom-css="customCSS"
+                                            v-on:css-errors="cssErrors = $event"/>
+                    </div>
+                </div>
+              </b-col>
 
-            <b-col cols="4" class="data-container overflow-auto pr-0 pl-0 rounded">
-              <div id="data-preview" class="overflow-auto border border-bottom-0">
-                <div class="card-header">Inspector</div>
-                <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
-                  <i class="fas fa-file-code mr-2"></i>
-                    Data Preview
-                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
-                </b-button>
-
-                <b-collapse id="dataPreview">
-                  <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
-                </b-collapse>
-              </div>
-
-              <div id="data-input" class="overflow-auto border">
-                  <b-button v-b-toggle.dataInput variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataInput = !showDataInput">
-                    <i class="fas fa-file-import mr-2"></i>
-                      Data Input
-                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
+              <b-col cols="4" class="data-container overflow-auto">
+                <div id="data-preview" class="overflow-auto border border-bottom-0 rounded">
+                  <div class="card-header">Inspector</div>
+                  <b-button v-b-toggle.dataPreview variant="outline"
+                    class="text-left card-header d-flex align-items-center sticky-top header-bg w-100"
+                    @click="showDataPreview = !showDataPreview">
+                    <i class="fas fa-file-code mr-2"></i>
+                      Data Preview
+                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
                   </b-button>
 
-                  <b-collapse id="dataInput">
-                      <form-text-area class="dataInput" rows="8" v-model="previewInput"></form-text-area>
+                  <b-collapse id="dataPreview">
+                    <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
                   </b-collapse>
-              </div>
-            </b-col>
-        </b-row>
+                </div>
 
-        <div class="card-footer text-muted d-flex justify-content-end align-items-center">
+                <div id="data-input" class="overflow-auto border-0">
+                    <b-button v-b-toggle.dataInput
+                      variant="outline"
+                      class="text-left card-header d-flex align-items-center sticky-top header-bg w-100 border-right border-left border-top"
+                      @click="showDataInput = !showDataInput">
+                      <i class="fas fa-file-import mr-2"></i>
+                        Data Input
+                      <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
+                    </b-button>
+
+                    <b-collapse id="dataInput">
+                        <form-text-area class="dataInput" rows="8" v-model="previewInput"></form-text-area>
+                    </b-collapse>
+                </div>
+              </b-col>
+          </b-row>
+        </b-card-body>
+
+        <b-card-footer class="text-muted d-flex justify-content-end align-items-center">
             <div>
               <span class="custom-control custom-switch">
               <input v-model="toggleValidation" type="checkbox" class="custom-control-input" id="customSwitch1" checked>
@@ -119,9 +126,9 @@
                 </span>
               </button>
             </div>
-        </div>
-    </div>
-  </div>
+        </b-card-footer>
+    </b-card>
+  </b-container>
 </template>
 
 <script>
@@ -316,5 +323,9 @@ import Validator from "validatorjs";
 
     .dataInput {
       margin-top: -25px;
+    }
+
+    .card-header {
+      border-radius: 0 !important;
     }
 </style>
