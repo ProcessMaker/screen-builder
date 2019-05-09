@@ -45,17 +45,21 @@
                     </option>
                   </b-form-select>
 
-                  <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
-                    <i class="far fa-edit" />
-                  </b-button>
 
-                  <b-button size="sm" variant="danger" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
-                    <i class="far fa-trash-alt" />
-                  </b-button>
+                    <b-button size="sm" class="mr-2 header-button d-flex justify-content-center" @click="openEditPageModal(currentPage)">
+                      <i class="far fa-edit" />
+                    </b-button>
 
-                  <b-button size="sm" class="flex-shrink-0 ml-2" v-b-modal.addPageModal>
-                    <i class="fas fa-plus" />
-                  </b-button>
+                    <b-button size="sm" variant="danger" class="mr-2 header-button d-flex justify-content-center" @click="confirmDelete()" :disabled="!displayDelete">
+                      <i class="far fa-trash-alt" />
+                    </b-button>
+
+
+                    <b-button size="sm" class="flex-shrink-0 header-button d-flex justify-content-center" v-b-modal.addPageModal>
+                      <i class="fas fa-plus" />
+                    </b-button>
+
+                    <!-- <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"></i></button> -->
 
                   <!-- <b-button-group size="sm" class="ml-1">
                     <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
@@ -113,7 +117,7 @@
                     </div>
                 </draggable>
             </div>
-            <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 mr-3 card">
+            <div class="form-builder__inspector col-3 pl-0 pr-0 mr-3 card">
                 <div class="card-header inspector-header">
                     Inspector
                 </div>
@@ -521,5 +525,10 @@ $header-bg: #f7f7f7;
     .controls {
       cursor: move;
       user-select: none;
+    }
+
+    .header-button {
+      height: 38px;
+      width: 38px;
     }
 </style>
