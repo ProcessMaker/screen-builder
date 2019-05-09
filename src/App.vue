@@ -49,8 +49,8 @@
               </div>
             </b-col>
 
-            <b-col cols="4" class="data-container border overflow-auto pr-0 pl-0 rounded">
-              <div id="data-preview" class="overflow-auto">
+            <b-col cols="4" class="data-container overflow-auto pr-0 pl-0 rounded">
+              <div id="data-preview" class="overflow-auto border border-bottom-0">
                 <div class="card-header">Inspector</div>
                 <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
                   <i class="fas fa-file-code mr-2"></i>
@@ -63,7 +63,7 @@
                 </b-collapse>
               </div>
 
-              <div id="data-input" class="overflow-auto">
+              <div id="data-input" class="overflow-auto border">
                   <b-button v-b-toggle.dataInput variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataInput = !showDataInput">
                     <i class="fas fa-file-import mr-2"></i>
                       Data Input
