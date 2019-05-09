@@ -1,5 +1,5 @@
 <template>
-    <div class="card-body overflow-hidden pl-1 pr-1">
+    <div class="card-body overflow-hidden pl-1 pr-3">
             <div class="form-builder__controls d-flex col-2">
               <div class="card border d-flex">
                   <div class="card-header controls-header">
@@ -114,7 +114,7 @@
                     </div>
                 </draggable>
             </div>
-            <div class="form-builder__inspector col-3 pl-0 pr-0 mr-3 card">
+            <div class="form-builder__inspector col-3 pl-0 pr-0 card">
                 <div class="card-header inspector-header">
                     Inspector
                 </div>
