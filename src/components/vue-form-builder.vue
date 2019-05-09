@@ -104,7 +104,7 @@
                             @focusout.native="updateState"
                           />
 
-                          <div v-if="!element.config.interactive" class="mask"></div>
+                          <!-- <div v-if="!element.config.interactive" class="mask"></div> -->
                         </div>
                     </div>
                     <div class="card">
