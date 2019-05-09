@@ -15,16 +15,13 @@
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl"
-                              class="overflow-auto controls"
+                              class="overflow-auto controls list-group w-auto list-group-flush"
 
                             >
-                            <b-list-group v-for="(element, index) in filteredControls"
-                            :key="index">
-                              <b-list-group-item class="">
+                              <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
                                 {{$t(element.label)}}
                               </b-list-group-item>
-                            </b-list-group>
 
                             <li v-if="!filteredControls.length" class="list-group-item">
                               <span class="text-danger">Control Not Found</span>
@@ -503,15 +500,6 @@ $header-bg: #f7f7f7;
       &:hover {
         background: rgba(51,151,225,0.30);
       }
-    }
-
-    .list-group-item {
-      border: 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-    }
-
-    .list-group-item:last-child {
-      border-radius: 0;
     }
 
     .controls-header {
