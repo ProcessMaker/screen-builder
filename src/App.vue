@@ -37,7 +37,7 @@
         <b-row id="preview" v-show="displayPreview" class="flex-grow-1 p-4 pl-5 pr-5">
             <b-col id="renderer-container" cols="8">
               <div class="row h-100">
-                  <div class="card-body border overflow-auto mr-5">
+                  <div class="card-body border overflow-auto mr-5 rounded">
                       <vue-form-renderer ref="renderer"
                                           v-model="previewData"
                                           @submit="previewSubmit"
@@ -49,7 +49,7 @@
               </div>
             </b-col>
 
-            <b-col cols="4" class="data-container border overflow-auto pr-0 pl-0">
+            <b-col cols="4" class="data-container border overflow-auto pr-0 pl-0 rounded">
               <div id="data-preview" class="overflow-auto">
                 <div class="card-header">Inspector</div>
                 <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
