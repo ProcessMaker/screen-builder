@@ -34,9 +34,8 @@
         <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
         <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
 
-        <div id="preview" v-show="displayPreview" class="flex-grow-1 p-4 pl-5 pr-5">
-          <div class="row h-100">
-            <div id="renderer-container" class="col-8">
+        <b-row id="preview" v-show="displayPreview" class="flex-grow-1 p-4 pl-5 pr-5">
+            <b-col id="renderer-container" cols="8">
               <div class="row h-100">
                   <div class="card-body border overflow-auto mr-5">
                       <vue-form-renderer ref="renderer"
@@ -48,9 +47,9 @@
                                           v-on:css-errors="cssErrors = $event"/>
                   </div>
               </div>
-            </div>
+            </b-col>
 
-            <div class="data-container col-4 border overflow-auto pr-0 pl-0">
+            <b-col cols="4" class="data-container border overflow-auto pr-0 pl-0">
               <div id="data-preview" class="overflow-auto">
                 <div class="card-header">Inspector</div>
                 <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
@@ -75,9 +74,8 @@
                       <form-text-area class="dataInput" rows="8" v-model="previewInput"></form-text-area>
                   </b-collapse>
               </div>
-            </div>
-          </div>
-        </div>
+            </b-col>
+        </b-row>
 
         <div class="card-footer text-muted d-flex justify-content-end align-items-center">
             <div>
