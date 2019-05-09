@@ -104,7 +104,7 @@
                             @focusout.native="updateState"
                           />
 
-                          <!-- <div v-if="!element.config.interactive" class="mask"></div> -->
+                          <div v-if="!element.config.interactive" class="mask"></div>
                         </div>
                     </div>
                     <div class="card">
@@ -467,11 +467,11 @@ $header-bg: #f7f7f7;
 
         .mask {
             position: absolute;
-            top: 0px;
+            top: 4rem;
             left: 0px;
             background-color: rgba(0, 0, 0, 0);
             width: 100%;
-            height: 100%;
+            height: 50%;
         }
     }
 
