@@ -107,15 +107,15 @@
             <div class="ml-3" @click="showValidationErrors = !showValidationErrors">
               <button type="button" class="btn btn-light btn-sm">
                 <i class="fas fa-angle-double-up"></i>
-                Open Console
+                {{ $t('Open Console') }}
                 <span v-if="allErrors === 0" class="badge badge-success">
                   <i class="fas fa-check-circle "></i>
-                  {{ allErrors }}
+                  {{ $t(allErrors) }}
                 </span>
 
                 <span v-else class="badge badge-danger">
                   <i class="fas fa-times-circle "></i>
-                  {{ allErrors }}
+                  {{ $t(allErrors) }}
                 </span>
               </button>
             </div>
