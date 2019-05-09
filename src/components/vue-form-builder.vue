@@ -18,13 +18,13 @@
                               class="overflow-auto controls"
 
                             >
-                            <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
+                            <b-list-group v-for="(element, index) in filteredControls"
                             :key="index">
-                              <li class="list-group-item">
+                              <b-list-group-item class="">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
                                 {{$t(element.label)}}
-                              </li>
-                            </ul>
+                              </b-list-group-item>
+                            </b-list-group>
 
                             <li v-if="!filteredControls.length" class="list-group-item">
                               <span class="text-danger">Control Not Found</span>
@@ -501,8 +501,13 @@ $header-bg: #f7f7f7;
       }
     }
 
-    .list-group:last-child {
+    .list-group-item {
+      border: 0;
       border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .list-group-item:last-child {
+      border-radius: 0;
     }
 
     .controls-header {
