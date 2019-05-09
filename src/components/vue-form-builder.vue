@@ -49,7 +49,7 @@
                     <i class="far fa-edit" />
                   </b-button>
 
-                  <b-button size="sm" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
+                  <b-button size="sm" variant="danger" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
                     <i class="far fa-trash-alt" />
                   </b-button>
 
