@@ -1,5 +1,179 @@
 <template>
-    <div class="card-body overflow-hidden pl-1 pr-3">
+    <b-row class="h-100">
+      <!-- Controls -->
+      <b-col cols="2" class="overflow-hidden mh-100 p-0">
+        <b-card no-body class="h-100">
+          <b-card-header>
+            Controls
+          </b-card-header>
+          <b-input-group>
+            <b-input-group-prepend>
+              <b-button size="sm" variant="light" class="border"><i class="fas fa-filter"></i></b-button>
+            </b-input-group-prepend>
+
+            <b-form-input v-model="filterQuery" type="text" placeholder="Filter Controls"></b-form-input>
+          </b-input-group>
+
+          <card-body no-body class="p-0 overflow-auto">
+            <draggable id="controls"
+                v-model="controls"
+                :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+                :clone="cloneControl"
+                class="controls list-group w-auto list-group-flush">
+                <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
+                  <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
+                  {{$t(element.label)}}
+                </b-list-group-item>
+
+              <li v-if="!filteredControls.length" class="list-group-item">
+                <span class="text-danger">Control Not Found</span>
+              </li>
+            </draggable>
+          </card-body>
+        </b-card>
+      </b-col>
+
+      <!-- Renderer -->
+      <b-col cols="7" class="overflow-auto mh-100 pl-4 pr-4">
+        <b-input-group size="md" class="sticky-top bg-white">
+          <b-form-select v-model="currentPage" class="screen-select form-builder__designer--select mr-2">
+            <option
+              v-for="(data, page) in config"
+              :key="page"
+              :value="page">
+              {{ data.name }}
+            </option>
+          </b-form-select>
+
+          <b-button size="sm" class="mr-2 header-button d-flex justify-content-center" @click="openEditPageModal(currentPage)">
+            <i class="far fa-edit" />
+          </b-button>
+
+          <b-button size="sm" variant="danger" class="mr-2 header-button d-flex justify-content-center" @click="confirmDelete()" :disabled="!displayDelete">
+            <i class="far fa-trash-alt" />
+          </b-button>
+
+          <b-button size="sm" class="flex-shrink-0 header-button d-flex justify-content-center" v-b-modal.addPageModal>
+            <i class="fas fa-plus" />
+          </b-button>
+
+          <hr class="w-100" />
+        </b-input-group>
+        <draggable
+          :value="config[currentPage].items"
+          @input="updateConfig"
+          :options="{group: {name: 'controls'}}">
+          <div class="control-item"
+              :class="{selected: selected === element, hasError: hasError(element)}"
+              v-for="(element,index) in config[currentPage].items"
+              :key="index"
+              @click="inspect(element)">
+
+              <div v-if="element.container" @click="inspect(element)">
+                  <component :class="elementCssClass(element)"
+                            @inspect="inspect"
+                            :selected="selected"
+                            v-model="element.items"
+                            :config="element.config"
+                            :is="element['editor-component']">
+                  </component>
+              </div>
+
+              <div v-else class="card mb-3">
+                <div v-if="selected === element" class="card-header form-element-header d-flex align-items-center">
+                  <i class="fas fa-arrows-alt-v mr-1" />
+                  {{ element.config.name || 'Field Name' }}
+                  <button class="btn btn-sm btn-danger ml-auto" @click="deleteItem(index)">
+                    <i class="far fa-trash-alt text-light" />
+                  </button>
+                </div>
+
+                <component
+                  class="card-body m-0 pb-4"
+                  :class="elementCssClass(element)"
+                  v-bind="element.config"
+                  :is="element['editor-component']"
+                  @input="element.config.interactive ? element.config.content = $event : null"
+                  @focusout.native="updateState"
+                />
+
+                <div v-if="!element.config.interactive" class="mask"></div>
+              </div>
+          </div>
+          <div class="card">
+            <div  class="card-body text-center">
+              Drag an element here
+            </div>
+          </div>
+        </draggable>
+      </b-col>
+
+      <!-- Inspector -->
+      <b-col cols="3" class="overflow-hidden h-100 p-0">
+        <b-card no-body class="p-0 h-100">
+          <b-card-header>
+            Inspector
+          </b-card-header>
+
+          <b-card-body class="p-0 h-100 overflow-auto">
+            <b-button v-b-toggle.configuration variant="outline"
+              class="text-left card-header d-flex align-items-center w-100 outline-0"
+              @click="showConfiguration = !showConfiguration">
+              <i class="fas fa-cog mr-2"></i>
+                {{ $t('Configuration') }}
+              <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
+            </b-button>
+
+            <b-collapse id="configuration" visible class="mt-2">
+              <component v-for="(item, index) in inspection.inspector"
+                        :formConfig="config"
+                        :key="index"
+                        :is="item.type"
+                        class="border-bottom pt-1 pb-3 pr-4 pl-4"
+                        v-bind="item.config"
+                        v-model="inspection.config[item.field]"
+                        @focusout.native="updateState"/>
+            </b-collapse>
+          </b-card-body>
+        </b-card>
+      </b-col>
+
+      <!-- Modals -->
+      <b-modal id="addPageModal"
+                centered
+                @ok="addPage"
+                :ok-title="$t('Save')"
+                cancel-variant="btn btn-outline-secondary"
+                ok-variant="btn btn-secondary ml-2"
+                :title="$t('Add New Page')">
+          <form-input v-model="addPageName"
+                      :label="$t('Page Name')"
+                      :helper="$t('The name of the new page to add')"></form-input>
+      </b-modal>
+
+      <b-modal ref="editPageModal"
+                centered
+                @ok="editPage"
+                :title="$t('Edit Page Title')"
+                :ok-title="$t('Save')"
+                cancel-variant="btn btn-outline-secondary"
+                ok-variant="btn btn-secondary ml-2">
+          <form-input v-model="editPageName" :label="$t('Page Name')" :helper="$t('The new name of the page')"></form-input>
+      </b-modal>
+
+      <b-modal ref="confirm"
+                centered
+                title="Confirm delete"
+                @ok="deletePage"
+                @cancel="hideConfirmModal"
+                cancel-variant="btn btn-outline-secondary"
+                ok-variant="btn btn-secondary ml-2">
+          <p>{{confirmMessage}}</p>
+          <div slot="modal-ok">Delete</div>
+      </b-modal>
+    </b-row>
+
+    <!-- <div class="card-body overflow-hidden pl-1 pr-3">
             <div class="form-builder__controls d-flex col-2">
               <div class="card border d-flex">
                   <div class="card-header controls-header">
@@ -56,12 +230,12 @@
                       <i class="fas fa-plus" />
                     </b-button>
 
-                    <!-- <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"></i></button> -->
+                    <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"></i></button>
 
-                  <!-- <b-button-group size="sm" class="ml-1">
+                  <b-button-group size="sm" class="ml-1">
                     <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
                     <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
-                  </b-button-group> -->
+                  </b-button-group>
 
                   <hr class="w-100 mb-0 mt-3 mb-3" />
               </div>
@@ -114,6 +288,7 @@
                     </div>
                 </draggable>
             </div>
+
             <div class="form-builder__inspector col-3 pl-0 pr-0 card">
                 <div class="card-header inspector-header">
                     Inspector
@@ -170,7 +345,7 @@
                 <p>{{confirmMessage}}</p>
                 <div slot="modal-ok">Delete</div>
             </b-modal>
-    </div>
+    </div> -->
 </template>
 
 <script>
