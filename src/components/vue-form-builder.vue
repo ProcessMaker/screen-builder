@@ -6,7 +6,7 @@
         <b-card-header>Controls</b-card-header>
         <b-input-group size="sm">
           <b-input-group-prepend>
-            <b-input-group-text>
+            <b-input-group-text class="filter-icon">
               <i class="fas fa-filter"></i>
             </b-input-group-text>
           </b-input-group-prepend>
@@ -14,7 +14,7 @@
           <b-form-input v-model="filterQuery" type="text" placeholder="Filter Controls"></b-form-input>
         </b-input-group>
 
-        <card-body no-body class="p-0 overflow-auto">
+        <b-card-body no-body class="p-0 overflow-auto">
           <draggable
             id="controls"
             v-model="controls"
@@ -31,7 +31,7 @@
               <span class="text-danger">Control Not Found</span>
             </li>
           </draggable>
-        </card-body>
+        </b-card-body>
       </b-card>
     </b-col>
 
@@ -748,6 +748,10 @@ $header-bg: #f7f7f7;
 .header-button {
   height: 38px;
   width: 38px;
+}
+
+.filter-icon {
+  background-color: #e9ecef;
 }
 
 .controls-column {
