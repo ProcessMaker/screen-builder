@@ -106,7 +106,7 @@
             </div>
 
             <component
-              class="card-body m-0 pb-4"
+              class="card-body m-0 pb-4 pt-4"
               :class="elementCssClass(element)"
               v-bind="element.config"
               :is="element['editor-component']"
