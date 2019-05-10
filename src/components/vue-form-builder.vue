@@ -117,7 +117,7 @@
 
           <b-card-body class="p-0 h-100 overflow-auto">
             <b-button v-b-toggle.configuration variant="outline"
-              class="text-left card-header d-flex align-items-center w-100 outline-0"
+              class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize"
               @click="showConfiguration = !showConfiguration">
               <i class="fas fa-cog mr-2"></i>
                 {{ $t('Configuration') }}
