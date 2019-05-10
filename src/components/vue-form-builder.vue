@@ -79,7 +79,7 @@
                   </component>
               </div>
 
-              <div v-else class="card mb-3">
+              <div v-else class="card">
                 <div v-if="selected === element" class="card-header form-element-header d-flex align-items-center">
                   <i class="fas fa-arrows-alt-v mr-1" />
                   {{ element.config.name || 'Field Name' }}
