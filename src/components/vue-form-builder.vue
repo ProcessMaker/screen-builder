@@ -1,148 +1,143 @@
 <template>
-    <div class="h-100 mb-3">
-        <div class="d-flex h-100 mb-5">
-
-            <div class="w-25 border overflow-auto">
-                <div class="card-header">{{$t('Controls')}}</div>
-                <div class="card-body d-flex flex-wrap mb-5">
-                    <draggable id="controls"
-                               v-model="controls"
-                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
-                               :clone="cloneControl">
-                        <div class="d-flex align-items-center flex-wrap m-2 mb-3"
-                             v-for="(element, index) in controls"
-                             :key="index">
-                            <div class="control-icon d-flex align-items-center">
-                                <img v-if="element['editor-icon']" :src="element['editor-icon']">
+    <div>
+      <div class="row card-body">
+        <div class="col-2">
+          <div class="card">
+            <div class="card-header">{{$t('Controls')}}</div>
+              <div class="d-flex flex-wrap mb-5">
+                  <draggable id="controls"
+                              v-model="controls"
+                              :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+                              :clone="cloneControl">
+                      <ul class="list-group list-group-flush"
+                            v-for="(element, index) in controls"
+                            :key="index">
+                          <li class="list-group-item">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
-                            </div>
-                            <div class="font-weight-normal text-capitalize">{{$t(element.label)}}</div>
-                        </div>
-                    </draggable>
-                </div>
+                                {{$t(element.label)}}
+
+                          </li>
+                      </ul>
+                  </draggable>
+              </div>
             </div>
-
-            <div class="w-75 flex-grow-1 overflow-auto">
-                <draggable :element="'ul'"
-                           class="nav nav-tabs"
-                           v-model="config"
-                           :options="{draggable:'.page-item'}"
-                           @change="handlePageSort">
-                    <li class="nav-item page-item" v-for="(data, page) in config" :key="page">
-                        <a class="nav-link"
-                           href="#"
-                           @click="currentPage = page"
-                           :class="{active: currentPage == page}">
-                            {{data.name}}
-                            <button class="btn btn-sm btn-primary mr-1"
-                                    @click="openEditPageModal(page)">
-                                {{$t('Edit')}}
-                            </button>
-                            <button class="btn btn-sm btn-danger mr-1"
-                                    @click="confirmDelete(page)"
-                                    v-show="displayDelete">x
-                            </button>
-                        </a>
-                    </li>
-                    <li slot="footer" class="nav-item">
-                        <a class="nav-link" href="#">
-                            <b-btn variant="success" size="sm" v-b-modal.addPageModal>{{$t('+ Add Page')}}</b-btn>
-                        </a>
-                    </li>
-                </draggable>
-
-                <div class="container p-4 mb-5">
-                    <div class="row">
-                        <div class="col-sm">
-                            <draggable class="p-4"
-                                       style="border: 1px dashed #000;"
-                                       v-model="config[currentPage]['items']"
-                                       :options="{group: {name: 'controls'}}">
-                                <div class="control-item"
-                                     :class="{selected: selected === element}"
-                                     v-for="(element,index) in config[currentPage]['items']"
-                                     :key="index"
-                                     @click="inspect(element)">
-                                    <div v-if="element.container" @click="inspect(element)">
-                                        <component :class="elementCssClass(element)"
-                                                   @inspect="inspect"
-                                                   :selected="selected"
-                                                   v-model="element.items"
-                                                   :config="element.config"
-                                                   :is="element['editor-component']">
-                                        </component>
-                                    </div>
-
-                                    <div v-else>
-                                        <component
-                                          :class="elementCssClass(element)"
-                                          v-bind="element.config"
-                                          :is="element['editor-component']"
-                                          @input="element.config.interactive ? element.config.content = $event : null"
-                                        />
-                                        <div v-if="!element.config.interactive" class="mask"></div>
-                                    </div>
-
-                                    <button class="delete btn btn-sm btn-danger" @click="deleteItem(index)">x</button>
-                                </div>
-                            </draggable>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-25 border d-flex flex-column">
-                <div class="card-header header-fixed">
-                    {{$t('Inspector')}}
-                    <div class="float-right dropdown">
-                        <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
-                            <i class="fas fa-check-circle text-success"></i>
-                        </button>
-                        <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button" @click="showValidationErrors=!showValidationErrors">
-                            <i class="fas fa-times-circle text-danger"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" :class="{'d-block':showValidationErrors && validationErrors.length}">
-                            <a v-for="(validation,index) in validationErrors" :key="index"
-                                href="javascript:void()"
-                                class="dropdown-item" @click="focusInspector(validation)">
-                                <i class="fas fa-times-circle text-danger"></i>
-                                <b>{{$t(validation.item.label)}}</b>
-                                {{$t(validation.message)}}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body flex-wrap mb-5 overflow-auto box-flex-1" id="inspector">
-                    <component v-for="(item, index) in inspection.inspector"
-                               :formConfig="config"
-                               :key="index"
-                               :is="item.type"
-                               v-bind="item.config"
-                               v-model="inspection.config[item.field]"/>
-                </div>
-            </div>
-
-            <b-modal id="addPageModal" @ok="addPage" :title="$t('Add New Page')">
-                <form-input v-model="addPageName"
-                            :label="$t('Page Name')"
-                            :helper="$t('The name of the new page to add')"></form-input>
-            </b-modal>
-
-            <b-modal ref="editPageModal" @ok="editPage" :title="$t('Edit Page Title')">
-                <form-input v-model="editPageName" :label="$t('Page Name')" :helper="$t('The new name of the page')"></form-input>
-            </b-modal>
-
-            <b-modal ref="confirm"
-                     centered
-                     title="Confirm delete"
-                     @ok="deletePage"
-                     @cancel="hideConfirmModal"
-                     cancel-variant="btn btn-outline-secondary"
-                     ok-variant="btn btn-secondary ml-2">
-                <p>{{$t(confirmMessage)}}</p>
-                <div slot="modal-ok">{{$t('Save')}}</div>
-            </b-modal>
         </div>
+        <div class="col-7">
+          <div class="row">
+            <div class="col-md-7">
+              <select class="custom-select">
+                <option v-for="(data, page) in config" :key="page" @click="currentPage = page">{{data.name}}</option>
+              </select>
+            </div>
+            <div class="col-md-5 text-right">
+              <button class="btn btn-secondary btn-sm"@click="openEditPageModal(page)">{{$t('Edit')}}</button>
+              <button type="button" class="btn btn-secondary btn-sm" style="margin:3px 7px;" v-b-modal.addPageModal><i class="fas fa-plus"></i> Add Screen</button>
+              <button class="btn btn-secondary btn-sm" @click="confirmDelete(page)" v-show="displayDelete"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </div>
+          <hr>
+          <div>
+              <div class="row">
+                  <div class="col-sm">
+                      <draggable 
+                                  v-model="config[currentPage]['items']"
+                                  :options="{group: {name: 'controls'}}">
+                                  <div class="text-center">Drag an element here</div>
+                          <div class="card"
+                                :class="{selected: selected === element}"
+                                v-for="(element,index) in config[currentPage]['items']"
+                                :key="index"
+                                @click="inspect(element)">
+                              <div class="card-header">
+                                <i class="fas fa-arrows-alt-v"></i>
+                                <button type="button" class="btn btn-secondary btn-sm float-right" @click="deleteItem(index)">
+                                  <i class="fas fa-trash-alt"></i>
+                                </button>
+                              </div>
+                              <div class="card-body" v-if="element.container" @click="inspect(element)">
+                                  <component :class="elementCssClass(element)"
+                                              @inspect="inspect"
+                                              :selected="selected"
+                                              v-model="element.items"
+                                              :config="element.config"
+                                              :is="element['editor-component']">
+                                  </component>
+                              </div>
+
+                              <div v-else class="card-body">
+                                  <component
+                                    :class="elementCssClass(element)"
+                                    v-bind="element.config"
+                                    :is="element['editor-component']"
+                                    @input="element.config.interactive ? element.config.content = $event : null"
+                                  />
+                                  <div v-if="!element.config.interactive" class="mask"></div>
+                              </div>
+                              
+                          </div>
+                      </draggable>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-header">
+                {{$t('Inspector')}}
+            
+                <div class="float-right dropdown">
+                    <button v-if="!validationErrors.length" class="btn btn-sm btn-outline-light" type="button">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </button>
+                    <button v-if="validationErrors.length" class="btn btn-sm btn-outline-warning" type="button" @click="showValidationErrors=!showValidationErrors">
+                        <i class="fas fa-times-circle text-danger"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" :class="{'d-block':showValidationErrors && validationErrors.length}">
+                        <a v-for="(validation,index) in validationErrors" :key="index"
+                            href="javascript:void()"
+                            class="dropdown-item" @click="focusInspector(validation)">
+                            <i class="fas fa-times-circle text-danger"></i>
+                            <b>{{$t(validation.item.label)}}</b>
+                            {{$t(validation.message)}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body flex-wrap mb-5 overflow-auto box-flex-1" id="inspector">
+                <component v-for="(item, index) in inspection.inspector"
+                            :formConfig="config"
+                            :key="index"
+                            :is="item.type"
+                            v-bind="item.config"
+                            v-model="inspection.config[item.field]"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <b-modal id="addPageModal" @ok="addPage" :title="$t('Add New Page')">
+          <form-input v-model="addPageName"
+                      :label="$t('Page Name')"
+                      :helper="$t('The name of the new page to add')"></form-input>
+      </b-modal>
+
+      <b-modal ref="editPageModal" @ok="editPage" :title="$t('Edit Page Title')">
+          <form-input v-model="editPageName" :label="$t('Page Name')" :helper="$t('The new name of the page')"></form-input>
+      </b-modal>
+
+      <b-modal ref="confirm"
+                centered
+                title="Confirm delete"
+                @ok="deletePage"
+                @cancel="hideConfirmModal"
+                cancel-variant="btn btn-outline-secondary"
+                ok-variant="btn btn-secondary ml-2">
+          <p>{{$t(confirmMessage)}}</p>
+          <div slot="modal-ok">{{$t('Save')}}</div>
+      </b-modal>
     </div>
 </template>
 
