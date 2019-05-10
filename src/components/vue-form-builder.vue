@@ -4,11 +4,11 @@
     <b-col cols="2" class="overflow-hidden mh-100 p-0 controls-column">
       <b-card no-body class="h-100">
         <b-card-header>Controls</b-card-header>
-        <b-input-group>
+        <b-input-group size="sm">
           <b-input-group-prepend>
-            <b-button size="sm" variant="light" class="border">
+            <b-input-group-text>
               <i class="fas fa-filter"></i>
-            </b-button>
+            </b-input-group-text>
           </b-input-group-prepend>
 
           <b-form-input v-model="filterQuery" type="text" placeholder="Filter Controls"></b-form-input>
