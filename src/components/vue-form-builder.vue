@@ -4,18 +4,30 @@
         <div class="col-2">
           <div class="card">
             <div class="card-header">{{$t('Controls')}}</div>
+              <b-input-group size="sm">
+                <b-input-group-prepend>
+                  <b-input-group-text class="filter-icon">
+                    <i class="fas fa-filter"></i>
+                  </b-input-group-text>
+                </b-input-group-prepend>
+
+                <b-form-input v-model="filterQuery" type="text" placeholder="Filter Controls"></b-form-input>
+              </b-input-group>
               <div >
                   <draggable id="controls"
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
                               :clone="cloneControl">
                       <ul class="list-group list-group-flush"
-                            v-for="(element, index) in controls"
+                            v-for="(element, index) in filteredControls"
                             :key="index">
                           <li class="list-group-item">
                                 <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
                                 {{$t(element.label)}}
 
+                          </li>
+                          <li v-if="!filteredControls.length" class="list-group-item">
+                            <span class="text-danger">Control Not Found</span>
                           </li>
                       </ul>
                   </draggable>
@@ -229,6 +241,7 @@ import { constants } from 'fs';
         confirmMessage: '',
         pageDelete: 0,
         translated: [],
+        filterQuery: ""
       };
     },
     computed: {
@@ -259,6 +272,13 @@ import { constants } from 'fs';
           });
         });
         return validationErrors;
+      },
+      filteredControls() {
+        return this.controls.filter(control => {
+          return control.label
+            .toLowerCase()
+            .includes(this.filterQuery.toLowerCase());
+        });
       },
       displayDelete() {
         return this.config.length > 1;
