@@ -26,42 +26,49 @@
       <vue-form-builder ref="builder" @change="updateConfig" v-show="displayBuilder"/>
     </div>
 
-    <div id="preview" v-show="displayPreview" class="d-flex h-100">
-      <div id="data-input" class="w-25 border">
-          <div class="card-header">
-              {{$t('Data Input')}}
+    <div id="preview" v-show="displayPreview" class="card">
+      <div class="row card-body">
+        <div id="data-input" class="col-3 h-100">
+          <div class="card">
+            <div class="card-header">
+                {{$t('Data Input')}}
+            </div>
+            <div>
+                <div class="alert"
+                    :class="{'alert-success': previewInputValid, 'alert-danger': !previewInputValid}">
+                    <span v-if="previewInputValid">{{$t('Valid JSON Data Object')}}</span>
+                    <span v-else>{{$t('Invalid JSON Data Object')}}</span>
+                </div>
+                <form-text-area rows="18" v-model="previewInput"></form-text-area>
+            </div>
           </div>
-          <div class="card-body mb-5">
-              <div class="alert"
-                  :class="{'alert-success': previewInputValid, 'alert-danger': !previewInputValid}">
-                  <span v-if="previewInputValid">{{$t('Valid JSON Data Object')}}</span>
-                  <span v-else>{{$t('Invalid JSON Data Object')}}</span>
-              </div>
-              <form-text-area rows="18" v-model="previewInput"></form-text-area>
-          </div>
-      </div>
+        </div>
 
-      <div id="renderer-container" class="w-50 p-4 pt-5 mb-5">
-          <div class="container">
-              <div class="row">
-                  <div class="col-sm">
-                      <vue-form-renderer ref="renderer"
-                                        v-model="previewData"
-                                        @submit="previewSubmit"
-                                        :config="config"
-                                        :computed="computed"
-                                        :custom-css="customCSS"
-                                        v-on:css-errors="cssErrors = $event"/>
-                  </div>
-              </div>
-          </div>
-      </div>
+        <div id="renderer-container" class="col-6">
+        <hr class="mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <vue-form-renderer ref="renderer"
+                                          v-model="previewData"
+                                          @submit="previewSubmit"
+                                          :config="config"
+                                          :computed="computed"
+                                          :custom-css="customCSS"
+                                          v-on:css-errors="cssErrors = $event"/>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-      <div id="data-preview" class="w-25 border mb-5">
-          <div class="card-header">
-              {{$t('Data Preview')}}
+        <div id="data-preview" class="col-3">
+          <div class="card">
+            <div class="card-header">
+                {{$t('Data Preview')}}
+            </div>
+            <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
           </div>
-          <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
+        </div>
       </div>
     </div>
   </div>
