@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class="overflow-hidden">
       <div class="row card-body">
         <div class="col-2">
           <div class="card">
             <div class="card-header">{{$t('Controls')}}</div>
-              <div class="d-flex flex-wrap mb-5">
+              <div >
                   <draggable id="controls"
                               v-model="controls"
                               :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
@@ -25,9 +25,9 @@
         <div class="col-7">
           <div class="row">
             <div class="col-md-7">
-              <select class="custom-select">
-                <option v-for="(data, page) in config" :key="page" @click="currentPage = page">{{data.name}}</option>
-              </select>
+              <b-form-select v-model="currentPage" class="form-control">
+                <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
+              </b-form-select>
             </div>
             <div class="col-md-5 text-right">
               <button class="btn btn-secondary btn-sm"@click="openEditPageModal(page)">{{$t('Edit')}}</button>
@@ -39,11 +39,10 @@
           <div>
               <div class="row">
                   <div class="col-sm">
-                      <draggable 
+                      <draggable  class="p4"
                                   v-model="config[currentPage]['items']"
-                                  :options="{group: {name: 'controls'}}">
-                                  <div class="text-center">Drag an element here</div>
-                          <div class="card"
+                                  :options="{group: {name: 'controls'}}">                                 
+                          <div class="card mb-4"
                                 :class="{selected: selected === element}"
                                 v-for="(element,index) in config[currentPage]['items']"
                                 :key="index"
@@ -75,6 +74,7 @@
                               </div>
                               
                           </div>
+                          <div class="text-center text-black-50">Drag an element here</div>
                       </draggable>
                   </div>
               </div>
@@ -103,7 +103,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body flex-wrap mb-5 overflow-auto box-flex-1" id="inspector">
+            <div class="card-body flex-wrap mb-5 box-flex-1" id="inspector">
                 <component v-for="(item, index) in inspection.inspector"
                             :formConfig="config"
                             :key="index"
