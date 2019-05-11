@@ -30,7 +30,7 @@
               </b-form-select>
             </div>
             <div class="col-md-5 text-right">
-              <button class="btn btn-secondary btn-sm"@click="openEditPageModal(page)">{{$t('Edit')}}</button>
+              <button class="btn btn-secondary btn-sm" @click="openEditPageModal(page)">{{$t('Edit')}}</button>
               <button type="button" class="btn btn-secondary btn-sm" style="margin:3px 7px;" v-b-modal.addPageModal><i class="fas fa-plus"></i> Add Screen</button>
               <button class="btn btn-secondary btn-sm" @click="confirmDelete(page)" v-show="displayDelete"><i class="fas fa-trash-alt"></i></button>
             </div>
