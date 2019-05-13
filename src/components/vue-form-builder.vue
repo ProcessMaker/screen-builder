@@ -36,7 +36,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col cols="7" class="overflow-auto mh-100 pl-4 pr-4 flex-grow-1 mw-100">
+    <b-col class="overflow-auto mh-100 pl-4 pr-4 flex-grow-1 mw-100">
       <b-input-group size="sm" class="sticky-top bg-white">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -755,10 +755,12 @@ $header-bg: #f7f7f7;
 }
 
 .controls-column {
-  max-width: 165px;
+  min-width: 185px;
+  flex-basis: 185px;
 }
 
 .inspector-column {
-  max-width: 265px;
+  min-width: 265px;
+  flex-basis: 265px;
 }
 </style>
