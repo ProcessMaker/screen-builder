@@ -755,10 +755,10 @@ $header-bg: #f7f7f7;
 }
 
 .controls-column {
-  max-width: 150px;
+  max-width: 165px;
 }
 
 .inspector-column {
-  max-width: 250px;
+  max-width: 265px;
 }
 </style>
