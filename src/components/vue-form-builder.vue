@@ -1,7 +1,7 @@
 <template>
   <b-row class="h-100">
     <!-- Controls -->
-    <b-col cols="2" class="overflow-hidden mh-100 p-0 controls-column">
+    <b-col class="overflow-hidden mh-100 p-0 controls-column">
       <b-card no-body class="h-100">
         <b-card-header>Controls</b-card-header>
         <b-input-group size="sm">
@@ -36,7 +36,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 pl-4 pr-4 flex-grow-1 mw-100">
+    <b-col class="overflow-auto mh-100 pl-4 pr-4">
       <b-input-group size="sm" class="sticky-top bg-white">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -124,7 +124,7 @@
     </b-col>
 
     <!-- Inspector -->
-    <b-col cols="3" class="overflow-hidden h-100 p-0 inspector-column">
+    <b-col class="overflow-hidden h-100 p-0 inspector-column">
       <b-card no-body class="p-0 h-100">
         <b-card-header>Inspector</b-card-header>
 
@@ -755,12 +755,10 @@ $header-bg: #f7f7f7;
 }
 
 .controls-column {
-  min-width: 185px;
-  flex-basis: 185px;
+  max-width: 185px;
 }
 
 .inspector-column {
-  min-width: 265px;
-  flex-basis: 265px;
+  max-width: 265px;
 }
 </style>
