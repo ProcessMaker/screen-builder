@@ -62,7 +62,6 @@
   } from "@processmaker/vue-form-elements";
 
   export default {
-    name: "FormMultiColumn",
     mixins: [HasColorProperty],
     props: ["value", "selected", "name", "config", "transientData"],
     components: {
