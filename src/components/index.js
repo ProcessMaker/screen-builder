@@ -8,7 +8,6 @@ import FormButton from './renderer/form-button'
 import FormMultiColumn from './renderer/form-multi-column'
 import FormRecordList from './renderer/form-record-list'
 import FormText from './renderer/form-text'
-import ControlsConfiguration from '../form-builder-controls'
 import ImageUpload from './inspector/image-upload.vue'
 import FormBuilderControls from '../form-builder-controls'
 
@@ -33,7 +32,6 @@ let renderer = {
 export {
     VueFormBuilder,
     VueFormRenderer,
-    ControlsConfiguration,
     editor,
     inspector,
     renderer,
