@@ -4,7 +4,7 @@
     <b-col class="overflow-hidden mh-100 p-0 controls-column">
       <b-card no-body class="h-100">
         <b-card-header>Controls</b-card-header>
-        <!-- <b-input-group size="sm">
+        <b-input-group size="sm">
           <b-input-group-prepend>
             <b-input-group-text class="filter-icon">
               <i class="fas fa-filter"></i>
@@ -12,17 +12,17 @@
           </b-input-group-prepend>
 
           <b-form-input v-model="filterQuery" type="text" placeholder="Filter Controls"></b-form-input>
-        </b-input-group> -->
+        </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
           <draggable
             id="controls"
-            v-model="controls"
+            v-model="filteredControls"
             :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
             :clone="cloneControl"
             class="controls list-group w-auto list-group-flush"
           >
-            <b-list-group-item v-for="(element, index) in controls" :key="index">
+            <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
               <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
               {{$t(element.label)}}
             </b-list-group-item>
@@ -104,7 +104,6 @@
                 <i class="far fa-trash-alt text-light"/>
               </button>
             </div>
-
             <component
               class="card-body m-0 pb-4 pt-4"
               :class="elementCssClass(element)"
@@ -113,7 +112,6 @@
               @input="element.config.interactive ? element.config.content = $event : null"
               @focusout.native="updateState"
             />
-
             <div v-if="!element.config.interactive" class="mask"></div>
           </div>
         </div>
@@ -445,7 +443,6 @@ export default {
         label: control.label,
         value: control.value
       };
-
       copy.config.label = this.$t(copy.config.label);
       if (copy.config.options) {
         for (var io in copy.config.options) {
