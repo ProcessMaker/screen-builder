@@ -20,7 +20,7 @@
       </b-button-toolbar>
       <small @click="checkColor">
         <i class="fas fa-ban"></i>
-        Clear Color Selection
+        {{ $t('Clear Color Selection') }}
       </small>
     </div>
   </div>
