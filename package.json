@@ -19,7 +19,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.6.1",
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "^0.8.0",
+    "@processmaker/vue-form-elements": "^0.8.1",
     "babel-loader": "^7.1.5",
     "css-tree": "^1.0.0-alpha.29",
     "expr-eval": "^1.2.2",
