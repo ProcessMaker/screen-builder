@@ -140,13 +140,13 @@
         let newOptions = JSON.parse(JSON.stringify(this.options));
 
         if (isNaN(this.addContent)) {
-          this.addError = $t("This value must be numeric");
+          this.addError = this.$t("This value must be numeric");
           event.preventDefault();
           return;
         }
 
         if (!(0 < this.addContent && this.addContent < 13)) {
-          this.addError = $t("This value must be between 1-12");
+          this.addError = this.$t("This value must be between 1-12");
           event.preventDefault();
           return;
         }
@@ -159,7 +159,7 @@
         });
 
         if (sum + Number(this.addContent) > 12) {
-          this.addError = $t("The total size of the columns exceeds 12");
+          this.addError = this.$t("The total size of the columns exceeds 12");
           event.preventDefault();
           return;
         }
