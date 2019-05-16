@@ -1,175 +1,174 @@
 <template>
     <div class="card-body overflow-hidden pl-1 pr-1">
-            <div class="form-builder__controls d-flex col-2">
-              <div class="card border d-flex">
-                  <div class="card-header controls-header">
-                    Controls
-                  </div>
-                  <div class="input-group input-group-sm sticky-top">
+        <div class="form-builder__controls d-flex col-2">
+            <div class="card border d-flex">
+                <div class="card-header controls-header">
+                    {{ $t('Controls') }}
+                </div>
+                <div class="input-group input-group-sm sticky-top">
                     <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
+                        <span class="input-group-text" id="basic-addon1"><i class="fas fa-filter"></i></span>
                     </div>
-                    <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter Controls">
-                  </div>
+                    <input v-model="filterQuery" type="text" class="form-control" :placeholder="$t('Filter Controls')">
+                </div>
                 <draggable id="controls"
-                              v-model="controls"
-                              :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
-                              :clone="cloneControl"
-                              class="overflow-auto controls"
+                           v-model="controls"
+                           :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+                           :clone="cloneControl"
+                           class="overflow-auto controls">
+                    <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
+                        :key="index">
+                        <li class="list-group-item">
+                            <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
+                            {{ $t(element.label) }}
+                        </li>
+                    </ul>
 
-                            >
-                            <ul class="list-group list-group-flush" v-for="(element, index) in filteredControls"
-                            :key="index">
-                              <li class="list-group-item">
-                                <i v-if="element['fa-icon']" :class="element['fa-icon']"></i>
-                                {{$t(element.label)}}
-                              </li>
-                            </ul>
-
-                            <li v-if="!filteredControls.length" class="list-group-item">
-                              <span class="text-danger">Control Not Found</span>
-                            </li>
+                    <li v-if="!filteredControls.length" class="list-group-item">
+                        <span class="text-danger">{{ $t('Control Not Found') }}</span>
+                    </li>
                 </draggable>
-              </div>
             </div>
+        </div>
 
-            <div class="form-builder__designer col-7 pl-3">
-                <div class="input-group bg-white">
-                  <b-form-select v-model="currentPage" class="mr-2 screen-select form-builder__designer--select">
-                    <option
-                      v-for="(data, page) in config"
-                      :key="page"
-                      :value="page"
-                    >
-                      {{ data.name }}
+        <div class="form-builder__designer col-7 pl-3">
+            <div class="input-group bg-white">
+                <b-form-select v-model="currentPage" class="mr-2 screen-select form-builder__designer--select">
+                    <option v-for="(data, page) in config"
+                            :key="page"
+                            :value="page">
+                        {{ data.name }}
                     </option>
-                  </b-form-select>
+                </b-form-select>
 
-                  <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
-                    <i class="far fa-edit" />
-                  </b-button>
+                <b-button size="sm" class="mr-2" @click="openEditPageModal(currentPage)">
+                    <i class="far fa-edit"/>
+                </b-button>
 
-                  <b-button size="sm" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
-                    <i class="far fa-trash-alt" />
-                  </b-button>
+                <b-button size="sm" class="mr-2" @click="confirmDelete()" :disabled="!displayDelete">
+                    <i class="far fa-trash-alt"/>
+                </b-button>
 
-                  <b-button size="sm" class="flex-shrink-0 ml-5" v-b-modal.addPageModal>
-                    <i class="fas fa-plus mr-2" />
+                <b-button size="sm" class="flex-shrink-0 ml-5" v-b-modal.addPageModal>
+                    <i class="fas fa-plus mr-2"/>
                     {{$t('Add Screen')}}
-                  </b-button>
+                </b-button>
 
-                  <b-button-group size="sm" class="ml-1">
+                <b-button-group size="sm" class="ml-1">
                     <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
                     <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
-                  </b-button-group>
+                </b-button-group>
 
-                  <hr class="w-100 mb-0 mt-3 mb-3" />
-              </div>
-                <draggable
-                          class="overflow-auto h-100"
-                          :value="config[currentPage].items"
-                          @input="updateConfig"
-                          :options="{group: {name: 'controls'}}">
-                    <div class="control-item"
-                        :class="{selected: selected === element, hasError: hasError(element)  }"
-                        v-for="(element,index) in config[currentPage].items"
-                        :key="index"
-                        @click="inspect(element)">
+                <hr class="w-100 mb-0 mt-3 mb-3"/>
+            </div>
+            <draggable
+                    class="overflow-auto h-100"
+                    :value="config[currentPage].items"
+                    @input="updateConfig"
+                    :options="{group: {name: 'controls'}}">
+                <div class="control-item"
+                     :class="{selected: selected === element, hasError: hasError(element)  }"
+                     v-for="(element,index) in config[currentPage].items"
+                     :key="index"
+                     @click="inspect(element)">
 
-                        <div v-if="element.container" @click="inspect(element)">
-                            <component :class="elementCssClass(element)"
-                                      @inspect="inspect"
-                                      :selected="selected"
-                                      v-model="element.items"
-                                      :config="element.config"
-                                      :is="element['editor-component']">
-                            </component>
-                        </div>
+                    <div v-if="element.container" @click="inspect(element)">
+                        <component :class="elementCssClass(element)"
+                                   @inspect="inspect"
+                                   :selected="selected"
+                                   v-model="element.items"
+                                   :config="element.config"
+                                   :is="element['editor-component']">
+                        </component>
+                    </div>
 
-                        <div v-else class="card">
+                    <div v-else class="card">
                           <span v-if="selected === element" class="card-header form-element-header p-3 pt-3 pb-3">
-                            <i class="fas fa-arrows-alt-v" />
-                            {{ element.config.name || 'Field Name' }}
+                            <i class="fas fa-arrows-alt-v"/>
+                            {{ element.config.name || $t('Field Name') }}
                           </span>
 
-                          <component
-                            class="card-body m-0 pb-4"
-                            :class="elementCssClass(element)"
-                            v-bind="element.config"
-                            :is="element['editor-component']"
-                            @input="element.config.interactive ? element.config.content = $event : null"
-                            @focusout.native="updateState"
-                          />
+                        <component
+                                class="card-body m-0 pb-4"
+                                :class="elementCssClass(element)"
+                                v-bind="element.config"
+                                :is="element['editor-component']"
+                                @input="element.config.interactive ? element.config.content = $event : null"
+                                @focusout.native="updateState"
+                        />
 
-                          <div v-if="!element.config.interactive" class="mask"></div>
-                          <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
+                        <div v-if="!element.config.interactive" class="mask"></div>
+                        <button class="delete btn btn-sm btn-secondary mr-3 mt-3" @click="deleteItem(index)">
                             <i class="far fa-trash-alt text-light"></i>
-                          </button>
-                        </div>
+                        </button>
                     </div>
-                    <div class="card">
-                      <div  class="card-body text-center">
-                        Drag an element here
-                      </div>
-                    </div>
-                </draggable>
-            </div>
-            <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 mr-3 card">
-                <div class="card-header inspector-header">
-                    Inspector
                 </div>
-                <div class="overflow-auto">
-                  <b-button v-b-toggle.configuration variant="outline-*" class="text-left card-header d-flex align-items-center w-100" @click="showConfiguration = !showConfiguration">
+                <div class="card">
+                    <div class="card-body text-center">
+                        {{ $t('Drag an element here') }}
+                    </div>
+                </div>
+            </draggable>
+        </div>
+        <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 mr-3 card">
+            <div class="card-header inspector-header">
+                {{ $t('Inspector') }}
+            </div>
+            <div class="overflow-auto">
+                <b-button v-b-toggle.configuration variant="outline-*"
+                          class="text-left card-header d-flex align-items-center w-100"
+                          @click="showConfiguration = !showConfiguration">
                     <i class="fas fa-cog mr-2"></i>
-                      Configuration
+                    {{ $t('Configuration') }}
                     <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : showConfiguration }"></i>
-                  </b-button>
+                </b-button>
 
-                  <b-collapse id="configuration" visible class="mt-2">
-                        <component v-for="(item, index) in inspection.inspector"
-                                  :formConfig="config"
-                                  :key="index"
-                                  :is="item.type"
-                                  class="border-bottom pt-1 pb-3 pr-4 pl-4"
-                                  v-bind="item.config"
-                                  v-model="inspection.config[item.field]"
-                                  @focusout.native="updateState"/>
-                  </b-collapse>
-                </div>
+                <b-collapse id="configuration" visible class="mt-2">
+                    <component v-for="(item, index) in inspection.inspector"
+                               :formConfig="config"
+                               :key="index"
+                               :is="item.type"
+                               class="border-bottom pt-1 pb-3 pr-4 pl-4"
+                               v-bind="item.config"
+                               v-model="inspection.config[item.field]"
+                               @focusout.native="updateState"/>
+                </b-collapse>
             </div>
+        </div>
 
-            <b-modal id="addPageModal"
-                     centered
-                     @ok="addPage"
-                     :ok-title="$t('Save')"
-                     cancel-variant="btn btn-outline-secondary"
-                     ok-variant="btn btn-secondary ml-2"
-                     :title="$t('Add New Page')">
-                <form-input v-model="addPageName"
-                            :label="$t('Page Name')"
-                            :helper="$t('The name of the new page to add')"></form-input>
-            </b-modal>
+        <b-modal id="addPageModal"
+                 centered
+                 @ok="addPage"
+                 :ok-title="$t('Save')"
+                 cancel-variant="btn btn-outline-secondary"
+                 ok-variant="btn btn-secondary ml-2"
+                 :title="$t('Add New Page')">
+            <form-input v-model="addPageName"
+                        :label="$t('Page Name')"
+                        :helper="$t('The name of the new page to add')"></form-input>
+        </b-modal>
 
-            <b-modal ref="editPageModal"
-                     centered
-                     @ok="editPage"
-                     :title="$t('Edit Page Title')"
-                     :ok-title="$t('Save')"
-                     cancel-variant="btn btn-outline-secondary"
-                     ok-variant="btn btn-secondary ml-2">
-                <form-input v-model="editPageName" :label="$t('Page Name')" :helper="$t('The new name of the page')"></form-input>
-            </b-modal>
+        <b-modal ref="editPageModal"
+                 centered
+                 @ok="editPage"
+                 :title="$t('Edit Page Title')"
+                 :ok-title="$t('Save')"
+                 cancel-variant="btn btn-outline-secondary"
+                 ok-variant="btn btn-secondary ml-2">
+            <form-input v-model="editPageName" :label="$t('Page Name')"
+                        :helper="$t('The new name of the page')"></form-input>
+        </b-modal>
 
-            <b-modal ref="confirm"
-                     centered
-                     title="Confirm delete"
-                     @ok="deletePage"
-                     @cancel="hideConfirmModal"
-                     cancel-variant="btn btn-outline-secondary"
-                     ok-variant="btn btn-secondary ml-2">
-                <p>{{confirmMessage}}</p>
-                <div slot="modal-ok">Delete</div>
-            </b-modal>
+        <b-modal ref="confirm"
+                 centered
+                 title="Confirm delete"
+                 @ok="deletePage"
+                 @cancel="hideConfirmModal"
+                 cancel-variant="btn btn-outline-secondary"
+                 ok-variant="btn btn-secondary ml-2">
+            <p>{{confirmMessage}}</p>
+            <div slot="modal-ok">{{ $t('Delete') }}</div>
+        </b-modal>
     </div>
 </template>
 
@@ -328,7 +327,7 @@
         this.updateState();
       },
       hasError(element) {
-        return this.validationErrors.some(({ item }) => item === element);
+        return this.validationErrors.some(({item}) => item === element);
       },
       focusInspector(validation) {
         this.showConfiguration = true;
@@ -364,7 +363,7 @@
         this.config[this.editPageIndex].name = this.editPageName;
       },
       addPage() {
-        this.config.push({ name: this.addPageName, items: [] });
+        this.config.push({name: this.addPageName, items: []});
         this.currentPage = this.config.length - 1;
         this.addPageName = '';
 
