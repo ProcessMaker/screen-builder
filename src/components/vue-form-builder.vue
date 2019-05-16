@@ -3,7 +3,7 @@
     <!-- Controls -->
     <b-col class="overflow-hidden mh-100 p-0 controls-column">
       <b-card no-body class="h-100">
-        <b-card-header>Controls</b-card-header>
+        <b-card-header>{{ $t('Controls')  }}</b-card-header>
         <b-input-group size="sm">
           <b-input-group-prepend>
             <b-input-group-text class="filter-icon">
@@ -11,7 +11,7 @@
             </b-input-group-text>
           </b-input-group-prepend>
 
-          <b-form-input v-model="filterQuery" type="text" placeholder="Filter Controls"></b-form-input>
+          <b-form-input v-model="filterQuery" type="text" :placeholder="$t('Filter Controls')"></b-form-input>
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
@@ -28,7 +28,7 @@
             </b-list-group-item>
 
             <li v-if="!filteredControls.length" class="list-group-item">
-              <span class="text-danger">Control Not Found</span>
+                        <span class="text-danger">{{ $t('Control Not Found') }}</span>
             </li>
           </draggable>
         </b-card-body>
@@ -96,7 +96,7 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1"/>
-              {{ element.config.name || 'Field Name' }}
+              {{ element.config.name || $t('Field Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
                 @click="deleteItem(index)"
@@ -116,7 +116,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-body text-center">Drag an element here</div>
+          <div class="card-body text-center">{{ $t('Drag an element here') }}</div>
         </div>
       </draggable>
     </b-col>
@@ -124,7 +124,7 @@
     <!-- Inspector -->
     <b-col class="overflow-hidden h-100 p-0 inspector-column">
       <b-card no-body class="p-0 h-100">
-        <b-card-header>Inspector</b-card-header>
+        <b-card-header>{{ $t('Inspector') }}</b-card-header>
 
         <b-card-body class="p-0 h-100 overflow-auto">
           <b-button
@@ -200,7 +200,7 @@
       ok-variant="btn btn-secondary ml-2"
     >
       <p>{{confirmMessage}}</p>
-      <div slot="modal-ok">Delete</div>
+            <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
   </b-row>
 </template>
