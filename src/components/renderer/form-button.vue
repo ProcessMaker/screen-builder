@@ -1,6 +1,6 @@
 <template>
     <div class="form-group">
-        <button @click="click" :class="classList" :name="name" v-model="fieldValue">{{ label }}</button>
+        <button @click="click" :class="classList" :name="name">{{ label }}</button>
     </div>
 </template>
 
