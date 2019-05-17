@@ -103,6 +103,11 @@
                         </button>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-body text-center">
+                        {{ $t('Drag an element here') }}
+                    </div>
+                </div>
             </draggable>
         </div>
         <div class="form-builder__inspector col-3 shadow-sm pl-0 pr-0 mr-3 card">
