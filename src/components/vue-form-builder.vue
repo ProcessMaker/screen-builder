@@ -115,9 +115,6 @@
             <div v-if="!element.config.interactive" class="mask"></div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-body text-center">{{ $t('Drag an element here') }}</div>
-        </div>
       </draggable>
     </b-col>
 
