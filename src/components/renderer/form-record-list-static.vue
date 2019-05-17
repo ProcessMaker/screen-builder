@@ -4,14 +4,14 @@
         <table>
             <thead>
                 <tr>
-                    <th v-for="field in fields">
+                    <th v-for="(field, index) in fields" :key="index">
                         {{ field.content }}
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="val in value">
-                    <td v-for="field in fields">
+                <tr v-for="(val, index) in value" :key="index">
+                    <td v-for="(field, index) in fields" :key="index">
                         {{ val[field.value] }}
                     </td>
                 </tr>
