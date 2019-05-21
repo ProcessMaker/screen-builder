@@ -251,7 +251,19 @@ import {
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 
 export default {
-  props: ["validationErrors"],
+  props: {
+    validationErrors: { type: Array },
+    initialConfig: {
+      type: Array,
+      default() {
+        return [{
+          name: "Default",
+          items: []
+        }];
+      }
+    },
+    title: { type: String }
+  },
   mixins: [HasColorProperty],
   components: {
     draggable,
@@ -287,7 +299,7 @@ export default {
       addPageName: "",
       editPageIndex: null,
       editPageName: "",
-      config: [],
+      config: this.initialConfig,
       confirmMessage: "",
       pageDelete: 0,
       translated: [],
@@ -454,9 +466,10 @@ export default {
       return copy;
     }
   },
-  created() {
-    this.addPageName = "Default";
-    this.addPage();
+  mounted() {
+    if (this.title) {
+      this.config[0].name = this.title;
+    }
   }
 };
 </script>
