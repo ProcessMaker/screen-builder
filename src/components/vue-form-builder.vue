@@ -110,7 +110,6 @@
               v-bind="element.config"
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
-              @focusout.native="updateState"
             />
             <div v-if="!element.config.interactive" class="mask"></div>
           </div>
@@ -147,7 +146,6 @@
               class="border-bottom pt-1 pb-3 pr-4 pl-4"
               v-bind="item.config"
               v-model="inspection.config[item.field]"
-              @focusout.native="updateState"
             />
           </b-collapse>
         </b-card-body>
@@ -225,7 +223,6 @@ import FormImage from "./renderer/form-image";
 import BootstrapVue from "bootstrap-vue";
 
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
-import undoRedoModule from "../undoRedoModule";
 
 Vue.use(BootstrapVue);
 
@@ -309,12 +306,6 @@ export default {
     };
   },
   computed: {
-    canUndo() {
-      return this.$store.getters[`page-${this.currentPage}/canUndo`];
-    },
-    canRedo() {
-      return this.$store.getters[`page-${this.currentPage}/canRedo`];
-    },
     displayDelete() {
       return this.config.length > 1;
     },
@@ -360,30 +351,8 @@ export default {
     }
   },
   methods: {
-    updateState() {
-      const items = this.config[this.currentPage].items;
-      this.$store.dispatch(
-        `page-${this.currentPage}/pushState`,
-        JSON.stringify(items)
-      );
-    },
-    undo() {
-      this.inspect();
-      this.$store.dispatch(`page-${this.currentPage}/undo`);
-      this.config[this.currentPage].items = JSON.parse(
-        this.$store.getters[`page-${this.currentPage}/currentState`]
-      );
-    },
-    redo() {
-      this.inspect();
-      this.$store.dispatch(`page-${this.currentPage}/redo`);
-      this.config[this.currentPage].items = JSON.parse(
-        this.$store.getters[`page-${this.currentPage}/currentState`]
-      );
-    },
     updateConfig(items) {
       this.config[this.currentPage].items = items;
-      this.updateState();
     },
     hasError(element) {
       return this.validationErrors.some(({ item }) => item === element);
@@ -425,12 +394,8 @@ export default {
       this.config.push({ name: this.addPageName, items: [] });
       this.currentPage = this.config.length - 1;
       this.addPageName = "";
-
-      this.$store.registerModule(`page-${this.currentPage}`, undoRedoModule);
-      this.updateState();
     },
     deletePage() {
-      this.$store.unregisterModule(`page-${this.currentPage}`);
       this.currentPage = 0;
       this.config.splice(this.pageDelete, 1);
     },
