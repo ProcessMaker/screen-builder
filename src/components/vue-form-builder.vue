@@ -247,20 +247,13 @@ import {
 
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 
+const defaultConfig = [{
+  name: "Default",
+  items: []
+}]
+
 export default {
-  props: {
-    validationErrors: { type: Array },
-    initialConfig: {
-      type: Array,
-      default() {
-        return [{
-          name: "Default",
-          items: []
-        }];
-      }
-    },
-    title: { type: String }
-  },
+  props: ['validationErrors', 'initialConfig', 'title'],
   mixins: [HasColorProperty],
   components: {
     draggable,
@@ -296,7 +289,7 @@ export default {
       addPageName: "",
       editPageIndex: null,
       editPageName: "",
-      config: this.initialConfig,
+      config: this.initialConfig || defaultConfig,
       confirmMessage: "",
       pageDelete: 0,
       translated: [],
