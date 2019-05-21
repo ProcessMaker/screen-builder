@@ -401,9 +401,6 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
     },
-    handlePageSort(data) {
-      this.currentPage = data.moved.newIndex;
-    },
     openEditPageModal(index) {
       this.editPageIndex = index;
       this.editPageName = this.config[index].name;
