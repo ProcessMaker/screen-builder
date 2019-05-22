@@ -68,6 +68,7 @@
         <hr class="w-100">
       </b-input-group>
       <draggable
+        ghost-class="form-control-ghost"
         :value="config[currentPage].items"
         @input="updateConfig"
         :options="{group: {name: 'controls'}}"
@@ -435,16 +436,6 @@ export default {
 <style lang="scss" scoped>
 $header-bg: #f7f7f7;
 
-.form-builder__designer {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 0 1.5rem;
-
-  &--select {
-    border-radius: 5px !important;
-  }
-}
 .control-icon {
   width: 30px;
   font-size: 20px;
@@ -548,5 +539,10 @@ $header-bg: #f7f7f7;
 
 .inspector-column {
   max-width: 265px;
+}
+
+.form-control-ghost {
+  margin-bottom: 0;
+  border-radius: 0.25rem;
 }
 </style>
