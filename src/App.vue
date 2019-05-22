@@ -343,11 +343,6 @@ import Validator from "validatorjs";
       border: 1px solid green;
     }
 
-    .data-height {
-      max-height: 50%;
-      min-height: 50%;
-    }
-
     .list-group-item:last-child {
       border-bottom: 1px solid #dfdfdf !important;
     }
