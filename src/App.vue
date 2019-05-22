@@ -71,7 +71,7 @@
 
 
                   <b-button v-b-toggle.dataPreview variant="outline"
-                    class="text-left card-header d-flex align-items-center w-100 border-top shadow-none"
+                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
                     data-toggle="collapse"
                     @click="showDataPreview = !showDataPreview">
                     <i class="fas fa-file-code mr-2"></i>
