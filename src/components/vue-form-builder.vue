@@ -79,8 +79,22 @@
           :key="index"
           @click="inspect(element)"
         >
-          <div v-if="element.container" @click="inspect(element)">
+          <div v-if="element.container" @click="inspect(element)" class="card">
+            <div
+              v-if="selected === element"
+              class="card-header form-element-header d-flex align-items-center"
+            >
+              <i class="fas fa-arrows-alt-v mr-1"/>
+              {{ element.config.name || element.label || $t('Field Name') }}
+              <button
+                class="btn btn-sm btn-danger ml-auto"
+                @click="deleteItem(index)">
+                <i class="far fa-trash-alt text-light"/>
+              </button>
+            </div>
+
             <component
+              class="card-body m-0 pb-4 pt-4"
               :class="elementCssClass(element)"
               @inspect="inspect"
               :selected="selected"
