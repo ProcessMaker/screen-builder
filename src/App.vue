@@ -57,34 +57,34 @@
               </b-card-header>
 
               <b-card-body class="p-0 overflow-auto">
-                <div class="h-50">
-                  <b-button v-b-toggle.dataInput variant="outline"
+
+                  <b-button v-b-toggle.data-input variant="outline"
                     class="text-left card-header d-flex align-items-center w-100 shadow-none"
                     @click="showDataInput = !showDataInput">
                     <i class="fas fa-file-import mr-2"></i>
                       {{ $t('Data Input') }}
-                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
+                    <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-right' : 'fa-angle-down'"></i>
                   </b-button>
 
-                  <b-collapse id="dataInput" visible class="">
-                    <form-text-area class="dataInput mb-0" v-model="previewInput" rows="12"></form-text-area>
+                  <b-collapse id="data-input" visible>
+                    <form-text-area class="data-input mb-0 data-collapse" v-model="previewInput"></form-text-area>
                   </b-collapse>
-                </div>
 
-                <div class="h-50">
+
+
                   <b-button v-b-toggle.dataPreview variant="outline"
                     class="text-left card-header d-flex align-items-center w-100 shadow-none"
                     data-toggle="collapse"
                     @click="showDataPreview = !showDataPreview">
                     <i class="fas fa-file-code mr-2"></i>
                       {{ $t('Data Preview') }}
-                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
+                    <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-right' : 'fa-angle-down'"></i>
                   </b-button>
 
                   <b-collapse id="dataPreview" visible class="mt-2">
-                    <vue-json-pretty  :data="previewData" class="p-2"></vue-json-pretty>
+                    <vue-json-pretty  :data="previewData" class="p-2 data-collapse"></vue-json-pretty>
                   </b-collapse>
-                </div>
+
               </b-card-body>
             </b-card>
           </b-col>
@@ -329,8 +329,13 @@ import Validator from "validatorjs";
       right: 0;
     }
 
-    .dataInput {
+    .data-input {
       margin-top: -25px;
+
+      textarea.form-control {
+        height: calc(100% - 25px);
+        resize: none;
+      }
     }
 
     .card-header {
@@ -354,7 +359,9 @@ import Validator from "validatorjs";
       max-width: 265px;
     }
 
-    textarea.form-control {
-      padding-bottom: 11px;
+
+
+    .data-collapse {
+      height: 300px;
     }
 </style>
