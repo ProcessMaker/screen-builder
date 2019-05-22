@@ -39,7 +39,7 @@
 
         <!-- Preview -->
         <b-row class="h-100" id="preview" v-show="displayPreview">
-          <b-col cols="8" class="overflow-auto h-100 border rounded">
+          <b-col class="overflow-auto h-100 border rounded mr-4">
             <vue-form-renderer ref="renderer"
               v-model="previewData"
               class="p-3 overflow-auto"
@@ -50,36 +50,38 @@
               v-on:css-errors="cssErrors = $event"/>
           </b-col>
 
-          <b-col cols="4" class="overflow-hidden h-100 pr-0 pl-4">
-            <b-card no-body class="p-0">
+          <b-col class="overflow-hidden h-100 preview-inspector p-0">
+            <b-card no-body class="p-0 h-100">
               <b-card-header class="stick-top">
                 Inspector
               </b-card-header>
 
-              <b-card-body class="p-0">
-                <b-button v-b-toggle.dataInput variant="outline"
-                  class="text-left card-header d-flex align-items-center w-100"
-                  @click="showDataInput = !showDataInput">
-                  <i class="fas fa-file-import mr-2"></i>
-                    {{ $t('Data Input') }}
-                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
-                </b-button>
+              <b-card-body class="p-0 overflow-auto">
+                  <b-button variant="outline"
+                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
+                    @click="showDataInput = !showDataInput">
+                    <i class="fas fa-file-import mr-2"></i>
+                      {{ $t('Data Input') }}
+                    <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-right' : 'fa-angle-down'"></i>
+                  </b-button>
 
-                <b-collapse id="dataInput" visible class="overflow-auto">
-                  <form-text-area class="data-height h-100 dataInput"  v-model="previewInput"></form-text-area>
-                </b-collapse>
+                  <b-collapse v-model="showDataInput" id="showDataInput">
+                    <form-text-area class="data-input mb-0 data-collapse" v-model="previewInput"></form-text-area>
+                  </b-collapse>
 
-                <b-button v-b-toggle.dataPreview variant="outline"
-                  class="text-left card-header d-flex align-items-center w-100"
-                  @click="showDataPreview = !showDataPreview">
-                  <i class="fas fa-file-code mr-2"></i>
-                    {{ $t('Data Preview') }}
-                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
-                </b-button>
+                  <b-button variant="outline"
+                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
+                    data-toggle="collapse"
+                    @click="showDataPreview = !showDataPreview">
+                    <i class="fas fa-file-code mr-2"></i>
+                      {{ $t('Data Preview') }}
+                    <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-right' : 'fa-angle-down'"></i>
+                  </b-button>
 
-                <b-collapse id="dataPreview" visible class="mt-2 overflow-auto">
-                  <vue-json-pretty  :data="previewData" class="p-2 data-height"></vue-json-pretty>
-                </b-collapse>
+                  <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
+                    <vue-json-pretty :data="previewData" class="p-2 data-collapse"></vue-json-pretty>
+                  </b-collapse>
+
               </b-card-body>
             </b-card>
           </b-col>
@@ -174,8 +176,8 @@ import Validator from "validatorjs";
         cssErrors: '',
         showValidationErrors: false,
         toggleValidation: true,
-        showDataPreview: false,
-        showDataInput: false,
+        showDataPreview: true,
+        showDataInput: true,
       };
     },
     components: {
@@ -324,8 +326,13 @@ import Validator from "validatorjs";
       right: 0;
     }
 
-    .dataInput {
+    .data-input {
       margin-top: -25px;
+
+      textarea.form-control {
+        height: calc(100% - 25px);
+        resize: none;
+      }
     }
 
     .card-header {
@@ -336,11 +343,15 @@ import Validator from "validatorjs";
       border: 1px solid green;
     }
 
-    .data-height {
-      max-height: 200px;
-    }
-
     .list-group-item:last-child {
       border-bottom: 1px solid #dfdfdf !important;
+    }
+
+    .preview-inspector {
+      max-width: 265px;
+    }
+
+    .data-collapse {
+      height: 300px;
     }
 </style>
