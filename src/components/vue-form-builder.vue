@@ -94,7 +94,7 @@
             </div>
 
             <component
-              class="card-body m-0 pb-4 pt-4"
+              class="card-body m-2 mr-3 ml-3 pt-3"
               :class="elementCssClass(element)"
               @inspect="inspect"
               :selected="selected"
