@@ -356,8 +356,6 @@ import Validator from "validatorjs";
       max-width: 265px;
     }
 
-
-
     .data-collapse {
       height: 300px;
     }
