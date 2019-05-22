@@ -468,16 +468,6 @@ export default {
 <style lang="scss" scoped>
 $header-bg: #f7f7f7;
 
-.form-builder__designer {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 0 1.5rem;
-
-  &--select {
-    border-radius: 5px !important;
-  }
-}
 .control-icon {
   width: 30px;
   font-size: 20px;
