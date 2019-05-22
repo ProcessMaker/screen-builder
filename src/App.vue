@@ -57,19 +57,21 @@
               </b-card-header>
 
               <b-card-body class="p-0 overflow-auto">
-                  <b-button v-b-toggle.dataInput variant="outline"
-                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
-                    @click="showDataInput = !showDataInput">
-                    <i class="fas fa-file-import mr-2"></i>
-                      {{ $t('Data Input') }}
-                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
-                  </b-button>
+                  <div class="h-50">
+                    <b-button v-b-toggle.dataInput variant="outline"
+                      class="text-left card-header d-flex align-items-center w-100 shadow-none"
+                      @click="showDataInput = !showDataInput">
+                      <i class="fas fa-file-import mr-2"></i>
+                        {{ $t('Data Input') }}
+                      <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
+                    </b-button>
 
                   <b-collapse id="dataInput" visible class="">
-                    <form-text-area class="dataInput mb-0" v-model="previewInput" rows="10"></form-text-area>
+                    <form-text-area class="dataInput mb-0" v-model="previewInput" rows="12"></form-text-area>
                   </b-collapse>
+                  </div>
 
-
+                  <div class="h-50">
                   <b-button v-b-toggle.dataPreview variant="outline"
                     class="text-left card-header d-flex align-items-center w-100 shadow-none"
                     data-toggle="collapse"
@@ -82,6 +84,7 @@
                   <b-collapse id="dataPreview" visible class="mt-2">
                     <vue-json-pretty  :data="previewData" class="p-2"></vue-json-pretty>
                   </b-collapse>
+                  </div>
               </b-card-body>
             </b-card>
           </b-col>
@@ -349,5 +352,9 @@ import Validator from "validatorjs";
 
     .preview-inspector {
       max-width: 265px;
+    }
+
+    textarea.form-control {
+      padding-bottom: 11px;
     }
 </style>
