@@ -68,7 +68,7 @@
         <hr class="w-100">
       </b-input-group>
       <draggable
-        class="form-elements-list"
+        ghost-class="form-control-ghost"
         :value="config[currentPage].items"
         @input="updateConfig"
         :options="{group: {name: 'controls'}}"
@@ -573,7 +573,7 @@ $header-bg: #f7f7f7;
   max-width: 265px;
 }
 
-.form-elements-list > .list-group-item {
+.form-control-ghost {
   margin-bottom: 0;
   border-radius: 0.25rem;
 }
