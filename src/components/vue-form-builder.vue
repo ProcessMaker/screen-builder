@@ -575,5 +575,6 @@ $header-bg: #f7f7f7;
 
 .form-elements-list > .list-group-item {
   margin-bottom: 0;
+  border-radius: 0.25rem;
 }
 </style>
