@@ -96,7 +96,7 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1"/>
-              {{ element.config.name || $t('Field Name') }}
+              {{ element.config.name || $t('Variable Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
                 @click="deleteItem(index)"

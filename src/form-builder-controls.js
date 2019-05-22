@@ -270,8 +270,8 @@ export default [
                 type: "FormInput",
                 field: "name",
                 config: {
-                    label: "Field Name",
-                    name: 'Field Name',
+                    label: "Variable Name",
+                    name: 'Variable Name',
                     validation: 'required',
                     helper: "The data name for this field"
                 }
@@ -351,8 +351,8 @@ export default [
           type: "FormInput",
           field: "name",
           config: {
-              label: "Field Name",
-              name: 'Field Name',
+              label: "Variable Name",
+              name: 'Variable Name',
               validation: 'required',
               helper: "The data name for this field"
           }
@@ -428,7 +428,7 @@ export default [
                 type: "FormInput",
                 field: "name",
                 config: {
-                    label: "Field Name",
+                    label: "Variable Name",
                     helper: "The data name for this field",
                     validation: 'required',
                 }
@@ -493,7 +493,7 @@ export default [
                 type: "FormInput",
                 field: "name",
                 config: {
-                    label: "Field Name",
+                    label: "Variable Name",
                     helper: "The data name for this field",
                     validation: 'required',
                 }
@@ -557,7 +557,7 @@ export default [
                 type: "FormInput",
                 field: "name",
                 config: {
-                    label: "Field Name",
+                    label: "Variable Name",
                     validation: 'required',
                     helper: "The name of the group for the checkbox. All checkboxes which share the same name will work together."
                 }
@@ -618,8 +618,8 @@ export default [
                 type: "FormInput",
                 field: "name",
                 config: {
-                    label: "Field Name",
-                    name: 'Field Name',
+                    label: "Variable Name",
+                    name: 'Variable Name',
                     validation: 'required',
                     helper: "The data name for this field"
                 }
@@ -863,7 +863,7 @@ export default [
                 type: "FormInput",
                 field: "name",
                 config: {
-                    label: "Field Name",
+                    label: "Variable Name",
                     helper: "The name of the image"
                 }
             },
@@ -925,7 +925,7 @@ export default [
               type: "FormInput",
               field: "name",
               config: {
-                  label: "Field Name",
+                  label: "Variable Name",
                   validation: 'required',
                   helper: "The name of the button"
               }
