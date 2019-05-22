@@ -57,8 +57,7 @@
               </b-card-header>
 
               <b-card-body class="p-0 overflow-auto">
-
-                  <b-button v-b-toggle.data-input variant="outline"
+                  <b-button variant="outline"
                     class="text-left card-header d-flex align-items-center w-100 shadow-none"
                     @click="showDataInput = !showDataInput">
                     <i class="fas fa-file-import mr-2"></i>
@@ -66,13 +65,11 @@
                     <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-right' : 'fa-angle-down'"></i>
                   </b-button>
 
-                  <b-collapse id="data-input" visible>
+                  <b-collapse v-model="showDataInput" id="showDataInput">
                     <form-text-area class="data-input mb-0 data-collapse" v-model="previewInput"></form-text-area>
                   </b-collapse>
 
-
-
-                  <b-button v-b-toggle.dataPreview variant="outline"
+                  <b-button variant="outline"
                     class="text-left card-header d-flex align-items-center w-100 shadow-none"
                     data-toggle="collapse"
                     @click="showDataPreview = !showDataPreview">
@@ -81,8 +78,8 @@
                     <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-right' : 'fa-angle-down'"></i>
                   </b-button>
 
-                  <b-collapse id="dataPreview" visible class="mt-2">
-                    <vue-json-pretty  :data="previewData" class="p-2 data-collapse"></vue-json-pretty>
+                  <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
+                    <vue-json-pretty :data="previewData" class="p-2 data-collapse"></vue-json-pretty>
                   </b-collapse>
 
               </b-card-body>
@@ -179,8 +176,8 @@ import Validator from "validatorjs";
         cssErrors: '',
         showValidationErrors: false,
         toggleValidation: true,
-        showDataPreview: false,
-        showDataInput: false,
+        showDataPreview: true,
+        showDataInput: true,
       };
     },
     components: {
