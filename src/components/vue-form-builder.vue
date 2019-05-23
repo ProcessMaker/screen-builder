@@ -126,7 +126,7 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <b-button
             variant="outline"
-            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize"
+            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
             @click="showConfiguration = !showConfiguration"
           >
             <i class="fas fa-cog mr-2"></i>
