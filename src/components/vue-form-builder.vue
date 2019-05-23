@@ -125,7 +125,6 @@
 
         <b-card-body class="p-0 h-100 overflow-auto">
           <b-button
-            v-b-toggle.configuration
             variant="outline"
             class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize"
             @click="showConfiguration = !showConfiguration"
@@ -138,7 +137,7 @@
             ></i>
           </b-button>
 
-          <b-collapse id="configuration" visible class="mt-2">
+          <b-collapse id="configuration" v-model="showConfiguration" visible class="mt-2">
             <component
               v-for="(item, index) in inspection.inspector"
               :formConfig="config"
