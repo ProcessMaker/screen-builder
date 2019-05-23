@@ -549,7 +549,7 @@ export default [
                 label: "New Checkbox",
                 helper: null,
                 name: null,
-                checked: false,
+                initiallyChecked: false,
                 validation: '',
                 toggle: false
             },
@@ -588,7 +588,7 @@ export default [
             },
             {
                 type: "FormCheckbox",
-                field: "checked",
+                field: "initiallyChecked",
                 config: {
                     label: "Initially Checked?",
                     helper: "Should the checkbox be checked by default"

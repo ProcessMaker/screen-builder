@@ -123,6 +123,7 @@ export default {
         }
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
+
         if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
           this.$emit("update", this.transientData);
           return;
@@ -233,25 +234,36 @@ export default {
           });
         });
       }
-      if (
-        item.config.name &&
-        this.defaultValues[item.component] !== undefined
-      ) {
-        this.data[item.config.name] === undefined
-          ? this.$set(
-              this.data,
-              item.config.name,
-              this.defaultValues[item.component]
-            )
-          : null;
-        this.transientData[item.config.name] === undefined
-          ? this.$set(
-              this.transientData,
-              item.config.name,
-              this.defaultValues[item.component]
-            )
-          : null;
+
+      if (!item.config.name || this.model[item.config.name] !== undefined) {
+        return;
       }
+
+      let defaultValue = null;
+
+      if (['FormInput', 'FormTextArea', 'FormText'].includes(item.component)) {
+        defaultValue = '';
+      }
+
+      if (
+        ['FormSelect', 'FormRadioButtonGroup'].includes(item.component) &&
+        item.config.options &&
+        item.config.options.length > 0
+      ) {
+        defaultValue = item.config.options[0].value;
+      }
+
+      if (item.component === 'FormCheckbox') {
+        defaultValue = item.config.initiallyChecked || false;
+      }
+
+      if (item.component === 'FormRecordList') {
+        defaultValue = [];
+      }
+
+      this.$vueSet(this.transientData, item.config.name, defaultValue);
+      this.$set(this.data, item.config.name, defaultValue);
+
     },
     parseCssDebounce: _.debounce(function() {
       this.parseCss();
