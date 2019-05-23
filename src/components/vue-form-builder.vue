@@ -375,6 +375,7 @@ export default {
     deleteItem(index) {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
+      this.inspection.inspector.splice(0, this.inspection.inspector.length);
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
