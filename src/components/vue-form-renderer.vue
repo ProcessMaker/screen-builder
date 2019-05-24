@@ -235,7 +235,11 @@ export default {
         });
       }
 
-      if (!item.config.name || this.model[item.config.name] !== undefined) {
+      if (
+        !item.config.name ||
+        this.model[item.config.name] !== undefined ||
+        item.component === 'FormButton'
+      ) {
         return;
       }
 
