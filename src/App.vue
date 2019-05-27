@@ -147,9 +147,6 @@
   // Bring in our initial set of controls
   import controlConfig from "./form-builder-controls";
   import globalProperties from "./global-properties";
-  import {
-    FormTextArea,
-  } from "@processmaker/vue-form-elements";
 
 import Validator from "validatorjs";
 
@@ -192,7 +189,6 @@ import Validator from "validatorjs";
       VueFormBuilder,
       VueFormRenderer,
       VueJsonPretty,
-      FormTextArea,
       MonacoEditor,
     },
     watch: {
