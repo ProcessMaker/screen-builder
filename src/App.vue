@@ -333,15 +333,6 @@ import Validator from "validatorjs";
       right: 0;
     }
 
-    .data-input {
-      margin-top: -25px;
-
-      textarea.form-control {
-        height: calc(100% - 25px);
-        resize: none;
-      }
-    }
-
     .card-header {
       border-radius: 0 !important;
     }
