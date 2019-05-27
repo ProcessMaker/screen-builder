@@ -66,7 +66,7 @@
                   </b-button>
 
                   <b-collapse v-model="showDataInput" id="showDataInput">
-                    <form-text-area class="data-input mb-0 data-collapse" v-model="previewInput"></form-text-area>
+                    <monaco-editor :options="monacoOptions" :minimap="{ enabled:false }" class="data-collapse" v-model="previewInput" language="json"/>
                   </b-collapse>
 
                   <b-button variant="outline"
@@ -142,6 +142,7 @@
   import VueFormBuilder from "./components/vue-form-builder.vue";
   import VueFormRenderer from "./components/vue-form-renderer.vue";
   import VueJsonPretty from 'vue-json-pretty';
+  import MonacoEditor from "vue-monaco";
 
   // Bring in our initial set of controls
   import controlConfig from "./form-builder-controls";
@@ -178,6 +179,11 @@ import Validator from "validatorjs";
         toggleValidation: true,
         showDataPreview: true,
         showDataInput: true,
+        monacoOptions: {
+          automaticLayout: true,
+          lineNumbers: 'off',
+          minimap: false,
+      },
       };
     },
     components: {
@@ -186,7 +192,8 @@ import Validator from "validatorjs";
       VueFormBuilder,
       VueFormRenderer,
       VueJsonPretty,
-      FormTextArea
+      FormTextArea,
+      MonacoEditor,
     },
     watch: {
       mode(mode) {
