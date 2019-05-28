@@ -126,7 +126,7 @@
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
             />
-            <div v-if="!element.config.interactive" class="mask"></div>
+            <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"></div>
           </div>
         </div>
       </draggable>
@@ -489,11 +489,16 @@ $header-bg: #f7f7f7;
 
   .mask {
     position: absolute;
-    top: 4rem;
-    left: 0px;
+    left: 0;
     background-color: rgba(0, 0, 0, 0);
     width: 100%;
-    height: 50%;
+    top: 0;
+    height: 100%;
+
+    &.selected {
+      top: 4rem;
+      height: 50%;
+    }
   }
 }
 
