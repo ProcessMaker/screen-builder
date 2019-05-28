@@ -45,6 +45,7 @@
               class="p-3 overflow-auto"
               @submit="previewSubmit"
               :config="config"
+              :mode="mode"
               :computed="computed"
               :custom-css="customCSS"
               v-on:css-errors="cssErrors = $event"/>

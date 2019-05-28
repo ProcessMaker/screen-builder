@@ -59,7 +59,7 @@ Vue.use(VueDeepSet);
 
 export default {
   name: "VueFormRenderer",
-  props: ["config", "data", "page", "computed", "customCss"],
+  props: ["config", "data", "page", "computed", "customCss", "mode"],
   model: {
     prop: "data",
     event: "update"
@@ -99,6 +99,9 @@ export default {
     };
   },
   watch: {
+    mode() {
+      this.currentPage = 0;
+    },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
     },
