@@ -141,7 +141,7 @@
           <b-button
             v-b-toggle.configuration
             variant="outline"
-            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize"
+            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
             @click="showConfiguration = !showConfiguration"
           >
             <i class="fas fa-cog mr-2"></i>
@@ -389,6 +389,7 @@ export default {
     deleteItem(index) {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
+      this.inspection.inspector.splice(0, this.inspection.inspector.length);
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
