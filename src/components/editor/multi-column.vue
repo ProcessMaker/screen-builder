@@ -1,6 +1,6 @@
 <template>
     <div :class="classContainer">
-        <div class="container-fluid">
+        <div>
             <div class="row">
                 <template v-for="(item, index) in items">
                     <draggable :class="classColumn(index)"

@@ -1,6 +1,6 @@
 <template>
     <div class="form-group">
-        <div class="container-fluid">
+        <div>
             <div class="row">
                 <template v-for="(item, key) in items">
 
