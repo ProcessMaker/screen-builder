@@ -1,20 +1,21 @@
 <template>
-  <div class="container h-100 pt-4">
-    <div id="app" class="card h-100">
-      <div class="card-header">
-        <div class="row">
-          <div class="col">
+  <b-container  class="h-100">
+    <b-card no-body class="h-100 bg-white" id="app">
+      <!-- Card Header -->
+      <b-card-header>
+        <b-row>
+          <b-col>
             <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'editor'">
+              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'">
                 <i class="fas fa-drafting-compass pr-1"></i>{{ $t('Design') }}
               </b-button>
-              <b-button :variant="!displayBuilder? 'outline-secondary' : 'secondary'" @click="mode = 'preview'">
+              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'">
                 <i class="fas fa-cogs pr-1"></i>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
-          </div>
+          </b-col>
 
-          <div class="col text-right">
+          <b-col class="text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
                 <i class="fas fa-flask"></i>
@@ -26,104 +27,114 @@
               </button>
             </div>
             <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"></i></button>
-          </div>
-        </div>
-      </div>
+          </b-col>
 
-        <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
-        <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
+        </b-row>
+      </b-card-header>
+
+      <!-- Card Body -->
+      <b-card-body class="overflow-auto ml-3 mr-3">
+        <!-- Vue-form-builder -->
         <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
 
-        <div id="preview" v-show="displayPreview" class="flex-grow-1 p-4 pl-5 pr-5">
-          <div class="row h-100">
-            <div id="renderer-container" class="col-8">
-              <div class="row h-100">
-                  <div class="card-body border overflow-auto mr-5">
-                      <vue-form-renderer ref="renderer"
-                                          v-model="previewData"
-                                          @submit="previewSubmit"
-                                          :config="config"
-                                          :computed="computed"
-                                          :custom-css="customCSS"
-                                          v-on:css-errors="cssErrors = $event"/>
-                  </div>
-              </div>
-            </div>
+        <!-- Preview -->
+        <b-row class="h-100" id="preview" v-show="displayPreview">
+          <b-col class="overflow-auto h-100 border rounded mr-4">
+            <vue-form-renderer ref="renderer"
+              v-model="previewData"
+              class="p-3 overflow-auto"
+              @submit="previewSubmit"
+              :config="config"
+              :mode="mode"
+              :computed="computed"
+              :custom-css="customCSS"
+              v-on:css-errors="cssErrors = $event"/>
+          </b-col>
 
-            <div class="data-container col-4 border overflow-auto pr-0 pl-0">
-              <div id="data-preview" class="overflow-auto">
-                <div class="card-header">Inspector</div>
-                <b-button v-b-toggle.dataPreview variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataPreview = !showDataPreview">
-                  <i class="fas fa-file-code mr-2"></i>
-                    Data Preview
-                  <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataPreview }"></i>
-                </b-button>
+          <b-col class="overflow-hidden h-100 preview-inspector p-0">
+            <b-card no-body class="p-0 h-100">
+              <b-card-header class="stick-top">
+                Inspector
+              </b-card-header>
 
-                <b-collapse id="dataPreview">
-                  <vue-json-pretty :data="previewData" class="card-body"></vue-json-pretty>
-                </b-collapse>
-              </div>
-
-              <div id="data-input" class="overflow-auto">
-                  <b-button v-b-toggle.dataInput variant="outline-*" class="text-left card-header d-flex align-items-center sticky-top header-bg w-100" @click="showDataInput = !showDataInput">
+              <b-card-body class="p-0 overflow-auto">
+                  <b-button variant="outline"
+                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
+                    @click="showDataInput = !showDataInput">
                     <i class="fas fa-file-import mr-2"></i>
-                      Data Input
-                    <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : !showDataInput }"></i>
+                      {{ $t('Data Input') }}
+                    <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-right' : 'fa-angle-down'"></i>
                   </b-button>
 
-                  <b-collapse id="dataInput">
-                      <form-text-area class="dataInput" rows="8" v-model="previewInput"></form-text-area>
+                  <b-collapse v-model="showDataInput" id="showDataInput">
+                    <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json"/>
                   </b-collapse>
-              </div>
-            </div>
-          </div>
+
+                  <b-button variant="outline"
+                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
+                    data-toggle="collapse"
+                    @click="showDataPreview = !showDataPreview">
+                    <i class="fas fa-file-code mr-2"></i>
+                      {{ $t('Data Preview') }}
+                    <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-right' : 'fa-angle-down'"></i>
+                  </b-button>
+
+                  <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
+                    <vue-json-pretty :data="previewData" class="p-2 data-collapse"></vue-json-pretty>
+                  </b-collapse>
+
+              </b-card-body>
+            </b-card>
+          </b-col>
+        </b-row>
+
+      </b-card-body>
+
+      <!-- Card Footer -->
+      <b-card-footer class="d-flex d-flex justify-content-end align-items-center">
+        <b-form-checkbox v-model="toggleValidation" name="check-button" switch>
+          Screen Validation
+        </b-form-checkbox>
+
+        <div class="ml-3" @click="showValidationErrors = !showValidationErrors">
+          <button type="button" class="btn btn-light btn-sm">
+            <i class="fas fa-angle-double-up"></i>
+            {{ $t('Open Console') }}
+            <span v-if="allErrors === 0" class="badge badge-success">
+              <i class="fas fa-check-circle "></i>
+              {{ $t(allErrors) }}
+            </span>
+
+            <span v-else class="badge badge-danger">
+              <i class="fas fa-times-circle "></i>
+              {{ $t(allErrors) }}
+            </span>
+          </button>
         </div>
 
-        <div class="card-footer text-muted d-flex justify-content-end align-items-center">
-            <div>
-              <span class="custom-control custom-switch">
-              <input v-model="toggleValidation" type="checkbox" class="custom-control-input" id="customSwitch1" checked>
-              <label class="custom-control-label" for="customSwitch1"> Screen Validation
-              </label>
+        <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+            <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
+              <i class="fas fa-times-circle text-danger mr-3"></i>
+              {{$t('Invalid JSON Data Object')}}
+            </div>
+            <b-button variant="link" class="validation__message d-flex align-items-center p-3"
+                      v-for="(validation,index) in validationErrors"
+                      :key="index"
+                      @click="focusInspector(validation)">
+              <i class="fas fa-times-circle text-danger d-block mr-3"></i>
+              <span class="ml-2 text-dark font-weight-bold text-left">
+                {{ validation.item.component }}
+                <span class="d-block font-weight-normal">{{ validation.message }}</span>
               </span>
-            </div>
-
-            <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
-                <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
-                  <i class="fas fa-times-circle text-danger mr-3"></i>
-                  {{$t('Invalid JSON Data Object')}}
-                </div>
-                <b-button variant="link" class="validation__message d-flex align-items-center p-3"
-                          v-for="(validation,index) in validationErrors"
-                          :key="index"
-                          @click="focusInspector(validation)">
-                  <i class="fas fa-times-circle text-danger d-block mr-3"></i>
-                  <span class="ml-2 text-dark font-weight-bold text-left">
-                    {{ validation.item.component }}
-                    <span class="d-block font-weight-normal">{{ validation.message }}</span>
-                  </span>
-                </b-button>
-                <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
-            </div>
-
-            <div class="ml-3" @click="showValidationErrors = !showValidationErrors">
-              <button type="button" class="btn btn-light btn-sm">
-                <i class="fas fa-angle-double-up"></i>
-                Open Console
-                <span v-if="allErrors === 0" class="badge badge-success">
-                  <i class="fas fa-check-circle "></i>
-                  {{ allErrors }}
-                </span>
-
-                <span v-else class="badge badge-danger">
-                  <i class="fas fa-times-circle "></i>
-                  {{ allErrors }}
-                </span>
-              </button>
-            </div>
+            </b-button>
+            <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">No Errors</span>
         </div>
-    </div>
-  </div>
+      </b-card-footer>
+    </b-card>
+    <!-- Modals -->
+    <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
+    <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
+  </b-container>
 </template>
 
 <script>
@@ -132,13 +143,11 @@
   import VueFormBuilder from "./components/vue-form-builder.vue";
   import VueFormRenderer from "./components/vue-form-renderer.vue";
   import VueJsonPretty from 'vue-json-pretty';
+  import MonacoEditor from "vue-monaco";
 
   // Bring in our initial set of controls
   import controlConfig from "./form-builder-controls";
   import globalProperties from "./global-properties";
-  import {
-    FormTextArea,
-  } from "@processmaker/vue-form-elements";
 
 import Validator from "validatorjs";
 
@@ -166,8 +175,13 @@ import Validator from "validatorjs";
         cssErrors: '',
         showValidationErrors: false,
         toggleValidation: true,
-        showDataPreview: false,
-        showDataInput: false,
+        showDataPreview: true,
+        showDataInput: true,
+        monacoOptions: {
+          automaticLayout: true,
+          lineNumbers: 'off',
+          minimap: false,
+      },
       };
     },
     components: {
@@ -176,7 +190,7 @@ import Validator from "validatorjs";
       VueFormBuilder,
       VueFormRenderer,
       VueJsonPretty,
-      FormTextArea
+      MonacoEditor,
     },
     watch: {
       mode(mode) {
@@ -316,7 +330,23 @@ import Validator from "validatorjs";
       right: 0;
     }
 
-    .dataInput {
-      margin-top: -25px;
+    .card-header {
+      border-radius: 0 !important;
+    }
+
+    .border-check {
+      border: 1px solid green;
+    }
+
+    .list-group-item:last-child {
+      border-bottom: 1px solid #dfdfdf !important;
+    }
+
+    .preview-inspector {
+      max-width: 265px;
+    }
+
+    .data-collapse {
+      height: 300px;
     }
 </style>

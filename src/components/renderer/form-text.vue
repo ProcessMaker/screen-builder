@@ -29,10 +29,14 @@ export default {
       };
     },
     rendered() {
+      if (!this.validationData) {
+        return this.label;
+      }
+
       try {
         return Mustache.render(this.label, this.validationData);
-      } catch (e) {
-        return this.$t(this.label);
+      } catch (error) {
+        return this.label;
       }
     }
   }

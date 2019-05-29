@@ -1,6 +1,20 @@
-import { shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueFormBuilder from '@/components/vue-form-builder';
 import controlConfig from '@/form-builder-controls';
+import Vuex from 'vuex'
+import VueI18Next from '@panter/vue-i18next';
+import i18next from 'i18next';
+
+i18next.init({
+  lng: 'en'
+});
+
+const localVue = createLocalVue()
+localVue.use(Vuex)
+localVue.use(VueI18Next)
+
+const i18n = new VueI18Next(i18next);
+
 
 function isFormHtmlEditor(config) {
   return config.control.component === 'FormHtmlEditor';
@@ -13,7 +27,8 @@ describe('App', () => {
   });
 
   it('Can add Rich Text control', () => {
-    const wrapper = shallowMount(VueFormBuilder);
+    let store = new Vuex.Store();
+    const wrapper = shallowMount(VueFormBuilder, {i18n, store, localVue});
     const richTextConfig = controlConfig.find(isFormHtmlEditor);
 
     expect(wrapper.vm.controls).toHaveLength(0);
