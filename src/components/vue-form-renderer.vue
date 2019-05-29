@@ -45,6 +45,18 @@ import Vue from "vue";
 import * as VueDeepSet from "vue-deepset";
 import _ from "lodash";
 import HasColorProperty from "../mixins/HasColorProperty";
+import * as editor from './editor';
+import * as renderer from './renderer';
+import * as inspector from './inspector';
+import {
+  FormInput,
+  FormSelect,
+  FormTextArea,
+  FormCheckbox,
+  FormRadioButtonGroup,
+  FormDatePicker,
+  FormHtmlEditor
+} from "@processmaker/vue-form-elements";
 
 var Parser = require("expr-eval").Parser;
 var csstree = require("css-tree");
@@ -59,12 +71,24 @@ Vue.use(VueDeepSet);
 
 export default {
   name: "VueFormRenderer",
-  props: ["config", "data", "page", "computed", "customCss"],
+  props: ["config", "data", "page", "computed", "customCss", "mode"],
   model: {
     prop: "data",
     event: "update"
   },
   mixins: [HasColorProperty],
+  components: {
+    FormInput,
+    FormSelect,
+    FormCheckbox,
+    FormRadioButtonGroup,
+    FormTextArea,
+    FormDatePicker,
+    FormHtmlEditor,
+    ...editor,
+    ...inspector,
+    ...renderer,
+  },
   computed: {
     model() {
       return this.$deepModel(this.transientData);
@@ -99,6 +123,9 @@ export default {
     };
   },
   watch: {
+    mode() {
+      this.currentPage = 0;
+    },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
     },
@@ -123,6 +150,7 @@ export default {
         }
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
+
         if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
           this.$emit("update", this.transientData);
           return;
@@ -233,25 +261,40 @@ export default {
           });
         });
       }
+
       if (
-        item.config.name &&
-        this.defaultValues[item.component] !== undefined
+        !item.config.name ||
+        this.model[item.config.name] !== undefined ||
+        item.component === 'FormButton'
       ) {
-        this.data[item.config.name] === undefined
-          ? this.$set(
-              this.data,
-              item.config.name,
-              this.defaultValues[item.component]
-            )
-          : null;
-        this.transientData[item.config.name] === undefined
-          ? this.$set(
-              this.transientData,
-              item.config.name,
-              this.defaultValues[item.component]
-            )
-          : null;
+        return;
       }
+
+      let defaultValue = null;
+
+      if (['FormInput', 'FormTextArea', 'FormText'].includes(item.component)) {
+        defaultValue = '';
+      }
+
+      if (
+        ['FormSelect', 'FormRadioButtonGroup'].includes(item.component) &&
+        item.config.options &&
+        item.config.options.length > 0
+      ) {
+        defaultValue = item.config.options[0].value;
+      }
+
+      if (item.component === 'FormCheckbox') {
+        defaultValue = item.config.initiallyChecked || false;
+      }
+
+      if (item.component === 'FormRecordList') {
+        defaultValue = [];
+      }
+
+      this.$vueSet(this.transientData, item.config.name, defaultValue);
+      this.$set(this.data, item.config.name, defaultValue);
+
     },
     parseCssDebounce: _.debounce(function() {
       this.parseCss();

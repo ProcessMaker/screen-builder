@@ -1,6 +1,6 @@
 <template>
     <div class="form-group">
-        <div class="container-fluid">
+        <div>
             <div class="row">
                 <template v-for="(item, key) in items">
 
@@ -62,7 +62,6 @@
   } from "@processmaker/vue-form-elements";
 
   export default {
-    name: "FormMultiColumn",
     mixins: [HasColorProperty],
     props: ["value", "selected", "name", "config", "transientData"],
     components: {
@@ -117,23 +116,25 @@
       columnVerticalAlign (index) {
         let verticalAlignClass = '';
 
+        // Only apply vertical align to text when it's the only element in the column
         if (this.items.length > 0
-           && this.items[index].length > 0) {
+           && this.items[index].length === 1) {
             let formTexts  = this.items[0].filter(item => item.component === 'FormText');
             if (formTexts.length === 0) {
                return '';
             }
 
             let formText = formTexts[0];
+            let justify = ' justify-content-' + (formText.config.textAlign === 'right' ? 'end' : formText.config.textAlign);
             switch (formText.config.verticalAlign) {
                 case 'top':
-                    verticalAlignClass = 'd-flex align-items-start';
+                    verticalAlignClass = 'd-flex align-items-start' + justify;
                     break;
                 case 'middle':
-                    verticalAlignClass = 'd-flex align-items-center';
+                    verticalAlignClass = 'd-flex align-items-center' + justify;
                     break;
                 case 'bottom':
-                    verticalAlignClass = 'd-flex align-items-end';
+                    verticalAlignClass = 'd-flex align-items-end' + justify;
                     break;
             }
         }

@@ -51,8 +51,8 @@
             <b-btn v-b-modal.addOptionModal>{{ $t('Add Option') }}</b-btn>
 
             <b-modal centered @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" :title="$t('Add New Option')">
-                <form-input :label="$t('Field Name')" v-model="addValue" :error="this.addError"></form-input>
-                <form-input :label="$t('Field Label')" v-model="addContent"></form-input>
+                <form-input :label="$t('Value')" v-model="addValue" :error="this.addError"></form-input>
+                <form-input :label="$t('Content')" v-model="addContent"></form-input>
             </b-modal>
         </template>
 

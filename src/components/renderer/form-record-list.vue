@@ -76,16 +76,12 @@
 
 
 <script>
-  import bModal from "bootstrap-vue/es/components/modal/modal";
-  import VueFormRenderer from "../vue-form-renderer";
   import Vuetable from "vuetable-2/src/components/Vuetable";
   import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 
   export default {
     name: "FormRecordList",
     components: {
-      bModal,
-      VueFormRenderer,
       Vuetable,
       VuetablePagination
     },
@@ -157,7 +153,10 @@
         this.$refs.vuetable.changePage(page);
       },
       fetchFormConfig() {
-        //Only if you have a one page set
+        if (this.form === '') {
+          // User has not chosen an add/edit page yet
+          return [{items: []}];
+        }
         let config = JSON.parse(JSON.stringify(this.$parent.config));
         for (let index = 0; index < config.length; index++) {
           if (index != this.form) {
