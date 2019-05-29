@@ -45,6 +45,18 @@ import Vue from "vue";
 import * as VueDeepSet from "vue-deepset";
 import _ from "lodash";
 import HasColorProperty from "../mixins/HasColorProperty";
+import * as editor from './editor';
+import * as renderer from './renderer';
+import * as inspector from './inspector';
+import {
+  FormInput,
+  FormSelect,
+  FormTextArea,
+  FormCheckbox,
+  FormRadioButtonGroup,
+  FormDatePicker,
+  FormHtmlEditor
+} from "@processmaker/vue-form-elements";
 
 var Parser = require("expr-eval").Parser;
 var csstree = require("css-tree");
@@ -65,6 +77,18 @@ export default {
     event: "update"
   },
   mixins: [HasColorProperty],
+  components: {
+    FormInput,
+    FormSelect,
+    FormCheckbox,
+    FormRadioButtonGroup,
+    FormTextArea,
+    FormDatePicker,
+    FormHtmlEditor,
+    ...editor,
+    ...inspector,
+    ...renderer,
+  },
   computed: {
     model() {
       return this.$deepModel(this.transientData);
