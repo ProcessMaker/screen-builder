@@ -1,32 +1,10 @@
 // Import our components
 import VueFormBuilder from './vue-form-builder'
 import VueFormRenderer from './vue-form-renderer'
-import MultiColumn from './editor/multi-column'
-import OptionsList from './inspector/options-list'
-import PageSelect from './inspector/page-select'
-import FormButton from './renderer/form-button'
-import FormMultiColumn from './renderer/form-multi-column'
-import FormRecordList from './renderer/form-record-list'
-import FormText from './renderer/form-text'
-import ImageUpload from './inspector/image-upload.vue'
+import * as editor from './editor'
+import * as renderer from './renderer'
+import * as inspector from './inspector'
 import FormBuilderControls from '../form-builder-controls'
-
-let editor = {
-    MultiColumn
-}
-
-let inspector = {
-    OptionsList,
-    PageSelect,
-    ImageUpload
-}
-
-let renderer = {
-    FormButton,
-    FormMultiColumn,
-    FormRecordList,
-    FormText
-}
 
 // Export our named exports
 export {

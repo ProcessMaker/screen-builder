@@ -218,22 +218,10 @@
 <script>
 import Vue from "vue";
 import draggable from "vuedraggable";
-
-import FormMultiselect from "./inspector/form-multiselect";
-import OptionsList from "./inspector/options-list";
-import ContainerColumns from "./inspector/container-columns";
-import PageSelect from "./inspector/page-select";
-import ImageUpload from "./inspector/image-upload";
-import ColorSelect from "./inspector/color-select";
 import HasColorProperty from "../mixins/HasColorProperty";
-
-import FormMultiColumn from "./renderer/form-multi-column";
-import MultiColumn from "./editor/multi-column";
-
-import FormText from "./renderer/form-text";
-import FormButton from "./renderer/form-button";
-import FormRecordList from "./renderer/form-record-list";
-import FormImage from "./renderer/form-image";
+import * as editor from './editor';
+import * as renderer from './renderer';
+import * as inspector from './inspector';
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -274,25 +262,22 @@ export default {
     draggable,
     FormInput,
     FormSelect,
-    FormMultiselect,
-    OptionsList,
-    ContainerColumns,
     FormCheckbox,
     FormRadioButtonGroup,
     FormTextArea,
-    FormText,
-    FormButton,
-    PageSelect,
-    MultiColumn,
-    FormMultiColumn,
     FormDatePicker,
-    FormRecordList,
-    FormImage,
-    ImageUpload,
-    ColorSelect,
-    FormHtmlEditor
+    FormHtmlEditor,
+    ...editor,
+    ...inspector,
+    ...renderer
   },
   data() {
+    const config = this.initialConfig || defaultConfig;
+
+    if (this.title) {
+      config[0].name = this.title;
+    }
+
     return {
       currentPage: 0,
       selected: null,
@@ -304,7 +289,7 @@ export default {
       addPageName: "",
       editPageIndex: null,
       editPageName: "",
-      config: this.initialConfig || defaultConfig,
+      config,
       confirmMessage: "",
       pageDelete: 0,
       translated: [],
@@ -440,11 +425,6 @@ export default {
       return copy;
     }
   },
-  mounted() {
-    if (this.title) {
-      this.config[0].name = this.title;
-    }
-  }
 };
 </script>
 
