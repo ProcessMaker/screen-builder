@@ -54,7 +54,7 @@
           <b-col class="overflow-hidden h-100 preview-inspector p-0">
             <b-card no-body class="p-0 h-100">
               <b-card-header class="stick-top">
-                Inspector
+                {{ $t('Inspector') }}
               </b-card-header>
 
               <b-card-body class="p-0 overflow-auto">
