@@ -17,7 +17,12 @@ module.exports = {
       symlinks: false,
     },
     externals: {
-      subtract: ['bootstrap', '@processmaker/vue-form-elements']
+      subtract: [
+        'bootstrap',
+        '@processmaker/vue-form-elements',
+        'i18next',
+        '@panter/vue-i18next'
+      ]
     }
   },
 }
