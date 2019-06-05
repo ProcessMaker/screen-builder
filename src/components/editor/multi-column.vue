@@ -5,7 +5,12 @@
                 <template v-for="(item, index) in items">
                     <draggable :class="classColumn(index)"
                             v-model="items[index]"
-                            :options="{group: {name: 'controls'}}"
+                            :options="{
+                              invertSwap: true,
+                              group: {name: 'controls'},
+                              direction: 'horizontal',
+                              emptyInsertThreshold: 5
+                            }"
                             :key="index">
                         <div class="control-item"
                                 :class="{selected: selected === element}"
