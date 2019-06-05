@@ -36,7 +36,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 pl-4 pr-4">
+    <b-col class="overflow-auto mh-100 pl-4 pr-4 d-flex flex-column">
       <b-input-group size="sm" class="sticky-top bg-white">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -68,10 +68,17 @@
         <hr class="w-100">
       </b-input-group>
       <draggable
+        class="h-100"
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
         @input="updateConfig"
-        :options="{group: {name: 'controls'}}"
+        :options="{
+          group: {name: 'controls'},
+          direction: 'horizontal',
+          invertSwap: true,
+          invertedSwapThreshold: 0.3,
+          emptyInsertThreshold: 30
+        }"
       >
         <div
           class="control-item"
