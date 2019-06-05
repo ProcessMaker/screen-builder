@@ -58,7 +58,8 @@
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormDatePicker
+    FormDatePicker,
+    FormHtmlEditor
   } from "@processmaker/vue-form-elements";
 
   export default {
@@ -75,7 +76,8 @@
       FormButton,
       FormMultiColumn,
       FormDatePicker,
-      FormImage
+      FormImage,
+      FormHtmlEditor
     },
     data() {
       return {
