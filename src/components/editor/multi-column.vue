@@ -24,6 +24,8 @@
                             <div v-else :id="element.config.name ? element.config.name : undefined">
                                 <component :class="elementCssClass(element)"
                                         v-bind="element.config"
+                                        v-model="element.items"
+                                        :config="element.config"
                                         :is="element['editor-component']">
                                 </component>
                                 <div @click.stop="inspect(element)" class="mask"></div>
