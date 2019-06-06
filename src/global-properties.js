@@ -16,7 +16,7 @@ export default [
                     config: {
                         label: "CSS Selector Name",
                         helper: "Use this in your custom css rules",
-                        validation: 'attr-value'
+                        validation: 'regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]'
                     }
                 }
             ]
