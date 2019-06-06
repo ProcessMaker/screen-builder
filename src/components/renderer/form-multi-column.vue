@@ -44,13 +44,8 @@
 
 <script>
   import draggable from "vuedraggable";
-
-  import FormMultiColumn from "./form-multi-column";
+  import * as renderer from '@/components/renderer';
   import HasColorProperty from "../../mixins/HasColorProperty";
-
-  import FormText from "../renderer/form-text";
-  import FormButton from "../renderer/form-button";
-  import FormImage from "../renderer/form-image";
 
   import {
     FormInput,
@@ -58,7 +53,8 @@
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
-    FormDatePicker
+    FormDatePicker,
+    FormHtmlEditor
   } from "@processmaker/vue-form-elements";
 
   export default {
@@ -71,11 +67,9 @@
       FormTextArea,
       FormCheckbox,
       FormRadioButtonGroup,
-      FormText,
-      FormButton,
-      FormMultiColumn,
       FormDatePicker,
-      FormImage
+      FormHtmlEditor,
+      ...renderer
     },
     data() {
       return {
