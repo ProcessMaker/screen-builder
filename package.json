@@ -31,7 +31,7 @@
     "vuedraggable": "^2.16.0",
     "vuetable-2": "^1.7.5",
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "^0.7.0",
+    "@processmaker/vue-form-elements": "^0.10.1",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-plugin-eslint": "^3.6.0",
     "@vue/cli-plugin-unit-jest": "^3.6.3",
@@ -53,7 +53,7 @@
   },
   "peerDependencies": {
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "^0.10.0",
+    "@processmaker/vue-form-elements": "^0.10.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.14",
     "i18next": "^15.0.8",
