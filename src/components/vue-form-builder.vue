@@ -74,14 +74,11 @@
         @input="updateConfig"
         :options="{
           group: {name: 'controls'},
-          direction: 'horizontal',
-          invertSwap: true,
-          invertedSwapThreshold: 0.3,
-          emptyInsertThreshold: 30
+          swapThreshold: 0.5
         }"
       >
         <div
-          class="control-item"
+          class="control-item mt-1 mb-1"
           :class="{selected: selected === element, hasError: hasError(element)}"
           v-for="(element,index) in config[currentPage].items"
           :key="index"
@@ -102,7 +99,7 @@
             </div>
 
             <component
-              class="card-body m-2 mr-3 ml-3 pt-3"
+              class="card-body"
               :class="elementCssClass(element)"
               @inspect="inspect"
               :selected="selected"
@@ -449,10 +446,6 @@ $header-bg: #f7f7f7;
 
 .control-item {
   position: relative;
-
-  &:not(:last-child) {
-    margin-bottom: 1.5rem;
-  }
 
   .delete {
     position: absolute;
