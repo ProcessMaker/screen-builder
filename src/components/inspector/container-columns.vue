@@ -37,9 +37,7 @@
                         @update="updateSort"
                         :element="'tbody'"
                         v-model="existingOptions"
-                        :options="{group:'options'}"
-                        @start="drag=true"
-                        @end="drag=false">
+                        :options="{group:'options'}">
                     <tr v-for="(option, index) in existingOptions" :key="index">
                         <td>{{option.value}}</td>
                         <td>{{option.content}}</td>
