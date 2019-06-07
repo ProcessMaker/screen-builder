@@ -1,5 +1,5 @@
 <template>
-  <div id="renderer-container">
+  <div>
     <div v-for="(element,index) in config[currentPage]['items']" :key="index">
       <div
         v-if="element.container"
@@ -300,7 +300,7 @@ export default {
       this.parseCss();
     }, 500),
     parseCss() {
-      let containerSelector = "div#renderer-container";
+      const containerSelector = "#screen-builder-container";
       try {
         var ast = csstree.parse(this.customCss, {
           onParseError: function(error) {

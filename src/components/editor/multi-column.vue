@@ -45,13 +45,9 @@
 
 <script>
   import draggable from "vuedraggable";
-
-  import MultiColumn from "../editor/multi-column";
-  import FormText from "../renderer/form-text";
-  import FormButton from "../renderer/form-button";
-  import FormImage from "../renderer/form-image";
   import HasColorProperty from "../../mixins/HasColorProperty";
-
+  import { MultiColumn } from '@/components/editor';
+  import * as renderer from '@/components/renderer';
   import {
     FormInput,
     FormSelect,
@@ -70,15 +66,13 @@
       draggable,
       FormInput,
       FormSelect,
-      FormTextArea,
       FormCheckbox,
       FormRadioButtonGroup,
-      FormText,
-      FormButton,
-      MultiColumn,
+      FormTextArea,
       FormDatePicker,
-      FormImage,
-      FormHtmlEditor
+      FormHtmlEditor,
+      MultiColumn,
+      ...renderer,
     },
     data() {
       return {
