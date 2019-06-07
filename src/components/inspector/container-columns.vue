@@ -1,6 +1,5 @@
 <template>
     <div class="form-group">
-
         <h3>{{label}}</h3>
         <form-checkbox name="type"
                        toggle="true"
@@ -179,8 +178,6 @@
           item.value = index + 1;
         });
         this.$emit("change", newOptions);
-        //delete column in multiple column
-        this.$parent.selected.items.splice(index, 1);
       }
     }
   };
