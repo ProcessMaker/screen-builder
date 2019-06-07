@@ -308,9 +308,6 @@ export default {
           .toLowerCase()
           .includes(this.filterQuery.toLowerCase());
       });
-    },
-    formBuilderCount() {
-      return this.config[0].items.length;
     }
   },
   watch: {
