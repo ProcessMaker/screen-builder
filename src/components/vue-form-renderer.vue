@@ -300,7 +300,7 @@ export default {
       this.parseCss();
     }, 500),
     parseCss() {
-      let containerSelector = "div#screen-builder-container";
+      const containerSelector = "#screen-builder-container";
       try {
         var ast = csstree.parse(this.customCss, {
           onParseError: function(error) {
