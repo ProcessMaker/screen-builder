@@ -78,7 +78,7 @@
         }"
       >
         <div
-          class="control-item mt-1 mb-1"
+          class="control-item mt-4 mb-4"
           :class="{selected: selected === element, hasError: hasError(element)}"
           v-for="(element,index) in config[currentPage].items"
           :key="index"
