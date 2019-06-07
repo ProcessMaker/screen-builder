@@ -10,7 +10,9 @@
                         <div class="control-item"
                                 :class="{selected: selected === element}"
                                 v-for="(element,row) in item"
-                                :key="row">
+                                :key="row"
+                                @click.stop="inspect(element)"
+                                >
                             <div v-if="element.container" @click.stop="inspect(element)">
                                 <component :class="elementCssClass(element)"
                                         :selected="selected"
@@ -24,9 +26,12 @@
                             <div v-else :id="element.config.name ? element.config.name : undefined">
                                 <component :class="elementCssClass(element)"
                                         v-bind="element.config"
-                                        :is="element['editor-component']">
+                                        :config="element.config"
+                                        @input="element.config.interactive ? element.config.content = $event : null"
+                                        :is="element['editor-component']"
+                                        >
                                 </component>
-                                <div @click.stop="inspect(element)" class="mask"></div>
+                                <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"></div>
                             </div>
 
                             <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
