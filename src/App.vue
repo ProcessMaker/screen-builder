@@ -1,5 +1,5 @@
 <template>
-  <b-container  class="h-100">
+  <b-container class="h-100" id="screen-builder-container">
     <b-card no-body class="h-100 bg-white" id="app">
       <!-- Card Header -->
       <b-card-header>
