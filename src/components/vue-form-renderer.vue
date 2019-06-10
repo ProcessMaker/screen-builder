@@ -41,7 +41,7 @@
 <script>
 import Vue from "vue";
 import * as VueDeepSet from "vue-deepset";
-import _ from "lodash";
+import debounce from 'lodash/debounce';
 import { HasColorProperty, shouldElementBeVisible } from "@/mixins";
 import * as editor from './editor';
 import * as renderer from './renderer';
@@ -151,8 +151,11 @@ export default {
       deep: true
     },
     customCss() {
-      this.parseCssDebounce();
+      this.parseCss();
     }
+  },
+  created() {
+    this.parseCss = debounce(this.parseCss, 500, { leading: true });
   },
   mounted() {
     this.parseCss();
@@ -250,19 +253,16 @@ export default {
       this.$set(this.data, item.config.name, defaultValue);
 
     },
-    parseCssDebounce: _.debounce(function() {
-      this.parseCss();
-    }, 500),
     parseCss() {
       const containerSelector = "#screen-builder-container";
       try {
-        var ast = csstree.parse(this.customCss, {
+        const ast = csstree.parse(this.customCss, {
           onParseError: function(error) {
             // throw "CSS has the following errors:\n\n" + error.formattedMessage
             throw error.formattedMessage;
           }
         });
-        var i = 0;
+        let i = 0;
         csstree.walk(ast, function(node, item, list) {
           if (node.type === "Atrule" && list) {
             throw "CSS 'At-Rules' (starting with @) are not allowed.";
