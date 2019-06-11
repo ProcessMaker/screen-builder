@@ -31,7 +31,7 @@
     "vuedraggable": "^2.16.0",
     "vuetable-2": "^1.7.5",
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "^0.10.1",
+    "@processmaker/vue-form-elements": "ProcessMaker/vue-form-elements#bugfix\/233-checkbox-state",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-plugin-eslint": "^3.6.0",
     "@vue/cli-plugin-unit-jest": "^3.6.3",
