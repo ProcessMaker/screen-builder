@@ -4,6 +4,7 @@
             <div class="row">
                 <template v-for="(item, index) in items">
                     <draggable :class="classColumn(index)"
+                            class="column-draggable"
                             v-model="items[index]"
                             :options="{group: {name: 'controls'}}"
                             :key="index">
@@ -46,7 +47,6 @@
 <script>
   import draggable from "vuedraggable";
   import HasColorProperty from "../../mixins/HasColorProperty";
-  import { MultiColumn } from '@/components/editor';
   import * as renderer from '@/components/renderer';
   import {
     FormInput,
@@ -58,8 +58,10 @@
     FormHtmlEditor
   } from "@processmaker/vue-form-elements";
 
+  const defaultColumnWidth = 1;
+
   export default {
-    name: "MultiColumn",
+    name: "FormMultiColumn",
     mixins: [HasColorProperty],
     props: ["value", "name", "config", "selected"],
     components: {
@@ -71,7 +73,6 @@
       FormTextArea,
       FormDatePicker,
       FormHtmlEditor,
-      MultiColumn,
       ...renderer,
     },
     data() {
@@ -88,6 +89,13 @@
       },
       items() {
         this.$emit("input", this.items);
+      },
+      'config.options'(options) {
+        this.items = options.map((option, index) => {
+          return this.items[index]
+            ? this.items[index]
+            : []
+        });
       }
     },
     computed: {
@@ -97,14 +105,13 @@
     },
     methods: {
       classColumn(index) {
-        let column = 1;
-        if (this.items.length < this.config.options.length) {
-          this.items.push([]);
-        }
+        let column = defaultColumnWidth;
+
         if (this.config.options[index] && this.config.options[index].content) {
           column = this.config.options[index].content;
         }
-        return "col-sm-" + column + " column-draggable";
+
+        return "col-sm-" + column;
       },
       inspect(element) {
         this.$emit("inspect", element);

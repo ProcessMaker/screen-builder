@@ -19,17 +19,36 @@
                         :is="element.component"
                     />
 
-                    <div v-else :id="element.config.name ? element.config.name : undefined">
-                        <component
-                            :class="elementCssClass(element)"
-                            ref="elements"
-                            v-model="model[element.config.name]"
-                            :validationData="transientData"
-                            @submit="submit"
-                            @pageNavigate="pageNavigate"
-                            v-bind="element.config"
-                            :is="element.component"
-                        />
+                    <div class="column-draggable" :class="classColumn(key)" :key="key">
+                        <div v-for="(element,index) in item" :key="index">
+
+                            <template v-if="element.container">
+                                <component :class="elementCssClass(element)"
+                                           ref="container"
+                                           v-model="element.items"
+                                           :transientData="transientData"
+                                           @submit="submit"
+                                           @pageNavigate="pageNavigate"
+                                           :config="element.config"
+                                           :is="element['component']">
+                                </component>
+                            </template>
+
+                            <template v-else>
+                                <div :id="element.config.name ? element.config.name : undefined">
+                                    <component :class="elementCssClass(element)"
+                                               ref="elements"
+                                               v-model="model[element.config.name]"
+                                               :validationData="transientData"
+                                               @submit="submit"
+                                               @pageNavigate="pageNavigate"
+                                               v-bind="element.config"
+                                               :is="element['component']"
+                                               v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true">
+                                    </component>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,8 +71,11 @@
     FormHtmlEditor
   } from "@processmaker/vue-form-elements";
 
+  const defaultColumnWidth = 1;
+
   export default {
     mixins: [HasColorProperty, shouldElementBeVisible],
+    name: "FormMultiColumn",
     props: ["value", "selected", "name", "config", "transientData"],
     components: {
       draggable,
@@ -89,15 +111,13 @@
     },
     methods: {
       classColumn(index) {
-        let column = 1;
-        if (this.items.length < this.config.options.length) {
-          this.items.push([]);
-        }
+        let column = defaultColumnWidth;
+
         if (this.config.options[index] && this.config.options[index].content) {
           column = this.config.options[index].content;
         }
 
-        return "col-sm-" + column + " column-draggable " + this.columnVerticalAlign(index);
+        return `col-sm-${column} ${this.columnVerticalAlign(index)}`;
       },
       columnVerticalAlign (index) {
         let verticalAlignClass = '';

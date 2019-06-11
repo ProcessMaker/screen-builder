@@ -222,6 +222,7 @@ import HasColorProperty from "../mixins/HasColorProperty";
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
+import FormMultiColumn from '@/components/renderer/form-multi-column';
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -267,6 +268,7 @@ export default {
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormMultiColumn,
     ...editor,
     ...inspector,
     ...renderer
@@ -308,9 +310,6 @@ export default {
           .toLowerCase()
           .includes(this.filterQuery.toLowerCase());
       });
-    },
-    formBuilderCount() {
-      return this.config[0].items.length;
     }
   },
   watch: {

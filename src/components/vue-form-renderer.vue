@@ -46,6 +46,7 @@ import { HasColorProperty, shouldElementBeVisible } from "@/mixins";
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
+import FormMultiColumn from '@/components/renderer/form-multi-column';
 import {
   FormInput,
   FormSelect,
@@ -83,6 +84,7 @@ export default {
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormMultiColumn,
     ...editor,
     ...inspector,
     ...renderer,
