@@ -61,7 +61,7 @@
   const defaultColumnWidth = 1;
 
   export default {
-    name: "MultiColumn",
+    name: "FormMultiColumn",
     mixins: [HasColorProperty],
     props: ["value", "name", "config", "selected"],
     components: {
