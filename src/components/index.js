@@ -3,8 +3,14 @@ import VueFormBuilder from './vue-form-builder'
 import VueFormRenderer from './vue-form-renderer'
 import * as editor from './editor'
 import * as renderer from './renderer'
+import FormMultiColumn from './renderer/form-multi-column';
 import * as inspector from './inspector'
 import FormBuilderControls from '../form-builder-controls'
+
+const rendererComponents = {
+    ...renderer,
+    FormMultiColumn
+}
 
 // Export our named exports
 export {
@@ -12,7 +18,7 @@ export {
     VueFormRenderer,
     editor,
     inspector,
-    renderer,
+    rendererComponents as renderer,
     FormBuilderControls
 }
 

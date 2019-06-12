@@ -4,6 +4,7 @@
             <div
                 v-for="(item, key) in items"
                 :class="classColumn(key)"
+                class="column-draggable"
                 :key="key"
             >
                 <div v-for="(element, index) in item.filter(shouldElementBeVisible)" :key="index">
@@ -52,7 +53,10 @@
     FormHtmlEditor
   } from "@processmaker/vue-form-elements";
 
+  const defaultColumnWidth = 1;
+
   export default {
+    name: "FormMultiColumn",
     mixins: [HasColorProperty, shouldElementBeVisible],
     props: ["value", "selected", "name", "config", "transientData"],
     components: {
@@ -89,15 +93,13 @@
     },
     methods: {
       classColumn(index) {
-        let column = 1;
-        if (this.items.length < this.config.options.length) {
-          this.items.push([]);
-        }
+        let column = defaultColumnWidth;
+
         if (this.config.options[index] && this.config.options[index].content) {
           column = this.config.options[index].content;
         }
 
-        return "col-sm-" + column + " column-draggable " + this.columnVerticalAlign(index);
+        return `col-sm-${column} ${this.columnVerticalAlign(index)}`;
       },
       columnVerticalAlign (index) {
         let verticalAlignClass = '';
