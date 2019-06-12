@@ -1,42 +1,38 @@
 <template>
     <div class="form-group">
-        <div>
-            <div class="row">
-                <template v-for="(item, key) in items">
+        <div class="row">
+            <div
+                v-for="(item, key) in items"
+                :class="classColumn(key)"
+                class="column-draggable"
+                :key="key"
+            >
+                <div v-for="(element, index) in item.filter(shouldElementBeVisible)" :key="index">
+                    <component
+                        v-if="element.container"
+                        :class="elementCssClass(element)"
+                        ref="container"
+                        v-model="element.items"
+                        :transientData="transientData"
+                        @submit="submit"
+                        @pageNavigate="pageNavigate"
+                        :config="element.config"
+                        :is="element.component"
+                    />
 
-                    <div class="column-draggable" :class="classColumn(key)" :key="key">
-                        <div v-for="(element,index) in item" :key="index">
-
-                            <template v-if="element.container">
-                                <component :class="elementCssClass(element)"
-                                           ref="container"
-                                           v-model="element.items"
-                                           :transientData="transientData"
-                                           @submit="submit"
-                                           @pageNavigate="pageNavigate"
-                                           :config="element.config"
-                                           :is="element['component']">
-                                </component>
-                            </template>
-
-                            <template v-else>
-                                <div :id="element.config.name ? element.config.name : undefined">
-                                    <component :class="elementCssClass(element)"
-                                               ref="elements"
-                                               v-model="model[element.config.name]"
-                                               :validationData="transientData"
-                                               @submit="submit"
-                                               @pageNavigate="pageNavigate"
-                                               v-bind="element.config"
-                                               :is="element['component']"
-                                               v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true">
-                                    </component>
-                                </div>
-                            </template>
-                        </div>
+                    <div v-else :id="element.config.name ? element.config.name : undefined">
+                        <component
+                            :class="elementCssClass(element)"
+                            ref="elements"
+                            v-model="model[element.config.name]"
+                            :validationData="transientData"
+                            @submit="submit"
+                            @pageNavigate="pageNavigate"
+                            v-bind="element.config"
+                            :is="element.component"
+                        />
                     </div>
-
-                </template>
+                </div>
             </div>
         </div>
     </div>
@@ -45,7 +41,7 @@
 <script>
   import draggable from "vuedraggable";
   import * as renderer from '@/components/renderer';
-  import HasColorProperty from "../../mixins/HasColorProperty";
+  import { HasColorProperty, shouldElementBeVisible } from "@/mixins";
 
   import {
     FormInput,
@@ -61,7 +57,7 @@
 
   export default {
     name: "FormMultiColumn",
-    mixins: [HasColorProperty],
+    mixins: [HasColorProperty, shouldElementBeVisible],
     props: ["value", "selected", "name", "config", "transientData"],
     components: {
       draggable,
@@ -82,9 +78,6 @@
     computed: {
       model() {
         return this.$parent.model;
-      },
-      showElement() {
-        return this.$parent.showElement;
       }
     },
     watch: {

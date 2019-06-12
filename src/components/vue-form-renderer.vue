@@ -1,24 +1,23 @@
 <template>
   <div>
-    <div v-for="(element,index) in config[currentPage]['items']" :key="index">
-      <div
+    <div
+      v-for="(element, index) in visibleElements"
+      :key="index"
+    >
+      <component
         v-if="element.container"
-        v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
-      >
-        <component
-          :class="elementCssClass(element)"
-          ref="container"
-          selected="selected"
-          :transientData="transientData"
-          v-model="element.items"
-          @submit="submit"
-          :config="element.config"
-          :name="element.config.name !== undefined ? element.config.name : null"
-          @pageNavigate="pageNavigate"
-          v-bind="element.config"
-          :is="element['component']"
-        ></component>
-      </div>
+        :class="elementCssClass(element)"
+        ref="container"
+        selected="selected"
+        :transientData="transientData"
+        v-model="element.items"
+        @submit="submit"
+        :config="element.config"
+        :name="element.config.name !== undefined ? element.config.name : null"
+        @pageNavigate="pageNavigate"
+        v-bind="element.config"
+        :is="element.component"
+      />
 
       <div v-else :id="element.config.name ? element.config.name : undefined">
         <component
@@ -27,13 +26,12 @@
           :validationData="transientData"
           v-model="model[element.config.name]"
           @submit="submit"
-          v-show="showElement[element.config.name] !== undefined ? showElement[element.config.name] : true"
           @pageNavigate="pageNavigate"
           :name="element.config.name !== undefined ? element.config.name : null"
           v-bind="element.config"
-          :is="element['component']"
+          :is="element.component"
           :disabled="element.config.interactive"
-        ></component>
+        />
       </div>
     </div>
     <custom-css>{{ customCssWrapped }}</custom-css>
@@ -43,8 +41,8 @@
 <script>
 import Vue from "vue";
 import * as VueDeepSet from "vue-deepset";
-import _ from "lodash";
-import HasColorProperty from "../mixins/HasColorProperty";
+import debounce from 'lodash/debounce';
+import { HasColorProperty, shouldElementBeVisible } from "@/mixins";
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -58,9 +56,9 @@ import {
   FormDatePicker,
   FormHtmlEditor
 } from "@processmaker/vue-form-elements";
+import { Parser } from 'expr-eval';
 
-var Parser = require("expr-eval").Parser;
-var csstree = require("css-tree");
+const csstree = require("css-tree");
 
 Vue.component("custom-css", {
   render: function(createElement) {
@@ -77,7 +75,7 @@ export default {
     prop: "data",
     event: "update"
   },
-  mixins: [HasColorProperty],
+  mixins: [HasColorProperty, shouldElementBeVisible],
   components: {
     FormInput,
     FormSelect,
@@ -95,14 +93,8 @@ export default {
     model() {
       return this.$deepModel(this.transientData);
     },
-    showElement() {
-      let display = {};
-      this.config.forEach(page => {
-        page.items.forEach(item => {
-          Object.assign(display, this.exploreItems(item, this, {}));
-        });
-      });
-      return this.$deepModel(display);
+    visibleElements() {
+      return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
     }
   },
   data() {
@@ -161,8 +153,11 @@ export default {
       deep: true
     },
     customCss() {
-      this.parseCssDebounce();
+      this.parseCss();
     }
+  },
+  created() {
+    this.parseCss = debounce(this.parseCss, 500, { leading: true });
   },
   mounted() {
     this.parseCss();
@@ -173,44 +168,6 @@ export default {
         this.setDefaultValues();
         this.$emit("submit", this.transientData);
       }
-    },
-    exploreItems(element, context, fields) {
-      let name;
-      if (
-        element &&
-        element.component &&
-        element.component === "FormMultiColumn"
-      ) {
-        element.items.forEach(container => {
-          container.forEach(itemsContainer => {
-            Object.assign(
-              fields,
-              this.exploreItems(itemsContainer, context, fields)
-            );
-          });
-        });
-      }
-      name = element.config.name;
-      //Element always visible when not have field conditional hide.
-      fields[name] = true;
-      if (element.config.conditionalHide) {
-        try {
-          //when conditional is evaluated
-          //evaluation is true field is displayed
-          //evaluation is false field is hidden.
-          fields[name] =
-            Boolean(
-              Parser.evaluate(
-                element.config.conditionalHide,
-                context.transientData
-              )
-            ) === true;
-        } catch (e) {
-          //conditional can't be evaluated, element hidden.
-          fields[name] = false;
-        }
-      }
-      return fields;
     },
     validateElements(elements) {
       elements.forEach(element => {
@@ -298,19 +255,16 @@ export default {
       this.$set(this.data, item.config.name, defaultValue);
 
     },
-    parseCssDebounce: _.debounce(function() {
-      this.parseCss();
-    }, 500),
     parseCss() {
       const containerSelector = "#screen-builder-container";
       try {
-        var ast = csstree.parse(this.customCss, {
+        const ast = csstree.parse(this.customCss, {
           onParseError: function(error) {
             // throw "CSS has the following errors:\n\n" + error.formattedMessage
             throw error.formattedMessage;
           }
         });
-        var i = 0;
+        let i = 0;
         csstree.walk(ast, function(node, item, list) {
           if (node.type === "Atrule" && list) {
             throw "CSS 'At-Rules' (starting with @) are not allowed.";
@@ -347,6 +301,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
