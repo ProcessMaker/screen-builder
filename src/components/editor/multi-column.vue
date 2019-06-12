@@ -1,5 +1,5 @@
 <template>
-    <div :class="classContainer">
+    <div :class="classContainer" class="mb-1 mt-1 pb-0 pt-0">
         <div>
             <div class="row">
                 <template v-for="(item, index) in items">
@@ -120,7 +120,7 @@
 <style lang="scss" scoped>
     .column-draggable {
         border: 1px dashed #000;
-        min-height: 48px;
+        min-height: 80px;
         content: "Drag Controls";
     }
 
