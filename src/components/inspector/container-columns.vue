@@ -1,6 +1,5 @@
 <template>
     <div class="form-group">
-
         <h3>{{label}}</h3>
         <form-checkbox name="type"
                        toggle="true"
@@ -37,9 +36,7 @@
                         @update="updateSort"
                         :element="'tbody'"
                         v-model="existingOptions"
-                        :options="{group:'options'}"
-                        @start="drag=true"
-                        @end="drag=false">
+                        :options="{group:'options'}">
                     <tr v-for="(option, index) in existingOptions" :key="index">
                         <td>{{option.value}}</td>
                         <td>{{option.content}}</td>
@@ -181,13 +178,7 @@
           item.value = index + 1;
         });
         this.$emit("change", newOptions);
-        //delete column in multiple column
-        this.$parent.selected.items.splice(index, 1);
       }
     }
   };
 </script>
-
-<style lang="scss" scoped>
-</style>
-
