@@ -36,7 +36,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 pl-4 pr-4">
+    <b-col class="overflow-auto mh-100 pl-4 pr-4 d-flex flex-column">
       <b-input-group size="sm" class="sticky-top bg-white">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -68,13 +68,17 @@
         <hr class="w-100">
       </b-input-group>
       <draggable
+        class="h-100"
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
         @input="updateConfig"
-        :options="{group: {name: 'controls'}}"
+        :options="{
+          group: {name: 'controls'},
+          swapThreshold: 0.5
+        }"
       >
         <div
-          class="control-item"
+          class="control-item mt-4 mb-4"
           :class="{selected: selected === element, hasError: hasError(element)}"
           v-for="(element,index) in config[currentPage].items"
           :key="index"
@@ -95,7 +99,7 @@
             </div>
 
             <component
-              class="card-body m-2 mr-3 ml-3 pt-3"
+              class="card-body"
               :class="elementCssClass(element)"
               @inspect="inspect"
               :selected="selected"
@@ -441,10 +445,6 @@ $header-bg: #f7f7f7;
 
 .control-item {
   position: relative;
-
-  &:not(:last-child) {
-    margin-bottom: 1.5rem;
-  }
 
   .delete {
     position: absolute;
