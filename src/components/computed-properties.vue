@@ -3,7 +3,6 @@
     ref="modal"
     size="lg"
     id="computed-properties"
-    centered
     hide-footer
     :title="$t('Computed Properties')"
     @hidden="displayTableList"
