@@ -15,9 +15,9 @@
                 <span v-else>Invalid JSON Data Object</span>
             </div>
             <form-text-area name="dataJson"
-                            label="Json Options"
+                            :label="$t('Json Options')"
                             rows="8"
-                            helper="It must be a correct json format."
+                            :helper="$t('It must be a correct json format')"
                             v-model="dataJson">
             </form-text-area>
             <b-btn @click="saveDataJson" :disabled="!isValidJson">{{ $t('Save') }}</b-btn>
@@ -50,7 +50,12 @@
             <b-btn v-b-modal.addOptionModal>{{ $t('Add Column') }}</b-btn>
             <small v-if="helper" class="form-text text-muted">{{$t(helper)}}</small>
 
-            <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" :title="$t('Add New Column')">
+            <b-modal @cancel="resetAdd"
+                     @ok="addNewOption"
+                     :ok-title="$t('Ok')"
+                     :cancel-title="$t('Cancel')"
+                     id="addOptionModal"
+                     :title="$t('Add New Column')">
                 <form-input
                         :label="$t('Column Width')"
                         v-model="addContent"

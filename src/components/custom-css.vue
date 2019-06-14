@@ -1,17 +1,16 @@
 <template>
-  <b-modal
-    ref="modal"
-    size="lg"
-    id="custom-css"
-    centered
-    :title="$t('Custom CSS')"
-    @ok="save"
-    @cancel="close"
-    @hide="hide"
-    cancel-variant="btn btn-outline-secondary"
-    ok-variant="btn btn-secondary ml-2"
-  >
-    <p>{{$t("You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']")}}</p>
+  <b-modal ref="modal"
+           size="lg"
+           id="custom-css"
+           :title="$t('Custom CSS')"
+           @ok="save"
+           @cancel="close"
+           @hide="hide"
+           cancel-variant="btn btn-outline-secondary"
+           ok-variant="btn btn-secondary ml-2"
+           :ok-title="$t('Save')"
+           :cancel-title="$t('Cancel')">
+    <p>{{ $t("You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']") }}</p>
     <div class="editor">
       <monaco-editor :options="monacoOptions" class="monaco" v-model="innerValue"/>
     </div>
@@ -19,8 +18,6 @@
     <b-alert :show="cssErrors != ''" variant="danger">
       <pre>{{ cssErrors }}</pre>
     </b-alert>
-    <div slot="modal-cancel">{{$t('Cancel')}}</div>
-    <div slot="modal-ok">{{$t('Save')}}</div>
   </b-modal>
 </template>
 
