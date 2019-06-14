@@ -172,50 +172,43 @@
     </b-col>
 
     <!-- Modals -->
-    <b-modal
-      id="addPageModal"
-      centered
-      @ok="addPage"
-      :ok-title="$t('Save')"
-      cancel-variant="btn btn-outline-secondary"
-      ok-variant="btn btn-secondary ml-2"
-      :title="$t('Add New Page')"
-    >
-      <form-input
-        v-model="addPageName"
-        :label="$t('Page Name')"
-        :helper="$t('The name of the new page to add')"
-      ></form-input>
+    <b-modal id="addPageModal"
+             @ok="addPage"
+             :ok-title="$t('Save')"
+             :cancel-title="$t('Cancel')"
+             cancel-variant="btn btn-outline-secondary"
+             ok-variant="btn btn-secondary ml-2"
+             :title="$t('Add New Page')">
+      <form-input v-model="addPageName"
+                  :label="$t('Page Name')"
+                  :helper="$t('The name of the new page to add')">
+      </form-input>
     </b-modal>
 
-    <b-modal
-      ref="editPageModal"
-      centered
-      @ok="editPage"
-      :title="$t('Edit Page Title')"
-      :ok-title="$t('Save')"
-      cancel-variant="btn btn-outline-secondary"
-      ok-variant="btn btn-secondary ml-2"
-    >
-      <form-input
-        v-model="editPageName"
-        :label="$t('Page Name')"
-        :helper="$t('The new name of the page')"
-      ></form-input>
+    <b-modal ref="editPageModal"
+             @ok="editPage"
+             :title="$t('Edit Page Title')"
+             :ok-title="$t('Save')"
+             :cancel-title="$t('Cancel')"
+             cancel-variant="btn btn-outline-secondary"
+             ok-variant="btn btn-secondary ml-2">
+      <form-input v-model="editPageName"
+                  :label="$t('Page Name')"
+                  :helper="$t('The new name of the page')">
+      </form-input>
     </b-modal>
 
-    <b-modal
-      ref="confirm"
-      centered
-      title="Confirm delete"
-      @ok="deletePage"
-      @cancel="hideConfirmModal"
-      cancel-variant="btn btn-outline-secondary"
-      ok-variant="btn btn-secondary ml-2"
-    >
+    <b-modal ref="confirm"
+             :title="$t('Caution!')"
+             :ok-title="$t('Delete')"
+             :cancel-title="$t('Cancel')"
+             @ok="deletePage"
+             @cancel="hideConfirmModal"
+             cancel-variant="btn btn-outline-secondary"
+             ok-variant="btn btn-secondary ml-2">
       <p>{{confirmMessage}}</p>
-            <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
+
   </b-row>
 </template>
 
@@ -361,10 +354,7 @@ export default {
       });
     },
     confirmDelete() {
-      this.confirmMessage =
-        "Are you sure to delete the page " +
-        this.config[this.currentPage].name +
-        "?";
+      this.confirmMessage = this.$t('Are you sure you want to delete {{item}}?', {item: this.config[this.currentPage].name});
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
