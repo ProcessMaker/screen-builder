@@ -16,7 +16,7 @@
                 <span v-else>{{ $t('Invalid JSON Data Object') }}</span>
             </div>
             <form-text-area name="dataJson"
-                            label="Json Options"
+                            :label="$t('Json Options')"
                             rows="8"
                             :helper="$t('It must be a correct json format')"
                             v-model="dataJson">
@@ -50,7 +50,12 @@
             </table>
             <b-btn v-b-modal.addOptionModal>{{ $t('Add Option') }}</b-btn>
 
-            <b-modal centered @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" :title="$t('Add New Option')">
+            <b-modal @cancel="resetAdd"
+                     @ok="addNewOption"
+                     id="addOptionModal"
+                     :ok-title="$t('Ok')"
+                     :cancel-title="$t('Cancel')"
+                     :title="$t('Add New Option')">
                 <form-input :label="$t('Value')" v-model="addValue" :error="this.addError"></form-input>
                 <form-input :label="$t('Content')" v-model="addContent"></form-input>
             </b-modal>

@@ -14,13 +14,22 @@
             {{ $t('There is no records in this list or the data is invalid.') }}
         </div>
         <template v-else>
-            <vuetable :per-page="perPage" ref="vuetable" :data-manager="dataManager" :fields="tableFields"
-                      :data="tableData" :api-mode="false" pagination-path=""
+            <vuetable :per-page="perPage"
+                      ref="vuetable"
+                      :data-manager="dataManager"
+                      :fields="tableFields"
+                      :data="tableData"
+                      :api-mode="false"
+                      pagination-path=""
+                      :noDataTemplate="$t('No Data Available')"
                       @vuetable:pagination-data="onPaginationData">
                 <template slot="actions" slot-scope="props">
                     <div class="actions">
+                        {{ $t('Json Options')}}
                         <div class="btn-group" role="group" aria-label="Actions">
-                            <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">Edit</button>
+                            <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">
+                                {{ $t('Edit') }}
+                            </button>
                             <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-primary">
                                 {{ $t('Delete') }}
                             </button>
@@ -35,7 +44,10 @@
                  size="lg"
                  v-if="editable && !selfReferenced"
                  ref="addModal"
+                 :ok-title="$t('Ok')"
+                 :cancel-title="$t('Cancel')"
                  :title="$t('Add Record')">
+            <vue-form-renderer></vue-form-renderer>
             <vue-form-renderer :page="form"
                                ref="addRenderer"
                                v-model="addItem"
@@ -46,6 +58,8 @@
                  size="lg"
                  v-if="editable && !selfReferenced"
                  ref="editModal"
+                 :ok-title="$t('Save')"
+                 :cancel-title="$t('Cancel')"
                  :title="$t('Edit Record')">
             <vue-form-renderer :page="form"
                                ref="editRenderer"
@@ -57,6 +71,8 @@
                  size="lg"
                  v-if="editable && !selfReferenced"
                  ref="deleteModal"
+                 :ok-title="$t('Save')"
+                 :cancel-title="$t('Cancel')"
                  :title="$t('Delete Record')">
             <p>{{ $t('Are you sure you want to remove this record?') }}</p>
         </b-modal>
@@ -64,24 +80,27 @@
                  size="sm"
                  v-if="editable && !selfReferenced"
                  ref="infoModal"
+                 :ok-title="$t('Save')"
                  :title="$t('Information form')"
                  ok-only>
-            <p>{{$t('The form to be displayed is not assigned..')}}</p>
+            <p>{{ $t('The form to be displayed is not assigned..') }}</p>
         </b-modal>
         <div v-if="editable && selfReferenced" class="alert alert-danger">
-            {{$t('The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.')}}
+            {{ $t('The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.') }}
         </div>
     </div>
 </template>
 
 
 <script>
+  import VueFormRenderer from "../vue-form-renderer";
   import Vuetable from "vuetable-2/src/components/Vuetable";
   import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 
   export default {
     name: "FormRecordList",
     components: {
+      VueFormRenderer,
       Vuetable,
       VuetablePagination
     },
