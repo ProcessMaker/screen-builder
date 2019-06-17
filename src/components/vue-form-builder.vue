@@ -228,6 +228,11 @@ import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 Vue.use(BootstrapVue);
 
 let Validator = require("validatorjs");
+// To include another language in the Validator with variable processmaker
+if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
+  Validator.useLang(window.ProcessMaker.user.lang);
+}
+
 Validator.register(
   "attr-value",
   value => {
