@@ -867,7 +867,7 @@ export default [
                 field: "name",
                 config: {
                     label: "Variable Name",
-                    helper: "The name of the image"
+                    helper: "The variable name of the image"
                 }
             },
             {
