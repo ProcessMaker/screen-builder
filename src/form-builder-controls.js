@@ -273,7 +273,7 @@ export default [
                     label: "Variable Name",
                     name: 'Variable Name',
                     validation: 'required',
-                    helper: "The data name for this field"
+                    helper: "The variable name for this field"
                 }
             },
                 {
@@ -354,7 +354,7 @@ export default [
               label: "Variable Name",
               name: 'Variable Name',
               validation: 'required',
-              helper: "The data name for this field"
+              helper: "The variable name for this field"
           }
       },
       {
@@ -429,8 +429,9 @@ export default [
                 field: "name",
                 config: {
                     label: "Variable Name",
-                    helper: "The data name for this field",
+                    helper: "The variable name for this field",
                     validation: 'required',
+                    name: 'Variable Name',
                 }
             },
             {
@@ -494,7 +495,8 @@ export default [
                 field: "name",
                 config: {
                     label: "Variable Name",
-                    helper: "The data name for this field",
+                    name: 'Variable Name',
+                    helper: "The variable name for this field",
                     validation: 'required',
                 }
             },
@@ -558,6 +560,7 @@ export default [
                 field: "name",
                 config: {
                     label: "Variable Name",
+                    name: 'Variable Name',
                     validation: 'required',
                     helper: "The name of the group for the checkbox. All checkboxes which share the same name will work together."
                 }
@@ -621,7 +624,7 @@ export default [
                     label: "Variable Name",
                     name: 'Variable Name',
                     validation: 'required',
-                    helper: "The data name for this field"
+                    helper: "The variable name for this field"
                 }
             },
             {
@@ -792,7 +795,7 @@ export default [
                     label: "List Name",
                     name: 'List Name',
                     validation: 'required',
-                    helper: "The data name for this list"
+                    helper: "The variable name for this list"
                 }
             },
             {
@@ -927,6 +930,7 @@ export default [
               config: {
                   label: "Variable Name",
                   validation: 'required',
+                  name: 'Variable Name',
                   helper: "The name of the button"
               }
           },
