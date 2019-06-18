@@ -36,7 +36,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 pl-4 pr-4 d-flex flex-column">
+    <b-col class="overflow-auto mh-100 pl-4 pr-4 d-flex flex-column position-relative">
       <b-input-group size="sm" class="sticky-top bg-white">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -67,6 +67,11 @@
 
         <hr class="w-100">
       </b-input-group>
+
+        <b-card-body class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute" v-if="!containsFormElements">
+          <b-card-text>Drag an element here</b-card-text>
+        </b-card-body>
+
       <draggable
         class="h-100"
         ghost-class="form-control-ghost"
@@ -314,6 +319,11 @@ export default {
           .toLowerCase()
           .includes(this.filterQuery.toLowerCase());
       });
+    },
+    containsFormElements() {
+      return this.config.some(page => {
+        return page.items.length;
+      })
     }
   },
   watch: {
@@ -543,5 +553,12 @@ $header-bg: #f7f7f7;
 .form-control-ghost {
   margin-bottom: 0;
   border-radius: 0.25rem;
+}
+
+.drag-placeholder {
+  width: calc(100% - 48px);
+  height: 8rem;
+  top: 4rem;
+  border: 1px dashed rgba(0, 0, 0, 0.125);
 }
 </style>
