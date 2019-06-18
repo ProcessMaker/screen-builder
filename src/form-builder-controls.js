@@ -612,34 +612,39 @@ export default [
             config: {
                 label: "New Date Picker",
                 type: 'date',
+                phrases: {
+                    ok: 'Continue',
+                    cancel: 'Cancel'
+                },
                 name: ''
             },
-            inspector: [{
-                type: "FormInput",
-                field: "name",
-                config: {
-                    label: "Variable Name",
-                    name: 'Variable Name',
-                    validation: 'required',
-                    helper: "The data name for this field"
-                }
-            },
-            {
-                type: "FormInput",
-                field: "label",
-                config: {
-                    label: "Field Label",
-                    helper: "The label describes the fields name"
-                }
-            },
-            {
-                type: "FormInput",
-                field: "placeholder",
-                config: {
-                    label: "Placeholder",
-                    helper: "The placeholder is what is shown in the field when no value is provided yet"
-                }
-            },
+            inspector: [
+                {
+                    type: "FormInput",
+                    field: "name",
+                    config: {
+                        label: "Variable Name",
+                        name: 'Variable Name',
+                        validation: 'required',
+                        helper: "The data name for this field"
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "label",
+                    config: {
+                        label: "Field Label",
+                        helper: "The label describes the fields name"
+                    }
+                },
+                {
+                    type: "FormInput",
+                    field: "placeholder",
+                    config: {
+                        label: "Placeholder",
+                        helper: "The placeholder is what is shown in the field when no value is provided yet"
+                    }
+                },
                 bgcolorProperty,
                 colorProperty,
             ]
