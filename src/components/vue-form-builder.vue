@@ -406,6 +406,10 @@ export default {
         label: control.label,
         value: control.value
       };
+      if (control.component === 'FormDatePicker' && copy.config.phrases) {
+        copy.config.phrases.ok = this.$t(copy.config.phrases.ok);
+        copy.config.phrases.cancel = this.$t(copy.config.phrases.cancel);
+      }
       copy.config.label = this.$t(copy.config.label);
       if (copy.config.options) {
         for (var io in copy.config.options) {
