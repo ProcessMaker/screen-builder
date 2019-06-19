@@ -416,11 +416,11 @@ export default [
                 label: "New Select",
                 placeholder: "",
                 validation: '',
-                options: [{
-                    value: 'new',
-                    content: 'New Option'
-                }
-
+                options: [
+                  {
+                    value: null,
+                    content: 'Select'
+                  }
                 ],
                 helper: null,
             },
