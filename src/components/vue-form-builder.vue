@@ -90,7 +90,7 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-1 ml-1"></i>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"></i>
               {{ element.config.name || element.label || $t('Field Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
@@ -116,7 +116,7 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-1 ml-1"></i>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"></i>
               {{ element.config.name || $t('Variable Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
