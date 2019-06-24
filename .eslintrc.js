@@ -1,11 +1,11 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
   },
   extends: [
     'plugin:vue/essential',
-    'eslint:recommended'
+    'eslint:recommended',
   ],
   rules: {
     semi: ['error', 'always'],
@@ -25,6 +25,6 @@ module.exports = {
     'vue/mustache-interpolation-spacing': 'error',
   },
   parserOptions: {
-    parser: 'babel-eslint'
-  }
-}
+    parser: 'babel-eslint',
+  },
+};
