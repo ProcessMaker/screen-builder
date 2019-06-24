@@ -139,34 +139,60 @@
     <!-- Inspector -->
     <b-col class="overflow-hidden h-100 p-0 inspector-column">
       <b-card no-body class="p-0 h-100">
-        <b-card-header>{{ $t('Inspector') }}</b-card-header>
-
+        <b-card-header>
+          {{ $t('Inspector') }}
+        </b-card-header>
         <b-card-body class="p-0 h-100 overflow-auto">
-          <b-button
-            v-b-toggle.configuration
-            variant="outline"
-            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-            @click="showConfiguration = !showConfiguration"
-          >
+
+          <b-button v-b-toggle.variableConfig
+                    variant="outline"
+                    class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+                    @click="showVariable = !showVariable">
             <i class="fas fa-cog mr-2"></i>
-            {{ $t('Configuration') }}
-            <i
-              class="fas fa-angle-down ml-auto"
-              :class="{ 'fas fa-angle-right' : showConfiguration }"
+            {{ $t('Variable') }}
+            <i class="fas fa-angle-down ml-auto"
+               :class="{ 'fas fa-angle-right' : showVariable }"
             ></i>
           </b-button>
 
-          <b-collapse id="configuration" visible class="mt-2">
-            <component
-              v-for="(item, index) in inspection.inspector"
-              :formConfig="config"
-              :key="index"
-              :is="item.type"
-              class="border-bottom pt-1 pb-3 pr-4 pl-4"
-              v-bind="item.config"
-              v-model="inspection.config[item.field]"
-            />
+          <b-collapse id="variableConfig" class="mt-2">
+            <template v-for="(item, index) in inspection.inspector">
+              <template v-if="item.panel && item.panel === 'variable'">
+                <component :formConfig="config"
+                           :key="index"
+                           :is="item.type"
+                           class="border-bottom pt-1 pb-3 pr-4 pl-4"
+                           v-bind="item.config"
+                           v-model="inspection.config[item.field]"/>
+              </template>
+            </template>
           </b-collapse>
+
+          <b-button v-b-toggle.configuration
+                    variant="outline"
+                    class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+                    @click="showConfiguration = !showConfiguration">
+            <i class="fas fa-cog mr-2"></i>
+            {{ $t('Configuration') }}
+            <i class="fas fa-angle-down ml-auto"
+               :class="{ 'fas fa-angle-right' : showConfiguration }"
+            ></i>
+          </b-button>
+
+          <b-collapse id="configuration" class="mt-2">
+            <template v-for="(item, index) in inspection.inspector">
+              <template v-if="!item.panel">
+                <component :formConfig="config"
+                           :key="index"
+                           :is="item.type"
+                           class="border-bottom pt-1 pb-3 pr-4 pl-4"
+                           v-bind="item.config"
+                           v-model="inspection.config[item.field]"
+                />
+              </template>
+            </template>
+          </b-collapse>
+
         </b-card-body>
       </b-card>
     </b-col>
@@ -301,6 +327,7 @@ export default {
       translated: [],
       showAssignment: false,
       showConfiguration: false,
+      showVariable: false,
       filterQuery: ""
     };
   },
@@ -355,6 +382,7 @@ export default {
     },
     focusInspector(validation) {
       this.showConfiguration = true;
+      this.showVariable = true;
       this.currentPage = this.config.indexOf(validation.page);
       this.$nextTick(() => {
         this.inspect(validation.item);
