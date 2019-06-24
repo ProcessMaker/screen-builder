@@ -1,5 +1,5 @@
 {
-  "name": "@processmaker/spark-screen-builder",
+  "name": "@processmaker/screen-builder",
   "version": "0.17.1",
   "scripts": {
     "serve": "vue-cli-service serve",
