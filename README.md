@@ -1,2 +1,2 @@
-# ProcessMaker Spark Screen Builder
+# ProcessMaker Screen Builder
 A VueJS powered Screen Builder that produces compatible JSON for our vue-form-renderer
