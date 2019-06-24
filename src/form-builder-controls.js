@@ -228,7 +228,9 @@ export default [
           field: "fontWeight",
           config: {
             label: "Font Weight",
+            name: "Font Weight",
             helper: "The weight of the text",
+            validation: 'required',
             options: [
               {
                 value: 'normal',
@@ -246,7 +248,9 @@ export default [
           field: "textAlign",
           config: {
             label: "Text Horizontal Alignment",
+            name: "Text Horizontal Alignment",
             helper: "Horizontal alignment of the text",
+            validation: 'required',
             options: [
               {
                 value: 'center',
@@ -272,7 +276,9 @@ export default [
           field: "verticalAlign",
           config: {
             label: "Text Vertical Alignment",
+            name: "Text Vertical Alignment",
             helper: "Vertical alignment of the text",
+            validation: 'required',
             options: [
               {
                 value: 'top',
@@ -294,7 +300,9 @@ export default [
           field: "fontSize",
           config: {
             label: "Font Size",
+            name: "Font Size",
             helper: "The size of the text in em",
+            validation: 'required',
             options: [
               {
                 value: '0.5em',
@@ -380,6 +388,7 @@ export default [
             label: "Field Type",
             name: 'Field Type',
             helper: "The type for this field",
+            validation: 'required',
             options: [
               {
                 value: 'text',
@@ -452,10 +461,9 @@ export default [
         validation: '',
         options: [
           {
-            value: 'new',
-            content: 'New Option'
+            value: null,
+            content: 'Select'
           }
-
         ],
         helper: null,
       },
@@ -631,7 +639,9 @@ export default [
           field: "variant",
           config: {
             label: "Variant",
+            name: "Variant",
             helper: "The variant determines the appearance of the button",
+            validation: 'required',
             options: [
               {
                 value: 'primary',
@@ -864,7 +874,9 @@ export default [
           field: "variant",
           config: {
             label: "Variant",
+            name: "Variant",
             helper: "The variant determines the appearance of the button",
+            validation: 'required',
             options: [
               {
                 value: 'primary',
