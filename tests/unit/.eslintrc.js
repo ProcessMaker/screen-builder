@@ -4,4 +4,4 @@ module.exports = {
     'jest/globals': true,
     node: true,
   },
-}
+};

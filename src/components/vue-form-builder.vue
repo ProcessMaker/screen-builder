@@ -3,15 +3,15 @@
     <!-- Controls -->
     <b-col class="overflow-hidden mh-100 p-0 controls-column">
       <b-card no-body class="h-100">
-        <b-card-header>{{ $t('Controls')  }}</b-card-header>
+        <b-card-header>{{ $t('Controls') }}</b-card-header>
         <b-input-group size="sm">
           <b-input-group-prepend>
             <b-input-group-text class="filter-icon">
-              <i class="fas fa-filter"></i>
+              <i class="fas fa-filter"/>
             </b-input-group-text>
           </b-input-group-prepend>
 
-          <b-form-input v-model="filterQuery" type="text" :placeholder="$t('Filter Controls')"></b-form-input>
+          <b-form-input v-model="filterQuery" type="text" :placeholder="$t('Filter Controls')"/>
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
@@ -23,12 +23,12 @@
             class="controls list-group w-auto list-group-flush"
           >
             <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
-              <i v-if="element.config.icon" :class="element.config.icon"></i>
-              {{$t(element.label)}}
+              <i v-if="element.config.icon" :class="element.config.icon"/>
+              {{ $t(element.label) }}
             </b-list-group-item>
 
             <li v-if="!filteredControls.length" class="list-group-item">
-                        <span class="text-danger">{{ $t('Control Not Found') }}</span>
+              <span class="text-danger">{{ $t('Control Not Found') }}</span>
             </li>
           </draggable>
         </b-card-body>
@@ -68,8 +68,11 @@
         <hr class="w-100">
       </b-input-group>
 
-      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded">
-        Drag an element here
+      <div
+        v-if="isCurrentPageEmpty"
+        class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded"
+      >
+        {{ $t('Drag an element here') }}
       </div>
 
       <draggable
@@ -95,11 +98,12 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"></i>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || element.label || $t('Field Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
-                @click="deleteItem(index)">
+                @click="deleteItem(index)"
+              >
                 <i class="far fa-trash-alt text-light"/>
               </button>
             </div>
@@ -112,7 +116,7 @@
               v-model="element.items"
               :config="element.config"
               :is="element['editor-component']"
-            ></component>
+            />
           </div>
 
           <div v-else class="card">
@@ -121,7 +125,7 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"></i>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || $t('Variable Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
@@ -152,50 +156,55 @@
         </b-card-header>
         <b-card-body class="p-0 h-100 overflow-auto">
 
-          <b-button v-b-toggle.variableConfig
-                    variant="outline"
-                    class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-                    @click="showVariable = !showVariable">
-            <i class="fas fa-cog mr-2"></i>
+          <b-button
+            v-b-toggle.variableConfig
+            variant="outline"
+            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+            @click="showVariable = !showVariable"
+          >
+            <i class="fas fa-cog mr-2"/>
             {{ $t('Variable') }}
-            <i class="fas fa-angle-down ml-auto"
-               :class="{ 'fas fa-angle-right' : showVariable }"
-            ></i>
+            <i
+              class="fas fa-angle-down ml-auto"
+              :class="{ 'fas fa-angle-right' : showVariable }"
+            />
           </b-button>
 
           <b-collapse id="variableConfig" class="mt-2">
             <template v-for="(item, index) in inspection.inspector">
               <template v-if="item.panel && item.panel === 'variable'">
-                <component :formConfig="config"
-                           :key="index"
-                           :is="item.type"
-                           class="border-bottom pt-1 pb-3 pr-4 pl-4"
-                           v-bind="item.config"
-                           v-model="inspection.config[item.field]"/>
-              </template>
+                <component
+                  :formConfig="config"
+                  :key="index"
+                  :is="item.type"
+                  class="border-bottom pt-1 pb-3 pr-4 pl-4"
+                  v-bind="item.config"
+                  v-model="inspection.config[item.field]"
+              /></template>
             </template>
           </b-collapse>
 
-          <b-button v-b-toggle.configuration
-                    variant="outline"
-                    class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-                    @click="showConfiguration = !showConfiguration">
-            <i class="fas fa-cog mr-2"></i>
+          <b-button
+            v-b-toggle.configuration
+            variant="outline"
+            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+            @click="showConfiguration = !showConfiguration"
+          >
+            <i class="fas fa-cog mr-2"/>
             {{ $t('Configuration') }}
-            <i class="fas fa-angle-down ml-auto"
-               :class="{ 'fas fa-angle-right' : showConfiguration }"
-            ></i>
+            <i class="fas fa-angle-down ml-auto" :class="{ 'fas fa-angle-right' : showConfiguration }"/>
           </b-button>
 
           <b-collapse id="configuration" class="mt-2">
             <template v-for="(item, index) in inspection.inspector">
               <template v-if="!item.panel">
-                <component :formConfig="config"
-                           :key="index"
-                           :is="item.type"
-                           class="border-bottom pt-1 pb-3 pr-4 pl-4"
-                           v-bind="item.config"
-                           v-model="inspection.config[item.field]"
+                <component
+                  :formConfig="config"
+                  :key="index"
+                  :is="item.type"
+                  class="border-bottom pt-1 pb-3 pr-4 pl-4"
+                  v-bind="item.config"
+                  v-model="inspection.config[item.field]"
                 />
               </template>
             </template>
@@ -219,7 +228,7 @@
         v-model="addPageName"
         :label="$t('Page Name')"
         :helper="$t('The name of the new page to add')"
-      ></form-input>
+      />
     </b-modal>
 
     <b-modal
@@ -235,7 +244,7 @@
         v-model="editPageName"
         :label="$t('Page Name')"
         :helper="$t('The new name of the page')"
-      ></form-input>
+      />
     </b-modal>
 
     <b-modal
@@ -247,34 +256,34 @@
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
     >
-      <p>{{confirmMessage}}</p>
-            <div slot="modal-ok">{{ $t('Delete') }}</div>
+      <p>{{ confirmMessage }}</p>
+      <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
   </b-row>
 </template>
 
 <script>
-import Vue from "vue";
-import draggable from "vuedraggable";
-import HasColorProperty from "../mixins/HasColorProperty";
+import Vue from 'vue';
+import draggable from 'vuedraggable';
+import HasColorProperty from '../mixins/HasColorProperty';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
 
-import BootstrapVue from "bootstrap-vue";
+import BootstrapVue from 'bootstrap-vue';
 
-import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
+import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 
 Vue.use(BootstrapVue);
 
-let Validator = require("validatorjs");
+let Validator = require('validatorjs');
 Validator.register(
-  "attr-value",
+  'attr-value',
   value => {
     return value.match(/^[a-zA-Z0-9-_]+$/);
   },
-  "Must be letters, numbers, underscores or dashes"
+  'Must be letters, numbers, underscores or dashes'
 );
 
 import {
@@ -284,15 +293,15 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormDatePicker,
-  FormHtmlEditor
-} from "@processmaker/vue-form-elements";
+  FormHtmlEditor,
+} from '@processmaker/vue-form-elements';
 
-import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
+import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 
 const defaultConfig = [{
-  name: "Default",
-  items: []
-}]
+  name: 'Default',
+  items: [],
+}];
 
 export default {
   props: ['validationErrors', 'initialConfig', 'title'],
@@ -309,7 +318,7 @@ export default {
     FormMultiColumn,
     ...editor,
     ...inspector,
-    ...renderer
+    ...renderer,
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -321,22 +330,22 @@ export default {
     return {
       currentPage: 0,
       selected: null,
-      display: "editor",
+      display: 'editor',
       inspection: {},
       // Blank at start, assume the parent component will call addControl for each control
       controls: [],
       pageAddModal: false,
-      addPageName: "",
+      addPageName: '',
       editPageIndex: null,
-      editPageName: "",
+      editPageName: '',
       config,
-      confirmMessage: "",
+      confirmMessage: '',
       pageDelete: 0,
       translated: [],
       showAssignment: false,
       showConfiguration: false,
       showVariable: false,
-      filterQuery: ""
+      filterQuery: '',
     };
   },
   computed: {
@@ -351,16 +360,16 @@ export default {
       });
     },
     isCurrentPageEmpty() {
-      return this.config[this.currentPage].items.length === 0
-    }
+      return this.config[this.currentPage].items.length === 0;
+    },
   },
   watch: {
     config: {
       handler() {
         // @todo, remove inspector stuffs
-        this.$emit("change", this.config);
+        this.$emit('change', this.config);
       },
-      deep: true
+      deep: true,
     },
     currentPage() {
       this.inspect();
@@ -382,14 +391,14 @@ export default {
         }
       }
       this.translated.push(e);
-    }
+    },
   },
   methods: {
     updateConfig(items) {
       this.config[this.currentPage].items = items;
     },
     hasError(element) {
-      return this.validationErrors.some(({ item }) => item === element);
+      return this.validationErrors.some(({item}) => item === element);
     },
     focusInspector(validation) {
       this.showConfiguration = true;
@@ -401,9 +410,9 @@ export default {
     },
     confirmDelete() {
       this.confirmMessage =
-        "Are you sure to delete the page " +
-        this.config[this.currentPage].name +
-        "?";
+          'Are you sure to delete the page ' +
+          this.config[this.currentPage].name +
+          '?';
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
@@ -427,9 +436,9 @@ export default {
       this.config[this.editPageIndex].name = this.editPageName;
     },
     addPage() {
-      this.config.push({ name: this.addPageName, items: [] });
+      this.config.push({name: this.addPageName, items: []});
       this.currentPage = this.config.length - 1;
-      this.addPageName = "";
+      this.addPageName = '';
     },
     deletePage() {
       this.currentPage = 0;
@@ -446,9 +455,9 @@ export default {
         config: JSON.parse(JSON.stringify(control.config)),
         inspector: JSON.parse(JSON.stringify(control.inspector)),
         component: control.component,
-        "editor-component": control["editor-component"],
+        'editor-component': control['editor-component'],
         label: control.label,
-        value: control.value
+        value: control.value,
       };
       copy.config.label = this.$t(copy.config.label);
       if (copy.config.options) {
@@ -461,120 +470,98 @@ export default {
 
       // If it's a container, let's add an items property, with the default of items in the control
       if (control.container) {
-        copy["items"] = JSON.parse(JSON.stringify(control.items));
+        copy['items'] = JSON.parse(JSON.stringify(control.items));
         copy.container = true;
       }
       return copy;
-    }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-$header-bg: #f7f7f7;
-
-.control-icon {
-  width: 30px;
-  font-size: 20px;
-
+  $header-bg: #f7f7f7;
+  .control-icon {
+    width: 30px;
+    font-size: 20px;
   img {
     height: 20px;
   }
-}
-
-.control-item {
+  }
+  .control-item {
   .delete {
     position: absolute;
     top: 0px;
     right: 0px;
     display: none;
   }
-
   &:hover {
-    cursor: move;
-  }
-
+     cursor: move;
+   }
   &.selected {
-    border-radius: 5px;
-    cursor: move;
-  }
-
+     border-radius: 5px;
+     cursor: move;
+   }
   &:not(.selected) .card {
-    border: none;
-  }
-
+     border: none;
+   }
   .prevent-interaction {
     pointer-events: none;
   }
-}
-
-.hasError {
-  border: 1px solid red;
-  border-radius: 0.25rem;
-
+  }
+  .hasError {
+    border: 1px solid red;
+    border-radius: 0.25rem;
   .form-element-header {
     border-bottom: 1px solid red;
     color: red;
   }
-}
-
-.inspector-header {
-  background: $header-bg;
-}
-
-.validation-panel {
-  background: $header-bg;
-  height: 10rem;
-  width: 21.35rem;
-  bottom: 3rem;
-}
-
-.validation__message {
-  text-decoration: none;
-
-  &:hover {
-    background: rgba(51, 151, 225, 0.3);
   }
-}
-
-.controls-header {
-  border-bottom: none;
-}
-
-.header-bg {
-  background: $header-bg;
-}
-
-.controls {
-  cursor: move;
-  user-select: none;
-}
-
-.header-button {
-  height: 38px;
-  width: 38px;
-}
-
-.filter-icon {
-  background-color: #e9ecef;
-}
-
-.controls-column {
-  max-width: 185px;
-}
-
-.inspector-column {
-  max-width: 265px;
-}
-
-.form-control-ghost {
-  margin-bottom: 0;
-  border-radius: 0.25rem;
-}
-
-.drag-placeholder {
-  height: 8rem;
-  top: 4rem;
-  border: 1px dashed rgba(0, 0, 0, 0.125);
-}
+  .inspector-header {
+    background: $header-bg;
+  }
+  .validation-panel {
+    background: $header-bg;
+    height: 10rem;
+    width: 21.35rem;
+    bottom: 3rem;
+  }
+  .validation__message {
+    text-decoration: none;
+  &:hover {
+     background: rgba(51, 151, 225, 0.3);
+   }
+  }
+  .controls-header {
+    border-bottom: none;
+  }
+  .header-bg {
+    background: $header-bg;
+  }
+  .controls {
+    cursor: move;
+    user-select: none;
+  }
+  .header-button {
+    height: 38px;
+    width: 38px;
+  }
+  .filter-icon {
+    background-color: #e9ecef;
+  }
+  .controls-column {
+    max-width: 185px;
+  }
+  .inspector-column {
+    max-width: 265px;
+  }
+  .form-control-ghost {
+    margin-bottom: 0;
+    border-radius: 0.25rem;
+  }
+  .drag-placeholder {
+    height: 8rem;
+    top: 4rem;
+    border: 1px dashed rgba(0, 0, 0, 0.125);
+  }
 </style>

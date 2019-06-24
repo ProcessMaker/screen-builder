@@ -1,8 +1,8 @@
-import FormText from "./components/renderer/form-text";
-import FormButton from "./components/renderer/form-button"
-import FormMultiColumn from "./components/renderer/form-multi-column"
-import FormRecordList from "./components/renderer/form-record-list"
-import FormImage from "./components/renderer/form-image"
+import FormText from './components/renderer/form-text';
+import FormButton from './components/renderer/form-button';
+import FormMultiColumn from './components/renderer/form-multi-column';
+import FormRecordList from './components/renderer/form-record-list';
+import FormImage from './components/renderer/form-image';
 
 import {
   FormInput,
@@ -12,186 +12,187 @@ import {
   FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
-} from "@processmaker/vue-form-elements";
+} from '@processmaker/vue-form-elements';
 
 const bgcolorProperty = {
-  type: "ColorSelect",
-  field: "bgcolor",
+  type: 'ColorSelect',
+  field: 'bgcolor',
   config: {
-    label: "Element Background color",
-    helper: "Set the element's background color",
+    label: 'Element Background color',
+    helper: 'Set the element\'s background color',
     options: [
       {
         value: 'alert alert-primary',
-        content: 'primary'
+        content: 'primary',
       },
       {
         value: 'alert alert-secondary',
-        content: 'secondary'
+        content: 'secondary',
       },
       {
         value: 'alert alert-success',
-        content: 'success'
+        content: 'success',
       },
       {
         value: 'alert alert-danger',
-        content: 'danger'
+        content: 'danger',
       },
       {
         value: 'alert alert-warning',
-        content: 'warning'
+        content: 'warning',
       },
       {
         value: 'alert alert-info',
-        content: 'info'
+        content: 'info',
       },
       {
         value: 'alert alert-light',
-        content: 'light'
+        content: 'light',
       },
       {
         value: 'alert alert-dark',
-        content: 'dark'
+        content: 'dark',
       },
-    ]
-  }
+    ],
+  },
 };
 const colorProperty = {
-  type: "ColorSelect",
-  field: "color",
+  type: 'ColorSelect',
+  field: 'color',
   config: {
-    label: "Text color",
-    helper: "Set the element's text color",
+    label: 'Text color',
+    helper: 'Set the element\'s text color',
     options: [
       {
         value: 'text-primary',
-        content: 'primary'
+        content: 'primary',
       },
       {
         value: 'text-secondary',
-        content: 'secondary'
+        content: 'secondary',
       },
       {
         value: 'text-success',
-        content: 'success'
+        content: 'success',
       },
       {
         value: 'text-danger',
-        content: 'danger'
+        content: 'danger',
       },
       {
         value: 'text-warning',
-        content: 'warning'
+        content: 'warning',
       },
       {
         value: 'text-info',
-        content: 'info'
+        content: 'info',
       },
       {
         value: 'text-light',
-        content: 'light'
+        content: 'light',
       },
       {
         value: 'text-dark',
-        content: 'dark'
+        content: 'dark',
       },
-    ]
-  }
+    ],
+  },
 };
 const KeyName = {
-  type: "FormInput",
-  field: "name",
-  panel: "variable",
+  type: 'FormInput',
+  field: 'name',
+  panel: 'variable',
   config: {
-    label: "Key Name",
+    label: 'Key Name',
     name: 'Key Name',
     validation: 'required',
-    helper: "A variable key name is a symbolic name to reference information."
-  }
+    helper: 'A variable key name is a symbolic name to reference information.',
+  },
 };
 const DataType = {
-  type: "FormMultiselect",
-  field: "dataFormat",
-  panel: "variable",
+  type: 'FormMultiselect',
+  field: 'dataFormat',
+  panel: 'variable',
   config: {
-    label: "Data Type",
-    name: "Data Type",
-    helper: "The data type specifies what kind of data is stored in the variable.",
+    label: 'Data Type',
+    name: 'Data Type',
+    helper: 'The data type specifies what kind of data is stored in the variable.',
     validation: 'required',
     options: [
       {
         value: 'string',
-        content: 'string'
+        content: 'string',
       },
       {
         value: 'int',
-        content: 'int'
+        content: 'int',
       },
       {
         value: 'float',
-        content: 'float'
+        content: 'float',
       },
       {
         value: 'datetime',
-        content: 'datetime'
+        content: 'datetime',
       },
       {
         value: 'date',
-        content: 'date'
+        content: 'date',
       },
       {
         value: 'currency',
-        content: 'currency'
+        content: 'currency',
       },
       {
         value: 'boolean',
-        content: 'boolean'
-      }
-    ]
-  }
+        content: 'boolean',
+      },
+    ],
+  },
 };
 const ValidateVariable = {
-  type: "FormInput",
-  field: "validation",
-  panel: "variable",
+  type: 'FormInput',
+  field: 'validation',
+  panel: 'variable',
   config: {
-    label: "Validation",
-    name: "validation",
-    helper: "Validation rules ensure the integrity and validity of the data."
-  }
+    label: 'Validation',
+    name: 'validation',
+    helper: 'Validation rules ensure the integrity and validity of the data.',
+  },
 };
 const ReadOnly = {
-  type: "FormCheckbox",
-  field: "readOnly",
-  panel: "variable",
+  type: 'FormCheckbox',
+  field: 'readOnly',
+  panel: 'variable',
   config: {
-    label: "Control is read only",
-    helper: ""
-  }
+    label: 'Control is read only',
+    toggle: true,
+    helper: '',
+  },
 };
 const LabelField = {
-  type: "FormInput",
-  field: "label",
+  type: 'FormInput',
+  field: 'label',
   config: {
-    label: "Field Label",
-    helper: "The label describes the fields name"
-  }
+    label: 'Field Label',
+    helper: 'The label describes the fields name',
+  },
 };
 const Placeholder = {
-  type: "FormInput",
-  field: "placeholder",
+  type: 'FormInput',
+  field: 'placeholder',
   config: {
-    label: "Placeholder",
-    helper: "The placeholder is what is shown in the field when no value is provided yet"
-  }
+    label: 'Placeholder',
+    helper: 'The placeholder is what is shown in the field when no value is provided yet',
+  },
 };
 const Helper = {
-  type: "FormInput",
-  field: "helper",
+  type: 'FormInput',
+  field: 'helper',
   config: {
-    label: "Help Text",
-    helper: "Help text is meant to provide additional guidance on the field's value"
-  }
+    label: 'Help Text',
+    helper: 'Help text is meant to provide additional guidance on the field\'s value',
+  },
 };
 
 export default [
@@ -211,122 +212,122 @@ export default [
         fontWeight: 'normal',
         textAlign: 'left',
         verticalAlign: 'top',
-        name: ''
+        name: '',
       },
       inspector: [
         {
-          type: "FormTextArea",
-          field: "label",
+          type: 'FormTextArea',
+          field: 'label',
           config: {
             rows: 5,
-            label: "Text Content",
-            helper: "The text to display",
-          }
+            label: 'Text Content',
+            helper: 'The text to display',
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "fontWeight",
+          type: 'FormMultiselect',
+          field: 'fontWeight',
           config: {
-            label: "Font Weight",
-            name: "Font Weight",
-            helper: "The weight of the text",
+            label: 'Font Weight',
+            name: 'Font Weight',
+            helper: 'The weight of the text',
             validation: 'required',
             options: [
               {
                 value: 'normal',
-                content: 'Normal'
+                content: 'Normal',
               },
               {
                 value: 'bold',
-                content: 'Bold'
-              }
-            ]
-          }
+                content: 'Bold',
+              },
+            ],
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "textAlign",
+          type: 'FormMultiselect',
+          field: 'textAlign',
           config: {
-            label: "Text Horizontal Alignment",
-            name: "Text Horizontal Alignment",
-            helper: "Horizontal alignment of the text",
+            label: 'Text Horizontal Alignment',
+            name: 'Text Horizontal Alignment',
+            helper: 'Horizontal alignment of the text',
             validation: 'required',
             options: [
               {
                 value: 'center',
-                content: 'Center'
+                content: 'Center',
               },
               {
                 value: 'left',
-                content: 'Left'
+                content: 'Left',
               },
               {
                 value: 'right',
-                content: 'Right'
+                content: 'Right',
               },
               {
                 value: 'justify',
-                content: 'Justify'
+                content: 'Justify',
               },
-            ]
-          }
+            ],
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "verticalAlign",
+          type: 'FormMultiselect',
+          field: 'verticalAlign',
           config: {
-            label: "Text Vertical Alignment",
-            name: "Text Vertical Alignment",
-            helper: "Vertical alignment of the text",
+            label: 'Text Vertical Alignment',
+            name: 'Text Vertical Alignment',
+            helper: 'Vertical alignment of the text',
             validation: 'required',
             options: [
               {
                 value: 'top',
-                content: 'Top'
+                content: 'Top',
               },
               {
                 value: 'middle',
-                content: 'Middle'
+                content: 'Middle',
               },
               {
                 value: 'bottom',
-                content: 'Bottom'
-              }
-            ]
-          }
+                content: 'Bottom',
+              },
+            ],
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "fontSize",
+          type: 'FormMultiselect',
+          field: 'fontSize',
           config: {
-            label: "Font Size",
-            name: "Font Size",
-            helper: "The size of the text in em",
+            label: 'Font Size',
+            name: 'Font Size',
+            helper: 'The size of the text in em',
             validation: 'required',
             options: [
               {
                 value: '0.5em',
-                content: '0.5'
+                content: '0.5',
               },
               {
                 value: '1em',
-                content: '1'
+                content: '1',
               },
               {
                 value: '1.5em',
-                content: '1.5'
+                content: '1.5',
               },
               {
                 value: '2em',
-                content: '2'
+                content: '2',
               },
-            ]
-          }
+            ],
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
-    }
+      ],
+    },
   },
   {
     editorComponent: FormHtmlEditor,
@@ -344,17 +345,17 @@ export default [
       },
       inspector: [
         {
-          type: "FormTextArea",
-          field: "content",
+          type: 'FormTextArea',
+          field: 'content',
           config: {
             rows: 5,
-            label: "Rich Text Content",
-            helper: "The HTML text to display",
+            label: 'Rich Text Content',
+            helper: 'The HTML text to display',
             value: '',
-          }
+          },
         },
         bgcolorProperty,
-      ]
+      ],
     },
   },
   {
@@ -363,17 +364,17 @@ export default [
     rendererComponent: FormInput,
     rendererBinding: 'FormInput',
     control: {
-      label: "Line Input",
+      label: 'Line Input',
       component: 'FormInput',
-      "editor-component": "FormInput",
+      'editor-component': 'FormInput',
       config: {
         icon: 'far fa-square',
-        label: "New Input",
+        label: 'New Input',
         name: '',
         placeholder: '',
         validation: '',
         helper: null,
-        type: 'text'
+        type: 'text',
       },
       inspector: [
         KeyName,
@@ -382,30 +383,30 @@ export default [
         ReadOnly,
         LabelField,
         {
-          type: "FormMultiselect",
-          field: "type",
+          type: 'FormMultiselect',
+          field: 'type',
           config: {
-            label: "Field Type",
+            label: 'Field Type',
             name: 'Field Type',
-            helper: "The type for this field",
+            helper: 'The type for this field',
             validation: 'required',
             options: [
               {
                 value: 'text',
-                content: 'Text'
+                content: 'Text',
               },
               {
                 value: 'password',
-                content: 'Password'
-              }
-            ]
-          }
+                content: 'Password',
+              },
+            ],
+          },
         },
         Placeholder,
         Helper,
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -414,15 +415,15 @@ export default [
     rendererComponent: FormTextArea,
     rendererBinding: 'FormTextArea',
     control: {
-      label: "Textarea",
+      label: 'Textarea',
       component: 'FormTextArea',
-      "editor-component": "FormTextArea",
+      'editor-component': 'FormTextArea',
       config: {
         icon: 'fas fa-paragraph',
-        label: "New Textarea",
-        placeholder: "",
+        label: 'New Textarea',
+        placeholder: '',
         helper: null,
-        rows: 2
+        rows: 2,
       },
       inspector: [
         KeyName,
@@ -431,18 +432,18 @@ export default [
         ReadOnly,
         LabelField,
         {
-          type: "FormInput",
-          field: "rows",
+          type: 'FormInput',
+          field: 'rows',
           config: {
-            label: "Rows",
-            helper: "The number of rows to provide for input"
-          }
+            label: 'Rows',
+            helper: 'The number of rows to provide for input',
+          },
         },
         Placeholder,
         Helper,
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -451,19 +452,19 @@ export default [
     rendererComponent: FormSelect,
     rendererBinding: 'FormSelect',
     control: {
-      label: "Select",
+      label: 'Select',
       component: 'FormSelect',
-      "editor-component": "FormSelect",
+      'editor-component': 'FormSelect',
       config: {
         icon: 'fas fa-chevron-circle-down',
-        label: "New Select",
-        placeholder: "",
+        label: 'New Select',
+        placeholder: '',
         validation: '',
         options: [
           {
             value: null,
-            content: 'Select'
-          }
+            content: 'Select',
+          },
         ],
         helper: null,
       },
@@ -475,16 +476,16 @@ export default [
         LabelField,
         Helper,
         {
-          type: "OptionsList",
-          field: "options",
+          type: 'OptionsList',
+          field: 'options',
           config: {
             label: 'Options List',
-            helper: "List of options available in the select drop down"
-          }
+            helper: 'List of options available in the select drop down',
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -493,17 +494,17 @@ export default [
     rendererComponent: FormRadioButtonGroup,
     rendererBinding: 'FormRadioButtonGroup',
     control: {
-      label: "Radio Group",
+      label: 'Radio Group',
       component: 'FormRadioButtonGroup',
-      "editor-component": "FormRadioButtonGroup",
+      'editor-component': 'FormRadioButtonGroup',
       config: {
         icon: 'fas fa-list-ul',
-        label: "New Radio Button Group",
+        label: 'New Radio Button Group',
         options: [
           {
             value: 'new',
-            content: 'New Option'
-          }
+            content: 'New Option',
+          },
         ],
         toggle: false,
         helper: null,
@@ -516,24 +517,24 @@ export default [
         LabelField,
         Helper,
         {
-          type: "OptionsList",
-          field: "options",
+          type: 'OptionsList',
+          field: 'options',
           config: {
             label: 'Options List',
-            helper: "List of options available in the radio button group"
-          }
+            helper: 'List of options available in the radio button group',
+          },
         },
         {
-          type: "FormCheckbox",
-          field: "toggle",
+          type: 'FormCheckbox',
+          field: 'toggle',
           config: {
-            label: "Toggle Style?",
-            helper: ""
-          }
+            label: 'Toggle Style?',
+            helper: '',
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -542,17 +543,17 @@ export default [
     rendererComponent: FormCheckbox,
     rendererBinding: 'FormCheckbox',
     control: {
-      label: "Checkbox",
+      label: 'Checkbox',
       component: 'FormCheckbox',
-      "editor-component": "FormCheckbox",
+      'editor-component': 'FormCheckbox',
       config: {
         icon: 'fas fa-check-square',
-        label: "New Checkbox",
+        label: 'New Checkbox',
         helper: null,
         name: null,
         initiallyChecked: false,
         validation: '',
-        toggle: false
+        toggle: false,
       },
       inspector: [
         KeyName,
@@ -562,24 +563,24 @@ export default [
         LabelField,
         Helper,
         {
-          type: "FormCheckbox",
-          field: "toggle",
+          type: 'FormCheckbox',
+          field: 'toggle',
           config: {
-            label: "Toggle Style?",
-            helper: ""
-          }
+            label: 'Toggle Style?',
+            helper: '',
+          },
         },
         {
-          type: "FormCheckbox",
-          field: "initiallyChecked",
+          type: 'FormCheckbox',
+          field: 'initiallyChecked',
           config: {
-            label: "Initially Checked?",
-            helper: "Should the checkbox be checked by default"
-          }
+            label: 'Initially Checked?',
+            helper: 'Should the checkbox be checked by default',
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -588,14 +589,15 @@ export default [
     rendererComponent: FormDatePicker,
     rendererBinding: 'FormDatePicker',
     control: {
-      label: "Date Picker",
+      label: 'Date Picker',
       component: 'FormDatePicker',
-      "editor-component": "FormDatePicker",
+      'editor-component': 'FormDatePicker',
       config: {
         icon: 'far fa-calendar-alt',
-        label: "New Date Picker",
+        label: 'New Date Picker',
         type: 'date',
-        name: ''
+        name: '',
+        placeholder: '',
       },
       inspector: [
         KeyName,
@@ -606,7 +608,7 @@ export default [
         Placeholder,
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -615,84 +617,84 @@ export default [
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
-      label: "Navigation",
+      label: 'Navigation',
       component: 'FormButton',
-      "editor-component": "FormButton",
+      'editor-component': 'FormButton',
       config: {
         icon: 'far fa-compass',
-        label: "Page Navigation",
+        label: 'Page Navigation',
         variant: 'primary',
         event: 'pageNavigate',
-        eventData: 0
+        eventData: 0,
       },
       inspector: [
         {
-          type: "FormInput",
-          field: "label",
+          type: 'FormInput',
+          field: 'label',
           config: {
-            label: "Field Label",
-            helper: "The label describes the button's text"
-          }
+            label: 'Field Label',
+            helper: 'The label describes the button\'s text',
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "variant",
+          type: 'FormMultiselect',
+          field: 'variant',
           config: {
-            label: "Variant",
-            name: "Variant",
-            helper: "The variant determines the appearance of the button",
+            label: 'Variant',
+            name: 'Variant',
+            helper: 'The variant determines the appearance of the button',
             validation: 'required',
             options: [
               {
                 value: 'primary',
-                content: 'Primary'
+                content: 'Primary',
               },
               {
                 value: 'secondary',
-                content: 'Secondary'
+                content: 'Secondary',
               },
               {
                 value: 'success',
-                content: 'Success'
+                content: 'Success',
               },
               {
                 value: 'danger',
-                content: 'Danger'
+                content: 'Danger',
               },
               {
                 value: 'warning',
-                content: 'Warning'
+                content: 'Warning',
               },
               {
                 value: 'info',
-                content: 'Info'
+                content: 'Info',
               },
               {
                 value: 'light',
-                content: 'Light'
+                content: 'Light',
               },
 
               {
                 value: 'dark',
-                content: 'Dark'
+                content: 'Dark',
               },
 
               {
                 value: 'link',
-                content: 'Link'
-              }
-            ]
-          }
+                content: 'Link',
+              },
+            ],
+          },
         },
         {
-          type: "PageSelect",
-          field: "eventData",
+          type: 'PageSelect',
+          field: 'eventData',
           config: {
-            label: "Destination",
-            helper: "The destination page to navigate to"
-          }
+            label: 'Destination',
+            helper: 'The destination page to navigate to',
+          },
         },
-      ]
+      ],
     },
   },
   {
@@ -701,39 +703,39 @@ export default [
     rendererComponent: FormMultiColumn,
     rendererBinding: 'FormMultiColumn',
     control: {
-      label: "Table",
+      label: 'Table',
       component: 'FormMultiColumn',
-      "editor-component": "MultiColumn",
+      'editor-component': 'MultiColumn',
       container: true,
       // Default items container
       items: [
         [],
-        []
+        [],
       ],
       config: {
         icon: 'fas fa-table',
         options: [
           {
             value: '1',
-            content: '6'
+            content: '6',
           },
           {
             value: '2',
-            content: '6'
-          }
+            content: '6',
+          },
         ],
       },
       inspector: [
         {
-          type: "ContainerColumns",
-          field: "options",
+          type: 'ContainerColumns',
+          field: 'options',
           config: {
             label: 'Column Widths',
-          }
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -742,47 +744,47 @@ export default [
     rendererComponent: FormRecordList,
     rendererBinding: 'FormRecordList',
     control: {
-      label: "Record List",
+      label: 'Record List',
       component: 'FormRecordList',
-      "editor-component": "FormText",
+      'editor-component': 'FormText',
       config: {
         name: '',
         icon: 'fas fa-th-list',
-        label: "New Record List",
+        label: 'New Record List',
         editable: false,
         fields: [],
-        form: ''
+        form: '',
       },
       inspector: [
         KeyName,
         LabelField,
         {
-          type: "FormCheckbox",
-          field: "editable",
+          type: 'FormCheckbox',
+          field: 'editable',
           config: {
-            label: "Editable?",
-            helper: "Should records be editable/removable and can new records be added"
-          }
+            label: 'Editable?',
+            helper: 'Should records be editable/removable and can new records be added',
+          },
         },
         {
-          type: "OptionsList",
-          field: "fields",
+          type: 'OptionsList',
+          field: 'fields',
           config: {
             label: 'Fields List',
-            helper: "List of fields to display in the record list"
-          }
+            helper: 'List of fields to display in the record list',
+          },
         },
         {
-          type: "PageSelect",
-          field: "form",
+          type: 'PageSelect',
+          field: 'form',
           config: {
-            label: "Record Form",
-            helper: "The form to use for adding/editing records"
-          }
+            label: 'Record Form',
+            helper: 'The form to use for adding/editing records',
+          },
         },
         bgcolorProperty,
         colorProperty,
-      ]
+      ],
     },
   },
   {
@@ -791,54 +793,54 @@ export default [
     rendererComponent: FormImage,
     rendererBinding: 'FormImage',
     control: {
-      label: "Image",
+      label: 'Image',
       component: 'FormImage',
-      "editor-component": "FormImage",
+      'editor-component': 'FormImage',
       config: {
-        label: "Image",
+        label: 'Image',
         icon: 'fas fa-image',
         variant: 'primary',
         event: 'submit',
         name: null,
-        value: null
+        value: null,
       },
       inspector: [
         KeyName,
         {
-          type: "FormInput",
-          field: "id",
+          type: 'FormInput',
+          field: 'id',
           config: {
-            label: "Id",
-            helper: "Image id"
-          }
+            label: 'Id',
+            helper: 'Image id',
+          },
         },
         {
           type: 'ImageUpload',
-          field: "image",
+          field: 'image',
           config: {
-            label: "Upload image",
-            helper: "Upload image"
-          }
+            label: 'Upload image',
+            helper: 'Upload image',
+          },
         },
         {
-          type: "FormInput",
-          field: "width",
+          type: 'FormInput',
+          field: 'width',
           config: {
-            label: "Width",
-            helper: "image width",
-            type: "number",
-          }
+            label: 'Width',
+            helper: 'image width',
+            type: 'number',
+          },
         },
         {
-          type: "FormInput",
-          field: "height",
+          type: 'FormInput',
+          field: 'height',
           config: {
-            label: "Height",
-            helper: "Image height",
-            type: "number",
-          }
+            label: 'Height',
+            helper: 'Image height',
+            type: 'number',
+          },
         },
-      ]
+      ],
     },
   },
   {
@@ -847,77 +849,77 @@ export default [
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
-      label: "Submit",
+      label: 'Submit',
       component: 'FormButton',
-      "editor-component": "FormButton",
+      'editor-component': 'FormButton',
       config: {
         icon: 'fas fa-share-square',
-        label: "New Submit",
+        label: 'New Submit',
         variant: 'primary',
         event: 'submit',
         name: null,
-        fieldValue: null
+        fieldValue: null,
       },
       inspector: [
         KeyName,
         LabelField,
         {
-          type: "FormInput",
-          field: "fieldValue",
+          type: 'FormInput',
+          field: 'fieldValue',
           config: {
-            label: "Field Value",
-            helper: "The value being submitted"
-          }
+            label: 'Field Value',
+            helper: 'The value being submitted',
+          },
         },
         {
-          type: "FormMultiselect",
-          field: "variant",
+          type: 'FormMultiselect',
+          field: 'variant',
           config: {
-            label: "Variant",
-            name: "Variant",
-            helper: "The variant determines the appearance of the button",
+            label: 'Variant',
+            name: 'Variant',
+            helper: 'The variant determines the appearance of the button',
             validation: 'required',
             options: [
               {
                 value: 'primary',
-                content: 'Primary'
+                content: 'Primary',
               },
               {
                 value: 'secondary',
-                content: 'Secondary'
+                content: 'Secondary',
               },
               {
                 value: 'success',
-                content: 'Success'
+                content: 'Success',
               },
               {
                 value: 'danger',
-                content: 'Danger'
+                content: 'Danger',
               },
               {
                 value: 'warning',
-                content: 'Warning'
+                content: 'Warning',
               },
               {
                 value: 'info',
-                content: 'Info'
+                content: 'Info',
               },
               {
                 value: 'light',
-                content: 'Light'
+                content: 'Light',
               },
               {
                 value: 'dark',
-                content: 'Dark'
+                content: 'Dark',
               },
               {
                 value: 'link',
-                content: 'Link'
-              }
-            ]
-          }
+                content: 'Link',
+              },
+            ],
+          },
         },
-      ]
+      ],
     },
   },
 ];
