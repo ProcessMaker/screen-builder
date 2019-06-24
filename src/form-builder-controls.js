@@ -615,7 +615,8 @@ export default [
               icon: 'far fa-calendar-alt',
               label: "New Date Picker",
                 type: 'date',
-                name: ''
+                name: '',
+                placeholder: ''
             },
             inspector: [{
                 type: "FormInput",
