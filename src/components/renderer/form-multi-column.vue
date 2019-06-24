@@ -1,144 +1,144 @@
 <template>
-    <div class="form-group">
-        <div class="row">
-            <div
-                v-for="(item, key) in items"
-                :class="classColumn(key)"
-                class="column-draggable"
-                :key="key"
-            >
-                <div v-for="(element, index) in item.filter(shouldElementBeVisible)" :key="index">
-                    <component
-                        v-if="element.container"
-                        :class="elementCssClass(element)"
-                        ref="container"
-                        v-model="element.items"
-                        :transientData="transientData"
-                        @submit="submit"
-                        @pageNavigate="pageNavigate"
-                        :config="element.config"
-                        :is="element.component"
-                    />
+  <div class="form-group">
+    <div class="row">
+      <div
+        v-for="(item, key) in items"
+        :class="classColumn(key)"
+        class="column-draggable"
+        :key="key"
+      >
+        <div v-for="(element, index) in item.filter(shouldElementBeVisible)" :key="index">
+          <component
+            v-if="element.container"
+            :class="elementCssClass(element)"
+            ref="container"
+            v-model="element.items"
+            :transientData="transientData"
+            @submit="submit"
+            @pageNavigate="pageNavigate"
+            :config="element.config"
+            :is="element.component"
+          />
 
-                    <div v-else :id="element.config.name ? element.config.name : undefined">
-                        <component
-                            :class="elementCssClass(element)"
-                            ref="elements"
-                            v-model="model[element.config.name]"
-                            :validationData="transientData"
-                            @submit="submit"
-                            @pageNavigate="pageNavigate"
-                            v-bind="element.config"
-                            :is="element.component"
-                        />
-                    </div>
-                </div>
-            </div>
+          <div v-else :id="element.config.name ? element.config.name : undefined">
+            <component
+              :class="elementCssClass(element)"
+              ref="elements"
+              v-model="model[element.config.name]"
+              :validationData="transientData"
+              @submit="submit"
+              @pageNavigate="pageNavigate"
+              v-bind="element.config"
+              :is="element.component"
+            />
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-  import draggable from "vuedraggable";
-  import * as renderer from '@/components/renderer';
-  import { HasColorProperty, shouldElementBeVisible } from "@/mixins";
+import draggable from 'vuedraggable';
+import * as renderer from '@/components/renderer';
+import { HasColorProperty, shouldElementBeVisible } from '@/mixins';
 
-  import {
+import {
+  FormInput,
+  FormSelect,
+  FormTextArea,
+  FormCheckbox,
+  FormRadioButtonGroup,
+  FormDatePicker,
+  FormHtmlEditor,
+} from '@processmaker/vue-form-elements';
+
+const defaultColumnWidth = 1;
+
+export default {
+  name: 'FormMultiColumn',
+  mixins: [HasColorProperty, shouldElementBeVisible],
+  props: ['value', 'selected', 'name', 'config', 'transientData'],
+  components: {
+    draggable,
     FormInput,
     FormSelect,
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
     FormDatePicker,
-    FormHtmlEditor
-  } from "@processmaker/vue-form-elements";
-
-  const defaultColumnWidth = 1;
-
-  export default {
-    name: "FormMultiColumn",
-    mixins: [HasColorProperty, shouldElementBeVisible],
-    props: ["value", "selected", "name", "config", "transientData"],
-    components: {
-      draggable,
-      FormInput,
-      FormSelect,
-      FormTextArea,
-      FormCheckbox,
-      FormRadioButtonGroup,
-      FormDatePicker,
-      FormHtmlEditor,
-      ...renderer
+    FormHtmlEditor,
+    ...renderer,
+  },
+  data() {
+    return {
+      items: [],
+    };
+  },
+  computed: {
+    model() {
+      return this.$parent.model;
     },
-    data() {
-      return {
-        items: []
-      };
-    },
-    computed: {
-      model() {
-        return this.$parent.model;
-      }
-    },
-    watch: {
-      value: {
-        handler: function () {
-          this.items = this.value;
-        },
-        immediate: true
+  },
+  watch: {
+    value: {
+      handler() {
+        this.items = this.value;
       },
-      items() {
-        this.$emit("input", this.items);
-      }
+      immediate: true,
     },
-    methods: {
-      classColumn(index) {
-        let column = defaultColumnWidth;
+    items() {
+      this.$emit('input', this.items);
+    },
+  },
+  methods: {
+    classColumn(index) {
+      let column = defaultColumnWidth;
 
-        if (this.config.options[index] && this.config.options[index].content) {
-          column = this.config.options[index].content;
-        }
+      if (this.config.options[index] && this.config.options[index].content) {
+        column = this.config.options[index].content;
+      }
 
-        return `col-sm-${column} ${this.columnVerticalAlign(index)}`;
-      },
-      columnVerticalAlign (index) {
-        let verticalAlignClass = '';
+      return `col-sm-${column} ${this.columnVerticalAlign(index)}`;
+    },
+    columnVerticalAlign(index) {
+      let verticalAlignClass = '';
 
-        // Only apply vertical align to text when it's the only element in the column
-        if (this.items.length > 0
+      // Only apply vertical align to text when it's the only element in the column
+      if (this.items.length > 0
            && this.items[index].length === 1) {
-            let formTexts  = this.items[0].filter(item => item.component === 'FormText');
-            if (formTexts.length === 0) {
-               return '';
-            }
-
-            let formText = formTexts[0];
-            let justify = ' justify-content-' + (formText.config.textAlign === 'right' ? 'end' : formText.config.textAlign);
-            switch (formText.config.verticalAlign) {
-                case 'top':
-                    verticalAlignClass = 'd-flex align-items-start' + justify;
-                    break;
-                case 'middle':
-                    verticalAlignClass = 'd-flex align-items-center' + justify;
-                    break;
-                case 'bottom':
-                    verticalAlignClass = 'd-flex align-items-end' + justify;
-                    break;
-            }
+        let formTexts  = this.items[0].filter(item => item.component === 'FormText');
+        if (formTexts.length === 0) {
+          return '';
         }
-        return verticalAlignClass;
-      },
-      inspect(element) {
-        this.$emit("inspect", element);
-      },
-      submit() {
-        // Just bubble up
-        this.$emit("submit");
-      },
-      pageNavigate(page) {
-        // Just bubble up
-        this.$emit("pageNavigate", page);
+
+        let formText = formTexts[0];
+        let justify = ' justify-content-' + (formText.config.textAlign === 'right' ? 'end' : formText.config.textAlign);
+        switch (formText.config.verticalAlign) {
+          case 'top':
+            verticalAlignClass = 'd-flex align-items-start' + justify;
+            break;
+          case 'middle':
+            verticalAlignClass = 'd-flex align-items-center' + justify;
+            break;
+          case 'bottom':
+            verticalAlignClass = 'd-flex align-items-end' + justify;
+            break;
+        }
       }
-    }
-  };
+      return verticalAlignClass;
+    },
+    inspect(element) {
+      this.$emit('inspect', element);
+    },
+    submit() {
+      // Just bubble up
+      this.$emit('submit');
+    },
+    pageNavigate(page) {
+      // Just bubble up
+      this.$emit('pageNavigate', page);
+    },
+  },
+};
 </script>
