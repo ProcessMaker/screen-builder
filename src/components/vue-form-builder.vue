@@ -7,11 +7,11 @@
         <b-input-group size="sm">
           <b-input-group-prepend>
             <b-input-group-text class="filter-icon">
-              <i class="fas fa-filter"></i>
+              <i class="fas fa-filter"/>
             </b-input-group-text>
           </b-input-group-prepend>
 
-          <b-form-input v-model="filterQuery" type="text" :placeholder="$t('Filter Controls')"></b-form-input>
+          <b-form-input v-model="filterQuery" type="text" :placeholder="$t('Filter Controls')"/>
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
@@ -23,12 +23,12 @@
             class="controls list-group w-auto list-group-flush"
           >
             <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
-              <i v-if="element.config.icon" :class="element.config.icon"></i>
-              {{$t(element.label)}}
+              <i v-if="element.config.icon" :class="element.config.icon"/>
+              {{ $t(element.label) }}
             </b-list-group-item>
 
             <li v-if="!filteredControls.length" class="list-group-item">
-                        <span class="text-danger">{{ $t('Control Not Found') }}</span>
+              <span class="text-danger">{{ $t('Control Not Found') }}</span>
             </li>
           </draggable>
         </b-card-body>
@@ -95,11 +95,12 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"></i>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || element.label || $t('Field Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
-                @click="deleteItem(index)">
+                @click="deleteItem(index)"
+              >
                 <i class="far fa-trash-alt text-light"/>
               </button>
             </div>
@@ -112,7 +113,7 @@
               v-model="element.items"
               :config="element.config"
               :is="element['editor-component']"
-            ></component>
+            />
           </div>
 
           <div v-else class="card">
@@ -121,7 +122,7 @@
               class="card-header form-element-header d-flex align-items-center"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"></i>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || $t('Variable Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
@@ -156,12 +157,12 @@
             class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
             @click="showConfiguration = !showConfiguration"
           >
-            <i class="fas fa-cog mr-2"></i>
+            <i class="fas fa-cog mr-2"/>
             {{ $t('Configuration') }}
             <i
               class="fas fa-angle-down ml-auto"
               :class="{ 'fas fa-angle-right' : showConfiguration }"
-            ></i>
+            />
           </b-button>
 
           <b-collapse id="configuration" visible class="mt-2">
@@ -193,7 +194,7 @@
         v-model="addPageName"
         :label="$t('Page Name')"
         :helper="$t('The name of the new page to add')"
-      ></form-input>
+      />
     </b-modal>
 
     <b-modal
@@ -209,7 +210,7 @@
         v-model="editPageName"
         :label="$t('Page Name')"
         :helper="$t('The new name of the page')"
-      ></form-input>
+      />
     </b-modal>
 
     <b-modal
@@ -221,34 +222,34 @@
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
     >
-      <p>{{confirmMessage}}</p>
-            <div slot="modal-ok">{{ $t('Delete') }}</div>
+      <p>{{ confirmMessage }}</p>
+      <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
   </b-row>
 </template>
 
 <script>
-import Vue from "vue";
-import draggable from "vuedraggable";
-import HasColorProperty from "../mixins/HasColorProperty";
+import Vue from 'vue';
+import draggable from 'vuedraggable';
+import HasColorProperty from '../mixins/HasColorProperty';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
 
-import BootstrapVue from "bootstrap-vue";
+import BootstrapVue from 'bootstrap-vue';
 
-import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
+import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 
 Vue.use(BootstrapVue);
 
-let Validator = require("validatorjs");
+let Validator = require('validatorjs');
 Validator.register(
-  "attr-value",
+  'attr-value',
   value => {
     return value.match(/^[a-zA-Z0-9-_]+$/);
   },
-  "Must be letters, numbers, underscores or dashes"
+  'Must be letters, numbers, underscores or dashes'
 );
 
 import {
@@ -258,15 +259,15 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormDatePicker,
-  FormHtmlEditor
-} from "@processmaker/vue-form-elements";
+  FormHtmlEditor,
+} from '@processmaker/vue-form-elements';
 
-import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
+import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 
 const defaultConfig = [{
-  name: "Default",
-  items: []
-}]
+  name: 'Default',
+  items: [],
+}];
 
 export default {
   props: ['validationErrors', 'initialConfig', 'title'],
@@ -283,7 +284,7 @@ export default {
     FormMultiColumn,
     ...editor,
     ...inspector,
-    ...renderer
+    ...renderer,
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -295,21 +296,21 @@ export default {
     return {
       currentPage: 0,
       selected: null,
-      display: "editor",
+      display: 'editor',
       inspection: {},
       // Blank at start, assume the parent component will call addControl for each control
       controls: [],
       pageAddModal: false,
-      addPageName: "",
+      addPageName: '',
       editPageIndex: null,
-      editPageName: "",
+      editPageName: '',
       config,
-      confirmMessage: "",
+      confirmMessage: '',
       pageDelete: 0,
       translated: [],
       showAssignment: false,
       showConfiguration: false,
-      filterQuery: ""
+      filterQuery: '',
     };
   },
   computed: {
@@ -324,16 +325,16 @@ export default {
       });
     },
     isCurrentPageEmpty() {
-      return this.config[this.currentPage].items.length === 0
-    }
+      return this.config[this.currentPage].items.length === 0;
+    },
   },
   watch: {
     config: {
       handler() {
         // @todo, remove inspector stuffs
-        this.$emit("change", this.config);
+        this.$emit('change', this.config);
       },
-      deep: true
+      deep: true,
     },
     currentPage() {
       this.inspect();
@@ -355,7 +356,7 @@ export default {
         }
       }
       this.translated.push(e);
-    }
+    },
   },
   methods: {
     updateConfig(items) {
@@ -373,9 +374,9 @@ export default {
     },
     confirmDelete() {
       this.confirmMessage =
-        "Are you sure to delete the page " +
+        'Are you sure to delete the page ' +
         this.config[this.currentPage].name +
-        "?";
+        '?';
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
@@ -401,7 +402,7 @@ export default {
     addPage() {
       this.config.push({ name: this.addPageName, items: [] });
       this.currentPage = this.config.length - 1;
-      this.addPageName = "";
+      this.addPageName = '';
     },
     deletePage() {
       this.currentPage = 0;
@@ -418,9 +419,9 @@ export default {
         config: JSON.parse(JSON.stringify(control.config)),
         inspector: JSON.parse(JSON.stringify(control.inspector)),
         component: control.component,
-        "editor-component": control["editor-component"],
+        'editor-component': control['editor-component'],
         label: control.label,
-        value: control.value
+        value: control.value,
       };
       copy.config.label = this.$t(copy.config.label);
       if (copy.config.options) {
@@ -433,11 +434,11 @@ export default {
 
       // If it's a container, let's add an items property, with the default of items in the control
       if (control.container) {
-        copy["items"] = JSON.parse(JSON.stringify(control.items));
+        copy['items'] = JSON.parse(JSON.stringify(control.items));
         copy.container = true;
       }
       return copy;
-    }
+    },
   },
 };
 </script>

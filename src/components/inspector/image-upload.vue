@@ -1,59 +1,60 @@
 <template>
-    <div class="form-group">
-        <file-upload
-                extensions="gif,jpg,jpeg,png,webp"
-                accept="image/png,image/gif,image/jpeg,image/webp"
-                name="avatar"
-                class="btn btn-sm btn-primary"
-                v-model="files"
-                @input-file="editSave"
-                ref="upload">
-            {{ $t('Upload image') }}
-        </file-upload>
-        <small data-v-7779e22f="" class="form-text text-muted">{{ $t('Preview') }}</small>
-        <div class="image-preview">
-            <img :src="value" style="height: 4em">
-        </div>
+  <div class="form-group">
+    <file-upload
+      extensions="gif,jpg,jpeg,png,webp"
+      accept="image/png,image/gif,image/jpeg,image/webp"
+      name="avatar"
+      class="btn btn-sm btn-primary"
+      v-model="files"
+      @input-file="editSave"
+      ref="upload"
+    >
+      {{ $t('Upload image') }}
+    </file-upload>
+    <small data-v-7779e22f="" class="form-text text-muted">{{ $t('Preview') }}</small>
+    <div class="image-preview">
+      <img :src="value" style="height: 4em">
     </div>
+  </div>
 </template>
 
 <script>
-  import FileUpload from 'vue-upload-component';
+import FileUpload from 'vue-upload-component';
 
-  export default {
-    props: ["value"],
-    components: {
-      FileUpload,
-    },
-    data() {
+export default {
+  props: ['value'],
+  components: {
+    FileUpload,
+  },
+  data() {
+    return {
+      files: [],
+    };
+  },
+  computed: {
+    classList() {
+      let variant = this.variant || 'primary';
       return {
-        files: [],
+        btn: true,
+        ['btn-' + variant]: true,
       };
     },
-    computed: {
-      classList() {
-        let variant = this.variant || "primary";
-        return {
-          btn: true,
-          ["btn-" + variant]: true
-        };
-      },
-      owner() {
-        return this.$parent.$parent.inspection.config;
-      },
+    owner() {
+      return this.$parent.$parent.inspection.config;
     },
-    methods: {
-      editSave(fileObject) {
-        let reader = new FileReader();
-        reader.readAsDataURL(fileObject.file);
-        reader.addEventListener("load", () => {
-          let name = fileObject.file.name.split('.');
-          this.owner.name = escape(name[0]);
-          this.$emit('input', reader.result);
-        }, false);
-      },
-    }
-  };
+  },
+  methods: {
+    editSave(fileObject) {
+      let reader = new FileReader();
+      reader.readAsDataURL(fileObject.file);
+      reader.addEventListener('load', () => {
+        let name = fileObject.file.name.split('.');
+        this.owner.name = escape(name[0]);
+        this.$emit('input', reader.result);
+      }, false);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
