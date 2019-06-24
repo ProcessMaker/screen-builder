@@ -104,11 +104,11 @@ export default [
     rendererComponent: FormText,
     rendererBinding: 'FormText',
     control: {
-        label: 'Text',
-        component: 'FormText',
-        'editor-component': 'FormText',
-        'fa-icon': 'fas fa-align-justify',
-        config: {
+      label: 'Text',
+      component: 'FormText',
+      'editor-component': 'FormText',
+      config: {
+            icon: 'fas fa-align-justify',
             label: 'New Text',
             fontSize: '1em',
             fontWeight: 'normal',
@@ -228,8 +228,8 @@ export default [
         label: 'Rich Text',
         component: 'FormHtmlEditor',
         'editor-component': 'FormHtmlEditor',
-        'fa-icon': 'fas fa-pencil-ruler',
         config: {
+            icon: 'fas fa-pencil-ruler',
             interactive: true,
             content: '<p>Rich text editor</p>',
         },
@@ -257,8 +257,8 @@ export default [
             label: "Line Input",
             component: 'FormInput',
             "editor-component": "FormInput",
-            'fa-icon': 'far fa-square',
             config: {
+                icon: 'far fa-square',
                 label: "New Input",
                 name: '',
                 placeholder: '',
@@ -340,8 +340,8 @@ export default [
       label: "Textarea",
       component: 'FormTextArea',
       "editor-component": "FormTextArea",
-      'fa-icon': 'fas fa-paragraph',
       config: {
+          icon: 'fas fa-paragraph',
           label: "New Textarea",
           placeholder: "",
           helper: null,
@@ -411,8 +411,8 @@ export default [
             label: "Select",
             component: 'FormSelect',
             "editor-component": "FormSelect",
-            'fa-icon': 'fas fa-chevron-circle-down',
             config: {
+                icon: 'fas fa-chevron-circle-down',
                 label: "New Select",
                 placeholder: "",
                 validation: '',
@@ -480,8 +480,8 @@ export default [
             label: "Radio Group",
             component: 'FormRadioButtonGroup',
             "editor-component": "FormRadioButtonGroup",
-            'fa-icon': 'fas fa-list-ul',
             config: {
+                icon: 'fas fa-list-ul',
                 label: "New Radio Button Group",
                 options: [{
                     value: 'new',
@@ -546,8 +546,8 @@ export default [
             label: "Checkbox",
             component: 'FormCheckbox',
             "editor-component": "FormCheckbox",
-            'fa-icon': 'fas fa-check-square',
             config: {
+                icon: 'fas fa-check-square',
                 label: "New Checkbox",
                 helper: null,
                 name: null,
@@ -611,9 +611,9 @@ export default [
             label: "Date Picker",
             component: 'FormDatePicker',
             "editor-component": "FormDatePicker",
-            'fa-icon': 'far fa-calendar-alt',
             config: {
-                label: "New Date Picker",
+              icon: 'far fa-calendar-alt',
+              label: "New Date Picker",
                 type: 'date',
                 name: ''
             },
@@ -657,8 +657,8 @@ export default [
           label: "Navigation",
           component: 'FormButton',
           "editor-component": "FormButton",
-          'fa-icon': 'far fa-compass',
           config: {
+              icon: 'far fa-compass',
               label: "Page Navigation",
               variant: 'primary',
               event: 'pageNavigate',
@@ -740,14 +740,14 @@ export default [
             label: "Table",
             component: 'FormMultiColumn',
             "editor-component": "MultiColumn",
-            'fa-icon': 'fas fa-table',
             container: true,
             // Default items container
             items: [
-                [],
-                []
+              [],
+              []
             ],
             config: {
+                icon: 'fas fa-table',
                 options: [{
                     value: '1',
                     content: '6'
@@ -780,9 +780,9 @@ export default [
             label: "Record List",
             component: 'FormRecordList',
             "editor-component": "FormText",
-            'fa-icon': 'fas fa-th-list',
             config: {
                 name: '',
+                icon: 'fas fa-th-list',
                 label: "New Record List",
                 editable: false,
                 fields: [],
@@ -846,9 +846,9 @@ export default [
             label: "Image",
             component: 'FormImage',
             "editor-component": "FormImage",
-            'fa-icon': 'fas fa-image',
             config: {
                 label: "Image",
+                icon: 'fas fa-image',
                 variant: 'primary',
                 event: 'submit',
                 name: null,
@@ -908,8 +908,8 @@ export default [
           label: "Submit",
           component: 'FormButton',
           "editor-component": "FormButton",
-          'fa-icon': 'fas fa-share-square',
           config: {
+              icon: 'fas fa-share-square',
               label: "New Submit",
               variant: 'primary',
               event: 'submit',
