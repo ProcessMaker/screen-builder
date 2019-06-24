@@ -134,8 +134,8 @@
 
             <component
               tabindex="-1"
-              class="prevent-interaction card-body m-0 pb-4 pt-4"
-              :class="elementCssClass(element)"
+              class="card-body m-0 pb-4 pt-4"
+              :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
               v-bind="element.config"
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
