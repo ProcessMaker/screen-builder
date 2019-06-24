@@ -1,8 +1,8 @@
 <template>
   <div class="mb-2">
-    <label class="typo__label">{{label}}</label>
-    <multiselect v-model="target" label="content" :options="options" :helper="helper"></multiselect>
-    <small v-if="helper" class="form-text text-muted">{{helper}}</small>
+    <label class="typo__label">{{ label }}</label>
+    <multiselect v-model="target" label="content" :options="options" :helper="helper"/>
+    <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
   </div>
 </template>
 
@@ -11,17 +11,17 @@
 </style>
 
 <script>
-import Multiselect from "vue-multiselect";
+import Multiselect from 'vue-multiselect';
 export default {
-  props: ["label", "helper", "formConfig", "value"],
+  props: ['label', 'helper', 'formConfig', 'value'],
   data() {
     return {
-      target: 0
+      target: 0,
     };
   },
   watch: {
     value: {
-      handler: function() {
+      handler() {
         const value = this.target ? this.target.value : '';
         if (value !== this.value) {
           this.target = this.options.find(item => {
@@ -29,17 +29,17 @@ export default {
           });
         }
       },
-      immediate: true
+      immediate: true,
     },
-    target: function() {
+    target() {
       const value = this.target ? this.target.value : '';
       if (this.value !== value) {
-        this.$emit("input", value);
+        this.$emit('input', value);
       }
-    }
+    },
   },
   components: {
-    Multiselect
+    Multiselect,
   },
   computed: {
     options() {
@@ -48,11 +48,11 @@ export default {
       for (var index in this.formConfig) {
         options.push({
           value: index,
-          content: this.formConfig[index].name
+          content: this.formConfig[index].name,
         });
       }
       return options;
-    }
-  }
+    },
+  },
 };
 </script>

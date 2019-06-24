@@ -3,25 +3,25 @@ module.exports = {
     'js',
     'jsx',
     'json',
-    'vue'
+    'vue',
   ],
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.jsx?$': 'babel-jest'
+    '^.+\\.jsx?$': 'babel-jest',
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(css|less)$': 'identity-obj-proxy',
   },
   snapshotSerializers: [
-    'jest-serializer-vue'
+    'jest-serializer-vue',
   ],
   testMatch: [
-    '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
+    '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)',
   ],
   testURL: 'http://localhost/',
   transformIgnorePatterns: [
-    'node_modules/(?!(vuetable-2)/)'
-  ]
-}
+    'node_modules/(?!(vuetable-2)/)',
+  ],
+};
