@@ -130,14 +130,15 @@
                 <i class="far fa-trash-alt text-light"/>
               </button>
             </div>
+
             <component
-              class="card-body m-0 pb-4 pt-4"
+              tabindex="-1"
+              class="prevent-interaction card-body m-0 pb-4 pt-4"
               :class="elementCssClass(element)"
               v-bind="element.config"
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
             />
-            <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"></div>
           </div>
         </div>
       </draggable>
@@ -482,8 +483,6 @@ $header-bg: #f7f7f7;
 }
 
 .control-item {
-  position: relative;
-
   .delete {
     position: absolute;
     top: 0px;
@@ -504,18 +503,8 @@ $header-bg: #f7f7f7;
     border: none;
   }
 
-  .mask {
-    position: absolute;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0);
-    width: 100%;
-    top: 0;
-    height: 100%;
-
-    &.selected {
-      top: 4rem;
-      height: 50%;
-    }
+  .prevent-interaction {
+    pointer-events: none;
   }
 }
 
