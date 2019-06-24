@@ -101,6 +101,7 @@ const colorProperty = {
 const KeyName = {
   type: "FormInput",
   field: "name",
+  panel: "variable",
   config: {
     label: "Key Name",
     name: 'Key Name',
@@ -111,6 +112,7 @@ const KeyName = {
 const DataType = {
   type: "FormMultiselect",
   field: "dataFormat",
+  panel: "variable",
   config: {
     label: "Data Type",
     name: "Data Type",
@@ -151,6 +153,7 @@ const DataType = {
 const ValidateVariable = {
   type: "FormInput",
   field: "validation",
+  panel: "variable",
   config: {
     label: "Validation",
     name: "validation",
@@ -160,6 +163,7 @@ const ValidateVariable = {
 const ReadOnly = {
   type: "FormCheckbox",
   field: "readOnly",
+  panel: "variable",
   config: {
     label: "Control is read only",
     helper: ""
