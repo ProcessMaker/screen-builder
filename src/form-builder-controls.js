@@ -615,7 +615,8 @@ export default [
             config: {
                 label: "New Date Picker",
                 type: 'date',
-                name: ''
+                name: '',
+                placeholder: '1/12/2019 12:00 AM'
             },
             inspector: [{
                 type: "FormInput",
