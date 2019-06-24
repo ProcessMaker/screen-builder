@@ -24,7 +24,7 @@
           :class="elementCssClass(element)"
           ref="elements"
           :validationData="transientData"
-          v-model="model[element.config.name]"
+          v-model="model[getValidPath(element.config.name)]"
           @submit="submit"
           @pageNavigate="pageNavigate"
           :name="element.config.name !== undefined ? element.config.name : null"
@@ -163,6 +163,19 @@ export default {
     this.parseCss();
   },
   methods: {
+    getValidPath(objectPath) {
+      return this.objectPathHasError(objectPath)
+        ? `["${objectPath}"]`
+        : objectPath;
+    },
+    objectPathHasError(objectPath) {
+      try {
+        this.$vueSet({}, objectPath);
+        return false;
+      } catch (error) {
+        return true;
+      }
+    },
     submit() {
       if (this.isValid()) {
         this.setDefaultValues();
@@ -223,7 +236,7 @@ export default {
 
       if (
         !item.config.name ||
-        this.model[item.config.name] !== undefined ||
+        this.model[this.getValidPath(item.config.name)] !== undefined ||
         item.component === 'FormButton'
       ) {
         return;
@@ -251,7 +264,7 @@ export default {
         defaultValue = [];
       }
 
-      this.model[item.config.name] = defaultValue;
+      this.model[this.getValidPath(item.config.name)] = defaultValue;
     },
     parseCss() {
       const containerSelector = "#screen-builder-container";
