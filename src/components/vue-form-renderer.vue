@@ -251,9 +251,7 @@ export default {
         defaultValue = [];
       }
 
-      this.$vueSet(this.transientData, item.config.name, defaultValue);
-      this.$set(this.data, item.config.name, defaultValue);
-
+      this.model[item.config.name] = defaultValue;
     },
     parseCss() {
       const containerSelector = "#screen-builder-container";
