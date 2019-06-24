@@ -7,10 +7,10 @@
           <b-col>
             <b-button-group size="sm">
               <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'">
-                <i class="fas fa-drafting-compass pr-1"></i>{{ $t('Design') }}
+                <i class="fas fa-drafting-compass pr-1"/>{{ $t('Design') }}
               </b-button>
               <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'">
-                <i class="fas fa-cogs pr-1"></i>{{ $t('Preview') }}
+                <i class="fas fa-cogs pr-1"/>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
           </b-col>
@@ -18,15 +18,15 @@
           <b-col class="text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
-                <i class="fas fa-flask"></i>
-                {{ $t('Calcs')}}
+                <i class="fas fa-flask"/>
+                {{ $t('Calcs') }}
               </button>
               <button type="button" class="btn btn-secondary mr-2" title="Custom CSS" @click="openCustomCSS">
-                <i class="fab fa-css3"></i>
+                <i class="fab fa-css3"/>
                 {{ $t('CSS') }}
               </button>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"></i></button>
+            <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"/></button>
           </b-col>
 
         </b-row>
@@ -48,7 +48,8 @@
               :mode="mode"
               :computed="computed"
               :custom-css="customCSS"
-              v-on:css-errors="cssErrors = $event"/>
+              v-on:css-errors="cssErrors = $event"
+            />
           </b-col>
 
           <b-col class="overflow-hidden h-100 preview-inspector p-0">
@@ -58,30 +59,32 @@
               </b-card-header>
 
               <b-card-body class="p-0 overflow-auto">
-                  <b-button variant="outline"
-                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
-                    @click="showDataInput = !showDataInput">
-                    <i class="fas fa-file-import mr-2"></i>
-                      {{ $t('Data Input') }}
-                    <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-right' : 'fa-angle-down'"></i>
-                  </b-button>
+                <b-button variant="outline"
+                  class="text-left card-header d-flex align-items-center w-100 shadow-none"
+                  @click="showDataInput = !showDataInput"
+                >
+                  <i class="fas fa-file-import mr-2"/>
+                  {{ $t('Data Input') }}
+                  <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-right' : 'fa-angle-down'"/>
+                </b-button>
 
-                  <b-collapse v-model="showDataInput" id="showDataInput">
-                    <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json"/>
-                  </b-collapse>
+                <b-collapse v-model="showDataInput" id="showDataInput">
+                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json"/>
+                </b-collapse>
 
-                  <b-button variant="outline"
-                    class="text-left card-header d-flex align-items-center w-100 shadow-none"
-                    data-toggle="collapse"
-                    @click="showDataPreview = !showDataPreview">
-                    <i class="fas fa-file-code mr-2"></i>
-                      {{ $t('Data Preview') }}
-                    <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-right' : 'fa-angle-down'"></i>
-                  </b-button>
+                <b-button variant="outline"
+                  class="text-left card-header d-flex align-items-center w-100 shadow-none"
+                  data-toggle="collapse"
+                  @click="showDataPreview = !showDataPreview"
+                >
+                  <i class="fas fa-file-code mr-2"/>
+                  {{ $t('Data Preview') }}
+                  <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-right' : 'fa-angle-down'"/>
+                </b-button>
 
-                  <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
-                    <vue-json-pretty :data="previewData" class="p-2 data-collapse"></vue-json-pretty>
-                  </b-collapse>
+                <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
+                  <vue-json-pretty :data="previewData" class="p-2 data-collapse"/>
+                </b-collapse>
 
               </b-card-body>
             </b-card>
@@ -98,222 +101,223 @@
 
         <div class="ml-3" @click="showValidationErrors = !showValidationErrors">
           <button type="button" class="btn btn-light btn-sm">
-            <i class="fas fa-angle-double-up"></i>
+            <i class="fas fa-angle-double-up"/>
             {{ $t('Open Console') }}
             <span v-if="allErrors === 0" class="badge badge-success">
-              <i class="fas fa-check-circle "></i>
+              <i class="fas fa-check-circle "/>
               {{ $t(allErrors) }}
             </span>
 
             <span v-else class="badge badge-danger">
-              <i class="fas fa-times-circle "></i>
+              <i class="fas fa-times-circle "/>
               {{ $t(allErrors) }}
             </span>
           </button>
         </div>
 
         <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
-            <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
-              <i class="fas fa-times-circle text-danger mr-3"></i>
-              {{$t('Invalid JSON Data Object')}}
-            </div>
-            <b-button variant="link" class="validation__message d-flex align-items-center p-3"
-                      v-for="(validation,index) in validationErrors"
-                      :key="index"
-                      @click="focusInspector(validation)">
-              <i class="fas fa-times-circle text-danger d-block mr-3"></i>
-              <span class="ml-2 text-dark font-weight-bold text-left">
-                {{ validation.item.component }}
-                <span class="d-block font-weight-normal">{{ validation.message }}</span>
-              </span>
-            </b-button>
-            <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">{{$t('No Errors')}}</span>
+          <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
+            <i class="fas fa-times-circle text-danger mr-3"/>
+            {{ $t('Invalid JSON Data Object') }}
+          </div>
+          <b-button variant="link" class="validation__message d-flex align-items-center p-3"
+            v-for="(validation,index) in validationErrors"
+            :key="index"
+            @click="focusInspector(validation)"
+          >
+            <i class="fas fa-times-circle text-danger d-block mr-3"/>
+            <span class="ml-2 text-dark font-weight-bold text-left">
+              {{ validation.item.component }}
+              <span class="d-block font-weight-normal">{{ validation.message }}</span>
+            </span>
+          </b-button>
+          <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">{{ $t('No Errors') }}</span>
         </div>
       </b-card-footer>
     </b-card>
     <!-- Modals -->
-    <computed-properties v-model="computed" ref="computedProperties"></computed-properties>
+    <computed-properties v-model="computed" ref="computedProperties"/>
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
   </b-container>
 </template>
 
 <script>
-  import ComputedProperties from "./components/computed-properties.vue";
-  import CustomCSS from "./components/custom-css.vue";
-  import VueFormBuilder from "./components/vue-form-builder.vue";
-  import VueFormRenderer from "./components/vue-form-renderer.vue";
-  import VueJsonPretty from 'vue-json-pretty';
-  import MonacoEditor from "vue-monaco";
+import ComputedProperties from './components/computed-properties.vue';
+import CustomCSS from './components/custom-css.vue';
+import VueFormBuilder from './components/vue-form-builder.vue';
+import VueFormRenderer from './components/vue-form-renderer.vue';
+import VueJsonPretty from 'vue-json-pretty';
+import MonacoEditor from 'vue-monaco';
 
-  // Bring in our initial set of controls
-  import controlConfig from "./form-builder-controls";
-  import globalProperties from "./global-properties";
+// Bring in our initial set of controls
+import controlConfig from './form-builder-controls';
+import globalProperties from './global-properties';
 
-import Validator from "validatorjs";
+import Validator from 'validatorjs';
 
-  // To include another language in the Validator with variable processmaker
-  if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
-    Validator.useLang(window.ProcessMaker.user.lang);
-  }
+// To include another language in the Validator with variable processmaker
+if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
+  Validator.useLang(window.ProcessMaker.user.lang);
+}
 
-  Validator.register('attr-value', value => {
-    return value.match(/^[a-zA-Z0-9-_]+$/);
-  }, 'Must be letters, numbers, underscores or dashes');
+Validator.register('attr-value', value => {
+  return value.match(/^[a-zA-Z0-9-_]+$/);
+}, 'Must be letters, numbers, underscores or dashes');
 
-  export default {
-    name: "app",
-    data() {
-      return {
-        mode: "editor",
-        // Computed properties
-        computed: [],
-        config: [
-          {
-            name: "Default",
-            computed: [],
-            items: []
-          }
-        ],
-        previewData: {},
-        previewInput: '{}',
-        customCSS: "",
-        cssErrors: '',
-        showValidationErrors: false,
-        toggleValidation: true,
-        showDataPreview: true,
-        showDataInput: true,
-        monacoOptions: {
-          automaticLayout: true,
-          lineNumbers: 'off',
-          minimap: false,
+export default {
+  name: 'app',
+  data() {
+    return {
+      mode: 'editor',
+      // Computed properties
+      computed: [],
+      config: [
+        {
+          name: 'Default',
+          computed: [],
+          items: [],
+        },
+      ],
+      previewData: {},
+      previewInput: '{}',
+      customCSS: '',
+      cssErrors: '',
+      showValidationErrors: false,
+      toggleValidation: true,
+      showDataPreview: true,
+      showDataInput: true,
+      monacoOptions: {
+        automaticLayout: true,
+        lineNumbers: 'off',
+        minimap: false,
       },
-      };
-    },
-    components: {
-      ComputedProperties,
-      CustomCSS,
-      VueFormBuilder,
-      VueFormRenderer,
-      VueJsonPretty,
-      MonacoEditor,
-    },
-    watch: {
-      mode(mode) {
-        if (mode === 'preview') {
-          this.previewData = this.previewInput ? JSON.parse(this.previewInput) : null;
-        }
-      },
-      config() {
-        // Reset the preview data with clean object to start
-        this.previewData = {}
-      },
-      previewInput() {
-        if (this.previewInputValid) {
-          // Copy data over
-          this.previewData = JSON.parse(this.previewInput)
-        } else {
-          this.previewData = {}
-        }
+    };
+  },
+  components: {
+    ComputedProperties,
+    CustomCSS,
+    VueFormBuilder,
+    VueFormRenderer,
+    VueJsonPretty,
+    MonacoEditor,
+  },
+  watch: {
+    mode(mode) {
+      if (mode === 'preview') {
+        this.previewData = this.previewInput ? JSON.parse(this.previewInput) : null;
       }
     },
-    computed: {
-      previewInputValid() {
-        try {
-          JSON.parse(this.previewInput)
-          return true
-        } catch (err) {
-          return false
-        }
-      },
-      displayBuilder() {
-        return this.mode === 'editor';
-      },
-      displayPreview() {
-        return this.mode === 'preview';
-      },
-      allErrors() {
-        let errorCount = 0;
+    config() {
+      // Reset the preview data with clean object to start
+      this.previewData = {};
+    },
+    previewInput() {
+      if (this.previewInputValid) {
+        // Copy data over
+        this.previewData = JSON.parse(this.previewInput);
+      } else {
+        this.previewData = {};
+      }
+    },
+  },
+  computed: {
+    previewInputValid() {
+      try {
+        JSON.parse(this.previewInput);
+        return true;
+      } catch (err) {
+        return false;
+      }
+    },
+    displayBuilder() {
+      return this.mode === 'editor';
+    },
+    displayPreview() {
+      return this.mode === 'preview';
+    },
+    allErrors() {
+      let errorCount = 0;
 
-        if(!this.previewInputValid) {
-          errorCount++;
-        }
+      if (!this.previewInputValid) {
+        errorCount++;
+      }
 
-        return this.validationErrors.length + errorCount
-      },
-      validationErrors() {
-        const validationErrors = [];
-        this.config.forEach(page => {
-          page.items.forEach(item => {
-            let data = item.config ? item.config : {};
-            let rules = {};
-            item.inspector.forEach(property => {
-              if (property.config.validation) {
-                rules[property.field] = property.config.validation;
-              }
-            });
-            let validator = new Validator(data, rules);
-            // To include another language in the Validator with variable processmaker
-            if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
-              validator.useLang(window.ProcessMaker.user.lang);
-            }
-            // Validation will not run until you call passes/fails on it
-            if(!validator.passes()) {
-              Object.keys(validator.errors.errors).forEach(field => {
-                validator.errors.errors[field].forEach(error => {
-                  validationErrors.push({
-                    message: error,
-                    page: page,
-                    item: item,
-                  });
-                });
-              });
+      return this.validationErrors.length + errorCount;
+    },
+    validationErrors() {
+      const validationErrors = [];
+      this.config.forEach(page => {
+        page.items.forEach(item => {
+          let data = item.config ? item.config : {};
+          let rules = {};
+          item.inspector.forEach(property => {
+            if (property.config.validation) {
+              rules[property.field] = property.config.validation;
             }
           });
+          let validator = new Validator(data, rules);
+          // To include another language in the Validator with variable processmaker
+          if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
+            validator.useLang(window.ProcessMaker.user.lang);
+          }
+          // Validation will not run until you call passes/fails on it
+          if (!validator.passes()) {
+            Object.keys(validator.errors.errors).forEach(field => {
+              validator.errors.errors[field].forEach(error => {
+                validationErrors.push({
+                  message: error,
+                  page,
+                  item,
+                });
+              });
+            });
+          }
         });
-        return this.toggleValidation ? validationErrors : [] ;
-      },
-    },
-    mounted() {
-      // Iterate through our initial config set, calling this.addControl
-      controlConfig.forEach(config => {
-        config.control.inspector.push(...globalProperties[0].inspector);
-
-        this.addControl(
-          config.control,
-          config.rendererComponent,
-          config.rendererBinding,
-          config.builderComponent,
-          config.builderBinding
-        );
       });
+      return this.toggleValidation ? validationErrors : [] ;
     },
-    methods: {
-      focusInspector(validate) {
-        this.$refs.builder.focusInspector(validate);
-      },
-      openComputedProperties() {
-        this.$refs.computedProperties.show();
-      },
-      openCustomCSS() {
-        this.$refs.customCSS.show();
-      },
-      updateConfig(newConfig) {
-        this.config = newConfig
-      },
-      updatePreview(data) {
-        this.previewData = data
-      },
-      previewSubmit() {
-        alert("Preview Form was Submitted")
-      },
-      addControl(control, rendererComponent, rendererBinding, builderComponent, builderBinding) {
-        // Add it to the renderer
-        this.$refs.renderer.$options.components[rendererBinding] = rendererComponent;
-        // Add it to the form builder
-        this.$refs.builder.addControl(control, builderComponent, builderBinding)
-      },
-    }
-  };
+  },
+  mounted() {
+    // Iterate through our initial config set, calling this.addControl
+    controlConfig.forEach(config => {
+      config.control.inspector.push(...globalProperties[0].inspector);
+
+      this.addControl(
+        config.control,
+        config.rendererComponent,
+        config.rendererBinding,
+        config.builderComponent,
+        config.builderBinding
+      );
+    });
+  },
+  methods: {
+    focusInspector(validate) {
+      this.$refs.builder.focusInspector(validate);
+    },
+    openComputedProperties() {
+      this.$refs.computedProperties.show();
+    },
+    openCustomCSS() {
+      this.$refs.customCSS.show();
+    },
+    updateConfig(newConfig) {
+      this.config = newConfig;
+    },
+    updatePreview(data) {
+      this.previewData = data;
+    },
+    previewSubmit() {
+      alert('Preview Form was Submitted');
+    },
+    addControl(control, rendererComponent, rendererBinding, builderComponent, builderBinding) {
+      // Add it to the renderer
+      this.$refs.renderer.$options.components[rendererBinding] = rendererComponent;
+      // Add it to the form builder
+      this.$refs.builder.addControl(control, builderComponent, builderBinding);
+    },
+  },
+};
 </script>
 
 <style lang="scss">

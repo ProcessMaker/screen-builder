@@ -1,15 +1,17 @@
 <template>
-  <b-modal ref="modal"
-           size="lg"
-           id="custom-css"
-           :title="$t('Custom CSS')"
-           @ok="save"
-           @cancel="close"
-           @hide="hide"
-           cancel-variant="btn btn-outline-secondary"
-           ok-variant="btn btn-secondary ml-2"
-           :ok-title="$t('Save')"
-           :cancel-title="$t('Cancel')">
+  <b-modal
+    ref="modal"
+    size="lg"
+    id="custom-css"
+    :title="$t('Custom CSS')"
+    @ok="save"
+    @cancel="close"
+    @hide="hide"
+    cancel-variant="btn btn-outline-secondary"
+    ok-variant="btn btn-secondary ml-2"
+    :ok-title="$t('Save')"
+    :cancel-title="$t('Cancel')"
+  >
     <p>{{ $t("You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']") }}</p>
     <div class="editor">
       <monaco-editor :options="monacoOptions" class="monaco" v-model="innerValue"/>
@@ -22,25 +24,25 @@
 </template>
 
 <script>
-import MonacoEditor from "vue-monaco";
+import MonacoEditor from 'vue-monaco';
 export default {
-  props: ["value", "cssErrors"],
+  props: ['value', 'cssErrors'],
   components: { MonacoEditor },
   data() {
     return {
-      saveValue: "",
-      innerValue: "",
+      saveValue: '',
+      innerValue: '',
       monacoOptions: {
-        language: "css",
+        language: 'css',
         automaticLayout: true,
-        minimap: { enabled: false }
-      }
+        minimap: { enabled: false },
+      },
     };
   },
   watch: {
     innerValue(value) {
-      this.$emit("input", value);
-    }
+      this.$emit('input', value);
+    },
   },
   methods: {
     show() {
@@ -53,13 +55,13 @@ export default {
     },
     hide() {
       this.innerValue = this.saveValue;
-      this.$emit("input", this.innerValue);
+      this.$emit('input', this.innerValue);
     },
     save() {
       this.saveValue = this.innerValue;
       this.$refs.modal.hide();
-    }
-  }
+    },
+  },
 };
 </script>
 
