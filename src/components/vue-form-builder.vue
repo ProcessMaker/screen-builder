@@ -133,7 +133,7 @@
             </div>
 
             <component
-              tabindex="-1"
+              :tabindex="element.config.interactive ? 0 : -1"
               class="card-body m-0 pb-4 pt-4"
               :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
               v-bind="element.config"
@@ -443,6 +443,13 @@ export default {
 };
 </script>
 
+<style>
+.prevent-interaction {
+  pointer-events: none;
+}
+</style>
+
+
 <style lang="scss" scoped>
 $header-bg: #f7f7f7;
 
@@ -474,10 +481,6 @@ $header-bg: #f7f7f7;
 
   &:not(.selected) .card {
     border: none;
-  }
-
-  .prevent-interaction {
-    pointer-events: none;
   }
 }
 
