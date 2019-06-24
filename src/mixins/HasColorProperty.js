@@ -7,6 +7,6 @@ export default {
       element.config.color ? css.push(element.config.color) : null;
       return css.join(' ');
     },
-  }
+  },
 };
 

@@ -6,7 +6,7 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new MonocoEditorPlugin({
-        languages: ['javascript', 'css', 'json']
+        languages: ['javascript', 'css', 'json'],
       }),
     ],
     resolve: {
@@ -24,4 +24,4 @@ module.exports = {
       '@panter/vue-i18next',
     ] : [],
   },
-}
+};

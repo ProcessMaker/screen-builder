@@ -8,35 +8,35 @@ describe('Test custom css', () => {
     sync: false,
     propsData: {
       config: [{
-          items: [
-            {
-              "config": {
-                "label": "Field test 1",
-                "name": "field1",
-                "placeholder": "",
-                "validation": "",
-                "helper": null,
-                "type": "text",
-              },
-              "label": "Line Input"
+        items: [
+          {
+            'config': {
+              'label': 'Field test 1',
+              'name': 'field1',
+              'placeholder': '',
+              'validation': '',
+              'helper': null,
+              'type': 'text',
             },
-            {
-              "config": {
-                "label": "Field test 2",
-                "name": "field2",
-                "placeholder": "",
-                "validation": "",
-                "helper": null,
-                "type": "text",
-              },
-              "label": "Line Input"
-            }]
-        }],
+            'label': 'Line Input',
+          },
+          {
+            'config': {
+              'label': 'Field test 2',
+              'name': 'field2',
+              'placeholder': '',
+              'validation': '',
+              'helper': null,
+              'type': 'text',
+            },
+            'label': 'Line Input',
+          }],
+      }],
       data: {},
       page: 0,
       computed: [],
-      customCss: `div {background: green;} .form-control {color: gray;}`,
-    }
+      customCss: 'div {background: green;} .form-control {color: gray;}',
+    },
   });
 
   it('Test custom CSS inclusion', () => {

@@ -1,22 +1,22 @@
 <template>
   <div class="form-group">
-    <div :style="styles" v-html="rendered"></div>
+    <div :style="styles" v-html="rendered"/>
   </div>
 </template>
 
 <script>
-import Mustache from "mustache";
+import Mustache from 'mustache';
 
 export default {
   props: [
-    "label",
-    "fontSize",
-    "fontWeight",
-    "textAlign",
-    "verticalAlign",
-    "validationData",
-    "color",
-    "name"
+    'label',
+    'fontSize',
+    'fontWeight',
+    'textAlign',
+    'verticalAlign',
+    'validationData',
+    'color',
+    'name',
   ],
   computed: {
     styles() {
@@ -25,7 +25,7 @@ export default {
         fontWeight: this.fontWeight,
         textAlign: this.textAlign,
         verticalAlign: this.verticalAlign,
-        color: this.color
+        color: this.color,
       };
     },
     rendered() {
@@ -38,7 +38,7 @@ export default {
       } catch (error) {
         return this.label;
       }
-    }
-  }
+    },
+  },
 };
 </script>
