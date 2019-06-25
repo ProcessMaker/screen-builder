@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-2">
+  <div>
     <label class="typo__label">{{ label }}</label>
     <multiselect v-model="target" label="content" :options="options" :helper="helper"/>
     <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
