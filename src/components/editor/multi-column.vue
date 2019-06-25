@@ -26,13 +26,14 @@
               </div>
 
               <div v-else :id="element.config.name ? element.config.name : undefined">
-                <component :class="elementCssClass(element)"
+                <component
+                  :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
+                  :tabindex="element.config.interactive ? 0 : -1"
                   v-bind="element.config"
                   :config="element.config"
                   @input="element.config.interactive ? element.config.content = $event : null"
                   :is="element['editor-component']"
                 />
-                <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"/>
               </div>
 
               <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
@@ -46,7 +47,7 @@
 
 <script>
 import draggable from 'vuedraggable';
-import HasColorProperty from '../../mixins/HasColorProperty';
+import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
 import {
   FormInput,
