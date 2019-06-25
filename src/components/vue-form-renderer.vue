@@ -42,7 +42,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import debounce from 'lodash/debounce';
-import { HasColorProperty, shouldElementBeVisible } from '@/mixins';
+import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -75,7 +75,7 @@ export default {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
   components: {
     FormInput,
     FormSelect,
@@ -163,19 +163,6 @@ export default {
     this.parseCss();
   },
   methods: {
-    getValidPath(objectPath) {
-      return this.objectPathHasError(objectPath)
-        ? `["${objectPath}"]`
-        : objectPath;
-    },
-    objectPathHasError(objectPath) {
-      try {
-        this.$vueSet({}, objectPath);
-        return false;
-      } catch (error) {
-        return true;
-      }
-    },
     submit() {
       if (this.isValid()) {
         this.setDefaultValues();
