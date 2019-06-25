@@ -71,6 +71,21 @@ export default {
       }
       this.$emit('input', value);
     },
+    value: {
+      immediate: true,
+      handler() {
+        this.selected = null;
+
+        // Load selected item.
+        if (this.value) {
+          this.options.forEach(item => {
+            if (item && item.value && item.value === this.value) {
+              this.selected = item;
+            }
+          });
+        }
+      },
+    },
   },
   computed: {
     classList() {
