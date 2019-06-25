@@ -162,7 +162,7 @@ const ValidateVariable = {
 };
 const ReadOnly = {
   type: 'FormCheckbox',
-  field: 'readOnly',
+  field: 'disabled',
   panel: 'variable',
   config: {
     label: 'Control is read only',
