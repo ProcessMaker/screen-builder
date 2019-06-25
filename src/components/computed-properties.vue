@@ -17,18 +17,18 @@
       <b-row class="float-right">
         <div class="m-2">
           <b-btn size="sm" variant="primary" @click.stop="displayFormProperty">
-            <i class="fas fa-plus"></i> {{ $t('Add Property') }}
+            <i class="fas fa-plus"/> {{ $t('Add Property') }}
           </b-btn>
         </div>
       </b-row>
 
       <b-table :items="current" :fields="fields" responsive striped bordered small hover fixed>
-      <template slot="HEAD_property" slot-scope="data">
-      {{ $t(data.label) }}
-      </template>
-      <template slot="HEAD_actions" slot-scope="data">
-      {{ $t(data.label) }}
-      </template>
+        <template slot="HEAD_property" slot-scope="data">
+          {{ $t(data.label) }}
+        </template>
+        <template slot="HEAD_actions" slot-scope="data">
+          {{ $t(data.label) }}
+        </template>
 
         <template slot="actions" slot-scope="row">
           <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
@@ -38,7 +38,7 @@
             class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
             :title="$t('Details')"
           >
-            <i class="fa fa-list-alt fa-1x"></i>
+            <i class="fa fa-list-alt fa-1x"/>
           </a>
           <a
             size="lg"
@@ -47,7 +47,7 @@
             class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
             @click.stop="editProperty(row.item)"
           >
-            <i class="fa fa-edit fa-1x"></i>
+            <i class="fa fa-edit fa-1x"/>
           </a>
           <a
             size="lg"
@@ -56,24 +56,24 @@
             class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
             @click.stop="deleteProperty(row.item)"
           >
-            <i class="fa fa-trash fa-1x"></i>
+            <i class="fa fa-trash fa-1x"/>
           </a>
         </template>
         <template slot="row-details" slot-scope="row">
           <b-card>
             <b-row class="mb-1">
               <b-col sm="3" class="text-sm-right">
-                <b>{{$t('Field:')}}</b>
+                <b>{{ $t('Field:') }}</b>
               </b-col>
               <b-col>{{ $t(row.item.property) }}</b-col>
             </b-row>
             <b-row class="mb-1">
               <b-col sm="3" class="text-sm-right">
-                <b>{{$t('Formula:')}}</b>
+                <b>{{ $t('Formula:') }}</b>
               </b-col>
               <b-col>{{ $t(row.item.formula) }}</b-col>
             </b-row>
-            <b-button class="float-right" size="sm" @click="row.toggleDetails">{{$t('Hide Details')}}</b-button>
+            <b-button class="float-right" size="sm" @click="row.toggleDetails">{{ $t('Hide Details') }}</b-button>
           </b-card>
         </template>
       </b-table>
@@ -85,35 +85,34 @@
         :label="$t('Property Name')"
         name="property name"
         validation="required"
-      ></form-input>
+      />
       <form-text-area
         v-model="add.name"
         :label="$t('Description')"
         name="property description"
         validation="required"
-      ></form-text-area>
+      />
       <div class="form-group" style='position: relative;'>
-        <label>{{$t('Formula')}}</label>
+        <label>{{ $t('Formula') }}</label>
         <div class="float-right">
           <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType">
-            <i class="fas fa-square-root-alt"></i>
+            <i class="fas fa-square-root-alt"/>
           </a>
           <a class='btn btn-sm' :class="javascriptTypeClass" @click="switchExpressionType">
-             <i class="fab fa-js-square"></i>
+            <i class="fab fa-js-square"/>
           </a>
         </div>
-        <textarea v-show="!isJS" name="formula" v-model="add.formula" class="form-control editor" :class="{'is-invalid':!add.formula}"></textarea>
-        <div v-show="isJS" class="editor-border" :class="{'is-invalid':!add.formula}"></div>
-        <monaco-editor v-show="isJS" :options="monacoOptions" :minimap="{enabled:false}" class="editor" v-model="add.formula" language="javascript">
-        </monaco-editor>
-        <div v-if="!add.formula" class="invalid-feedback"><div>{{$t('The property formula field is required.')}}</div></div>
+        <textarea v-show="!isJS" name="formula" v-model="add.formula" class="form-control editor" :class="{'is-invalid':!add.formula}"/>
+        <div v-show="isJS" class="editor-border" :class="{'is-invalid':!add.formula}"/>
+        <monaco-editor v-show="isJS" :options="monacoOptions" :minimap="{enabled:false}" class="editor" v-model="add.formula" language="javascript"/>
+        <div v-if="!add.formula" class="invalid-feedback"><div>{{ $t('The property formula field is required.') }}</div></div>
       </div>
       <button
         class="btn btn-secondary float-right ml-2"
         @click="validateData"
         :disabled="disabled"
-      >{{$t('Save Property')}}</button>
-      <button class="btn btn-outline-secondary float-right" @click="displayTableList">{{$t('Cancel')}}</button>
+      >{{ $t('Save Property') }}</button>
+      <button class="btn btn-outline-secondary float-right" @click="displayTableList">{{ $t('Cancel') }}</button>
     </template>
   </b-modal>
 </template>
@@ -121,9 +120,9 @@
 <script>
 import {
   FormInput,
-  FormTextArea
-} from "@processmaker/vue-form-elements";
-import MonacoEditor from "vue-monaco";
+  FormTextArea,
+} from '@processmaker/vue-form-elements';
+import MonacoEditor from 'vue-monaco';
 
 export default {
   components: {
@@ -131,41 +130,41 @@ export default {
     FormTextArea,
     MonacoEditor,
   },
-  props: ["value"],
+  props: ['value'],
   data() {
     return {
       showDismissibleAlert: false,
-      alertVariant: "danger",
-      message: "",
+      alertVariant: 'danger',
+      message: '',
       required: true,
       numberItem: 0,
       displayList: true,
       current: [],
       add: {
         id: 0,
-        name: "",
-        property: "",
-        type: "expression",
-        formula: ""
+        name: '',
+        property: '',
+        type: 'expression',
+        formula: '',
       },
       fields: [
         {
-          key: "property",
-          label: "Property Name",
-          class: "text-center",
-          sortable: true
+          key: 'property',
+          label: 'Property Name',
+          class: 'text-center',
+          sortable: true,
         },
         {
-          key: "actions",
-          label: "",
-          class: "text-center",
-          sortable: false
-        }
+          key: 'actions',
+          label: '',
+          class: 'text-center',
+          sortable: false,
+        },
       ],
       monacoOptions: {
-          automaticLayout: true,
-          lineNumbers: 'off',
-          minimap: false,
+        automaticLayout: true,
+        lineNumbers: 'off',
+        minimap: false,
       },
     };
   },
@@ -185,7 +184,7 @@ export default {
         'btn-outline-secondary': isJS,
         'text-dark': isJS,
         'btn-outline-light': !isJS,
-        'text-secondary': !isJS
+        'text-secondary': !isJS,
       };
     },
     expressionTypeClass() {
@@ -194,7 +193,7 @@ export default {
         'btn-outline-secondary': isJS,
         'text-dark': isJS,
         'btn-outline-light': !isJS,
-        'text-secondary': !isJS
+        'text-secondary': !isJS,
       };
     },
     isJS() {
@@ -202,14 +201,14 @@ export default {
     },
     disabled() {
       if (
-        this.add.name.trim() === "" ||
-        this.add.property.trim() === "" ||
-        this.add.formula.trim() === ""
+        this.add.name.trim() === '' ||
+        this.add.property.trim() === '' ||
+        this.add.formula.trim() === ''
       ) {
         return true;
       }
       return false;
-    }
+    },
   },
   methods: {
     switchExpressionType() {
@@ -220,10 +219,10 @@ export default {
     },
     emptyForm() {
       this.add.id = 0;
-      this.add.name = "";
-      this.add.property = "";
-      this.add.type = "expression";
-      this.add.formula = "";
+      this.add.name = '';
+      this.add.property = '';
+      this.add.type = 'expression';
+      this.add.formula = '';
     },
     displayTableList() {
       this.emptyForm();
@@ -238,7 +237,7 @@ export default {
       this.current.forEach(item => {
         if (item.property === this.add.property && item.id !== this.add.id) {
           validation = false;
-          this.showAlert("Property already exists", "danger");
+          this.showAlert('Property already exists', 'danger');
         }
       });
       if (validation) {
@@ -255,7 +254,7 @@ export default {
           formula: this.add.formula,
           type: this.add.type,
         });
-        this.showAlert("Property Saved", "success");
+        this.showAlert('Property Saved', 'success');
       } else {
         this.current.forEach(item => {
           if (item.id === this.add.id) {
@@ -265,17 +264,17 @@ export default {
             item.type = this.add.type;
           }
         });
-        this.showAlert("Property Edited", "success");
+        this.showAlert('Property Edited', 'success');
       }
 
-      this.$emit("input", this.current);
+      this.$emit('input', this.current);
       this.displayTableList();
     },
     editProperty(item) {
       this.add.id = item.id;
       this.add.name = item.name;
       this.add.property = item.property;
-      this.add.type = item.type ? item.type : "expression";
+      this.add.type = item.type ? item.type : 'expression';
       this.add.formula = item.formula;
       this.displayList = false;
     },
@@ -283,16 +282,16 @@ export default {
       this.current = this.current.filter(val => {
         return val.id !== item.id;
       });
-      this.$emit("input", this.current);
-      this.showAlert("Property deleted", "success");
+      this.$emit('input', this.current);
+      this.showAlert('Property deleted', 'success');
       this.displayTableList();
     },
     showAlert(message, variant) {
-      this.alertVariant = variant || "success";
-      this.message = message || "";
+      this.alertVariant = variant || 'success';
+      this.message = message || '';
       this.showDismissibleAlert = true;
-    }
-  }
+    },
+  },
 };
 </script>
 

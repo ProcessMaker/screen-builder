@@ -24,7 +24,7 @@
           :class="elementCssClass(element)"
           ref="elements"
           :validationData="transientData"
-          v-model="model[element.config.name]"
+          v-model="model[getValidPath(element.config.name)]"
           @submit="submit"
           @pageNavigate="pageNavigate"
           :name="element.config.name !== undefined ? element.config.name : null"
@@ -39,10 +39,10 @@
 </template>
 
 <script>
-import Vue from "vue";
-import * as VueDeepSet from "vue-deepset";
+import Vue from 'vue';
+import * as VueDeepSet from 'vue-deepset';
 import debounce from 'lodash/debounce';
-import { HasColorProperty, shouldElementBeVisible } from "@/mixins";
+import { HasColorProperty, shouldElementBeVisible } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -54,26 +54,26 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormDatePicker,
-  FormHtmlEditor
-} from "@processmaker/vue-form-elements";
+  FormHtmlEditor,
+} from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
 
-const csstree = require("css-tree");
+const csstree = require('css-tree');
 
-Vue.component("custom-css", {
-  render: function(createElement) {
-    return createElement("style", this.$slots.default);
-  }
+Vue.component('custom-css', {
+  render(createElement) {
+    return createElement('style', this.$slots.default);
+  },
 });
 
 Vue.use(VueDeepSet);
 
 export default {
-  name: "VueFormRenderer",
-  props: ["config", "data", "page", "computed", "customCss", "mode"],
+  name: 'VueFormRenderer',
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
   model: {
-    prop: "data",
-    event: "update"
+    prop: 'data',
+    event: 'update',
   },
   mixins: [HasColorProperty, shouldElementBeVisible],
   components: {
@@ -95,7 +95,7 @@ export default {
     },
     visibleElements() {
       return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
-    }
+    },
   },
   data() {
     return {
@@ -104,16 +104,16 @@ export default {
       currentPage: this.page ? this.page : 0,
       transientData: JSON.parse(JSON.stringify(this.data)),
       defaultValues: {
-        FormInput: "",
+        FormInput: '',
         FormSelect: null,
         FormCheckbox: false,
         FormRadioButtonGroup: null,
-        FormTextArea: "",
-        FormText: "",
+        FormTextArea: '',
+        FormText: '',
         FormDatePicker: null,
-        FormRecordList: []
+        FormRecordList: [],
       },
-      customCssWrapped: ""
+      customCssWrapped: '',
     };
   },
   watch: {
@@ -124,14 +124,14 @@ export default {
       this.transientData = JSON.parse(JSON.stringify(this.data));
     },
     transientData: {
-      handler: function() {
+      handler() {
         if (this.computed) {
           this.computed.forEach(prop => {
             let value;
             try {
               if (prop.type==='expression') {
                 value = Parser.evaluate(prop.formula, this.transientData);
-              } else if(prop.type==='javascript') {
+              } else if (prop.type==='javascript') {
                 var func = new Function(prop.formula);
                 value = this.transientData[prop.property] = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
               }
@@ -146,15 +146,15 @@ export default {
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
         if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
-          this.$emit("update", this.transientData);
+          this.$emit('update', this.transientData);
           return;
         }
       },
-      deep: true
+      deep: true,
     },
     customCss() {
       this.parseCss();
-    }
+    },
   },
   created() {
     this.parseCss = debounce(this.parseCss, 500, { leading: true });
@@ -163,10 +163,23 @@ export default {
     this.parseCss();
   },
   methods: {
+    getValidPath(objectPath) {
+      return this.objectPathHasError(objectPath)
+        ? `["${objectPath}"]`
+        : objectPath;
+    },
+    objectPathHasError(objectPath) {
+      try {
+        this.$vueSet({}, objectPath);
+        return false;
+      } catch (error) {
+        return true;
+      }
+    },
     submit() {
       if (this.isValid()) {
         this.setDefaultValues();
-        this.$emit("submit", this.transientData);
+        this.$emit('submit', this.transientData);
       }
     },
     validateElements(elements) {
@@ -213,7 +226,7 @@ export default {
       });
     },
     setDefaultValueItem(item) {
-      if (item.component === "FormMultiColumn") {
+      if (item.component === 'FormMultiColumn') {
         item.items.forEach(column => {
           column.forEach(innerItem => {
             this.setDefaultValueItem(innerItem);
@@ -223,7 +236,7 @@ export default {
 
       if (
         !item.config.name ||
-        this.model[item.config.name] !== undefined ||
+        this.model[this.getValidPath(item.config.name)] !== undefined ||
         item.component === 'FormButton'
       ) {
         return;
@@ -251,23 +264,21 @@ export default {
         defaultValue = [];
       }
 
-      this.$vueSet(this.transientData, item.config.name, defaultValue);
-      this.$set(this.data, item.config.name, defaultValue);
-
+      this.model[this.getValidPath(item.config.name)] = defaultValue;
     },
     parseCss() {
-      const containerSelector = "#screen-builder-container";
+      const containerSelector = '#screen-builder-container';
       try {
         const ast = csstree.parse(this.customCss, {
-          onParseError: function(error) {
+          onParseError(error) {
             // throw "CSS has the following errors:\n\n" + error.formattedMessage
             throw error.formattedMessage;
-          }
+          },
         });
         let i = 0;
         csstree.walk(ast, function(node, item, list) {
-          if (node.type === "Atrule" && list) {
-            throw "CSS 'At-Rules' (starting with @) are not allowed.";
+          if (node.type === 'Atrule' && list) {
+            throw 'CSS \'At-Rules\' (starting with @) are not allowed.';
           }
           if (
             node.type.match(/^.+Selector$/) &&
@@ -276,16 +287,16 @@ export default {
           ) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
-              list.prependData({ type: "WhiteSpace", loc: null, value: " " });
+              list.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
               list.prependData({
-                type: "TypeSelector",
+                type: 'TypeSelector',
                 loc: null,
-                name: containerSelector
+                name: containerSelector,
               });
             }
           }
           if (i > 5000) {
-            throw "CSS is too big";
+            throw 'CSS is too big';
           }
           i = i + 1;
         });
@@ -293,11 +304,11 @@ export default {
         this.customCssWrapped = csstree.generate(ast);
 
         // clear errors
-        this.$emit("css-errors", "");
+        this.$emit('css-errors', '');
       } catch (error) {
-        this.$emit("css-errors", error);
+        this.$emit('css-errors', error);
       }
-    }
-  }
+    },
+  },
 };
 </script>

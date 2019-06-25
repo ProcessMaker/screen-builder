@@ -56,7 +56,8 @@
       </table>
       <b-btn v-b-modal.addOptionModal>{{ $t('Add Option') }}</b-btn>
 
-      <b-modal @cancel="resetAdd"
+      <b-modal
+        @cancel="resetAdd"
         @ok="addNewOption"
         id="addOptionModal"
         :ok-title="$t('Ok')"

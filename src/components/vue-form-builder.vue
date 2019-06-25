@@ -23,7 +23,7 @@
             class="controls list-group w-auto list-group-flush"
           >
             <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
-              <i v-if="element['fa-icon']" :class="element['fa-icon']"/>
+              <i v-if="element.config.icon" :class="element.config.icon"/>
               {{ $t(element.label) }}
             </b-list-group-item>
 
@@ -36,7 +36,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 pl-4 pr-4 d-flex flex-column">
+    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative">
       <b-input-group size="sm" class="sticky-top bg-white">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -67,6 +67,11 @@
 
         <hr class="w-100">
       </b-input-group>
+
+      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded">
+        {{ $t('Drag an element here') }}
+      </div>
+
       <draggable
         class="h-100"
         ghost-class="form-control-ghost"
@@ -89,7 +94,8 @@
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
             >
-              <i class="fas fa-arrows-alt-v mr-1"/>
+              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || element.label || $t('Field Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
@@ -115,7 +121,8 @@
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
             >
-              <i class="fas fa-arrows-alt-v mr-1"/>
+              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || $t('Variable Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
@@ -124,9 +131,11 @@
                 <i class="far fa-trash-alt text-light"/>
               </button>
             </div>
+
             <component
+              tabindex="-1"
               class="card-body m-0 pb-4 pt-4"
-              :class="elementCssClass(element)"
+              :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
               v-bind="element.config"
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
@@ -211,6 +220,7 @@
       ok-variant="btn btn-secondary ml-2"
     >
       <p>{{ confirmMessage }}</p>
+      <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
 
   </b-row>
@@ -316,6 +326,9 @@ export default {
           .toLowerCase()
           .includes(this.filterQuery.toLowerCase());
       });
+    },
+    isCurrentPageEmpty() {
+      return this.config[this.currentPage].items.length === 0;
     },
   },
   watch: {
@@ -447,8 +460,6 @@ $header-bg: #f7f7f7;
 }
 
 .control-item {
-  position: relative;
-
   .delete {
     position: absolute;
     top: 0px;
@@ -469,18 +480,8 @@ $header-bg: #f7f7f7;
     border: none;
   }
 
-  .mask {
-    position: absolute;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0);
-    width: 100%;
-    top: 0;
-    height: 100%;
-
-    &.selected {
-      top: 4rem;
-      height: 50%;
-    }
+  .prevent-interaction {
+    pointer-events: none;
   }
 }
 
@@ -546,5 +547,11 @@ $header-bg: #f7f7f7;
 .form-control-ghost {
   margin-bottom: 0;
   border-radius: 0.25rem;
+}
+
+.drag-placeholder {
+  height: 8rem;
+  top: 4rem;
+  border: 1px dashed rgba(0, 0, 0, 0.125);
 }
 </style>

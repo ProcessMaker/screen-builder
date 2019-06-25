@@ -20,6 +20,8 @@
     <b-alert :show="cssErrors != ''" variant="danger">
       <pre>{{ cssErrors }}</pre>
     </b-alert>
+    <div slot="modal-cancel">{{ $t('Cancel') }}</div>
+    <div slot="modal-ok">{{ $t('Save') }}</div>
   </b-modal>
 </template>
 

@@ -6,7 +6,7 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new MonocoEditorPlugin({
-        languages: ['javascript', 'css', 'json']
+        languages: ['javascript', 'css', 'json'],
       }),
     ],
     resolve: {
@@ -16,13 +16,12 @@ module.exports = {
       ],
       symlinks: false,
     },
-    externals: {
-      subtract: [
-        'bootstrap',
-        '@processmaker/vue-form-elements',
-        'i18next',
-        '@panter/vue-i18next'
-      ]
-    }
+    externals: process.env.NODE_ENV === 'production' ? [
+      'vue',
+      /^bootstrap\/.+$/,
+      /^@processmaker\/.+$/,
+      'i18next',
+      '@panter/vue-i18next',
+    ] : [],
   },
-}
+};

@@ -107,8 +107,8 @@ export default [
       label: 'Text',
       component: 'FormText',
       'editor-component': 'FormText',
-      'fa-icon': 'fas fa-align-justify',
       config: {
+        icon: 'fas fa-align-justify',
         label: 'New Text',
         fontSize: '1em',
         fontWeight: 'normal',
@@ -228,8 +228,8 @@ export default [
       label: 'Rich Text',
       component: 'FormHtmlEditor',
       'editor-component': 'FormHtmlEditor',
-      'fa-icon': 'fas fa-pencil-ruler',
       config: {
+        icon: 'fas fa-pencil-ruler',
         interactive: true,
         content: '<p>Rich text editor</p>',
       },
@@ -257,8 +257,8 @@ export default [
       label: 'Line Input',
       component: 'FormInput',
       'editor-component': 'FormInput',
-      'fa-icon': 'far fa-square',
       config: {
+        icon: 'far fa-square',
         label: 'New Input',
         name: '',
         placeholder: '',
@@ -266,68 +266,69 @@ export default [
         helper: null,
         type: 'text',
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          validation: 'required',
-          helper: 'The data name for this field',
-        },
-      },
-      {
-        type: 'FormMultiselect',
-        field: 'type',
-        config: {
-          label: 'Field Type',
-          name: 'Field Type',
-          helper: 'The type for this field',
-          options: [{
-            value: 'text',
-            content: 'Text',
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Variable Name',
+            name: 'Variable Name',
+            validation: 'required',
+            helper: 'The data name for this field',
           },
-          {
-            value: 'password',
-            content: 'Password',
+        },
+        {
+          type: 'FormMultiselect',
+          field: 'type',
+          config: {
+            label: 'Field Type',
+            name: 'Field Type',
+            helper: 'The type for this field',
+            options: [{
+              value: 'text',
+              content: 'Text',
+            },
+            {
+              value: 'password',
+              content: 'Password',
+            },
+            ],
           },
-          ],
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'validation',
-        config: {
-          label: 'Validation',
-          helper: 'The validation rules needed for this field',
+        {
+          type: 'FormInput',
+          field: 'validation',
+          config: {
+            label: 'Validation',
+            helper: 'The validation rules needed for this field',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'placeholder',
-        config: {
-          label: 'Placeholder',
-          helper: 'The placeholder is what is shown in the field when no value is provided yet',
+        {
+          type: 'FormInput',
+          field: 'placeholder',
+          config: {
+            label: 'Placeholder',
+            helper: 'The placeholder is what is shown in the field when no value is provided yet',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -342,6 +343,7 @@ export default [
       'editor-component': 'FormTextArea',
       'fa-icon': 'fas fa-paragraph',
       config: {
+        icon: 'fas fa-paragraph',
         label: 'New Textarea',
         placeholder: '',
         helper: null,
@@ -411,62 +413,64 @@ export default [
       label: 'Select',
       component: 'FormSelect',
       'editor-component': 'FormSelect',
-      'fa-icon': 'fas fa-chevron-circle-down',
       config: {
+        icon: 'fas fa-chevron-circle-down',
         label: 'New Select',
         placeholder: '',
         validation: '',
-        options: [{
-          value: 'new',
-          content: 'New Option',
-        },
-
+        options: [
+          {
+            value: null,
+            content: 'Select',
+          },
         ],
         helper: null,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          helper: 'The data name for this field',
-          validation: 'required',
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Variable Name',
+            helper: 'The variable name for this field',
+            validation: 'required',
+            name: 'Variable Name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'validation',
-        config: {
-          label: 'Validation',
-          helper: 'The validation rules needed for this field',
+        {
+          type: 'FormInput',
+          field: 'validation',
+          config: {
+            label: 'Validation',
+            helper: 'The validation rules needed for this field',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'OptionsList',
-        field: 'options',
-        config: {
-          label: 'Options List',
-          helper: 'List of options available in the select drop down',
+        {
+          type: 'OptionsList',
+          field: 'options',
+          config: {
+            label: 'Options List',
+            helper: 'List of options available in the select drop down',
+          },
         },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -479,8 +483,8 @@ export default [
       label: 'Radio Group',
       component: 'FormRadioButtonGroup',
       'editor-component': 'FormRadioButtonGroup',
-      'fa-icon': 'fas fa-list-ul',
       config: {
+        icon: 'fas fa-list-ul',
         label: 'New Radio Button Group',
         options: [{
           value: 'new',
@@ -494,7 +498,8 @@ export default [
         field: 'name',
         config: {
           label: 'Variable Name',
-          helper: 'The data name for this field',
+          name: 'Variable Name',
+          helper: 'The variable name for this field',
           validation: 'required',
         },
       },
@@ -544,8 +549,8 @@ export default [
       label: 'Checkbox',
       component: 'FormCheckbox',
       'editor-component': 'FormCheckbox',
-      'fa-icon': 'fas fa-check-square',
       config: {
+        icon: 'fas fa-check-square',
         label: 'New Checkbox',
         helper: null,
         name: null,
@@ -558,6 +563,7 @@ export default [
         field: 'name',
         config: {
           label: 'Variable Name',
+          name: 'Variable Name',
           validation: 'required',
           helper: 'The name of the group for the checkbox. All checkboxes which share the same name will work together.',
         },
@@ -608,49 +614,46 @@ export default [
       label: 'Date Picker',
       component: 'FormDatePicker',
       'editor-component': 'FormDatePicker',
-      'fa-icon': 'far fa-calendar-alt',
       config: {
+        icon: 'far fa-calendar-alt',
         label: 'New Date Picker',
         type: 'date',
-        phrases: {
-          ok: 'Continue',
-          cancel: 'Cancel',
-        },
         name: '',
+        placeholder: '',
       },
-      inspector: [
-        {
-          type: 'FormInput',
-          field: 'name',
-          config: {
-            label: 'Variable Name',
-            name: 'Variable Name',
-            validation: 'required',
-            helper: 'The data name for this field',
-          },
+      inspector: [{
+        type: 'FormInput',
+        field: 'name',
+        config: {
+          label: 'Variable Name',
+          name: 'Variable Name',
+          validation: 'required',
+          helper: 'The variable name for this field',
         },
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the fields name',
-          },
+      },
+      {
+        type: 'FormInput',
+        field: 'label',
+        config: {
+          label: 'Field Label',
+          helper: 'The label describes the fields name',
         },
-        {
-          type: 'FormInput',
-          field: 'placeholder',
-          config: {
-            label: 'Placeholder',
-            helper: 'The placeholder is what is shown in the field when no value is provided yet',
-          },
+      },
+      {
+        type: 'FormInput',
+        field: 'placeholder',
+        config: {
+          label: 'Placeholder',
+          helper: 'The placeholder is what is shown in the field when no value is provided yet',
         },
-        bgcolorProperty,
-        colorProperty,
+      },
+      bgcolorProperty,
+      colorProperty,
       ],
     },
   },
   {
+
     editorComponent: FormButton,
     editorBinding: 'FormButton',
     rendererComponent: FormButton,
@@ -659,8 +662,8 @@ export default [
       label: 'Navigation',
       component: 'FormButton',
       'editor-component': 'FormButton',
-      'fa-icon': 'far fa-compass',
       config: {
+        icon: 'far fa-compass',
         label: 'Page Navigation',
         variant: 'primary',
         event: 'pageNavigate',
@@ -742,7 +745,6 @@ export default [
       label: 'Table',
       component: 'FormMultiColumn',
       'editor-component': 'MultiColumn',
-      'fa-icon': 'fas fa-table',
       container: true,
       // Default items container
       items: [
@@ -750,6 +752,7 @@ export default [
         [],
       ],
       config: {
+        icon: 'fas fa-table',
         options: [{
           value: '1',
           content: '6',
@@ -782,9 +785,9 @@ export default [
       label: 'Record List',
       component: 'FormRecordList',
       'editor-component': 'FormText',
-      'fa-icon': 'fas fa-th-list',
       config: {
         name: '',
+        icon: 'fas fa-th-list',
         label: 'New Record List',
         editable: false,
         fields: [],
@@ -797,7 +800,7 @@ export default [
           label: 'List Name',
           name: 'List Name',
           validation: 'required',
-          helper: 'The data name for this list',
+          helper: 'The variable name for this list',
         },
       },
       {
@@ -848,9 +851,9 @@ export default [
       label: 'Image',
       component: 'FormImage',
       'editor-component': 'FormImage',
-      'fa-icon': 'fas fa-image',
       config: {
         label: 'Image',
+        icon: 'fas fa-image',
         variant: 'primary',
         event: 'submit',
         name: null,
@@ -869,7 +872,7 @@ export default [
         field: 'name',
         config: {
           label: 'Variable Name',
-          helper: 'The name of the image',
+          helper: 'The variable name of the image',
         },
       },
       {
@@ -910,8 +913,8 @@ export default [
       label: 'Submit',
       component: 'FormButton',
       'editor-component': 'FormButton',
-      'fa-icon': 'fas fa-share-square',
       config: {
+        icon: 'fas fa-share-square',
         label: 'New Submit',
         variant: 'primary',
         event: 'submit',
@@ -932,6 +935,7 @@ export default [
         config: {
           label: 'Variable Name',
           validation: 'required',
+          name: 'Variable Name',
           helper: 'The name of the button',
         },
       },
