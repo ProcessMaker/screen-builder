@@ -136,7 +136,7 @@
             </div>
 
             <component
-              tabindex="-1"
+              :tabindex="element.config.interactive ? 0 : -1"
               class="card-body m-0 pb-4 pt-4"
               :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
               v-bind="element.config"
@@ -479,14 +479,23 @@ export default {
 };
 </script>
 
+<style>
+  .prevent-interaction {
+    pointer-events: none;
+  }
+</style>
+
+
 <style lang="scss" scoped>
   $header-bg: #f7f7f7;
+
   .control-icon {
     width: 30px;
     font-size: 20px;
-  img {
-    height: 20px;
-  }
+
+    img {
+      height: 20px;
+    }
   }
   .control-item {
   .delete {
@@ -495,70 +504,84 @@ export default {
     right: 0px;
     display: none;
   }
+
   &:hover {
      cursor: move;
    }
+
   &.selected {
      border-radius: 5px;
      cursor: move;
    }
+
   &:not(.selected) .card {
      border: none;
    }
-  .prevent-interaction {
-    pointer-events: none;
   }
-  }
+
   .hasError {
     border: 1px solid red;
     border-radius: 0.25rem;
-  .form-element-header {
-    border-bottom: 1px solid red;
-    color: red;
+    .form-element-header {
+      border-bottom: 1px solid red;
+      color: red;
+    }
   }
-  }
+
   .inspector-header {
     background: $header-bg;
   }
+
   .validation-panel {
     background: $header-bg;
     height: 10rem;
     width: 21.35rem;
     bottom: 3rem;
   }
+
   .validation__message {
     text-decoration: none;
-  &:hover {
-     background: rgba(51, 151, 225, 0.3);
-   }
+
+    &:hover {
+       background: rgba(51, 151, 225, 0.3);
+     }
   }
+
   .controls-header {
     border-bottom: none;
   }
+
   .header-bg {
     background: $header-bg;
   }
+
   .controls {
     cursor: move;
     user-select: none;
   }
+
   .header-button {
     height: 38px;
     width: 38px;
   }
+
   .filter-icon {
     background-color: #e9ecef;
   }
+
   .controls-column {
     max-width: 185px;
   }
+
   .inspector-column {
     max-width: 265px;
   }
+
   .form-control-ghost {
     margin-bottom: 0;
     border-radius: 0.25rem;
   }
+
   .drag-placeholder {
     height: 8rem;
     top: 4rem;
