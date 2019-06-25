@@ -7,6 +7,7 @@
     hide-footer
     :title="$t('Computed Properties')"
     @hidden="displayTableList"
+    no-close-on-backdrop
   >
     <b-alert
       :variant="alertVariant"
