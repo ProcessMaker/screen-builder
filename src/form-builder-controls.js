@@ -458,12 +458,9 @@ export default [
           },
         },
         {
-          type: 'OptionsList',
+          type: 'DataSource',
           field: 'options',
-          config: {
-            label: 'Options List',
-            helper: 'List of options available in the select drop down',
-          },
+          config: {},
         },
         bgcolorProperty,
         colorProperty,
