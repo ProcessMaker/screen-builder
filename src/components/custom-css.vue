@@ -10,6 +10,7 @@
     @hide="hide"
     cancel-variant="btn btn-outline-secondary"
     ok-variant="btn btn-secondary ml-2"
+    no-close-on-backdrop
   >
     <p>{{ $t("You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']") }}</p>
     <div class="editor">
