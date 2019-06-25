@@ -4,7 +4,7 @@ const undoRedoModule = {
     return {
       stack: [],
       position: null,
-    }
+    };
   },
   getters: {
     canUndo(state) {
