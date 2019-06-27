@@ -20,34 +20,18 @@
       />
 
       <div v-else :id="element.config.name ? element.config.name : undefined">
-        <template v-if="element.config.interactive">
-          <component
-            :class="elementCssClass(element)"
-            ref="elements"
-            :validationData="transientData"
-            v-model="model[getValidPath(element.config.name)]"
-            @submit="submit"
-            @pageNavigate="pageNavigate"
-            :name="element.config.name !== undefined ? element.config.name : null"
-            v-bind="element.config"
-            :is="element.component"
-            :disabled="element.config.interactive"
-          />
-        </template>
-        <template v-else>
-          <component
-            :class="elementCssClass(element)"
-            ref="elements"
-            :validationData="transientData"
-            v-model="model[getValidPath(element.config.name)]"
-            @submit="submit"
-            @pageNavigate="pageNavigate"
-            :name="element.config.name !== undefined ? element.config.name : null"
-            v-bind="element.config"
-            :is="element.component"
-          />
-        </template>
-
+        <component
+          :class="elementCssClass(element)"
+          ref="elements"
+          :validationData="transientData"
+          v-model="model[getValidPath(element.config.name)]"
+          @submit="submit"
+          @pageNavigate="pageNavigate"
+          :name="element.config.name !== undefined ? element.config.name : null"
+          v-bind="element.config"
+          :is="element.component"
+          :disabled="element.config.disabled ? element.config.disabled : ( element.config.interactive ? element.config.interactive : false)"
+        />
       </div>
     </div>
     <custom-css>{{ customCssWrapped }}</custom-css>
