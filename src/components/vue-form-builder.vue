@@ -68,10 +68,7 @@
         <hr class="w-100">
       </b-input-group>
 
-      <div
-        v-if="isCurrentPageEmpty"
-        class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded"
-      >
+      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded">
         {{ $t('Drag an element here') }}
       </div>
 
@@ -143,6 +140,7 @@
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
             />
+            <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"/>
           </div>
         </div>
       </draggable>
@@ -217,9 +215,9 @@
     <!-- Modals -->
     <b-modal
       id="addPageModal"
-      centered
       @ok="addPage"
       :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
       :title="$t('Add New Page')"
@@ -233,10 +231,10 @@
 
     <b-modal
       ref="editPageModal"
-      centered
       @ok="editPage"
       :title="$t('Edit Page Title')"
       :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
     >
@@ -249,8 +247,9 @@
 
     <b-modal
       ref="confirm"
-      centered
-      title="Confirm delete"
+      :title="$t('Caution!')"
+      :ok-title="$t('Delete')"
+      :cancel-title="$t('Cancel')"
       @ok="deletePage"
       @cancel="hideConfirmModal"
       cancel-variant="btn btn-outline-secondary"
@@ -259,6 +258,7 @@
       <p>{{ confirmMessage }}</p>
       <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
+
   </b-row>
 </template>
 
@@ -278,6 +278,11 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 Vue.use(BootstrapVue);
 
 let Validator = require('validatorjs');
+// To include another language in the Validator with variable processmaker
+if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
+  Validator.useLang(window.ProcessMaker.user.lang);
+}
+
 Validator.register(
   'attr-value',
   value => {
@@ -409,10 +414,7 @@ export default {
       });
     },
     confirmDelete() {
-      this.confirmMessage =
-          'Are you sure to delete the page ' +
-          this.config[this.currentPage].name +
-          '?';
+      this.confirmMessage = this.$t('Are you sure you want to delete {{item}}?', {item: this.config[this.currentPage].name});
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
@@ -459,6 +461,10 @@ export default {
         label: control.label,
         value: control.value,
       };
+      if (control.component === 'FormDatePicker' && copy.config.phrases) {
+        copy.config.phrases.ok = this.$t(copy.config.phrases.ok);
+        copy.config.phrases.cancel = this.$t(copy.config.phrases.cancel);
+      }
       copy.config.label = this.$t(copy.config.label);
       if (copy.config.options) {
         for (var io in copy.config.options) {
