@@ -1,7 +1,8 @@
 <template>
   <div class="form-group">
     <label class="typo__label">{{ label }}</label>
-    <multiselect :options="options"
+    <multiselect
+      :options="options"
       selectedLabel="Primary"
       :class="classList"
       :placeholder="$t('Select...')"
