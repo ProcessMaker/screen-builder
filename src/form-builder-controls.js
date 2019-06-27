@@ -121,31 +121,31 @@ const DataType = {
     options: [
       {
         value: 'string',
-        content: 'string',
+        content: 'Text',
       },
       {
         value: 'int',
-        content: 'int',
+        content: 'Integer',
       },
       {
         value: 'float',
-        content: 'float',
+        content: 'Decimal',
       },
       {
         value: 'datetime',
-        content: 'datetime',
+        content: 'Datetime',
       },
       {
         value: 'date',
-        content: 'date',
+        content: 'Date',
       },
       {
         value: 'currency',
-        content: 'currency',
+        content: 'Currency',
       },
       {
         value: 'boolean',
-        content: 'boolean',
+        content: 'Boolean',
       },
     ],
   },
@@ -375,6 +375,7 @@ export default [
         validation: '',
         helper: null,
         type: 'text',
+        dataFormat:'string',
       },
       inspector: [
         KeyName,
@@ -424,6 +425,7 @@ export default [
         placeholder: '',
         helper: null,
         rows: 2,
+        dataFormat:'string',
       },
       inspector: [
         KeyName,
@@ -467,6 +469,7 @@ export default [
           },
         ],
         helper: null,
+        dataFormat:'string',
       },
       inspector: [
         KeyName,
@@ -508,6 +511,7 @@ export default [
         ],
         toggle: false,
         helper: null,
+        dataFormat:'string',
       },
       inspector: [
         KeyName,
@@ -554,6 +558,7 @@ export default [
         initiallyChecked: false,
         validation: '',
         toggle: false,
+        dataFormat:'string',
       },
       inspector: [
         KeyName,
@@ -598,6 +603,7 @@ export default [
         type: 'date',
         name: '',
         placeholder: '',
+        dataFormat:'string',
       },
       inspector: [
         KeyName,
