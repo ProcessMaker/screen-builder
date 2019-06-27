@@ -105,6 +105,9 @@ export default {
     options() {
       this.existingOptions = JSON.parse(JSON.stringify(this.options));
     },
+    dataJson() {
+      this.saveDataJson();
+    },
   },
   props: ['label', 'options', 'helper'],
   model: {
