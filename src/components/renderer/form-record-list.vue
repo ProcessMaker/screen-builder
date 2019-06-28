@@ -105,14 +105,11 @@
 
 
 <script>
-import VueFormRenderer from '../vue-form-renderer';
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
 
 export default {
-  name: 'FormRecordList',
   components: {
-    VueFormRenderer,
     Vuetable,
     VuetablePagination,
   },
