@@ -150,6 +150,39 @@ const DataType = {
     ],
   },
 };
+const DataTypeWithoutDate = {
+  type: 'FormMultiselect',
+  field: 'dataFormat',
+  panel: 'variable',
+  config: {
+    label: 'Data Type',
+    name: 'Data Type',
+    helper: 'The data type specifies what kind of data is stored in the variable.',
+    validation: 'required',
+    options: [
+      {
+        value: 'string',
+        content: 'Text',
+      },
+      {
+        value: 'int',
+        content: 'Integer',
+      },
+      {
+        value: 'float',
+        content: 'Decimal',
+      },
+      {
+        value: 'currency',
+        content: 'Currency',
+      },
+      {
+        value: 'boolean',
+        content: 'Boolean',
+      },
+    ],
+  },
+};
 const ValidateVariable = {
   type: 'FormInput',
   field: 'validation',
@@ -429,7 +462,6 @@ export default [
       },
       inspector: [
         KeyName,
-        DataType,
         ValidateVariable,
         ReadOnly,
         LabelField,
@@ -473,7 +505,7 @@ export default [
       },
       inspector: [
         KeyName,
-        DataType,
+        DataTypeWithoutDate,
         ValidateVariable,
         ReadOnly,
         LabelField,
@@ -515,7 +547,7 @@ export default [
       },
       inspector: [
         KeyName,
-        DataType,
+        DataTypeWithoutDate,
         ValidateVariable,
         ReadOnly,
         LabelField,
@@ -562,7 +594,7 @@ export default [
       },
       inspector: [
         KeyName,
-        DataType,
+        DataTypeWithoutDate,
         ValidateVariable,
         ReadOnly,
         LabelField,
@@ -607,7 +639,6 @@ export default [
       },
       inspector: [
         KeyName,
-        DataType,
         ValidateVariable,
         ReadOnly,
         LabelField,
