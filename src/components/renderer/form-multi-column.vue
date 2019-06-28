@@ -30,6 +30,7 @@
               @pageNavigate="pageNavigate"
               v-bind="element.config"
               :is="element.component"
+              :disabled="element.config.interactive"
             />
           </div>
         </div>
