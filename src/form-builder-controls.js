@@ -266,75 +266,76 @@ export default [
         helper: null,
         type: 'text',
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          validation: 'required',
-          helper: 'The variable name for this field',
-        },
-      },
-      {
-        type: 'FormMultiselect',
-        field: 'type',
-        config: {
-          label: 'Field Type',
-          name: 'Field Type',
-          helper: 'The type for this field',
-          options: [{
-            value: 'text',
-            content: 'Text',
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Variable Name',
+            name: 'Variable Name',
+            validation: 'required',
+            helper: 'The data name for this field',
           },
-          {
-            value: 'password',
-            content: 'Password',
+        },
+        {
+          type: 'FormMultiselect',
+          field: 'type',
+          config: {
+            label: 'Field Type',
+            name: 'Field Type',
+            helper: 'The type for this field',
+            options: [{
+              value: 'text',
+              content: 'Text',
+            },
+            {
+              value: 'password',
+              content: 'Password',
+            },
+            ],
           },
-          ],
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'validation',
-        config: {
-          label: 'Validation',
-          helper: 'The validation rules needed for this field',
+        {
+          type: 'FormInput',
+          field: 'validation',
+          config: {
+            label: 'Validation',
+            helper: 'The validation rules needed for this field',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'placeholder',
-        config: {
-          label: 'Placeholder',
-          helper: 'The placeholder is what is shown in the field when no value is provided yet',
+        {
+          type: 'FormInput',
+          field: 'placeholder',
+          config: {
+            label: 'Placeholder',
+            helper: 'The placeholder is what is shown in the field when no value is provided yet',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'FormCheckbox',
-        field: 'readonly',
-        config: {
-          label: 'Control is read only',
+        {
+          type: 'FormCheckbox',
+          field: 'readonly',
+          config: {
+            label: 'Control is read only',
+          },
         },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -347,6 +348,7 @@ export default [
       label: 'Textarea',
       component: 'FormTextArea',
       'editor-component': 'FormTextArea',
+      'fa-icon': 'fas fa-paragraph',
       config: {
         icon: 'fas fa-paragraph',
         label: 'New Textarea',
@@ -361,7 +363,7 @@ export default [
           label: 'Variable Name',
           name: 'Variable Name',
           validation: 'required',
-          helper: 'The variable name for this field',
+          helper: 'The data name for this field',
         },
       },
       {
@@ -438,50 +440,51 @@ export default [
         ],
         helper: null,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          helper: 'The variable name for this field',
-          validation: 'required',
-          name: 'Variable Name',
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Variable Name',
+            helper: 'The variable name for this field',
+            validation: 'required',
+            name: 'Variable Name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'validation',
-        config: {
-          label: 'Validation',
-          helper: 'The validation rules needed for this field',
+        {
+          type: 'FormInput',
+          field: 'validation',
+          config: {
+            label: 'Validation',
+            helper: 'The validation rules needed for this field',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'OptionsList',
-        field: 'options',
-        config: {
-          label: 'Options List',
-          helper: 'List of options available in the select drop down',
+        {
+          type: 'OptionsList',
+          field: 'options',
+          config: {
+            label: 'Options List',
+            helper: 'List of options available in the select drop down',
+          },
         },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -664,6 +667,7 @@ export default [
     },
   },
   {
+
     editorComponent: FormButton,
     editorBinding: 'FormButton',
     rendererComponent: FormButton,
