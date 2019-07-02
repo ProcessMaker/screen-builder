@@ -55,6 +55,7 @@ const bgcolorProperty = {
     ],
   },
 };
+
 const colorProperty = {
   type: 'ColorSelect',
   field: 'color',
@@ -94,6 +95,17 @@ const colorProperty = {
       content: 'dark',
     },
     ],
+  },
+};
+
+const variableKeyProperty = {
+  type: 'FormInput',
+  field: 'name',
+  config: {
+    label: 'Key Name',
+    name: 'Key Name',
+    validation: 'required',
+    helper: 'A variable key name is a symbolic name to reference information.',
   },
 };
 
@@ -266,68 +278,60 @@ export default [
         helper: null,
         type: 'text',
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          validation: 'required',
-          helper: 'The variable name for this field',
-        },
-      },
-      {
-        type: 'FormMultiselect',
-        field: 'type',
-        config: {
-          label: 'Field Type',
-          name: 'Field Type',
-          helper: 'The type for this field',
-          options: [{
-            value: 'text',
-            content: 'Text',
+      inspector: [
+        variableKeyProperty,
+        {
+          type: 'FormMultiselect',
+          field: 'type',
+          config: {
+            label: 'Field Type',
+            name: 'Field Type',
+            helper: 'The type for this field',
+            options: [{
+              value: 'text',
+              content: 'Text',
+            },
+            {
+              value: 'password',
+              content: 'Password',
+            },
+            ],
           },
-          {
-            value: 'password',
-            content: 'Password',
+        },
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
           },
-          ],
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'validation',
+          config: {
+            label: 'Validation',
+            helper: 'The validation rules needed for this field',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'validation',
-        config: {
-          label: 'Validation',
-          helper: 'The validation rules needed for this field',
+        {
+          type: 'FormInput',
+          field: 'placeholder',
+          config: {
+            label: 'Placeholder',
+            helper: 'The placeholder is what is shown in the field when no value is provided yet',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'placeholder',
-        config: {
-          label: 'Placeholder',
-          helper: 'The placeholder is what is shown in the field when no value is provided yet',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
-        },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -347,58 +351,50 @@ export default [
         helper: null,
         rows: 2,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          validation: 'required',
-          helper: 'The variable name for this field',
+      inspector: [
+        variableKeyProperty,
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'validation',
+          config: {
+            label: 'Validation',
+            helper: 'The validation rules needed for this field',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'validation',
-        config: {
-          label: 'Validation',
-          helper: 'The validation rules needed for this field',
+        {
+          type: 'FormInput',
+          field: 'rows',
+          config: {
+            label: 'Rows',
+            helper: 'The number of rows to provide for input',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'rows',
-        config: {
-          label: 'Rows',
-          helper: 'The number of rows to provide for input',
+        {
+          type: 'FormInput',
+          field: 'placeholder',
+          config: {
+            label: 'Placeholder',
+            helper: 'The placeholder is what is shown in the field when no value is provided yet',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'placeholder',
-        config: {
-          label: 'Placeholder',
-          helper: 'The placeholder is what is shown in the field when no value is provided yet',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
-        },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -424,50 +420,42 @@ export default [
         ],
         helper: null,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          helper: 'The variable name for this field',
-          validation: 'required',
-          name: 'Variable Name',
+      inspector: [
+        variableKeyProperty,
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'validation',
+          config: {
+            label: 'Validation',
+            helper: 'The validation rules needed for this field',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'validation',
-        config: {
-          label: 'Validation',
-          helper: 'The validation rules needed for this field',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        {
+          type: 'OptionsList',
+          field: 'options',
+          config: {
+            label: 'Options List',
+            helper: 'List of options available in the select drop down',
+          },
         },
-      },
-      {
-        type: 'OptionsList',
-        field: 'options',
-        config: {
-          label: 'Options List',
-          helper: 'List of options available in the select drop down',
-        },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -490,50 +478,42 @@ export default [
         toggle: false,
         helper: null,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          helper: 'The variable name for this field',
-          validation: 'required',
+      inspector: [
+        variableKeyProperty,
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        {
+          type: 'OptionsList',
+          field: 'options',
+          config: {
+            label: 'Options List',
+            helper: 'List of options available in the radio button group',
+          },
         },
-      },
-      {
-        type: 'OptionsList',
-        field: 'options',
-        config: {
-          label: 'Options List',
-          helper: 'List of options available in the radio button group',
+        {
+          type: 'FormCheckbox',
+          field: 'toggle',
+          config: {
+            label: 'Toggle Style?',
+            helper: '',
+          },
         },
-      },
-      {
-        type: 'FormCheckbox',
-        field: 'toggle',
-        config: {
-          label: 'Toggle Style?',
-          helper: '',
-        },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -555,50 +535,42 @@ export default [
         validation: '',
         toggle: false,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          validation: 'required',
-          helper: 'The name of the group for the checkbox. All checkboxes which share the same name will work together.',
+      inspector: [
+        variableKeyProperty,
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Help Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'helper',
-        config: {
-          label: 'Help Text',
-          helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        {
+          type: 'FormCheckbox',
+          field: 'toggle',
+          config: {
+            label: 'Toggle Style?',
+            helper: '',
+          },
         },
-      },
-      {
-        type: 'FormCheckbox',
-        field: 'toggle',
-        config: {
-          label: 'Toggle Style?',
-          helper: '',
+        {
+          type: 'FormCheckbox',
+          field: 'initiallyChecked',
+          config: {
+            label: 'Initially Checked?',
+            helper: 'Should the checkbox be checked by default',
+          },
         },
-      },
-      {
-        type: 'FormCheckbox',
-        field: 'initiallyChecked',
-        config: {
-          label: 'Initially Checked?',
-          helper: 'Should the checkbox be checked by default',
-        },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -618,34 +590,26 @@ export default [
         name: '',
         placeholder: '',
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          validation: 'required',
-          helper: 'The variable name for this field',
+      inspector: [
+        variableKeyProperty,
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Field Label',
+            helper: 'The label describes the fields name',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the fields name',
+        {
+          type: 'FormInput',
+          field: 'placeholder',
+          config: {
+            label: 'Placeholder',
+            helper: 'The placeholder is what is shown in the field when no value is provided yet',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'placeholder',
-        config: {
-          label: 'Placeholder',
-          helper: 'The placeholder is what is shown in the field when no value is provided yet',
-        },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
     },
   },
@@ -789,51 +753,43 @@ export default [
         fields: [],
         form: '',
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'List Name',
-          name: 'List Name',
-          validation: 'required',
-          helper: 'The variable name for this list',
+      inspector: [
+        variableKeyProperty,
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'List Label',
+            helper: 'The label describes this record list',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'List Label',
-          helper: 'The label describes this record list',
+        {
+          type: 'FormCheckbox',
+          field: 'editable',
+          config: {
+            label: 'Editable?',
+            helper: 'Should records be editable/removable and can new records be added',
+          },
         },
-      },
-      {
-        type: 'FormCheckbox',
-        field: 'editable',
-        config: {
-          label: 'Editable?',
-          helper: 'Should records be editable/removable and can new records be added',
-        },
-      },
 
-      {
-        type: 'OptionsList',
-        field: 'fields',
-        config: {
-          label: 'Fields List',
-          helper: 'List of fields to display in the record list',
+        {
+          type: 'OptionsList',
+          field: 'fields',
+          config: {
+            label: 'Fields List',
+            helper: 'List of fields to display in the record list',
+          },
         },
-      },
-      {
-        type: 'PageSelect',
-        field: 'form',
-        config: {
-          label: 'Record Form',
-          helper: 'The form to use for adding/editing records',
+        {
+          type: 'PageSelect',
+          field: 'form',
+          config: {
+            label: 'Record Form',
+            helper: 'The form to use for adding/editing records',
+          },
         },
-      },
-      bgcolorProperty,
-      colorProperty,
+        bgcolorProperty,
+        colorProperty,
       ],
 
     },
@@ -863,14 +819,7 @@ export default [
           helper: 'Image id',
         },
       },
-      {
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          helper: 'The variable name of the image',
-        },
-      },
+      variableKeyProperty,
       {
         type: 'ImageUpload',
         field: 'image',
@@ -925,16 +874,7 @@ export default [
           helper: 'The label describes the button\'s text',
         },
       },
-      {
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          validation: 'required',
-          name: 'Variable Name',
-          helper: 'The name of the button',
-        },
-      },
+      variableKeyProperty,
       {
         type: 'FormInput',
         field: 'fieldValue',
