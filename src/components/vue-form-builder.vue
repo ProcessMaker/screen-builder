@@ -123,7 +123,7 @@
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
               <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-              {{ element.config.name || $t('Variable Name') }}
+              {{ element.config.name || $t('Key Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
                 @click="deleteItem(index)"
