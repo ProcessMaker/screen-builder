@@ -344,6 +344,7 @@ export default [
       label: 'Textarea',
       component: 'FormTextArea',
       'editor-component': 'FormTextArea',
+      'fa-icon': 'fas fa-paragraph',
       config: {
         icon: 'fas fa-paragraph',
         label: 'New Textarea',
@@ -614,6 +615,7 @@ export default [
     },
   },
   {
+
     editorComponent: FormButton,
     editorBinding: 'FormButton',
     rendererComponent: FormButton,

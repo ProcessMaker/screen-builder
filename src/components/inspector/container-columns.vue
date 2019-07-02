@@ -1,7 +1,8 @@
 <template>
   <div class="form-group">
     <h3>{{ label }}</h3>
-    <form-checkbox name="type"
+    <form-checkbox
+      name="type"
       toggle="true"
       :label="$t('Show in Json Format')"
       v-model="displayList"
@@ -9,16 +10,18 @@
     />
 
     <template v-if="displayList">
-      <div class="alert"
+      <div
+        class="alert"
         :class="{'alert-success': isValidJson, 'alert-danger': !isValidJson}"
       >
         <span v-if="isValidJson">Valid JSON Data Object</span>
         <span v-else>Invalid JSON Data Object</span>
       </div>
-      <form-text-area name="dataJson"
-        label="Json Options"
+      <form-text-area
+        name="dataJson"
+        :label="$t('Json Options')"
         rows="8"
-        helper="It must be a correct json format."
+        :helper="$t('It must be a correct json format')"
         v-model="dataJson"
       />
       <b-btn @click="saveDataJson" :disabled="!isValidJson">{{ $t('Save') }}</b-btn>
@@ -52,7 +55,14 @@
       <b-btn v-b-modal.addOptionModal>{{ $t('Add Column') }}</b-btn>
       <small v-if="helper" class="form-text text-muted">{{ $t(helper) }}</small>
 
-      <b-modal @cancel="resetAdd" @ok="addNewOption" id="addOptionModal" :title="$t('Add New Column')">
+      <b-modal
+        @cancel="resetAdd"
+        @ok="addNewOption"
+        :ok-title="$t('Ok')"
+        :cancel-title="$t('Cancel')"
+        id="addOptionModal"
+        :title="$t('Add New Column')"
+      >
         <form-input
           :label="$t('Column Width')"
           v-model="addContent"
