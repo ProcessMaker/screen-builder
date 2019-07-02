@@ -69,7 +69,7 @@
       </b-input-group>
 
       <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded">
-        Drag an element here
+        {{ $t('Drag an element here') }}
       </div>
 
       <draggable
@@ -140,6 +140,7 @@
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
             />
+            <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"/>
           </div>
         </div>
       </draggable>
@@ -181,42 +182,38 @@
     </b-col>
 
     <!-- Modals -->
-    <b-modal
-      id="addPageModal"
-      centered
+    <b-modal id="addPageModal"
       @ok="addPage"
       :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
       :title="$t('Add New Page')"
     >
-      <form-input
-        v-model="addPageName"
+      <form-input v-model="addPageName"
         :label="$t('Page Name')"
         :helper="$t('The name of the new page to add')"
       />
     </b-modal>
 
-    <b-modal
-      ref="editPageModal"
-      centered
+    <b-modal ref="editPageModal"
       @ok="editPage"
       :title="$t('Edit Page Title')"
       :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
     >
-      <form-input
-        v-model="editPageName"
+      <form-input v-model="editPageName"
         :label="$t('Page Name')"
         :helper="$t('The new name of the page')"
       />
     </b-modal>
 
-    <b-modal
-      ref="confirm"
-      centered
-      title="Confirm delete"
+    <b-modal ref="confirm"
+      :title="$t('Caution!')"
+      :ok-title="$t('Delete')"
+      :cancel-title="$t('Cancel')"
       @ok="deletePage"
       @cancel="hideConfirmModal"
       cancel-variant="btn btn-outline-secondary"
@@ -225,6 +222,7 @@
       <p>{{ confirmMessage }}</p>
       <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
+
   </b-row>
 </template>
 
@@ -244,6 +242,11 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 Vue.use(BootstrapVue);
 
 let Validator = require('validatorjs');
+// To include another language in the Validator with variable processmaker
+if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
+  Validator.useLang(window.ProcessMaker.user.lang);
+}
+
 Validator.register(
   'attr-value',
   value => {
@@ -373,10 +376,7 @@ export default {
       });
     },
     confirmDelete() {
-      this.confirmMessage =
-        'Are you sure to delete the page ' +
-        this.config[this.currentPage].name +
-        '?';
+      this.confirmMessage = this.$t('Are you sure you want to delete {{item}}?', {item: this.config[this.currentPage].name});
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
@@ -423,6 +423,10 @@ export default {
         label: control.label,
         value: control.value,
       };
+      if (control.component === 'FormDatePicker' && copy.config.phrases) {
+        copy.config.phrases.ok = this.$t(copy.config.phrases.ok);
+        copy.config.phrases.cancel = this.$t(copy.config.phrases.cancel);
+      }
       copy.config.label = this.$t(copy.config.label);
       if (copy.config.options) {
         for (var io in copy.config.options) {
