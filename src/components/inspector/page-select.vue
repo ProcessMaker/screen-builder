@@ -1,17 +1,31 @@
 <template>
   <div>
     <label class="typo__label">{{ label }}</label>
-    <multiselect v-model="target" label="content" :options="options" :helper="helper"/>
+    <multiselect
+      v-model="target"
+      label="content"
+      :placeholder="$t('Select...')"
+      :show-labels="false"
+      :options="options"
+    >
+      <template slot="noResult">
+        {{ $t('No elements found. Consider changing the search query.') }}
+      </template>
+      <template slot="noOptions">
+        {{ $t('No Data Available') }}
+      </template>
+    </multiselect>
     <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
   </div>
 </template>
 
 <style lang="scss" scoped>
-@import "~vue-multiselect/dist/vue-multiselect.min.css";
+    @import "~vue-multiselect/dist/vue-multiselect.min.css";
 </style>
 
 <script>
 import Multiselect from 'vue-multiselect';
+
 export default {
   props: ['label', 'helper', 'formConfig', 'value'],
   data() {
