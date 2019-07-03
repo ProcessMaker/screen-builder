@@ -9,6 +9,7 @@
     @hide="hide"
     cancel-variant="btn btn-outline-secondary"
     ok-variant="btn btn-secondary ml-2"
+    no-close-on-backdrop
     :ok-title="$t('Save')"
     :cancel-title="$t('Cancel')"
   >
