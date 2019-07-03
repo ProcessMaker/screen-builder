@@ -20,39 +20,38 @@ const bgcolorProperty = {
   config: {
     label: 'Element Background color',
     helper: 'Set the element\'s background color',
-    options: [
-      {
-        value: 'alert alert-primary',
-        content: 'primary',
-      },
-      {
-        value: 'alert alert-secondary',
-        content: 'secondary',
-      },
-      {
-        value: 'alert alert-success',
-        content: 'success',
-      },
-      {
-        value: 'alert alert-danger',
-        content: 'danger',
-      },
-      {
-        value: 'alert alert-warning',
-        content: 'warning',
-      },
-      {
-        value: 'alert alert-info',
-        content: 'info',
-      },
-      {
-        value: 'alert alert-light',
-        content: 'light',
-      },
-      {
-        value: 'alert alert-dark',
-        content: 'dark',
-      },
+    options: [{
+      value: 'alert alert-primary',
+      content: 'primary',
+    },
+    {
+      value: 'alert alert-secondary',
+      content: 'secondary',
+    },
+    {
+      value: 'alert alert-success',
+      content: 'success',
+    },
+    {
+      value: 'alert alert-danger',
+      content: 'danger',
+    },
+    {
+      value: 'alert alert-warning',
+      content: 'warning',
+    },
+    {
+      value: 'alert alert-info',
+      content: 'info',
+    },
+    {
+      value: 'alert alert-light',
+      content: 'light',
+    },
+    {
+      value: 'alert alert-dark',
+      content: 'dark',
+    },
     ],
   },
 };
@@ -62,39 +61,38 @@ const colorProperty = {
   config: {
     label: 'Text color',
     helper: 'Set the element\'s text color',
-    options: [
-      {
-        value: 'text-primary',
-        content: 'primary',
-      },
-      {
-        value: 'text-secondary',
-        content: 'secondary',
-      },
-      {
-        value: 'text-success',
-        content: 'success',
-      },
-      {
-        value: 'text-danger',
-        content: 'danger',
-      },
-      {
-        value: 'text-warning',
-        content: 'warning',
-      },
-      {
-        value: 'text-info',
-        content: 'info',
-      },
-      {
-        value: 'text-light',
-        content: 'light',
-      },
-      {
-        value: 'text-dark',
-        content: 'dark',
-      },
+    options: [{
+      value: 'text-primary',
+      content: 'primary',
+    },
+    {
+      value: 'text-secondary',
+      content: 'secondary',
+    },
+    {
+      value: 'text-success',
+      content: 'success',
+    },
+    {
+      value: 'text-danger',
+      content: 'danger',
+    },
+    {
+      value: 'text-warning',
+      content: 'warning',
+    },
+    {
+      value: 'text-info',
+      content: 'info',
+    },
+    {
+      value: 'text-light',
+      content: 'light',
+    },
+    {
+      value: 'text-dark',
+      content: 'dark',
+    },
     ],
   },
 };
@@ -295,15 +293,14 @@ export default [
             name: 'Font Weight',
             helper: 'The weight of the text',
             validation: 'required',
-            options: [
-              {
-                value: 'normal',
-                content: 'Normal',
-              },
-              {
-                value: 'bold',
-                content: 'Bold',
-              },
+            options: [{
+              value: 'normal',
+              content: 'Normal',
+            },
+            {
+              value: 'bold',
+              content: 'Bold',
+            },
             ],
           },
         },
@@ -315,23 +312,22 @@ export default [
             name: 'Text Horizontal Alignment',
             helper: 'Horizontal alignment of the text',
             validation: 'required',
-            options: [
-              {
-                value: 'center',
-                content: 'Center',
-              },
-              {
-                value: 'left',
-                content: 'Left',
-              },
-              {
-                value: 'right',
-                content: 'Right',
-              },
-              {
-                value: 'justify',
-                content: 'Justify',
-              },
+            options: [{
+              value: 'center',
+              content: 'Center',
+            },
+            {
+              value: 'left',
+              content: 'Left',
+            },
+            {
+              value: 'right',
+              content: 'Right',
+            },
+            {
+              value: 'justify',
+              content: 'Justify',
+            },
             ],
           },
         },
@@ -343,19 +339,18 @@ export default [
             name: 'Text Vertical Alignment',
             helper: 'Vertical alignment of the text',
             validation: 'required',
-            options: [
-              {
-                value: 'top',
-                content: 'Top',
-              },
-              {
-                value: 'middle',
-                content: 'Middle',
-              },
-              {
-                value: 'bottom',
-                content: 'Bottom',
-              },
+            options: [{
+              value: 'top',
+              content: 'Top',
+            },
+            {
+              value: 'middle',
+              content: 'Middle',
+            },
+            {
+              value: 'bottom',
+              content: 'Bottom',
+            },
             ],
           },
         },
@@ -367,23 +362,22 @@ export default [
             name: 'Font Size',
             helper: 'The size of the text in em',
             validation: 'required',
-            options: [
-              {
-                value: '0.5em',
-                content: '0.5',
-              },
-              {
-                value: '1em',
-                content: '1',
-              },
-              {
-                value: '1.5em',
-                content: '1.5',
-              },
-              {
-                value: '2em',
-                content: '2',
-              },
+            options: [{
+              value: '0.5em',
+              content: '0.5',
+            },
+            {
+              value: '1em',
+              content: '1',
+            },
+            {
+              value: '1.5em',
+              content: '1.5',
+            },
+            {
+              value: '2em',
+              content: '2',
+            },
             ],
           },
         },
@@ -438,7 +432,7 @@ export default [
         validation: '',
         helper: null,
         type: 'text',
-        dataFormat:'string',
+        dataFormat: 'string',
       },
       inspector: [
         KeyName,
@@ -454,15 +448,14 @@ export default [
             name: 'Field Type',
             helper: 'The type for this field',
             validation: 'required',
-            options: [
-              {
-                value: 'text',
-                content: 'Text',
-              },
-              {
-                value: 'password',
-                content: 'Password',
-              },
+            options: [{
+              value: 'text',
+              content: 'Text',
+            },
+            {
+              value: 'password',
+              content: 'Password',
+            },
             ],
           },
         },
@@ -488,7 +481,7 @@ export default [
         placeholder: '',
         helper: null,
         rows: 2,
-        dataFormat:'string',
+        dataFormat: 'string',
       },
       inspector: [
         KeyName,
@@ -531,7 +524,7 @@ export default [
           },
         ],
         helper: null,
-        dataFormat:'string',
+        dataFormat: 'string',
       },
       inspector: [
         KeyName,
@@ -565,15 +558,13 @@ export default [
       config: {
         icon: 'fas fa-list-ul',
         label: 'New Radio Button Group',
-        options: [
-          {
-            value: 'new',
-            content: 'New Option',
-          },
-        ],
+        options: [{
+          value: 'new',
+          content: 'New Option',
+        }],
         toggle: false,
         helper: null,
-        dataFormat:'string',
+        dataFormat: 'string',
       },
       inspector: [
         KeyName,
@@ -620,7 +611,7 @@ export default [
         initiallyChecked: false,
         validation: '',
         toggle: false,
-        dataFormat:'string',
+        dataFormat: 'string',
       },
       inspector: [
         KeyName,
@@ -665,7 +656,7 @@ export default [
         type: 'date',
         name: '',
         placeholder: '',
-        dataFormat:'string',
+        dataFormat: 'string',
       },
       inspector: [
         KeyName,
@@ -695,73 +686,71 @@ export default [
         event: 'pageNavigate',
         eventData: 0,
       },
-      inspector: [
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the button\'s text',
-          },
+      inspector: [{
+        type: 'FormInput',
+        field: 'label',
+        config: {
+          label: 'Field Label',
+          helper: 'The label describes the button\'s text',
         },
-        {
-          type: 'FormMultiselect',
-          field: 'variant',
-          config: {
-            label: 'Variant',
-            name: 'Variant',
-            helper: 'The variant determines the appearance of the button',
-            validation: 'required',
-            options: [
-              {
-                value: 'primary',
-                content: 'Primary',
-              },
-              {
-                value: 'secondary',
-                content: 'Secondary',
-              },
-              {
-                value: 'success',
-                content: 'Success',
-              },
-              {
-                value: 'danger',
-                content: 'Danger',
-              },
-              {
-                value: 'warning',
-                content: 'Warning',
-              },
-              {
-                value: 'info',
-                content: 'Info',
-              },
-              {
-                value: 'light',
-                content: 'Light',
-              },
+      },
+      {
+        type: 'FormMultiselect',
+        field: 'variant',
+        config: {
+          label: 'Variant',
+          name: 'Variant',
+          helper: 'The variant determines the appearance of the button',
+          validation: 'required',
+          options: [{
+            value: 'primary',
+            content: 'Primary',
+          },
+          {
+            value: 'secondary',
+            content: 'Secondary',
+          },
+          {
+            value: 'success',
+            content: 'Success',
+          },
+          {
+            value: 'danger',
+            content: 'Danger',
+          },
+          {
+            value: 'warning',
+            content: 'Warning',
+          },
+          {
+            value: 'info',
+            content: 'Info',
+          },
+          {
+            value: 'light',
+            content: 'Light',
+          },
 
-              {
-                value: 'dark',
-                content: 'Dark',
-              },
+          {
+            value: 'dark',
+            content: 'Dark',
+          },
 
-              {
-                value: 'link',
-                content: 'Link',
-              },
-            ],
+          {
+            value: 'link',
+            content: 'Link',
           },
+          ],
         },
-        {
-          type: 'PageSelect',
-          field: 'eventData',
-          config: {
-            label: 'Destination',
-            helper: 'The destination page to navigate to',
-          },
+      },
+      {
+        type: 'PageSelect',
+        field: 'eventData',
+        config: {
+          label: 'Destination',
+          helper: 'The destination page to navigate to',
         },
+      },
       ],
     },
   },
@@ -782,15 +771,14 @@ export default [
       ],
       config: {
         icon: 'fas fa-table',
-        options: [
-          {
-            value: '1',
-            content: '6',
-          },
-          {
-            value: '2',
-            content: '6',
-          },
+        options: [{
+          value: '1',
+          content: '6',
+        },
+        {
+          value: '2',
+          content: '6',
+        },
         ],
       },
       inspector: [
