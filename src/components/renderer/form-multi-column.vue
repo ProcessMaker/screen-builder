@@ -24,12 +24,13 @@
             <component
               :class="elementCssClass(element)"
               ref="elements"
-              v-model="model[element.config.name]"
+              v-model="model[getValidPath(element.config.name)]"
               :validationData="transientData"
               @submit="submit"
               @pageNavigate="pageNavigate"
               v-bind="element.config"
               :is="element.component"
+              :disabled="element.config.interactive"
             />
           </div>
         </div>
@@ -41,7 +42,7 @@
 <script>
 import draggable from 'vuedraggable';
 import * as renderer from '@/components/renderer';
-import { HasColorProperty, shouldElementBeVisible } from '@/mixins';
+import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins';
 
 import {
   FormInput,
@@ -57,7 +58,7 @@ const defaultColumnWidth = 1;
 
 export default {
   name: 'FormMultiColumn',
-  mixins: [HasColorProperty, shouldElementBeVisible],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
   props: ['value', 'selected', 'name', 'config', 'transientData'],
   components: {
     draggable,

@@ -4,17 +4,25 @@
     <multiselect
       :options="options"
       selectedLabel="Primary"
-      placeholder="Select one"
+      :placeholder="$t('Select...')"
+      :show-labels="false"
       label="content"
       track-by="value"
       v-model="selected"
-    />
+    >
+      <template slot="noResult">
+        {{ $t('No elements found. Consider changing the search query.') }}
+      </template>
+      <template slot="noOptions">
+        {{ $t('No Data Available') }}
+      </template>
+    </multiselect>
     <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
   </div>
 </template>
 
 <style lang="scss" scoped>
-@import "~vue-multiselect/dist/vue-multiselect.min.css";
+    @import "~vue-multiselect/dist/vue-multiselect.min.css";
 </style>
 
 <script>
@@ -39,7 +47,7 @@ export default {
   ],
   data() {
     return {
-      // The v-model for the multiselect. Should be prepopulated with the 
+      // The v-model for the multiselect. Should be prepopulated with the
       // object that represents the selected value, pulled from our options
       initialValue: null,
       selected: null,
@@ -47,11 +55,15 @@ export default {
   },
   watch: {
     selected() {
-      this.$emit('input', this.selected.value);
+      let value = '';
+      if (this.selected && this.selected.value) {
+        value = this.selected.value;
+      }
+      this.$emit('input', value);
     },
   },
   mounted() {
-    // We go through our options for a first-match of our options 
+    // We go through our options for a first-match of our options
     // to our value, if there is one
     for (let i = 0; i < this.options.length; i++) {
       if (this.options[i].value == this.value) {
