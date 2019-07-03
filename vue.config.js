@@ -6,7 +6,7 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new MonocoEditorPlugin({
-        languages: ['javascript', 'css', 'json'],
+        languages: ['javascript', 'typescript', 'css', 'json'],
       }),
     ],
     resolve: {

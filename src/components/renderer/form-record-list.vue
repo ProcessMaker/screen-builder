@@ -14,14 +14,24 @@
       {{ $t('There is no records in this list or the data is invalid.') }}
     </div>
     <template v-else>
-      <vuetable :per-page="perPage" ref="vuetable" :data-manager="dataManager" :fields="tableFields"
-        :data="tableData" :api-mode="false" pagination-path=""
+      <vuetable
+        :per-page="perPage"
+        ref="vuetable"
+        :data-manager="dataManager"
+        :fields="tableFields"
+        :data="tableData"
+        :api-mode="false"
+        pagination-path=""
+        :noDataTemplate="$t('No Data Available')"
         @vuetable:pagination-data="onPaginationData"
       >
         <template slot="actions" slot-scope="props">
           <div class="actions">
+            {{ $t('Json Options') }}
             <div class="btn-group" role="group" aria-label="Actions">
-              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">Edit</button>
+              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">
+                {{ $t('Edit') }}
+              </button>
               <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-primary">
                 {{ $t('Delete') }}
               </button>
@@ -32,42 +42,56 @@
       <vuetable-pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
     </template>
 
-    <b-modal @ok="add"
+    <b-modal
+      @ok="add"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
+      :ok-title="$t('Ok')"
+      :cancel-title="$t('Cancel')"
       :title="$t('Add Record')"
     >
-      <vue-form-renderer :page="form"
+      <vue-form-renderer/>
+      <vue-form-renderer
+        :page="form"
         ref="addRenderer"
         v-model="addItem"
         :config="fetchFormConfig()"
       />
     </b-modal>
-    <b-modal @ok="edit"
+    <b-modal
+      @ok="edit"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="editModal"
+      :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       :title="$t('Edit Record')"
     >
-      <vue-form-renderer :page="form"
+      <vue-form-renderer
+        :page="form"
         ref="editRenderer"
         v-model="editItem"
         :config="fetchFormConfig()"
       />
     </b-modal>
-    <b-modal @ok="remove"
+    <b-modal
+      @ok="remove"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="deleteModal"
+      :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       :title="$t('Delete Record')"
     >
       <p>{{ $t('Are you sure you want to remove this record?') }}</p>
     </b-modal>
-    <b-modal @ok="hideInformation"
+    <b-modal
+      @ok="hideInformation"
       size="sm"
       v-if="editable && !selfReferenced"
       ref="infoModal"
+      :ok-title="$t('Save')"
       :title="$t('Information form')"
       ok-only
     >
@@ -85,7 +109,6 @@ import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
 
 export default {
-  name: 'FormRecordList',
   components: {
     Vuetable,
     VuetablePagination,
@@ -225,5 +248,3 @@ export default {
 
 <style lang="scss" scoped>
 </style>
-
-

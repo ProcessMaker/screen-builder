@@ -1,17 +1,21 @@
 <template>
-  <b-row class="h-100">
+  <b-row class="h-100 m-0">
     <!-- Controls -->
     <b-col class="overflow-hidden mh-100 p-0 controls-column">
-      <b-card no-body class="h-100">
-        <b-card-header>{{ $t('Controls')  }}</b-card-header>
+      <b-card no-body class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0">
         <b-input-group size="sm">
           <b-input-group-prepend>
-            <b-input-group-text class="filter-icon">
+            <b-input-group-text class="filter-icon border-left-0 border-top-0 rounded-0">
               <i class="fas fa-filter"/>
             </b-input-group-text>
           </b-input-group-prepend>
 
-          <b-form-input v-model="filterQuery" type="text" :placeholder="$t('Filter Controls')"/>
+          <b-form-input
+            class="border-top-0 border-right-0 rounded-0"
+            v-model="filterQuery"
+            type="text"
+            :placeholder="$t('Filter Controls')"
+          />
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
@@ -37,7 +41,7 @@
 
     <!-- Renderer -->
     <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative">
-      <b-input-group size="sm" class="sticky-top bg-white">
+      <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
         </b-form-select>
@@ -69,7 +73,7 @@
       </b-input-group>
 
       <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded">
-        Drag an element here
+        {{ $t('Drag an element here') }}
       </div>
 
       <draggable
@@ -133,13 +137,14 @@
             </div>
 
             <component
-              tabindex="-1"
+              :tabindex="element.config.interactive ? 0 : -1"
               class="card-body m-0 pb-4 pt-4"
               :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
               v-bind="element.config"
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
             />
+            <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"/>
           </div>
         </div>
       </draggable>
@@ -147,9 +152,7 @@
 
     <!-- Inspector -->
     <b-col class="overflow-hidden h-100 p-0 inspector-column">
-      <b-card no-body class="p-0 h-100">
-        <b-card-header>{{ $t('Inspector') }}</b-card-header>
-
+      <b-card no-body class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0">
         <b-card-body class="p-0 h-100 overflow-auto">
           <b-button
             v-b-toggle.configuration
@@ -181,42 +184,38 @@
     </b-col>
 
     <!-- Modals -->
-    <b-modal
-      id="addPageModal"
-      centered
+    <b-modal id="addPageModal"
       @ok="addPage"
       :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
       :title="$t('Add New Page')"
     >
-      <form-input
-        v-model="addPageName"
+      <form-input v-model="addPageName"
         :label="$t('Page Name')"
         :helper="$t('The name of the new page to add')"
       />
     </b-modal>
 
-    <b-modal
-      ref="editPageModal"
-      centered
+    <b-modal ref="editPageModal"
       @ok="editPage"
       :title="$t('Edit Page Title')"
       :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
     >
-      <form-input
-        v-model="editPageName"
+      <form-input v-model="editPageName"
         :label="$t('Page Name')"
         :helper="$t('The new name of the page')"
       />
     </b-modal>
 
-    <b-modal
-      ref="confirm"
-      centered
-      title="Confirm delete"
+    <b-modal ref="confirm"
+      :title="$t('Caution!')"
+      :ok-title="$t('Delete')"
+      :cancel-title="$t('Cancel')"
       @ok="deletePage"
       @cancel="hideConfirmModal"
       cancel-variant="btn btn-outline-secondary"
@@ -225,6 +224,7 @@
       <p>{{ confirmMessage }}</p>
       <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
+
   </b-row>
 </template>
 
@@ -244,6 +244,11 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 Vue.use(BootstrapVue);
 
 let Validator = require('validatorjs');
+// To include another language in the Validator with variable processmaker
+if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
+  Validator.useLang(window.ProcessMaker.user.lang);
+}
+
 Validator.register(
   'attr-value',
   value => {
@@ -373,10 +378,7 @@ export default {
       });
     },
     confirmDelete() {
-      this.confirmMessage =
-        'Are you sure to delete the page ' +
-        this.config[this.currentPage].name +
-        '?';
+      this.confirmMessage = this.$t('Are you sure you want to delete {{item}}?', {item: this.config[this.currentPage].name});
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
@@ -423,6 +425,10 @@ export default {
         label: control.label,
         value: control.value,
       };
+      if (control.component === 'FormDatePicker' && copy.config.phrases) {
+        copy.config.phrases.ok = this.$t(copy.config.phrases.ok);
+        copy.config.phrases.cancel = this.$t(copy.config.phrases.cancel);
+      }
       copy.config.label = this.$t(copy.config.label);
       if (copy.config.options) {
         for (var io in copy.config.options) {
@@ -442,6 +448,13 @@ export default {
   },
 };
 </script>
+
+<style>
+.prevent-interaction {
+  pointer-events: none;
+}
+</style>
+
 
 <style lang="scss" scoped>
 $header-bg: #f7f7f7;
@@ -474,10 +487,6 @@ $header-bg: #f7f7f7;
 
   &:not(.selected) .card {
     border: none;
-  }
-
-  .prevent-interaction {
-    pointer-events: none;
   }
 }
 
