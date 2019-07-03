@@ -159,6 +159,7 @@
             variant="outline"
             class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
             @click="showVariable = !showVariable"
+            v-if="hasVariableConfig(inspection.inspector)"
           >
             <i class="fas fa-cog mr-2"/>
             {{ $t('Variable') }}
@@ -168,7 +169,7 @@
             />
           </b-button>
 
-          <b-collapse id="variableConfig" class="mt-2">
+          <b-collapse id="variableConfig" class="mt-2" v-if="hasVariableConfig(inspection.inspector)">
             <template v-for="(item, index) in inspection.inspector">
               <template v-if="item.panel && item.panel === 'variable'">
                 <component
@@ -399,6 +400,9 @@ export default {
     },
   },
   methods: {
+    hasVariableConfig(inspector) {
+      return inspector && inspector.filter(item => item.panel==='variable').length > 0;
+    },
     updateConfig(items) {
       this.config[this.currentPage].items = items;
     },

@@ -171,7 +171,7 @@ export default {
     },
     validateElements(elements) {
       elements.forEach(element => {
-        if (element.validator && element.validator.errorCount !== 0) {
+        if (element.validator && !element.validator.passes() && element.validator.errorCount !== 0) {
           this.valid = false;
           this.errors.push(element.validator.errors.errors);
         }
