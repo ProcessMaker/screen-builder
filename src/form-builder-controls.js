@@ -143,10 +143,6 @@ const DataType = {
         value: 'currency',
         content: 'Currency',
       },
-      {
-        value: 'boolean',
-        content: 'Boolean',
-      },
     ],
   },
 };
@@ -176,9 +172,43 @@ const DataTypeWithoutDate = {
         value: 'currency',
         content: 'Currency',
       },
+    ],
+  },
+};
+const DataTypeBoolean = {
+  type: 'FormMultiselect',
+  field: 'dataFormat',
+  panel: 'variable',
+  config: {
+    label: 'Data Type',
+    name: 'Data Type',
+    helper: 'The data type specifies what kind of data is stored in the variable.',
+    validation: 'required',
+    options: [
       {
         value: 'boolean',
         content: 'Boolean',
+      },
+    ],
+  },
+};
+const DataTypeDateTime = {
+  type: 'FormMultiselect',
+  field: 'type',
+  panel: 'variable',
+  config: {
+    label: 'Data Type',
+    name: 'Data Type',
+    helper: 'The data type specifies what kind of data is stored in the variable.',
+    validation: 'required',
+    options: [
+      {
+        value: 'datetime',
+        content: 'Datetime',
+      },
+      {
+        value: 'date',
+        content: 'Date',
       },
     ],
   },
@@ -594,7 +624,7 @@ export default [
       },
       inspector: [
         KeyName,
-        DataTypeWithoutDate,
+        DataTypeBoolean,
         ValidateVariable,
         ReadOnly,
         LabelField,
@@ -639,6 +669,7 @@ export default [
       },
       inspector: [
         KeyName,
+        DataTypeDateTime,
         ValidateVariable,
         ReadOnly,
         LabelField,
