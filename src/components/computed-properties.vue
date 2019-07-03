@@ -104,7 +104,7 @@
         </div>
         <textarea v-show="!isJS" name="formula" v-model="add.formula" class="form-control editor" :class="{'is-invalid':!add.formula}"/>
         <div v-show="isJS" class="editor-border" :class="{'is-invalid':!add.formula}"/>
-        <monaco-editor v-show="isJS" :options="monacoOptions" :minimap="{enabled:false}" class="editor" v-model="add.formula" language="javascript"/>
+        <monaco-editor v-show="isJS" :options="monacoOptions" class="editor" v-model="add.formula" language="javascript"/>
         <div v-if="!add.formula" class="invalid-feedback"><div>{{ $t('The property formula field is required.') }}</div></div>
       </div>
       <button
