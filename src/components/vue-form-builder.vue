@@ -312,6 +312,7 @@ const variableFields = [
   'id',
   'image',
   'fieldValue',
+  'readonly',
 ];
 
 export default {
