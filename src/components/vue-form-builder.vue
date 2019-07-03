@@ -1,17 +1,21 @@
 <template>
-  <b-row class="h-100">
+  <b-row class="h-100 m-0">
     <!-- Controls -->
     <b-col class="overflow-hidden mh-100 p-0 controls-column">
-      <b-card no-body class="h-100">
-        <b-card-header>{{ $t('Controls')  }}</b-card-header>
+      <b-card no-body class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0">
         <b-input-group size="sm">
           <b-input-group-prepend>
-            <b-input-group-text class="filter-icon">
+            <b-input-group-text class="filter-icon border-left-0 border-top-0 rounded-0">
               <i class="fas fa-filter"/>
             </b-input-group-text>
           </b-input-group-prepend>
 
-          <b-form-input v-model="filterQuery" type="text" :placeholder="$t('Filter Controls')"/>
+          <b-form-input
+            class="border-top-0 border-right-0 rounded-0"
+            v-model="filterQuery"
+            type="text"
+            :placeholder="$t('Filter Controls')"
+          />
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
@@ -37,7 +41,7 @@
 
     <!-- Renderer -->
     <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative">
-      <b-input-group size="sm" class="sticky-top bg-white">
+      <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
         </b-form-select>
@@ -148,9 +152,7 @@
 
     <!-- Inspector -->
     <b-col class="overflow-hidden h-100 p-0 inspector-column">
-      <b-card no-body class="p-0 h-100">
-        <b-card-header>{{ $t('Inspector') }}</b-card-header>
-
+      <b-card no-body class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0">
         <b-card-body class="p-0 h-100 overflow-auto">
           <b-button
             v-if="variableFields.length > 0"
