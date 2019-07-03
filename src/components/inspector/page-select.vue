@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-2">
+  <div>
     <label class="typo__label">{{ label }}</label>
     <multiselect
       v-model="target"

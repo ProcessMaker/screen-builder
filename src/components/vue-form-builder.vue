@@ -127,7 +127,7 @@
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
               <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-              {{ element.config.name || $t('Variable Name') }}
+              {{ element.config.name || $t('Key Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
                 @click="deleteItem(index)"
@@ -155,26 +155,52 @@
       <b-card no-body class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0">
         <b-card-body class="p-0 h-100 overflow-auto">
           <b-button
-            v-b-toggle.configuration
+            v-if="variableFields.length > 0"
+            v-b-toggle.variable
             variant="outline"
             class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-            @click="showConfiguration = !showConfiguration"
+            @click="showVariable = !showVariable"
           >
             <i class="fas fa-cog mr-2"/>
-            {{ $t('Configuration') }}
+            {{ $t('Variable') }}
             <i
               class="fas fa-angle-down ml-auto"
-              :class="{ 'fas fa-angle-right' : showConfiguration }"
+              :class="{ 'fas fa-angle-right' : showVariable }"
             />
           </b-button>
-
-          <b-collapse id="configuration" visible class="mt-2">
+          <b-collapse id="variable" visible>
             <component
-              v-for="(item, index) in inspection.inspector"
+              v-for="(item, index) in variableFields"
               :formConfig="config"
               :key="index"
               :is="item.type"
-              class="border-bottom pt-1 pb-3 pr-4 pl-4"
+              class="border-bottom m-0 p-4"
+              v-bind="item.config"
+              v-model="inspection.config[item.field]"
+            />
+          </b-collapse>
+
+          <b-button
+            v-if="designFields.length > 0"
+            v-b-toggle.design
+            variant="outline"
+            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+            @click="showDesign = !showDesign"
+          >
+            <i class="fas fa-cog mr-2"/>
+            {{ $t('Design') }}
+            <i
+              class="fas fa-angle-down ml-auto"
+              :class="{ 'fas fa-angle-right' : showDesign }"
+            />
+          </b-button>
+          <b-collapse id="design" visible>
+            <component
+              v-for="(item, index) in designFields"
+              :formConfig="config"
+              :key="index"
+              :is="item.type"
+              class="border-bottom m-0 p-4"
               v-bind="item.config"
               v-model="inspection.config[item.field]"
             />
@@ -274,6 +300,21 @@ const defaultConfig = [{
   items: [],
 }];
 
+const variableFields = [
+  'name',
+  'type',
+  'validation',
+  'options',
+  'eventData',
+  'editable',
+  'fields',
+  'form',
+  'id',
+  'image',
+  'fieldValue',
+  'readonly',
+];
+
 export default {
   props: ['validationErrors', 'initialConfig', 'title'],
   mixins: [HasColorProperty],
@@ -314,11 +355,22 @@ export default {
       pageDelete: 0,
       translated: [],
       showAssignment: false,
-      showConfiguration: false,
+      showVariable: false,
+      showDesign: false,
       filterQuery: '',
     };
   },
   computed: {
+    variableFields() {
+      return this.inspection.inspector
+        ? this.inspection.inspector.filter(input => variableFields.includes(input.field))
+        : [];
+    },
+    designFields() {
+      return this.inspection.inspector
+        ? this.inspection.inspector.filter(input => !variableFields.includes(input.field))
+        : [];
+    },
     displayDelete() {
       return this.config.length > 1;
     },
