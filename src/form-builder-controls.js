@@ -327,6 +327,13 @@ export default [
             helper: 'Help text is meant to provide additional guidance on the field\'s value',
           },
         },
+        {
+          type: 'FormCheckbox',
+          field: 'readonly',
+          config: {
+            label: 'Control is read only',
+          },
+        },
         bgcolorProperty,
         colorProperty,
       ],
@@ -397,6 +404,13 @@ export default [
         config: {
           label: 'Help Text',
           helper: 'Help text is meant to provide additional guidance on the field\'s value',
+        },
+      },
+      {
+        type: 'FormCheckbox',
+        field: 'readonly',
+        config: {
+          label: 'Control is read only',
         },
       },
       bgcolorProperty,
