@@ -482,7 +482,7 @@ export default {
         copy.config.phrases.cancel = this.$t(copy.config.phrases.cancel);
       }
       copy.config.label = this.$t(copy.config.label);
-      if (copy.config.options) {
+      if (Array.isArray(copy.config.options)) {
         for (var io in copy.config.options) {
           copy.config.options[io].content = this.$t(
             copy.config.options[io].content

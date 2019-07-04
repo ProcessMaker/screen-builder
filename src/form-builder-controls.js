@@ -3,7 +3,6 @@ import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
-
 import {
   FormInput,
   FormTextArea,
@@ -13,6 +12,7 @@ import {
   FormDatePicker,
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
+import { dataSourceValues } from '@/components/inspector/data-source-types';
 
 const bgcolorProperty = {
   type: 'ColorSelect',
@@ -423,12 +423,10 @@ export default [
         label: 'New Select',
         placeholder: '',
         validation: '',
-        options: [
-          {
-            value: null,
-            content: 'Select',
-          },
-        ],
+        options: {
+          dataSource: dataSourceValues.provideData,
+          jsonData: '',
+        },
         helper: null,
       },
       inspector: [
