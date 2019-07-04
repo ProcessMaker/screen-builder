@@ -4,12 +4,12 @@
     <b-form-select id="data-sources" v-model="dataSource" :options="dataSources"/>
     <small class="form-text text-muted mb-3">Data source to populate select</small>
 
-    <div v-if="dataSource === 'Provide Data'">
+    <div v-if="dataSource === dataSourceValues.provideData">
       <label for="json-data">{{ $t('JSON Data') }}</label>
       <b-form-textarea class="mb-3" id="json-data" rows="8" v-model="jsonData"/>
     </div>
 
-    <div v-if="dataSource === 'Data Object'">
+    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="data-name">{{ $t('Data Name') }}</label>
       <b-form-input id="data-name" v-model="dataName"/>
       <small class="form-text text-muted mb-3">Data source to populate select</small>
@@ -30,15 +30,7 @@
 </template>
 
 <script>
-// export const dataSources = [
-//   { value: 'provideData', content: 'Provide Data' },
-//   { value: 'dataObject', content: 'Data Object' },
-// ];
-
-// export const dataSourceValues = dataSources.reduce((values, source) => {
-//   values[source.value] = source.value;
-//   return values;
-// }, {});
+import { dataSources, dataSourceValues } from './data-source-types';
 
 export default {
   props: ['options'],
@@ -47,14 +39,10 @@ export default {
     event: 'change',
   },
   data() {
-    const dataSources = [
-      'Provide Data',
-      'Data Object',
-    ];
-
     return {
+      dataSourceValues,
       dataSources,
-      dataSource: dataSources[0],
+      dataSource: dataSourceValues.provideData,
       jsonData: '',
       key: null,
       value: null,
@@ -63,62 +51,38 @@ export default {
     };
   },
   watch: {
-    // parsedOptions(parsedOptions) {
-    //   this.$emit('change', parsedOptions);
-    // },
     dataSource() {
       this.jsonData = '';
       this.dataName = '';
     },
-    options(options) {
-      console.log('Input options changed!');
-
-      if (Array.isArray(options)) {
-        this.jsonData = JSON.stringify(options);
-      } else {
-        this.jsonData = options.json;
-        this.dataName = options.name;
-        this.key = options.key;
-        this.value = options.value;
-        this.pmqlQuery = options.pmqlQuery;
-      }
-    },
-    // dataName(dataName) {
-    //   this.jsonData = JSON.stringify(this.data[dataName]);
-    // },
     dataObjectOptions(dataObjectOptions) {
-      console.log('New options emitted!');
       this.$emit('change', dataObjectOptions);
     },
   },
   computed: {
-    inputData() {
-      switch (this.dataSource) {
-        case 'Provide Data':
-          return this.jsonData;
-
-        case 'Data Object':
-          return this.dataObjectOptions;
-      }
-    },
     dataObjectOptions() {
       return {
-        json: this.jsonData,
-        name: this.dataName,
+        dataSource: this.dataSource,
+        jsonData: this.jsonData,
+        dataName: this.dataName,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
       };
     },
-    parsedOptions() {
-      try {
-        return JSON.parse(this.inputData).map(option => ({
-          value: option[this.key || 'value'], content: option[this.value || 'content'],
-        }));
-      } catch (error) {
-        return [{ value: null, content: 'Select' }];
-      }
-    },
+  },
+  mounted() {
+    if (Array.isArray(this.options)) {
+      this.jsonData = JSON.stringify(this.options, null, 2);
+      this.dataSource = dataSourceValues.provideData;
+    } else {
+      this.dataSource = this.options.dataSource;
+      this.jsonData = this.options.jsonData;
+      this.dataName = this.options.dataName;
+      this.key = this.options.key;
+      this.value = this.options.value;
+      this.pmqlQuery = this.options.pmqlQuery;
+    }
   },
 };
 </script>
