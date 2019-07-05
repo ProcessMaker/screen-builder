@@ -144,7 +144,6 @@
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
             />
-            <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"/>
           </div>
         </div>
       </draggable>

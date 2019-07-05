@@ -477,10 +477,10 @@ export default [
       config: {
         icon: 'fas fa-list-ul',
         label: 'New Radio Button Group',
-        options: [{
-          value: 'new',
-          content: 'New Option',
-        }],
+        options: {
+          dataSource: dataSourceValues.provideData,
+          jsonData: '[{ "value": "new", "content": "New Option" }]',
+        },
         toggle: false,
         helper: null,
       },
@@ -503,12 +503,9 @@ export default [
           },
         },
         {
-          type: 'OptionsList',
+          type: 'DataSource',
           field: 'options',
-          config: {
-            label: 'Options List',
-            helper: 'List of options available in the radio button group',
-          },
+          config: {},
         },
         {
           type: 'FormCheckbox',
