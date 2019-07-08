@@ -201,6 +201,10 @@ export default {
       return this.valid;
     },
     pageNavigate(page) {
+      if (!this.config[page]) {
+        return;
+      }
+
       this.currentPage = page;
     },
     setDefaultValues() {
