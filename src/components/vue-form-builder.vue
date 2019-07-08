@@ -172,6 +172,7 @@
             <component
               v-for="(item, index) in variableFields"
               :formConfig="config"
+              :currentPage="currentPage"
               :key="index"
               :is="item.type"
               class="border-bottom m-0 p-4"
