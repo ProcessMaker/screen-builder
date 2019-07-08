@@ -360,8 +360,17 @@ export default [
         placeholder: '',
         helper: null,
         rows: 2,
+        richtext: false,
       },
       inspector: [
+        {
+          type: 'FormCheckbox',
+          field: 'richtext',
+          config: {
+            label: 'Display RichText Editor?',
+            helper: '',
+          },
+        },
         variableKeyProperty,
         {
           type: 'FormInput',
