@@ -639,7 +639,7 @@ export default [
         label: 'Page Navigation',
         variant: 'primary',
         event: 'pageNavigate',
-        eventData: 0,
+        eventData: null,
 
       },
       inspector: [{
