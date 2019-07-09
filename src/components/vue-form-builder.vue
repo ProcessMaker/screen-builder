@@ -511,6 +511,7 @@ export default {
 
 <style lang="scss" scoped>
 $header-bg: #f7f7f7;
+$side-bar-font-size: 0.875rem;
 
 .control-icon {
   width: 30px;
@@ -583,6 +584,7 @@ $header-bg: #f7f7f7;
 .controls {
   cursor: move;
   user-select: none;
+  font-size: $side-bar-font-size;
 }
 
 .header-button {
@@ -600,6 +602,7 @@ $header-bg: #f7f7f7;
 
 .inspector-column {
   max-width: 265px;
+  font-size: $side-bar-font-size;
 }
 
 .form-control-ghost {
