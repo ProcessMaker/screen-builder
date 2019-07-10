@@ -30,7 +30,7 @@
           :name="element.config.name !== undefined ? element.config.name : null"
           v-bind="element.config"
           :is="element.component"
-          :disabled="element.config.interactive"
+          :disabled="element.config.readonly || element.config.interactive"
         />
       </div>
     </div>
