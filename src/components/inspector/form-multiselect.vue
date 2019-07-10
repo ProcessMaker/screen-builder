@@ -4,6 +4,7 @@
     <multiselect
       :options="options"
       selectedLabel="Primary"
+      :class="classList"
       :placeholder="$t('Select...')"
       :show-labels="false"
       label="content"
@@ -17,21 +18,30 @@
         {{ $t('No Data Available') }}
       </template>
     </multiselect>
+    <div v-if="(validator && validator.errorCount) || error" class="invalid-feedback d-block">
+      <div v-for="(error, index) in validator.errors.get(this.name)" :key="index">{{ error }}</div>
+      <div v-if="error">{{ error }}</div>
+    </div>
     <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
   </div>
 </template>
 
-<style lang="scss" scoped>
-    @import "~vue-multiselect/dist/vue-multiselect.min.css";
+<style lang="scss">
+  @import "~vue-multiselect/dist/vue-multiselect.min.css";
+  .is-invalid .multiselect__tags {
+    border-color: red !important;
+  }
 </style>
 
 <script>
 import Multiselect from 'vue-multiselect';
+import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 
 export default {
   components: {
     Multiselect,
   },
+  mixins: [ValidationMixin],
   props: [
     'label',
     'error',
@@ -60,6 +70,27 @@ export default {
         value = this.selected.value;
       }
       this.$emit('input', value);
+    },
+    value: {
+      immediate: true,
+      handler() {
+        this.selected = null;
+        // Load selected item.
+        if (this.value) {
+          this.options.forEach(item => {
+            if (item && item.value && item.value === this.value) {
+              this.selected = item;
+            }
+          });
+        }
+      },
+    },
+  },
+  computed: {
+    classList() {
+      return {
+        'is-invalid': (this.validator && this.validator.errorCount) || this.error,
+      };
     },
   },
   mounted() {
