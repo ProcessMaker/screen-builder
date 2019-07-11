@@ -118,6 +118,7 @@
               class="card-body"
               :class="elementCssClass(element)"
               @inspect="inspect"
+              @update-state="updateState"
               :selected="selected"
               v-model="element.items"
               :config="element.config"
@@ -473,6 +474,7 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
       this.inspection.inspector.splice(0, this.inspection.inspector.length);
+      this.updateState();
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
