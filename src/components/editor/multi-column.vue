@@ -26,17 +26,35 @@
               </div>
 
               <div v-else :id="element.config.name ? element.config.name : undefined">
-                <component
-                  :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
-                  :tabindex="element.config.interactive ? 0 : -1"
-                  v-bind="element.config"
-                  :config="element.config"
-                  @input="element.config.interactive ? element.config.content = $event : null"
-                  :is="element['editor-component']"
-                />
+                <div class="m-2" :class="{ 'card' : selected === element }">
+                  <div
+                    v-if="selected === element"
+                    class="card-header form-element-header d-flex align-items-center"
+                  >
+                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
+                    {{ element.config.name || element.label || $t('Field Name') }}
+                    <button
+                      class="btn btn-sm btn-danger ml-auto"
+                      @click="deleteItem(index, row)"
+                    >
+                      <i class="far fa-trash-alt text-light"/>
+                    </button>
+                  </div>
+
+                  <component
+                    class="p-3"
+                    :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
+                    :tabindex="element.config.interactive ? 0 : -1"
+                    v-bind="element.config"
+                    :config="element.config"
+                    @input="element.config.interactive ? element.config.content = $event : null"
+                    :is="element['editor-component']"
+                  />
+                </div>
               </div>
 
-              <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
+            <!-- <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button> -->
             </div>
           </draggable>
         </template>
