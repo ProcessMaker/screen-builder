@@ -2,10 +2,10 @@
   <div class="form-group">
     <div class="row">
       <div
-        v-for="(item, key) in items"
-        :class="classColumn(key)"
+        v-for="(item, index) in items"
+        :class="classColumn(index)"
         class="column-draggable"
-        :key="key"
+        :key="index"
       >
         <div v-for="(element, index) in item.filter(shouldElementBeVisible)" :key="index">
           <component
