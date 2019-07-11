@@ -198,8 +198,10 @@ export default {
     MonacoEditor,
   },
   watch: {
-    mode() {
-      this.previewData = this.previewInput ? JSON.parse(this.previewInput) : null;
+    mode(mode) {
+      if (mode === 'preview') {
+        this.previewData = this.previewInput ? JSON.parse(this.previewInput) : null;
+      }
     },
     config() {
       // Reset the preview data with clean object to start
