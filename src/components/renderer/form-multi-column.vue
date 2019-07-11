@@ -7,8 +7,9 @@
         class="column-draggable"
         :key="index"
       >
-        <div v-for="(element, index) in item.filter(shouldElementBeVisible)" :key="index">
+        <template v-for="(element, index) in item.filter(shouldElementBeVisible)">
           <component
+            :key="index"
             v-if="element.container"
             :class="elementCssClass(element)"
             ref="container"
@@ -20,7 +21,7 @@
             :is="element.component"
           />
 
-          <div v-else :id="element.config.name ? element.config.name : undefined">
+          <div v-else :id="element.config.name ? element.config.name : undefined" :key="index" class="w-100">
             <component
               :class="elementCssClass(element)"
               ref="elements"
@@ -33,7 +34,7 @@
               :disabled="element.config.interactive"
             />
           </div>
-        </div>
+        </template>
       </div>
     </div>
   </div>
