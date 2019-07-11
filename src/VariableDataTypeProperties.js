@@ -1,104 +1,30 @@
-export const DataTypeProperty = {
-  type: 'FormMultiselect',
-  field: 'dataFormat',
-  panel: 'variable',
-  config: {
-    label: 'Data Type',
-    name: 'Data Type',
-    helper: 'The data type specifies what kind of data is stored in the variable.',
-    validation: 'required',
-    options: [
-      {
-        value: 'string',
-        content: 'Text',
-      },
-      {
-        value: 'int',
-        content: 'Integer',
-      },
-      {
-        value: 'float',
-        content: 'Decimal',
-      },
-      {
-        value: 'datetime',
-        content: 'Datetime',
-      },
-      {
-        value: 'date',
-        content: 'Date',
-      },
-      {
-        value: 'currency',
-        content: 'Currency',
-      },
-    ],
-  },
-};
-export const DataTypeWithoutDateProperty = {
-  type: 'FormMultiselect',
-  field: 'dataFormat',
-  panel: 'variable',
-  config: {
-    label: 'Data Type',
-    name: 'Data Type',
-    helper: 'The data type specifies what kind of data is stored in the variable.',
-    validation: 'required',
-    options: [
-      {
-        value: 'string',
-        content: 'Text',
-      },
-      {
-        value: 'int',
-        content: 'Integer',
-      },
-      {
-        value: 'float',
-        content: 'Decimal',
-      },
-      {
-        value: 'currency',
-        content: 'Currency',
-      },
-    ],
-  },
-};
-export const DataTypeBooleanProperty = {
-  type: 'FormMultiselect',
-  field: 'dataFormat',
-  panel: 'variable',
-  config: {
-    label: 'Data Type',
-    name: 'Data Type',
-    helper: 'The data type specifies what kind of data is stored in the variable.',
-    validation: 'required',
-    options: [
-      {
-        value: 'boolean',
-        content: 'Boolean',
-      },
-    ],
-  },
-};
-export const DataTypeDateTimeProperty = {
-  type: 'FormMultiselect',
-  field: 'type',
-  panel: 'variable',
-  config: {
-    label: 'Data Type',
-    name: 'Data Type',
-    helper: 'The data type specifies what kind of data is stored in the variable.',
-    validation: 'required',
-    options: [
-      {
-        value: 'datetime',
-        content: 'Datetime',
-      },
-      {
-        value: 'date',
-        content: 'Date',
-      },
-    ],
-  },
-};
+const string = { value: 'string', content: 'Text' };
+const int = { value: 'int', content: 'Integer' };
+const float = { value: 'float', content: 'Decimal' };
+const datetime = { value: 'datetime', content: 'Datetime' };
+const date = { value: 'date', content: 'Date' };
+const currency = { value: 'currency', content: 'Currency' };
+const boolean = { value: 'boolean', content: 'Boolean' };
+
+const allOptions = [string, int, float, datetime, date, currency];
+const allOptionsWithoutDate = [string, int, float, currency];
+
+function dataTypeFactory(options) {
+  return {
+    type: 'FormMultiselect',
+    field: 'dataFormat',
+    panel: 'variable',
+    config: {
+      label: 'Data Type',
+      name: 'Data Type',
+      helper: 'The data type specifies what kind of data is stored in the variable.',
+      validation: 'required',
+      options,
+    },
+  };
+}
+
+export const DataTypeProperty = dataTypeFactory(allOptions);
+export const DataTypeWithoutDateProperty = dataTypeFactory(allOptionsWithoutDate);
+export const DataTypeBooleanProperty = dataTypeFactory([boolean]);
+export const DataTypeDateTimeProperty = dataTypeFactory([date, datetime]);
