@@ -2,13 +2,13 @@
   <div class="mb-2">
     <label class="typo__label">{{ label }}</label>
     <multiselect
-      :options="options"
-      selectedLabel="Primary"
-      :class="classList"
+      v-bind="$attrs"
+      v-on="$listeners"
       :placeholder="$t('Select...')"
       :show-labels="false"
-      label="content"
-      track-by="value"
+      :options="options.map(option => option.value)"
+      :class="classList"
+      :custom-label="getLabelFromValue"
       v-model="selected"
     >
       <template slot="noResult">
@@ -38,6 +38,7 @@ import Multiselect from 'vue-multiselect';
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 
 export default {
+  inheritAttrs: false,
   components: {
     Multiselect,
   },
@@ -63,29 +64,6 @@ export default {
       selected: null,
     };
   },
-  watch: {
-    selected() {
-      let value = '';
-      if (this.selected && this.selected.value) {
-        value = this.selected.value;
-      }
-      this.$emit('input', value);
-    },
-    value: {
-      immediate: true,
-      handler() {
-        this.selected = null;
-        // Load selected item.
-        if (this.value) {
-          this.options.forEach(item => {
-            if (item && item.value && item.value === this.value) {
-              this.selected = item;
-            }
-          });
-        }
-      },
-    },
-  },
   computed: {
     classList() {
       return {
@@ -105,6 +83,10 @@ export default {
     }
   },
   methods: {
+    getLabelFromValue(value) {
+      const selectedOption = this.options.find(option => option.value == value);
+      return selectedOption ? selectedOption.content : null;
+    },
     updateValue(value) {
       this.content = value.value;
       this.$emit('input', this.content);
