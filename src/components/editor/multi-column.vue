@@ -16,31 +16,34 @@
               @click.stop="inspect(element)"
             >
               <div v-if="element.container" @click.stop="inspect(element)">
-                <component :class="elementCssClass(element)"
-                  :selected="selected"
-                  @inspect="inspect"
-                  v-model="element.items"
-                  :config="element.config"
-                  :is="element['editor-component']"
-                />
+                <div class="m-2">
+                  <button
+                    v-if="selected === element"
+                    class="element-delete-btn btn btn-sm btn-danger-outline ml-auto position-absolute"
+                    @click="deleteItem(index, row)"
+                  >
+                    <i class="far fa-trash-alt text-danger"/>
+                  </button>
+
+                  <component :class="elementCssClass(element)"
+                    :selected="selected"
+                    @inspect="inspect"
+                    v-model="element.items"
+                    :config="element.config"
+                    :is="element['editor-component']"
+                  />
+                </div>
               </div>
 
               <div v-else :id="element.config.name ? element.config.name : undefined">
                 <div class="m-2" :class="{ 'card' : selected === element }">
-                  <div
+                  <button
                     v-if="selected === element"
-                    class="card-header form-element-header d-flex align-items-center"
+                    class="element-delete-btn btn btn-sm btn-danger-outline ml-auto position-absolute"
+                    @click="deleteItem(index, row)"
                   >
-                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                    {{ element.config.name || element.label || $t('Field Name') }}
-                    <button
-                      class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index, row)"
-                    >
-                      <i class="far fa-trash-alt text-light"/>
-                    </button>
-                  </div>
+                    <i class="far fa-trash-alt text-danger"/>
+                  </button>
 
                   <component
                     class="p-3"
@@ -179,5 +182,11 @@ export default {
             width: 100%;
             height: 100%;
         }
+    }
+
+    .element-delete-btn {
+      top: 10px;
+      right: 10px;
+      z-index: 1;
     }
 </style>
