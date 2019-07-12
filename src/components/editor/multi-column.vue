@@ -56,8 +56,6 @@
                   />
                 </div>
               </div>
-
-            <!-- <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button> -->
             </div>
           </draggable>
         </template>
