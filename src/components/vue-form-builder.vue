@@ -69,6 +69,11 @@
           <i class="fas fa-plus"/>
         </b-button>
 
+        <b-button-group size="sm" class="ml-1">
+          <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
+          <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
+        </b-button-group>
+
         <hr class="w-100">
       </b-input-group>
 
@@ -113,6 +118,7 @@
               class="card-body"
               :class="elementCssClass(element)"
               @inspect="inspect"
+              @update-state="updateState"
               :selected="selected"
               v-model="element.items"
               :config="element.config"
@@ -143,6 +149,7 @@
               v-bind="element.config"
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
+              @focusout.native="updateState"
             />
             <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"/>
           </div>
@@ -178,6 +185,7 @@
               class="border-bottom m-0 p-4"
               v-bind="item.config"
               v-model="inspection.config[item.field]"
+              @focusout.native="updateState"
             />
           </b-collapse>
 
@@ -204,6 +212,7 @@
               class="border-bottom m-0 p-4"
               v-bind="item.config"
               v-model="inspection.config[item.field]"
+              @focusout.native="updateState"
             />
           </b-collapse>
         </b-card-body>
@@ -263,10 +272,9 @@ import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
-
 import BootstrapVue from 'bootstrap-vue';
-
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+import undoRedoModule from '../undoRedoModule';
 
 Vue.use(BootstrapVue);
 
@@ -362,6 +370,12 @@ export default {
     };
   },
   computed: {
+    canUndo() {
+      return this.$store.getters[`page-${this.currentPage}/canUndo`];
+    },
+    canRedo() {
+      return this.$store.getters[`page-${this.currentPage}/canRedo`];
+    },
     variableFields() {
       return this.inspection.inspector
         ? this.inspection.inspector.filter(input => variableFields.includes(input.field))
@@ -417,8 +431,23 @@ export default {
     },
   },
   methods: {
+    updateState() {
+      const items = this.config[this.currentPage].items;
+      this.$store.dispatch(`page-${this.currentPage}/pushState`, JSON.stringify(items));
+    },
+    undo() {
+      this.inspect();
+      this.$store.dispatch(`page-${this.currentPage}/undo`);
+      this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+    },
+    redo() {
+      this.inspect();
+      this.$store.dispatch(`page-${this.currentPage}/redo`);
+      this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+    },
     updateConfig(items) {
       this.config[this.currentPage].items = items;
+      this.updateState();
     },
     hasError(element) {
       return this.validationErrors.some(({ item }) => item === element);
@@ -445,6 +474,7 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
       this.inspection.inspector.splice(0, this.inspection.inspector.length);
+      this.updateState();
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
@@ -458,6 +488,8 @@ export default {
       this.config.push({ name: this.addPageName, items: [] });
       this.currentPage = this.config.length - 1;
       this.addPageName = '';
+      this.$store.registerModule(`page-${this.currentPage}`, undoRedoModule);
+      this.updateState();
     },
     deletePage() {
       this.currentPage = 0;
@@ -498,6 +530,12 @@ export default {
       }
       return copy;
     },
+  },
+  created() {
+    this.config.forEach((config, index) => {
+      this.$store.registerModule(`page-${index}`, undoRedoModule);
+      this.$store.dispatch(`page-${index}/pushState`, JSON.stringify(config.items));
+    });
   },
 };
 </script>
