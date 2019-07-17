@@ -6,6 +6,8 @@
           <draggable :class="classColumn(index)"
             class="column-draggable"
             v-model="items[index]"
+            :value="items[index]"
+            @input="updateContainerConfig($event, index)"
             :options="{group: {name: 'controls'}}"
             :key="index"
           >
@@ -28,6 +30,7 @@
                   <component :class="elementCssClass(element)"
                     :selected="selected"
                     @inspect="inspect"
+                    @update-state="$emit('update-state')"
                     v-model="element.items"
                     :config="element.config"
                     :is="element['editor-component']"
@@ -124,6 +127,10 @@ export default {
     },
   },
   methods: {
+    updateContainerConfig(config, index) {
+      this.items[index] = config;
+      this.$emit('update-state');
+    },
     classColumn(index) {
       let column = defaultColumnWidth;
 
@@ -139,6 +146,7 @@ export default {
     deleteItem(col, index) {
       // Remove the item from the array in currentPage
       this.items[col].splice(index, 1);
+      this.$emit('update-state');
     },
   },
 };
