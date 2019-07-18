@@ -456,7 +456,7 @@ export default [
           },
         },
         {
-          type: 'DataSource',
+          type: 'OptionsList',
           field: 'options',
           config: {},
         },
@@ -503,7 +503,7 @@ export default [
           },
         },
         {
-          type: 'DataSource',
+          type: 'OptionsList',
           field: 'options',
           config: {},
         },

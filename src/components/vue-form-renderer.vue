@@ -273,9 +273,7 @@ export default {
       }
 
       if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
-        const options = Array.isArray(item.config.options)
-          ? item.config.options
-          : getOptionsFromDataSource(item.config.options, this.transientData);
+        const options = getOptionsFromDataSource(item.config.options, this.transientData);
 
         defaultValue = options[0].value;
       }
