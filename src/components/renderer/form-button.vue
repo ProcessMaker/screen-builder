@@ -5,9 +5,10 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import { getValidPath } from '@/mixins';
 
 export default {
+  mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue'],
   computed: {
     classList() {
@@ -23,7 +24,7 @@ export default {
       if (parent.items) {
         this.setValue(parent.$parent, name, value);
       } else {
-        Vue.set(parent.data, name, value);
+        this.$vueSet(parent.data, this.getValidPath(name), value);
       }
     },
     click() {
