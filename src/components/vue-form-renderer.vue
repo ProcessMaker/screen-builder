@@ -275,7 +275,7 @@ export default {
       if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
         const options = getOptionsFromDataSource(item.config.options, this.transientData);
 
-        defaultValue = options[0].value;
+        defaultValue = options[0] ? options[0].value : null;
       }
 
       if (item.component === 'FormCheckbox') {
