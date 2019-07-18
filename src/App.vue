@@ -300,9 +300,6 @@ export default {
     updateConfig(newConfig) {
       this.config = newConfig;
     },
-    updatePreview(data) {
-      this.previewData = data;
-    },
     previewSubmit() {
       alert('Preview Form was Submitted');
     },
