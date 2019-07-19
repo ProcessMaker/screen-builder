@@ -2,12 +2,13 @@
   <div class="mb-2">
     <label class="typo__label">{{ label }}</label>
     <multiselect
-      :options="options"
-      selectedLabel="Primary"
+      v-bind="$attrs"
+      v-on="$listeners"
       :placeholder="$t('Select...')"
       :show-labels="false"
-      label="content"
-      track-by="value"
+      :options="options.map(option => option.value)"
+      :class="classList"
+      :custom-label="getLabelFromValue"
       v-model="selected"
     >
       <template slot="noResult">
@@ -17,21 +18,31 @@
         {{ $t('No Data Available') }}
       </template>
     </multiselect>
+    <div v-if="(validator && validator.errorCount) || error" class="invalid-feedback d-block">
+      <div v-for="(error, index) in validator.errors.get(this.name)" :key="index">{{ error }}</div>
+      <div v-if="error">{{ error }}</div>
+    </div>
     <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
   </div>
 </template>
 
-<style lang="scss" scoped>
-    @import "~vue-multiselect/dist/vue-multiselect.min.css";
+<style lang="scss">
+  @import "~vue-multiselect/dist/vue-multiselect.min.css";
+  .is-invalid .multiselect__tags {
+    border-color: red !important;
+  }
 </style>
 
 <script>
 import Multiselect from 'vue-multiselect';
+import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 
 export default {
+  inheritAttrs: false,
   components: {
     Multiselect,
   },
+  mixins: [ValidationMixin],
   props: [
     'label',
     'error',
@@ -53,13 +64,11 @@ export default {
       selected: null,
     };
   },
-  watch: {
-    selected() {
-      let value = '';
-      if (this.selected && this.selected.value) {
-        value = this.selected.value;
-      }
-      this.$emit('input', value);
+  computed: {
+    classList() {
+      return {
+        'is-invalid': (this.validator && this.validator.errorCount) || this.error,
+      };
     },
   },
   mounted() {
@@ -74,6 +83,10 @@ export default {
     }
   },
   methods: {
+    getLabelFromValue(value) {
+      const selectedOption = this.options.find(option => option.value == value);
+      return selectedOption ? selectedOption.content : null;
+    },
     updateValue(value) {
       this.content = value.value;
       this.$emit('input', this.content);
