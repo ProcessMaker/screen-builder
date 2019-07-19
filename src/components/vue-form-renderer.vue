@@ -68,6 +68,43 @@ Vue.component('custom-css', {
 
 Vue.use(VueDeepSet);
 
+function removeInvalidOptions(option) {
+  return Object.keys(option).includes('value', 'contemnt') &&
+    option.content != null;
+}
+
+function getOptionsFromDataSource(inputOptions, data) {
+  const { jsonData, key, value, dataName } = inputOptions;
+  let options = [];
+
+  const convertToSelectOptions = option => ({
+    value: option[key || 'value'],
+    content: option[value || 'content'],
+  });
+
+  if (jsonData) {
+    try {
+      options = JSON.parse(jsonData)
+        .map(convertToSelectOptions)
+        .filter(removeInvalidOptions);
+    } catch (error) {
+      /* Ignore error */
+    }
+  }
+
+  if (dataName) {
+    try {
+      options = data[dataName]
+        .map(convertToSelectOptions)
+        .filter(removeInvalidOptions);
+    } catch (error) {
+      /* Ignore error */
+    }
+  }
+
+  return options;
+}
+
 export default {
   name: 'VueFormRenderer',
   props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
@@ -239,12 +276,10 @@ export default {
         defaultValue = '';
       }
 
-      if (
-        ['FormSelect', 'FormRadioButtonGroup'].includes(item.component) &&
-        item.config.options &&
-        item.config.options.length > 0
-      ) {
-        defaultValue = item.config.options[0].value;
+      if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
+        const options = getOptionsFromDataSource(item.config.options, this.transientData);
+
+        defaultValue = options[0] ? options[0].value : null;
       }
 
       if (item.component === 'FormCheckbox') {

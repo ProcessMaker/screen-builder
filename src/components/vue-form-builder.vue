@@ -151,7 +151,6 @@
               @input="element.config.interactive ? element.config.content = $event : null"
               @focusout.native="updateState"
             />
-            <div v-if="!element.config.interactive" class="mask" :class="{ selected: selected === element }"/>
           </div>
         </div>
       </draggable>
@@ -515,7 +514,7 @@ export default {
         copy.config.phrases.cancel = this.$t(copy.config.phrases.cancel);
       }
       copy.config.label = this.$t(copy.config.label);
-      if (copy.config.options) {
+      if (Array.isArray(copy.config.options)) {
         for (var io in copy.config.options) {
           copy.config.options[io].content = this.$t(
             copy.config.options[io].content

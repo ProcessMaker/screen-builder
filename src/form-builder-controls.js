@@ -14,6 +14,7 @@ import {
   FormDatePicker,
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
+import { dataSourceValues } from '@/components/inspector/data-source-types';
 
 const bgcolorProperty = {
   type: 'ColorSelect',
@@ -425,12 +426,10 @@ export default [
         label: 'New Select',
         placeholder: '',
         validation: '',
-        options: [
-          {
-            value: null,
-            content: 'Select',
-          },
-        ],
+        options: {
+          dataSource: dataSourceValues.provideData,
+          jsonData: '',
+        },
         helper: null,
       },
       inspector: [
@@ -463,10 +462,7 @@ export default [
         {
           type: 'OptionsList',
           field: 'options',
-          config: {
-            label: 'Options List',
-            helper: 'List of options available in the select drop down',
-          },
+          config: {},
         },
         bgcolorProperty,
         colorProperty,
@@ -485,10 +481,10 @@ export default [
       config: {
         icon: 'fas fa-list-ul',
         label: 'New Radio Button Group',
-        options: [{
-          value: 'new',
-          content: 'New Option',
-        }],
+        options: {
+          dataSource: dataSourceValues.provideData,
+          jsonData: '[{ "value": "new", "content": "New Option" }]',
+        },
         toggle: false,
         helper: null,
       },
@@ -514,10 +510,7 @@ export default [
         {
           type: 'OptionsList',
           field: 'options',
-          config: {
-            label: 'Options List',
-            helper: 'List of options available in the radio button group',
-          },
+          config: {},
         },
         {
           type: 'FormCheckbox',

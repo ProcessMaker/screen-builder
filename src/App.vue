@@ -61,7 +61,7 @@
                 >
                   <i class="fas fa-file-import mr-2"/>
                   {{ $t('Data Input') }}
-                  <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-right' : 'fa-angle-down'"/>
+                  <i class="fas ml-auto" :class="showDataInput ? 'fa-angle-down' : 'fa-angle-right'"/>
                 </b-button>
 
                 <b-collapse v-model="showDataInput" id="showDataInput">
@@ -75,7 +75,7 @@
                 >
                   <i class="fas fa-file-code mr-2"/>
                   {{ $t('Data Preview') }}
-                  <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-right' : 'fa-angle-down'"/>
+                  <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-down' : 'fa-angle-right'"/>
                 </b-button>
 
                 <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
@@ -299,9 +299,6 @@ export default {
     },
     updateConfig(newConfig) {
       this.config = newConfig;
-    },
-    updatePreview(data) {
-      this.previewData = data;
     },
     previewSubmit() {
       alert('Preview Form was Submitted');
