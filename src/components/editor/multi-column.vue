@@ -6,6 +6,8 @@
           <draggable :class="classColumn(index)"
             class="column-draggable"
             v-model="items[index]"
+            :value="items[index]"
+            @input="updateContainerConfig($event, index)"
             :options="{group: {name: 'controls'}}"
             :key="index"
           >
@@ -16,27 +18,47 @@
               @click.stop="inspect(element)"
             >
               <div v-if="element.container" @click.stop="inspect(element)">
-                <component :class="elementCssClass(element)"
-                  :selected="selected"
-                  @inspect="inspect"
-                  v-model="element.items"
-                  :config="element.config"
-                  :is="element['editor-component']"
-                />
+                <div class="m-2">
+                  <button
+                    v-if="selected === element"
+                    class="element-delete-btn btn btn-sm btn-danger-outline ml-auto position-absolute"
+                    @click="deleteItem(index, row)"
+                  >
+                    <i class="far fa-trash-alt text-danger"/>
+                  </button>
+
+                  <component :class="elementCssClass(element)"
+                    :selected="selected"
+                    @inspect="inspect"
+                    @update-state="$emit('update-state')"
+                    v-model="element.items"
+                    :config="element.config"
+                    :is="element['editor-component']"
+                  />
+                </div>
               </div>
 
               <div v-else :id="element.config.name ? element.config.name : undefined">
-                <component
-                  :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
-                  :tabindex="element.config.interactive ? 0 : -1"
-                  v-bind="element.config"
-                  :config="element.config"
-                  @input="element.config.interactive ? element.config.content = $event : null"
-                  :is="element['editor-component']"
-                />
-              </div>
+                <div class="m-2" :class="{ 'card' : selected === element }">
+                  <button
+                    v-if="selected === element"
+                    class="element-delete-btn btn btn-sm btn-danger-outline ml-auto position-absolute"
+                    @click="deleteItem(index, row)"
+                  >
+                    <i class="far fa-trash-alt text-danger"/>
+                  </button>
 
-              <button class="delete btn btn-sm btn-danger" @click="deleteItem(index, row)">x</button>
+                  <component
+                    class="p-3"
+                    :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
+                    :tabindex="element.config.interactive ? 0 : -1"
+                    v-bind="element.config"
+                    :config="element.config"
+                    @input="element.config.interactive ? element.config.content = $event : null"
+                    :is="element['editor-component']"
+                  />
+                </div>
+              </div>
             </div>
           </draggable>
         </template>
@@ -105,6 +127,10 @@ export default {
     },
   },
   methods: {
+    updateContainerConfig(config, index) {
+      this.items[index] = config;
+      this.$emit('update-state');
+    },
     classColumn(index) {
       let column = defaultColumnWidth;
 
@@ -120,6 +146,7 @@ export default {
     deleteItem(col, index) {
       // Remove the item from the array in currentPage
       this.items[col].splice(index, 1);
+      this.$emit('update-state');
     },
   },
 };
@@ -161,5 +188,11 @@ export default {
             width: 100%;
             height: 100%;
         }
+    }
+
+    .element-delete-btn {
+      top: 10px;
+      right: 10px;
+      z-index: 1;
     }
 </style>

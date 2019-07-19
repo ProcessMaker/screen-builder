@@ -40,7 +40,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative">
+    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative mt-2">
       <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -69,10 +69,15 @@
           <i class="fas fa-plus"/>
         </b-button>
 
+        <b-button-group size="sm" class="ml-1">
+          <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
+          <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
+        </b-button-group>
+
         <hr class="w-100">
       </b-input-group>
 
-      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded">
+      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
         {{ $t('Drag an element here') }}
       </div>
 
@@ -113,6 +118,7 @@
               class="card-body"
               :class="elementCssClass(element)"
               @inspect="inspect"
+              @update-state="updateState"
               :selected="selected"
               v-model="element.items"
               :config="element.config"
@@ -143,6 +149,7 @@
               v-bind="element.config"
               :is="element['editor-component']"
               @input="element.config.interactive ? element.config.content = $event : null"
+              @focusout.native="updateState"
             />
           </div>
         </div>
@@ -171,11 +178,13 @@
             <component
               v-for="(item, index) in variableFields"
               :formConfig="config"
+              :currentPage="currentPage"
               :key="index"
               :is="item.type"
               class="border-bottom m-0 p-4"
               v-bind="item.config"
               v-model="inspection.config[item.field]"
+              @focusout.native="updateState"
             />
           </b-collapse>
 
@@ -202,6 +211,7 @@
               class="border-bottom m-0 p-4"
               v-bind="item.config"
               v-model="inspection.config[item.field]"
+              @focusout.native="updateState"
             />
           </b-collapse>
         </b-card-body>
@@ -261,10 +271,9 @@ import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
-
 import BootstrapVue from 'bootstrap-vue';
-
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+import undoRedoModule from '../undoRedoModule';
 
 Vue.use(BootstrapVue);
 
@@ -301,7 +310,7 @@ const defaultConfig = [{
 
 const variableFields = [
   'name',
-  'type',
+  'dataFormat',
   'validation',
   'options',
   'eventData',
@@ -360,6 +369,12 @@ export default {
     };
   },
   computed: {
+    canUndo() {
+      return this.$store.getters[`page-${this.currentPage}/canUndo`];
+    },
+    canRedo() {
+      return this.$store.getters[`page-${this.currentPage}/canRedo`];
+    },
     variableFields() {
       return this.inspection.inspector
         ? this.inspection.inspector.filter(input => variableFields.includes(input.field))
@@ -415,8 +430,23 @@ export default {
     },
   },
   methods: {
+    updateState() {
+      const items = this.config[this.currentPage].items;
+      this.$store.dispatch(`page-${this.currentPage}/pushState`, JSON.stringify(items));
+    },
+    undo() {
+      this.inspect();
+      this.$store.dispatch(`page-${this.currentPage}/undo`);
+      this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+    },
+    redo() {
+      this.inspect();
+      this.$store.dispatch(`page-${this.currentPage}/redo`);
+      this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+    },
     updateConfig(items) {
       this.config[this.currentPage].items = items;
+      this.updateState();
     },
     hasError(element) {
       return this.validationErrors.some(({ item }) => item === element);
@@ -443,6 +473,7 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
       this.inspection.inspector.splice(0, this.inspection.inspector.length);
+      this.updateState();
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
@@ -456,6 +487,8 @@ export default {
       this.config.push({ name: this.addPageName, items: [] });
       this.currentPage = this.config.length - 1;
       this.addPageName = '';
+      this.$store.registerModule(`page-${this.currentPage}`, undoRedoModule);
+      this.updateState();
     },
     deletePage() {
       this.currentPage = 0;
@@ -497,6 +530,12 @@ export default {
       return copy;
     },
   },
+  created() {
+    this.config.forEach((config, index) => {
+      this.$store.registerModule(`page-${index}`, undoRedoModule);
+      this.$store.dispatch(`page-${index}/pushState`, JSON.stringify(config.items));
+    });
+  },
 };
 </script>
 
@@ -509,6 +548,7 @@ export default {
 
 <style lang="scss" scoped>
 $header-bg: #f7f7f7;
+$side-bar-font-size: 0.875rem;
 
 .control-icon {
   width: 30px;
@@ -581,6 +621,7 @@ $header-bg: #f7f7f7;
 .controls {
   cursor: move;
   user-select: none;
+  font-size: $side-bar-font-size;
 }
 
 .header-button {
@@ -598,6 +639,7 @@ $header-bg: #f7f7f7;
 
 .inspector-column {
   max-width: 265px;
+  font-size: $side-bar-font-size;
 }
 
 .form-control-ghost {
