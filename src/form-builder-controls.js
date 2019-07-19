@@ -3,6 +3,7 @@ import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
+import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 
 import {
   FormInput,
@@ -288,6 +289,7 @@ export default [
       },
       inspector: [
         variableKeyProperty,
+        DataTypeProperty,
         {
           type: 'FormMultiselect',
           field: 'type',
@@ -433,6 +435,7 @@ export default [
       },
       inspector: [
         variableKeyProperty,
+        DataTypeWithoutDateProperty,
         {
           type: 'FormInput',
           field: 'label',
@@ -491,6 +494,7 @@ export default [
       },
       inspector: [
         variableKeyProperty,
+        DataTypeWithoutDateProperty,
         {
           type: 'FormInput',
           field: 'label',
@@ -548,6 +552,7 @@ export default [
       },
       inspector: [
         variableKeyProperty,
+        DataTypeBooleanProperty,
         {
           type: 'FormInput',
           field: 'label',
@@ -603,6 +608,7 @@ export default [
       },
       inspector: [
         variableKeyProperty,
+        DataTypeDateTimeProperty,
         {
           type: 'FormInput',
           field: 'label',
@@ -887,6 +893,7 @@ export default [
         },
       },
       variableKeyProperty,
+      DataTypeWithoutDateProperty,
       {
         type: 'FormInput',
         field: 'fieldValue',

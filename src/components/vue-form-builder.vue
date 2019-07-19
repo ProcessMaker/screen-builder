@@ -311,7 +311,7 @@ const defaultConfig = [{
 
 const variableFields = [
   'name',
-  'type',
+  'dataFormat',
   'validation',
   'options',
   'eventData',
