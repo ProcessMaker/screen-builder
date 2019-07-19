@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/screen-builder",
-  "version": "0.17.6",
+  "version": "0.17.7",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -31,7 +31,7 @@
     "vuedraggable": "^2.16.0",
     "vuetable-2": "^1.7.5",
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "^0.10.3",
+    "@processmaker/vue-form-elements": "^0.10.4",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-plugin-eslint": "^3.6.0",
     "@vue/cli-plugin-unit-jest": "^3.6.3",

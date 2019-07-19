@@ -1,12 +1,14 @@
 <template>
   <div>
     <label class="typo__label">{{ label }}</label>
+
     <multiselect
-      v-model="target"
-      label="content"
+      v-bind="$attrs"
+      v-on="$listeners"
       :placeholder="$t('Select...')"
       :show-labels="false"
-      :options="options"
+      :options="options.map(option => option.value)"
+      :custom-label="getLabelFromValue"
     >
       <template slot="noResult">
         {{ $t('No elements found. Consider changing the search query.') }}
@@ -27,29 +29,12 @@
 import Multiselect from 'vue-multiselect';
 
 export default {
-  props: ['label', 'helper', 'formConfig', 'value'],
-  data() {
-    return {
-      target: 0,
-    };
-  },
-  watch: {
-    value: {
-      handler() {
-        const value = this.target ? this.target.value : '';
-        if (value !== this.value) {
-          this.target = this.options.find(item => {
-            return item.value === this.value;
-          });
-        }
-      },
-      immediate: true,
-    },
-    target() {
-      const value = this.target ? this.target.value : '';
-      if (this.value !== value) {
-        this.$emit('input', value);
-      }
+  inheritAttrs: false,
+  props: ['label', 'helper', 'formConfig', 'currentPage'],
+  methods: {
+    getLabelFromValue(value) {
+      const selectedOption = this.options.find(option => option.value == value);
+      return selectedOption ? selectedOption.content : null;
     },
   },
   components: {
@@ -57,15 +42,9 @@ export default {
   },
   computed: {
     options() {
-      let options = [];
-      // Get the page values (array index), and the content (page title)
-      for (var index in this.formConfig) {
-        options.push({
-          value: index,
-          content: this.formConfig[index].name,
-        });
-      }
-      return options;
+      return Object.keys(this.formConfig)
+        .filter(page => page != this.currentPage)
+        .map(page => ({ value: page, content: this.formConfig[page].name }));
     },
   },
 };

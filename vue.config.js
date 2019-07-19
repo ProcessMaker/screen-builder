@@ -23,6 +23,7 @@ module.exports = {
     },
     externals: process.env.NODE_ENV === 'production' ? [
       'vue',
+      'vuex',
       /^bootstrap\/.+$/,
       /^@processmaker\/.+$/,
       'i18next',

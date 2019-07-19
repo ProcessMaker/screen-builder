@@ -1,6 +1,6 @@
 <template>
   <b-container class="h-100" id="screen-builder-container">
-    <b-card no-body class="h-100 bg-white" id="app">
+    <b-card no-body class="h-100 bg-white border-top-0" id="app">
       <!-- Card Header -->
       <b-card-header>
         <b-row>
@@ -111,7 +111,7 @@
           </button>
         </div>
 
-        <div v-if="showValidationErrors" class="validation-panel position-absolute shadow border overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+        <div v-if="showValidationErrors" class="validation-panel position-absolute border-left border-top overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
           <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
             <i class="fas fa-times-circle text-danger mr-3"/>
             {{ $t('Invalid JSON Data Object') }}
@@ -316,6 +316,15 @@ export default {
 <style lang="scss">
     @import "~bootstrap/dist/css/bootstrap";
 
+    $validation-panel-bottom: 3.5rem;
+    $validation-panel-right: 0;
+    $validation-panel-height: 10rem;
+    $validation-panel-width: 21.35rem;
+    $primary-white: #f7f7f7;
+
+    $preview-inspector-width: 265px;
+    $data-collapse-height: 300px;
+
     html,
     body {
         height: 100%;
@@ -325,15 +334,15 @@ export default {
     }
 
     .header-bg {
-      background: #f7f7f7;
+      background: $primary-white;
     }
 
     .validation-panel {
-      background: #f7f7f7;
-      height: 10rem;
-      width: 21.35rem;
-      bottom: 4rem;
-      right: 0;
+      background: $primary-white;
+      height: $validation-panel-height;
+      width: $validation-panel-width;
+      bottom: $validation-panel-bottom;
+      right: $validation-panel-right;
     }
 
     .card-header {
@@ -349,10 +358,10 @@ export default {
     }
 
     .preview-inspector {
-      max-width: 265px;
+      max-width: $preview-inspector-width;
     }
 
     .data-collapse {
-      height: 300px;
+      height: $data-collapse-height;
     }
 </style>
