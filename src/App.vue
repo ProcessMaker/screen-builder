@@ -49,6 +49,7 @@
               :computed="computed"
               :custom-css="customCSS"
               v-on:css-errors="cssErrors = $event"
+              :mock-magic-variables="mockMagicVariables"
             />
           </b-col>
 
@@ -144,6 +145,7 @@ import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
 import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
+import mockMagicVariables from './mockMagicVariables';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -187,6 +189,7 @@ export default {
         lineNumbers: 'off',
         minimap: false,
       },
+      mockMagicVariables,
     };
   },
   components: {
