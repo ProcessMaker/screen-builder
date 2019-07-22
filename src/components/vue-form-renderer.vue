@@ -9,7 +9,7 @@
         :class="elementCssClass(element)"
         ref="container"
         selected="selected"
-        :transientData="transientData"
+        :transientData="dataWithMockMagicVariables"
         v-model="element.items"
         @submit="submit"
         :config="element.config"
@@ -23,7 +23,7 @@
         <component
           :class="elementCssClass(element)"
           ref="elements"
-          :validationData="transientData"
+          :validationData="dataWithMockMagicVariables"
           v-model="model[getValidPath(element.config.name)]"
           @submit="submit"
           @pageNavigate="pageNavigate"
@@ -57,6 +57,7 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
+import mockMagicVariables from './mockMagicVariables';
 
 const csstree = require('css-tree');
 
@@ -132,6 +133,12 @@ export default {
     },
     visibleElements() {
       return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
+    },
+    dataWithMockMagicVariables() {
+      return {
+        ...mockMagicVariables,
+        ...this.transientData,
+      };
     },
   },
   data() {
