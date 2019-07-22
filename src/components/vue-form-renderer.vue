@@ -57,7 +57,6 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
-import mockMagicVariables from './mockMagicVariables';
 
 const csstree = require('css-tree');
 
@@ -108,7 +107,7 @@ function getOptionsFromDataSource(inputOptions, data) {
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'mockMagicVariables'],
   model: {
     prop: 'data',
     event: 'update',
@@ -136,7 +135,7 @@ export default {
     },
     dataWithMockMagicVariables() {
       return {
-        ...mockMagicVariables,
+        ...this.mockMagicVariables,
         ...this.transientData,
       };
     },
