@@ -9,7 +9,7 @@
         :class="elementCssClass(element)"
         ref="container"
         selected="selected"
-        :transientData="dataWithMockMagicVariables"
+        :transientData="transientData"
         v-model="element.items"
         @submit="submit"
         :config="element.config"
@@ -23,7 +23,7 @@
         <component
           :class="elementCssClass(element)"
           ref="elements"
-          :validationData="dataWithMockMagicVariables"
+          :validationData="transientData"
           v-model="model[getValidPath(element.config.name)]"
           @submit="submit"
           @pageNavigate="pageNavigate"
@@ -107,7 +107,7 @@ function getOptionsFromDataSource(inputOptions, data) {
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'mockMagicVariables'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
   model: {
     prop: 'data',
     event: 'update',
@@ -132,12 +132,6 @@ export default {
     },
     visibleElements() {
       return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
-    },
-    dataWithMockMagicVariables() {
-      return {
-        ...this.mockMagicVariables,
-        ...this.transientData,
-      };
     },
   },
   data() {
