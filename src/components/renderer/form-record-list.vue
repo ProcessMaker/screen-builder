@@ -51,7 +51,6 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Add Record')"
     >
-      <vue-form-renderer/>
       <vue-form-renderer
         :page="form"
         ref="addRenderer"
@@ -247,6 +246,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
