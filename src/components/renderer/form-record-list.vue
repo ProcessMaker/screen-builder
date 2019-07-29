@@ -141,13 +141,8 @@ export default {
       return data;
     },
     tableFields() {
-      let fields = [];
-      for (var field of this.fields) {
-        fields[fields.length] = {
-          name: field.value,
-          title: field.content,
-        };
-      }
+      const fields = this.getFieldsFromDataSource();
+
       // Add special actions slot if we're editable and non selfReferencing
       if (this.editable && !this.selfReferenced) {
         fields[fields.length] = {
@@ -157,6 +152,7 @@ export default {
           dataClass: 'text-right',
         };
       }
+
       return fields;
     },
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
@@ -165,6 +161,34 @@ export default {
     },
   },
   methods: {
+    getFieldsFromDataSource() {
+      const { jsonData, key, value, dataName } = this.fields;
+
+      const convertToTableOptions = option => ({
+        name: option[key || 'value'],
+        title: option[value || 'content'],
+      });
+
+      if (jsonData) {
+        try {
+          return JSON.parse(jsonData)
+            .map(convertToTableOptions);
+        } catch (error) {
+          /* Ignore error */
+        }
+      }
+
+      if (dataName) {
+        try {
+          return this.validationData[dataName]
+            .map(convertToTableOptions);
+        } catch (error) {
+          /* Ignore error */
+        }
+      }
+
+      return [];
+    },
     hideInformation() {
       this.$refs.infoModal.hide();
     },
