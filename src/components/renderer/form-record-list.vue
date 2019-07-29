@@ -108,6 +108,13 @@ import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
 import VueFormRenderer from '@/components/vue-form-renderer';
 
+const jsonOptionsActionsColumn = {
+  name: '__slot:actions',
+  title: 'Actions',
+  titleClass: 'text-right',
+  dataClass: 'text-right',
+};
+
 export default {
   components: {
     Vuetable,
@@ -143,14 +150,8 @@ export default {
     tableFields() {
       const fields = this.getFieldsFromDataSource();
 
-      // Add special actions slot if we're editable and non selfReferencing
       if (this.editable && !this.selfReferenced) {
-        fields[fields.length] = {
-          name: '__slot:actions',
-          title: 'Actions',
-          titleClass: 'text-right',
-          dataClass: 'text-right',
-        };
+        fields.push(jsonOptionsActionsColumn);
       }
 
       return fields;
