@@ -107,11 +107,13 @@
 <script>
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
+import VueFormRenderer from '@/components/vue-form-renderer';
 
 export default {
   components: {
     Vuetable,
     VuetablePagination,
+    VueFormRenderer,
   },
   props: ['label', 'fields', 'value', 'editable', '_config', 'form'],
   data() {
