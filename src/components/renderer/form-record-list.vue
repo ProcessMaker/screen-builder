@@ -114,7 +114,7 @@ export default {
     VuetablePagination,
     VueFormRenderer,
   },
-  props: ['label', 'fields', 'value', 'editable', '_config', 'form'],
+  props: ['label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
   data() {
     return {
       addItem: {},
