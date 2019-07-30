@@ -148,7 +148,7 @@ export default {
       return data;
     },
     tableFields() {
-      const fields = this.getFieldsFromDataSource();
+      const fields = this.getTableFieldsFromDataSource();
 
       if (this.editable && !this.selfReferenced) {
         fields.push(jsonOptionsActionsColumn);
@@ -162,33 +162,30 @@ export default {
     },
   },
   methods: {
-    getFieldsFromDataSource() {
+    getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
 
-      const convertToTableOptions = option => ({
+      const convertToVuetableFormat = option => ({
         name: option[key || 'value'],
         title: option[value || 'content'],
       });
 
+      return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
+    },
+    getValidFieldData(jsonData, dataName) {
+      let validationData = this.validationData[dataName];
+
       if (jsonData) {
         try {
-          return JSON.parse(jsonData)
-            .map(convertToTableOptions);
+          validationData = JSON.parse(jsonData);
         } catch (error) {
-          /* Ignore error */
+          validationData = [];
         }
       }
 
-      if (dataName) {
-        try {
-          return this.validationData[dataName]
-            .map(convertToTableOptions);
-        } catch (error) {
-          /* Ignore error */
-        }
-      }
-
-      return [];
+      return Array.isArray(validationData)
+        ? validationData
+        : [];
     },
     hideInformation() {
       this.$refs.infoModal.hide();
