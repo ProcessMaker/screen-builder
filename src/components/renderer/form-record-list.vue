@@ -106,7 +106,6 @@
 <script>
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
-import VueFormRenderer from '@/components/vue-form-renderer';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -119,7 +118,6 @@ export default {
   components: {
     Vuetable,
     VuetablePagination,
-    VueFormRenderer,
   },
   props: ['label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
   data() {

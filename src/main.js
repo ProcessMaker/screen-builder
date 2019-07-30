@@ -6,6 +6,7 @@ import i18next from 'i18next';
 import VueI18Next from '@panter/vue-i18next';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
+import ScreenBuilder from '@/components';
 
 // Allow strings to be wrapped in $t(...) for translating
 // outside this package. This standalone app just returns
@@ -14,6 +15,7 @@ Vue.use(VueI18Next);
 i18next.init({lng: 'en'});
 Vue.mixin({ i18n: new VueI18Next(i18next) });
 Vue.use(Vuex);
+Vue.use(ScreenBuilder);
 
 const store = new Vuex.Store({ modules: {} });
 
