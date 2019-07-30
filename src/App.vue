@@ -364,4 +364,8 @@ export default {
     .data-collapse {
       height: $data-collapse-height;
     }
+
+    .modal-backdrop {
+      opacity: 0.5;
+    }
 </style>
