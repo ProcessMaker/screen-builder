@@ -274,8 +274,6 @@ import FormMultiColumn from '@/components/renderer/form-multi-column';
 import BootstrapVue from 'bootstrap-vue';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 Vue.use(BootstrapVue);
 
