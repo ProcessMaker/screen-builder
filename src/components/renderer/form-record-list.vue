@@ -43,6 +43,7 @@
     </template>
 
     <b-modal
+      :static="true"
       @ok="add"
       size="lg"
       v-if="editable && !selfReferenced"
@@ -59,6 +60,7 @@
       />
     </b-modal>
     <b-modal
+      :static="true"
       @ok="edit"
       size="lg"
       v-if="editable && !selfReferenced"
