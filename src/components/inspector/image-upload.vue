@@ -9,7 +9,7 @@
       @input-file="editSave"
       ref="upload"
     >
-      {{ $t('Upload image') }}
+      {{ $t('Upload') }}
     </file-upload>
     <small data-v-7779e22f="" class="form-text text-muted">{{ $t('Preview') }}</small>
     <div class="image-preview">
