@@ -1,7 +1,7 @@
 <template>
   <b-row class="h-100 m-0">
     <!-- Controls -->
-    <b-col class="overflow-hidden mh-100 p-0 controls-column">
+    <b-col class="overflow-hidden h-100 p-0 controls-column">
       <b-card no-body class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0">
         <b-input-group size="sm">
           <b-input-group-prepend>
