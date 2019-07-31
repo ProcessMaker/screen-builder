@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label for="data-sources">{{ $t('Data Source') }}</label>
+    <label for="data-sources">{{ $t('Source Type') }}</label>
     <b-form-select id="data-sources" v-model="dataSource" :options="dataSources"/>
     <small class="form-text text-muted mb-3">Data source to populate select</small>
 
@@ -23,7 +23,7 @@
     <b-form-input id="value" v-model="value"/>
     <small class="form-text text-muted mb-3">Field to show in the select box</small>
 
-    <label for="pmql-query">{{ $t('PMQL Query (optional)') }}</label>
+    <label for="pmql-query">{{ $t('PMQL') }}</label>
     <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
     <small class="form-text text-muted">Advanced data search</small>
   </div>
