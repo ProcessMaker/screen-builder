@@ -43,6 +43,7 @@
     </template>
 
     <b-modal
+      :static="true"
       @ok="add"
       size="lg"
       v-if="editable && !selfReferenced"
@@ -51,7 +52,6 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Add Record')"
     >
-      <vue-form-renderer/>
       <vue-form-renderer
         :page="form"
         ref="addRenderer"
@@ -60,6 +60,7 @@
       />
     </b-modal>
     <b-modal
+      :static="true"
       @ok="edit"
       size="lg"
       v-if="editable && !selfReferenced"
@@ -108,12 +109,19 @@
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
 
+const jsonOptionsActionsColumn = {
+  name: '__slot:actions',
+  title: 'Actions',
+  titleClass: 'text-right',
+  dataClass: 'text-right',
+};
+
 export default {
   components: {
     Vuetable,
     VuetablePagination,
   },
-  props: ['label', 'fields', 'value', 'editable', '_config', 'form'],
+  props: ['label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
   data() {
     return {
       addItem: {},
@@ -140,22 +148,12 @@ export default {
       return data;
     },
     tableFields() {
-      let fields = [];
-      for (var field of this.fields) {
-        fields[fields.length] = {
-          name: field.value,
-          title: field.content,
-        };
-      }
-      // Add special actions slot if we're editable and non selfReferencing
+      const fields = this.getTableFieldsFromDataSource();
+
       if (this.editable && !this.selfReferenced) {
-        fields[fields.length] = {
-          name: '__slot:actions',
-          title: 'Actions',
-          titleClass: 'text-right',
-          dataClass: 'text-right',
-        };
+        fields.push(jsonOptionsActionsColumn);
       }
+
       return fields;
     },
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
@@ -164,6 +162,31 @@ export default {
     },
   },
   methods: {
+    getTableFieldsFromDataSource() {
+      const { jsonData, key, value, dataName } = this.fields;
+
+      const convertToVuetableFormat = option => ({
+        name: option[key || 'value'],
+        title: option[value || 'content'],
+      });
+
+      return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
+    },
+    getValidFieldData(jsonData, dataName) {
+      let validationData = this.validationData[dataName];
+
+      if (jsonData) {
+        try {
+          validationData = JSON.parse(jsonData);
+        } catch (error) {
+          validationData = [];
+        }
+      }
+
+      return Array.isArray(validationData)
+        ? validationData
+        : [];
+    },
     hideInformation() {
       this.$refs.infoModal.hide();
     },
@@ -245,6 +268,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

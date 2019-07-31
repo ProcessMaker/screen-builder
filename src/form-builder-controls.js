@@ -770,7 +770,10 @@ export default [
         icon: 'fas fa-th-list',
         label: 'New Record List',
         editable: false,
-        fields: [],
+        fields: {
+          dataSource: dataSourceValues.provideData,
+          jsonData: '',
+        },
         form: '',
       },
       inspector: [

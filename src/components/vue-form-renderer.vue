@@ -138,7 +138,7 @@ export default {
     return {
       valid: true,
       errors: [],
-      currentPage: this.page ? this.page : 0,
+      currentPage: this.page || 0,
       transientData: JSON.parse(JSON.stringify(this.data)),
       defaultValues: {
         FormInput: '',
