@@ -160,60 +160,35 @@
     <b-col class="overflow-hidden h-100 p-0 inspector-column">
       <b-card no-body class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0">
         <b-card-body class="p-0 h-100 overflow-auto">
-          <b-button
-            v-if="variableFields.length > 0"
-            v-b-toggle.variable
-            variant="outline"
-            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-            @click="showVariable = !showVariable"
-          >
-            <i class="fas fa-cog mr-2"/>
-            {{ $t('Variable') }}
-            <i
-              class="fas fa-angle-down ml-auto"
-              :class="{ 'fas fa-angle-right' : showVariable }"
-            />
-          </b-button>
-          <b-collapse id="variable" visible>
-            <component
-              v-for="(item, index) in variableFields"
-              :formConfig="config"
-              :currentPage="currentPage"
-              :key="index"
-              :is="item.type"
-              class="border-bottom m-0 p-4"
-              v-bind="item.config"
-              v-model="inspection.config[item.field]"
-              @focusout.native="updateState"
-            />
-          </b-collapse>
-
-          <b-button
-            v-if="designFields.length > 0"
-            v-b-toggle.design
-            variant="outline"
-            class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-            @click="showDesign = !showDesign"
-          >
-            <i class="fas fa-cog mr-2"/>
-            {{ $t('Design') }}
-            <i
-              class="fas fa-angle-down ml-auto"
-              :class="{ 'fas fa-angle-right' : showDesign }"
-            />
-          </b-button>
-          <b-collapse id="design" visible>
-            <component
-              v-for="(item, index) in designFields"
-              :formConfig="config"
-              :key="index"
-              :is="item.type"
-              class="border-bottom m-0 p-4"
-              v-bind="item.config"
-              v-model="inspection.config[item.field]"
-              @focusout.native="updateState"
-            />
-          </b-collapse>
+          <template v-for="accordion in accordions">
+            <b-button
+              :key="`${accordion.name}-button`"
+              v-if="getInspectorFields(accordion.fields).length > 0"
+              variant="outline"
+              class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+              @click="accordion.open = !accordion.open"
+            >
+              <i class="fas fa-cog mr-2"/>
+              {{ $t(accordion.name) }}
+              <i
+                class="fas fa-angle-down ml-auto"
+                :class="{ 'fas fa-angle-right' : !accordion.open }"
+              />
+            </b-button>
+            <b-collapse :key="`${accordion.name}-collapse`" :id="accordion.name" v-model="accordion.open">
+              <component
+                v-for="(item, index) in getInspectorFields(accordion.fields)"
+                :formConfig="config"
+                :currentPage="currentPage"
+                :key="index"
+                :is="item.type"
+                class="border-bottom m-0 p-4"
+                v-bind="item.config"
+                v-model="inspection.config[item.field]"
+                @focusout.native="updateState"
+              />
+            </b-collapse>
+          </template>
         </b-card-body>
       </b-card>
     </b-col>
@@ -274,6 +249,7 @@ import FormMultiColumn from '@/components/renderer/form-multi-column';
 import BootstrapVue from 'bootstrap-vue';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
+import accordions from './accordions';
 
 Vue.use(BootstrapVue);
 
@@ -307,21 +283,6 @@ const defaultConfig = [{
   name: 'Default',
   items: [],
 }];
-
-const variableFields = [
-  'name',
-  'dataFormat',
-  'validation',
-  'options',
-  'eventData',
-  'editable',
-  'fields',
-  'form',
-  'id',
-  'image',
-  'fieldValue',
-  'readonly',
-];
 
 export default {
   props: ['validationErrors', 'initialConfig', 'title'],
@@ -366,6 +327,7 @@ export default {
       showVariable: false,
       showDesign: false,
       filterQuery: '',
+      accordions,
     };
   },
   computed: {
@@ -374,16 +336,6 @@ export default {
     },
     canRedo() {
       return this.$store.getters[`page-${this.currentPage}/canRedo`];
-    },
-    variableFields() {
-      return this.inspection.inspector
-        ? this.inspection.inspector.filter(input => variableFields.includes(input.field))
-        : [];
-    },
-    designFields() {
-      return this.inspection.inspector
-        ? this.inspection.inspector.filter(input => !variableFields.includes(input.field))
-        : [];
     },
     displayDelete() {
       return this.config.length > 1;
@@ -430,6 +382,11 @@ export default {
     },
   },
   methods: {
+    getInspectorFields(fields) {
+      return this.inspection.inspector
+        ? this.inspection.inspector.filter(input => fields.includes(input.field))
+        : [];
+    },
     updateState() {
       const items = this.config[this.currentPage].items;
       this.$store.dispatch(`page-${this.currentPage}/pushState`, JSON.stringify(items));

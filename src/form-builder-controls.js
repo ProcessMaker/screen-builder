@@ -4,7 +4,6 @@ import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
-
 import {
   FormInput,
   FormTextArea,
@@ -15,232 +14,21 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
-
-const bgcolorProperty = {
-  type: 'ColorSelect',
-  field: 'bgcolor',
-  config: {
-    label: 'Element Background color',
-    helper: 'Set the element\'s background color',
-    options: [{
-      value: 'alert alert-primary',
-      content: 'primary',
-    },
-    {
-      value: 'alert alert-secondary',
-      content: 'secondary',
-    },
-    {
-      value: 'alert alert-success',
-      content: 'success',
-    },
-    {
-      value: 'alert alert-danger',
-      content: 'danger',
-    },
-    {
-      value: 'alert alert-warning',
-      content: 'warning',
-    },
-    {
-      value: 'alert alert-info',
-      content: 'info',
-    },
-    {
-      value: 'alert alert-light',
-      content: 'light',
-    },
-    {
-      value: 'alert alert-dark',
-      content: 'dark',
-    },
-    ],
-  },
-};
-
-const colorProperty = {
-  type: 'ColorSelect',
-  field: 'color',
-  config: {
-    label: 'Text color',
-    helper: 'Set the element\'s text color',
-    options: [{
-      value: 'text-primary',
-      content: 'primary',
-    },
-    {
-      value: 'text-secondary',
-      content: 'secondary',
-    },
-    {
-      value: 'text-success',
-      content: 'success',
-    },
-    {
-      value: 'text-danger',
-      content: 'danger',
-    },
-    {
-      value: 'text-warning',
-      content: 'warning',
-    },
-    {
-      value: 'text-info',
-      content: 'info',
-    },
-    {
-      value: 'text-light',
-      content: 'light',
-    },
-    {
-      value: 'text-dark',
-      content: 'dark',
-    },
-    ],
-  },
-};
-
-const variableKeyProperty = {
-  type: 'FormInput',
-  field: 'name',
-  config: {
-    label: 'Key Name',
-    name: 'Key Name',
-    validation: 'required',
-    helper: 'A variable key name is a symbolic name to reference information.',
-  },
-};
-
-const readonlyProperty = {
-  type: 'FormCheckbox',
-  field: 'readonly',
-  config: {
-    label: 'Control is read only',
-  },
-};
+import {
+  bgcolorProperty,
+  colorProperty,
+  keyNameProperty,
+  labelProperty,
+  buttonLabelProperty,
+  placeholderProperty,
+  helperTextProperty,
+  readonlyProperty,
+  validationRulesProperty,
+  toggleStyleProperty,
+  buttonVariantStyleProperty,
+} from './form-control-common-properties';
 
 export default [
-  {
-    builderComponent: FormText,
-    builderBinding: 'FormText',
-    rendererComponent: FormText,
-    rendererBinding: 'FormText',
-    control: {
-      label: 'Text',
-      component: 'FormText',
-      'editor-component': 'FormText',
-      config: {
-        icon: 'fas fa-align-justify',
-        label: 'New Text',
-        fontSize: '1em',
-        fontWeight: 'normal',
-        textAlign: 'left',
-        verticalAlign: 'top',
-        name: '',
-      },
-      inspector: [
-        {
-          type: 'FormTextArea',
-          field: 'label',
-          config: {
-            rows: 5,
-            label: 'Text Content',
-            helper: 'The text to display',
-          },
-        },
-        {
-          type: 'FormMultiselect',
-          field: 'fontWeight',
-          config: {
-            label: 'Font Weight',
-            helper: 'The weight of the text',
-            options: [{
-              value: 'normal',
-              content: 'Normal',
-            },
-            {
-              value: 'bold',
-              content: 'Bold',
-            },
-            ],
-          },
-        },
-        {
-          type: 'FormMultiselect',
-          field: 'textAlign',
-          config: {
-            label: 'Text Horizontal Alignment',
-            helper: 'Horizontal alignment of the text',
-            options: [{
-              value: 'center',
-              content: 'Center',
-            },
-            {
-              value: 'left',
-              content: 'Left',
-            },
-            {
-              value: 'right',
-              content: 'Right',
-            },
-            {
-              value: 'justify',
-              content: 'Justify',
-            },
-            ],
-          },
-        },
-        {
-          type: 'FormMultiselect',
-          field: 'verticalAlign',
-          config: {
-            label: 'Text Vertical Alignment',
-            helper: 'Vertical alignment of the text',
-            options: [{
-              value: 'top',
-              content: 'Top',
-            },
-            {
-              value: 'middle',
-              content: 'Middle',
-            },
-            {
-              value: 'bottom',
-              content: 'Bottom',
-            },
-            ],
-          },
-        },
-        {
-          type: 'FormMultiselect',
-          field: 'fontSize',
-          config: {
-            label: 'Font Size',
-            helper: 'The size of the text in em',
-            options: [{
-              value: '0.5em',
-              content: '0.5',
-            },
-            {
-              value: '1em',
-              content: '1',
-            },
-            {
-              value: '1.5em',
-              content: '1.5',
-            },
-            {
-              value: '2em',
-              content: '2',
-            },
-            ],
-          },
-        },
-        bgcolorProperty,
-        colorProperty,
-      ],
-    },
-  },
   {
     editorComponent: FormHtmlEditor,
     editorBinding: 'FormHtmlEditor',
@@ -266,7 +54,6 @@ export default [
             value: '',
           },
         },
-        bgcolorProperty,
       ],
     },
   },
@@ -289,14 +76,15 @@ export default [
         type: 'text',
       },
       inspector: [
-        variableKeyProperty,
+        keyNameProperty,
         DataTypeProperty,
+        labelProperty,
         {
           type: 'FormMultiselect',
           field: 'type',
           config: {
-            label: 'Field Type',
-            name: 'Field Type',
+            label: 'Type',
+            name: 'Type',
             helper: 'The type for this field',
             options: [{
               value: 'text',
@@ -309,41 +97,12 @@ export default [
             ],
           },
         },
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the fields name',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'validation',
-          config: {
-            label: 'Validation',
-            helper: 'The validation rules needed for this field',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'placeholder',
-          config: {
-            label: 'Placeholder',
-            helper: 'The placeholder is what is shown in the field when no value is provided yet',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'helper',
-          config: {
-            label: 'Help Text',
-            helper: 'Help text is meant to provide additional guidance on the field\'s value',
-          },
-        },
+        validationRulesProperty,
+        placeholderProperty,
+        helperTextProperty,
         readonlyProperty,
-        bgcolorProperty,
         colorProperty,
+        bgcolorProperty,
       ],
     },
   },
@@ -366,31 +125,20 @@ export default [
         richtext: false,
       },
       inspector: [
+        labelProperty,
+        placeholderProperty,
+        keyNameProperty,
+        DataTypeProperty,
+        helperTextProperty,
         {
           type: 'FormCheckbox',
           field: 'richtext',
           config: {
-            label: 'Display RichText Editor?',
+            label: 'Rich Text',
             helper: '',
           },
         },
-        variableKeyProperty,
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the fields name',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'validation',
-          config: {
-            label: 'Validation',
-            helper: 'The validation rules needed for this field',
-          },
-        },
+        validationRulesProperty,
         {
           type: 'FormInput',
           field: 'rows',
@@ -399,25 +147,9 @@ export default [
             helper: 'The number of rows to provide for input',
           },
         },
-        {
-          type: 'FormInput',
-          field: 'placeholder',
-          config: {
-            label: 'Placeholder',
-            helper: 'The placeholder is what is shown in the field when no value is provided yet',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'helper',
-          config: {
-            label: 'Help Text',
-            helper: 'Help text is meant to provide additional guidance on the field\'s value',
-          },
-        },
         readonlyProperty,
-        bgcolorProperty,
         colorProperty,
+        bgcolorProperty,
       ],
     },
   },
@@ -442,39 +174,19 @@ export default [
         helper: null,
       },
       inspector: [
-        variableKeyProperty,
+        keyNameProperty,
         DataTypeWithoutDateProperty,
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the fields name',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'validation',
-          config: {
-            label: 'Validation',
-            helper: 'The validation rules needed for this field',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'helper',
-          config: {
-            label: 'Help Text',
-            helper: 'Help text is meant to provide additional guidance on the field\'s value',
-          },
-        },
+        labelProperty,
+        placeholderProperty,
+        validationRulesProperty,
+        helperTextProperty,
         {
           type: 'OptionsList',
           field: 'options',
           config: {},
         },
-        bgcolorProperty,
         colorProperty,
+        bgcolorProperty,
       ],
     },
   },
@@ -484,7 +196,7 @@ export default [
     rendererComponent: FormRadioButtonGroup,
     rendererBinding: 'FormRadioButtonGroup',
     control: {
-      label: 'Radio Group',
+      label: 'Radio Button Group',
       component: 'FormRadioButtonGroup',
       'editor-component': 'FormRadioButtonGroup',
       config: {
@@ -498,39 +210,19 @@ export default [
         helper: null,
       },
       inspector: [
-        variableKeyProperty,
+        keyNameProperty,
         DataTypeWithoutDateProperty,
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the fields name',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'helper',
-          config: {
-            label: 'Help Text',
-            helper: 'Help text is meant to provide additional guidance on the field\'s value',
-          },
-        },
+        validationRulesProperty,
+        labelProperty,
+        helperTextProperty,
         {
           type: 'OptionsList',
           field: 'options',
           config: {},
         },
-        {
-          type: 'FormCheckbox',
-          field: 'toggle',
-          config: {
-            label: 'Toggle Style?',
-            helper: '',
-          },
-        },
-        bgcolorProperty,
         colorProperty,
+        bgcolorProperty,
+        toggleStyleProperty,
       ],
     },
   },
@@ -553,32 +245,10 @@ export default [
         toggle: false,
       },
       inspector: [
-        variableKeyProperty,
+        keyNameProperty,
         DataTypeBooleanProperty,
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the fields name',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'helper',
-          config: {
-            label: 'Help Text',
-            helper: 'Help text is meant to provide additional guidance on the field\'s value',
-          },
-        },
-        {
-          type: 'FormCheckbox',
-          field: 'toggle',
-          config: {
-            label: 'Toggle Style?',
-            helper: '',
-          },
-        },
+        labelProperty,
+        helperTextProperty,
         {
           type: 'FormCheckbox',
           field: 'initiallyChecked',
@@ -587,8 +257,9 @@ export default [
             helper: 'Should the checkbox be checked by default',
           },
         },
-        bgcolorProperty,
         colorProperty,
+        bgcolorProperty,
+        toggleStyleProperty,
       ],
     },
   },
@@ -609,26 +280,14 @@ export default [
         placeholder: '',
       },
       inspector: [
-        variableKeyProperty,
+        keyNameProperty,
         DataTypeDateTimeProperty,
-        {
-          type: 'FormInput',
-          field: 'label',
-          config: {
-            label: 'Field Label',
-            helper: 'The label describes the fields name',
-          },
-        },
-        {
-          type: 'FormInput',
-          field: 'placeholder',
-          config: {
-            label: 'Placeholder',
-            helper: 'The placeholder is what is shown in the field when no value is provided yet',
-          },
-        },
-        bgcolorProperty,
+        validationRulesProperty,
+        labelProperty,
+        placeholderProperty,
+        helperTextProperty,
         colorProperty,
+        bgcolorProperty,
       ],
     },
   },
@@ -639,7 +298,7 @@ export default [
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
-      label: 'Navigation',
+      label: 'Page Navigation',
       component: 'FormButton',
       'editor-component': 'FormButton',
       config: {
@@ -650,69 +309,17 @@ export default [
         eventData: null,
 
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Field Label',
-          helper: 'The label describes the button\'s text',
+      inspector: [
+        {
+          type: 'PageSelect',
+          field: 'eventData',
+          config: {
+            label: 'Destination Screen',
+            helper: 'The destination page to navigate to',
+          },
         },
-      },
-      {
-        type: 'FormMultiselect',
-        field: 'variant',
-        config: {
-          label: 'Variant',
-          helper: 'The variant determines the appearance of the button',
-          options: [{
-            value: 'primary',
-            content: 'Primary',
-          },
-          {
-            value: 'secondary',
-            content: 'Secondary',
-          },
-          {
-            value: 'success',
-            content: 'Success',
-          },
-          {
-            value: 'danger',
-            content: 'Danger',
-          },
-          {
-            value: 'warning',
-            content: 'Warning',
-          },
-          {
-            value: 'info',
-            content: 'Info',
-          },
-          {
-            value: 'light',
-            content: 'Light',
-          },
-
-          {
-            value: 'dark',
-            content: 'Dark',
-          },
-
-          {
-            value: 'link',
-            content: 'Link',
-          },
-          ],
-        },
-      },
-      {
-        type: 'PageSelect',
-        field: 'eventData',
-        config: {
-          label: 'Destination',
-          helper: 'The destination page to navigate to',
-        },
-      },
+        buttonLabelProperty,
+        buttonVariantStyleProperty,
       ],
     },
   },
@@ -722,7 +329,7 @@ export default [
     rendererComponent: FormMultiColumn,
     rendererBinding: 'FormMultiColumn',
     control: {
-      label: 'Table',
+      label: 'Multicolumn / Table',
       component: 'FormMultiColumn',
       'editor-component': 'MultiColumn',
       container: true,
@@ -748,11 +355,11 @@ export default [
           type: 'ContainerColumns',
           field: 'options',
           config: {
-            label: 'Column Widths',
+            label: 'Column Width',
           },
         },
-        bgcolorProperty,
         colorProperty,
+        bgcolorProperty,
       ],
     },
   },
@@ -777,7 +384,7 @@ export default [
         form: '',
       },
       inspector: [
-        variableKeyProperty,
+        keyNameProperty,
         {
           type: 'FormInput',
           field: 'label',
@@ -811,10 +418,9 @@ export default [
             helper: 'The form to use for adding/editing records',
           },
         },
-        bgcolorProperty,
         colorProperty,
+        bgcolorProperty,
       ],
-
     },
   },
   {
@@ -836,19 +442,28 @@ export default [
       },
       inspector: [{
         type: 'FormInput',
-        field: 'id',
+        field: 'name',
         config: {
-          label: 'Id',
-          helper: 'Image id',
+          label: 'Name',
+          helper: 'Image name',
         },
       },
-      variableKeyProperty,
       {
         type: 'ImageUpload',
         field: 'image',
         config: {
-          label: 'Upload image',
+          label: 'Upload',
           helper: 'Upload image',
+        },
+      },
+      helperTextProperty,
+      {
+        type: 'FormInput',
+        field: 'height',
+        config: {
+          label: 'Height',
+          helper: 'Image height',
+          type: 'number',
         },
       },
       {
@@ -857,15 +472,6 @@ export default [
         config: {
           label: 'Width',
           helper: 'image width',
-          type: 'number',
-        },
-      },
-      {
-        type: 'FormInput',
-        field: 'height',
-        config: {
-          label: 'Height',
-          helper: 'Image height',
           type: 'number',
         },
       },
@@ -878,7 +484,7 @@ export default [
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
-      label: 'Submit',
+      label: 'Submit Button',
       component: 'FormButton',
       'editor-component': 'FormButton',
       config: {
@@ -893,67 +499,20 @@ export default [
         type: 'FormInput',
         field: 'label',
         config: {
-          label: 'Field Label',
+          label: 'Label',
           helper: 'The label describes the button\'s text',
         },
       },
-      variableKeyProperty,
-      DataTypeWithoutDateProperty,
+      keyNameProperty,
       {
         type: 'FormInput',
         field: 'fieldValue',
         config: {
-          label: 'Field Value',
+          label: 'Value',
           helper: 'The value being submitted',
         },
       },
-      {
-        type: 'FormMultiselect',
-        field: 'variant',
-        config: {
-          label: 'Variant',
-          helper: 'The variant determines the appearance of the button',
-          options: [{
-            value: 'primary',
-            content: 'Primary',
-          },
-          {
-            value: 'secondary',
-            content: 'Secondary',
-          },
-          {
-            value: 'success',
-            content: 'Success',
-          },
-          {
-            value: 'danger',
-            content: 'Danger',
-          },
-          {
-            value: 'warning',
-            content: 'Warning',
-          },
-          {
-            value: 'info',
-            content: 'Info',
-          },
-          {
-            value: 'light',
-            content: 'Light',
-          },
-
-          {
-            value: 'dark',
-            content: 'Dark',
-          },
-
-          {
-            value: 'link',
-            content: 'Link',
-          },
-          ],
-        },
-      },
+      buttonVariantStyleProperty,
       ],
     },
   },
