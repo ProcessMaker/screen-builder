@@ -275,7 +275,7 @@ export default [
       config: {
         icon: 'far fa-calendar-alt',
         label: 'New Date Picker',
-        type: 'date',
+        type: 'datetime',
         name: '',
         placeholder: '',
       },
