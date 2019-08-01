@@ -26,7 +26,7 @@
                 {{ $t('CSS') }}
               </button>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"/></button>
+            <button type="button" class="btn btn-secondary btn-sm ml-1" title="Save Screen"><i class="fas fa-save"/></button>
           </b-col>
 
         </b-row>

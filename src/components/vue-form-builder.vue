@@ -50,6 +50,7 @@
           size="sm"
           variant="secondary"
           class="ml-1"
+          title="Edit Page Title"
           @click="openEditPageModal(currentPage)"
         >
           <i class="far fa-edit"/>
@@ -59,13 +60,14 @@
           size="sm"
           variant="danger"
           class="ml-1"
+          title="Delete Page"
           @click="confirmDelete()"
           :disabled="!displayDelete"
         >
           <i class="far fa-trash-alt"/>
         </b-button>
 
-        <b-button size="sm" variant="secondary" class="ml-1" v-b-modal.addPageModal>
+        <b-button size="sm" variant="secondary" class="ml-1" title="Add New Page" v-b-modal.addPageModal>
           <i class="fas fa-plus"/>
         </b-button>
 
@@ -108,6 +110,7 @@
               {{ element.config.name || element.label || $t('Field Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
+                title="Delete Control"
                 @click="deleteItem(index)"
               >
                 <i class="far fa-trash-alt text-light"/>
@@ -136,6 +139,7 @@
               {{ element.config.name || $t('Key Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
+                title="Delete Control"
                 @click="deleteItem(index)"
               >
                 <i class="far fa-trash-alt text-light"/>
