@@ -17,16 +17,16 @@
 
           <b-col class="text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
+              <button type="button" class="btn btn-secondary" :title="$t('Calculated Properties')" @click="openComputedProperties">
                 <i class="fas fa-flask"/>
                 {{ $t('Calcs') }}
               </button>
-              <button type="button" class="btn btn-secondary mr-2" title="Custom CSS" @click="openCustomCSS">
+              <button type="button" class="btn btn-secondary mr-2" :title="$t('Custom CSS')" @click="openCustomCSS">
                 <i class="fab fa-css3"/>
                 {{ $t('CSS') }}
               </button>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm ml-1" title="Save Screen"><i class="fas fa-save"/></button>
+            <button type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
           </b-col>
 
         </b-row>
