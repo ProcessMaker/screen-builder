@@ -145,6 +145,7 @@ export default [
           config: {
             label: 'Rows',
             helper: 'The number of rows to provide for input',
+            validation: 'integer',
           },
         },
         readonlyProperty,
