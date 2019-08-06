@@ -152,8 +152,12 @@ import globalProperties from './global-properties';
 import Validator from 'validatorjs';
 
 // To include another language in the Validator with variable processmaker
-if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
-  Validator.useLang(window.ProcessMaker.user.lang);
+let globalObject = typeof window === 'undefined'
+  ? global
+  : window;
+
+if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+  Validator.useLang(globalObject.ProcessMaker.user.lang);
 }
 
 Validator.register('attr-value', value => {
@@ -253,8 +257,8 @@ export default {
           });
           let validator = new Validator(data, rules);
           // To include another language in the Validator with variable processmaker
-          if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
-            validator.useLang(window.ProcessMaker.user.lang);
+          if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+            validator.useLang(globalObject.ProcessMaker.user.lang);
           }
           // Validation will not run until you call passes/fails on it
           if (!validator.passes()) {
