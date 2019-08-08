@@ -26,6 +26,7 @@ export default [
       'richtext',
       'rows',
       { name: 'options', showFor: 'FormMultiColumn' },
+      'form',
     ],
     open: true,
   },
