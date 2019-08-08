@@ -27,6 +27,7 @@ export default [
       'rows',
       { name: 'options', showFor: 'FormMultiColumn' },
       'form',
+      'editable',
     ],
     open: true,
   },
