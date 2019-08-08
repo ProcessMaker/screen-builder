@@ -250,11 +250,12 @@ export default [
         DataTypeBooleanProperty,
         labelProperty,
         helperTextProperty,
+        validationRulesProperty,
         {
           type: 'FormCheckbox',
           field: 'initiallyChecked',
           config: {
-            label: 'Initially Checked?',
+            label: 'Checked by default',
             helper: 'Should the checkbox be checked by default',
           },
         },
