@@ -32,6 +32,7 @@ export default [
   {
     name: 'Data Source',
     fields: [
+      'fields',
       { name: 'options', hideFor: 'FormMultiColumn' },
     ],
     open: true,
