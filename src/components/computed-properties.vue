@@ -3,7 +3,6 @@
     ref="modal"
     size="lg"
     id="computed-properties"
-    hide-footer
     :title="$t('Computed Properties')"
     @hidden="displayTableList"
     no-close-on-backdrop
@@ -78,6 +77,9 @@
           </b-card>
         </template>
       </b-table>
+      <template slot="modal-footer">
+        <span></span>
+      </template>
     </template>
 
     <template v-else>
@@ -108,13 +110,16 @@
         <monaco-editor v-show="isJS" :options="monacoOptions" class="editor" v-model="add.formula" language="javascript"/>
         <div v-if="!add.formula" class="invalid-feedback"><div>{{ $t('The property formula field is required.') }}</div></div>
       </div>
-      <button
-        class="btn btn-secondary float-right ml-2"
-        @click="validateData"
-        :disabled="disabled"
-      >{{ $t('Save Property') }}</button>
-      <button class="btn btn-outline-secondary float-right" @click="displayTableList">{{ $t('Cancel') }}</button>
+      <template slot="modal-footer">
+        <button
+          class="btn btn-secondary float-right ml-2"
+          @click="validateData"
+          :disabled="disabled"
+        >{{ $t('Save Property') }}</button>
+        <button class="btn btn-outline-secondary float-right" @click="displayTableList">{{ $t('Cancel') }}</button>
+      </template>
     </template>
+
   </b-modal>
 </template>
 
