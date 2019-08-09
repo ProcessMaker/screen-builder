@@ -13,7 +13,6 @@ function dataTypeFactory(options) {
   return {
     type: 'FormMultiselect',
     field: 'dataFormat',
-    panel: 'variable',
     config: {
       label: 'Data Type',
       name: 'Data Type',
