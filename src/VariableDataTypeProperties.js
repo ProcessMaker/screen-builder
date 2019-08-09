@@ -3,11 +3,10 @@ const int = { value: 'int', content: 'Integer' };
 const float = { value: 'float', content: 'Decimal' };
 const datetime = { value: 'datetime', content: 'Datetime' };
 const date = { value: 'date', content: 'Date' };
-const currency = { value: 'currency', content: 'Currency' };
 const boolean = { value: 'boolean', content: 'Boolean' };
 
-const allOptions = [string, int, float, datetime, date, currency];
-const allOptionsWithoutDate = [string, int, float, currency];
+const allOptions = [string, int, float, datetime, date];
+const allOptionsWithoutDate = [string, int, float];
 
 function dataTypeFactory(options) {
   return {
