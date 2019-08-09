@@ -387,9 +387,36 @@ export default {
   },
   methods: {
     getInspectorFields(fields) {
-      return this.inspection.inspector
-        ? this.inspection.inspector.filter(input => fields.includes(input.field))
-        : [];
+      if (!this.inspection.inspector) {
+        return [];
+      }
+
+      const accordionFields = fields
+        .filter(field => {
+          if (typeof field !== 'string') {
+            const component = this.inspection.component;
+            const { showFor, hideFor } = field;
+
+            if (showFor) {
+              return showFor === component;
+            }
+
+            if (hideFor) {
+              return hideFor !== component;
+            }
+          }
+
+          return true;
+        })
+        .map(field => {
+          if (typeof field !== 'string') {
+            return field.name;
+          }
+
+          return field;
+        });
+
+      return this.inspection.inspector.filter(input => accordionFields.includes(input.field));
     },
     updateState() {
       const items = this.config[this.currentPage].items;

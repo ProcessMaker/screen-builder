@@ -1,12 +1,20 @@
 export default [
   {
     name: 'Variable',
-    fields: ['name', 'fieldValue', 'dataFormat', 'validation', 'readonly', 'initiallyChecked'],
+    fields: [
+      { name: 'name', hideFor: 'FormImage' },
+      'fieldValue',
+      'dataFormat',
+      'validation',
+      'readonly',
+      'initiallyChecked',
+    ],
     open: true,
   },
   {
     name: 'Configuration',
     fields: [
+      { name: 'name', showFor: 'FormImage' },
       'image',
       'eventData',
       'label',
@@ -17,12 +25,18 @@ export default [
       'Multiselect checkbox (doesn’t exist)',
       'richtext',
       'rows',
+      { name: 'options', showFor: 'FormMultiColumn' },
+      'form',
+      'editable',
     ],
     open: true,
   },
   {
     name: 'Data Source',
-    fields: ['options'],
+    fields: [
+      'fields',
+      { name: 'options', hideFor: 'FormMultiColumn' },
+    ],
     open: true,
   },
   {
