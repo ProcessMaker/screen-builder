@@ -361,7 +361,6 @@ export default {
     },
     currentPage() {
       this.inspect();
-      this.$root.$emit('current-page', this.currentPage);
     },
     inspection(e) {
       if (this.translated.includes(e)) {

@@ -187,8 +187,6 @@ export default {
         lineNumbers: 'off',
         minimap: false,
       },
-      childNodes: [],
-      currentPage: 0,
     };
   },
   components: {
@@ -245,7 +243,6 @@ export default {
     validationErrors() {
       const validationErrors = [];
       this.config.forEach(page => {
-        this.validateChildNodes(validationErrors, page);
         page.items.forEach(item => {
           let data = item.config ? item.config : {};
           let rules = {};
@@ -289,18 +286,6 @@ export default {
         config.builderBinding
       );
     });
-
-    this.$root.$on('validation', (errors) => {
-      this.childNodes = this.childNodes.concat(errors);
-    });
-
-    this.$root.$on('current-page', (index) => {
-      this.currentPage = index;
-    });
-
-    this.$root.$on('deleted-child', (item) => {
-     this.childNodes.splice(item,1);
-    });
   },
   methods: {
     focusInspector(validate) {
@@ -323,38 +308,6 @@ export default {
       this.$refs.renderer.$options.components[rendererBinding] = rendererComponent;
       // Add it to the form builder
       this.$refs.builder.addControl(control, builderComponent, builderBinding);
-    },
-    validateChildNodes(validationErrors, page) {
-      let pageIndex = this.config.indexOf(page);
-      if (pageIndex === this.currentPage && this.childNodes.length > 0) {
-        this.childNodes.forEach(item => {
-          let data = item.config ? item.config : {};
-          let rules = {};
-          item.inspector.forEach(property => {
-            if (property.config.validation) {
-              rules[property.field] = property.config.validation;
-            }
-          });
-          let validator = new Validator(data, rules);
-            // To include another language in the Validator with variable processmaker
-            if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
-              validator.useLang(window.ProcessMaker.user.lang);
-            }
-            // Validation will not run until you call passes/fails on it
-            if (!validator.passes()) {
-              Object.keys(validator.errors.errors).forEach(field => {
-                validator.errors.errors[field].forEach(error => {
-                  validationErrors.push({
-                    message: error,
-                    page,
-                    item,
-                  });
-                });
-              });
-            }
-            return validationErrors;
-        });
-      }
     },
   },
 };

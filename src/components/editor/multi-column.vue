@@ -10,7 +10,6 @@
             @input="updateContainerConfig($event, index)"
             :options="{group: {name: 'controls'}}"
             :key="index"
-            @change="getItems($event)"
           >
             <div class="control-item"
               :class="{selected: selected === element}"
@@ -40,7 +39,7 @@
               </div>
 
               <div v-else :id="element.config.name ? element.config.name : undefined">
-                <div class="m-2" :class="{ 'card' : selected === element, 'card hasError ' : hasErrors(element) }">
+                <div class="m-2" :class="{ 'card' : selected === element }">
                   <button
                     v-if="selected === element"
                     class="element-delete-btn btn btn-sm btn-danger-outline ml-auto position-absolute"
@@ -69,7 +68,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
@@ -83,7 +81,6 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 
-import Validator from 'validatorjs';
 const defaultColumnWidth = 1;
 
 export default {
@@ -147,39 +144,10 @@ export default {
       this.$emit('inspect', element);
     },
     deleteItem(col, index) {
-      this.$root.$emit('deleted-child', index);
       // Remove the item from the array in currentPage
       this.items[col].splice(index, 1);
       this.$emit('update-state');
     },
-    hasErrors(item) {
-      let validationErrors = [];
-      let rules = {};
-      item.inspector.forEach(property => {
-        if (property.config.validation) {
-          rules[property.field] = property.config.validation;
-        }
-      });
-      let validator = new Validator(item.config, rules);
-      // Validation will not run until you call passes/fails on it
-      if (!validator.passes()) {
-        Object.keys(validator.errors.errors).forEach(field => {
-          validator.errors.errors[field].forEach(error => {
-            validationErrors.push({
-              message: error,
-              item,
-            });
-          });
-        });
-      }
-      return validationErrors.some(({ col }) => col === col); 
-    },
-    getItems(event) {
-      
-      if (event.added) {
-        this.$root.$emit('validation', event.added.element);
-      }
-    }
   },
 };
 </script>
@@ -226,9 +194,5 @@ export default {
       top: 10px;
       right: 10px;
       z-index: 1;
-    }
-
-    .hasError {
-      border-color: red;
     }
 </style>
