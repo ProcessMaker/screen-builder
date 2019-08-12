@@ -18,16 +18,24 @@
               @click.stop="inspect(element)"
             >
               <div v-if="element.container" @click.stop="inspect(element)">
-                <div class="m-2">
-                  <button
+                <div class="m-2 card border-0">
+                  <div
                     v-if="selected === element"
-                    class="element-delete-btn btn btn-sm btn-danger-outline ml-auto position-absolute"
-                    @click="deleteItem(index, row)"
+                    class="card-header form-element-header d-flex align-items-center border rounded"
                   >
-                    <i class="far fa-trash-alt text-danger"/>
-                  </button>
+                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
+                    {{ element.config.name || $t('Key Name') }}
+                    <button
+                      class="btn btn-sm btn-danger ml-auto"
+                      @click="deleteItem(index)"
+                    >
+                      <i class="far fa-trash-alt text-light"/>
+                    </button>
+                  </div>
 
                   <component :class="elementCssClass(element)"
+                    class="mb-3 mr-3 ml-3"
                     :selected="selected"
                     @inspect="inspect"
                     @update-state="$emit('update-state')"
@@ -40,13 +48,20 @@
 
               <div v-else :id="element.config.name ? element.config.name : undefined">
                 <div class="m-2" :class="{ 'card' : selected === element }">
-                  <button
+                  <div
                     v-if="selected === element"
-                    class="element-delete-btn btn btn-sm btn-danger-outline ml-auto position-absolute"
-                    @click="deleteItem(index, row)"
+                    class="card-header form-element-header d-flex align-items-center"
                   >
-                    <i class="far fa-trash-alt text-danger"/>
-                  </button>
+                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
+                    {{ element.config.name || $t('Key Name') }}
+                    <button
+                      class="btn btn-sm btn-danger ml-auto"
+                      @click="deleteItem(index)"
+                    >
+                      <i class="far fa-trash-alt text-light"/>
+                    </button>
+                  </div>
 
                   <component
                     class="p-3"
@@ -188,11 +203,5 @@ export default {
             width: 100%;
             height: 100%;
         }
-    }
-
-    .element-delete-btn {
-      top: 10px;
-      right: 10px;
-      z-index: 1;
     }
 </style>
