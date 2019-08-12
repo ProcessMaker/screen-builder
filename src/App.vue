@@ -17,16 +17,16 @@
 
           <b-col class="text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-secondary" title="Calculated Properties" @click="openComputedProperties">
+              <button type="button" class="btn btn-secondary" :title="$t('Calculated Properties')" @click="openComputedProperties">
                 <i class="fas fa-flask"/>
                 {{ $t('Calcs') }}
               </button>
-              <button type="button" class="btn btn-secondary mr-2" title="Custom CSS" @click="openCustomCSS">
+              <button type="button" class="btn btn-secondary mr-2" :title="$t('Custom CSS')" @click="openCustomCSS">
                 <i class="fab fa-css3"/>
                 {{ $t('CSS') }}
               </button>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm ml-1"><i class="fas fa-save"/></button>
+            <button type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
           </b-col>
 
         </b-row>
@@ -152,8 +152,12 @@ import globalProperties from './global-properties';
 import Validator from 'validatorjs';
 
 // To include another language in the Validator with variable processmaker
-if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
-  Validator.useLang(window.ProcessMaker.user.lang);
+let globalObject = typeof window === 'undefined'
+  ? global
+  : window;
+
+if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+  Validator.useLang(globalObject.ProcessMaker.user.lang);
 }
 
 Validator.register('attr-value', value => {
@@ -256,8 +260,8 @@ export default {
           });
           let validator = new Validator(data, rules);
           // To include another language in the Validator with variable processmaker
-          if (window.ProcessMaker && window.ProcessMaker.user && window.ProcessMaker.user.lang) {
-            validator.useLang(window.ProcessMaker.user.lang);
+          if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+            validator.useLang(globalObject.ProcessMaker.user.lang);
           }
           // Validation will not run until you call passes/fails on it
           if (!validator.passes()) {
