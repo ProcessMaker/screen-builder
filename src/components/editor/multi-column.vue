@@ -28,7 +28,7 @@
                     {{ element.config.name || $t('Key Name') }}
                     <button
                       class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index)"
+                      @click="deleteItem(index, row)"
                     >
                       <i class="far fa-trash-alt text-light"/>
                     </button>
@@ -57,7 +57,7 @@
                     {{ element.config.name || $t('Key Name') }}
                     <button
                       class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index)"
+                      @click="deleteItem(index, row)"
                     >
                       <i class="far fa-trash-alt text-light"/>
                     </button>
