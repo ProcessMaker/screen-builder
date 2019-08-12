@@ -40,7 +40,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative mt-2">
+    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
       <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
