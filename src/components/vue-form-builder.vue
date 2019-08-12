@@ -40,7 +40,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative mt-2">
+    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
       <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -50,6 +50,7 @@
           size="sm"
           variant="secondary"
           class="ml-1"
+          :title="$t('Edit Page Title')"
           @click="openEditPageModal(currentPage)"
         >
           <i class="far fa-edit"/>
@@ -59,13 +60,14 @@
           size="sm"
           variant="danger"
           class="ml-1"
+          :title="$t('Delete Page')"
           @click="confirmDelete()"
           :disabled="!displayDelete"
         >
           <i class="far fa-trash-alt"/>
         </b-button>
 
-        <b-button size="sm" variant="secondary" class="ml-1" v-b-modal.addPageModal @click="originalPageName=null">
+        <b-button size="sm" variant="secondary" class="ml-1" @click="originalPageName=null" :title="$t('Add New Page')" v-b-modal.addPageModal>
           <i class="fas fa-plus"/>
         </b-button>
 
@@ -108,6 +110,7 @@
               {{ element.config.name || element.label || $t('Field Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
+                :title="$t('Delete Control')"
                 @click="deleteItem(index)"
               >
                 <i class="far fa-trash-alt text-light"/>
@@ -136,6 +139,7 @@
               {{ element.config.name || $t('Key Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
+                :title="$t('Delete Control')"
                 @click="deleteItem(index)"
               >
                 <i class="far fa-trash-alt text-light"/>
