@@ -49,7 +49,7 @@ export default [
           field: 'content',
           config: {
             rows: 5,
-            label: 'Rich Text Content',
+            label: 'Content',
             helper: 'The HTML text to display',
             value: '',
           },
