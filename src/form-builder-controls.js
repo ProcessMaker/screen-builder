@@ -49,7 +49,7 @@ export default [
           field: 'content',
           config: {
             rows: 5,
-            label: 'Rich Text Content',
+            label: 'Content',
             helper: 'The HTML text to display',
             value: '',
           },
@@ -250,11 +250,12 @@ export default [
         DataTypeBooleanProperty,
         labelProperty,
         helperTextProperty,
+        validationRulesProperty,
         {
           type: 'FormCheckbox',
           field: 'initiallyChecked',
           config: {
-            label: 'Initially Checked?',
+            label: 'Checked by default',
             helper: 'Should the checkbox be checked by default',
           },
         },

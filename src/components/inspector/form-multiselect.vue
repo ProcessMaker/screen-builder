@@ -4,12 +4,12 @@
     <multiselect
       v-bind="$attrs"
       v-on="$listeners"
+      :value="value"
       :placeholder="$t('Select...')"
       :show-labels="false"
       :options="options.map(option => option.value)"
       :class="classList"
       :custom-label="getLabelFromValue"
-      v-model="selected"
     >
       <template slot="noResult">
         {{ $t('No elements found. Consider changing the search query.') }}
@@ -18,6 +18,7 @@
         {{ $t('No Data Available') }}
       </template>
     </multiselect>
+
     <div v-if="(validator && validator.errorCount) || error" class="invalid-feedback d-block">
       <div v-for="(error, index) in validator.errors.get(this.name)" :key="index">{{ error }}</div>
       <div v-if="error">{{ error }}</div>
@@ -25,13 +26,6 @@
     <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
   </div>
 </template>
-
-<style lang="scss">
-  @import "~vue-multiselect/dist/vue-multiselect.min.css";
-  .is-invalid .multiselect__tags {
-    border-color: red !important;
-  }
-</style>
 
 <script>
 import Multiselect from 'vue-multiselect';
@@ -46,24 +40,11 @@ export default {
   props: [
     'label',
     'error',
-    'value',
     'options',
     'helper',
-    'disabled',
-    'required',
-    'size',
     'name',
-    'controlClass',
-    'multiple',
+    'value',
   ],
-  data() {
-    return {
-      // The v-model for the multiselect. Should be prepopulated with the
-      // object that represents the selected value, pulled from our options
-      initialValue: null,
-      selected: null,
-    };
-  },
   computed: {
     classList() {
       return {
@@ -71,26 +52,18 @@ export default {
       };
     },
   },
-  mounted() {
-    // We go through our options for a first-match of our options
-    // to our value, if there is one
-    for (let i = 0; i < this.options.length; i++) {
-      if (this.options[i].value == this.value) {
-        this.selected = JSON.parse(JSON.stringify(this.options[i]));
-        // Get out of for loop
-        break;
-      }
-    }
-  },
   methods: {
     getLabelFromValue(value) {
       const selectedOption = this.options.find(option => option.value == value);
       return selectedOption ? selectedOption.content : null;
     },
-    updateValue(value) {
-      this.content = value.value;
-      this.$emit('input', this.content);
-    },
   },
 };
 </script>
+
+<style lang="scss">
+  @import "~vue-multiselect/dist/vue-multiselect.min.css";
+  .is-invalid .multiselect__tags {
+    border-color: red !important;
+  }
+</style>
