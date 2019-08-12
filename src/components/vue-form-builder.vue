@@ -65,7 +65,7 @@
           <i class="far fa-trash-alt"/>
         </b-button>
 
-        <b-button size="sm" variant="secondary" class="ml-1" v-b-modal.addPageModal>
+        <b-button size="sm" variant="secondary" class="ml-1" v-b-modal.addPageModal @click="originalPageName=null">
           <i class="fas fa-plus"/>
         </b-button>
 
@@ -205,6 +205,8 @@
       <form-input v-model="addPageName"
         :label="$t('Page Name')"
         :helper="$t('The name of the new page to add')"
+        validation="unique-page-name|required"
+        ref="addPageInput"
       />
     </b-modal>
 
@@ -219,6 +221,8 @@
       <form-input v-model="editPageName"
         :label="$t('Page Name')"
         :helper="$t('The new name of the page')"
+        validation="unique-page-name|required"
+        ref="editPageInput"
       />
     </b-modal>
 
@@ -308,7 +312,7 @@ export default {
   data() {
     const config = this.initialConfig || defaultConfig;
 
-    if (this.title) {
+    if (this.title && config[0].name === 'Default') {
       config[0].name = this.title;
     }
 
@@ -323,6 +327,7 @@ export default {
       addPageName: '',
       editPageIndex: null,
       editPageName: '',
+      originalPageName: null,
       config,
       confirmMessage: '',
       pageDelete: 0,
@@ -465,13 +470,21 @@ export default {
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
-      this.editPageName = this.config[index].name;
+      this.editPageName = this.originalPageName = this.config[index].name;
       this.$refs.editPageModal.show();
     },
-    editPage() {
+    editPage(e) {
+      if (this.$refs.editPageInput.validator.errorCount) {
+        e.preventDefault();
+        return;
+      }
       this.config[this.editPageIndex].name = this.editPageName;
     },
-    addPage() {
+    addPage(e) {
+      if (this.$refs.addPageInput.validator.errorCount) {
+        e.preventDefault();
+        return;
+      }
       this.config.push({ name: this.addPageName, items: [] });
       this.currentPage = this.config.length - 1;
       this.addPageName = '';
@@ -519,6 +532,17 @@ export default {
     },
   },
   created() {
+    Validator.register(
+      'unique-page-name',
+      value => {
+        let pageNames =this.config
+          .map(c => c.name)
+          .filter(c => c !== this.originalPageName)
+        return !pageNames.includes(value)
+      },
+      this.$t('Must be unique')
+    );
+
     this.config.forEach((config, index) => {
       this.$store.registerModule(`page-${index}`, undoRedoModule);
       this.$store.dispatch(`page-${index}/pushState`, JSON.stringify(config.items));
