@@ -7,16 +7,11 @@
     @hidden="displayTableList"
     no-close-on-backdrop
   >
-    <b-alert
-      :variant="alertVariant"
-      dismissible
-      :show="showDismissibleAlert"
-      @dismissed="showDismissibleAlert=false"
-    >{{ $t(message) }}</b-alert>
+
     <template v-if="displayList">
       <b-row class="float-right">
         <div class="m-2">
-          <b-btn size="sm" variant="primary" @click.stop="displayFormProperty">
+          <b-btn size="sm" variant="secondary" @click.stop="displayFormProperty">
             <i class="fas fa-plus"/> {{ $t('Add Property') }}
           </b-btn>
         </div>
@@ -78,7 +73,7 @@
         </template>
       </b-table>
       <template slot="modal-footer">
-        <span></span>
+        <span/>
       </template>
     </template>
 
@@ -86,17 +81,20 @@
       <form-input
         v-model="add.property"
         :label="$t('Property Name')"
-        name="property name"
-        validation="required"
+        :name="$t('Property Name')"
+        :validation="rulesValidation"
       />
+      <div v-if="existsProperty" class="invalid-feedback d-block">
+        <div>{{ $t('Property already exists.') }}</div>
+      </div>
       <form-text-area
         v-model="add.name"
         :label="$t('Description')"
-        name="property description"
-        validation="required"
+        :name="$t('Description')"
+        :validation="rulesValidation"
       />
       <div class="form-group" style='position: relative;'>
-        <label>{{ $t('Formula') }}</label>
+        <label v-show="isJS">{{ $t('Formula') }}</label>
         <div class="float-right">
           <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType">
             <i class="fas fa-square-root-alt"/>
@@ -105,18 +103,27 @@
             <i class="fab fa-js-square"/>
           </a>
         </div>
-        <textarea v-show="!isJS" name="formula" v-model="add.formula" class="form-control editor" :class="{'is-invalid':!add.formula}"/>
-        <div v-show="isJS" class="editor-border" :class="{'is-invalid':!add.formula}"/>
+        <form-text-area
+          v-show="!isJS"
+          rows="5"
+          v-model="add.formula"
+          :label="$t('Formula')"
+          :name="$t('Formula')"
+          :validation="rulesValidation"
+        />
+        <div v-show="isJS" class="editor-border" :class="{'is-invalid':editorInvalid}"/>
         <monaco-editor v-show="isJS" :options="monacoOptions" class="editor" v-model="add.formula" language="javascript"/>
-        <div v-if="!add.formula" class="invalid-feedback"><div>{{ $t('The property formula field is required.') }}</div></div>
+        <div v-if="isJS && editorInvalid" class="invalid-feedback d-block"><div>{{ $t('The property formula field is required.') }}</div>
+        </div>
       </div>
       <template slot="modal-footer">
+        <button class="btn btn-outline-secondary" @click="displayTableList">{{ $t('Cancel') }}</button>
         <button
-          class="btn btn-secondary float-right ml-2"
+          class="btn btn-secondary ml-2"
           @click="validateData"
-          :disabled="disabled"
-        >{{ $t('Save Property') }}</button>
-        <button class="btn btn-outline-secondary float-right" @click="displayTableList">{{ $t('Cancel') }}</button>
+        >
+          {{ $t('Save') }}
+        </button>
       </template>
     </template>
 
@@ -130,6 +137,10 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 
+let globalObject = typeof window === 'undefined'
+  ? global
+  : window;
+
 export default {
   components: {
     FormInput,
@@ -139,12 +150,12 @@ export default {
   props: ['value'],
   data() {
     return {
-      showDismissibleAlert: false,
-      alertVariant: 'danger',
-      message: '',
       required: true,
       numberItem: 0,
       displayList: true,
+      rulesValidation: '',
+      editorInvalid: false,
+      existsProperty: false,
       current: [],
       add: {
         id: 0,
@@ -182,6 +193,12 @@ export default {
       });
       this.current = this.value;
     },
+    'add.property': {
+      handler() {
+        this.validateDuplicate();
+      },
+      deep: true,
+    },
   },
   computed: {
     javascriptTypeClass() {
@@ -205,18 +222,19 @@ export default {
     isJS() {
       return this.add.type === 'javascript';
     },
-    disabled() {
+  },
+  methods: {
+    isEmpty() {
+      this.editorInvalid = this.add.formula.trim() === '';
       if (
         this.add.name.trim() === '' ||
-        this.add.property.trim() === '' ||
-        this.add.formula.trim() === ''
+          this.add.property.trim() === '' ||
+          this.add.formula.trim() === ''
       ) {
         return true;
       }
       return false;
     },
-  },
-  methods: {
     switchExpressionType() {
       this.add.type = this.add.type === 'expression' ? 'javascript' : 'expression';
     },
@@ -229,6 +247,9 @@ export default {
       this.add.property = '';
       this.add.type = 'expression';
       this.add.formula = '';
+      this.rulesValidation = '';
+      this.editorInvalid = false;
+      this.existsProperty = false;
     },
     displayTableList() {
       this.emptyForm();
@@ -238,15 +259,18 @@ export default {
       this.emptyForm();
       this.displayList = false;
     },
-    validateData() {
-      let validation = true;
+    validateDuplicate() {
+      this.existsProperty = false;
       this.current.forEach(item => {
         if (item.property === this.add.property && item.id !== this.add.id) {
-          validation = false;
-          this.showAlert('Property already exists', 'danger');
+          this.existsProperty = true;
         }
       });
-      if (validation) {
+    },
+    validateData() {
+      this.rulesValidation = 'required';
+
+      if (!this.existsProperty && !this.isEmpty()) {
         this.saveProperty();
       }
     },
@@ -260,7 +284,7 @@ export default {
           formula: this.add.formula,
           type: this.add.type,
         });
-        this.showAlert('Property Saved', 'success');
+        this.showAlert(this.$t('Property Saved'), 'success');
       } else {
         this.current.forEach(item => {
           if (item.id === this.add.id) {
@@ -270,7 +294,7 @@ export default {
             item.type = this.add.type;
           }
         });
-        this.showAlert('Property Edited', 'success');
+        this.showAlert(this.$t('Property Edited'), 'success');
       }
 
       this.$emit('input', this.current);
@@ -289,34 +313,36 @@ export default {
         return val.id !== item.id;
       });
       this.$emit('input', this.current);
-      this.showAlert('Property deleted', 'success');
+      this.showAlert(this.$t('Property deleted'), 'success');
       this.displayTableList();
     },
     showAlert(message, variant) {
-      this.alertVariant = variant || 'success';
-      this.message = message || '';
-      this.showDismissibleAlert = true;
+      if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
+        globalObject.ProcessMaker.alert(message, variant || 'success');
+      }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-    .editor{
-        height: 6em;
-        z-index: 0;
-    }
-    .editor-border {
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        overflow: hidden;
-        height: 6em;
-        position: absolute;
-        pointer-events: none;
-        width: 100%;
-        z-index: 1;
-    }
-    .editor-border.is-invalid {
-        border-color: #dc3545;
-    }
+  .editor {
+    height: 8.5em;
+    z-index: 0;
+  }
+
+  .editor-border {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 8.5em;
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .editor-border.is-invalid {
+    border-color: #dc3545;
+  }
 </style>
