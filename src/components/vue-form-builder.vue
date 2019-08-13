@@ -296,7 +296,21 @@ const defaultConfig = [{
 }];
 
 export default {
-  props: ['validationErrors', 'initialConfig', 'title', 'screenType'],
+  props: {
+    validationErrors: {
+      type: Array,
+    },
+    initialConfig: {
+      type: Array,
+    },
+    title: {
+      type: String,
+    },
+    screenType: {
+      type: String,
+      default: formTypes.form,
+    },
+  },
   mixins: [HasColorProperty],
   components: {
     draggable,
@@ -362,9 +376,6 @@ export default {
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
-      if (!this.screenType) {
-        return;
-      }
       return this.screenType === formTypes.display;
     },
   },
