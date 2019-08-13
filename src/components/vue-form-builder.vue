@@ -42,36 +42,38 @@
     <!-- Renderer -->
     <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
       <b-input-group size="sm" class="bg-white mt-3">
-        <b-form-select v-model="currentPage" class="form-control">
+        <b-form-select v-if="!showToolbar" v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
         </b-form-select>
 
-        <b-button
-          size="sm"
-          variant="secondary"
-          class="ml-1"
-          :title="$t('Edit Page Title')"
-          @click="openEditPageModal(currentPage)"
-        >
-          <i class="far fa-edit"/>
-        </b-button>
+        <div v-if="!showToolbar">
+          <b-button
+            size="sm"
+            variant="secondary"
+            class="ml-1"
+            :title="$t('Edit Page Title')"
+            @click="openEditPageModal(currentPage)"
+          >
+            <i class="far fa-edit"/>
+          </b-button>
 
-        <b-button
-          size="sm"
-          variant="danger"
-          class="ml-1"
-          :title="$t('Delete Page')"
-          @click="confirmDelete()"
-          :disabled="!displayDelete"
-        >
-          <i class="far fa-trash-alt"/>
-        </b-button>
+          <b-button
+            size="sm"
+            variant="danger"
+            class="ml-1"
+            :title="$t('Delete Page')"
+            @click="confirmDelete()"
+            :disabled="!displayDelete"
+          >
+            <i class="far fa-trash-alt"/>
+          </b-button>
 
-        <b-button size="sm" variant="secondary" class="ml-1" :title="$t('Add New Page')" v-b-modal.addPageModal>
-          <i class="fas fa-plus"/>
-        </b-button>
+          <b-button size="sm" variant="secondary" class="ml-1 mr-1" :title="$t('Add New Page')" v-b-modal.addPageModal>
+            <i class="fas fa-plus"/>
+          </b-button>
+        </div>
 
-        <b-button-group size="sm" class="ml-1">
+        <b-button-group size="sm" class="ml-1 ml-auto">
           <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
           <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
         </b-button-group>
@@ -293,7 +295,7 @@ const defaultConfig = [{
 }];
 
 export default {
-  props: ['validationErrors', 'initialConfig', 'title'],
+  props: ['validationErrors', 'initialConfig', 'title', 'screenType'],
   mixins: [HasColorProperty],
   components: {
     draggable,
@@ -357,6 +359,12 @@ export default {
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
+    },
+    showToolbar() {
+      if (!this.screenType) {
+        return;
+      }
+      return this.screenType === 'DISPLAY';
     },
   },
   watch: {
