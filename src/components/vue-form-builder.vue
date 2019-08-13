@@ -288,6 +288,7 @@ import {
 } from '@processmaker/vue-form-elements';
 
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+import { formTypes } from '@/global-properties';
 
 const defaultConfig = [{
   name: 'Default',
@@ -364,7 +365,7 @@ export default {
       if (!this.screenType) {
         return;
       }
-      return this.screenType === 'DISPLAY';
+      return this.screenType === formTypes.display;
     },
   },
   watch: {
