@@ -12,7 +12,7 @@
             :key="index"
           >
             <div class="control-item"
-              :class="{selected: selected === element}"
+              :class="{selected: selected === element, hasError: hasError(element)}"
               v-for="(element,row) in item"
               :key="row"
               @click.stop="inspect(element)"
@@ -101,7 +101,7 @@ const defaultColumnWidth = 1;
 export default {
   name: 'MultiColumn',
   mixins: [HasColorProperty],
-  props: ['value', 'name', 'config', 'selected'],
+  props: ['value', 'name', 'config', 'selected', 'validationErrors'],
   components: {
     draggable,
     FormInput,
@@ -142,6 +142,9 @@ export default {
     },
   },
   methods: {
+    hasError(element) {
+      return this.validationErrors.some(({ item }) => item === element);
+    },
     updateContainerConfig(config, index) {
       this.items[index] = config;
       this.$emit('update-state');
@@ -168,6 +171,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .hasError {
+      border: 1px solid red;
+      border-radius: 0.25rem;
+
+      .form-element-header {
+        border-bottom: 1px solid red;
+        color: red;
+      }
+    }
+
     .column-draggable {
         border: 1px dashed #000;
         min-height: 80px;
