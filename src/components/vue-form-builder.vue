@@ -539,10 +539,10 @@ export default {
     Validator.register(
       'unique-page-name',
       value => {
-        let pageNames =this.config
-          .map(c => c.name)
-          .filter(c => c !== this.originalPageName)
-        return !pageNames.includes(value)
+        const pageNames = this.config
+          .map(config => config.name)
+          .filter(name => name !== this.originalPageName);
+        return !pageNames.includes(value);
       },
       this.$t('Must be unique')
     );

@@ -123,7 +123,7 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormMultiColumn,
-    'custom-css' : CustomCSS,
+    CustomCSS,
     ...editor,
     ...inspector,
     ...renderer,

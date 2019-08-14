@@ -78,7 +78,7 @@
         </template>
       </b-table>
       <template slot="modal-footer">
-        <span></span>
+        <span />
       </template>
     </template>
 
