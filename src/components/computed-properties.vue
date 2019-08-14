@@ -79,19 +79,17 @@
 
     <template v-else>
       <form-input
+        ref="propName"
         v-model="add.property"
         :label="$t('Property Name')"
         :name="$t('Property Name')"
-        :validation="rulesValidation"
+        :validation="rulePropName"
       />
-      <div v-if="existsProperty" class="invalid-feedback d-block">
-        <div>{{ $t('Property already exists.') }}</div>
-      </div>
       <form-text-area
         v-model="add.name"
         :label="$t('Description')"
         :name="$t('Description')"
-        :validation="rulesValidation"
+        :validation="ruleDescription"
       />
       <div class="form-group" style='position: relative;'>
         <label v-show="isJS">{{ $t('Formula') }}</label>
@@ -109,11 +107,14 @@
           v-model="add.formula"
           :label="$t('Formula')"
           :name="$t('Formula')"
-          :validation="rulesValidation"
+          :validation="ruleFormula"
         />
         <div v-show="isJS" class="editor-border" :class="{'is-invalid':editorInvalid}"/>
-        <monaco-editor v-show="isJS" :options="monacoOptions" class="editor" v-model="add.formula" language="javascript"/>
-        <div v-if="isJS && editorInvalid" class="invalid-feedback d-block"><div>{{ $t('The property formula field is required.') }}</div>
+        <monaco-editor v-show="isJS" :options="monacoOptions" class="editor" v-model="add.formula"
+          language="javascript"
+        />
+        <div v-if="isJS && editorInvalid" class="invalid-feedback d-block">
+          <div>{{ $t('The property formula field is required.') }}</div>
         </div>
       </div>
       <template slot="modal-footer">
@@ -137,7 +138,7 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 
-let globalObject = typeof window === 'undefined'
+const globalObject = typeof window === 'undefined'
   ? global
   : window;
 
@@ -153,7 +154,9 @@ export default {
       required: true,
       numberItem: 0,
       displayList: true,
-      rulesValidation: '',
+      ruleDescription:'',
+      ruleFormula:'',
+      rulePropName:'',
       editorInvalid: false,
       existsProperty: false,
       current: [],
@@ -195,7 +198,28 @@ export default {
     },
     'add.property': {
       handler() {
-        this.validateDuplicate();
+        if (this.$refs.propName && this.$refs.propName.validator) {
+          this.$refs.propName.validator.messages.messages.not_in = this.$t('Property already exists.');
+        }
+        let data = '';
+        this.current.forEach(item => {
+          if (item.property === this.add.property && item.id !== this.add.id) {
+            data += data ? ',' + item.property : 'not_in:' + item.property;
+          }
+        });
+        this.rulePropName = 'required' + (data ? '|' + data : '');
+      },
+      deep: true,
+    },
+    'add.name': {
+      handler() {
+        this.ruleDescription = 'required';
+      },
+      deep: true,
+    },
+    'add.formula': {
+      handler() {
+        this.ruleFormula = 'required';
       },
       deep: true,
     },
@@ -224,17 +248,6 @@ export default {
     },
   },
   methods: {
-    isEmpty() {
-      this.editorInvalid = this.add.formula.trim() === '';
-      if (
-        this.add.name.trim() === '' ||
-          this.add.property.trim() === '' ||
-          this.add.formula.trim() === ''
-      ) {
-        return true;
-      }
-      return false;
-    },
     switchExpressionType() {
       this.add.type = this.add.type === 'expression' ? 'javascript' : 'expression';
     },
@@ -247,9 +260,11 @@ export default {
       this.add.property = '';
       this.add.type = 'expression';
       this.add.formula = '';
-      this.rulesValidation = '';
       this.editorInvalid = false;
       this.existsProperty = false;
+      this.ruleDescription = '';
+      this.ruleFormula = '';
+      this.rulePropName = '';
     },
     displayTableList() {
       this.emptyForm();
@@ -259,18 +274,21 @@ export default {
       this.emptyForm();
       this.displayList = false;
     },
-    validateDuplicate() {
-      this.existsProperty = false;
-      this.current.forEach(item => {
-        if (item.property === this.add.property && item.id !== this.add.id) {
-          this.existsProperty = true;
+    validateData() {
+      this.ruleDescription = 'required';
+      this.ruleFormula = 'required';
+      this.rulePropName = this.rulePropName ? this.rulePropName : 'required';
+      this.editorInvalid = this.add.formula.trim() === '';
+      let fields = this.$children[0].$children[0].$children;
+
+      let valid = false;
+      fields.forEach(item => {
+        if (item.name && item.validator) {
+          valid += item.validator.errorCount;
         }
       });
-    },
-    validateData() {
-      this.rulesValidation = 'required';
 
-      if (!this.existsProperty && !this.isEmpty()) {
+      if (valid === 0) {
         this.saveProperty();
       }
     },
@@ -284,7 +302,7 @@ export default {
           formula: this.add.formula,
           type: this.add.type,
         });
-        this.showAlert(this.$t('Property Saved'), 'success');
+        this.showAlert(this.$t('Property Saved'));
       } else {
         this.current.forEach(item => {
           if (item.id === this.add.id) {
@@ -294,7 +312,7 @@ export default {
             item.type = this.add.type;
           }
         });
-        this.showAlert(this.$t('Property Edited'), 'success');
+        this.showAlert(this.$t('Property Edited'));
       }
 
       this.$emit('input', this.current);
@@ -313,15 +331,16 @@ export default {
         return val.id !== item.id;
       });
       this.$emit('input', this.current);
-      this.showAlert(this.$t('Property deleted'), 'success');
+      this.showAlert(this.$t('Property deleted'));
       this.displayTableList();
     },
-    showAlert(message, variant) {
+    showAlert(message) {
       if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-        globalObject.ProcessMaker.alert(message, variant || 'success');
+        globalObject.ProcessMaker.alert(message, 'success');
       }
     },
   },
+
 };
 </script>
 
