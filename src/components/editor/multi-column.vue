@@ -35,6 +35,7 @@
                   </div>
 
                   <component :class="elementCssClass(element)"
+                    :validationErrors="validationErrors"
                     class="mb-3 mr-3 ml-3"
                     :selected="selected"
                     @inspect="inspect"
