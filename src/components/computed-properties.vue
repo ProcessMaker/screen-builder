@@ -86,6 +86,7 @@
         :validation="rulePropName"
       />
       <form-text-area
+        ref="propDescription"
         v-model="add.name"
         :label="$t('Description')"
         :name="$t('Description')"
@@ -101,7 +102,9 @@
             <i class="fab fa-js-square"/>
           </a>
         </div>
+
         <form-text-area
+          ref="propFormula"
           v-show="!isJS"
           rows="5"
           v-model="add.formula"
@@ -198,9 +201,9 @@ export default {
     },
     'add.property': {
       handler() {
-        if (this.$refs.propName && this.$refs.propName.validator) {
+        /*if (this.$refs.propName && this.$refs.propName.validator) {
           this.$refs.propName.validator.messages.messages.not_in = this.$t('Property already exists.');
-        }
+        }*/
         let data = '';
         this.current.forEach(item => {
           if (item.property === this.add.property && item.id !== this.add.id) {
@@ -209,19 +212,17 @@ export default {
         });
         this.rulePropName = 'required' + (data ? '|' + data : '');
       },
-      deep: true,
     },
     'add.name': {
       handler() {
         this.ruleDescription = 'required';
       },
-      deep: true,
     },
     'add.formula': {
       handler() {
         this.ruleFormula = 'required';
+        this.editorInvalid = this.add.formula.trim() === '';
       },
-      deep: true,
     },
   },
   computed: {
@@ -277,18 +278,17 @@ export default {
     validateData() {
       this.ruleDescription = 'required';
       this.ruleFormula = 'required';
-      this.rulePropName = this.rulePropName ? this.rulePropName : 'required';
+      this.rulePropName = this.rulePropName || 'required';
       this.editorInvalid = this.add.formula.trim() === '';
-      let fields = this.$children[0].$children[0].$children;
 
-      let valid = false;
-      fields.forEach(item => {
-        if (item.name && item.validator) {
-          valid += item.validator.errorCount;
+      let valid = true;
+      for (let item in this.$refs) {
+        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
+          valid = false;
         }
-      });
+      }
 
-      if (valid === 0) {
+      if (valid && !this.editorInvalid) {
         this.saveProperty();
       }
     },
