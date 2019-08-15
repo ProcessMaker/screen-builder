@@ -1,3 +1,8 @@
+export const formTypes = {
+  form: 'form',
+  display: 'display',
+};
+
 export default [
   {
     inspector: [
