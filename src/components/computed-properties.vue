@@ -141,6 +141,8 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 
+let Validator = require('validatorjs');
+
 const globalObject = typeof window === 'undefined'
   ? global
   : window;
@@ -201,16 +203,7 @@ export default {
     },
     'add.property': {
       handler() {
-        /*if (this.$refs.propName && this.$refs.propName.validator) {
-          this.$refs.propName.validator.messages.messages.not_in = this.$t('Property already exists.');
-        }*/
-        let data = '';
-        this.current.forEach(item => {
-          if (item.property === this.add.property && item.id !== this.add.id) {
-            data += data ? ',' + item.property : 'not_in:' + item.property;
-          }
-        });
-        this.rulePropName = 'required' + (data ? '|' + data : '');
+        this.rulePropName = 'required|exists-property';
       },
     },
     'add.name': {
@@ -278,7 +271,7 @@ export default {
     validateData() {
       this.ruleDescription = 'required';
       this.ruleFormula = 'required';
-      this.rulePropName = this.rulePropName || 'required';
+      this.rulePropName = 'required|exists-property';
       this.editorInvalid = this.add.formula.trim() === '';
 
       let valid = true;
@@ -339,6 +332,21 @@ export default {
         globalObject.ProcessMaker.alert(message, 'success');
       }
     },
+  },
+  created() {
+    Validator.register(
+      'exists-property',
+      () => {
+        let response = true;
+        this.current.forEach(item => {
+          if (item.property === this.add.property && item.id !== this.add.id) {
+            response = false;
+          }
+        });
+        return response;
+      },
+      this.$t('Property already exists.')
+    );
   },
 
 };
