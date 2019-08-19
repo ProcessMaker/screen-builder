@@ -120,6 +120,7 @@
             </div>
 
             <component
+              :validationErrors="validationErrors"
               class="card-body"
               :class="elementCssClass(element)"
               @inspect="inspect"
