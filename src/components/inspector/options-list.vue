@@ -1,46 +1,75 @@
-<template xmlns="http://www.w3.org/1999/html">
-  <div>
-    <label for="data-sources">{{ $t('Options') }}</label>
-    <b-btn v-b-modal.addOptionModal class="fas fa-plus-square"/>
-    <table class="table table-sm">
-      <draggable @update="updateSort"
-        :element="'tbody'"
-        v-model="existingOptions"
-        :options="{group:'options'}"
-        @start="drag=true"
-        @end="drag=false"
-      >
-        <tr v-for="(option, index) in existingOptions" :key="index">
-          <td>
-            <span class="fas fa-arrows-alt-v"/>
-          </td>
-          <td>
-            <input type="radio" class="form-check-input" id="materialChecked" name="materialExampleRadios" checked>
-          </td>
-          <td>
-            {{ option.content }}
-          </td>
-          <td>
-            <button @click="editOption(index)" class="fas fa-cog"/>
-          </td>
-          <td>
-            <button @click="removeOption(index)" class="fas fa-trash-alt"/>
-          </td>
-        </tr>
-      </draggable>
-    </table>
-    <div><b>&#x3C;/&#x3E;</b> JSON</div>
-    <div><input type="checkbox" class="form-check-input" id="materialUnchecked"> Allow multiple selections</div>
-    <div>
-      Render Option as
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown button
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+<template>
+  <div class="container">
+    <div class="row">
+      <div class="col-10">
+        <label for="data-sources">{{ $t('Options') }}</label>
+      </div>
+      <div class="col-2">
+        <a @click="showAddOption" class="fas fa-plus-square"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-sm">
+          <draggable @update="updateSort"
+            :element="'tbody'"
+            v-model="existingOptions"
+            :options="{group:'options'}"
+            @start="drag=true"
+            @end="drag=false"
+          >
+            <tr v-for="(option, index) in existingOptions" :key="index">
+              <td style="width:10%;">
+                <span class="fas fa-arrows-alt-v"/>
+              </td>
+              <td style="width:10%;">
+                <input type="radio" class="form-check-input2" id="materialChecked" name="materialExampleRadios">
+              </td>
+              <td style="width:50%;">
+                {{ option.content }}
+              </td>
+              <td style="width:10%;">
+                <a @click="editOption(index)" class="fas fa-cog"/>
+              </td>
+              <td style="width:10%;">
+                <a @click="removeOption(index)" class="fas fa-trash-alt"/>
+              </td>
+            </tr>
+          </draggable>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col text-right">
+        <a @click="editAsJson()" href="#">
+          <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> Edit as JSON</small>
+        </a>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-1">
+        <input type="checkbox" class="form-check-input" id="materialUnchecked">
+      </div>
+      <div class="col-11">
+        Allow multiple selections
+      </div>
+    </div>
+    <div class="row mb-1">
+      <div class="col">
+        Render Option As
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown button
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
         </div>
       </div>
     </div>
@@ -105,7 +134,7 @@ export default {
       value: null,
       dataName: '',
       pmqlQuery: '',
-      existingOptions: [{'value': 'key1', 'content': 'Val1'}, {'value': 'key2', 'content': 'Val2'}],
+      existingOptions: [{'value': 'key1', 'content': 'Val1'}, {'value': 'key2', 'content': 'Val2'}, {'value': 'key3', 'content': 'Val3'}],
     };
   },
   watch: {
@@ -155,6 +184,12 @@ export default {
     addContent() {
     },
     updateSort() {
+    },
+    editAsJson() {
+      alert('dummy edit as json');
+    },
+    showAddOption() {
+      alert('dummy add new option');
     },
   },
 };
