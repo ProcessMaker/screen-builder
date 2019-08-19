@@ -47,6 +47,7 @@ import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
+import CustomCSS from './custom-css';
 import {
   FormInput,
   FormSelect,
@@ -122,6 +123,7 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormMultiColumn,
+    CustomCSS,
     ...editor,
     ...inspector,
     ...renderer,
