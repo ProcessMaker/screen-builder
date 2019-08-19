@@ -245,36 +245,17 @@ export default {
       return this.validationErrors.length + errorCount;
     },
     validationErrors() {
+      if (!this.toggleValidation) {
+        return [];
+      }
+
       const validationErrors = [];
+
       this.config.forEach(page => {
-        page.items.forEach(item => {
-          let data = item.config ? item.config : {};
-          let rules = {};
-          item.inspector.forEach(property => {
-            if (property.config.validation) {
-              rules[property.field] = property.config.validation;
-            }
-          });
-          let validator = new Validator(data, rules);
-          // To include another language in the Validator with variable processmaker
-          if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
-            validator.useLang(globalObject.ProcessMaker.user.lang);
-          }
-          // Validation will not run until you call passes/fails on it
-          if (!validator.passes()) {
-            Object.keys(validator.errors.errors).forEach(field => {
-              validator.errors.errors[field].forEach(error => {
-                validationErrors.push({
-                  message: error,
-                  page,
-                  item,
-                });
-              });
-            });
-          }
-        });
+        validationErrors.push(...this.getValidationErrorsForItems(page.items, page));
       });
-      return this.toggleValidation ? validationErrors : [] ;
+
+      return validationErrors;
     },
   },
   mounted() {
@@ -292,6 +273,48 @@ export default {
     });
   },
   methods: {
+    getValidationErrorsForItems(items, page) {
+      const validationErrors = [];
+
+      items.forEach(item => {
+        if (item.container) {
+          item.items.forEach(containerItems => {
+            validationErrors.push(...this.getValidationErrorsForItems(containerItems, page));
+          });
+        }
+
+        const data = item.config || {};
+        const rules = {};
+
+        item.inspector.forEach(property => {
+          if (property.config.validation) {
+            rules[property.field] = property.config.validation;
+          }
+        });
+
+        const validator = new Validator(data, rules);
+
+        // To include another language in the Validator with variable processmaker
+        if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+          validator.useLang(globalObject.ProcessMaker.user.lang);
+        }
+
+        // Validation will not run until you call passes/fails on it
+        if (!validator.passes()) {
+          Object.keys(validator.errors.errors).forEach(field => {
+            validator.errors.errors[field].forEach(error => {
+              validationErrors.push({
+                message: error,
+                page,
+                item,
+              });
+            });
+          });
+        }
+      });
+
+      return validationErrors;
+    },
     focusInspector(validate) {
       this.$refs.builder.focusInspector(validate);
     },
