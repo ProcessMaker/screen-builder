@@ -2,8 +2,11 @@
   <div>
 
     <div id="addOption" class="card" v-show="showOptionCard">
-      <div class="card-header">
+      <div class="card-header" v-if="optionCardType == 'insert'">
         {{ $t('Add Option') }}
+      </div>
+      <div v-else class="card-header">
+        {{ $t('Edit Option') }}
       </div>
       <div class="card-body">
         <label for="option-value">{{ $t('Value') }}</label>
@@ -51,7 +54,7 @@
                   {{ option.content }}
                 </td>
                 <td style="width:10%;">
-                  <a @click="editOption(index)" class="fas fa-cog"/>
+                  <a @click="showEditOption(index)" class="fas fa-cog"/>
                 </td>
                 <td style="width:10%;">
                   <a @click="removeOption(index)" class="fas fa-trash-alt"/>
@@ -156,6 +159,7 @@ export default {
       pmqlQuery: '',
       existingOptions: [{'value': 'key1', 'content': 'Val1'}, {'value': 'key2', 'content': 'Val2'}, {'value': 'key3', 'content': 'Val3'}],
       showOptionCard: false,
+      optionCardType: '',
       optionValue: '',
       optionContent: '',
     };
@@ -196,9 +200,6 @@ export default {
   methods: {
     resetAdd() {
     },
-    editOption() {
-      this.showOptionCard = true;
-    },
     addError() {
     },
     addValue() {
@@ -210,7 +211,14 @@ export default {
     editAsJson() {
       alert('dummy edit as json');
     },
+    showEditOption(index) {
+      this.optionCardType = 'edit';
+      this.showOptionCard = true;
+      this.optionContent = this.existingOptions[index].content;
+      this.optionValue = this.existingOptions[index].value;
+    },
     showAddOption() {
+      this.optionCardType = 'insert';
       this.showOptionCard = true;
     },
     addOption() {
