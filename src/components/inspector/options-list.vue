@@ -79,23 +79,10 @@
           Allow multiple selections
         </div>
       </div>
-      <div class="row mb-1">
-        <div class="col">
-          Render Option As
-        </div>
-      </div>
       <div class="row mb-3">
         <div class="col">
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown button
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div>
+          <label for="render-as">{{ $t('Render Options As') }}</label>
+          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
         </div>
       </div>
     </div>
@@ -162,6 +149,21 @@ export default {
       optionCardType: '',
       optionValue: '',
       optionContent: '',
+      renderAs: '',
+      renderAsOptions: [
+        {
+          text:'Dropdown' ,
+          value: 'dropdown',
+        },
+        {
+          text: 'Radio/Checkbox Group',
+          value: 'checkbox',
+        },
+        {
+          text: 'Toggle Group',
+          value: 'toggle',
+        },
+      ],
     };
   },
   watch: {
@@ -182,6 +184,7 @@ export default {
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
+        renderAs: this.renderAs,
       };
     },
   },
@@ -192,6 +195,7 @@ export default {
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
+    this.renderAs = this.options.renderAs;
   },
   updateSort() {
     let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
@@ -228,6 +232,9 @@ export default {
           value: this.optionValue,
         }
       );
+      this.key = 'value';
+      this.value = 'content';
+      this.jsonData = JSON.stringify(this.existingOptions);
       this.showOptionCard = false;
     },
     removeOption(index) {
