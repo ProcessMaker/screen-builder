@@ -175,12 +175,12 @@ export default [
         helper: null,
       },
       inspector: [
-        keyNameProperty,
-        DataTypeWithoutDateProperty,
-        labelProperty,
-        placeholderProperty,
-        validationRulesProperty,
-        helperTextProperty,
+        // keyNameProperty,
+        // DataTypeWithoutDateProperty,
+        // labelProperty,
+        // placeholderProperty,
+        // validationRulesProperty,
+        // helperTextProperty,
         {
           type: 'OptionsList',
           field: 'options',
