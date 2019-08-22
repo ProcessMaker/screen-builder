@@ -147,9 +147,11 @@ export default {
       existingOptions: [{'value': 'key1', 'content': 'Val1'}, {'value': 'key2', 'content': 'Val2'}, {'value': 'key3', 'content': 'Val3'}],
       showOptionCard: false,
       optionCardType: '',
+      editIndex: null,
       optionValue: '',
       optionContent: '',
-      renderAs: '',
+      renderAs: 'dropdown',
+      selectedOptions: [],
       renderAsOptions: [
         {
           text:'Dropdown' ,
@@ -177,6 +179,9 @@ export default {
   },
   computed: {
     dataObjectOptions() {
+      console.log('Inspector-Options-list:');
+      console.log(this.selectedOptions);
+      console.log(this.renderAs);
       return {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
@@ -185,6 +190,7 @@ export default {
         value: this.value,
         pmqlQuery: this.pmqlQuery,
         renderAs: this.renderAs,
+        selectedOptions: this.selectedOptions,
       };
     },
   },
@@ -196,6 +202,7 @@ export default {
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
     this.renderAs = this.options.renderAs;
+    this.selectedOptions = this.options.selectedOptions;
   },
   updateSort() {
     let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
@@ -217,6 +224,7 @@ export default {
     },
     showEditOption(index) {
       this.optionCardType = 'edit';
+      this.editIndex = index;
       this.showOptionCard = true;
       this.optionContent = this.existingOptions[index].content;
       this.optionValue = this.existingOptions[index].value;
@@ -226,12 +234,20 @@ export default {
       this.showOptionCard = true;
     },
     addOption() {
-      this.existingOptions.push(
-        {
-          content: this.optionContent,
-          value: this.optionValue,
-        }
-      );
+      console.log('addOption');
+      if (this.optionCardType === 'insert') {
+        this.existingOptions.push(
+          {
+            content: this.optionContent,
+            value: this.optionValue,
+          }
+        );
+      }
+      else {
+        this.existingOptions[this.editIndex].content = this.optionContent;
+        this.existingOptions[this.editIndex].value = this.optionValue;
+      }
+
       this.key = 'value';
       this.value = 'content';
       this.jsonData = JSON.stringify(this.existingOptions);
