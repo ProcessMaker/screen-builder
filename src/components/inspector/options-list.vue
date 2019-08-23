@@ -24,7 +24,22 @@
       </div>
     </div>
 
-    <div class="container">
+    <div id="removeOption" class="card text-white bg-danger mb-3" v-show="showRemoveWarning">
+
+      <div class="card-body">
+        {{ $t('Are you sure you want to delete ') }} '{{ this.currentItemToDelete }}' ?
+      </div>
+      <div class="card-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" @click="showRemoveWarning=false">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" @click="deleteOption()">
+          Yes
+        </button>
+      </div>
+    </div>
+
+    <div class="container" v-if="!showJsonEditor" style="margin-left:-12px;">
       <div class="row">
         <div class="col-10">
           <label for="data-sources">{{ $t('Options') }}</label>
@@ -96,9 +111,23 @@
     <b-form-select id="data-sources" v-model="dataSource" :options="dataSources"/>
     <small class="form-text text-muted mb-3">Data source to populate select</small>
 
-    <div v-if="dataSource === dataSourceValues.provideData">
-      <label for="json-data">{{ $t('JSON Data') }}</label>
-      <b-form-textarea class="mb-3" id="json-data" rows="8" v-model="jsonData"/>
+    <div v-if="showJsonEditor">
+      <div v-if="dataSource === dataSourceValues.provideData">
+        <label for="json-data">{{ $t('JSON Data') }}</label>
+        <b-form-textarea class="mb-3" id="json-data" rows="8" v-model="jsonData"/>
+      </div>
+
+      <label for="key">{{ $t('Key') }}</label>
+      <b-form-input id="key" v-model="key"/>
+      <small class="form-text text-muted mb-3">Field to save to the data object</small>
+
+      <label for="value">{{ $t('Value') }}</label>
+      <b-form-input id="value" v-model="value"/>
+      <small class="form-text text-muted mb-3">Field to show in the select box</small>
+
+      <a @click="editAsOptionList()" href="#">
+        <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> Edit as Option List</small>
+      </a>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
@@ -107,17 +136,10 @@
       <small class="form-text text-muted mb-3">Data source to populate select</small>
     </div>
 
-    <label for="key">{{ $t('Key') }}</label>
-    <b-form-input id="key" v-model="key"/>
-    <small class="form-text text-muted mb-3">Field to save to the data object</small>
 
-    <label for="value">{{ $t('Value') }}</label>
-    <b-form-input id="value" v-model="value"/>
-    <small class="form-text text-muted mb-3">Field to show in the select box</small>
-
-    <label for="pmql-query">{{ $t('PMQL') }}</label>
-    <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
-    <small class="form-text text-muted">Advanced data search</small>
+<!--    <label for="pmql-query">{{ $t('PMQL') }}</label>-->
+<!--    <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>-->
+<!--    <small class="form-text text-muted">Advanced data search</small>-->
   </div>
 </template>
 
@@ -146,11 +168,14 @@ export default {
       pmqlQuery: '',
       existingOptions: [{'value': 'key1', 'content': 'Val1'}, {'value': 'key2', 'content': 'Val2'}, {'value': 'key3', 'content': 'Val3'}],
       showOptionCard: false,
+      showRemoveWarning: false,
+      showJsonEditor: false,
       optionCardType: '',
       editIndex: null,
+      removeIndex: null,
       optionValue: '',
       optionContent: '',
-      renderAs: 'dropdown',
+      renderAs: 'checkbox',
       selectedOptions: [],
       renderAsOptions: [
         {
@@ -158,13 +183,9 @@ export default {
           value: 'dropdown',
         },
         {
-          text: 'Radio/Checkbox Group',
+          text: 'Checkbox Group',
           value: 'checkbox',
-        },
-        {
-          text: 'Toggle Group',
-          value: 'toggle',
-        },
+        }
       ],
     };
   },
@@ -178,9 +199,23 @@ export default {
     },
   },
   computed: {
+    currentItemToDelete() {
+      console.log('currentItemToDelete - removeIndex');
+      console.log(this.removeIndex);
+      console.log('currentItemToDelete - existingOptions');
+      console.log(this.existingOptions);
+      if (this.removeIndex !== null
+          && this.existingOptions.length > 0
+          && this.existingOptions[this.removeIndex] !==
+          undefined) {
+        return this.existingOptions[this.removeIndex].content;
+      }
+      return '';
+    },
     dataObjectOptions() {
-      console.log('Inspector-Options-list:');
+      console.log('Inspector-dataObjectOptions-selected options:');
       console.log(this.selectedOptions);
+      console.log('Inspector-dataObjectOptions-render as:');
       console.log(this.renderAs);
       return {
         dataSource: this.dataSource,
@@ -203,6 +238,9 @@ export default {
     this.pmqlQuery = this.options.pmqlQuery;
     this.renderAs = this.options.renderAs;
     this.selectedOptions = this.options.selectedOptions;
+    // console.log('Inspector Options - mounted - json data');
+    // console.log(this.jsonData);
+    // this.existingOptions = JSON.parse(this.jsonData);
   },
   updateSort() {
     let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
@@ -220,7 +258,10 @@ export default {
     updateSort() {
     },
     editAsJson() {
-      alert('dummy edit as json');
+      this.showJsonEditor = true;
+    },
+    editAsOptionList() {
+      this.showJsonEditor = false;
     },
     showEditOption(index) {
       this.optionCardType = 'edit';
@@ -253,8 +294,16 @@ export default {
       this.jsonData = JSON.stringify(this.existingOptions);
       this.showOptionCard = false;
     },
+
+    deleteOption() {
+      this.existingOptions.splice(this.removeIndex, 1);
+      this.jsonData = JSON.stringify(this.existingOptions);
+      this.showRemoveWarning = false;
+    },
+
     removeOption(index) {
-      this.existingOptions.splice(index, 1);
+      this.removeIndex = index;
+      this.showRemoveWarning = true;
     },
   },
 };
