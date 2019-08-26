@@ -173,6 +173,7 @@ export default [
           dataSource: dataSourceValues.provideData,
           jsonData: '',
           renderAs: 'dropdown',
+          allowMultiSelect: false,
           selectedOptions: [],
           existingOptions: [{'value': 'key1', 'content': 'Val1'}, {'value': 'key2', 'content': 'Val2'}, {'value': 'key3', 'content': 'Val3'}],
         },
@@ -180,7 +181,6 @@ export default [
       },
       inspector: [
         keyNameProperty,
-        //DataTypeWithoutDateProperty,
         // labelProperty,
         // placeholderProperty,
         // validationRulesProperty,
