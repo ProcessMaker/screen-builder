@@ -1,6 +1,5 @@
 <template>
   <div>
-optt11
     <div id="addOption" class="card" v-show="showOptionCard">
       <div class="card-header" v-if="optionCardType == 'insert'">
         {{ $t('Add Option') }}
@@ -166,7 +165,7 @@ export default {
       value: null,
       dataName: '',
       pmqlQuery: '',
-      existingOptions: [{'value': 'key1', 'content': 'Val1'}, {'value': 'key2', 'content': 'Val2'}, {'value': 'key3', 'content': 'Val3'}],
+      existingOptions: [],
       showOptionCard: false,
       showRemoveWarning: false,
       showJsonEditor: false,
@@ -190,6 +189,17 @@ export default {
     };
   },
   watch: {
+    options() {
+      this.dataSource = this.options.dataSource;
+      this.jsonData = this.options.jsonData;
+      this.dataName = this.options.dataName;
+      this.key = this.options.key;
+      this.value = this.options.value;
+      this.pmqlQuery = this.options.pmqlQuery;
+      this.renderAs = this.options.renderAs;
+      this.selectedOptions = this.options.selectedOptions;
+      this.existingOptions = this.options.existingOptions;
+    },
     dataSource() {
       this.jsonData = '';
       this.dataName = '';
@@ -219,6 +229,8 @@ export default {
       console.log(this.selectedOptions);
       console.log('Inspector-dataObjectOptions-render as:');
       console.log(this.renderAs);
+      console.log('Inspector-dataObjectOptions-existing Options as:');
+      console.log(this.existingOptions);
       return {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
@@ -228,21 +240,23 @@ export default {
         pmqlQuery: this.pmqlQuery,
         renderAs: this.renderAs,
         selectedOptions: this.selectedOptions,
+        existingOptions: this.existingOptions,
       };
     },
   },
   mounted() {
-    this.dataSource = this.options.dataSource;
-    this.jsonData = this.options.jsonData;
-    this.dataName = this.options.dataName;
-    this.key = this.options.key;
-    this.value = this.options.value;
-    this.pmqlQuery = this.options.pmqlQuery;
-    this.renderAs = this.options.renderAs;
-    this.selectedOptions = this.options.selectedOptions;
-    // console.log('Inspector Options - mounted - json data');
-    // console.log(this.jsonData);
-    // this.existingOptions = JSON.parse(this.jsonData);
+     this.dataSource = this.options.dataSource;
+     this.jsonData = this.options.jsonData;
+     this.dataName = this.options.dataName;
+     this.key = this.options.key;
+     this.value = this.options.value;
+     this.pmqlQuery = this.options.pmqlQuery;
+     this.renderAs = this.options.renderAs;
+     this.selectedOptions = this.options.selectedOptions;
+     this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
+     console.log('Inspector-mounted options - existingOptions');
+     console.log(this.existingOptions);
+     this.jsonData = JSON.stringify(this.existingOptions);
   },
   updateSort() {
     let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
