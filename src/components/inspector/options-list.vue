@@ -265,14 +265,6 @@ export default {
      this.jsonData = JSON.stringify(this.existingOptions);
   },
   methods: {
-    resetAdd() {
-    },
-    addError() {
-    },
-    addValue() {
-    },
-    addContent() {
-    },
     updateSort() {
       this.jsonData = JSON.stringify(this.existingOptions);
       this.$emit('change', this.dataObjectOptions);
