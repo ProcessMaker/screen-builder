@@ -205,17 +205,11 @@ export default {
       this.dataName = '';
     },
     dataObjectOptions(dataObjectOptions) {
-      console.log('watch de dataObjectOptions');
-      console.log(dataObjectOptions);
       this.$emit('change', dataObjectOptions);
     },
   },
   computed: {
     currentItemToDelete() {
-      console.log('currentItemToDelete - removeIndex');
-      console.log(this.removeIndex);
-      console.log('currentItemToDelete - existingOptions');
-      console.log(this.existingOptions);
       if (this.removeIndex !== null
           && this.existingOptions.length > 0
           && this.existingOptions[this.removeIndex] !==
@@ -225,14 +219,6 @@ export default {
       return '';
     },
     dataObjectOptions() {
-      console.log('Inspector-dataObjectOptions-selected options:');
-      console.log(this.selectedOptions);
-      console.log('Inspector-dataObjectOptions-render as:');
-      console.log(this.renderAs);
-      console.log('Inspector-dataObjectOptions-existing Options as:');
-      console.log(this.existingOptions);
-      console.log('Inspector-dataObjectOptions-allowMultiSelect:');
-      console.log(this.allowMultiSelect);
       return {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
@@ -258,8 +244,6 @@ export default {
      this.allowMultiSelect = this.options.allowMultiSelect;
      this.selectedOptions = this.options.selectedOptions;
      this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
-     console.log('Inspector-mounted options - existingOptions');
-     console.log(this.existingOptions);
      this.jsonData = JSON.stringify(this.existingOptions);
   },
   updateSort() {
@@ -292,10 +276,11 @@ export default {
     },
     showAddOption() {
       this.optionCardType = 'insert';
+      this.optionContent = '';
+      this.optionValue = '';
       this.showOptionCard = true;
     },
     addOption() {
-      console.log('addOption');
       if (this.optionCardType === 'insert') {
         this.existingOptions.push(
           {
