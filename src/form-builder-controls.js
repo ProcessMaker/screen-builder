@@ -168,6 +168,7 @@ export default [
         label: 'New Select',
         placeholder: '',
         validation: '',
+        dataFormat: 'array',
         options: {
           dataSource: dataSourceValues.provideData,
           jsonData: '',
@@ -178,7 +179,7 @@ export default [
       },
       inspector: [
         keyNameProperty,
-        // DataTypeWithoutDateProperty,
+        //DataTypeWithoutDateProperty,
         // labelProperty,
         // placeholderProperty,
         // validationRulesProperty,
