@@ -1,6 +1,6 @@
 <template>
   <div>
-
+optt11
     <div id="addOption" class="card" v-show="showOptionCard">
       <div class="card-header" v-if="optionCardType == 'insert'">
         {{ $t('Add Option') }}
@@ -195,6 +195,8 @@ export default {
       this.dataName = '';
     },
     dataObjectOptions(dataObjectOptions) {
+      console.log('watch de dataObjectOptions');
+      console.log(dataObjectOptions);
       this.$emit('change', dataObjectOptions);
     },
   },
