@@ -86,17 +86,15 @@
         </div>
       </div>
       <div class="row mb-3">
-        <div class="col-1">
-          <input type="checkbox" class="form-check-input" id="materialUnchecked">
-        </div>
-        <div class="col-11">
-          Allow multiple selections
-        </div>
-      </div>
-      <div class="row mb-3">
         <div class="col">
           <label for="render-as">{{ $t('Render Options As') }}</label>
           <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
+        </div>
+      </div>
+      <div class="row mb-3" v-show="renderAs=='checkbox'">
+        <div class="col-12">
+          <input type="checkbox"  v-model="allowMultiSelect">
+          Allow multiple selections
         </div>
       </div>
     </div>
@@ -174,7 +172,8 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
-      renderAs: 'checkbox',
+      renderAs: 'dropdown',
+      allowMultiSelect: false,
       selectedOptions: [],
       renderAsOptions: [
         {
@@ -197,6 +196,7 @@ export default {
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
       this.renderAs = this.options.renderAs;
+      this.allowMultiSelect = this.options.allowMultiSelect;
       this.selectedOptions = this.options.selectedOptions;
       this.existingOptions = this.options.existingOptions;
     },
@@ -231,6 +231,8 @@ export default {
       console.log(this.renderAs);
       console.log('Inspector-dataObjectOptions-existing Options as:');
       console.log(this.existingOptions);
+      console.log('Inspector-dataObjectOptions-allowMultiSelect:');
+      console.log(this.allowMultiSelect);
       return {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
@@ -239,6 +241,7 @@ export default {
         value: this.value,
         pmqlQuery: this.pmqlQuery,
         renderAs: this.renderAs,
+        allowMultiSelect: this.allowMultiSelect,
         selectedOptions: this.selectedOptions,
         existingOptions: this.existingOptions,
       };
@@ -252,6 +255,7 @@ export default {
      this.value = this.options.value;
      this.pmqlQuery = this.options.pmqlQuery;
      this.renderAs = this.options.renderAs;
+     this.allowMultiSelect = this.options.allowMultiSelect;
      this.selectedOptions = this.options.selectedOptions;
      this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
      console.log('Inspector-mounted options - existingOptions');
