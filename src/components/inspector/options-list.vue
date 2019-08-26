@@ -1,5 +1,9 @@
 <template>
   <div>
+    <label for="data-sources">{{ $t('Source Type') }}</label>
+    <b-form-select id="data-sources" v-model="dataSource" :options="dataSources"/>
+    <small class="form-text text-muted mb-3">Data source to populate select</small>
+
     <div id="addOption" class="card" v-show="showOptionCard">
       <div class="card-header" v-if="optionCardType == 'insert'">
         {{ $t('Add Option') }}
@@ -38,7 +42,7 @@
       </div>
     </div>
 
-    <div class="container" v-if="!showJsonEditor" style="margin-left:-12px;">
+    <div class="container" v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData" style="margin-left:-12px;">
       <div class="row">
         <div class="col-10">
           <label for="data-sources">{{ $t('Options') }}</label>
@@ -49,15 +53,16 @@
       </div>
       <div class="row">
         <div class="col">
-          <table class="table table-sm">
-            <draggable @update="updateSort"
+          <table class="table table-sm table-striped">
+            <draggable 
+              @update="updateSort"
               :element="'tbody'"
               v-model="existingOptions"
               :options="{group:'options'}"
               @start="drag=true"
               @end="drag=false"
             >
-              <tr v-for="(option, index) in existingOptions" :key="index">
+              <tr v-for="(option, index) in existingOptions" :key="option.value">
                 <td style="width:10%;">
                   <span class="fas fa-arrows-alt-v"/>
                 </td>
@@ -104,23 +109,12 @@
       <form-input label="Option Label" v-model="addContent"/>
     </b-modal>
 
-    <label for="data-sources">{{ $t('Source Type') }}</label>
-    <b-form-select id="data-sources" v-model="dataSource" :options="dataSources"/>
-    <small class="form-text text-muted mb-3">Data source to populate select</small>
-
-    <div v-if="showJsonEditor">
+    <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
         <label for="json-data">{{ $t('JSON Data') }}</label>
         <b-form-textarea class="mb-3" id="json-data" rows="8" v-model="jsonData"/>
       </div>
 
-      <label for="key">{{ $t('Key') }}</label>
-      <b-form-input id="key" v-model="key"/>
-      <small class="form-text text-muted mb-3">Field to save to the data object</small>
-
-      <label for="value">{{ $t('Value') }}</label>
-      <b-form-input id="value" v-model="value"/>
-      <small class="form-text text-muted mb-3">Field to show in the select box</small>
 
       <a @click="editAsOptionList()" href="#">
         <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> Edit as Option List</small>
@@ -133,6 +127,15 @@
       <small class="form-text text-muted mb-3">Data source to populate select</small>
     </div>
 
+    <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
+      <label for="key">{{ $t('Key') }}</label>
+      <b-form-input id="key" v-model="key"/>
+      <small class="form-text text-muted mb-3">Field to save to the data object</small>
+
+      <label for="value">{{ $t('Value') }}</label>
+      <b-form-input id="value" v-model="value"/>
+      <small class="form-text text-muted mb-3">Field to show in the select box</small>
+    </div>
 
 <!--    <label for="pmql-query">{{ $t('PMQL') }}</label>-->
 <!--    <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>-->
@@ -155,6 +158,17 @@ export default {
   },
   data() {
     return {
+       list: [
+        { id: 1, name: "Abby", sport: "basket" },
+        { id: 2, name: "Brooke", sport: "foot" },
+        { id: 3, name: "Courtenay", sport: "volley" },
+        { id: 4, name: "David", sport: "rugby" }
+      ],
+      dragging: false,
+
+
+
+
       dataSourceValues,
       dataSources,
       dataSource: dataSourceValues.provideData,
@@ -250,10 +264,6 @@ export default {
      this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
      this.jsonData = JSON.stringify(this.existingOptions);
   },
-  updateSort() {
-    let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
-    this.$emit('change', newOptions);
-  },
   methods: {
     resetAdd() {
     },
@@ -264,6 +274,9 @@ export default {
     addContent() {
     },
     updateSort() {
+      this.jsonData = JSON.stringify(this.existingOptions);
+      this.$emit('change', this.dataObjectOptions);
+      
     },
     editAsJson() {
       this.showJsonEditor = true;

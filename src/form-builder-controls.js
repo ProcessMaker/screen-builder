@@ -181,10 +181,10 @@ export default [
       },
       inspector: [
         keyNameProperty,
-        //labelProperty,
-        //placeholderProperty,
-        //validationRulesProperty,
-        //helperTextProperty,
+        labelProperty,
+        placeholderProperty,
+        validationRulesProperty,
+        helperTextProperty,
         {
           type: 'OptionsList',
           field: 'options',
