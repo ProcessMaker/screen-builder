@@ -91,7 +91,7 @@
           <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
         </div>
       </div>
-      <div class="row mb-3" v-show="renderAs=='checkbox'">
+      <div class="row mb-3">
         <div class="col-12">
           <input type="checkbox"  v-model="allowMultiSelect">
           Allow multiple selections
@@ -247,6 +247,7 @@ export default {
      this.jsonData = JSON.stringify(this.existingOptions);
   },
   updateSort() {
+    console.log('update sortttttt');
     let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
     this.$emit('change', newOptions);
   },
