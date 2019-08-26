@@ -62,7 +62,7 @@
                   <span class="fas fa-arrows-alt-v"/>
                 </td>
                 <td style="width:10%;">
-                  <input type="radio" class="form-check-input2" id="materialChecked" name="materialExampleRadios">
+                  <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOption" :value="option.value">
                 </td>
                 <td style="width:50%;">
                   {{ option.content }}
@@ -174,6 +174,7 @@ export default {
       optionContent: '',
       renderAs: 'dropdown',
       allowMultiSelect: false,
+      defaultOption: '',
       selectedOptions: [],
       renderAsOptions: [
         {
@@ -197,6 +198,7 @@ export default {
       this.pmqlQuery = this.options.pmqlQuery;
       this.renderAs = this.options.renderAs;
       this.allowMultiSelect = this.options.allowMultiSelect;
+      this.defaultOption = this.options.defaultOption;
       this.selectedOptions = this.options.selectedOptions;
       this.existingOptions = this.options.existingOptions;
     },
@@ -228,6 +230,7 @@ export default {
         pmqlQuery: this.pmqlQuery,
         renderAs: this.renderAs,
         allowMultiSelect: this.allowMultiSelect,
+        defaultOption: this.defaultOption,
         selectedOptions: this.selectedOptions,
         existingOptions: this.existingOptions,
       };
@@ -242,12 +245,12 @@ export default {
      this.pmqlQuery = this.options.pmqlQuery;
      this.renderAs = this.options.renderAs;
      this.allowMultiSelect = this.options.allowMultiSelect;
+     this.defaultOption= this.options.defaultOption;
      this.selectedOptions = this.options.selectedOptions;
      this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
      this.jsonData = JSON.stringify(this.existingOptions);
   },
   updateSort() {
-    console.log('update sortttttt');
     let newOptions = JSON.parse(JSON.stringify(this.existingOptions));
     this.$emit('change', newOptions);
   },
