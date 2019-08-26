@@ -17,11 +17,11 @@
         <label for="option-content">{{ $t('Content') }}</label>
         <b-form-input id="option-content" v-model="optionContent"/>
         <div class="card-footer">
-          <button type="button" class="btn btn-sm btn-outline-secondary" @click="showOptionCard=false">
-            Cancel
+          <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showOptionCard=false">
+            {{ $t('Close') }}
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
-            Save
+            {{ $t('Save') }}
           </button>
         </div>
       </div>
@@ -30,14 +30,14 @@
     <div id="removeOption" class="card text-white bg-danger mb-3" v-show="showRemoveWarning">
 
       <div class="card-body">
-        {{ $t('Are you sure you want to delete ') }} '{{ this.currentItemToDelete }}' ?
+          {{ currentItemToDelete }}
       </div>
       <div class="card-footer">
-        <button type="button" class="btn btn-sm btn-outline-secondary" @click="showRemoveWarning=false">
-          Cancel
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showRemoveWarning=false">
+            {{ $t('Close') }}
         </button>
         <button type="button" class="btn btn-sm btn-secondary" @click="deleteOption()">
-          Yes
+            {{ $t('Yes') }}
         </button>
       </div>
     </div>
@@ -86,7 +86,7 @@
       <div class="row">
         <div class="col text-right">
           <a @click="editAsJson()" href="#">
-            <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> Edit as JSON</small>
+              <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{$t('Edit as JSON')}}</small>
           </a>
         </div>
       </div>
@@ -104,9 +104,9 @@
       </div>
     </div>
 
-    <b-modal @cancel="resetAdd" @ok="addOption" id="addOptionModal" title="Add New Option">
-      <form-input label="Option Value" v-model="addValue" :error="this.addError"/>
-      <form-input label="Option Label" v-model="addContent"/>
+    <b-modal  @ok="addOption" id="addOptionModal" title="Add New Option">
+      <form-input label="Option Value" />
+      <form-input label="Option Label" />
     </b-modal>
 
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
@@ -117,24 +117,24 @@
 
 
       <a @click="editAsOptionList()" href="#">
-        <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> Edit as Option List</small>
+          <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{$t('Edit as Option List')}}</small>
       </a>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="data-name">{{ $t('Data Name') }}</label>
       <b-form-input id="data-name" v-model="dataName"/>
-      <small class="form-text text-muted mb-3">Data source to populate select</small>
+          <small class="form-text text-muted mb-3">{{$t('Data source to populate select')}}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
       <label for="key">{{ $t('Key') }}</label>
       <b-form-input id="key" v-model="key"/>
-      <small class="form-text text-muted mb-3">Field to save to the data object</small>
+          <small class="form-text text-muted mb-3">{{$t('Field to save to the data object')}}</small>
 
       <label for="value">{{ $t('Value') }}</label>
       <b-form-input id="value" v-model="value"/>
-      <small class="form-text text-muted mb-3">Field to show in the select box</small>
+          <small class="form-text text-muted mb-3">{{$t('Field to show in the select box')}}</small>
     </div>
 
 <!--    <label for="pmql-query">{{ $t('PMQL') }}</label>-->
@@ -230,7 +230,8 @@ export default {
           && this.existingOptions.length > 0
           && this.existingOptions[this.removeIndex] !==
           undefined) {
-        return this.existingOptions[this.removeIndex].content;
+        let itemName =  this.existingOptions[this.removeIndex].content;
+        return this.$t('Are you sure you want to delete "{{item}}"?', {item:itemName});
       }
       return '';
     },
