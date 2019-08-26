@@ -175,7 +175,7 @@ export default [
           renderAs: 'dropdown',
           allowMultiSelect: false,
           selectedOptions: [],
-          existingOptions: [{"value":"key1","content":"Val1"},{"value":"key2","content":"Val2"},{"value":"key3","content":"Val3"}],
+          existingOptions: [],
         },
         helper: null,
       },
