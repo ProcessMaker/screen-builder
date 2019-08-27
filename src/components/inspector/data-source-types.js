@@ -1,5 +1,5 @@
 export const dataSources = [
-  { value: 'provideData', text: 'Provide Data' },
+  { value: 'provideData', text: 'Provide Values' },
   { value: 'dataObject', text: 'Data Object' },
 ];
 
