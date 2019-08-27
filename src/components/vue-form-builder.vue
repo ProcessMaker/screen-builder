@@ -173,7 +173,7 @@
               v-if="getInspectorFields(accordion.fields).length > 0"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-              @click="accordion.open = !accordion.open"
+              @click="toggleAccordion(accordion)"
             >
               <i class="fas fa-cog mr-2"/>
               {{ $t(accordion.name) }}
@@ -416,6 +416,10 @@ export default {
     },
   },
   methods: {
+    toggleAccordion(accordion) {
+      this.accordions.forEach(panel => panel !== accordion ? panel.open = false : null);
+      accordion.open = !accordion.open;
+    },
     getInspectorFields(fields) {
       if (!this.inspection.inspector) {
         return [];
