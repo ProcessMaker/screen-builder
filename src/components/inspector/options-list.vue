@@ -1,17 +1,16 @@
 <template>
   <div>
-    <label for="data-sources">{{ $t('Source Type') }}</label>
-    <b-form-select id="data-sources" v-model="dataSource" :options="dataSources"/>
-    <small class="form-text text-muted mb-3">Data source to populate select</small>
+    <label for="data-sources">{{ $t('Data Source') }}</label>
+    <b-form-select id="data-sources" v-model="dataSource" :options="dataSources" class="mb-3"/>
 
     <div id="addOption" class="card" v-show="showOptionCard">
-      <div class="card-header" v-if="optionCardType == 'insert'">
+      <div class="card-header pl-2" v-if="optionCardType == 'insert'">
         {{ $t('Add Option') }}
       </div>
       <div v-else class="card-header">
         {{ $t('Edit Option') }}
       </div>
-      <div class="card-body">
+      <div class="card-body p-2">
         <label for="option-value">{{ $t('Value') }}</label>
         <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
 
@@ -19,9 +18,9 @@
           <div>{{optionError}}</div>
         </div>
 
-        <label for="option-content">{{ $t('Content') }}</label>
+        <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
         <b-form-input id="option-content" v-model="optionContent"/>
-        <div class="card-footer">
+        <div class="card-footer pr-1 mt-3 text-right">
           <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showOptionCard=false">
             {{ $t('Close') }}
           </button>
@@ -32,25 +31,24 @@
       </div>
     </div>
 
-    <div id="removeOption" class="card text-white bg-danger mb-3" v-show="showRemoveWarning">
-
+    <div id="removeOption" class="card mb-3 bg-danger text-white text-right" v-show="showRemoveWarning">
       <div class="card-body">
           {{ currentItemToDelete }}
       </div>
-      <div class="card-footer">
-        <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showRemoveWarning=false">
+      <div class="card-footer ">
+        <button type="button" class="btn btn-sm  bg-white mr-3" @click="showRemoveWarning=false">
             {{ $t('Close') }}
         </button>
-        <button type="button" class="btn btn-sm btn-secondary" @click="deleteOption()">
+        <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
             {{ $t('Yes') }}
         </button>
       </div>
     </div>
 
-    <div class="container" v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData" style="margin-left:-12px;">
+    <div  v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
-          <label for="data-sources">{{ $t('Options') }}</label>
+          <label for="data-sources"><b>{{ $t('Options') }}</b></label>
         </div>
         <div class="col-2">
           <a @click="showAddOption" class="fas fa-plus-square"/>
@@ -96,15 +94,15 @@
         </div>
       </div>
       <div class="row mb-3">
-        <div class="col">
-          <label for="render-as">{{ $t('Render Options As') }}</label>
-          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
-        </div>
-      </div>
-      <div class="row mb-3">
         <div class="col-12">
           <input type="checkbox"  v-model="allowMultiSelect">
           Allow multiple selections
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col">
+          <label for="render-as">{{ $t('Render Options As') }}</label>
+          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
         </div>
       </div>
     </div>
