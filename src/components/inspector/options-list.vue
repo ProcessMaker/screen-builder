@@ -113,7 +113,11 @@
     <!--<div>-->
       <div v-if="dataSource === dataSourceValues.provideData">
         <label for="json-data">{{ $t('JSON Data') }}</label>
-        <b-form-textarea class="mb-3" id="json-data" rows="8" v-model="jsonData" @change="jsonDataChange"/>
+        <b-form-textarea class="mb-3" :class="jsonDataClass" id="json-data" rows="8" v-model="jsonData" @change="jsonDataChange"/>
+      </div>
+
+      <div v-if="error" class="invalid-feedback d-block text-right">
+        <div>{{error}}</div>
       </div>
 
       <a @click="editAsOptionList()" href="#" class="text-right">
@@ -165,6 +169,7 @@ export default {
         { id: 3, name: "Courtenay", sport: "volley" },
         { id: 4, name: "David", sport: "rugby" }
       ],
+      error: '',
       dragging: false,
       dataSourceValues,
       dataSources,
@@ -222,6 +227,9 @@ export default {
     },
   },
   computed: {
+    jsonDataClass () {
+      return this.error ? 'is-invalid' : '';
+    },
     keyField() {
       return this.key || 'value';
     },
@@ -276,17 +284,29 @@ export default {
       this.existingOptions = [];
     },
     jsonDataChange() {
-      //manejo de errores!!
-      let jsonList = JSON.parse(this.jsonData);
+      let jsonList = [];
       let newList = [];
+      try {
+        jsonList = JSON.parse(this.jsonData);
+        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
+          throw Error("String does not represent a valid JSON");
+        }
+      }
+      catch(err) {
+        this.error = err.message;
+        return;
+      }
+
       this.existingOptions = [];
       const that = this;
+      console.log(jsonList);
       jsonList.forEach (item => {
         that.existingOptions.push({
           [that.keyField] : item[that.keyField], 
           [that.valueField] : item[that.valueField]
         });
       });
+      this.error = '';
     },
     updateSort() {
       this.jsonData = JSON.stringify(this.existingOptions);
@@ -326,8 +346,7 @@ export default {
         this.existingOptions[this.editIndex][this.valueField] = this.optionContent;
       }
 
-      //this.key = 'value';
-      //this.value = 'content';
+      this.error = '';
       this.jsonData = JSON.stringify(this.existingOptions);
       this.showOptionCard = false;
     },
