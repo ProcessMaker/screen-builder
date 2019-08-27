@@ -168,15 +168,19 @@ export default [
         label: 'New Select',
         placeholder: '',
         validation: '',
+        dataFormat: 'array',
         options: {
           dataSource: dataSourceValues.provideData,
           jsonData: '',
+          renderAs: 'dropdown',
+          allowMultiSelect: false,
+          selectedOptions: [],
+          existingOptions: [],
         },
         helper: null,
       },
       inspector: [
         keyNameProperty,
-        DataTypeWithoutDateProperty,
         labelProperty,
         placeholderProperty,
         validationRulesProperty,
@@ -505,7 +509,15 @@ export default [
           helper: 'The label describes the button\'s text',
         },
       },
-      keyNameProperty,
+      {
+        type: 'FormInput',
+        field: 'name',
+        config: {
+          label: 'Key Name',
+          name: 'Key Name',
+          helper: 'A variable key name is a symbolic name to reference information.',
+        },
+      },
       {
         type: 'FormInput',
         field: 'fieldValue',
