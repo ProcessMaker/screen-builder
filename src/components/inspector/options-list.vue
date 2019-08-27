@@ -67,10 +67,10 @@
                   <span class="fas fa-arrows-alt-v"/>
                 </td>
                 <td style="width:10%;">
-                  <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOption" :value="option.value">
+                  <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOption" :value="option[keyField]">
                 </td>
                 <td style="width:50%;">
-                  {{ option.content }}
+                  {{ option[valueField] }}
                 </td>
                 <td style="width:10%;">
                   <a @click="showEditOption(index)" class="fas fa-cog"/>
@@ -110,13 +110,13 @@
     </b-modal>
 
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
+    <!--<div>-->
       <div v-if="dataSource === dataSourceValues.provideData">
         <label for="json-data">{{ $t('JSON Data') }}</label>
-        <b-form-textarea class="mb-3" id="json-data" rows="8" v-model="jsonData"/>
+        <b-form-textarea class="mb-3" id="json-data" rows="8" v-model="jsonData" @change="jsonDataChange"/>
       </div>
 
-
-      <a @click="editAsOptionList()" href="#">
+      <a @click="editAsOptionList()" href="#" class="text-right">
           <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{$t('Edit as Option List')}}</small>
       </a>
     </div>
@@ -128,12 +128,13 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
+    <!--<div>-->
       <label for="key">{{ $t('Key') }}</label>
-      <b-form-input id="key" v-model="key"/>
+      <b-form-input id="key" v-model="key" @change="keyChanged"/>
           <small class="form-text text-muted mb-3">{{$t('Field to save to the data object')}}</small>
 
       <label for="value">{{ $t('Value') }}</label>
-      <b-form-input id="value" v-model="value"/>
+      <b-form-input id="value" v-model="value" @change="valueChanged"/>
           <small class="form-text text-muted mb-3">{{$t('Field to show in the select box')}}</small>
     </div>
 
@@ -165,10 +166,6 @@ export default {
         { id: 4, name: "David", sport: "rugby" }
       ],
       dragging: false,
-
-
-
-
       dataSourceValues,
       dataSources,
       dataSource: dataSourceValues.provideData,
@@ -225,12 +222,18 @@ export default {
     },
   },
   computed: {
+    keyField() {
+      return this.key || 'value';
+    },
+    valueField() {
+      return this.value || 'content';
+    },
     currentItemToDelete() {
       if (this.removeIndex !== null
           && this.existingOptions.length > 0
           && this.existingOptions[this.removeIndex] !==
           undefined) {
-        let itemName =  this.existingOptions[this.removeIndex].content;
+        let itemName =  this.existingOptions[this.removeIndex][this.valueField];
         return this.$t('Are you sure you want to delete "{{item}}"?', {item:itemName});
       }
       return '';
@@ -266,6 +269,25 @@ export default {
      this.jsonData = JSON.stringify(this.existingOptions);
   },
   methods: {
+    keyChanged() {
+      this.existingOptions = [];
+    },
+    valueChanged() {
+      this.existingOptions = [];
+    },
+    jsonDataChange() {
+      //manejo de errores!!
+      let jsonList = JSON.parse(this.jsonData);
+      let newList = [];
+      this.existingOptions = [];
+      const that = this;
+      jsonList.forEach (item => {
+        that.existingOptions.push({
+          [that.keyField] : item[that.keyField], 
+          [that.valueField] : item[that.valueField]
+        });
+      });
+    },
     updateSort() {
       this.jsonData = JSON.stringify(this.existingOptions);
       this.$emit('change', this.dataObjectOptions);
@@ -281,8 +303,8 @@ export default {
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.showOptionCard = true;
-      this.optionContent = this.existingOptions[index].content;
-      this.optionValue = this.existingOptions[index].value;
+      this.optionContent = this.existingOptions[index][this.valueField]
+      this.optionValue = this.existingOptions[index][this.keyField];
     },
     showAddOption() {
       this.optionCardType = 'insert';
@@ -294,18 +316,18 @@ export default {
       if (this.optionCardType === 'insert') {
         this.existingOptions.push(
           {
-            content: this.optionContent,
-            value: this.optionValue,
+            [this.valueField]: this.optionContent,
+            [this.keyField]: this.optionValue,
           }
         );
       }
       else {
-        this.existingOptions[this.editIndex].content = this.optionContent;
-        this.existingOptions[this.editIndex].value = this.optionValue;
+        this.existingOptions[this.editIndex][this.keyField] = this.optionValue;
+        this.existingOptions[this.editIndex][this.valueField] = this.optionContent;
       }
 
-      this.key = 'value';
-      this.value = 'content';
+      //this.key = 'value';
+      //this.value = 'content';
       this.jsonData = JSON.stringify(this.existingOptions);
       this.showOptionCard = false;
     },
