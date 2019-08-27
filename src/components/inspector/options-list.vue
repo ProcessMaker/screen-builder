@@ -13,7 +13,12 @@
       </div>
       <div class="card-body">
         <label for="option-value">{{ $t('Value') }}</label>
-        <b-form-input id="option-value" v-model="optionValue"/>
+        <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+
+        <div v-if="optionError" class="invalid-feedback d-block text-right">
+          <div>{{optionError}}</div>
+        </div>
+
         <label for="option-content">{{ $t('Content') }}</label>
         <b-form-input id="option-content" v-model="optionContent"/>
         <div class="card-footer">
@@ -116,8 +121,8 @@
         <b-form-textarea class="mb-3" :class="jsonDataClass" id="json-data" rows="8" v-model="jsonData" @change="jsonDataChange"/>
       </div>
 
-      <div v-if="error" class="invalid-feedback d-block text-right">
-        <div>{{error}}</div>
+      <div v-if="jsonError" class="invalid-feedback d-block text-right">
+        <div>{{jsonError}}</div>
       </div>
 
       <a @click="editAsOptionList()" href="#" class="text-right">
@@ -169,7 +174,8 @@ export default {
         { id: 3, name: "Courtenay", sport: "volley" },
         { id: 4, name: "David", sport: "rugby" }
       ],
-      error: '',
+      jsonError: '',
+      optionError:'',
       dragging: false,
       dataSourceValues,
       dataSources,
@@ -228,7 +234,10 @@ export default {
   },
   computed: {
     jsonDataClass () {
-      return this.error ? 'is-invalid' : '';
+      return this.jsonError ? 'is-invalid' : '';
+    },
+    optionKeyClass () {
+      return this.optionError ? 'is-invalid' : '';
     },
     keyField() {
       return this.key || 'value';
@@ -293,7 +302,7 @@ export default {
         }
       }
       catch(err) {
-        this.error = err.message;
+        this.jsonError = err.message;
         return;
       }
 
@@ -306,7 +315,7 @@ export default {
           [that.valueField] : item[that.valueField]
         });
       });
-      this.error = '';
+      this.jsonError = '';
     },
     updateSort() {
       this.jsonData = JSON.stringify(this.existingOptions);
@@ -325,14 +334,23 @@ export default {
       this.showOptionCard = true;
       this.optionContent = this.existingOptions[index][this.valueField]
       this.optionValue = this.existingOptions[index][this.keyField];
+      this.optionError = '';
     },
     showAddOption() {
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
       this.showOptionCard = true;
+      this.optionError = '';
     },
     addOption() {
+      const that = this
+
+      if (this.existingOptions.find(item => { return item[that.keyField] === this.optionValue })) {
+        this.optionError = 'An item with the same key already exists';
+        return;
+      } 
+
       if (this.optionCardType === 'insert') {
         this.existingOptions.push(
           {
@@ -346,9 +364,10 @@ export default {
         this.existingOptions[this.editIndex][this.valueField] = this.optionContent;
       }
 
-      this.error = '';
+      this.jsonError = '';
       this.jsonData = JSON.stringify(this.existingOptions);
       this.showOptionCard = false;
+      this.optionError = '';
     },
 
     deleteOption() {
