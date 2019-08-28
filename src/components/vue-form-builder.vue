@@ -420,6 +420,10 @@ export default {
       this.accordions.forEach(panel => panel !== accordion ? panel.open = false : null);
       accordion.open = !accordion.open;
     },
+    openAccordion(accordion) {
+      this.accordions.forEach(panel => panel.open = false);
+      accordion.open = true;
+    },
     getInspectorFields(fields) {
       if (!this.inspection.inspector) {
         return [];
@@ -527,6 +531,8 @@ export default {
     inspect(element = {}) {
       this.inspection = element;
       this.selected = element;
+      const defaultAccordion = this.accordions.find(accordion => this.getInspectorFields(accordion.fields).length > 0);
+      this.openAccordion(defaultAccordion);
     },
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
