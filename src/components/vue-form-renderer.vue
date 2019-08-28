@@ -1,42 +1,42 @@
 <template>
   <div class="custom-css-scope">
-  <div class="page p-3">
-    <div
-      v-for="(element, index) in visibleElements"
-      :key="index"
-    >
-      <component
-        v-if="element.container"
-        :class="elementCssClass(element)"
-        ref="container"
-        selected="selected"
-        :transientData="transientData"
-        v-model="element.items"
-        @submit="submit"
-        :config="element.config"
-        :name="element.config.name !== undefined ? element.config.name : null"
-        @pageNavigate="pageNavigate"
-        v-bind="element.config"
-        :is="element.component"
-      />
-
-      <div v-else :id="element.config.name ? element.config.name : undefined">
+    <div class="page p-3">
+      <div
+        v-for="(element, index) in visibleElements"
+        :key="index"
+      >
         <component
+          v-if="element.container"
           :class="elementCssClass(element)"
-          ref="elements"
-          :validationData="transientData"
-          v-model="model[getValidPath(element.config.name)]"
+          ref="container"
+          selected="selected"
+          :transientData="transientData"
+          v-model="element.items"
           @submit="submit"
-          @pageNavigate="pageNavigate"
+          :config="element.config"
           :name="element.config.name !== undefined ? element.config.name : null"
+          @pageNavigate="pageNavigate"
           v-bind="element.config"
           :is="element.component"
-          :disabled="element.config.interactive"
         />
+
+        <div v-else :id="element.config.name ? element.config.name : undefined">
+          <component
+            :class="elementCssClass(element)"
+            ref="elements"
+            :validationData="transientData"
+            v-model="model[getValidPath(element.config.name)]"
+            @submit="submit"
+            @pageNavigate="pageNavigate"
+            :name="element.config.name !== undefined ? element.config.name : null"
+            v-bind="element.config"
+            :is="element.component"
+            :disabled="element.config.interactive"
+          />
+        </div>
       </div>
-    </div>
-    <custom-css id="custom-css-output">{{ customCssWrapped }}</custom-css>
-  </div><!-- end page -->
+      <custom-css>{{ customCssWrapped }}</custom-css>
+    </div><!-- end page -->
   </div><!-- end custom-css-scope -->
 </template>
 

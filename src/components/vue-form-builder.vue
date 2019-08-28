@@ -81,95 +81,87 @@
         <hr class="w-100">
       </b-input-group>
 
-      <div class="custom-css-scope h-100">
-        <div class="page h-100">
 
-          <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
-            {{ $t('Drag an element here') }}
+      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
+        {{ $t('Drag an element here') }}
+      </div>
+
+      <draggable
+        class="h-100"
+        ghost-class="form-control-ghost"
+        :value="config[currentPage].items"
+        @input="updateConfig"
+        :options="{
+          group: {name: 'controls'},
+          swapThreshold: 0.5
+        }"
+      >
+        <div
+          class="control-item mt-4 mb-4"
+          :class="{selected: selected === element, hasError: hasError(element)}"
+          v-for="(element,index) in config[currentPage].items"
+          :key="index"
+          @click="inspect(element)"
+        >
+          <div v-if="element.container" @click="inspect(element)" class="card">
+            <div
+              v-if="selected === element"
+              class="card-header form-element-header d-flex align-items-center"
+            >
+              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
+              {{ element.config.name || element.label || $t('Field Name') }}
+              <button
+                class="btn btn-sm btn-danger ml-auto"
+                :title="$t('Delete Control')"
+                @click="deleteItem(index)"
+              >
+                <i class="far fa-trash-alt text-light"/>
+              </button>
+            </div>
+
+            <component
+              :validationErrors="validationErrors"
+              class="card-body"
+              :class="elementCssClass(element)"
+              @inspect="inspect"
+              @update-state="updateState"
+              :selected="selected"
+              v-model="element.items"
+              :config="element.config"
+              :is="element['editor-component']"
+            />
           </div>
 
-          <draggable
-            class="h-100"
-            ghost-class="form-control-ghost"
-            :value="config[currentPage].items"
-            @input="updateConfig"
-            :options="{
-              group: {name: 'controls'},
-              swapThreshold: 0.5
-            }"
-          >
+          <div v-else class="card">
             <div
-              class="control-item mt-4 mb-4"
-              :class="{selected: selected === element, hasError: hasError(element)}"
-              v-for="(element,index) in config[currentPage].items"
-              :key="index"
-              @click="inspect(element)"
+              v-if="selected === element"
+              class="card-header form-element-header d-flex align-items-center"
             >
-              <div v-if="element.container" @click="inspect(element)" class="card">
-                <div
-                  v-if="selected === element"
-                  class="card-header form-element-header d-flex align-items-center"
-                >
-                  <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-                  <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                  {{ element.config.name || element.label || $t('Field Name') }}
-                  <button
-                    class="btn btn-sm btn-danger ml-auto"
-                    :title="$t('Delete Control')"
-                    @click="deleteItem(index)"
-                  >
-                    <i class="far fa-trash-alt text-light"/>
-                  </button>
-                </div>
-
-                <component
-                  :validationErrors="validationErrors"
-                  class="card-body"
-                  :class="elementCssClass(element)"
-                  @inspect="inspect"
-                  @update-state="updateState"
-                  :selected="selected"
-                  v-model="element.items"
-                  :config="element.config"
-                  :is="element['editor-component']"
-                />
-              </div>
-
-              <div v-else class="card">
-                <div
-                  v-if="selected === element"
-                  class="card-header form-element-header d-flex align-items-center"
-                >
-                  <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-                  <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                  {{ element.config.name || $t('Key Name') }}
-                  <button
-                    class="btn btn-sm btn-danger ml-auto"
-                    :title="$t('Delete Control')"
-                    @click="deleteItem(index)"
-                  >
-                    <i class="far fa-trash-alt text-light"/>
-                  </button>
-                </div>
-
-                <component
-                  :tabindex="element.config.interactive ? 0 : -1"
-                  class="card-body m-0 pb-4 pt-4"
-                  :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
-                  v-bind="element.config"
-                  :is="element['editor-component']"
-                  @input="element.config.interactive ? element.config.content = $event : null"
-                  @focusout.native="updateState"
-                />
-              </div>
+              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
+              {{ element.config.name || $t('Key Name') }}
+              <button
+                class="btn btn-sm btn-danger ml-auto"
+                :title="$t('Delete Control')"
+                @click="deleteItem(index)"
+              >
+                <i class="far fa-trash-alt text-light"/>
+              </button>
             </div>
-          </draggable>
-      
-      
-      
-        </div><!-- end .page -->
-      </div><!-- end .custom-css-scope -->
 
+            <component
+              :tabindex="element.config.interactive ? 0 : -1"
+              class="card-body m-0 pb-4 pt-4"
+              :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
+              v-bind="element.config"
+              :is="element['editor-component']"
+              @input="element.config.interactive ? element.config.content = $event : null"
+              @focusout.native="updateState"
+            />
+          </div>
+        </div>
+      </draggable>
     </b-col>
 
     <!-- Inspector -->
