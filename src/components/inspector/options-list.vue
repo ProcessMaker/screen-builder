@@ -89,20 +89,20 @@
               </div>
               
               <div class="row" :class="rowCss(index)">
-                <div class="col-1">
+                <div class="col-1" style="cursor:grab">
                   <span class="fas fa-arrows-alt-v"/>
                 </div>
                 <div class="col-1">
                   <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
                 </div>
-                <div class="col-5">
+                <div class="col-5" style="cursor:grab">
                   {{ option[valueField] }}
                 </div>
                 <div class="col-1">
-                  <a @click="showEditOption(index)" class="fas fa-cog"/>
+                  <a @click="showEditOption(index)" class="fas fa-cog" style="cursor:pointer"/>
                 </div>
                 <div class="col-1">
-                  <a @click="removeOption(index)" class="fas fa-trash-alt"/>
+                  <a @click="removeOption(index)" class="fas fa-trash-alt" style="cursor:pointer"/>
                 </div>
               </div>
             </div>
