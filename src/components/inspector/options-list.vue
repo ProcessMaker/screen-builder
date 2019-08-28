@@ -13,11 +13,9 @@
       <div class="card-body p-2">
         <label for="option-value">{{ $t('Value') }}</label>
         <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
-
         <div v-if="optionError" class="invalid-feedback d-block text-right">
-          <div>{{optionError}}</div>
+          <div>{{ optionError }}</div>
         </div>
-
         <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
         <b-form-input id="option-content" v-model="optionContent"/>
         <div class="card-footer pr-1 mt-3 text-right">
@@ -33,19 +31,19 @@
 
     <div id="removeOption" class="card mb-3 bg-danger text-white text-right" v-show="showRemoveWarning">
       <div class="card-body">
-          {{ currentItemToDelete }}
+        {{ currentItemToDelete }}
       </div>
       <div class="card-footer ">
         <button type="button" class="btn btn-sm  bg-white mr-3" @click="showRemoveWarning=false">
-            {{ $t('Close') }}
+          {{ $t('Close') }}
         </button>
         <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
-            {{ $t('Yes') }}
+          {{ $t('Yes') }}
         </button>
       </div>
     </div>
 
-    <div  v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
+    <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
           <label for="data-sources"><b>{{ $t('Options') }}</b></label>
@@ -89,7 +87,7 @@
       <div class="row">
         <div class="col text-right">
           <a @click="editAsJson()" href="#">
-              <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{$t('Edit as JSON')}}</small>
+            <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as JSON') }}</small>
           </a>
         </div>
       </div>
@@ -113,41 +111,39 @@
     </b-modal>
 
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
-    <!--<div>-->
       <div v-if="dataSource === dataSourceValues.provideData">
         <label for="json-data">{{ $t('JSON Data') }}</label>
         <b-form-textarea class="mb-3" :class="jsonDataClass" id="json-data" rows="8" v-model="jsonData" @change="jsonDataChange"/>
       </div>
 
       <div v-if="jsonError" class="invalid-feedback d-block text-right">
-        <div>{{jsonError}}</div>
+        <div>{{ jsonError }}</div>
       </div>
 
       <a @click="editAsOptionList()" href="#" class="text-right">
-          <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{$t('Edit as Option List')}}</small>
+        <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as Option List') }}</small>
       </a>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="data-name">{{ $t('Data Name') }}</label>
       <b-form-input id="data-name" v-model="dataName"/>
-          <small class="form-text text-muted mb-3">{{$t('Data source to populate select')}}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
-    <!--<div>-->
       <label for="key">{{ $t('Key') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
-          <small class="form-text text-muted mb-3">{{$t('Field to save to the data object')}}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
 
       <label for="value">{{ $t('Value') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
-          <small class="form-text text-muted mb-3">{{$t('Field to show in the select box')}}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
     </div>
 
-<!--    <label for="pmql-query">{{ $t('PMQL') }}</label>-->
-<!--    <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>-->
-<!--    <small class="form-text text-muted">Advanced data search</small>-->
+    <!--    <label for="pmql-query">{{ $t('PMQL') }}</label>-->
+    <!--    <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>-->
+    <!--    <small class="form-text text-muted">Advanced data search</small>-->
   </div>
 </template>
 
@@ -166,12 +162,6 @@ export default {
   },
   data() {
     return {
-       list: [
-        { id: 1, name: "Abby", sport: "basket" },
-        { id: 2, name: "Brooke", sport: "foot" },
-        { id: 3, name: "Courtenay", sport: "volley" },
-        { id: 4, name: "David", sport: "rugby" }
-      ],
       jsonError: '',
       optionError:'',
       dragging: false,
@@ -204,7 +194,7 @@ export default {
         {
           text: 'Radio/Checkbox Group',
           value: 'checkbox',
-        }
+        },
       ],
     };
   },
@@ -231,10 +221,10 @@ export default {
     },
   },
   computed: {
-    jsonDataClass () {
+    jsonDataClass() {
       return this.jsonError ? 'is-invalid' : '';
     },
-    optionKeyClass () {
+    optionKeyClass() {
       return this.optionError ? 'is-invalid' : '';
     },
     keyField() {
@@ -270,18 +260,18 @@ export default {
     },
   },
   mounted() {
-     this.dataSource = this.options.dataSource;
-     this.jsonData = this.options.jsonData;
-     this.dataName = this.options.dataName;
-     this.key = this.options.key;
-     this.value = this.options.value;
-     this.pmqlQuery = this.options.pmqlQuery;
-     this.renderAs = this.options.renderAs;
-     this.allowMultiSelect = this.options.allowMultiSelect;
-     this.defaultOption= this.options.defaultOption;
-     this.selectedOptions = this.options.selectedOptions;
-     this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
-     this.jsonData = JSON.stringify(this.existingOptions);
+    this.dataSource = this.options.dataSource;
+    this.jsonData = this.options.jsonData;
+    this.dataName = this.options.dataName;
+    this.key = this.options.key;
+    this.value = this.options.value;
+    this.pmqlQuery = this.options.pmqlQuery;
+    this.renderAs = this.options.renderAs;
+    this.allowMultiSelect = this.options.allowMultiSelect;
+    this.defaultOption= this.options.defaultOption;
+    this.selectedOptions = this.options.selectedOptions;
+    this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
+    this.jsonData = JSON.stringify(this.existingOptions);
   },
   methods: {
     keyChanged() {
@@ -292,25 +282,23 @@ export default {
     },
     jsonDataChange() {
       let jsonList = [];
-      let newList = [];
       try {
         jsonList = JSON.parse(this.jsonData);
         if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
-          throw Error("String does not represent a valid JSON");
+          throw Error('String does not represent a valid JSON');
         }
       }
-      catch(err) {
+      catch (err) {
         this.jsonError = err.message;
         return;
       }
 
       this.existingOptions = [];
       const that = this;
-      console.log(jsonList);
       jsonList.forEach (item => {
         that.existingOptions.push({
           [that.keyField] : item[that.keyField], 
-          [that.valueField] : item[that.valueField]
+          [that.valueField] : item[that.valueField],
         });
       });
       this.jsonError = '';
@@ -330,7 +318,7 @@ export default {
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.showOptionCard = true;
-      this.optionContent = this.existingOptions[index][this.valueField]
+      this.optionContent = this.existingOptions[index][this.valueField];
       this.optionValue = this.existingOptions[index][this.keyField];
       this.optionError = '';
     },
@@ -342,9 +330,9 @@ export default {
       this.optionError = '';
     },
     addOption() {
-      const that = this
+      const that = this;
 
-      if (this.existingOptions.find(item => { return item[that.keyField] === this.optionValue })) {
+      if (this.existingOptions.find(item => { return item[that.keyField] === this.optionValue; })) {
         this.optionError = 'An item with the same key already exists';
         return;
       } 
