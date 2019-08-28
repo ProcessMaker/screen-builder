@@ -198,11 +198,11 @@ export default {
       selectedOptions: [],
       renderAsOptions: [
         {
-          text:'Dropdown' ,
+          text:'Dropdown/Multiselect' ,
           value: 'dropdown',
         },
         {
-          text: 'Checkbox Group',
+          text: 'Radio/Checkbox Group',
           value: 'checkbox',
         }
       ],
