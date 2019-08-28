@@ -173,7 +173,7 @@ export default [
           jsonData: '',
           optionsList: [],
           key:'key',
-          value:'value'
+          value:'value',
         },
         helper: null,
       },
@@ -210,7 +210,7 @@ export default [
           jsonData: '',
           optionsList: [],
           key:'key',
-          value:'value'
+          value:'value',
         },
 
         toggle: false,
