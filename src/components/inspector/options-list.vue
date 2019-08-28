@@ -35,7 +35,7 @@
             {{ $t('Cancel') }}
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
-            {{ $t('Update') }}
+            {{ $t('Save') }}
           </button>
         </div>
       </div>
@@ -89,11 +89,11 @@
                 </div>
               </div>
               
-              <div class="row border-top border-bottom" :class="rowCss(index)">
+              <div class="row border-top" :class="rowCss(index)">
                 <div class="col-1" style="cursor:grab">
                   <span class="fas fa-arrows-alt-v"/>
                 </div>
-                <div class="col-1">
+                <div class="col-1 d-flex align-items-center">
                   <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
                 </div>
                 <div class="col-5" style="cursor:grab">
@@ -269,7 +269,7 @@ export default {
   },
   methods: {
     rowCss(index) {
-      return index % 2 === 0 ? 'alert-secondary' : 'bg-default';
+      return index % 2 === 0 ? 'striped' : 'bg-default';
     },
     keyChanged() {
       this.jsonDataChange();
@@ -371,3 +371,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .striped {
+    background-color: rgba(0,0,0,.05);
+  }
+</style>
