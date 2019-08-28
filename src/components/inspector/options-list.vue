@@ -3,7 +3,6 @@
     <label for="data-sources">{{ $t('Data Source') }}</label>
     <b-form-select id="data-sources" v-model="dataSource" :options="dataSources" class="mb-3"/>
 
-
     <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
@@ -13,6 +12,33 @@
           <a @click="showAddOption" class="fas fa-plus-square"/>
         </div>
       </div>
+
+      <div class="card" v-if="showOptionCard">
+        <div class="card-header pl-2" v-if="optionCardType == 'insert'">
+          {{ $t('Add Option') }}
+        </div>
+        <div v-else class="card-header">
+          {{ $t('Edit Option') }}
+        </div>
+        <div class="card-body p-2">
+          <label for="option-value">{{ $t('Value') }}</label>
+          <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+          <div v-if="optionError" class="invalid-feedback d-block text-right">
+            <div>{{ optionError }}</div>
+          </div>
+          <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
+          <b-form-input id="option-content" v-model="optionContent"/>
+          <div class="card-footer pr-1 mt-3 text-right">
+            <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="editIndex=null">
+              {{ $t('Close') }}
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+              {{ $t('Save') }}
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col">
           <table class="table table-sm table-striped">
@@ -79,7 +105,7 @@
                     <span class="fas fa-arrows-alt-v"/>
                   </td>
                   <td style="width:10%;">
-                    <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultValue" :value="option[keyField]">
+                    <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
                   </td>
                   <td style="width:50%;">
                     {{ option[valueField] }}
@@ -192,7 +218,7 @@ export default {
       optionContent: '',
       //renderAs: 'dropdown',
       //allowMultiSelect: false,
-      defaultValue: '',
+      defaultOptionKey: '',
       selectedOptions: [],
       //renderAsOptions: [
       //  {
@@ -216,7 +242,7 @@ export default {
       this.pmqlQuery = this.options.pmqlQuery;
       //this.renderAs = this.options.renderAs;
       //this.allowMultiSelect = this.options.allowMultiSelect;
-      this.defaultValue = this.options.defaultValue;
+      this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
       this.existingOptions = this.options.existingOptions;
     },
@@ -261,7 +287,7 @@ export default {
         pmqlQuery: this.pmqlQuery,
         //renderAs: this.renderAs,
         //allowMultiSelect: this.allowMultiSelect,
-        defaultValue: this.defaultValue,
+        defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         existingOptions: this.existingOptions,
       };
@@ -276,7 +302,7 @@ export default {
     this.pmqlQuery = this.options.pmqlQuery;
     //this.renderAs = this.options.renderAs;
     //this.allowMultiSelect = this.options.allowMultiSelect;
-    this.defaultValue= this.options.defaultValue;
+    this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
     this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
     this.jsonData = JSON.stringify(this.existingOptions);
