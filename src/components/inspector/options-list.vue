@@ -91,18 +91,18 @@
           </a>
         </div>
       </div>
-      <div class="row mb-3">
-        <div class="col-12">
-          <input type="checkbox"  v-model="allowMultiSelect">
-          Allow multiple selections
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col">
-          <label for="render-as">{{ $t('Render Options As') }}</label>
-          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
-        </div>
-      </div>
+      <!--<div class="row mb-3">-->
+        <!--<div class="col-12">-->
+          <!--<input type="checkbox"  v-model="allowMultiSelect">-->
+          <!--Allow multiple selections-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="row mb-3">-->
+        <!--<div class="col">-->
+          <!--<label for="render-as">{{ $t('Render Options As') }}</label>-->
+          <!--<b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>-->
+        <!--</div>-->
+      <!--</div>-->
     </div>
 
     <b-modal  @ok="addOption" id="addOptionModal" title="Add New Option">
@@ -182,20 +182,20 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
-      renderAs: 'dropdown',
-      allowMultiSelect: false,
+      //renderAs: 'dropdown',
+      //allowMultiSelect: false,
       defaultOption: '',
       selectedOptions: [],
-      renderAsOptions: [
-        {
-          text:'Dropdown/Multiselect' ,
-          value: 'dropdown',
-        },
-        {
-          text: 'Radio/Checkbox Group',
-          value: 'checkbox',
-        },
-      ],
+      //renderAsOptions: [
+      //  {
+      //    text:'Dropdown/Multiselect' ,
+      //    value: 'dropdown',
+      //  },
+      //  {
+      //    text: 'Radio/Checkbox Group',
+      //    value: 'checkbox',
+      //  },
+      //],
     };
   },
   watch: {
@@ -206,8 +206,8 @@ export default {
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
-      this.renderAs = this.options.renderAs;
-      this.allowMultiSelect = this.options.allowMultiSelect;
+      //this.renderAs = this.options.renderAs;
+      //this.allowMultiSelect = this.options.allowMultiSelect;
       this.defaultOption = this.options.defaultOption;
       this.selectedOptions = this.options.selectedOptions;
       this.existingOptions = this.options.existingOptions;
@@ -228,10 +228,10 @@ export default {
       return this.optionError ? 'is-invalid' : '';
     },
     keyField() {
-      return this.key || 'value';
+      return this.key || 'key';
     },
     valueField() {
-      return this.value || 'content';
+      return this.value || 'value';
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
@@ -251,8 +251,8 @@ export default {
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
-        renderAs: this.renderAs,
-        allowMultiSelect: this.allowMultiSelect,
+        //renderAs: this.renderAs,
+        //allowMultiSelect: this.allowMultiSelect,
         defaultOption: this.defaultOption,
         selectedOptions: this.selectedOptions,
         existingOptions: this.existingOptions,
@@ -266,8 +266,8 @@ export default {
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
-    this.renderAs = this.options.renderAs;
-    this.allowMultiSelect = this.options.allowMultiSelect;
+    //this.renderAs = this.options.renderAs;
+    //this.allowMultiSelect = this.options.allowMultiSelect;
     this.defaultOption= this.options.defaultOption;
     this.selectedOptions = this.options.selectedOptions;
     this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
@@ -332,12 +332,11 @@ export default {
     addOption() {
       const that = this;
 
-      if (this.existingOptions.find(item => { return item[that.keyField] === this.optionValue; })) {
-        this.optionError = 'An item with the same key already exists';
-        return;
-      } 
-
       if (this.optionCardType === 'insert') {
+        if (this.existingOptions.find(item => { return item[that.keyField] === this.optionValue; })) {
+          this.optionError = 'An item with the same key already exists';
+          return;
+        } 
         this.existingOptions.push(
           {
             [this.valueField]: this.optionContent,
@@ -346,6 +345,10 @@ export default {
         );
       }
       else {
+        if (this.existingOptions.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
+          this.optionError = 'An item with the same key already exists';
+          return;
+        } 
         this.existingOptions[this.editIndex][this.keyField] = this.optionValue;
         this.existingOptions[this.editIndex][this.valueField] = this.optionContent;
       }

@@ -168,14 +168,12 @@ export default [
         label: 'New Select',
         placeholder: '',
         validation: '',
-        dataFormat: 'array',
         options: {
           dataSource: dataSourceValues.provideData,
           jsonData: '',
-          renderAs: 'dropdown',
-          allowMultiSelect: false,
-          selectedOptions: [],
-          existingOptions: [{'value':'key1','content':'Val1'},{'value':'key2','content':'Val2'},{'value':'key3','content':'Val3'}],
+          existingOptions: [{'key':'key1','value':'Val1'},{'key':'key2','value':'Val2'},{'key':'key3','value':'Val3'}],
+          key:'key',
+          value:'value'
         },
         helper: null,
       },
