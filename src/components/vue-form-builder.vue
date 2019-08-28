@@ -101,6 +101,7 @@
           v-for="(element,index) in config[currentPage].items"
           :key="index"
           @click="inspect(element)"
+          :selector="element.config.customCssSelector"
         >
           <div v-if="element.container" @click="inspect(element)" class="card">
             <div
