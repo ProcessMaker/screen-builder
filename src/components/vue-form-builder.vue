@@ -447,11 +447,11 @@ export default {
             defaultOptionKey: '',
             key: 'value',
             value: 'content',
-            existingOptions: item.config.options,
+            optionsList: item.config.options,
             jsonData: JSON.stringify(item.config.options),
           };
-        } else if (item.component === 'FormSelect' && item.config.options instanceof Object && !item.config.options.existingOptions ) {
-          item.config.options.existingOptions = JSON.parse(item.config.options.jsonData);
+        } else if (item.component === 'FormSelect' && item.config.options instanceof Object && !item.config.options.optionsList ) {
+          item.config.options.optionsList = JSON.parse(item.config.options.jsonData);
         }
         if (item.items instanceof Array && item.component === 'FormMultiColumn') {
           item.items.forEach(column => this.migrateFormSelect(column));
@@ -465,7 +465,7 @@ export default {
             defaultOptionKey: '',
             key: 'value',
             value: 'content',
-            existingOptions: item.config.options,
+            optionsList: item.config.options,
             jsonData: JSON.stringify(item.config.options),
           };
         }
