@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="custom-css-scope">
+  <div class="page p-3">
     <div
       v-for="(element, index) in visibleElements"
       :key="index"
@@ -34,8 +35,9 @@
         />
       </div>
     </div>
-    <custom-css>{{ customCssWrapped }}</custom-css>
-  </div>
+    <custom-css id="custom-css-output">{{ customCssWrapped }}</custom-css>
+  </div><!-- end page -->
+  </div><!-- end custom-css-scope -->
 </template>
 
 <script>
@@ -303,7 +305,7 @@ export default {
       this.model[this.getValidPath(item.config.name)] = defaultValue;
     },
     parseCss() {
-      const containerSelector = '#screen-builder-container';
+      const containerSelector = '.custom-css-scope';
       try {
         const ast = csstree.parse(this.customCss, {
           onParseError(error) {
