@@ -171,7 +171,7 @@ export default [
         options: {
           dataSource: dataSourceValues.provideData,
           jsonData: '',
-          existingOptions: [{'key':'key1','value':'Val1'},{'key':'key2','value':'Val2'},{'key':'key3','value':'Val3'}],
+          existingOptions: [],
           key:'key',
           value:'value'
         },
@@ -207,8 +207,12 @@ export default [
         label: 'New Radio Button Group',
         options: {
           dataSource: dataSourceValues.provideData,
-          jsonData: '[{ "value": "new", "content": "New Option" }]',
+          jsonData: '',
+          existingOptions: [],
+          key:'key',
+          value:'value'
         },
+
         toggle: false,
         helper: null,
       },

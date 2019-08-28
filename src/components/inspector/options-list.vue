@@ -29,7 +29,7 @@
           <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
           <div class="card-footer pr-1 mt-3 text-right">
-            <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="editIndex=null">
+            <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showOptionCard=false">
               {{ $t('Close') }}
             </button>
             <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
@@ -129,18 +129,6 @@
           </a>
         </div>
       </div>
-      <!--<div class="row mb-3">-->
-        <!--<div class="col-12">-->
-          <!--<input type="checkbox"  v-model="allowMultiSelect">-->
-          <!--Allow multiple selections-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="row mb-3">-->
-        <!--<div class="col">-->
-          <!--<label for="render-as">{{ $t('Render Options As') }}</label>-->
-          <!--<b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>-->
-        <!--</div>-->
-      <!--</div>-->
     </div>
 
 
@@ -216,20 +204,8 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
-      //renderAs: 'dropdown',
-      //allowMultiSelect: false,
       defaultOptionKey: '',
       selectedOptions: [],
-      //renderAsOptions: [
-      //  {
-      //    text:'Dropdown/Multiselect' ,
-      //    value: 'dropdown',
-      //  },
-      //  {
-      //    text: 'Radio/Checkbox Group',
-      //    value: 'checkbox',
-      //  },
-      //],
     };
   },
   watch: {
@@ -240,8 +216,6 @@ export default {
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
-      //this.renderAs = this.options.renderAs;
-      //this.allowMultiSelect = this.options.allowMultiSelect;
       this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
       this.existingOptions = this.options.existingOptions;
@@ -285,8 +259,6 @@ export default {
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
-        //renderAs: this.renderAs,
-        //allowMultiSelect: this.allowMultiSelect,
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         existingOptions: this.existingOptions,
@@ -300,8 +272,6 @@ export default {
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
-    //this.renderAs = this.options.renderAs;
-    //this.allowMultiSelect = this.options.allowMultiSelect;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
     this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
