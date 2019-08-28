@@ -173,7 +173,7 @@
               v-if="getInspectorFields(accordion.fields).length > 0"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-              @click="accordion.open = !accordion.open"
+              @click="toggleAccordion(accordion)"
             >
               <i class="fas fa-cog mr-2"/>
               {{ $t(accordion.name) }}
@@ -417,6 +417,14 @@ export default {
     },
   },
   methods: {
+    toggleAccordion(accordion) {
+      this.accordions.forEach(panel => panel !== accordion ? panel.open = false : null);
+      accordion.open = !accordion.open;
+    },
+    openAccordion(accordion) {
+      this.accordions.forEach(panel => panel.open = false);
+      accordion.open = true;
+    },
     migrateConfig() {
       this.config.forEach(page => this.replaceFormText(page.items));
     },
@@ -546,6 +554,8 @@ export default {
     inspect(element = {}) {
       this.inspection = element;
       this.selected = element;
+      const defaultAccordion = this.accordions.find(accordion => this.getInspectorFields(accordion.fields).length > 0);
+      this.openAccordion(defaultAccordion);
     },
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
