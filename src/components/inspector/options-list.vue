@@ -78,7 +78,7 @@
                     <b-form-input id="option-content" v-model="optionContent"/>
                   </div>
 
-                  <div class="card-footer">
+                  <div class="card-footer text-right p-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="editIndex=null">
                       {{ $t('Cancel') }}
                     </button>
