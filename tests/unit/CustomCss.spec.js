@@ -48,8 +48,8 @@ describe('Test custom css', () => {
   it('Test custom CSS rules are scoped', () => {
 
     // Test if the rendered form contains the custom CSS
-    expect(wrapper.html()).toContain('#screen-builder-container div{background:green}');
-    expect(wrapper.html()).toContain('#screen-builder-container .form-control{color:gray}');
+    expect(wrapper.html()).toContain('.custom-css-scope div{background:green}');
+    expect(wrapper.html()).toContain('.custom-css-scope .form-control{color:gray}');
 
   });
 });
