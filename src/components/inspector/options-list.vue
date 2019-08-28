@@ -271,10 +271,10 @@ export default {
       return index % 2 === 0 ? 'bg-default' : 'alert-secondary';
     },
     keyChanged() {
-      this.optionsList = [];
+      this.jsonDataChange();
     },
     valueChanged() {
-      this.optionsList = [];
+      this.jsonDataChange();
     },
     jsonDataChange() {
       let jsonList = [];
