@@ -21,12 +21,12 @@
           {{ $t('Edit Option') }}
         </div>
         <div class="card-body p-2">
-          <label for="option-value">{{ $t('Value') }}</label>
+          <label for="option-value">{{ $t('Key') }}</label>
           <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
           </div>
-          <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
+          <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
           <div class="card-footer pr-1 mt-3 text-right">
             <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showOptionCard=false">
@@ -41,18 +41,16 @@
 
       <div class="row">
         <div class="col">
-          <table class="table table-sm table-striped">
-            <draggable 
+          <draggable 
               @update="updateSort"
-              :element="'tbody'"
-              v-model="existingOptions"
+              :element="'div'"
+              v-model="optionsList"
               :options="{group:'options'}"
               @start="drag=true"
               @end="drag=false"
             >
-              <template v-for="(option, index) in existingOptions" >
-                <tr :key="'remove-' + option.value" v-if="removeIndex === index">
-                  <td colspan="5">
+            <div v-for="(option, index) in optionsList" :key="option.value">
+                <div v-if="removeIndex === index">
                     <div class="card mb-3 bg-danger text-white text-right">
                       <div class="card-body">
                         {{ currentItemToDelete }}
@@ -66,13 +64,9 @@
                         </button>
                       </div>
                     </div>
-                  </td>
-                </tr>
-              </template>
+                </div>
 
-              <template v-for="(option, index) in existingOptions" >
-                <tr :key="'edit-' + option.value" v-if="editIndex === index">
-                  <td colspan="5">
+                <div v-if="editIndex === index">
                     <div class="card">
                       <div class="card-header pl-2" v-if="optionCardType == 'insert'">
                         {{ $t('Add Option') }}
@@ -81,13 +75,14 @@
                         {{ $t('Edit Option') }}
                       </div>
                       <div class="card-body p-2">
-                        <label for="option-value">{{ $t('Value') }}</label>
+                        <label for="option-value">{{ $t('Key') }}</label>
                         <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
                         <div v-if="optionError" class="invalid-feedback d-block text-right">
                           <div>{{ optionError }}</div>
                         </div>
-                        <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
+                        <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
                         <b-form-input id="option-content" v-model="optionContent"/>
+
                         <div class="card-footer pr-1 mt-3 text-right">
                           <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="editIndex=null">
                             {{ $t('Close') }}
@@ -98,28 +93,27 @@
                         </div>
                       </div>
                     </div>
-                  </td>
-                </tr>
-                <tr :key="option.value">
-                  <td style="width:10%;">
+                </div>
+              
+                <div class="row" :class="rowCss(index)">
+                  <div class="col-1">
                     <span class="fas fa-arrows-alt-v"/>
-                  </td>
-                  <td style="width:10%;">
+                  </div>
+                  <div class="col-1">
                     <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
-                  </td>
-                  <td style="width:50%;">
+                  </div>
+                  <div class="col-5">
                     {{ option[valueField] }}
-                  </td>
-                  <td style="width:10%;">
+                  </div>
+                  <div class="col-1">
                     <a @click="showEditOption(index)" class="fas fa-cog"/>
-                  </td>
-                  <td style="width:10%;">
+                  </div>
+                  <div class="col-1">
                     <a @click="removeOption(index)" class="fas fa-trash-alt"/>
-                  </td>
-                </tr>
-              </template>
-            </draggable>
-          </table>
+                  </div>
+                </div>
+            </div>
+          </draggable> 
         </div>
       </div>
       <div class="row">
@@ -163,9 +157,11 @@
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
     </div>
 
-    <!--    <label for="pmql-query">{{ $t('PMQL') }}</label>-->
-    <!--    <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>-->
-    <!--    <small class="form-text text-muted">Advanced data search</small>-->
+    <div v-if="dataSource === dataSourceValues.dataObject">
+      <label for="pmql-query">{{ $t('PMQL') }}</label>
+      <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
+      <small class="form-text text-muted">Advanced data search</small>
+    </div>
   </div>
 </template>
 
@@ -195,7 +191,7 @@ export default {
       value: null,
       dataName: '',
       pmqlQuery: '',
-      existingOptions: [],
+      optionsList: [],
       showOptionCard: false,
       showRemoveWarning: false,
       showJsonEditor: false,
@@ -204,7 +200,7 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
-      defaultOptionKey: '',
+      defaultOptionKey: false,
       selectedOptions: [],
     };
   },
@@ -218,7 +214,7 @@ export default {
       this.pmqlQuery = this.options.pmqlQuery;
       this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
-      this.existingOptions = this.options.existingOptions;
+      this.optionsList = this.options.optionsList;
     },
     dataSource() {
       this.jsonData = '';
@@ -243,10 +239,10 @@ export default {
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
-          && this.existingOptions.length > 0
-          && this.existingOptions[this.removeIndex] !==
+          && this.optionsList.length > 0
+          && this.optionsList[this.removeIndex] !==
           undefined) {
-        let itemName =  this.existingOptions[this.removeIndex][this.valueField];
+        let itemName =  this.optionsList[this.removeIndex][this.valueField];
         return this.$t('Are you sure you want to delete "{{item}}"?', {item:itemName});
       }
       return '';
@@ -261,7 +257,7 @@ export default {
         pmqlQuery: this.pmqlQuery,
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
-        existingOptions: this.existingOptions,
+        optionsList: this.optionsList,
       };
     },
   },
@@ -274,15 +270,18 @@ export default {
     this.pmqlQuery = this.options.pmqlQuery;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
-    this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
-    this.jsonData = JSON.stringify(this.existingOptions);
+    this.optionsList = this.options.optionsList ? this.options.optionsList : [];
+    this.jsonData = JSON.stringify(this.optionsList);
   },
   methods: {
+    rowCss(index) {
+      return index % 2 === 0 ? "bg-default" : "alert-secondary";
+    },
     keyChanged() {
-      this.existingOptions = [];
+      this.optionsList = [];
     },
     valueChanged() {
-      this.existingOptions = [];
+      this.optionsList = [];
     },
     jsonDataChange() {
       let jsonList = [];
@@ -297,10 +296,10 @@ export default {
         return;
       }
 
-      this.existingOptions = [];
+      this.optionsList = [];
       const that = this;
       jsonList.forEach (item => {
-        that.existingOptions.push({
+        that.optionsList.push({
           [that.keyField] : item[that.keyField], 
           [that.valueField] : item[that.valueField],
         });
@@ -308,7 +307,7 @@ export default {
       this.jsonError = '';
     },
     updateSort() {
-      this.jsonData = JSON.stringify(this.existingOptions);
+      this.jsonData = JSON.stringify(this.optionsList);
       this.$emit('change', this.dataObjectOptions);
       
     },
@@ -322,9 +321,8 @@ export default {
       let parent = this.$el.parentElement;
       this.optionCardType = 'edit';
       this.editIndex = index;
-      this.showOptionCard = true;
-      this.optionContent = this.existingOptions[index][this.valueField];
-      this.optionValue = this.existingOptions[index][this.keyField];
+      this.optionContent = this.optionsList[index][this.valueField];
+      this.optionValue = this.optionsList[index][this.keyField];
       this.optionError = '';
     },
     showAddOption() {
@@ -333,17 +331,17 @@ export default {
       this.optionValue = '';
       this.showOptionCard = true;
       this.optionError = '';
-      this.editIndex = 0;
+      this.editIndex = null;
     },
     addOption() {
       const that = this;
 
       if (this.optionCardType === 'insert') {
-        if (this.existingOptions.find(item => { return item[that.keyField] === this.optionValue; })) {
+        if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
           this.optionError = 'An item with the same key already exists';
           return;
         } 
-        this.existingOptions.push(
+        this.optionsList.push(
           {
             [this.valueField]: this.optionContent,
             [this.keyField]: this.optionValue,
@@ -351,24 +349,24 @@ export default {
         );
       }
       else {
-        if (this.existingOptions.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
+        if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
           this.optionError = 'An item with the same key already exists';
           return;
         } 
-        this.existingOptions[this.editIndex][this.keyField] = this.optionValue;
-        this.existingOptions[this.editIndex][this.valueField] = this.optionContent;
+        this.optionsList[this.editIndex][this.keyField] = this.optionValue;
+        this.optionsList[this.editIndex][this.valueField] = this.optionContent;
       }
 
       this.jsonError = '';
-      this.jsonData = JSON.stringify(this.existingOptions);
+      this.jsonData = JSON.stringify(this.optionsList);
       this.showOptionCard = false;
       this.optionError = '';
       this.editIndex = null;
     },
 
     deleteOption() {
-      this.existingOptions.splice(this.removeIndex, 1);
-      this.jsonData = JSON.stringify(this.existingOptions);
+      this.optionsList.splice(this.removeIndex, 1);
+      this.jsonData = JSON.stringify(this.optionsList);
       this.showRemoveWarning = false;
       this.removeIndex = null;
     },

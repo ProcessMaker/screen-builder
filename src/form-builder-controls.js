@@ -171,7 +171,7 @@ export default [
         options: {
           dataSource: dataSourceValues.provideData,
           jsonData: '',
-          existingOptions: [],
+          optionsList: [],
           key:'key',
           value:'value'
         },
@@ -208,7 +208,7 @@ export default [
         options: {
           dataSource: dataSourceValues.provideData,
           jsonData: '',
-          existingOptions: [],
+          optionsList: [],
           key:'key',
           value:'value'
         },
