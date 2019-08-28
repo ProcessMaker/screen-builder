@@ -3,45 +3,6 @@
     <label for="data-sources">{{ $t('Data Source') }}</label>
     <b-form-select id="data-sources" v-model="dataSource" :options="dataSources" class="mb-3"/>
 
-    <div id="addOption" class="card" v-show="showOptionCard">
-      <div class="card-header pl-2" v-if="optionCardType == 'insert'">
-        {{ $t('Add Option') }}
-      </div>
-      <div v-else class="card-header">
-        {{ $t('Edit Option') }}
-      </div>
-      <div class="card-body p-2">
-        <label for="option-value">{{ $t('Value') }}</label>
-        <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
-        <div v-if="optionError" class="invalid-feedback d-block text-right">
-          <div>{{ optionError }}</div>
-        </div>
-        <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
-        <b-form-input id="option-content" v-model="optionContent"/>
-        <div class="card-footer pr-1 mt-3 text-right">
-          <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showOptionCard=false">
-            {{ $t('Close') }}
-          </button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
-            {{ $t('Save') }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div id="removeOption" class="card mb-3 bg-danger text-white text-right" v-show="showRemoveWarning">
-      <div class="card-body">
-        {{ currentItemToDelete }}
-      </div>
-      <div class="card-footer ">
-        <button type="button" class="btn btn-sm  bg-white mr-3" @click="showRemoveWarning=false">
-          {{ $t('Close') }}
-        </button>
-        <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
-          {{ $t('Yes') }}
-        </button>
-      </div>
-    </div>
 
     <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
@@ -63,23 +24,72 @@
               @start="drag=true"
               @end="drag=false"
             >
-              <tr v-for="(option, index) in existingOptions" :key="option.value">
-                <td style="width:10%;">
-                  <span class="fas fa-arrows-alt-v"/>
-                </td>
-                <td style="width:10%;">
-                  <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOption" :value="option[keyField]">
-                </td>
-                <td style="width:50%;">
-                  {{ option[valueField] }}
-                </td>
-                <td style="width:10%;">
-                  <a @click="showEditOption(index)" class="fas fa-cog"/>
-                </td>
-                <td style="width:10%;">
-                  <a @click="removeOption(index)" class="fas fa-trash-alt"/>
-                </td>
-              </tr>
+              <template v-for="(option, index) in existingOptions" >
+                <tr :key="'remove-' + option.value" v-if="removeIndex === index">
+                  <div class="card mb-3 bg-danger text-white text-right">
+                    <div class="card-body">
+                      {{ currentItemToDelete }}
+                    </div>
+                    <div class="card-footer ">
+                      <button type="button" class="btn btn-sm  bg-white mr-3" @click="removeIndex=null">
+                        {{ $t('Close') }}
+                      </button>
+                      <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
+                        {{ $t('Yes') }}
+                      </button>
+                    </div>
+                  </div>
+                </tr>
+              </template>
+
+              <template v-for="(option, index) in existingOptions" >
+                <tr :key="'edit-' + option.value" v-if="editIndex === index">
+                  <td colspan=5>
+                    <div class="card">
+                      <div class="card-header pl-2" v-if="optionCardType == 'insert'">
+                        {{ $t('Add Option') }}
+                      </div>
+                      <div v-else class="card-header">
+                        {{ $t('Edit Option') }}
+                      </div>
+                      <div class="card-body p-2">
+                        <label for="option-value">{{ $t('Value') }}</label>
+                        <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+                        <div v-if="optionError" class="invalid-feedback d-block text-right">
+                          <div>{{ optionError }}</div>
+                        </div>
+                        <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
+                        <b-form-input id="option-content" v-model="optionContent"/>
+                        <div class="card-footer pr-1 mt-3 text-right">
+                          <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="editIndex=null">
+                            {{ $t('Close') }}
+                          </button>
+                          <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+                            {{ $t('Save') }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr :key="option.value">
+                  <td style="width:10%;">
+                    <span class="fas fa-arrows-alt-v"/>
+                  </td>
+                  <td style="width:10%;">
+                    <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultValue" :value="option[keyField]">
+                  </td>
+                  <td style="width:50%;">
+                    {{ option[valueField] }}
+                  </td>
+                  <td style="width:10%;">
+                    <a @click="showEditOption(index)" class="fas fa-cog"/>
+                  </td>
+                  <td style="width:10%;">
+                    <a @click="removeOption(index)" class="fas fa-trash-alt"/>
+                  </td>
+                </tr>
+              </template>
             </draggable>
           </table>
         </div>
@@ -105,10 +115,6 @@
       <!--</div>-->
     </div>
 
-    <b-modal  @ok="addOption" id="addOptionModal" title="Add New Option">
-      <form-input label="Option Value" />
-      <form-input label="Option Label" />
-    </b-modal>
 
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
@@ -184,7 +190,7 @@ export default {
       optionContent: '',
       //renderAs: 'dropdown',
       //allowMultiSelect: false,
-      defaultOption: '',
+      defaultValue: '',
       selectedOptions: [],
       //renderAsOptions: [
       //  {
@@ -208,7 +214,7 @@ export default {
       this.pmqlQuery = this.options.pmqlQuery;
       //this.renderAs = this.options.renderAs;
       //this.allowMultiSelect = this.options.allowMultiSelect;
-      this.defaultOption = this.options.defaultOption;
+      this.defaultValue = this.options.defaultValue;
       this.selectedOptions = this.options.selectedOptions;
       this.existingOptions = this.options.existingOptions;
     },
@@ -253,7 +259,7 @@ export default {
         pmqlQuery: this.pmqlQuery,
         //renderAs: this.renderAs,
         //allowMultiSelect: this.allowMultiSelect,
-        defaultOption: this.defaultOption,
+        defaultValue: this.defaultValue,
         selectedOptions: this.selectedOptions,
         existingOptions: this.existingOptions,
       };
@@ -268,7 +274,7 @@ export default {
     this.pmqlQuery = this.options.pmqlQuery;
     //this.renderAs = this.options.renderAs;
     //this.allowMultiSelect = this.options.allowMultiSelect;
-    this.defaultOption= this.options.defaultOption;
+    this.defaultValue= this.options.defaultValue;
     this.selectedOptions = this.options.selectedOptions;
     this.existingOptions = this.options.existingOptions ? this.options.existingOptions : [];
     this.jsonData = JSON.stringify(this.existingOptions);
@@ -315,6 +321,7 @@ export default {
       this.showJsonEditor = false;
     },
     showEditOption(index) {
+      let parent = this.$el.parentElement;
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.showOptionCard = true;
@@ -357,12 +364,14 @@ export default {
       this.jsonData = JSON.stringify(this.existingOptions);
       this.showOptionCard = false;
       this.optionError = '';
+      this.editIndex = null;
     },
 
     deleteOption() {
       this.existingOptions.splice(this.removeIndex, 1);
       this.jsonData = JSON.stringify(this.existingOptions);
       this.showRemoveWarning = false;
+      this.removeIndex = null;
     },
 
     removeOption(index) {
