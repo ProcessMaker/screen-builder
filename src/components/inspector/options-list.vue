@@ -26,25 +26,27 @@
             >
               <template v-for="(option, index) in existingOptions" >
                 <tr :key="'remove-' + option.value" v-if="removeIndex === index">
-                  <div class="card mb-3 bg-danger text-white text-right">
-                    <div class="card-body">
-                      {{ currentItemToDelete }}
+                  <td colspan="5">
+                    <div class="card mb-3 bg-danger text-white text-right">
+                      <div class="card-body">
+                        {{ currentItemToDelete }}
+                      </div>
+                      <div class="card-footer ">
+                        <button type="button" class="btn btn-sm  bg-white mr-3" @click="removeIndex=null">
+                          {{ $t('Close') }}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
+                          {{ $t('Yes') }}
+                        </button>
+                      </div>
                     </div>
-                    <div class="card-footer ">
-                      <button type="button" class="btn btn-sm  bg-white mr-3" @click="removeIndex=null">
-                        {{ $t('Close') }}
-                      </button>
-                      <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
-                        {{ $t('Yes') }}
-                      </button>
-                    </div>
-                  </div>
+                  </td>
                 </tr>
               </template>
 
               <template v-for="(option, index) in existingOptions" >
                 <tr :key="'edit-' + option.value" v-if="editIndex === index">
-                  <td colspan=5>
+                  <td colspan="5">
                     <div class="card">
                       <div class="card-header pl-2" v-if="optionCardType == 'insert'">
                         {{ $t('Add Option') }}
@@ -335,6 +337,7 @@ export default {
       this.optionValue = '';
       this.showOptionCard = true;
       this.optionError = '';
+      this.editIndex = 0;
     },
     addOption() {
       const that = this;
