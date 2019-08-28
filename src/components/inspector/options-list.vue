@@ -41,77 +41,70 @@
 
       <div class="row">
         <div class="col">
-          <draggable 
-              @update="updateSort"
-              :element="'div'"
-              v-model="optionsList"
-              :options="{group:'options'}"
-              @start="drag=true"
-              @end="drag=false"
-            >
+          <draggable @update="updateSort" :element="'div'" v-model="optionsList" :options="{group:'options'}" @start="drag=true" @end="drag=false" >
             <div v-for="(option, index) in optionsList" :key="option.value">
-                <div v-if="removeIndex === index">
-                    <div class="card mb-3 bg-danger text-white text-right">
-                      <div class="card-body">
-                        {{ currentItemToDelete }}
-                      </div>
-                      <div class="card-footer ">
-                        <button type="button" class="btn btn-sm  bg-white mr-3" @click="removeIndex=null">
-                          {{ $t('Close') }}
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
-                          {{ $t('Yes') }}
-                        </button>
-                      </div>
-                    </div>
+              <div v-if="removeIndex === index">
+                <div class="card mb-3 bg-danger text-white text-right">
+                  <div class="card-body">
+                    {{ currentItemToDelete }}
+                  </div>
+                  <div class="card-footer ">
+                    <button type="button" class="btn btn-sm  bg-white mr-3" @click="removeIndex=null">
+                      {{ $t('Close') }}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
+                      {{ $t('Yes') }}
+                    </button>
+                  </div>
                 </div>
+              </div>
 
-                <div v-if="editIndex === index">
-                    <div class="card">
-                      <div class="card-header pl-2" v-if="optionCardType == 'insert'">
-                        {{ $t('Add Option') }}
-                      </div>
-                      <div v-else class="card-header">
-                        {{ $t('Edit Option') }}
-                      </div>
-                      <div class="card-body p-2">
-                        <label for="option-value">{{ $t('Key') }}</label>
-                        <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
-                        <div v-if="optionError" class="invalid-feedback d-block text-right">
-                          <div>{{ optionError }}</div>
-                        </div>
-                        <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
-                        <b-form-input id="option-content" v-model="optionContent"/>
-
-                        <div class="card-footer pr-1 mt-3 text-right">
-                          <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="editIndex=null">
-                            {{ $t('Close') }}
-                          </button>
-                          <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
-                            {{ $t('Save') }}
-                          </button>
-                        </div>
-                      </div>
+              <div v-if="editIndex === index">
+                <div class="card">
+                  <div class="card-header pl-2" v-if="optionCardType == 'insert'">
+                    {{ $t('Add Option') }}
+                  </div>
+                  <div v-else class="card-header">
+                    {{ $t('Edit Option') }}
+                  </div>
+                  <div class="card-body p-2">
+                    <label for="option-value">{{ $t('Key') }}</label>
+                    <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+                    <div v-if="optionError" class="invalid-feedback d-block text-right">
+                      <div>{{ optionError }}</div>
                     </div>
+                    <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
+                    <b-form-input id="option-content" v-model="optionContent"/>
+
+                    <div class="card-footer pr-1 mt-3 text-right">
+                      <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="editIndex=null">
+                        {{ $t('Close') }}
+                      </button>
+                      <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+                        {{ $t('Save') }}
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              </div>
               
-                <div class="row" :class="rowCss(index)">
-                  <div class="col-1">
-                    <span class="fas fa-arrows-alt-v"/>
-                  </div>
-                  <div class="col-1">
-                    <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
-                  </div>
-                  <div class="col-5">
-                    {{ option[valueField] }}
-                  </div>
-                  <div class="col-1">
-                    <a @click="showEditOption(index)" class="fas fa-cog"/>
-                  </div>
-                  <div class="col-1">
-                    <a @click="removeOption(index)" class="fas fa-trash-alt"/>
-                  </div>
+              <div class="row" :class="rowCss(index)">
+                <div class="col-1">
+                  <span class="fas fa-arrows-alt-v"/>
                 </div>
+                <div class="col-1">
+                  <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
+                </div>
+                <div class="col-5">
+                  {{ option[valueField] }}
+                </div>
+                <div class="col-1">
+                  <a @click="showEditOption(index)" class="fas fa-cog"/>
+                </div>
+                <div class="col-1">
+                  <a @click="removeOption(index)" class="fas fa-trash-alt"/>
+                </div>
+              </div>
             </div>
           </draggable> 
         </div>
@@ -275,7 +268,7 @@ export default {
   },
   methods: {
     rowCss(index) {
-      return index % 2 === 0 ? "bg-default" : "alert-secondary";
+      return index % 2 === 0 ? 'bg-default' : 'alert-secondary';
     },
     keyChanged() {
       this.optionsList = [];
@@ -318,7 +311,6 @@ export default {
       this.showJsonEditor = false;
     },
     showEditOption(index) {
-      let parent = this.$el.parentElement;
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
