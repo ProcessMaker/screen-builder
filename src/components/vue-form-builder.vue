@@ -419,6 +419,7 @@ export default {
   methods: {
     migrateConfig() {
       this.config.forEach(page => this.replaceFormText(page.items));
+      this.config.forEach(page => this.migrateFormSelect(page.items));
     },
     replaceFormText(items) {
       items.forEach(item => {
@@ -436,6 +437,40 @@ export default {
         }
         if (item.items instanceof Array) {
           this.replaceFormText(item.items);
+        }
+      });
+    },
+    migrateFormSelect(items) {
+      items.forEach(item => {
+        if (item.component === 'FormSelect' && item.config.options instanceof Array) {
+          item.config.options = {
+            defaultOptionKey: '',
+            key: 'value',
+            value: 'content',
+            existingOptions: item.config.options,
+            jsonData: JSON.stringify(item.config.options),
+          };
+        } else if (item.component === 'FormSelect' && item.config.options instanceof Object && !item.config.options.existingOptions ) {
+          item.config.options.existingOptions = JSON.parse(item.config.options.jsonData);
+        }
+        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
+          item.items.forEach(column => this.migrateFormSelect(column));
+        }
+      });
+    },
+    migrateFormRadioButtonGroup(items) {
+      items.forEach(item => {
+        if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Array) {
+          item.config.options = {
+            defaultOptionKey: '',
+            key: 'value',
+            value: 'content',
+            existingOptions: item.config.options,
+            jsonData: JSON.stringify(item.config.options),
+          };
+        }
+        if (item.items instanceof Array) {
+          this.migrateFormRadioButtonGroup(item.items);
         }
       });
     },
