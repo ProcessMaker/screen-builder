@@ -26,9 +26,29 @@
                 {{ $t('CSS') }}
               </button>
             </div>
+            <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2" :title="$t('Load Screen')">
+              <i class="fas fa-upload mr-1"/>
+            </b-btn>
             <button type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
           </b-col>
+          <b-modal
+            ref="uploadmodal"
+            id="uploadmodal"
+            :title="$t('Upload JSON File')"
+            :cancel-title="$t('Cancel')"
+            :ok-title="$t('Upload')"
+            :ok-disabled="!uploadedJson"
+            cancel-variant="outline-secondary"
+            ok-variant="secondary"
+            @hidden="this.clearUpload"
+            @ok="loadScreenPackage"
+          >
+            <file-upload class="btn btn-primary" v-model="jsonFiles">
+              {{ $t('Select file') }}
+            </file-upload>
 
+            <span class="ml-3" v-if="jsonFiles[0]">{{ jsonFiles[0].name }}</span>
+          </b-modal>
         </b-row>
       </b-card-header>
 
@@ -144,6 +164,7 @@ import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
 import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
+import canOpenJsonFile from './mixins/canOpenJsonFile';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -166,6 +187,7 @@ Validator.register('attr-value', value => {
 
 export default {
   name: 'app',
+  mixins: [canOpenJsonFile],
   data() {
     return {
       mode: 'editor',
