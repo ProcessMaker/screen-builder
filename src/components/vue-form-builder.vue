@@ -334,6 +334,7 @@ export default {
   data() {
     const config = this.initialConfig || defaultConfig;
 
+    config.forEach(page => this.replaceFormText(page.items));
     if (this.title && config[0].name === 'Default') {
       config[0].name = this.title;
     }
@@ -424,6 +425,28 @@ export default {
       this.accordions.forEach(panel => panel.open = false);
       accordion.open = true;
     },
+    migrateConfig() {
+      this.config.forEach(page => this.replaceFormText(page.items));
+    },
+    replaceFormText(items) {
+      items.forEach(item => {
+        if (item.component === 'FormText') {
+          item.component = 'FormHtmlEditor';
+          item['editor-component'] = 'FormHtmlEditor';
+          const style =
+            (item.config.fontSize ? 'font-size: ' + item.config.fontSize + ';' : '') +
+            (item.config.fontWeight ? 'font-weight: ' + item.config.fontWeight + ';' : '') +
+            (item.config.textAlign ? 'text-align: ' + item.config.textAlign + ';' : '');
+          item.config = {
+            content: '<div style="' + style + '">' + item.config.label + '</div>',
+            interactive: true,
+          };
+        }
+        if (item.items instanceof Array) {
+          this.replaceFormText(item.items);
+        }
+      });
+    },
     getInspectorFields(fields) {
       if (!this.inspection.inspector) {
         return [];
@@ -453,8 +476,8 @@ export default {
 
           return field;
         });
-
-      return this.inspection.inspector.filter(input => accordionFields.includes(input.field));
+      const control = this.controls.find(control => control.component === this.inspection.component) || this.inspection;
+      return control.inspector.filter(input => accordionFields.includes(input.field));
     },
     updateState() {
       const items = this.config[this.currentPage].items;
