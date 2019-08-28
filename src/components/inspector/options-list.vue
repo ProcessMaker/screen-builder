@@ -13,8 +13,8 @@
         </div>
       </div>
 
-      <div class="card" v-if="showOptionCard">
-        <div class="card-header pl-2" v-if="optionCardType == 'insert'">
+      <div class="card mb-2" v-if="showOptionCard">
+        <div class="card-header" v-if="optionCardType == 'insert'">
           {{ $t('Add Option') }}
         </div>
         <div v-else class="card-header">
@@ -28,14 +28,15 @@
           </div>
           <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
-          <div class="card-footer pr-1 mt-3 text-right">
-            <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="showOptionCard=false">
-              {{ $t('Close') }}
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
-              {{ $t('Save') }}
-            </button>
-          </div>
+        </div>
+
+        <div class="card-footer text-right p-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="showOptionCard=false">
+            {{ $t('Cancel') }}
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+            {{ $t('Update') }}
+          </button>
         </div>
       </div>
 
@@ -45,23 +46,23 @@
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
                 <div class="card mb-3 bg-danger text-white text-right">
-                  <div class="card-body">
+                  <div class="card-body p-2">
                     {{ currentItemToDelete }}
                   </div>
-                  <div class="card-footer ">
-                    <button type="button" class="btn btn-sm  bg-white mr-3" @click="removeIndex=null">
-                      {{ $t('Close') }}
+                  <div class="card-footer text-right p-2">
+                    <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null">
+                      {{ $t('Cancel') }}
                     </button>
                     <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
-                      {{ $t('Yes') }}
+                      {{ $t('Delete') }}
                     </button>
                   </div>
                 </div>
               </div>
 
               <div v-if="editIndex === index">
-                <div class="card">
-                  <div class="card-header pl-2" v-if="optionCardType == 'insert'">
+                <div class="card my-2">
+                  <div class="card-header" v-if="optionCardType == 'insert'">
                     {{ $t('Add Option') }}
                   </div>
                   <div v-else class="card-header">
@@ -75,20 +76,20 @@
                     </div>
                     <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
                     <b-form-input id="option-content" v-model="optionContent"/>
+                  </div>
 
-                    <div class="card-footer pr-1 mt-3 text-right">
-                      <button type="button" class="btn btn-sm btn-outline-secondary mr-3" @click="editIndex=null">
-                        {{ $t('Close') }}
-                      </button>
-                      <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
-                        {{ $t('Save') }}
-                      </button>
-                    </div>
+                  <div class="card-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="editIndex=null">
+                      {{ $t('Cancel') }}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+                      {{ $t('Update') }}
+                    </button>
                   </div>
                 </div>
               </div>
               
-              <div class="row" :class="rowCss(index)">
+              <div class="row border-top border-bottom" :class="rowCss(index)">
                 <div class="col-1" style="cursor:grab">
                   <span class="fas fa-arrows-alt-v"/>
                 </div>
@@ -268,7 +269,7 @@ export default {
   },
   methods: {
     rowCss(index) {
-      return index % 2 === 0 ? 'bg-default' : 'alert-secondary';
+      return index % 2 === 0 ? 'alert-secondary' : 'bg-default';
     },
     keyChanged() {
       this.jsonDataChange();
