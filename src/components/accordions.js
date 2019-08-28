@@ -29,7 +29,7 @@ export default [
       'form',
       'editable',
     ],
-    open: true,
+    open: false,
   },
   {
     name: 'Data Source',
@@ -37,16 +37,16 @@ export default [
       'fields',
       { name: 'options', hideFor: 'FormMultiColumn' },
     ],
-    open: true,
+    open: false,
   },
   {
     name: 'Design',
     fields: ['color', 'bgcolor', 'variant', 'toggle', 'height', 'width'],
-    open: true,
+    open: false,
   },
   {
     name: 'Advanced',
     fields: ['conditionalHide', 'customCssSelector'],
-    open: true,
+    open: false,
   },
 ];

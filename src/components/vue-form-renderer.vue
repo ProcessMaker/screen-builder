@@ -59,7 +59,6 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
-import moment from 'moment';
 
 const csstree = require('css-tree');
 
@@ -163,7 +162,6 @@ export default {
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
-      this.setDefaultValues();
     },
     transientData: {
       handler() {
@@ -293,12 +291,6 @@ export default {
 
       if (item.component === 'FormRecordList') {
         defaultValue = [];
-      }
-
-      if (item.component === 'FormDatePicker') {
-        let date = new Date();
-        let formatDefaultDate = moment(date).format('MM/DD/YYYY h:mm A');
-        defaultValue = formatDefaultDate;
       }
 
       this.model[this.getValidPath(item.config.name)] = defaultValue;
