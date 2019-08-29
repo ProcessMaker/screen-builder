@@ -3,7 +3,6 @@
     <div
       v-for="(element, index) in visibleElements"
       :key="index"
-      :selector="element.config.customCssSelector"
     >
       <component
         v-if="element.container"
@@ -20,7 +19,7 @@
         :is="element.component"
       />
 
-      <div v-else :id="element.config.name ? element.config.name : undefined">
+      <div v-else :id="element.config.name ? element.config.name : undefined" :selector="element.config.customCssSelector">
         <component
           :class="elementCssClass(element)"
           ref="elements"
