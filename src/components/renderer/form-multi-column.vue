@@ -21,7 +21,7 @@
             :is="element.component"
           />
 
-          <div v-else :id="element.config.name ? element.config.name : undefined" :key="index" class="w-100">
+          <div v-else :id="element.config.name ? element.config.name : undefined" :key="index" class="w-100" :selector="element.config.customCssSelector">
             <component
               :class="elementCssClass(element)"
               ref="elements"
