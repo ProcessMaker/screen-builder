@@ -81,6 +81,7 @@
         <hr class="w-100">
       </b-input-group>
 
+
       <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
         {{ $t('Drag an element here') }}
       </div>
