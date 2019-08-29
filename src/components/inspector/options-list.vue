@@ -94,7 +94,7 @@
                   <span class="fas fa-arrows-alt-v"/>
                 </div>
                 <div class="col-1 d-flex align-items-center">
-                  <input type="radio" class="form-check" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
+                  <input type="radio" class="form-check" @click="defaultOptionClick" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
                 </div>
                 <div class="col-5" style="cursor:grab">
                   {{ option[valueField] }}
@@ -268,6 +268,11 @@ export default {
     this.jsonData = JSON.stringify(this.optionsList);
   },
   methods: {
+    defaultOptionClick() {
+      if (this.defaultOptionKey === event.target.value) {
+        this.defaultOptionKey = false;
+      }
+    },
     rowCss(index) {
       return index % 2 === 0 ? 'striped' : 'bg-default';
     },
