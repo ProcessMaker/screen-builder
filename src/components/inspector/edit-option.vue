@@ -29,9 +29,6 @@
 <script>
 
 export default {
-  components: {
-    draggable,
-  },
   props: ['optionValue','optionContent'],
   data() {
   },
