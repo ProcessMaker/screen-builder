@@ -428,6 +428,7 @@ export default {
     migrateConfig() {
       this.config.forEach(page => this.replaceFormText(page.items));
       this.config.forEach(page => this.migrateFormSelect(page.items));
+      this.config.forEach(page => this.migrateFormButton(page.items));
     },
     replaceFormText(items) {
       items.forEach(item => {
@@ -482,6 +483,17 @@ export default {
         }
       });
     },
+    migrateFormSubmit(items) {
+      items.forEach(item => {
+        item['editor-control'] = item['editor-component'];
+        if (item.component === 'FormSubmit') {
+          item['editor-control'] = item.config.event === 'submit' ? 'FormSubmit' : 'PageNavigation';
+        }
+        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
+          item.items.forEach(column => this.migrateFormSubmit(column));
+        }
+      });
+    },
     getInspectorFields(fields) {
       if (!this.inspection.inspector) {
         return [];
@@ -511,7 +523,7 @@ export default {
 
           return field;
         });
-      const control = this.controls.find(control => control.component === this.inspection.component) || this.inspection;
+      const control = this.controls.find(control => control['editor-control'] === this.inspection['editor-control']) || this.inspection;
       return control.inspector.filter(input => accordionFields.includes(input.field));
     },
     updateState() {
@@ -600,6 +612,7 @@ export default {
         inspector: JSON.parse(JSON.stringify(control.inspector)),
         component: control.component,
         'editor-component': control['editor-component'],
+        'editor-control': control['editor-control'],
         label: control.label,
         value: control.value,
       };
