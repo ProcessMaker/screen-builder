@@ -1,6 +1,6 @@
 <template>
   <div class="custom-css-scope">
-    <div class="page p-3">
+    <div class="page">
       <div
         v-for="(element, index) in visibleElements"
         :key="index"
