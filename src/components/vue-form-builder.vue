@@ -603,7 +603,9 @@ export default {
       this.inspection = element;
       this.selected = element;
       const defaultAccordion = this.accordions.find(accordion => this.getInspectorFields(accordion.fields).length > 0);
-      this.openAccordion(defaultAccordion);
+      if (defaultAccordion) {
+        this.openAccordion(defaultAccordion);
+      }
     },
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
