@@ -334,8 +334,8 @@ export default {
   },
   data() {
     const config = this.initialConfig || defaultConfig;
+    this.migrateConfig(config);
 
-    config.forEach(page => this.replaceFormText(page.items));
     if (this.title && config[0].name === 'Default') {
       config[0].name = this.title;
     }
@@ -426,10 +426,10 @@ export default {
       this.accordions.forEach(panel => panel.open = false);
       accordion.open = true;
     },
-    migrateConfig() {
-      this.config.forEach(page => this.replaceFormText(page.items));
-      this.config.forEach(page => this.migrateFormSelect(page.items));
-      this.config.forEach(page => this.migrateFormButton(page.items));
+    migrateConfig(config = this.config) {
+      config.forEach(page => this.replaceFormText(page.items));
+      config.forEach(page => this.migrateFormSelect(page.items));
+      config.forEach(page => this.migrateFormSubmit(page.items));
     },
     replaceFormText(items) {
       items.forEach(item => {
@@ -455,6 +455,7 @@ export default {
         if (item.component === 'FormSelect' && item.config.options instanceof Array) {
           item.config.options = {
             defaultOptionKey: '',
+            dataSource: 'provideData',
             key: 'value',
             value: 'content',
             optionsList: item.config.options,
