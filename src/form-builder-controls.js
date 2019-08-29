@@ -38,6 +38,7 @@ export default [
       label: 'Rich Text',
       component: 'FormHtmlEditor',
       'editor-component': 'FormHtmlEditor',
+      'editor-control': 'FormHtmlEditor',
       config: {
         icon: 'fas fa-pencil-ruler',
         interactive: true,
@@ -66,6 +67,7 @@ export default [
       label: 'Line Input',
       component: 'FormInput',
       'editor-component': 'FormInput',
+      'editor-control': 'FormInput',
       config: {
         icon: 'far fa-square',
         label: 'New Input',
@@ -115,6 +117,7 @@ export default [
       label: 'Textarea',
       component: 'FormTextArea',
       'editor-component': 'FormTextArea',
+      'editor-control': 'FormTextArea',
       'fa-icon': 'fas fa-paragraph',
       config: {
         icon: 'fas fa-paragraph',
@@ -163,6 +166,7 @@ export default [
       label: 'Select',
       component: 'FormSelect',
       'editor-component': 'FormSelect',
+      'editor-control': 'FormSelect',
       config: {
         icon: 'fas fa-chevron-circle-down',
         label: 'New Select',
@@ -202,6 +206,7 @@ export default [
       label: 'Radio Button Group',
       component: 'FormRadioButtonGroup',
       'editor-component': 'FormRadioButtonGroup',
+      'editor-control': 'FormRadioButtonGroup',
       config: {
         icon: 'fas fa-list-ul',
         label: 'New Radio Button Group',
@@ -242,6 +247,7 @@ export default [
       label: 'Checkbox',
       component: 'FormCheckbox',
       'editor-component': 'FormCheckbox',
+      'editor-control': 'FormCheckbox',
       config: {
         icon: 'fas fa-check-square',
         label: 'New Checkbox',
@@ -280,6 +286,7 @@ export default [
       label: 'Date Picker',
       component: 'FormDatePicker',
       'editor-component': 'FormDatePicker',
+      'editor-control': 'FormDatePicker',
       config: {
         icon: 'far fa-calendar-alt',
         label: 'New Date Picker',
@@ -309,6 +316,7 @@ export default [
       label: 'Page Navigation',
       component: 'FormButton',
       'editor-component': 'FormButton',
+      'editor-control': 'PageNavigation',
       config: {
         icon: 'far fa-compass',
         label: 'Page Navigation',
@@ -340,6 +348,7 @@ export default [
       label: 'Multicolumn / Table',
       component: 'FormMultiColumn',
       'editor-component': 'MultiColumn',
+      'editor-control': 'MultiColumn',
       container: true,
       // Default items container
       items: [
@@ -380,6 +389,7 @@ export default [
       label: 'Record List',
       component: 'FormRecordList',
       'editor-component': 'FormText',
+      'editor-control': 'FormText',
       config: {
         name: '',
         icon: 'fas fa-th-list',
@@ -440,6 +450,7 @@ export default [
       label: 'Image',
       component: 'FormImage',
       'editor-component': 'FormImage',
+      'editor-control': 'FormImage',
       config: {
         label: 'Image',
         icon: 'fas fa-image',
@@ -495,6 +506,7 @@ export default [
       label: 'Submit Button',
       component: 'FormButton',
       'editor-component': 'FormButton',
+      'editor-control': 'FormButton',
       config: {
         icon: 'fas fa-share-square',
         label: 'New Submit',

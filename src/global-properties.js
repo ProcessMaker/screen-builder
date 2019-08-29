@@ -16,7 +16,7 @@ export default [
       },
       {
         type: 'FormInput',
-        field: 'selector',
+        field: 'customCssSelector',
         config: {
           label: 'CSS Selector Name',
           helper: 'Use this in your custom css rules',
