@@ -26,6 +26,7 @@ import {
   validationRulesProperty,
   toggleStyleProperty,
   buttonVariantStyleProperty,
+  disabledProperty,
 } from './form-control-common-properties';
 
 export default [
@@ -186,6 +187,7 @@ export default [
         labelProperty,
         placeholderProperty,
         validationRulesProperty,
+        disabledProperty,
         helperTextProperty,
         {
           type: 'OptionsList',
@@ -235,6 +237,7 @@ export default [
         colorProperty,
         bgcolorProperty,
         toggleStyleProperty,
+        disabledProperty,
       ],
     },
   },
@@ -274,6 +277,7 @@ export default [
         colorProperty,
         bgcolorProperty,
         toggleStyleProperty,
+        disabledProperty,
       ],
     },
   },
@@ -303,6 +307,7 @@ export default [
         helperTextProperty,
         colorProperty,
         bgcolorProperty,
+        disabledProperty
       ],
     },
   },

@@ -136,6 +136,14 @@ export const readonlyProperty = {
   },
 };
 
+export const disabledProperty = {
+  type: 'FormCheckbox',
+  field: 'disabled',
+  config: {
+    label: 'Read Only',
+  },
+};
+
 export const validationRulesProperty = {
   type: 'FormInput',
   field: 'validation',
