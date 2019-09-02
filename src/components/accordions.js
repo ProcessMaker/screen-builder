@@ -7,6 +7,7 @@ export default [
       'dataFormat',
       'validation',
       'readonly',
+      'disabled',
       'initiallyChecked',
     ],
     open: true,
