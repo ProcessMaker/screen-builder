@@ -53,6 +53,7 @@ import CustomCSS from './custom-css';
 import {
   FormInput,
   FormSelect,
+  FormPolySelect,
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
@@ -147,6 +148,7 @@ export default {
       defaultValues: {
         FormInput: '',
         FormSelect: null,
+        FormPolySelect: null,
         FormCheckbox: false,
         FormRadioButtonGroup: null,
         FormTextArea: '',
@@ -281,6 +283,12 @@ export default {
       }
 
       if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
+        const options = getOptionsFromDataSource(item.config.options, this.transientData);
+
+        defaultValue = options[0] ? options[0].value : null;
+      }
+
+      if (['FormPolySelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
         const options = getOptionsFromDataSource(item.config.options, this.transientData);
 
         defaultValue = options[0] ? options[0].value : null;
