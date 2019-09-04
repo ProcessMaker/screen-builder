@@ -21,12 +21,12 @@
           {{ $t('Edit Option') }}
         </div>
         <div class="card-body p-2">
-          <label for="option-value">{{ $t('Key') }}</label>
+          <label for="option-value">{{ $t('Value') }}</label>
           <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
           </div>
-          <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
+          <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
         </div>
 
@@ -69,12 +69,12 @@
                     {{ $t('Edit Option') }}
                   </div>
                   <div class="card-body p-2">
-                    <label for="option-value">{{ $t('Key') }}</label>
+                    <label for="option-value">{{ $t('Value') }}</label>
                     <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
                     <div v-if="optionError" class="invalid-feedback d-block text-right">
                       <div>{{ optionError }}</div>
                     </div>
-                    <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
+                    <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
                     <b-form-input id="option-content" v-model="optionContent"/>
                   </div>
 
@@ -152,11 +152,11 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
-      <label for="key">{{ $t('Key') }}</label>
+      <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
 
-      <label for="value">{{ $t('Value') }}</label>
+      <label for="value">{{ $t('Content') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
     </div>
@@ -235,6 +235,11 @@ export default {
       this.showRenderAs = this.options.showRenderAs;
       this.renderAs = this.options.renderAs;
       this.allowMultiSelect = this.options.allowMultiSelect;
+      this.showOptionCard = this.options.showOptionCard;
+      this.showRemoveWarning = this.options.showRemoveWarning;
+      this.showJsonEditor = this.options.showJsonEditor;
+      this.editIndex = this.options.editIndex;
+      this.removeIndex = this.options.removeIndex;
     },
     dataSource() {
       this.jsonData = '';
@@ -252,10 +257,10 @@ export default {
       return this.optionError ? 'is-invalid' : '';
     },
     keyField() {
-      return this.key || 'key';
+      return this.key || 'value';
     },
     valueField() {
-      return this.value || 'value';
+      return this.value || 'content';
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
@@ -281,6 +286,11 @@ export default {
         showRenderAs: this.showRenderAs,
         renderAs: this.renderAs,
         allowMultiSelect: this.allowMultiSelect,
+        showOptionCard: this.showOptionCard,
+        showRemoveWarning: this.showRemoveWarning,
+        showJsonEditor: this.showJsonEditor,
+        editIndex: this.editIndex,
+        removeIndex: this.removeIndex,
       };
     },
   },
