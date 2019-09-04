@@ -88,7 +88,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="row border-top" :class="rowCss(index)">
                 <div class="col-1" style="cursor:grab">
                   <span class="fas fa-arrows-alt-v"/>
@@ -107,7 +107,7 @@
                 </div>
               </div>
             </div>
-          </draggable> 
+          </draggable>
         </div>
       </div>
       <div class="row">
@@ -117,22 +117,19 @@
           </a>
         </div>
       </div>
-
-      <div class="row mb-3">
+      <div class="row mb-3" v-if="showRenderAs">
         <div class="col-12">
           <input type="checkbox"  v-model="allowMultiSelect">
           Allow multiple selections
         </div>
       </div>
-      <div class="row mb-3">
+      <div class="row mb-3" v-if="showRenderAs">
         <div class="col">
           <label for="render-as">{{ $t('Render Options As') }}</label>
           <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
         </div>
       </div>
     </div>
-
-
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
         <label for="json-data">{{ $t('JSON Data') }}</label>
@@ -207,6 +204,7 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
+      showRenderAs: false,
       renderAs: 'dropdown',
       allowMultiSelect: false,
       defaultOptionKey: false,
@@ -234,6 +232,7 @@ export default {
       this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
       this.optionsList = this.options.optionsList;
+      this.showRenderAs = this.options.showRenderAs;
       this.renderAs = this.options.renderAs;
       this.allowMultiSelect = this.options.allowMultiSelect;
     },
@@ -279,6 +278,7 @@ export default {
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         optionsList: this.optionsList,
+        showRenderAs: this.showRenderAs,
         renderAs: this.renderAs,
         allowMultiSelect: this.allowMultiSelect,
       };
@@ -295,6 +295,7 @@ export default {
     this.selectedOptions = this.options.selectedOptions;
     this.optionsList = this.options.optionsList ? this.options.optionsList : [];
     this.jsonData = JSON.stringify(this.optionsList);
+    this.showRenderAs = this.options.showRenderAs;
     this.renderAs = this.options.renderAs;
     this.allowMultiSelect = this.options.allowMultiSelect;
   },
@@ -330,7 +331,7 @@ export default {
       const that = this;
       jsonList.forEach (item => {
         that.optionsList.push({
-          [that.keyField] : item[that.keyField], 
+          [that.keyField] : item[that.keyField],
           [that.valueField] : item[that.valueField],
         });
       });
@@ -339,7 +340,7 @@ export default {
     updateSort() {
       this.jsonData = JSON.stringify(this.optionsList);
       this.$emit('change', this.dataObjectOptions);
-      
+
     },
     editAsJson() {
       this.showJsonEditor = true;
@@ -369,7 +370,7 @@ export default {
         if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
           this.optionError = 'An item with the same key already exists';
           return;
-        } 
+        }
         this.optionsList.push(
           {
             [this.valueField]: this.optionContent,
@@ -381,7 +382,7 @@ export default {
         if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
           this.optionError = 'An item with the same key already exists';
           return;
-        } 
+        }
         this.optionsList[this.editIndex][this.keyField] = this.optionValue;
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
       }

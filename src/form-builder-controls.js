@@ -173,14 +173,11 @@ export default [
         label: 'New Select',
         placeholder: '',
         validation: '',
-        dataFormat: 'array',
         options: {
           dataSource: dataSourceValues.provideData,
           jsonData: '',
-          renderAs: 'dropdown',
-          allowMultiSelect: false,
           selectedOptions: [],
-          optionsList: [{'key':'llave1', 'value':'texto1'}, {'key':'llave2', 'value':'texto2'}],
+          optionsList: [],
           key:'key',
           value:'value',
         },
@@ -219,6 +216,7 @@ export default [
         validation: '',
         dataFormat: 'array',
         options: {
+          showRenderAs: true,
           dataSource: dataSourceValues.provideData,
           jsonData: '',
           renderAs: 'dropdown',
