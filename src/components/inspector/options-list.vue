@@ -117,6 +117,19 @@
           </a>
         </div>
       </div>
+
+      <div class="row mb-3">
+        <div class="col-12">
+          <input type="checkbox"  v-model="allowMultiSelect">
+          Allow multiple selections
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col">
+          <label for="render-as">{{ $t('Render Options As') }}</label>
+          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
+        </div>
+      </div>
     </div>
 
 
@@ -194,8 +207,20 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
+      renderAs: 'dropdown',
+      allowMultiSelect: false,
       defaultOptionKey: false,
       selectedOptions: [],
+      renderAsOptions: [
+        {
+          text:'Dropdown/Multiselect' ,
+          value: 'dropdown',
+        },
+        {
+          text: 'Radio/Checkbox Group',
+          value: 'checkbox',
+        },
+      ],
     };
   },
   watch: {
@@ -209,6 +234,8 @@ export default {
       this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
       this.optionsList = this.options.optionsList;
+      this.renderAs = this.options.renderAs;
+      this.allowMultiSelect = this.options.allowMultiSelect;
     },
     dataSource() {
       this.jsonData = '';
@@ -252,6 +279,8 @@ export default {
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         optionsList: this.optionsList,
+        renderAs: this.renderAs,
+        allowMultiSelect: this.allowMultiSelect,
       };
     },
   },
@@ -266,6 +295,8 @@ export default {
     this.selectedOptions = this.options.selectedOptions;
     this.optionsList = this.options.optionsList ? this.options.optionsList : [];
     this.jsonData = JSON.stringify(this.optionsList);
+    this.renderAs = this.options.renderAs;
+    this.allowMultiSelect = this.options.allowMultiSelect;
   },
   methods: {
     defaultOptionClick() {
