@@ -429,6 +429,7 @@ export default {
     migrateConfig(config = this.config) {
       config.forEach(page => this.replaceFormText(page.items));
       config.forEach(page => this.migrateFormSelect(page.items));
+      config.forEach(page => this.migrateFormRadioButtonGroup(page.items));
       config.forEach(page => this.migrateFormSubmit(page.items));
     },
     replaceFormText(items) {
@@ -474,14 +475,17 @@ export default {
         if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Array) {
           item.config.options = {
             defaultOptionKey: '',
+            dataSource: 'provideData',
             key: 'value',
             value: 'content',
             optionsList: item.config.options,
             jsonData: JSON.stringify(item.config.options),
           };
+        } else if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Object && !item.config.options.optionsList ) {
+          item.config.options.optionsList = JSON.parse(item.config.options.jsonData);
         }
-        if (item.items instanceof Array) {
-          this.migrateFormRadioButtonGroup(item.items);
+        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
+          item.items.forEach(column => this.migrateFormRadioButtonGroup(column));
         }
       });
     },
