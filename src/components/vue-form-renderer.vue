@@ -53,6 +53,7 @@ import CustomCSS from './custom-css';
 import {
   FormInput,
   FormSelect,
+  FormPolySelect,
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
