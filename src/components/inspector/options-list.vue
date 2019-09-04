@@ -209,6 +209,11 @@ export default {
       this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
       this.optionsList = this.options.optionsList;
+      this.showOptionCard = this.options.showOptionCard;
+      this.showRemoveWarning = this.options.showRemoveWarning;
+      this.showJsonEditor = this.options.showJsonEditor;
+      this.editIndex = this.options.editIndex;
+      this.removeIndex = this.options.removeIndex;
     },
     dataSource() {
       this.jsonData = '';
@@ -252,6 +257,11 @@ export default {
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         optionsList: this.optionsList,
+        showOptionCard: this.showOptionCard,
+        showRemoveWarning: this.showRemoveWarning,
+        showJsonEditor: this.showJsonEditor,
+        editIndex: this.editIndex,
+        removeIndex: this.removeIndex,
       };
     },
   },
