@@ -53,7 +53,7 @@ import CustomCSS from './custom-css';
 import {
   FormInput,
   FormSelect,
-  FormPolySelect,
+  FormSelectList,
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
@@ -120,6 +120,7 @@ export default {
   components: {
     FormInput,
     FormSelect,
+    FormSelectList,
     FormCheckbox,
     FormRadioButtonGroup,
     FormTextArea,
@@ -148,6 +149,7 @@ export default {
       defaultValues: {
         FormInput: '',
         FormSelect: null,
+        FormSelectList: [],
         FormCheckbox: false,
         FormRadioButtonGroup: null,
         FormTextArea: '',
