@@ -21,12 +21,12 @@
           {{ $t('Edit Option') }}
         </div>
         <div class="card-body p-2">
-          <label for="option-value">{{ $t('Key') }}</label>
+          <label for="option-value">{{ $t('Value') }}</label>
           <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
           </div>
-          <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
+          <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
         </div>
 
@@ -69,12 +69,12 @@
                     {{ $t('Edit Option') }}
                   </div>
                   <div class="card-body p-2">
-                    <label for="option-value">{{ $t('Key') }}</label>
+                    <label for="option-value">{{ $t('Value') }}</label>
                     <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
                     <div v-if="optionError" class="invalid-feedback d-block text-right">
                       <div>{{ optionError }}</div>
                     </div>
-                    <label class="mt-3" for="option-content">{{ $t('Value') }}</label>
+                    <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
                     <b-form-input id="option-content" v-model="optionContent"/>
                   </div>
 
@@ -88,7 +88,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="row border-top" :class="rowCss(index)">
                 <div class="col-1" style="cursor:grab">
                   <span class="fas fa-arrows-alt-v"/>
@@ -107,7 +107,7 @@
                 </div>
               </div>
             </div>
-          </draggable> 
+          </draggable>
         </div>
       </div>
       <div class="row">
@@ -142,11 +142,11 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
-      <label for="key">{{ $t('Key') }}</label>
+      <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
 
-      <label for="value">{{ $t('Value') }}</label>
+      <label for="value">{{ $t('Content') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
     </div>
@@ -209,6 +209,11 @@ export default {
       this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
       this.optionsList = this.options.optionsList;
+      this.showOptionCard = this.options.showOptionCard;
+      this.showRemoveWarning = this.options.showRemoveWarning;
+      this.showJsonEditor = this.options.showJsonEditor;
+      this.editIndex = this.options.editIndex;
+      this.removeIndex = this.options.removeIndex;
     },
     dataSource() {
       this.jsonData = '';
@@ -226,10 +231,10 @@ export default {
       return this.optionError ? 'is-invalid' : '';
     },
     keyField() {
-      return this.key || 'key';
+      return this.key || 'value';
     },
     valueField() {
-      return this.value || 'value';
+      return this.value || 'content';
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
@@ -252,6 +257,11 @@ export default {
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         optionsList: this.optionsList,
+        showOptionCard: this.showOptionCard,
+        showRemoveWarning: this.showRemoveWarning,
+        showJsonEditor: this.showJsonEditor,
+        editIndex: this.editIndex,
+        removeIndex: this.removeIndex,
       };
     },
   },
@@ -299,7 +309,7 @@ export default {
       const that = this;
       jsonList.forEach (item => {
         that.optionsList.push({
-          [that.keyField] : item[that.keyField], 
+          [that.keyField] : item[that.keyField],
           [that.valueField] : item[that.valueField],
         });
       });
@@ -308,7 +318,7 @@ export default {
     updateSort() {
       this.jsonData = JSON.stringify(this.optionsList);
       this.$emit('change', this.dataObjectOptions);
-      
+
     },
     editAsJson() {
       this.showJsonEditor = true;
@@ -338,7 +348,7 @@ export default {
         if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
           this.optionError = 'An item with the same key already exists';
           return;
-        } 
+        }
         this.optionsList.push(
           {
             [this.valueField]: this.optionContent,
@@ -350,7 +360,7 @@ export default {
         if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
           this.optionError = 'An item with the same key already exists';
           return;
-        } 
+        }
         this.optionsList[this.editIndex][this.keyField] = this.optionValue;
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
       }
