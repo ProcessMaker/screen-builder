@@ -1,11 +1,12 @@
 const string = { value: 'string', content: 'Text' };
 const int = { value: 'int', content: 'Integer' };
+const currency = { value: 'currency', content: 'Currency' };
 const float = { value: 'float', content: 'Decimal' };
 const datetime = { value: 'datetime', content: 'Datetime' };
 const date = { value: 'date', content: 'Date' };
 const boolean = { value: 'boolean', content: 'Boolean' };
 
-const allOptions = [string, int, float, datetime, date];
+const allOptions = [string, int, currency, float, datetime, date];
 const allOptionsWithoutDate = [string, int, float];
 
 function dataTypeFactory(options) {
