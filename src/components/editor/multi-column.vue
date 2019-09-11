@@ -95,6 +95,7 @@ import {
   FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
+  FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
 
 const defaultColumnWidth = 1;
@@ -112,6 +113,7 @@ export default {
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormHtmlViewer,
     ...renderer,
   },
   data() {

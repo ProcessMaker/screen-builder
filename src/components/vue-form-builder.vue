@@ -291,6 +291,7 @@ import {
   FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
+  FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
 
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
@@ -327,6 +328,7 @@ export default {
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormHtmlViewer,
     FormMultiColumn,
     ...editor,
     ...inspector,

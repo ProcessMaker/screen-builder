@@ -58,6 +58,7 @@ import {
   FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
+  FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
 
@@ -124,6 +125,7 @@ export default {
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormHtmlViewer,
     FormMultiColumn,
     CustomCSS,
     ...editor,
