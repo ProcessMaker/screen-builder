@@ -117,9 +117,19 @@
           </a>
         </div>
       </div>
+      <div class="row mb-3" v-if="showRenderAs">
+        <div class="col-12">
+          <input type="checkbox"  v-model="allowMultiSelect">
+          Allow multiple selections
+        </div>
+      </div>
+      <div class="row mb-3" v-if="showRenderAs">
+        <div class="col">
+          <label for="render-as">{{ $t('Render Options As') }}</label>
+          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
+        </div>
+      </div>
     </div>
-
-
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
         <label for="json-data">{{ $t('JSON Data') }}</label>
@@ -194,8 +204,21 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
+      showRenderAs: false,
+      renderAs: 'dropdown',
+      allowMultiSelect: false,
       defaultOptionKey: false,
       selectedOptions: [],
+      renderAsOptions: [
+        {
+          text:'Dropdown/Multiselect' ,
+          value: 'dropdown',
+        },
+        {
+          text: 'Radio/Checkbox Group',
+          value: 'checkbox',
+        },
+      ],
     };
   },
   watch: {
@@ -209,6 +232,9 @@ export default {
       this.defaultOptionKey = this.options.defaultOptionKey;
       this.selectedOptions = this.options.selectedOptions;
       this.optionsList = this.options.optionsList;
+      this.showRenderAs = this.options.showRenderAs;
+      this.renderAs = this.options.renderAs;
+      this.allowMultiSelect = this.options.allowMultiSelect;
       this.showOptionCard = this.options.showOptionCard;
       this.showRemoveWarning = this.options.showRemoveWarning;
       this.showJsonEditor = this.options.showJsonEditor;
@@ -257,6 +283,9 @@ export default {
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         optionsList: this.optionsList,
+        showRenderAs: this.showRenderAs,
+        renderAs: this.renderAs,
+        allowMultiSelect: this.allowMultiSelect,
         showOptionCard: this.showOptionCard,
         showRemoveWarning: this.showRemoveWarning,
         showJsonEditor: this.showJsonEditor,
@@ -276,6 +305,9 @@ export default {
     this.selectedOptions = this.options.selectedOptions;
     this.optionsList = this.options.optionsList ? this.options.optionsList : [];
     this.jsonData = JSON.stringify(this.optionsList);
+    this.showRenderAs = this.options.showRenderAs;
+    this.renderAs = this.options.renderAs;
+    this.allowMultiSelect = this.options.allowMultiSelect;
   },
   methods: {
     defaultOptionClick() {
