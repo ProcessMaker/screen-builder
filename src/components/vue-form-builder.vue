@@ -171,7 +171,7 @@
           <template v-for="accordion in accordions">
             <b-button
               :key="`${accordion.name}-button`"
-              v-if="getInspectorFields(accordion.fields).length > 0"
+              v-if="getInspectorFields(accordion).length > 0"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
               @click="toggleAccordion(accordion)"
@@ -185,7 +185,7 @@
             </b-button>
             <b-collapse :key="`${accordion.name}-collapse`" :id="accordion.name" v-model="accordion.open">
               <component
-                v-for="(item, index) in getInspectorFields(accordion.fields)"
+                v-for="(item, index) in getInspectorFields(accordion)"
                 :formConfig="config"
                 :currentPage="currentPage"
                 :key="index"
@@ -502,12 +502,29 @@ export default {
         }
       });
     },
-    getInspectorFields(fields) {
+    getAllAccordionizedFields() {
+      if (this._allAccordionizedFields) {
+        return this._allAccordionizedFields;
+      }
+      this._allAccordionizedFields = this.accordions.flatMap(accordion => {
+        return accordion.fields.map(fieldName => {
+          if (typeof fieldName === 'string') {
+            return fieldName;
+          }
+          return fieldName.name;
+        });
+      });
+      return this._allAccordionizedFields;
+    },
+    knownField(field) {
+      return this.getAllAccordionizedFields().includes(field);
+    },
+    getInspectorFields(accordion) {
       if (!this.inspection.inspector) {
         return [];
       }
 
-      const accordionFields = fields
+      const accordionFields = accordion.fields
         .filter(field => {
           if (typeof field !== 'string') {
             const component = this.inspection.component;
@@ -532,7 +549,16 @@ export default {
           return field;
         });
       const control = this.controls.find(control => control['editor-control'] === this.inspection['editor-control']) || this.inspection;
-      return control.inspector.filter(input => accordionFields.includes(input.field));
+      return control.inspector.filter(input => {
+        if (accordionFields.includes(input.field)) {
+          return true;
+        } else if (!this.knownField(input.field) && accordion.name === 'Configuration') {
+          // If it's not a known inspector field from accordion.js and this is the
+          // configuration accordion, then add it here
+          return true;
+        }
+        return false;
+      });
     },
     updateState() {
       const items = this.config[this.currentPage].items;
@@ -609,7 +635,7 @@ export default {
     inspect(element = {}) {
       this.inspection = element;
       this.selected = element;
-      const defaultAccordion = this.accordions.find(accordion => this.getInspectorFields(accordion.fields).length > 0);
+      const defaultAccordion = this.accordions.find(accordion => this.getInspectorFields(accordion).length > 0);
       if (defaultAccordion) {
         this.openAccordion(defaultAccordion);
       }
