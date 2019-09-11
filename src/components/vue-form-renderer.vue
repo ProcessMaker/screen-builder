@@ -49,6 +49,7 @@ import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
+import FormMaskedInput from '@/components/renderer/form-masked-input';
 import CustomCSS from './custom-css';
 import {
   FormInput,
@@ -118,7 +119,7 @@ export default {
   },
   mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
   components: {
-    FormInput,
+    FormInput: FormMaskedInput,
     FormSelect,
     FormSelectList,
     FormCheckbox,
@@ -148,6 +149,7 @@ export default {
       transientData: JSON.parse(JSON.stringify(this.data)),
       defaultValues: {
         FormInput: '',
+        FormMaskedInput: '',
         FormSelect: null,
         FormSelectList: [],
         FormCheckbox: false,
@@ -279,7 +281,7 @@ export default {
 
       let defaultValue = null;
 
-      if (['FormInput', 'FormTextArea', 'FormText'].includes(item.component)) {
+      if (['FormInput', 'FormMaskedInput', 'FormTextArea', 'FormText'].includes(item.component)) {
         defaultValue = '';
       }
 
