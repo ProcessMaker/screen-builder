@@ -55,10 +55,6 @@ import { Money } from 'v-money';
 import MaskedInput from 'vue-text-mask'
 
 const uniqIdsMixin = createUniqIdsMixin();
-const componentTypes = {
-  currency: 'money',
-  date: 'the-mask',
-};
 
 export default {
   inheritAttrs: false,
@@ -72,7 +68,7 @@ export default {
     'name',
     'controlClass',
     'dataFormat',
-    'currency'
+    'dataMask',
   ],
   methods: {
     gotInput(val) {
@@ -139,9 +135,6 @@ export default {
     }
   },
   computed: {
-    componentType() {
-      return componentTypes[this.dataFormat] || 'input';
-    },
     classList() {
       return {
         'is-invalid': (this.validator && this.validator.errorCount) || this.error,
@@ -165,8 +158,10 @@ export default {
         this.component = 'input';
       }
     },
-    currency() {
-      this.setCurrencyFormatter(this.currency);
+    'dataMask.code': {
+      handler() {
+        this.setCurrencyFormatter(this.dataMask.code);
+      }
     },
   },
   computed: {
