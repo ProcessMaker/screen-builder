@@ -48,6 +48,7 @@ import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins
 import {
   FormInput,
   FormSelect,
+  FormSelectList,
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
@@ -66,6 +67,7 @@ export default {
     draggable,
     FormInput,
     FormSelect,
+    FormSelectList,
     FormTextArea,
     FormCheckbox,
     FormRadioButtonGroup,
