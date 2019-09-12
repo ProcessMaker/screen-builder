@@ -72,6 +72,7 @@
   ],
   "dependencies": {
     "v-money": "^0.8.1",
+    "vue-text-mask": "^6.1.2",
     "vue-the-mask": "^0.11.1"
   }
 }

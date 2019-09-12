@@ -21,6 +21,7 @@
         />
 
         <div v-else :id="element.config.name ? element.config.name : undefined" :selector="element.config.customCssSelector">
+          {{ element.config }}
           <component
             :class="elementCssClass(element)"
             ref="elements"
