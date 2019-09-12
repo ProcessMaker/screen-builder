@@ -24,22 +24,7 @@
 
 <script>
 import FormMultiselect from './form-multiselect';
-import currencies from '../../currency.json';
-
-const currencyCodes = [];
-for (let code in currencies) {
-  currencyCodes.push(code);
-}
-const maskConfigurations = {
-  defaultMask: {
-    label: 'Data Format',
-    options: [],
-  },
-  currency: {
-    label: 'Currency Format',
-    options: currencyCodes,
-  },
-};
+import maskConfig from '../../form-input-mask-config';
 
 export default {
   extends: FormMultiselect,
@@ -48,7 +33,7 @@ export default {
       return this.selectedControl.config.dataFormat === 'currency';
     },
     maskConfig() {
-      return maskConfigurations[this.selectedControl.config.dataFormat] || maskConfigurations.defaultMask;
+      return maskConfig[this.selectedControl.config.dataFormat] || maskConfig.defaultMask;
     },
     maskLabel() {
       return this.$t(this.maskConfig.label || 'Data Format');
@@ -59,6 +44,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>
