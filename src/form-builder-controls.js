@@ -4,7 +4,7 @@ import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
-import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
+import {DataTypeProperty, DataFormatProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
@@ -78,23 +78,13 @@ export default [
         name: '',
         placeholder: '',
         validation: '',
-        currency: {
-          code: 'USD',
-          name: 'US Dollar',
-          format: '#,###.##',
-          symbol: '$'
-        },
         helper: null,
         type: 'text',
       },
       inspector: [
         keyNameProperty,
         DataTypeProperty,
-        {
-          type: 'CurrencyFormat',
-          field: 'currency',
-          config: {},
-        },
+        DataFormatProperty,
         labelProperty,
         {
           type: 'FormMultiselect',
@@ -153,11 +143,7 @@ export default [
         placeholderProperty,
         keyNameProperty,
         DataTypeProperty,
-        {
-          type: 'CurrencyFormat',
-          field: 'currency',
-          config: {},
-        },
+        DataFormatProperty,
         helperTextProperty,
         {
           type: 'FormCheckbox',

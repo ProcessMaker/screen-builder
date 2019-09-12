@@ -190,6 +190,7 @@
                 :currentPage="currentPage"
                 :key="index"
                 :is="item.type"
+                :selectedControl="selected"
                 class="border-bottom m-0 p-4"
                 v-bind="item.config"
                 v-model="inspection.config[item.field]"
