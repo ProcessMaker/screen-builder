@@ -21,6 +21,7 @@
       :class="classList"
       :mask="mask"
       :guide="false"
+      :modelClean="true"
     ></masked-input>
 
     <input v-if="component === 'input'"
@@ -51,7 +52,6 @@ import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixi
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 // import { TheMask } from 'vue-the-mask';
 import { Money } from 'v-money';
-// import maskConfig from '../../form-input-mask-config';
 import MaskedInput from 'vue-text-mask'
 
 const uniqIdsMixin = createUniqIdsMixin();
@@ -77,17 +77,23 @@ export default {
       }
       this.localValue = val;
     },
+    setPercentageFormatter() {
+      this.percentageFormatter = new Intl.NumberFormat(this.lang, { style: 'percent', maximumFractionDigits: 20 });
+      let parts = this.percentageFormatter.formatToParts('111.1111');
+      this.vMoneyConfig = this.partsToMaskConfig(parts);
+    },
     setCurrencyFormatter(code) {
       this.currencyFormatter = new Intl.NumberFormat(this.lang, { style: 'currency', currency: code });
-      
-      const parts = this.currencyFormatter.formatToParts('11111.11');
-
+      let parts = this.currencyFormatter.formatToParts('11111.11');
+      this.vMoneyConfig = this.partsToMaskConfig(parts);
+    },
+    partsToMaskConfig(parts) {
       let prefix = '';
       let decimal = '';
       let suffix = '';
 
       let startIdx = 0;
-      if (parts[0].type === 'currency') {
+      if (parts[0].type === 'currency' || parts[0].type === 'percentSign') {
         prefix = parts[0].value;
         startIdx = 1
         
@@ -116,7 +122,7 @@ export default {
           suffix = parts[endIdx].value
         }
       }
-      this.currencyParts = {
+      return {
         decimal,
         thousands,
         prefix,
@@ -126,9 +132,9 @@ export default {
     mask(value) {
     },
     maskConfig() {
-      const precision = this.currencyParts.decimal === "" ? 0 : 2;
+      const precision = this.vMoneyConfig.decimal === "" ? 0 : 2;
       return { 
-          ...this.currencyParts,
+          ...this.vMoneyConfig,
           precision,
           masked: false
       }
@@ -149,10 +155,10 @@ export default {
       }
     },
     localValue() {
-      this.$emit('input', this.value);
+      this.$emit('input', this.localValue);
     },
     dataFormat() {
-      if (this.isCurrency) {
+      if (this.isCurrency || this.isPercentage) {
         this.component = 'money'
       } else {
         this.component = 'input';
@@ -160,13 +166,18 @@ export default {
     },
     'dataMask.code': {
       handler() {
-        this.setCurrencyFormatter(this.dataMask.code);
+        if (this.isCurrency) {
+          this.setCurrencyFormatter(this.dataMask.code);
+        }
       }
     },
   },
   computed: {
     isCurrency() {
       return this.dataFormat === 'currency';
+    },
+    isPercentage() {
+      return this.dataFormat === 'percentage';
     },
     classList() {
       return {
@@ -181,8 +192,9 @@ export default {
       localValue: '',
       lang: 'en-US',
       currencyFormatter: null,
+      percentageFormatter: null,
       component: 'input',
-      currencyParts: null,
+      vMoneyConfig: null,
     }
   },
   mounted() {
@@ -190,6 +202,7 @@ export default {
       this.lang = document.documentElement.lang;
     }
     this.setCurrencyFormatter('USD'); // default
+    this.setPercentageFormatter();
   }
 }
 </script>
