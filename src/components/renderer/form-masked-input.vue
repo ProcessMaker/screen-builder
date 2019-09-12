@@ -1,17 +1,37 @@
 <template>
   <div class="form-group">
     <label v-uni-for="name">{{ label }}</label>
-    <component
-      :is="componentType"
-      v-model="localValue"
-      v-bind="componentConfig"
+    <money v-if="component === 'money'"
+      v-bind="{...$attrs, ...maskConfig()}"
       v-uni-id="name"
+      :value="localValue"
+      @input="gotInput"
+      :name="name"
+      class="form-control"
+      :class="classList"
+    ></money>
+
+    <masked-input v-if="component === 'masked-input'"
+      v-bind="$attrs"
+      v-uni-id="name"
+      :value="localValue"
+      @input="gotInput"
+      :name="name"
+      class="form-control"
+      :class="classList"
+      :mask="mask"
+      :guide="false"
+    ></masked-input>
+
+    <input v-if="component === 'input'"
+      v-bind="$attrs"
+      v-uni-id="name"
+      :value="localValue"
+      @input="gotInput"
       :name="name"
       class="form-control"
       :class="classList"
       v-on:blur="formatFloatValue()"
-      type="text"
-      :mask="getMask()"
     />
       <template v-if="validator && validator.errorCount">
         <div class="invalid-feedback" v-for="(errors, index) in validator.errors.all()" :key="index">
@@ -29,9 +49,10 @@
 import { createUniqIdsMixin } from 'vue-uniq-ids'
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
-import { TheMask } from 'vue-the-mask';
+// import { TheMask } from 'vue-the-mask';
 import { Money } from 'v-money';
-import maskConfig from '../../form-input-mask-config';
+// import maskConfig from '../../form-input-mask-config';
+import MaskedInput from 'vue-text-mask'
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -41,7 +62,7 @@ const componentTypes = {
 
 export default {
   inheritAttrs: false,
-  components: { TheMask, Money },
+  components: { MaskedInput, Money },
   mixins: [uniqIdsMixin, ValidationMixin, DataFormatMixin],
   props: [
     'value',
@@ -50,47 +71,76 @@ export default {
     'helper',
     'name',
     'controlClass',
-    'dataMask',
+    'dataFormat',
+    'currency'
   ],
   methods: {
     gotInput(val) {
-      this.$emit('input', this.componentType === 'input' ? val.target.value : val);
+      if (typeof val === 'object') {
+        val = val.target.value
+      }
+      this.localValue = val;
     },
-    getMask() {
-      // @todo prepare de mask from this.getMaskConfig()
-      return '##/##/####';
+    setCurrencyFormatter(code) {
+      this.currencyFormatter = new Intl.NumberFormat(this.lang, { style: 'currency', currency: code });
+      
+      const parts = this.currencyFormatter.formatToParts('11111.11');
+
+      let prefix = '';
+      let decimal = '';
+      let suffix = '';
+
+      let startIdx = 0;
+      if (parts[0].type === 'currency') {
+        prefix = parts[0].value;
+        startIdx = 1
+        
+        if (parts[1].type === 'literal') {
+          prefix += parts[1].value;
+          startIdx = 2
+        }
+      }
+
+      if (parts[startIdx].type !== 'integer' || parts[startIdx + 1].type !== 'group') {
+        throw "Part Error: " + JSON.stringify(parts);
+      }
+
+      let thousands = parts[startIdx + 1].value
+
+      let endIdx = startIdx + 3;
+      if (parts[startIdx + 3] && parts[startIdx + 3].type === 'decimal') {
+        decimal = parts[startIdx + 3].value;
+        endIdx += 2;
+      }
+
+      if (parts[endIdx]) {
+        if (parts[endIdx].type == 'literal') {
+          suffix = parts[endIdx].value + parts[endIdx + 1].value;
+        } else {
+          suffix = parts[endIdx].value
+        }
+      }
+      this.currencyParts = {
+        decimal,
+        thousands,
+        prefix,
+        suffix,
+      }
     },
-    /**
-     * Return the config in ex. currncy.json for the selected currency:
-     * {
-     *    "Name": "Albanian Lek",
-     *    "Format": "####.##",
-     *    "Symbol": ""
-     * }
-     * 
-     */
-    getMaskConfig() {
-      const mask = maskConfig[this.dataFormat] || maskConfig.defaultMask;
-      return mask.config[this.dataMask];
-    },
-  },
-  computed: {
-    componentConfig() {
-      // @todo configure the <money> properties from this.getMaskConfig()
-      return Object.assign({}, {
-          decimal: ',',
-          thousands: '.',
-          prefix: 'R$ ',
-          suffix: ' #',
-          precision: 2,
-          masked: false
-        }, this.$attrs);
-    },
-    componentType() {
-      return componentTypes[this.dataFormat] || 'input';
+    mask(value) {
     },
     maskConfig() {
-      return this.getMaskConfig();
+      const precision = this.currencyParts.decimal === "" ? 0 : 2;
+      return { 
+          ...this.currencyParts,
+          precision,
+          masked: false
+      }
+    }
+  },
+  computed: {
+    componentType() {
+      return componentTypes[this.dataFormat] || 'input';
     },
     classList() {
       return {
@@ -100,19 +150,51 @@ export default {
     }
   },
   watch: {
-    value(value) {
-      value !== this.localValue ? this.localValue = value : null;
+    value() {
+      if (this.value !== this.localValue) {
+        this.localValue = this.value;
+      }
     },
-    localValue(value) {
-      value !== this.value ? this.$emit('input', value) : null;
+    localValue() {
+      this.$emit('input', this.value);
     },
+    dataFormat() {
+      if (this.isCurrency) {
+        this.component = 'money'
+      } else {
+        this.component = 'input';
+      }
+    },
+    currency() {
+      this.setCurrencyFormatter(this.currency);
+    },
+  },
+  computed: {
+    isCurrency() {
+      return this.dataFormat === 'currency';
+    },
+    classList() {
+      return {
+        'is-invalid': (this.validator && this.validator.errorCount) || this.error,
+        [this.controlClass]: !!this.controlClass
+      }
+    }
   },
   data() {
     return {
       validator: null,
-      localValue: this.value,
-      price: 0,
+      localValue: '',
+      lang: 'en-US',
+      currencyFormatter: null,
+      component: 'input',
+      currencyParts: null,
     }
+  },
+  mounted() {
+    if (document && document.documentElement && document.documentElement.lang) {
+      this.lang = document.documentElement.lang;
+    }
+    this.setCurrencyFormatter('USD'); // default
   }
 }
 </script>
