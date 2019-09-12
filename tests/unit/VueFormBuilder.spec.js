@@ -17,7 +17,7 @@ const i18n = new VueI18Next(i18next);
 
 
 function isFormHtmlEditor(config) {
-  return config.control.component === 'FormHtmlEditor';
+  return config.control.component === 'FormHtmlEditor' || config.control.component === 'FormHtmlViewer';
 }
 
 describe('App', () => {
