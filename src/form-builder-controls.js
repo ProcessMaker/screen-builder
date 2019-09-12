@@ -38,7 +38,7 @@ export default [
     rendererBinding: 'FormHtmlEditor',
     control: {
       label: 'Rich Text',
-      component: 'FormHtmlEditor',
+      component: 'FormHtmlViewer',
       'editor-component': 'FormHtmlEditor',
       'editor-control': 'FormHtmlEditor',
       config: {
