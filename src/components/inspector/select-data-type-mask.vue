@@ -1,6 +1,6 @@
 <template>
   <div v-show="isVisible">
-    <label class="typo__label">{{ label }}</label>
+    <label class="typo__label">{{ maskLabel }}</label>
     <multiselect
       v-bind="$attrs"
       v-on="$listeners"
@@ -30,15 +30,31 @@ const currencyCodes = [];
 for (let code in currencies) {
   currencyCodes.push(code);
 }
+const maskConfigurations = {
+  defaultMask: {
+    label: 'Data Format',
+    options: [],
+  },
+  currency: {
+    label: 'Currency Format',
+    options: currencyCodes,
+  },
+};
 
 export default {
   extends: FormMultiselect,
   computed: {
     isVisible() {
-      return false;
+      return this.selectedControl.config.dataFormat === 'currency';
+    },
+    maskConfig() {
+      return maskConfigurations[this.selectedControl.config.dataFormat] || maskConfigurations.defaultMask;
+    },
+    maskLabel() {
+      return this.$t(this.maskConfig.label || 'Data Format');
     },
     maskOptions() {
-      return currencyCodes;
+      return this.maskConfig.options;
     },
   },
 };
