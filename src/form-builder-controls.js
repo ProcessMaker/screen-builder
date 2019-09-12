@@ -16,6 +16,7 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
+
 import {
   bgcolorProperty,
   colorProperty,
@@ -77,12 +78,23 @@ export default [
         name: '',
         placeholder: '',
         validation: '',
+        currency: {
+          code: 'USD',
+          name: 'US Dollar',
+          format: '#,###.##',
+          symbol: '$'
+        },
         helper: null,
         type: 'text',
       },
       inspector: [
         keyNameProperty,
         DataTypeProperty,
+        {
+          type: 'CurrencyFormat',
+          field: 'currency',
+          config: {},
+        },
         labelProperty,
         {
           type: 'FormMultiselect',
@@ -129,12 +141,23 @@ export default [
         helper: null,
         rows: 2,
         richtext: false,
+        currency: {
+          code: 'USD',
+          name: 'US Dollar',
+          format: '#,###.##',
+          symbol: '$'
+        },
       },
       inspector: [
         labelProperty,
         placeholderProperty,
         keyNameProperty,
         DataTypeProperty,
+        {
+          type: 'CurrencyFormat',
+          field: 'currency',
+          config: {},
+        },
         helperTextProperty,
         {
           type: 'FormCheckbox',
