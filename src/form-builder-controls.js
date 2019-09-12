@@ -4,7 +4,7 @@ import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
-import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
+import {DataTypeProperty, DataFormatProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
@@ -83,6 +83,7 @@ export default [
       inspector: [
         keyNameProperty,
         DataTypeProperty,
+        DataFormatProperty,
         labelProperty,
         {
           type: 'FormMultiselect',

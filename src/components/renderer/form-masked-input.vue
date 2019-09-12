@@ -29,7 +29,7 @@
 import { createUniqIdsMixin } from 'vue-uniq-ids'
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
-import { TheMask } from 'vue-the-mask'
+import { TheMask } from 'vue-the-mask';
 
 const uniqIdsMixin = createUniqIdsMixin()
 
