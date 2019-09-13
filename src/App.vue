@@ -62,7 +62,6 @@
           <b-col class="overflow-auto h-100">
             <vue-form-renderer ref="renderer"
               v-model="previewData"
-              class="overflow-auto"
               @submit="previewSubmit"
               :config="config"
               :mode="mode"
