@@ -11,7 +11,6 @@
       :class="classList"
       v-on:blur="formatFloatValue()"
       type="text"
-      :mask="getMask()"
     />
     <template v-if="validator && validator.errorCount">
       <div class="invalid-feedback" v-for="(errors, index) in validator.errors.all()" :key="index">
@@ -36,11 +35,13 @@ const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
   currency: 'money',
   date: 'the-mask',
+  datetime: 'the-mask',
   percentage: 'money', // We use money because it stores properly the unmasked value
 };
 const componentTypesConfigs = {
   currency: 'getCurrencyFormat',
   date: 'getDateFormat',
+  datetime: 'getDatetimeFormat',
   percentage: 'getPercentageFormat',
 };
 
@@ -58,16 +59,17 @@ export default {
     'dataMask',
   ],
   methods: {
+    getUserConfig() {
+      return (window.ProcessMaker && window.ProcessMaker.user) || {};
+    },
     convertToData(value) {
+      if (this.dataFormat === 'percentage') return value / 100;
       if (this.dataFormat === 'percentage') return value / 100;
       return value;
     },
     convertFromData(value) {
       if (this.dataFormat === 'percentage') return value * 100;
       return value;
-    },
-    getMask() {
-      return '###.## %';
     },
   },
   computed: {
@@ -93,6 +95,18 @@ export default {
         suffix: ' %',
         precision: 2,
         masked: false,
+      };
+    },
+    getDateFormat() {
+      return {
+        masked: true,
+        mask: this.getUserConfig().date_mask || '##-##-####',
+      };
+    },
+    getDatetimeFormat() {
+      return {
+        masked: true,
+        mask: this.getUserConfig().datetime_mask || '##-##-#### ##:##',
       };
     },
     componentType() {
