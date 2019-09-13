@@ -52,14 +52,14 @@ import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixi
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 // import { TheMask } from 'vue-the-mask';
 import { Money } from 'v-money';
-import MaskedInput from 'vue-text-mask'
+import MaskedInput, {conformToMask} from 'vue-text-mask'
 
 const uniqIdsMixin = createUniqIdsMixin();
 
 export default {
   inheritAttrs: false,
   components: { MaskedInput, Money },
-  mixins: [uniqIdsMixin, ValidationMixin, DataFormatMixin],
+  mixins: [uniqIdsMixin, ValidationMixin ], //DataFormatMixin
   props: [
     'value',
     'label',
@@ -79,8 +79,9 @@ export default {
     },
     setPercentageFormatter() {
       this.percentageFormatter = new Intl.NumberFormat(this.lang, { style: 'percent', maximumFractionDigits: 20 });
-      let parts = this.percentageFormatter.formatToParts('111.1111');
-      this.vMoneyConfig = this.partsToMaskConfig(parts);
+      // this was an attempt to use v-money for percentages, didn't work
+      // let parts = this.percentageFormatter.formatToParts('111.1111');
+      // this.vMoneyConfig = this.partsToMaskConfig(parts);
     },
     setCurrencyFormatter(code) {
       this.currencyFormatter = new Intl.NumberFormat(this.lang, { style: 'currency', currency: code });
@@ -130,6 +131,28 @@ export default {
       }
     },
     mask(value) {
+      console.log("Mask fn got value", value);
+      if (typeof value === 'string') {
+        value = this.stripPercentage(value);
+      }
+      console.log("Formatting to parts with", value / 100)
+      const parts = this.percentageFormatter.formatToParts(value / 100);
+      console.log("parts: ", parts);
+      let mask = parts.flatMap((part) => {
+        if (part.type === 'integer') {
+          return part.value.split('').map((char) => {
+            return /\d/;
+          });
+        }
+        return part.value;
+      });
+      console.log("So returning mask", mask)
+      // for (const part in parts) {
+      //   if (part.type === 'integer') {
+      //   }
+      // }
+      // return ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
+      return mask;
     },
     maskConfig() {
       const precision = this.vMoneyConfig.decimal === "" ? 0 : 2;
@@ -138,6 +161,16 @@ export default {
           precision,
           masked: false
       }
+    },
+    stripPercentage(value) {
+      if (value === "") {
+        return 0;
+      }
+      console.log("stripPercentage", value)
+      return parseFloat(value.replace(/\D/g, ''));
+      
+      // TODO . and % need to be localized
+      // return value.replace("%", '').replace('/\.$');
     }
   },
   computed: {
@@ -150,16 +183,32 @@ export default {
   },
   watch: {
     value() {
-      if (this.value !== this.localValue) {
-        this.localValue = this.value;
+      console.log("VALUE CHANGED TO", this.value, '(local value is ', this.localValue)
+      if (this.isPercentage) {
+          let newval = conformToMask(this.localValue, this.mask(this.value)).conformedValue;
+          console.log("Formatting incoming value to: ", newval)
+          this.localValue = newval;
+      } else {
+        if (this.value !== this.localValue) {
+          this.localValue = this.value;
+        }
       }
     },
     localValue() {
-      this.$emit('input', this.localValue);
+      console.log("LOCAL CHANGED TO, EMITTING", this.localValue)
+      let emitValue = this.localValue;
+      if (this.isPercentage) {
+        // value comes back formatted so strip out the formatting here
+        emitValue = this.stripPercentage(this.localValue)
+      }
+      console.log("Actually emiting", emitValue)
+      this.$emit('input', emitValue);
     },
     dataFormat() {
-      if (this.isCurrency || this.isPercentage) {
+      if (this.isCurrency) {
         this.component = 'money'
+      } else if (this.isPercentage) {
+        this.component = 'masked-input'
       } else {
         this.component = 'input';
       }
