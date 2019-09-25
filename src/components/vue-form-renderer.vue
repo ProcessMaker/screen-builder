@@ -179,13 +179,13 @@ export default {
                 value = Parser.evaluate(prop.formula, this.transientData);
               } else if (prop.type==='javascript') {
                 var func = new Function(prop.formula);
-                value = this.transientData[prop.property] = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
+                value = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
               }
             } catch (e) {
               value = String(e);
             }
-            this.$set(this.transientData, prop.property, value);
-            this.$set(this.data, prop.property, value);
+            JSON.stringify(this.transientData[prop.property]) !== JSON.stringify(value) ? this.$set(this.transientData, prop.property, value) : null;
+            JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
           });
         }
         // Only emit the update message if transientData does NOT equal this.data
