@@ -132,14 +132,24 @@
     </div>
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
-        <label for="json-data">{{ $t('JSON Data') }}</label>
-        <b-form-textarea class="mb-3" :class="jsonDataClass" id="json-data" rows="8" v-model="jsonData" @change="jsonDataChange"/>
-      </div>
+        <div class="mb-1">
+          <label for="json-data">{{ $t('JSON Data') }}</label>
+          <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+        </div>
+        <MonacoEditor  :options="monacoOptions" class="editor" v-model="jsonData" language="json" />
 
-      <div v-if="jsonError" class="invalid-feedback d-block text-right">
-        <div>{{ jsonError }}</div>
+        <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
+          <div class="editor-container">
+            <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"/>
+          </div>
+          <div slot="modal-footer">
+            <b-button @click="closePopup" class="btn btn-secondary">
+              {{ $t('CLOSE') }}
+            </b-button>
+          </div>
+        </b-modal>
       </div>
-
+      
       <a @click="editAsOptionList()" href="#" class="text-right">
         <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as Option List') }}</small>
       </a>
@@ -172,10 +182,12 @@
 <script>
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
+import MonacoEditor from 'vue-monaco';
 
 export default {
   components: {
     draggable,
+    MonacoEditor,
   },
   props: ['options'],
   model: {
@@ -184,7 +196,6 @@ export default {
   },
   data() {
     return {
-      jsonError: '',
       optionError:'',
       dragging: false,
       dataSourceValues,
@@ -219,6 +230,14 @@ export default {
           value: 'checkbox',
         },
       ],
+      monacoOptions: {
+        automaticLayout: true,
+        fontSize: 8,
+      },
+      monacoLargeOptions: {
+        automaticLayout: true,
+      },
+      showPopup: false,
     };
   },
   watch: {
@@ -250,9 +269,6 @@ export default {
     },
   },
   computed: {
-    jsonDataClass() {
-      return this.jsonError ? 'is-invalid' : '';
-    },
     optionKeyClass() {
       return this.optionError ? 'is-invalid' : '';
     },
@@ -324,29 +340,6 @@ export default {
     valueChanged() {
       this.jsonDataChange();
     },
-    jsonDataChange() {
-      let jsonList = [];
-      try {
-        jsonList = JSON.parse(this.jsonData);
-        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
-          throw Error('String does not represent a valid JSON');
-        }
-      }
-      catch (err) {
-        this.jsonError = err.message;
-        return;
-      }
-
-      this.optionsList = [];
-      const that = this;
-      jsonList.forEach (item => {
-        that.optionsList.push({
-          [that.keyField] : item[that.keyField],
-          [that.valueField] : item[that.valueField],
-        });
-      });
-      this.jsonError = '';
-    },
     updateSort() {
       this.jsonData = JSON.stringify(this.optionsList);
       this.$emit('change', this.dataObjectOptions);
@@ -397,7 +390,6 @@ export default {
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
       }
 
-      this.jsonError = '';
       this.jsonData = JSON.stringify(this.optionsList);
       this.showOptionCard = false;
       this.optionError = '';
@@ -415,11 +407,22 @@ export default {
       this.removeIndex = index;
       this.showRemoveWarning = true;
     },
+    expandEditor() {
+      this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
   },
 };
 </script>
 <style scoped>
   .striped {
     background-color: rgba(0,0,0,.05);
+  }
+
+  .editor {
+    width: inherit;
+    height: 150px;
   }
 </style>
