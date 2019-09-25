@@ -473,7 +473,7 @@ export default [
         },
 
         {
-          type: 'OptionsList',
+          type: 'ColumnSetup',
           field: 'fields',
           config: {
             label: 'Fields List',
