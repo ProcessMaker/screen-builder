@@ -18,13 +18,13 @@
           {{ $t('Edit Column') }}
         </div>
         <div class="card-body p-2">
+          <label class="mt-3" for="option-content">{{ $t('Column Header') }}</label>
+          <b-form-input id="option-content" v-model="optionContent"/>
           <label for="option-value">{{ $t('Value') }}</label>
           <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
           </div>
-          <label class="mt-3" for="option-content">{{ $t('Column Header') }}</label>
-          <b-form-input id="option-content" v-model="optionContent"/>
         </div>
 
         <div class="card-footer text-right p-2">
@@ -66,13 +66,13 @@
                     {{ $t('Edit Option') }}
                   </div>
                   <div class="card-body p-2">
+                    <label class="mt-3" for="option-content">{{ $t('Column Header') }}</label>
+                    <b-form-input id="option-content" v-model="optionContent"/>
                     <label for="option-value">{{ $t('Value') }}</label>
                     <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
                     <div v-if="optionError" class="invalid-feedback d-block text-right">
                       <div>{{ optionError }}</div>
                     </div>
-                    <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
-                    <b-form-input id="option-content" v-model="optionContent"/>
                   </div>
 
                   <div class="card-footer text-right p-2">
