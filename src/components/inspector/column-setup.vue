@@ -12,10 +12,10 @@
 
       <div class="card mb-2" v-if="showOptionCard">
         <div class="card-header" v-if="optionCardType == 'insert'">
-          {{ $t('Add Option') }}
+          {{ $t('Add Column') }}
         </div>
         <div v-else class="card-header">
-          {{ $t('Edit Option') }}
+          {{ $t('Edit Column') }}
         </div>
         <div class="card-body p-2">
           <label for="option-value">{{ $t('Value') }}</label>
