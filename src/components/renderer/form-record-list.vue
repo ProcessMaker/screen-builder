@@ -28,12 +28,12 @@
         <template slot="actions" slot-scope="props">
           <div class="actions">
             {{ $t('Json Options') }}
-            <div class="btn-group" role="group" aria-label="Actions">
-              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">
-                {{ $t('Edit') }}
+            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')">
+                <i class="fas fa-edit"></i>
               </button>
-              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-primary">
-                {{ $t('Delete') }}
+              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')">
+                <i class="fas fa-trash-alt"></i>
               </button>
             </div>
           </div>
