@@ -354,7 +354,7 @@ export default [
         helperTextProperty,
         colorProperty,
         bgcolorProperty,
-        disabledProperty
+        disabledProperty,
       ],
     },
   },
