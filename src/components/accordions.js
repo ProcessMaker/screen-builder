@@ -41,6 +41,11 @@ export default [
     open: false,
   },
   {
+    name: 'Columns',
+    fields: ['columns'],
+    open: false,
+  },
+  {
     name: 'Design',
     fields: ['color', 'bgcolor', 'variant', 'toggle', 'height', 'width'],
     open: false,
