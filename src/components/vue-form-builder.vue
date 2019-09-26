@@ -424,7 +424,7 @@ export default {
   methods: {
     accordionName(accordion) {
       return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
-    }, 
+    },
     toggleAccordion(accordion) {
       this.accordions.forEach(panel => panel !== accordion ? panel.open = false : null);
       accordion.open = !accordion.open;
@@ -557,7 +557,7 @@ export default {
       return control.inspector.filter(input => {
         if (accordionFields.includes(input.field)) {
           return true;
-        } else if (!this.knownField(input.field) && this.accordion.name === 'Configuration') {
+        } else if (!this.knownField(input.field) && accordion.name === 'Configuration') {
           // If it's not a known inspector field from accordion.js and this is the
           // configuration accordion, then add it here
           return true;
