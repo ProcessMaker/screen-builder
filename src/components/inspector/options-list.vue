@@ -432,7 +432,7 @@ export default {
   .editor-container {
     height: 70vh;
   }
-
+  
   .editor-container .editor {
     height: inherit;
   }
