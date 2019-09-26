@@ -132,11 +132,13 @@
     </div>
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
-        <div class="mb-1">
+        <div class="mb-2">
           <label for="json-data">{{ $t('JSON Data') }}</label>
           <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
         </div>
-        <MonacoEditor  :options="monacoOptions" class="editor" v-model="jsonData" language="json" />
+        <div class="small-editor-container">
+          <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" />
+        </div>
 
         <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
           <div class="editor-container">
@@ -183,6 +185,7 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
+import * as editor from 'monaco-editor/esm/vs/editor/editor.main';
 
 export default {
   components: {
@@ -421,8 +424,16 @@ export default {
     background-color: rgba(0,0,0,.05);
   }
 
-  .editor {
+  .small-editor-container .editor {
     width: inherit;
     height: 150px;
+  }
+
+  .editor-container {
+    height: 70vh;
+  }
+
+  .editor-container .editor {
+    height: inherit;
   }
 </style>
