@@ -473,7 +473,7 @@ export default [
         },
         {
           type: 'ColumnSetup',
-          field: 'columns',
+          field: 'fields',
           config: {
             label: 'Columns',
             helper: 'List of columns to display in the record list',
