@@ -3,7 +3,7 @@
     <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
-          <label for="data-sources"><b>{{ $t('Options') }}</b></label>
+          <label for="data-sources"><b>{{ $t('Column') }}</b></label>
         </div>
         <div class="col-2">
           <a @click="showAddOption" class="fas fa-plus-square"/>

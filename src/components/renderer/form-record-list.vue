@@ -109,10 +109,9 @@
 
 
 <script>
-import _ from 'lodash';
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
-import Mustache from 'mustache';
+import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -126,6 +125,7 @@ export default {
     Vuetable,
     VuetablePagination,
   },
+  mixins: [mustacheEvaluation],
   props: ['label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
   data() {
     return {
@@ -167,14 +167,6 @@ export default {
     },
   },
   methods: {
-    mustache(expression, data) {
-      const value = _.get(data, expression);
-      try {
-        return value === undefined ? Mustache.render(expression, data) : value;
-      } catch (error) {
-        return expression;
-      }
-    },
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
 

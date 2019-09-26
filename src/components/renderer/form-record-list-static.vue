@@ -12,7 +12,7 @@
       <tbody>
         <tr v-for="(val, index) in value" :key="index">
           <td v-for="(field, index) in fields" :key="index">
-            {{ val[field.value] }}
+            {{ mustache(field.value, val) }}
           </td>
         </tr>
       </tbody>
@@ -22,11 +22,11 @@
 
 
 <script>
-// import bModal from "bootstrap-vue/es/components/modal/modal";
-// import VueFormRenderer from "../vue-form-renderer";
+import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 
 export default {
   name: 'FormRecordListStatic',
+  mixins: [mustacheEvaluation],
   props: ['label', 'fields', 'value', 'editable', '_config', 'form'],
   components: {
   },
