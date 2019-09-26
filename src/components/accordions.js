@@ -33,16 +33,11 @@ export default [
     open: false,
   },
   {
-    name: 'Data Source',
+    name: (control) => control.component === 'FormRecordList' ? 'Columns' : 'Data Source',
     fields: [
       'fields',
       { name: 'options', hideFor: 'FormMultiColumn' },
     ],
-    open: false,
-  },
-  {
-    name: 'Columns',
-    fields: ['columns'],
     open: false,
   },
   {
