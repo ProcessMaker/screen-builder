@@ -125,7 +125,7 @@ export default {
     VuetablePagination,
   },
   mixins: [mustacheEvaluation],
-  props: ['label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
+  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
   data() {
     return {
       addItem: {},
@@ -166,6 +166,9 @@ export default {
     },
   },
   methods: {
+    setUploadDataNamePrefix(index = null) {
+      this.$root.$emit('set-upload-data-name', this, index);
+    },
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
 
@@ -227,6 +230,7 @@ export default {
       this.editItem = JSON.parse(JSON.stringify(this.value[index]));
       this.editIndex = index;
       this.$refs.editRenderer.currentPage = this.form;
+      this.setUploadDataNamePrefix(index);
       this.$refs.editModal.show();
     },
     edit() {
@@ -248,6 +252,7 @@ export default {
       // This form is a numerical index to the form we want to show
       this.$refs.addRenderer.currentPage = this.form;
       // Open form
+      this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
     },
     add() {
