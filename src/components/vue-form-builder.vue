@@ -467,7 +467,8 @@ export default {
             jsonData: JSON.stringify(item.config.options),
           };
         } else if (item.component === 'FormSelect' && item.config.options instanceof Object && !item.config.options.optionsList ) {
-          item.config.options.optionsList = JSON.parse(item.config.options.jsonData);
+          try {item.config.options.optionsList = JSON.parse(item.config.options.jsonData);}
+          catch (e) {item.config.options.optionsList = [];}
         }
         if (item.items instanceof Array && item.component === 'FormMultiColumn') {
           item.items.forEach(column => this.migrateFormSelect(column));
@@ -486,7 +487,8 @@ export default {
             jsonData: JSON.stringify(item.config.options),
           };
         } else if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Object && !item.config.options.optionsList ) {
-          item.config.options.optionsList = JSON.parse(item.config.options.jsonData);
+          try {item.config.options.optionsList = JSON.parse(item.config.options.jsonData);}
+          catch (e) {item.config.options.optionsList = [];}
         }
         if (item.items instanceof Array && item.component === 'FormMultiColumn') {
           item.items.forEach(column => this.migrateFormRadioButtonGroup(column));
