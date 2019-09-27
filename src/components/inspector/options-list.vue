@@ -137,7 +137,7 @@
           <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
         </div>
         <div class="small-editor-container">
-          <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" />
+          <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" @change="jsonDataChange"/>
         </div>
 
         <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
@@ -311,6 +311,28 @@ export default {
         editIndex: this.editIndex,
         removeIndex: this.removeIndex,
       };
+    },
+     jsonDataChange() {	
+      let jsonList = [];	
+      try {	
+        jsonList = JSON.parse(this.jsonData);	
+        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {	
+          throw Error('String does not represent a valid JSON');	
+        }	
+      }	
+      catch (err) {	
+        this.jsonError = err.message;	
+        return;	
+      }	
+      this.optionsList = [];	
+      const that = this;	
+      jsonList.forEach (item => {	
+        that.optionsList.push({	
+          [that.keyField] : item[that.keyField],	
+          [that.valueField] : item[that.valueField],	
+        });	
+      });	
+      this.jsonError = '';	
     },
   },
   mounted() {
