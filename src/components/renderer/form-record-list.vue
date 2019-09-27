@@ -27,16 +27,18 @@
       >
         <template slot="actions" slot-scope="props">
           <div class="actions">
-            {{ $t('Json Options') }}
-            <div class="btn-group" role="group" aria-label="Actions">
-              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">
-                {{ $t('Edit') }}
+            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')">
+                <i class="fas fa-edit"/>
               </button>
-              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-primary">
-                {{ $t('Delete') }}
+              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')">
+                <i class="fas fa-trash-alt"/>
               </button>
             </div>
           </div>
+        </template>
+        <template slot="mustache" slot-scope="{rowData, rowField}">
+          {{ mustache(rowField, rowData) }}
         </template>
       </vuetable>
       <vuetable-pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
@@ -108,6 +110,7 @@
 <script>
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
+import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -121,6 +124,7 @@ export default {
     Vuetable,
     VuetablePagination,
   },
+  mixins: [mustacheEvaluation],
   props: ['label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
   data() {
     return {
@@ -169,7 +173,9 @@ export default {
       const { jsonData, key, value, dataName } = this.fields;
 
       const convertToVuetableFormat = option => ({
-        name: option[key || 'value'],
+        //name: '__component:mustache',
+        name: '__slot:mustache',
+        sortField: option[key || 'value'],
         title: option[value || 'content'],
       });
 

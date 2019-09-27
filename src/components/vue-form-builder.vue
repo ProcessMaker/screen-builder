@@ -170,20 +170,20 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              :key="`${accordion.name}-button`"
+              :key="`${accordionName(accordion)}-button`"
               v-if="getInspectorFields(accordion).length > 0"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
               @click="toggleAccordion(accordion)"
             >
               <i class="fas fa-cog mr-2"/>
-              {{ $t(accordion.name) }}
+              {{ $t(accordionName(accordion)) }}
               <i
                 class="fas fa-angle-down ml-auto"
                 :class="{ 'fas fa-angle-right' : !accordion.open }"
               />
             </b-button>
-            <b-collapse :key="`${accordion.name}-collapse`" :id="accordion.name" v-model="accordion.open">
+            <b-collapse :key="`${accordionName(accordion)}-collapse`" :id="accordionName(accordion)" v-model="accordion.open">
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :formConfig="config"
@@ -422,6 +422,9 @@ export default {
     },
   },
   methods: {
+    accordionName(accordion) {
+      return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
+    },
     toggleAccordion(accordion) {
       this.accordions.forEach(panel => panel !== accordion ? panel.open = false : null);
       accordion.open = !accordion.open;

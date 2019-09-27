@@ -354,7 +354,7 @@ export default [
         helperTextProperty,
         colorProperty,
         bgcolorProperty,
-        disabledProperty
+        disabledProperty,
       ],
     },
   },
@@ -471,13 +471,12 @@ export default [
             helper: 'Should records be editable/removable and can new records be added',
           },
         },
-
         {
-          type: 'OptionsList',
+          type: 'ColumnSetup',
           field: 'fields',
           config: {
-            label: 'Fields List',
-            helper: 'List of fields to display in the record list',
+            label: 'Columns',
+            helper: 'List of columns to display in the record list',
           },
         },
         {
