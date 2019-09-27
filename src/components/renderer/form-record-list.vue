@@ -207,7 +207,6 @@ export default {
       this.$refs.vuetable.changePage(page);
     },
     fetchFormConfig() {
-      console.log('fetchFormConfig');
       if (this.form === '') {
         // User has not chosen an add/edit page yet
         return [{items: []}];
