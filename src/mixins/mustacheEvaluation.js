@@ -6,9 +6,9 @@ export default {
     mustache(expression, data) {
       const value = _.get(data, expression);
       try {
-        return value === undefined ? Mustache.render(expression, data) : value;
+        return expression.indexOf('{{') > -1 ? Mustache.render(expression, data) : value;
       } catch (error) {
-        return expression;
+        return value;
       }
     },
   },
