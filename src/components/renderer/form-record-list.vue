@@ -56,7 +56,7 @@
         :page="form"
         ref="addRenderer"
         v-model="addItem"
-        :config="fetchFormConfig()"
+        :config="formConfig"
       />
     </b-modal>
     <b-modal
@@ -73,7 +73,7 @@
         :page="form"
         ref="editRenderer"
         v-model="editItem"
-        :config="fetchFormConfig()"
+        :config="formConfig"
       />
     </b-modal>
     <b-modal
@@ -132,6 +132,9 @@ export default {
     };
   },
   computed: {
+    formConfig() {
+      return this.fetchFormConfig();
+    },
     // The fields used for our vue table
     tableData() {
       let data = {
@@ -204,6 +207,7 @@ export default {
       this.$refs.vuetable.changePage(page);
     },
     fetchFormConfig() {
+      console.log('fetchFormConfig');
       if (this.form === '') {
         // User has not chosen an add/edit page yet
         return [{items: []}];
