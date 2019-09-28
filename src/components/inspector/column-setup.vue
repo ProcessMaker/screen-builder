@@ -129,8 +129,24 @@
     </div>
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
-        <label for="json-data">{{ $t('JSON Data') }}</label>
-        <b-form-textarea class="mb-3" :class="jsonDataClass" id="json-data" rows="8" v-model="jsonData" @change="jsonDataChange"/>
+        <div class="mb-2">
+          <label for="json-data">{{ $t('JSON Data') }}</label>
+          <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+        </div>
+        <div class="small-editor-container">
+          <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" @change="jsonDataChange"/>
+        </div>
+
+        <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
+          <div class="editor-container">
+            <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor" @change="jsonDataChange"/>
+          </div>
+          <div slot="modal-footer">
+            <b-button @click="closePopup" class="btn btn-secondary">
+              {{ $t('CLOSE') }}
+            </b-button>
+          </div>
+        </b-modal>
       </div>
 
       <div v-if="jsonError" class="invalid-feedback d-block text-right">
@@ -169,10 +185,12 @@
 <script>
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
+import MonacoEditor from 'vue-monaco';
 
 export default {
   components: {
     draggable,
+    MonacoEditor,
   },
   props: ['options'],
   model: {
@@ -216,6 +234,14 @@ export default {
           value: 'checkbox',
         },
       ],
+      monacoOptions: {
+        automaticLayout: true,
+        fontSize: 8,
+      },
+      monacoLargeOptions: {
+        automaticLayout: true,
+      },
+      showPopup: false,
     };
   },
   watch: {
@@ -412,11 +438,31 @@ export default {
       this.removeIndex = index;
       this.showRemoveWarning = true;
     },
+    
+    expandEditor() {
+      this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
   },
 };
 </script>
 <style scoped>
   .striped {
     background-color: rgba(0,0,0,.05);
+  }
+
+  .small-editor-container .editor {
+    width: inherit;
+    height: 150px;
+  }
+
+  .editor-container {
+    height: 70vh;
+  }
+  
+  .editor-container .editor {
+    height: inherit;
   }
 </style>
