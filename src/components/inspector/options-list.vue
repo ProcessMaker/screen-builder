@@ -142,7 +142,7 @@
 
         <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
           <div class="editor-container">
-            <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"/>
+            <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor" @change="jsonDataChange"/>
           </div>
           <div slot="modal-footer">
             <b-button @click="closePopup" class="btn btn-secondary">
@@ -312,9 +312,26 @@ export default {
         removeIndex: this.removeIndex,
       };
     },
-     jsonDataChange() {	
+  },
+  mounted() {
+    this.dataSource = this.options.dataSource;
+    this.jsonData = this.options.jsonData;
+    this.dataName = this.options.dataName;
+    this.key = this.options.key;
+    this.value = this.options.value;
+    this.pmqlQuery = this.options.pmqlQuery;
+    this.defaultOptionKey= this.options.defaultOptionKey;
+    this.selectedOptions = this.options.selectedOptions;
+    this.optionsList = this.options.optionsList ? this.options.optionsList : [];
+    this.jsonData = JSON.stringify(this.optionsList);
+    this.showRenderAs = this.options.showRenderAs;
+    this.renderAs = this.options.renderAs;
+    this.allowMultiSelect = this.options.allowMultiSelect;
+  },
+  methods: {
+    jsonDataChange() {	
       let jsonList = [];	
-      try {	
+      try {
         jsonList = JSON.parse(this.jsonData);	
         if (jsonList.constructor !== Array && jsonList.constructor !== Object) {	
           throw Error('String does not represent a valid JSON');	
@@ -334,23 +351,6 @@ export default {
       });	
       this.jsonError = '';	
     },
-  },
-  mounted() {
-    this.dataSource = this.options.dataSource;
-    this.jsonData = this.options.jsonData;
-    this.dataName = this.options.dataName;
-    this.key = this.options.key;
-    this.value = this.options.value;
-    this.pmqlQuery = this.options.pmqlQuery;
-    this.defaultOptionKey= this.options.defaultOptionKey;
-    this.selectedOptions = this.options.selectedOptions;
-    this.optionsList = this.options.optionsList ? this.options.optionsList : [];
-    this.jsonData = JSON.stringify(this.optionsList);
-    this.showRenderAs = this.options.showRenderAs;
-    this.renderAs = this.options.renderAs;
-    this.allowMultiSelect = this.options.allowMultiSelect;
-  },
-  methods: {
     defaultOptionClick() {
       if (this.defaultOptionKey === event.target.value) {
         this.defaultOptionKey = false;
