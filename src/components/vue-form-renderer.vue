@@ -168,6 +168,7 @@ export default {
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
+      this.setDefaultValues();
     },
     transientData: {
       handler() {
@@ -297,6 +298,11 @@ export default {
 
       if (item.component === 'FormRecordList') {
         defaultValue = [];
+      }
+
+      if (item.component === 'FormDatePicker') {
+        let date = new Date();
+        defaultValue = date.toISOString();
       }
 
       this.model[this.getValidPath(item.config.name)] = defaultValue;
