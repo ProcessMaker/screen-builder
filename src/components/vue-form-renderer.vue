@@ -148,17 +148,6 @@ export default {
       errors: [],
       currentPage: this.page || 0,
       transientData: JSON.parse(JSON.stringify(this.data)),
-      defaultValues: {
-        FormInput: '',
-        FormSelect: null,
-        FormSelectList: [],
-        FormCheckbox: false,
-        FormRadioButtonGroup: null,
-        FormTextArea: '',
-        FormText: '',
-        FormDatePicker: null,
-        FormRecordList: [],
-      },
       customCssWrapped: '',
     };
   },
