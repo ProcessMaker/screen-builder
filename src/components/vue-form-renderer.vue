@@ -301,7 +301,7 @@ export default {
       }
 
       if (item.component === 'FormDatePicker') {
-        let date = new Date();
+        const date = new Date();
         defaultValue = date.toISOString();
       }
 
