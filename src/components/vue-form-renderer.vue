@@ -148,17 +148,6 @@ export default {
       errors: [],
       currentPage: this.page || 0,
       transientData: JSON.parse(JSON.stringify(this.data)),
-      defaultValues: {
-        FormInput: '',
-        FormSelect: null,
-        FormSelectList: [],
-        FormCheckbox: false,
-        FormRadioButtonGroup: null,
-        FormTextArea: '',
-        FormText: '',
-        FormDatePicker: null,
-        FormRecordList: [],
-      },
       customCssWrapped: '',
     };
   },
@@ -168,6 +157,7 @@ export default {
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
+      this.setDefaultValues();
     },
     transientData: {
       handler() {
@@ -297,6 +287,11 @@ export default {
 
       if (item.component === 'FormRecordList') {
         defaultValue = [];
+      }
+
+      if (item.component === 'FormDatePicker') {
+        const date = new Date();
+        defaultValue = date.toISOString();
       }
 
       this.model[this.getValidPath(item.config.name)] = defaultValue;
