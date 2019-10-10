@@ -578,9 +578,9 @@ export default [
         type: 'FormInput',
         field: 'name',
         config: {
-          label: 'Key Name',
-          name: 'Key Name',
-          helper: 'A variable key name is a symbolic name to reference information.',
+          label: 'Variable Name',
+          name: 'Variable Name',
+          helper: 'A variable name is a symbolic name to reference information.',
         },
       },
       {

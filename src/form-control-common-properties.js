@@ -86,10 +86,10 @@ export const keyNameProperty = {
   type: 'FormInput',
   field: 'name',
   config: {
-    label: 'Key Name',
-    name: 'Key Name',
+    label: 'Variable Name',
+    name: 'Variable Name',
     validation: 'required',
-    helper: 'A variable key name is a symbolic name to reference information.',
+    helper: 'A variable name is a symbolic name to reference information.',
   },
 };
 
