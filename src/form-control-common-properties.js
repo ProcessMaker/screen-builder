@@ -88,7 +88,7 @@ export const keyNameProperty = {
   config: {
     label: 'Variable Name',
     name: 'Variable Name',
-    validation: 'required',
+    validation: 'regex:/^(?:[A-Z_a-z])(?:[0-9A-Z_a-z])*$/|required',
     helper: 'A variable name is a symbolic name to reference information.',
   },
 };
