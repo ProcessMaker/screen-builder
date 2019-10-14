@@ -73,6 +73,8 @@ Vue.component('custom-css', {
 
 Vue.use(VueDeepSet);
 
+let Validator = require('validatorjs');
+
 function removeInvalidOptions(option) {
   return Object.keys(option).includes('value', 'contemnt') &&
     option.content != null;
@@ -205,42 +207,41 @@ export default {
         this.$emit('submit', this.transientData);
       }
     },
-    validateElements(elements) {
-      elements.forEach(element => {
-        if (element.validator && element.validator.errorCount !== 0) {
-          this.valid = false;
-          this.errors.push(element.validator.errors.errors);
+    getRules(items, data, rules) {
+      items.forEach(item => {
+
+        if (Array.isArray(item)) {
+          this.getRules(item, data, rules);
+        }
+
+        if (item.items) {
+          this.getRules(item.items, data, rules);
+        }
+
+        if (item.config && item.config.name && item.config.validation) {
+          data[`${item.config.name}`] = this.data[item.config.name];
+          rules[`${item.config.name}`] = item.config.validation;
         }
       });
-    },
-    validateContainer(container) {
-      if (container.$refs && container.$refs.container) {
-        this.validateContainer(container.$refs.container);
-      }
-      container.forEach(element => {
-        if (element.$refs && element.$refs.elements) {
-          this.validateElements(element.$refs.elements);
-        }
-      });
+
     },
     isValid() {
       this.errors = [];
-      this.valid = true;
+      let data = {};
+      let rules = {};
+      this.getRules(this.config, data, rules);
 
-      if (this.$refs && this.$refs.elements) {
-        this.validateElements(this.$refs.elements);
+      this.dataTypeValidator = new Validator( data, rules, null);
+      if (this.dataTypeValidator.fails()) {
+        this.errors = this.dataTypeValidator.errors.errors;
+        return false;
       }
-
-      if (this.$refs && this.$refs.container) {
-        this.validateContainer(this.$refs.container);
-      }
-      return this.valid;
+      return true;
     },
     pageNavigate(page) {
       if (!this.config[page]) {
         return;
       }
-
       this.currentPage = page;
     },
     setDefaultValues() {
