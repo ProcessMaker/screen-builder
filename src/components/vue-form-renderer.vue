@@ -73,7 +73,7 @@ Vue.component('custom-css', {
 
 Vue.use(VueDeepSet);
 
-let Validator = require('validatorjs');
+const Validator = require('validatorjs');
 
 function removeInvalidOptions(option) {
   return Object.keys(option).includes('value', 'contemnt') &&
@@ -207,15 +207,20 @@ export default {
         this.$emit('submit', this.transientData);
       }
     },
-    getRules(items, data, rules) {
+    getDataAndRules(items) {
+      let data = {}, rules = {};
       items.forEach(item => {
 
         if (Array.isArray(item)) {
-          this.getRules(item, data, rules);
+          const [data1, rules1] = this.getDataAndRules(item);
+          data = {...data, ...data1};
+          rules = {...rules, ...rules1};
         }
 
         if (item.items) {
-          this.getRules(item.items, data, rules);
+          const [data2, rules2] = this.getDataAndRules(item.items);
+          data = {...data, ...data2};
+          rules = {...rules, ...rules2};
         }
 
         if (item.config && item.config.name && item.config.validation) {
@@ -224,12 +229,11 @@ export default {
         }
       });
 
+      return [data, rules];
     },
     isValid() {
       this.errors = [];
-      let data = {};
-      let rules = {};
-      this.getRules(this.config, data, rules);
+      const [ data, rules ] = this.getDataAndRules(this.config);
 
       this.dataTypeValidator = new Validator( data, rules, null);
       if (this.dataTypeValidator.fails()) {
