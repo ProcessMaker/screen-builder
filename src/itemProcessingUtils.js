@@ -40,7 +40,7 @@ export function getItemsFromConfig(config) {
     .flatMap(processFormItem);
 }
 
-export function getDefaultValueForItem(item) {
+export function getDefaultValueForItem(item, transientData) {
   let defaultValue = null;
 
   if (['FormInput', 'FormTextArea', 'FormText'].includes(item.component)) {
@@ -48,7 +48,7 @@ export function getDefaultValueForItem(item) {
   }
 
   if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
-    const options = getOptionsFromDataSource(item.config.options, this.transientData);
+    const options = getOptionsFromDataSource(item.config.options, transientData);
 
     defaultValue = options[0] ? options[0].value : null;
   }

@@ -217,7 +217,7 @@ export default {
       };
       getItemsFromConfig(this.config)
         .filter(shouldHaveDefaultValue)
-        .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item));
+        .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
     },
     parseCss() {
       const containerSelector = '.custom-css-scope';
