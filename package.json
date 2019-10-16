@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/screen-builder",
-  "version": "0.20.4",
+  "version": "0.20.5",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -70,8 +70,8 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-    "dependencies": {
-      "vue-loader": "latest",
-      "lodash": "latest"
-    }
+  "dependencies": {
+    "vue-loader": "latest",
+    "lodash": "latest"
+  }
 }
