@@ -131,7 +131,7 @@ export default {
               if (prop.type === 'expression') {
                 value = Parser.evaluate(prop.formula, this.transientData);
               } else if (prop.type === 'javascript') {
-                var func = new Function(prop.formula);
+                const func = new Function(prop.formula);
                 value = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
               }
             } catch (e) {
