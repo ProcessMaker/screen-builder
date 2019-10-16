@@ -182,9 +182,8 @@ export default {
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
-        if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
+        if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
           this.$emit('update', this.transientData);
-          return;
         }
       },
       deep: true,
@@ -246,17 +245,17 @@ export default {
     },
     setDefaultValues() {
       getItemsFromConfig(this.config)
-        .filter(item => !this.shouldNotHaveDefaultValueSet(item))
+        .filter(item => this.shouldHaveDefaultValueSet(item))
         .forEach(item => this.setDefaultValueItem(item));
     },
-    shouldNotHaveDefaultValueSet(item) {
-      const shouldNotHaveDefaultValueSet = !item.config.name ||
-        this.model[this.getValidPath(item.config.name)] !== undefined ||
-        item.component === 'FormButton';
+    shouldHaveDefaultValueSet(item) {
+      const shouldHaveDefaultValueSet = item.config.name &&
+              this.model[this.getValidPath(item.config.name)] === undefined &&
+              item.component !== 'FormButton';
 
-      const isFormAccordion = item.component === 'FormAccordion';
+      const isNotFormAccordion = item.component !== 'FormAccordion';
 
-      return shouldNotHaveDefaultValueSet || isFormAccordion;
+      return shouldHaveDefaultValueSet && isNotFormAccordion;
     },
     setDefaultValueItem(item) {
       let defaultValue = null;
