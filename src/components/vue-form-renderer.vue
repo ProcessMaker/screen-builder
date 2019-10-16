@@ -44,7 +44,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import debounce from 'lodash/debounce';
-import {getValidPath, HasColorProperty, shouldElementBeVisible} from '@/mixins';
+import { getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -61,8 +61,8 @@ import {
   FormSelectList,
   FormTextArea,
 } from '@processmaker/vue-form-elements';
-import {Parser} from 'expr-eval';
-import {getDefaultValueForItem, getItemsFromConfig} from '../itemProcessingUtils';
+import { Parser } from 'expr-eval';
+import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
 
 const csstree = require('css-tree');
 
