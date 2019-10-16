@@ -1,5 +1,5 @@
 function removeInvalidOptions(option) {
-  return Object.keys(option).includes('value', 'contemnt') &&
+  return Object.keys(option).includes('value') &&
     option.content != null;
 }
 
