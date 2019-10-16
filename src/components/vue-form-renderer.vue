@@ -44,24 +44,25 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import debounce from 'lodash/debounce';
-import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins';
+import { getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
 import CustomCSS from './custom-css';
 import {
-  FormInput,
-  FormSelect,
-  FormSelectList,
-  FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
   FormHtmlViewer,
+  FormInput,
+  FormRadioButtonGroup,
+  FormSelect,
+  FormSelectList,
+  FormTextArea,
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
+import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
 
 const csstree = require('css-tree');
 
@@ -72,44 +73,6 @@ Vue.component('custom-css', {
 });
 
 Vue.use(VueDeepSet);
-
-function removeInvalidOptions(option) {
-  return Object.keys(option).includes('value', 'contemnt') &&
-    option.content != null;
-}
-
-function getOptionsFromDataSource(inputOptions, data) {
-  const { jsonData, key, value, dataName } = inputOptions;
-  let options = [];
-
-  const convertToSelectOptions = option => ({
-    value: option[key || 'value'],
-    content: option[value || 'content'],
-  });
-
-  if (jsonData) {
-    try {
-      options = JSON.parse(jsonData)
-        .map(convertToSelectOptions)
-        .filter(removeInvalidOptions);
-    } catch (error) {
-      /* Ignore error */
-    }
-  }
-
-  if (dataName) {
-    try {
-      options = data[dataName]
-        .map(convertToSelectOptions)
-        .filter(removeInvalidOptions);
-    } catch (error) {
-      /* Ignore error */
-    }
-  }
-
-  return options;
-}
-
 export default {
   name: 'VueFormRenderer',
   props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
@@ -165,10 +128,10 @@ export default {
           this.computed.forEach(prop => {
             let value;
             try {
-              if (prop.type==='expression') {
+              if (prop.type === 'expression') {
                 value = Parser.evaluate(prop.formula, this.transientData);
-              } else if (prop.type==='javascript') {
-                var func = new Function(prop.formula);
+              } else if (prop.type === 'javascript') {
+                const func = new Function(prop.formula);
                 value = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
               }
             } catch (e) {
@@ -181,9 +144,8 @@ export default {
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
-        if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
+        if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
           this.$emit('update', this.transientData);
-          return;
         }
       },
       deep: true,
@@ -193,7 +155,7 @@ export default {
     },
   },
   created() {
-    this.parseCss = debounce(this.parseCss, 500, { leading: true });
+    this.parseCss = debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
     this.parseCss();
@@ -244,57 +206,18 @@ export default {
       this.currentPage = page;
     },
     setDefaultValues() {
-      // Iterate through config, if item has a name property,
-      // then we set the default value
-      this.config.forEach(page => {
-        page.items.forEach(item => {
-          this.setDefaultValueItem(item);
-        });
-      });
-    },
-    setDefaultValueItem(item) {
-      if (item.component === 'FormMultiColumn') {
-        item.items.forEach(column => {
-          column.forEach(innerItem => {
-            this.setDefaultValueItem(innerItem);
-          });
-        });
-      }
+      const shouldHaveDefaultValue = item => {
+        const shouldHaveDefaultValueSet = item.config.name &&
+          this.model[this.getValidPath(item.config.name)] === undefined &&
+          item.component !== 'FormButton';
 
-      if (
-        !item.config.name ||
-        this.model[this.getValidPath(item.config.name)] !== undefined ||
-        item.component === 'FormButton'
-      ) {
-        return;
-      }
+        const isNotFormAccordion = item.component !== 'FormAccordion';
 
-      let defaultValue = null;
-
-      if (['FormInput', 'FormTextArea', 'FormText'].includes(item.component)) {
-        defaultValue = '';
-      }
-
-      if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
-        const options = getOptionsFromDataSource(item.config.options, this.transientData);
-
-        defaultValue = options[0] ? options[0].value : null;
-      }
-
-      if (item.component === 'FormCheckbox') {
-        defaultValue = item.config.initiallyChecked || false;
-      }
-
-      if (item.component === 'FormRecordList') {
-        defaultValue = [];
-      }
-
-      if (item.component === 'FormDatePicker') {
-        const date = new Date();
-        defaultValue = date.toISOString();
-      }
-
-      this.model[this.getValidPath(item.config.name)] = defaultValue;
+        return shouldHaveDefaultValueSet && isNotFormAccordion;
+      };
+      getItemsFromConfig(this.config)
+        .filter(shouldHaveDefaultValue)
+        .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
     },
     parseCss() {
       const containerSelector = '.custom-css-scope';
@@ -317,7 +240,7 @@ export default {
           ) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
-              list.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
+              list.prependData({type: 'WhiteSpace', loc: null, value: ' '});
               list.prependData({
                 type: 'TypeSelector',
                 loc: null,
