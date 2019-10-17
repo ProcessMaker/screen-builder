@@ -4,38 +4,39 @@ export const bgcolorProperty = {
   config: {
     label: 'Background Color',
     helper: 'Set the element\'s background color',
-    options: [{
-      value: 'alert alert-primary',
-      content: 'primary',
-    },
-    {
-      value: 'alert alert-secondary',
-      content: 'secondary',
-    },
-    {
-      value: 'alert alert-success',
-      content: 'success',
-    },
-    {
-      value: 'alert alert-danger',
-      content: 'danger',
-    },
-    {
-      value: 'alert alert-warning',
-      content: 'warning',
-    },
-    {
-      value: 'alert alert-info',
-      content: 'info',
-    },
-    {
-      value: 'alert alert-light',
-      content: 'light',
-    },
-    {
-      value: 'alert alert-dark',
-      content: 'dark',
-    },
+    options: [
+      {
+        value: 'alert alert-primary',
+        content: 'primary',
+      },
+      {
+        value: 'alert alert-secondary',
+        content: 'secondary',
+      },
+      {
+        value: 'alert alert-success',
+        content: 'success',
+      },
+      {
+        value: 'alert alert-danger',
+        content: 'danger',
+      },
+      {
+        value: 'alert alert-warning',
+        content: 'warning',
+      },
+      {
+        value: 'alert alert-info',
+        content: 'info',
+      },
+      {
+        value: 'alert alert-light',
+        content: 'light',
+      },
+      {
+        value: 'alert alert-dark',
+        content: 'dark',
+      },
     ],
   },
 };
@@ -46,38 +47,39 @@ export const colorProperty = {
   config: {
     label: 'Text Color',
     helper: 'Set the element\'s text color',
-    options: [{
-      value: 'text-primary',
-      content: 'primary',
-    },
-    {
-      value: 'text-secondary',
-      content: 'secondary',
-    },
-    {
-      value: 'text-success',
-      content: 'success',
-    },
-    {
-      value: 'text-danger',
-      content: 'danger',
-    },
-    {
-      value: 'text-warning',
-      content: 'warning',
-    },
-    {
-      value: 'text-info',
-      content: 'info',
-    },
-    {
-      value: 'text-light',
-      content: 'light',
-    },
-    {
-      value: 'text-dark',
-      content: 'dark',
-    },
+    options: [
+      {
+        value: 'text-primary',
+        content: 'primary',
+      },
+      {
+        value: 'text-secondary',
+        content: 'secondary',
+      },
+      {
+        value: 'text-success',
+        content: 'success',
+      },
+      {
+        value: 'text-danger',
+        content: 'danger',
+      },
+      {
+        value: 'text-warning',
+        content: 'warning',
+      },
+      {
+        value: 'text-info',
+        content: 'info',
+      },
+      {
+        value: 'text-light',
+        content: 'light',
+      },
+      {
+        value: 'text-dark',
+        content: 'dark',
+      },
     ],
   },
 };
@@ -86,10 +88,10 @@ export const keyNameProperty = {
   type: 'FormInput',
   field: 'name',
   config: {
-    label: 'Key Name',
-    name: 'Key Name',
-    validation: 'required',
-    helper: 'A variable key name is a symbolic name to reference information.',
+    label: 'Variable Name',
+    name: 'Variable Name',
+    validation: 'regex:/^(?:[A-Z_a-z])(?:[0-9A-Z_a-z])*$/|required',
+    helper: 'A variable name is a symbolic name to reference information.',
   },
 };
 
@@ -168,44 +170,45 @@ export const buttonVariantStyleProperty = {
   config: {
     label: 'Button Variant Style',
     helper: 'The variant determines the appearance of the button',
-    options: [{
-      value: 'primary',
-      content: 'Primary',
-    },
-    {
-      value: 'secondary',
-      content: 'Secondary',
-    },
-    {
-      value: 'success',
-      content: 'Success',
-    },
-    {
-      value: 'danger',
-      content: 'Danger',
-    },
-    {
-      value: 'warning',
-      content: 'Warning',
-    },
-    {
-      value: 'info',
-      content: 'Info',
-    },
-    {
-      value: 'light',
-      content: 'Light',
-    },
+    options: [
+      {
+        value: 'primary',
+        content: 'Primary',
+      },
+      {
+        value: 'secondary',
+        content: 'Secondary',
+      },
+      {
+        value: 'success',
+        content: 'Success',
+      },
+      {
+        value: 'danger',
+        content: 'Danger',
+      },
+      {
+        value: 'warning',
+        content: 'Warning',
+      },
+      {
+        value: 'info',
+        content: 'Info',
+      },
+      {
+        value: 'light',
+        content: 'Light',
+      },
 
-    {
-      value: 'dark',
-      content: 'Dark',
-    },
+      {
+        value: 'dark',
+        content: 'Dark',
+      },
 
-    {
-      value: 'link',
-      content: 'Link',
-    },
+      {
+        value: 'link',
+        content: 'Link',
+      },
     ],
   },
 };
