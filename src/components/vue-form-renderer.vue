@@ -63,6 +63,7 @@ import {
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
 import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
+import { ValidatorFactory } from '../factories/ValidatorFactory';
 
 const csstree = require('css-tree');
 
@@ -73,8 +74,6 @@ Vue.component('custom-css', {
 });
 
 Vue.use(VueDeepSet);
-
-const Validator = require('validatorjs');
 
 export default {
   name: 'VueFormRenderer',
@@ -170,40 +169,10 @@ export default {
         this.$emit('submit', this.transientData);
       }
     },
-    getDataAndRules(items) {
-      let data = {}, rules = {};
-      items.forEach(item => {
-
-        if (Array.isArray(item)) {
-          const [data1, rules1] = this.getDataAndRules(item);
-          data = {...data, ...data1};
-          rules = {...rules, ...rules1};
-        }
-
-        if (item.items) {
-          const [data2, rules2] = this.getDataAndRules(item.items);
-          data = {...data, ...data2};
-          rules = {...rules, ...rules2};
-        }
-
-        if (item.config && item.config.name && item.config.validation) {
-          data[`${item.config.name}`] = this.data[item.config.name];
-          rules[`${item.config.name}`] = item.config.validation;
-        }
-      });
-
-      return [data, rules];
-    },
     isValid() {
-      this.errors = [];
-      const [ data, rules ] = this.getDataAndRules(this.config);
-
-      this.dataTypeValidator = new Validator( data, rules, null);
-      if (this.dataTypeValidator.fails()) {
-        this.errors = this.dataTypeValidator.errors.errors;
-        return false;
-      }
-      return true;
+      this.dataTypeValidator = ValidatorFactory(this.config, this.data);
+      this.errors = this.dataTypeValidator.getErrors();
+      return _.size(this.errors) === 0;
     },
     pageNavigate(page) {
       if (!this.config[page]) {
