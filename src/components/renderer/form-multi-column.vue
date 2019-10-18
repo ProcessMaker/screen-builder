@@ -31,7 +31,7 @@
               @pageNavigate="pageNavigate"
               v-bind="element.config"
               :is="element.component"
-              :disabled="element.config.interactive"
+              :disabled="element.config.interactive || element.config.disabled"
             />
           </div>
         </template>
