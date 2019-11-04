@@ -502,10 +502,15 @@ export default {
     migrateFormSubmit(items) {
       items.forEach(item => {
         item['editor-control'] = item['editor-component'];
-        if (item.component === 'FormSubmit') {
-          item['editor-control'] = item.config.event === 'submit' ? 'FormSubmit' : 'PageNavigation';
+
+        if (item.config.event === 'submit') {
+          item['editor-control'] = 'FormSubmit';
+        }
+        if (item.config.event === 'pageNavigate') {
+          item['editor-control'] = 'PageNavigation';
         }
         if (item.items instanceof Array && item.component === 'FormMultiColumn') {
+          item['editor-control'] = 'FormMultiColumn';
           item.items.forEach(column => this.migrateFormSubmit(column));
         }
       });
