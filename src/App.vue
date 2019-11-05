@@ -16,14 +16,18 @@
           </b-col>
 
           <b-col class="text-right" v-if="displayBuilder && !displayPreview">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+            <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-secondary" :title="$t('Calculated Properties')" @click="openComputedProperties">
                 <i class="fas fa-flask"/>
                 {{ $t('Calcs') }}
               </button>
-              <button type="button" class="btn btn-secondary mr-2" :title="$t('Custom CSS')" @click="openCustomCSS">
+              <button type="button" class="btn btn-secondary" :title="$t('Custom CSS')" @click="openCustomCSS">
                 <i class="fab fa-css3"/>
                 {{ $t('CSS') }}
+              </button>
+              <button type="button" class="btn btn-secondary" :title="$t('Watchers')" @click="openWatchersPopup">
+                <i class="fas fa-mask"/>
+                {{ $t('Watchers') }}
               </button>
             </div>
             <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2" :title="$t('Load Screen')">
@@ -153,11 +157,13 @@
     <!-- Modals -->
     <computed-properties v-model="computed" ref="computedProperties"/>
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
+    <watchers-popup v-model="watchers" ref="watchersPopup"/>
   </b-container>
 </template>
 
 <script>
 import ComputedProperties from './components/computed-properties.vue';
+import WatchersPopup from './components/watchers-popup.vue';
 import CustomCSS from './components/custom-css.vue';
 import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
@@ -192,6 +198,8 @@ export default {
       mode: 'editor',
       // Computed properties
       computed: [],
+      // Watchers
+      watchers: [],
       config: [
         {
           name: 'Default',
@@ -221,6 +229,7 @@ export default {
     VueFormRenderer,
     VueJsonPretty,
     MonacoEditor,
+    WatchersPopup,
   },
   watch: {
     mode(mode) {
@@ -338,6 +347,9 @@ export default {
     },
     focusInspector(validate) {
       this.$refs.builder.focusInspector(validate);
+    },
+    openWatchersPopup() {
+      this.$refs.watchersPopup.show();
     },
     openComputedProperties() {
       this.$refs.computedProperties.show();
