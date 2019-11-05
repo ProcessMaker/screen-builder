@@ -8,7 +8,7 @@
     no-close-on-backdrop
   >
     <template v-if="displayList">
-      <watchers-list />
+      <watchers-list v-model="current" @display-form="displayFormProperty" />
     </template>
     <template v-else>
       Form
