@@ -108,8 +108,26 @@ export default {
       },
       fields: [
         {
-          key: 'property',
-          label: 'Property Name',
+          key: 'name',
+          label: 'Name',
+          class: 'text-center',
+          sortable: true,
+        },
+        {
+          key: 'watching',
+          label: 'Watching',
+          class: 'text-center',
+          sortable: true,
+        },
+        {
+          key: 'variable',
+          label: 'Variable',
+          class: 'text-center',
+          sortable: true,
+        },
+        {
+          key: 'script',
+          label: 'Script',
           class: 'text-center',
           sortable: true,
         },
