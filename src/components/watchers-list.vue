@@ -1,18 +1,19 @@
 <template>
   <div>
     <b-row class="mb-2">
-      <b-col sm="8">
-        Filter
-      </b-col>
-      <b-col sm="4" class="text-right">
-        <b-btn size="sm" variant="secondary" @click.stop="displayFormProperty">
+      <b-col class="d-flex">
+        <input class="form-control mr-2 flex-grow-1" v-model="filter" :placeholder="$t('Filter')">
+        <b-btn class="mr-2" size="sm" variant="primary" @click.stop="search" style="width:6em;">
+          <i class="fas fa-search" />
+        </b-btn>
+        <b-btn class="text-nowrap" size="sm" variant="secondary" @click.stop="displayFormProperty">
           <i class="fas fa-plus" />
           {{ $t('Watcher') }}
         </b-btn>
       </b-col>
     </b-row>
 
-    <b-table :items="value" :fields="fields" responsive striped bordered small hover fixed>
+    <b-table :items="filtered" :fields="fields" responsive striped bordered small hover fixed>
       <template slot="HEAD_property" slot-scope="data">{{ $t(data.label) }}</template>
       <template slot="HEAD_actions" slot-scope="data">{{ $t(data.label) }}</template>
 
@@ -81,9 +82,15 @@ export default {
     FormInput,
     FormTextArea,
   },
-  props: ['value'],
+  props: {
+    value: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
+      filter: '',
       fields: [
         {
           key: 'name',
@@ -118,7 +125,24 @@ export default {
       ],
     };
   },
+  computed: {
+    filtered() {
+      if (!this.filter) {
+        return this.value;
+      }
+      const filtered = [];
+      this.value.forEach(item => {
+        if (Object.keys(item).find(key => typeof item[key] === 'string' ? item[key].indexOf(this.filter)>=0 : false)) {
+          filtered.push(item);
+        }
+      });
+      return filtered;
+    },
+  },
   methods: {
+    search() {
+
+    },
     displayFormProperty() {
       this.$emit('display-form');
     },
