@@ -195,6 +195,12 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      watchers: {
+        api: {
+          scripts: [],
+          execute: null,
+        },
+      },
       mode: 'editor',
       // Computed properties
       computed: [],
