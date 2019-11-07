@@ -13,13 +13,26 @@
       :options="variables"
       v-model="config.variable"
       :placeholder="$t('None')"
+      :multiple="false"
+      :show-labels="false"
+      :internal-search="true"
+      @open="loadVariables"
     />
+
     <form-multi-select
       :name="$t('Script Source')"
       :label="$t('Script Source')"
       :options="scripts"
       v-model="config.script_id"
       :placeholder="$t('None')"
+      :multiple="false"
+      :show-labels="false"
+      :searchable="true"
+      :internal-search="false"
+      group-values="items"
+      group-label="type"
+      @open="loadSources"
+      @search-change="loadSources"
     />
 
     <div class="form-group" style='position: relative;'>
@@ -101,8 +114,9 @@ export default {
       default() {
         return {
           name:'',
-          variables:'',
+          variable:'',
           script_id:'',
+          script_key:'',
           input_data:'',
           script_configuration:'',
           synchronous:false,
@@ -131,6 +145,19 @@ export default {
 
   },
   methods: {
+    loadVariables() {
+      this.variables = ['uno', 'dos', 'tres', 'cuatro'];
+    },
+    loadSources(filter) {
+      this.scripts =  [];
+
+      //call load data
+      console.log(this.$root.$children[0].watchers.api.scripts);
+      this.$root.$children[0].watchers.api.scripts.forEach( callback => {
+        callback(this.scripts, filter);
+      });
+
+    },
 
   },
   created() {
@@ -160,3 +187,4 @@ export default {
     border-color: #dc3545;
   }
 </style>
+
