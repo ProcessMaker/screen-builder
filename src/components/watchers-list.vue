@@ -146,6 +146,12 @@ export default {
     displayFormProperty() {
       this.$emit('display-form');
     },
+    editProperty(item) {
+      this.$emit('edit-form', item);
+    },
+    deleteProperty(item) {
+      this.$emit('delete-form', item);
+    },
   },
 };
 </script>

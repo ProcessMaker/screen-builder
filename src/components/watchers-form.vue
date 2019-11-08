@@ -2,7 +2,7 @@
   <div class="form-group">
     <form-input
       ref="name"
-      v-model="value.name"
+      v-model="config.name"
       :label="$t('Watcher Name')"
       :name="$t('Watcher Name')"
     />
@@ -11,7 +11,7 @@
       :name="$t('Variable to Watch')"
       :label="$t('Variable to Watch')"
       :options="variables"
-      v-model="value.variable"
+      v-model="config.variable"
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -23,7 +23,7 @@
       :name="$t('Script Source')"
       :label="$t('Script Source')"
       :options="scripts"
-      v-model="value.script_id"
+      v-model="config.script_id"
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -43,7 +43,7 @@
       <monaco-editor
         :options="monacoOptions"
         class="editor"
-        v-model="value.input_data"
+        v-model="config.input_data"
         language="json"
       />
       <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
@@ -58,7 +58,7 @@
       <monaco-editor
         :options="monacoOptions"
         class="editor"
-        v-model="value.script_configuration"
+        v-model="config.script_configuration"
         language="json"
       />
       <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
@@ -69,7 +69,7 @@
 
     <form-input
       ref="propOutputVariableName"
-      v-model="value.output_variable"
+      v-model="config.output_variable"
       :label="$t('Output Variable Name')"
       :name="$t('Output Variable Name')"
       :helper="$t('Name of Variable to store the output')"
@@ -78,9 +78,9 @@
     <form-checkbox
       :name="$t('Run Synchronously')"
       :label="$t('Run Synchronously')"
-      v-model="value.synchronous"
+      v-model="config.synchronous"
     />
-    <div class="float-right">
+    <div class="float-right mb-3">
       <button class="btn btn-outline-secondary" @click.stop="displayTableList">{{ $t('Cancel') }}</button>
       <button
         class="btn btn-secondary ml-2"
@@ -89,8 +89,6 @@
         {{ $t('Save') }}
       </button>
     </div>
-
-
 
   </div>
 
@@ -105,8 +103,6 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 
-const globalObject = typeof window === 'undefined' ? global : window;
-
 export default {
   components: {
     FormInput,
@@ -116,7 +112,7 @@ export default {
     MonacoEditor,
   },
   props: {
-    value: {
+    config: {
       type: Object,
       default() {
         return {
@@ -146,7 +142,7 @@ export default {
     };
   },
   watch: {
-    value: {
+    config: {
       immediate:true,
       handler(value) {
         console.log('watch value...');
@@ -193,8 +189,8 @@ export default {
       this.$emit('display-list');
     },
     validateData() {
-      if (!this.value.uid) {
-        this.value.uid = _.uniqueId('watcher_');
+      if (!this.config.uid) {
+        this.config.uid = _.uniqueId('watcher_');
       }
       this.save();
     },

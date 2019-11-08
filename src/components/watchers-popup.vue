@@ -9,10 +9,10 @@
     no-close-on-backdrop
   >
     <template v-if="enableList">
-      <watchers-list v-model="current" @display-form="displayForm" />
+      <watchers-list v-model="current" @display-form="displayForm" @edit-form="edit" @delete-form="remove"/>
     </template>
     <template v-else>
-      <watchers-form v-model="add" @display-list="displayList" @save-form="save" />
+      <watchers-form refs="form" :config="add" @display-list="displayList" @save-form="save"/>
     </template>
   </b-modal>
 </template>
@@ -22,8 +22,6 @@ import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 import WatchersList from './watchers-list';
 import WatchersForm from './watchers-form';
-
-let Validator = require('validatorjs');
 
 const globalObject = typeof window === 'undefined' ? global : window;
 
@@ -71,9 +69,6 @@ export default {
       this.enableList = false;
     },
     save() {
-      console.log('... save');
-      console.log('popup save');
-      console.log(this.add);
       let newWatcher = true;
       let message = this.$t('Watcher Saved');
       this.current.forEach(item => {
@@ -92,11 +87,10 @@ export default {
       this.displayList();
     },
     edit(item) {
-      console.log('... todo editProperty');
-      this.add = item;
+      Object.assign(this.add, item);
+      this.displayForm();
     },
-    delete(item) {
-      console.log('... delete');
+    remove(item) {
       this.current = this.current.filter(val => {
         return val.uid !== item.uid;
       });
@@ -109,9 +103,6 @@ export default {
         globalObject.ProcessMaker.alert(message, 'success');
       }
     },
-  },
-  created() {
-
   },
 };
 </script>
