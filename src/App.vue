@@ -195,7 +195,7 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
-      watchers: {
+      watchers_config: {
         api: {
           scripts: [],
           execute: null,

@@ -2,7 +2,7 @@
   <div class="form-group">
     <form-input
       ref="name"
-      v-model="config.name"
+      v-model="value.name"
       :label="$t('Watcher Name')"
       :name="$t('Watcher Name')"
     />
@@ -11,7 +11,7 @@
       :name="$t('Variable to Watch')"
       :label="$t('Variable to Watch')"
       :options="variables"
-      v-model="config.variable"
+      v-model="value.variable"
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -23,7 +23,7 @@
       :name="$t('Script Source')"
       :label="$t('Script Source')"
       :options="scripts"
-      v-model="config.script_id"
+      v-model="value.script_id"
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -43,7 +43,7 @@
       <monaco-editor
         :options="monacoOptions"
         class="editor"
-        v-model="config.input_data"
+        v-model="value.input_data"
         language="json"
       />
       <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
@@ -58,7 +58,7 @@
       <monaco-editor
         :options="monacoOptions"
         class="editor"
-        v-model="config.script_configuration"
+        v-model="value.script_configuration"
         language="json"
       />
       <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
@@ -69,7 +69,7 @@
 
     <form-input
       ref="propOutputVariableName"
-      v-model="config.output_variable"
+      v-model="value.output_variable"
       :label="$t('Output Variable Name')"
       :name="$t('Output Variable Name')"
       :helper="$t('Name of Variable to store the output')"
@@ -78,8 +78,19 @@
     <form-checkbox
       :name="$t('Run Synchronously')"
       :label="$t('Run Synchronously')"
-      v-model="config.synchronous"
+      v-model="value.synchronous"
     />
+    <div class="float-right">
+      <button class="btn btn-outline-secondary" @click.stop="displayTableList">{{ $t('Cancel') }}</button>
+      <button
+        class="btn btn-secondary ml-2"
+        @click="validateData"
+      >
+        {{ $t('Save') }}
+      </button>
+    </div>
+
+
 
   </div>
 
@@ -106,12 +117,6 @@ export default {
   },
   props: {
     value: {
-      type: String,
-      default() {
-        return '';
-      },
-    },
-    config: {
       type: Object,
       default() {
         return {
@@ -141,7 +146,13 @@ export default {
     };
   },
   watch: {
-
+    value: {
+      immediate:true,
+      handler(value) {
+        console.log('watch value...');
+        console.log(value);
+      },
+    },
   },
   computed: {
 
@@ -174,15 +185,22 @@ export default {
       this.scripts =  [];
 
       //call load data
-      this.$root.$children[0].watchers.api.scripts.forEach( callback => {
+      this.$root.$children[0].watchers_config.api.scripts.forEach( callback => {
         callback(this.scripts, filter);
       });
-
     },
-
-  },
-  created() {
-
+    displayTableList() {
+      this.$emit('display-list');
+    },
+    validateData() {
+      if (!this.value.uid) {
+        this.value.uid = _.uniqueId('watcher_');
+      }
+      this.save();
+    },
+    save() {
+      this.$emit('save-form');
+    },
   },
 };
 </script>
