@@ -23,7 +23,7 @@
       :name="$t('Script Source')"
       :label="$t('Script Source')"
       :options="scripts"
-      v-model="config.script_id"
+      v-model="script"
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -134,6 +134,7 @@ export default {
       scriptConfigurationInvalid: false,
       variables:[],
       scripts:[],
+      script: null,
       monacoOptions: {
         automaticLayout: true,
         lineNumbers: 'on',
@@ -147,7 +148,17 @@ export default {
       handler(value) {
         console.log('watch value...');
         console.log(value);
+        this.script = value.script_id;
       },
+    },
+    'config.script_id': {
+      immediate:true,
+      handler(id) {
+        this.script = id;
+      },
+    },
+    script(script) {
+      this.config.script_id = script.id;
     },
   },
   computed: {

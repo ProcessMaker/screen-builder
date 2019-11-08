@@ -119,11 +119,13 @@ export default {
       this.currentPage = 0;
     },
     data() {
+      console.log('watch data');
       this.transientData = JSON.parse(JSON.stringify(this.data));
       this.setDefaultValues();
     },
     transientData: {
       handler() {
+        console.log('watch transientData');
         if (this.computed) {
           this.computed.forEach(prop => {
             let value;
@@ -146,7 +148,7 @@ export default {
 
         if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
           this.$emit('update', this.transientData);
-          this.watchersData(this.transientData);
+          this.watchDataChanges(this.transientData);
         }
       },
       deep: true,
@@ -160,6 +162,10 @@ export default {
   },
   mounted() {
     this.parseCss();
+    console.log("mount screen-renderer-init", window.ProcessMaker);
+    if (window.ProcessMaker) {
+      window.ProcessMaker.EventBus.$emit("screen-renderer-init", this);
+    }
   },
   methods: {
     submit() {
