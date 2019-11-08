@@ -105,13 +105,13 @@ export default {
           sortable: true,
         },
         {
-          key: 'variable',
+          key: 'output_variable',
           label: 'Variable',
           class: 'text-center',
           sortable: true,
         },
         {
-          key: 'script',
+          key: 'script.title',
           label: 'Script',
           class: 'text-center',
           sortable: true,
