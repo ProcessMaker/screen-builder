@@ -11,7 +11,7 @@
       :name="$t('Variable to Watch')"
       :label="$t('Variable to Watch')"
       :options="variables"
-      v-model="config.variable"
+      v-model="config.watching"
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -23,7 +23,11 @@
       :name="$t('Script Source')"
       :label="$t('Script Source')"
       :options="scripts"
+<<<<<<< HEAD
       v-model="script"
+=======
+      v-model="config.script"
+>>>>>>> 16cf75b7da4764352ec8e77e16c4c4eca029bc7d
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -117,11 +121,13 @@ export default {
       default() {
         return {
           name:'',
-          variable:'',
+          watching:'',
+          script:'',
           script_id:'',
           script_key:'',
           input_data:'',
           script_configuration:'',
+          output_variable:'',
           synchronous:false,
         };
       },
@@ -144,11 +150,15 @@ export default {
   },
   watch: {
     config: {
-      immediate:true,
       handler(value) {
-        console.log('watch value...');
-        console.log(value);
-        this.script = value.script_id;
+      },
+    },
+    'config.script': {
+      handler(value) {
+        if (typeof value === 'object') {
+          this.config.script_id = value.id;
+          this.config.script_key = value.key;
+        }
       },
     },
     'config.script_id': {

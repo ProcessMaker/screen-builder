@@ -69,17 +69,13 @@ export default {
       this.enableList = false;
     },
     save() {
-      let newWatcher = true;
       let message = this.$t('Watcher Saved');
-      this.current.forEach(item => {
-        if (item.uid === this.add.uid) {
-          item = this.add;
-          newWatcher= false;
-          message = this.$t('Watcher Updated');
-        }
-      });
-      if (newWatcher) {
+      let index = this.current.findIndex(item => item.uid === this.add.uid);
+      if (index === -1) {
         this.current.push(this.add);
+      } else {
+        message = this.$t('Watcher Updated');
+        this.current[index] = this.add;
       }
 
       this.showAlert(message);
@@ -87,8 +83,8 @@ export default {
       this.displayList();
     },
     edit(item) {
-      Object.assign(this.add, item);
       this.displayForm();
+      Object.assign(this.add, item);
     },
     remove(item) {
       this.current = this.current.filter(val => {
