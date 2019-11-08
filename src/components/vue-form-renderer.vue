@@ -44,7 +44,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import debounce from 'lodash/debounce';
-import { getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
+import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -75,12 +75,12 @@ Vue.component('custom-css', {
 Vue.use(VueDeepSet);
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
   model: {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers],
   components: {
     FormInput,
     FormSelect,
@@ -146,6 +146,7 @@ export default {
 
         if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
           this.$emit('update', this.transientData);
+          this.watchersData(this.transientData);
         }
       },
       deep: true,
