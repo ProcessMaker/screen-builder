@@ -11,7 +11,7 @@
       <watchers-list v-model="current" @display-form="displayFormProperty" />
     </template>
     <template v-else>
-      Form
+      <watchers-form></watchers-form>
     </template>
   </b-modal>
 </template>
