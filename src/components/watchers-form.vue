@@ -29,6 +29,8 @@
       :show-labels="false"
       :searchable="true"
       :internal-search="false"
+      optionValue="id"
+      optionContent="title"
       group-values="items"
       group-label="type"
       @open="loadSources"
@@ -146,13 +148,32 @@ export default {
   },
   methods: {
     loadVariables() {
-      this.variables = ['uno', 'dos', 'tres', 'cuatro'];
+      this.variables = [];
+      //Search in all config screen
+      this.findElements(this.$root.$children[0].config);
+    },
+    findElements(items) {
+      items.forEach(item => {
+        //If the element has containers
+        if (Array.isArray(item)) {
+          this.findElements(item);
+        }
+
+        //If the element has items
+        if (item.items) {
+          this.findElements(item.items);
+        }
+
+        //If the element has configuration only
+        if (item.config && item.config.name) {
+          this.variables.push(item.config.name);
+        }
+      });
     },
     loadSources(filter) {
       this.scripts =  [];
 
       //call load data
-      console.log(this.$root.$children[0].watchers.api.scripts);
       this.$root.$children[0].watchers.api.scripts.forEach( callback => {
         callback(this.scripts, filter);
       });
