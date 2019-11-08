@@ -145,7 +145,6 @@ export default {
   },
   watch: {
     config: {
-      immediate:true,
       handler(value) {
       },
     },
