@@ -18,6 +18,7 @@ export default {
      * @param {object} data 
      */
     watchDataChanges(data) {
+      console.log('watchDataChanges');
       if (this.watchers && this.watchers instanceof Array) {
         this.watchers.forEach(watcher => this.checkWatcher(watcher, data));
       }
@@ -29,9 +30,10 @@ export default {
      * @param {object} data 
      */
     checkWatcher(watcher, data) {
+      console.log('checkWatcher', watcher);
       const trigger = this.watching[watcher.watching] == data[watcher.watching];
       if (trigger) {
-        this.triggerWatcher(watcher, data);
+        this.callWatcher(watcher, data);
       }
       this.watching[watcher.watching] = data[watcher.watching];
     },
@@ -42,10 +44,11 @@ export default {
      * @param {object} data 
      */
     callWatcher(watcher, data) {
+      console.log('callWatcher', watcher);
       if (this.watchers_config.api.execute) {
         const input = Mustache.render(watcher.input_data, data);
         const config = Mustache.render(watcher.script_configuration, data);
-        window.ProcessMaker.api.post(this.watchers_config.api.execute.replace(/script_id/, watcher.script_id), {
+        window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id/, watcher.script_id), {
           watcher: watcher.uid,
           data: input,
           config,
