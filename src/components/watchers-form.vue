@@ -23,11 +23,7 @@
       :name="$t('Script Source')"
       :label="$t('Script Source')"
       :options="scripts"
-<<<<<<< HEAD
-      v-model="script"
-=======
       v-model="config.script"
->>>>>>> 16cf75b7da4764352ec8e77e16c4c4eca029bc7d
       :placeholder="$t('None')"
       :multiple="false"
       :show-labels="false"
@@ -243,4 +239,3 @@ export default {
     border-color: #dc3545;
   }
 </style>
-
