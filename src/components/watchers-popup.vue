@@ -2,7 +2,7 @@
   <b-modal
     ref="modal"
     size="lg"
-    id="computed-properties"
+    id="watchers-popup"
     :title="$t('Watchers')"
     @hidden="displayList"
     hide-footer
