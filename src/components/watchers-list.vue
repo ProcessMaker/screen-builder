@@ -20,14 +20,6 @@
       <template slot="actions" slot-scope="row">
         <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
         <a
-          variant="action"
-          @click.stop="row.toggleDetails"
-          class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-          :title="$t('Details')"
-        >
-          <i class="fa fa-list-alt fa-1x" />
-        </a>
-        <a
           size="lg"
           variant="action"
           :title="$t('edit')"
@@ -45,27 +37,6 @@
         >
           <i class="fa fa-trash fa-1x" />
         </a>
-      </template>
-      <template slot="row-details" slot-scope="row">
-        <b-card>
-          <b-row class="mb-1">
-            <b-col sm="3" class="text-sm-right">
-              <b>{{ $t('Field:') }}</b>
-            </b-col>
-            <b-col>{{ $t(row.item.property) }}</b-col>
-          </b-row>
-          <b-row class="mb-1">
-            <b-col sm="3" class="text-sm-right">
-              <b>{{ $t('Formula:') }}</b>
-            </b-col>
-            <b-col>{{ $t(row.item.formula) }}</b-col>
-          </b-row>
-          <b-button
-            class="float-right"
-            size="sm"
-            @click="row.toggleDetails"
-          >{{ $t('Hide Details') }}</b-button>
-        </b-card>
       </template>
     </b-table>
     <template slot="modal-footer">
