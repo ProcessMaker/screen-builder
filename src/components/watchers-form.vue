@@ -152,7 +152,8 @@ export default {
     'config.script': {
       handler(value) {
         if (typeof value === 'object') {
-          this.config.script_id = value.id;
+          let id = value.id.split('-');
+          this.config.script_id = id[1];
           this.config.script_key = value.key;
         }
       },
@@ -207,7 +208,7 @@ export default {
     },
     validateData() {
       if (!this.config.uid) {
-        this.config.uid = _.uniqueId('watcher_');
+        this.config.uid = _.uniqueId(new Date().getTime());
       }
       this.save();
     },

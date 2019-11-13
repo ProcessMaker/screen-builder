@@ -51,7 +51,11 @@ export default {
     };
   },
   watch: {
-
+    value: {
+      handler(value) {
+        this.current = value;
+      },
+    },
   },
   computed: {
 
