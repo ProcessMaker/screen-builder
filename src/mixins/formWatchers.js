@@ -98,11 +98,12 @@ export default {
   mounted() {
     if (window.ProcessMaker && window.ProcessMaker.user) {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker.user.id}`;
-      const event = 'ProcessMaker.Notifications.ScriptResponseNotification';
+      const event = 'ProcessMaker\\Notifications\\ScriptResponseNotification';
       window.Echo.private(channel).notification(
         (data) => {
-          console.log(data);
-          this.loadWatcherResponse(data.watcher, data.response);
+          if (data.type === event) {
+            this.loadWatcherResponse(data.watcher, data.response);
+          }
         },
       );
     }
