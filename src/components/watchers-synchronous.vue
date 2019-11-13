@@ -30,7 +30,7 @@
         <i class="fas fa-sad-tear fa-10x"/>
       </div>
       <h3 class="display-6">{{ $t('Something has gone wrong.') }}</h3>
-      <p class="lead">{{ $t('Unfortunately this screen has had an issue. We've notified the administrator.') }}</p>
+      <p class="lead">{{ $t('Unfortunately this screen has had an issue. We\'ve notified the administrator.') }}</p>
     </div>
 
   </b-modal>
