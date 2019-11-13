@@ -1,4 +1,5 @@
 import Mustache from 'mustache';
+import _ from 'lodash';
 
 export default {
   data() {
@@ -31,7 +32,7 @@ export default {
      */
     checkWatcher(watcher, data) {
       console.log('checkWatcher', watcher);
-      const trigger = this.watching[watcher.watching] == data[watcher.watching];
+      const trigger = _.get(this.watching, watcher.watching) != _.get(data, watcher.watching);
       if (trigger) {
         this.callWatcher(watcher, data);
       }
@@ -48,7 +49,10 @@ export default {
       if (this.watchers_config.api.execute) {
         const input = Mustache.render(watcher.input_data, data);
         const config = Mustache.render(watcher.script_configuration, data);
-        window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id/, watcher.script_id), {
+        if (watcher.synchronous) {
+          // popup lock screen
+        }
+        window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id/, watcher.script_key || watcher.script_id ), {
           watcher: watcher.uid,
           data: input,
           config,
@@ -57,9 +61,12 @@ export default {
     },
     loadWatcherResponse(watcherUid, response) {
       const watcher = this.watchers.find(watcher => watcher.uid = watcherUid);
-      if (watcher) {
-        this.transientData[watcher.output] = response;
+      if (response.error) {
+        // change to error popup
+      } else if (watcher) {
+        this.$set(this.transientData, watcher.output_variable, response.output);
       }
+      // unlock screen
     },
     /**
      * Add a Echo listener
@@ -91,11 +98,15 @@ export default {
   mounted() {
     if (window.ProcessMaker && window.ProcessMaker.user) {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker.user.id}`;
-      const event = 'ProcessMaker.Events.ScriptExecution';
-      this.addEchoListener(channel, event, (data) => {
-        this.loadWatcherResponse(data.watcher, data.response);
-      });
+      const event = 'ProcessMaker.Notifications.ScriptResponseNotification';
+      window.Echo.private(channel).notification(
+        (data) => {
+          console.log(data);
+          this.loadWatcherResponse(data.watcher, data.response);
+        },
+      );
     }
+    this.callWatcher = _.debounce(this.callWatcher, 2000);
   },
   destroyed() {
     this.cleanEchoListeners();
