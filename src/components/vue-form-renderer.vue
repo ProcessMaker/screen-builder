@@ -36,6 +36,7 @@
         </div>
       </div>
       <custom-css>{{ customCssWrapped }}</custom-css>
+      <watchers-synchronous ref="watchersSynchronous"/>
     </div><!-- end page -->
   </div><!-- end custom-css-scope -->
 </template>
@@ -63,6 +64,7 @@ import {
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
 import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
+import WatchersSynchronous from '@/components/watchers-synchronous';
 
 const csstree = require('css-tree');
 
@@ -82,6 +84,7 @@ export default {
   },
   mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers],
   components: {
+    WatchersSynchronous,
     FormInput,
     FormSelect,
     FormSelectList,
