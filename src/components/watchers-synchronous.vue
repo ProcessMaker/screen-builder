@@ -10,7 +10,7 @@
     hide-header-close
     no-close-on-backdrop
   >
-    <div class="container text-center" v-if="displayRunning">
+    <div class="container text-center" v-if="display === 'running'">
       <div class="icon-container m-4">
         <svg class="lds-gear" width="50%" height="50%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
           <g transform="translate(50 50)">
@@ -55,13 +55,6 @@ export default {
     },
   },
   computed: {
-    displayRunning: {
-      immediate: true,
-      handler(value) {
-        return value === 'running';
-      },
-    },
-
   },
   methods: {
     run() {
