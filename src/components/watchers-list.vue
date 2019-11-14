@@ -65,25 +65,25 @@ export default {
       fields: [
         {
           key: 'name',
-          label: 'Name',
+          label: this.$t('Name'),
           class: 'text-center',
           sortable: true,
         },
         {
           key: 'watching',
-          label: 'Watching',
+          label: this.$t('Watching'),
           class: 'text-center',
           sortable: true,
         },
         {
           key: 'output_variable',
-          label: 'Variable',
+          label: this.$t('Variable'),
           class: 'text-center',
           sortable: true,
         },
         {
           key: 'script.title',
-          label: 'Script',
+          label: this.$t('Script'),
           class: 'text-center',
           sortable: true,
         },
