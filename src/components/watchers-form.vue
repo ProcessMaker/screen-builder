@@ -5,6 +5,7 @@
       v-model="config.name"
       :label="$t('Watcher Name')"
       :name="$t('Watcher Name')"
+      :validation="ruleWatcherName"
     />
 
     <form-multi-select
@@ -16,6 +17,7 @@
       :multiple="false"
       :show-labels="false"
       :internal-search="true"
+      :validation="ruleWatcherVariable"
       @open="loadVariables"
     />
 
@@ -33,6 +35,7 @@
       optionContent="title"
       group-values="items"
       group-label="type"
+      :validation="ruleWatcherScript"
       @open="loadSources"
       @search-change="loadSources"
     />
@@ -73,6 +76,7 @@
       :label="$t('Output Variable Name')"
       :name="$t('Output Variable Name')"
       :helper="$t('Name of Variable to store the output')"
+      :validation="ruleWatcherOutputVariable"
     />
 
     <form-checkbox
@@ -121,8 +125,8 @@ export default {
           script:'',
           script_id:'',
           script_key:'',
-          input_data:'',
-          script_configuration:'',
+          input_data:'{}',
+          script_configuration:'{}',
           output_variable:'',
           synchronous:false,
         };
@@ -131,6 +135,10 @@ export default {
   },
   data() {
     return {
+      ruleWatcherName: 'required',
+      ruleWatcherVariable: 'required',
+      ruleWatcherScript: 'required',
+      ruleWatcherOutputVariable: 'required',
       required: true,
       inputDataInvalid: false,
       scriptConfigurationInvalid: false,
@@ -166,6 +174,14 @@ export default {
     },
     script(script) {
       this.config.script_id = script.id;
+    },
+    'config.name': {
+      handler() {
+        this.ruleWatcherName = 'required';
+        this.ruleWatcherVariable = 'required';
+        this.ruleWatcherScript = 'required';
+        this.ruleWatcherOutputVariable = 'required';
+      }
     },
   },
   computed: {
@@ -207,10 +223,27 @@ export default {
       this.$emit('display-list');
     },
     validateData() {
+      this.ruleWatcherName = 'required';
+      this.ruleWatcherVariable = 'required';
+      this.ruleWatcherScript = 'required';
+      this.ruleWatcherOutputVariable = 'required';
+
       if (!this.config.uid) {
         this.config.uid = _.uniqueId(new Date().getTime());
       }
-      this.save();
+
+      let valid = true;
+      for (let item in this.$refs) {
+        console.log(this.$refs[item].name);
+        console.log(this.$refs[item].validator);
+        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
+          valid = false;
+        }
+      }
+
+      if (valid ) {
+        this.save();
+      }
     },
     save() {
       this.$emit('save-form');
