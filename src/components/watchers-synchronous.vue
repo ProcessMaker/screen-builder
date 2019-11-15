@@ -21,7 +21,7 @@
           </g>
         </svg>
       </div>
-      <h3 class="display-6">{{ $t('variable: is running.', {'variable': variable}) }}</h3>
+      <h3 class="display-6">{{ message }}</h3>
       <p class="lead">{{ $t('This window will automatically close when complete.') }}</p>
     </div>
 
@@ -30,7 +30,7 @@
         <i class="fas fa-sad-tear fa-10x"/>
       </div>
       <h3 class="display-6">{{ $t('Something has gone wrong.') }}</h3>
-      <p class="lead">{{ $t('Unfortunately this screen has had an issue. We\'ve notified the administrator.') }}</p>
+      <p class="lead">{{ $t("Unfortunately this screen has had an issue. We've notified the administrator.") }}</p>
     </div>
 
   </b-modal>
@@ -41,20 +41,17 @@
 export default {
   components: {
   },
-  props: ['variable'],
+  props: ['value'],
   data() {
     return {
       display:'running',
+      variable: '',
     };
   },
-  watch: {
-    variable: {
-      handler(value) {
-        console.log(value);
-      },
-    },
-  },
   computed: {
+    message() {
+      return this.$t('{{variable}} is running.', {'variable': this.variable});
+    },
   },
   methods: {
     run() {
@@ -63,7 +60,8 @@ export default {
     error() {
       this.display = 'error';
     },
-    show() {
+    show(variableName) {
+      this.variable = variableName;
       this.$refs.modal.show();
     },
     hide() {

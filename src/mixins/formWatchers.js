@@ -51,7 +51,7 @@ export default {
         const config = Mustache.render(watcher.script_configuration, data);
         if (watcher.synchronous) {
           // popup lock screen
-          this.$refs.watchersSynchronous.show();
+          this.$refs.watchersSynchronous.show(watcher.name);
         }
         window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id/, watcher.script_key || watcher.script_id ), {
           watcher: watcher.uid,
