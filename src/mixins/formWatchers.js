@@ -59,7 +59,7 @@ export default {
     },
     loadWatcherResponse(watcherUid, response) {
       const watcher = this.watchers.find(watcher => watcher.uid = watcherUid);
-      if (response.error) {
+      if (response.exception) {
         // change to error popup
         this.$refs.watchersSynchronous.error();
       } else if (watcher) {
