@@ -47,15 +47,6 @@ export default {
       display:'running',
     };
   },
-  watch: {
-    variable: {
-      handler(value) {
-        console.log(value);
-      },
-    },
-  },
-  computed: {
-  },
   methods: {
     run() {
       this.display = 'running';
