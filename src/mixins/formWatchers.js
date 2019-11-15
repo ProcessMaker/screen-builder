@@ -107,7 +107,7 @@ export default {
         },
       );
     }
-    this.callWatcher = _.debounce(this.callWatcher, 2000);
+    this.callWatcher = _.debounce(this.callWatcher, 1000);
   },
   destroyed() {
     this.cleanEchoListeners();
