@@ -153,27 +153,18 @@ export default {
     };
   },
   watch: {
-    config: {
-      handler(value) {
-      },
-    },
     'config.script': {
       handler(value) {
         if (typeof value === 'object') {
           let id = value.id.split('-');
           this.config.script_id = id[1];
           this.config.script_key = value.key;
+        } else if (!value) {
+          this.config.script_id = '';
+          this.config.script_key = '';
         }
+        return value;
       },
-    },
-    'config.script_id': {
-      immediate:true,
-      handler(id) {
-        this.script = id;
-      },
-    },
-    script(script) {
-      this.config.script_id = script.id;
     },
     'config.name': {
       handler() {
@@ -234,8 +225,6 @@ export default {
 
       let valid = true;
       for (let item in this.$refs) {
-        console.log(this.$refs[item].name);
-        console.log(this.$refs[item].validator);
         if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
           valid = false;
         }
