@@ -88,7 +88,7 @@ export default {
     },
     edit(item) {
       this.displayForm();
-      Object.assign(this.add, item);
+      this.$set(this, 'add', item);
     },
     remove(item) {
       this.current = this.current.filter(val => {
