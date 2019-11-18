@@ -52,7 +52,12 @@ export default {
             this.$refs.watchersSynchronous.show(watcher.name);
           }
         }
-        window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id/, watcher.script_key || watcher.script_id ), {
+
+        let scriptId = (watcher.script_key === 'package-data-sources/data-source-task-service')
+                        ? watcher.datasource_script_id
+                        : watcher.script_id;
+
+        window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id/, scriptId), {
           watcher: watcher.uid,
           data: input,
           config,
