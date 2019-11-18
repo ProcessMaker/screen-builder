@@ -48,7 +48,9 @@ export default {
         const config = Mustache.render(watcher.script_configuration, data);
         if (watcher.synchronous) {
           // popup lock screen
-          this.$refs.watchersSynchronous.show(watcher.name);
+          if (this.$el.offsetParent) {
+            this.$refs.watchersSynchronous.show(watcher.name);
+          }
         }
         window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id/, watcher.script_key || watcher.script_id ), {
           watcher: watcher.uid,
@@ -61,7 +63,9 @@ export default {
       const watcher = this.watchers.find(watcher => watcher.uid = watcherUid);
       if (response.exception) {
         // change to error popup
-        this.$refs.watchersSynchronous.error();
+        if (this.$el.offsetParent) {
+          this.$refs.watchersSynchronous.error();
+        }
       } else if (watcher) {
         this.$set(this.transientData, watcher.output_variable, response.output);
         // unlock screen
