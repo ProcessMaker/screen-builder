@@ -153,6 +153,18 @@ export default {
     };
   },
   watch: {
+    config: {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        if (!value.input_data) {
+          value.input_data = '{}';
+        }
+        if (!value.script_configuration) {
+          value.script_configuration = '{}';
+        }
+      },
+    },
     'config.script': {
       handler(value) {
         if (typeof value === 'object') {
@@ -175,7 +187,7 @@ export default {
         this.ruleWatcherVariable = 'required';
         this.ruleWatcherScript = 'required';
         this.ruleWatcherOutputVariable = 'required';
-      }
+      },
     },
   },
   computed: {
