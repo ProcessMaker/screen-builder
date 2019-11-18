@@ -40,44 +40,76 @@
       @search-change="loadSources"
     />
 
-    <div class="form-group" style='position: relative;'>
-      <label>{{ $t('Input Data') }}</label>
-      <div class="editor-border" :class="{'is-invalid':inputDataInvalid}"/>
-      <monaco-editor
-        :options="monacoOptions"
-        class="editor"
-        v-model="config.input_data"
-        language="json"
-      />
-      <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
-      <div v-if="inputDataInvalid" class="invalid-feedback d-block">
-        <div>{{ $t('The Input Data field is required.') }}</div>
+    <div v-show="isScript">
+      <div class="form-group" style='position: relative;'>
+        <label>{{ $t('Input Data') }}</label>
+        <div class="editor-border" :class="{'is-invalid':inputDataInvalid}"/>
+        <monaco-editor
+          :options="monacoOptions"
+          class="editor"
+          v-model="config.input_data"
+          language="json"
+        />
+        <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
+        <div v-if="inputDataInvalid" class="invalid-feedback d-block">
+          <div>{{ $t('The Input Data field is required.') }}</div>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group" style='position: relative;'>
-      <label>{{ $t('Script Configuration') }}</label>
-      <div class="editor-border" :class="{'is-invalid':scriptConfigurationInvalid}"/>
-      <monaco-editor
-        :options="monacoOptions"
-        class="editor"
-        v-model="config.script_configuration"
-        language="json"
-      />
-      <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
-      <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
-        <div>{{ $t('The Script Configuration field is required.') }}</div>
+      <div class="form-group" style='position: relative;'>
+        <label>{{ $t('Script Configuration') }}</label>
+        <div class="editor-border" :class="{'is-invalid':scriptConfigurationInvalid}"/>
+        <monaco-editor
+          :options="monacoOptions"
+          class="editor"
+          v-model="config.script_configuration"
+          language="json"
+        />
+        <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
+        <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
+          <div>{{ $t('The Script Configuration field is required.') }}</div>
+        </div>
       </div>
-    </div>
 
-    <form-input
-      ref="propOutputVariableName"
-      v-model="config.output_variable"
-      :label="$t('Output Variable Name')"
-      :name="$t('Output Variable Name')"
-      :helper="$t('Name of Variable to store the output')"
-      :validation="ruleWatcherOutputVariable"
-    />
+      <form-input
+        ref="propOutputVariableName"
+        v-model="config.output_variable"
+        :label="$t('Output Variable Name')"
+        :name="$t('Output Variable Name')"
+        :helper="$t('Name of Variable to store the output')"
+        :validation="ruleWatcherOutputVariable"
+      />
+    </div>
+    <div v-show="isDatasource">
+      <form-multi-select
+        :name="$t('Endpoint')"
+        :label="$t('Endpoint')"
+        :options="endpoints"
+        v-model="endpoint"
+        :placeholder="$t('Select an endpoint')"
+        :multiple="false"
+        :show-labels="false"
+        :searchable="true"
+        :internal-search="false"
+        @search-change="loadEndpoints"
+        @open="loadEndpoints"
+      />
+      <div class="form-group" style='position: relative;'>
+        <label>{{ $t('Input Data') }}</label>
+        <div class="editor-border" :class="{'is-invalid':inputDataInvalid}"/>
+        <monaco-editor
+          :options="monacoOptions"
+          class="editor"
+          v-model="config.input_data"
+          language="json"
+        />
+        <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
+        <div v-if="inputDataInvalid" class="invalid-feedback d-block">
+          <div>{{ $t('The Input Data field is required.') }}</div>
+        </div>
+      </div>
+      <data-mapping v-model="config.script_configuration" />
+    </div>
 
     <form-checkbox
       :name="$t('Run Synchronously')"
@@ -106,6 +138,7 @@ import {
   FormCheckbox,
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
+import DataMapping from './inspector/data-mapping';
 
 export default {
   components: {
@@ -114,6 +147,7 @@ export default {
     FormMultiSelect,
     FormCheckbox,
     MonacoEditor,
+    DataMapping,
   },
   props: {
     config: {
@@ -135,6 +169,8 @@ export default {
   },
   data() {
     return {
+      endpoint: null,
+      endpoints: [],
       ruleWatcherName: 'required',
       ruleWatcherVariable: 'required',
       ruleWatcherScript: 'required',
@@ -176,9 +212,26 @@ export default {
     },
   },
   computed: {
-
+    isDatasource() {
+      return this.config.script && this.config.script.id.substr(0, 11) === 'data_source';
+    },
+    isScript() {
+      return !this.config.script || this.config.script.id.substr(0, 6) === 'script';
+    },
   },
   methods: {
+    loadEndpoints() {
+      const datasourceId = this.config.script.id.substr(0, 11) === 'data_source'
+        ? this.config.script.id.substr(12) : null;
+      this.endpoints.splice(0);
+      if (datasourceId  && window.ProcessMaker && window.ProcessMaker.apiClient) {
+        window.ProcessMaker.apiClient.get(`/data_sources/${datasourceId}`).then((response) => {
+          for (let name in response.data.endpoints) {
+            this.endpoints.push(name);
+          }
+        });
+      }
+    },
     loadVariables() {
       this.variables = [];
       //Search in all config screen
