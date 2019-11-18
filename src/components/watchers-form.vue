@@ -159,9 +159,12 @@ export default {
           let id = value.id.split('-');
           this.config.script_id = id[1];
           this.config.script_key = value.key;
+          console.log('datasource id: ' + value.dataSourceScriptId);
+          this.config.datasource_script_id = value.dataSourceScriptId;
         } else if (!value) {
           this.config.script_id = '';
           this.config.script_key = '';
+          this.config.datasource_script_id = '';
         }
         return value;
       },
