@@ -189,6 +189,9 @@ export default {
     };
   },
   watch: {
+    endpoint(endpoint) {
+      this.setConfig('endpoint', endpoint);
+    },
     config: {
       deep: true,
       immediate: true,
@@ -207,7 +210,9 @@ export default {
           let id = value.id.split('-');
           this.config.script_id = id[1];
           this.config.script_key = value.key;
-          console.log('datasource id: ' + value.dataSourceScriptId);
+          if (id[0] === 'data_source') {
+            this.setConfig('dataSource', this.config.script_id);
+          }
           this.config.datasource_script_id = value.dataSourceScriptId;
         } else if (!value) {
           this.config.script_id = '';
@@ -235,6 +240,20 @@ export default {
     },
   },
   methods: {
+    getConfig() {
+      try {
+        return JSON.parse(this.config.script_configuration);
+      } catch (e) {
+        return {};
+      }
+    },
+    setConfig(name, value) {
+      const config = this.getConfig();
+      if (JSON.stringify(config[name]) !== JSON.stringify(value)) {
+        config[name] = value;
+        this.config.script_configuration = JSON.stringify(config);
+      }
+    },
     loadEndpoints() {
       const datasourceId = this.config.script.id.substr(0, 11) === 'data_source'
         ? this.config.script.id.substr(12) : null;
