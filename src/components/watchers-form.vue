@@ -202,6 +202,7 @@ export default {
         if (!value.script_configuration) {
           value.script_configuration = '{}';
         }
+        this.endpoint = this.getConfig().endpoint;
       },
     },
     'config.script': {
