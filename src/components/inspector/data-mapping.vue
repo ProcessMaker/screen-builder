@@ -92,6 +92,18 @@ export default {
         this.setConfig('dataMapping', dataMapping);
       },
     },
+    value: {
+      immediate: true,
+      handler() {
+        const dataMapping = this.getConfig().dataMapping;
+        if (dataMapping) {
+          this.dataMapping.splice(0);
+          dataMapping.forEach(element => {
+            this.dataMapping.push(element);
+          });
+        }
+      },
+    },
   },
 };
 </script>
