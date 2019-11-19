@@ -171,10 +171,10 @@ export default {
     return {
       endpoint: null,
       endpoints: [],
-      ruleWatcherName: 'required',
-      ruleWatcherVariable: 'required',
-      ruleWatcherScript: 'required',
-      ruleWatcherOutputVariable: 'required',
+      ruleWatcherName: '',
+      ruleWatcherVariable: '',
+      ruleWatcherScript: '',
+      ruleWatcherOutputVariable: '',
       required: true,
       inputDataInvalid: false,
       scriptConfigurationInvalid: false,
@@ -196,6 +196,7 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
+        this.setValidations();
         if (!value.input_data) {
           value.input_data = '{}';
         }
@@ -207,7 +208,11 @@ export default {
     },
     'config.script': {
       handler(value) {
-        if (typeof value === 'object') {
+        if (!value) {
+          this.config.script_id = '';
+          this.config.script_key = '';
+          this.config.datasource_script_id = '';
+        } else if (typeof value === 'object') {
           let id = value.id.split('-');
           this.config.script_id = id[1];
           this.config.script_key = value.key;
@@ -215,20 +220,13 @@ export default {
             this.setConfig('dataSource', this.config.script_id);
           }
           this.config.datasource_script_id = value.dataSourceScriptId;
-        } else if (!value) {
-          this.config.script_id = '';
-          this.config.script_key = '';
-          this.config.datasource_script_id = '';
         }
         return value;
       },
     },
     'config.name': {
       handler() {
-        this.ruleWatcherName = 'required';
-        this.ruleWatcherVariable = 'required';
-        this.ruleWatcherScript = 'required';
-        this.ruleWatcherOutputVariable = 'required';
+        this.setValidations();
       },
     },
   },
@@ -241,6 +239,15 @@ export default {
     },
   },
   methods: {
+    setValidations() {
+      this.ruleWatcherName = 'required';
+      this.ruleWatcherVariable = 'required';
+      this.ruleWatcherScript = 'required';
+      this.ruleWatcherOutputVariable = 'required';
+      if (this.isDatasource) {
+        this.ruleWatcherOutputVariable = '';
+      }
+    },
     getConfig() {
       try {
         return JSON.parse(this.config.script_configuration);
@@ -302,10 +309,7 @@ export default {
       this.$emit('display-list');
     },
     validateData() {
-      this.ruleWatcherName = 'required';
-      this.ruleWatcherVariable = 'required';
-      this.ruleWatcherScript = 'required';
-      this.ruleWatcherOutputVariable = 'required';
+      this.setValidations();
 
       if (!this.config.uid) {
         this.config.uid = _.uniqueId(new Date().getTime());
