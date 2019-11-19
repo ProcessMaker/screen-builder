@@ -293,7 +293,6 @@ export default {
       }
     },
     selectedDataSource(val) {
-      console.log('Data source changed');
       this.getEndPointsList();
     },
     dataObjectOptions(dataObjectOptions) {
@@ -347,7 +346,6 @@ export default {
     },
   },
   mounted() {
-    console.log('mounteddddd');
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
@@ -392,7 +390,7 @@ export default {
 
     getEndPointsList () {
       //If no ProcessMaker is found, datasources can't be loaded
-      if (typeof ProcessMaker === 'undefined') {
+      if (typeof ProcessMaker === 'undefined' || typeof this.selectedDataSource === 'undefined') {
         this.endPointList = [];
         return;
       }
@@ -404,8 +402,8 @@ export default {
 
           for (var endpoint in jsonData) {
             this.endPointList.push({
-              value: endpoint,
-              text: jsonData[endpoint]['url'],
+              text: endpoint,
+              value: jsonData[endpoint]['url'],
             })
           }
         })
