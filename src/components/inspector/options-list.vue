@@ -157,9 +157,21 @@
       </a>
     </div>
 
+    <!--<div v-if="dataSource === dataSourceValues.dataObject">-->
+      <!--<label for="data-name">{{ $t('Data Name OLD BORRAME') }}</label>-->
+      <!--<b-form-input id="data-name" v-model="dataName"/>-->
+      <!--<small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>-->
+    <!--</div>-->
+
     <div v-if="dataSource === dataSourceValues.dataObject">
-      <label for="data-name">{{ $t('Data Name') }}</label>
-      <b-form-input id="data-name" v-model="dataName"/>
+      <label for="data-name">{{ $t('Data Source Name') }}</label>
+      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" class="mb-3"/>
+      <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.dataObject">
+      <label for="data-name">{{ $t('End Point') }}</label>
+      <b-form-select id="data-sources-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
       <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
     </div>
 
@@ -208,6 +220,8 @@ export default {
       key: null,
       value: null,
       dataName: '',
+      selectedDataSource: '',
+      dataSourcesList: [],
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -248,6 +262,8 @@ export default {
       this.dataSource = this.options.dataSource;
       this.jsonData = this.options.jsonData;
       this.dataName = this.options.dataName;
+      this.selectedDataSource = this.options.selectedDataSource;
+      this.dataSourcesList = this.options.dataSourcesList,
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
@@ -266,8 +282,10 @@ export default {
     dataSource(val) {
       if (val === 'dataObject') {
         this.jsonData = '';
+        this.getDataSourceList(); 
       } else {
         this.dataName = '';
+        this.selectedDataSource = '';
       }
     },
     dataObjectOptions(dataObjectOptions) {
@@ -299,6 +317,8 @@ export default {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
         dataName: this.dataName,
+        selectedDataSource: this.selectedDataSource,
+        dataSourcesList: this.dataSourcesList,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -320,6 +340,8 @@ export default {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
+    this.selectedDataSource = this.options.selectedDataSource,
+    this.dataSourcesList = this.options.dataSourcesList,
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -332,6 +354,29 @@ export default {
     this.allowMultiSelect = this.options.allowMultiSelect;
   },
   methods: {
+    getDataSourceList() {
+      //If no ProcessMaker is found, datasources can't be loaded
+      if (typeof ProcessMaker === 'undefined') {
+        this.dataSourcesList = [];
+        return;
+      }
+
+      ProcessMaker.apiClient
+        .get('/data_sources')
+        .then(response => {
+          let jsonData = response.data.data;
+          const convertToSelectOptions = option => ({
+            value: option['id'],
+            text: option['name'],
+          });
+          // Map the data sources response to value/text items list
+          this.dataSourcesList = jsonData.map(convertToSelectOptions);
+        })
+        .catch(err => {
+          this.dataSourcesList = [];
+        });
+    },
+
     jsonDataChange() {	
       let jsonList = [];	
       try {	
