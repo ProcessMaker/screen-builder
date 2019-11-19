@@ -166,13 +166,13 @@
     <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="data-name">{{ $t('Data Source Name') }}</label>
       <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" class="mb-3"/>
-      <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Data source to use') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="data-name">{{ $t('End Point') }}</label>
       <b-form-select id="data-sources-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
-      <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
@@ -222,6 +222,8 @@ export default {
       dataName: '',
       selectedDataSource: '',
       dataSourcesList: [],
+      selectedEndPoint: '',
+      endPointList: [],
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -263,7 +265,9 @@ export default {
       this.jsonData = this.options.jsonData;
       this.dataName = this.options.dataName;
       this.selectedDataSource = this.options.selectedDataSource;
-      this.dataSourcesList = this.options.dataSourcesList,
+      this.dataSourcesList = this.options.dataSourcesList;
+      this.selectedEndPoint = this.options.selectedEndPoint;
+      this.endPointList = this.options.endPointList;
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
@@ -287,6 +291,10 @@ export default {
         this.dataName = '';
         this.selectedDataSource = '';
       }
+    },
+    selectedDataSource(val) {
+      console.log('Data source changed');
+      this.getEndPointsList();
     },
     dataObjectOptions(dataObjectOptions) {
       this.$emit('change', dataObjectOptions);
@@ -319,6 +327,8 @@ export default {
         dataName: this.dataName,
         selectedDataSource: this.selectedDataSource,
         dataSourcesList: this.dataSourcesList,
+        selectedEndPoint: this.selectedEndPoint,
+        endPointList: this.endPointList,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -337,11 +347,14 @@ export default {
     },
   },
   mounted() {
+    console.log('mounteddddd');
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
     this.selectedDataSource = this.options.selectedDataSource,
     this.dataSourcesList = this.options.dataSourcesList,
+    this.selectedEndPoint = this.options.selectedEndPoint,
+    this.endPointList = this.options.endPointList,
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -374,6 +387,30 @@ export default {
         })
         .catch(err => {
           this.dataSourcesList = [];
+        });
+    },
+
+    getEndPointsList () {
+      //If no ProcessMaker is found, datasources can't be loaded
+      if (typeof ProcessMaker === 'undefined') {
+        this.endPointList = [];
+        return;
+      }
+
+      ProcessMaker.apiClient
+        .get('/data_sources/' + this.selectedDataSource)
+        .then(response => {
+          let jsonData = response.data.endpoints;
+
+          for (var endpoint in jsonData) {
+            this.endPointList.push({
+              value: endpoint,
+              text: jsonData[endpoint]['url'],
+            })
+          }
+        })
+        .catch(err => {
+          this.endPointList = [];
         });
     },
 
