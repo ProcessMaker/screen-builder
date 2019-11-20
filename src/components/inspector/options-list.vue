@@ -164,15 +164,21 @@
     <!--</div>-->
 
     <div v-if="dataSource === dataSourceValues.dataObject">
-      <label for="data-name">{{ $t('Data Source Name') }}</label>
+      <label for="data-sources-list">{{ $t('Data Source Name') }}</label>
       <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" class="mb-3"/>
       <small class="form-text text-muted mb-3">{{ $t('Data source to use') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
-      <label for="data-name">{{ $t('End Point') }}</label>
-      <b-form-select id="data-sources-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
+      <label for="endpoint-list">{{ $t('End Point') }}</label>
+      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.dataObject">
+      <label for="element-name">{{ $t('Element Name') }}</label>
+      <b-form-input id="element-name" v-model="elementName"/>
+      <small class="form-text text-muted mb-3">{{ $t('Element of the response to be used') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
@@ -224,6 +230,7 @@ export default {
       dataSourcesList: [],
       selectedEndPoint: '',
       endPointList: [],
+      elementName: '',
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -268,6 +275,7 @@ export default {
       this.dataSourcesList = this.options.dataSourcesList;
       this.selectedEndPoint = this.options.selectedEndPoint;
       this.endPointList = this.options.endPointList;
+      this.elementName = this.options.elementName;
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
@@ -328,6 +336,7 @@ export default {
         dataSourcesList: this.dataSourcesList,
         selectedEndPoint: this.selectedEndPoint,
         endPointList: this.endPointList,
+        elementName: this.elementName,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -353,6 +362,7 @@ export default {
     this.dataSourcesList = this.options.dataSourcesList,
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.endPointList = this.options.endPointList,
+    this.elementName = this.options.elementName,
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -403,7 +413,7 @@ export default {
           for (var endpoint in jsonData) {
             this.endPointList.push({
               text: endpoint,
-              value: jsonData[endpoint]['url'],
+              value: endpoint,
             })
           }
         })
