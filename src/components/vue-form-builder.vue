@@ -286,7 +286,6 @@ Validator.register(
 
 import {
   FormInput,
-  FormSelect,
   FormSelectList,
   FormTextArea,
   FormCheckbox,
@@ -323,7 +322,6 @@ export default {
   components: {
     draggable,
     FormInput,
-    FormSelect,
     FormSelectList,
     FormCheckbox,
     FormTextArea,
