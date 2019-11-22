@@ -14,7 +14,7 @@
         <tr>
           <th scope="col">{{ $t('key') }}</th>
           <th scope="col">{{ $t('value') }}</th>
-          <th scope="col"></th>
+          <th scope="col">&nbsp;</th>
         </tr>
       </thead>
       <tbody>
@@ -39,7 +39,7 @@
           </td>
           <td class="align-middle">
             <a href="javascript:void(0)" class="btn btn-sm btn-danger" @click="removeRowIndex(i)">
-              <i class="fa fa-trash-alt"></i>
+              <i class="fa fa-trash-alt" />
             </a>
           </td>
         </tr>

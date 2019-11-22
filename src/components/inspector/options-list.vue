@@ -263,9 +263,12 @@ export default {
       this.editIndex = this.options.editIndex;
       this.removeIndex = this.options.removeIndex;
     },
-    dataSource() {
-      this.jsonData = '';
-      this.dataName = '';
+    dataSource(val) {
+      if (val === 'dataObject') {
+        this.jsonData = '';
+      } else {
+        this.dataName = '';
+      }
     },
     dataObjectOptions(dataObjectOptions) {
       this.$emit('change', dataObjectOptions);

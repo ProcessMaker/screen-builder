@@ -65,6 +65,7 @@ import {
 import { Parser } from 'expr-eval';
 import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
 import WatchersSynchronous from '@/components/watchers-synchronous';
+import { ValidatorFactory } from '../factories/ValidatorFactory';
 
 const csstree = require('css-tree');
 
@@ -75,6 +76,7 @@ Vue.component('custom-css', {
 });
 
 Vue.use(VueDeepSet);
+
 export default {
   name: 'VueFormRenderer',
   props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
@@ -164,7 +166,7 @@ export default {
   mounted() {
     this.parseCss();
     if (window.ProcessMaker) {
-      window.ProcessMaker.EventBus.$emit("screen-renderer-init", this);
+      window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
   },
   methods: {
@@ -174,36 +176,10 @@ export default {
         this.$emit('submit', this.transientData);
       }
     },
-    validateElements(elements) {
-      elements.forEach(element => {
-        if (element.validator && element.validator.errorCount !== 0) {
-          this.valid = false;
-          this.errors.push(element.validator.errors.errors);
-        }
-      });
-    },
-    validateContainer(container) {
-      if (container.$refs && container.$refs.container) {
-        this.validateContainer(container.$refs.container);
-      }
-      container.forEach(element => {
-        if (element.$refs && element.$refs.elements) {
-          this.validateElements(element.$refs.elements);
-        }
-      });
-    },
     isValid() {
-      this.errors = [];
-      this.valid = true;
-
-      if (this.$refs && this.$refs.elements) {
-        this.validateElements(this.$refs.elements);
-      }
-
-      if (this.$refs && this.$refs.container) {
-        this.validateContainer(this.$refs.container);
-      }
-      return this.valid;
+      this.dataTypeValidator = ValidatorFactory(this.config, this.data);
+      this.errors = this.dataTypeValidator.getErrors();
+      return _.size(this.errors) === 0;
     },
     pageNavigate(page) {
       if (!this.config[page]) {
@@ -215,8 +191,8 @@ export default {
     setDefaultValues() {
       const shouldHaveDefaultValue = item => {
         const shouldHaveDefaultValueSet = item.config.name &&
-          this.model[this.getValidPath(item.config.name)] === undefined &&
-          item.component !== 'FormButton';
+            this.model[this.getValidPath(item.config.name)] === undefined &&
+            item.component !== 'FormButton';
 
         const isNotFormAccordion = item.component !== 'FormAccordion';
 
@@ -242,8 +218,8 @@ export default {
           }
           if (
             node.type.match(/^.+Selector$/) &&
-            node.name !== containerSelector &&
-            list
+              node.name !== containerSelector &&
+              list
           ) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
