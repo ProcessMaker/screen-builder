@@ -17,6 +17,28 @@
       <template slot="HEAD_property" slot-scope="data">{{ $t(data.label) }}</template>
       <template slot="HEAD_actions" slot-scope="data">{{ $t(data.label) }}</template>
 
+      <template v-slot:cell(actions)="row">
+        <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
+        <a
+          size="lg"
+          variant="action"
+          :title="$t('edit')"
+          class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
+          @click.stop="editProperty(row.item)"
+        >
+          <i class="fa fa-edit fa-1x" />
+        </a>
+        <a
+          size="lg"
+          variant="action"
+          :title="$t('Delete')"
+          class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
+          @click.stop="deleteProperty(row.item)"
+        >
+          <i class="fa fa-trash fa-1x" />
+        </a>
+      </template>
+      <!-- Keeps compatibility with the bootstrap-vue version in ProcessMaker -->
       <template slot="actions" slot-scope="row">
         <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
         <a
