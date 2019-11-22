@@ -139,6 +139,7 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 import DataMapping from './inspector/data-mapping';
+import _ from 'lodash';
 
 export default {
   components: {
