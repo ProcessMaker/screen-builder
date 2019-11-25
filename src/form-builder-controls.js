@@ -175,6 +175,9 @@ export default [
         placeholder: '',
         validation: '',
         dataFormat: 'array',
+        dataSourceUrl:'/requests/data_sources/1',
+        dataSourceEndpoint:'list',
+        rootElement:'response',
         options: {
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
