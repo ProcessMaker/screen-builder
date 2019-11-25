@@ -8,6 +8,15 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 
+window.ProcessMaker = {
+  apiClient: {
+    get(params) {return new Promise((resolve) => { resolve({status:200, url: params}); });},
+    put(params) {return new Promise((resolve) => { resolve({status:200, url: params}); });},
+    post(params) {return new Promise((resolve) => { resolve({status:200, url: params}); });},
+    delete(params) {return new Promise((resolve) => { resolve({status:200, url: params}); });},
+  },
+};
+
 // Allow strings to be wrapped in $t(...) for translating
 // outside this package. This standalone app just returns
 // the English string
