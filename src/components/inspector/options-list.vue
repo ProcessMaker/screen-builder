@@ -3,7 +3,7 @@
     <label for="data-sources">{{ $t('Data Source') }}</label>
     <b-form-select id="data-sources" v-model="dataSource" :options="dataSources" class="mb-3"/>
 
-    <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
+    <div v-if="!showJsonEditor && dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
           <label for="data-sources"><b>{{ $t('Options') }}</b></label>
@@ -112,7 +112,7 @@
       </div>
       <div class="row">
         <div class="col text-right">
-          <button @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3">
+          <button type="button" @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3">
             <i class="fas fa-code" aria-hidden="true"/>
             {{ $t('Edit as JSON') }}
           </button>
@@ -132,28 +132,28 @@
       </div>
     </div>
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
-      <div v-if="dataSource === dataSourceValues.provideData">
-        <div class="mb-2">
-          <label for="json-data">{{ $t('JSON Data') }}</label>
-          <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
-        </div>
-        <div class="small-editor-container">
-          <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" @change="jsonDataChange"/>
-        </div>
-
-        <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
-          <div class="editor-container">
-            <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor" @change="jsonDataChange"/>
-          </div>
-          <div slot="modal-footer">
-            <b-button @click="closePopup" class="btn btn-secondary">
-              {{ $t('CLOSE') }}
-            </b-button>
-          </div>
-        </b-modal>
+      <div class="mb-2">
+        <label for="json-data">{{ $t('JSON Data') }}</label>
+        <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+      </div>
+      <div class="small-editor-container">
+        <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
+                      @change="jsonDataChange"/>
       </div>
 
-      <button @click="showJsonEditor = false" class="edit-json text-muted mt-1 mb-3">
+      <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
+        <div class="editor-container">
+          <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
+                        @change="jsonDataChange"/>
+        </div>
+        <div slot="modal-footer">
+          <b-button @click="closePopup" class="btn btn-secondary">
+            {{ $t('CLOSE') }}
+          </b-button>
+        </div>
+      </b-modal>
+
+      <button type="button" @click="showJsonEditor = false" class="edit-json text-muted mt-1 mb-3">
         <i class="fas fa-code" aria-hidden="true"/>
         {{ $t('Edit as Option List') }}
       </button>
@@ -185,8 +185,6 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
-
-require('monaco-editor/esm/vs/editor/editor.main');
 
 export default {
   components: {
