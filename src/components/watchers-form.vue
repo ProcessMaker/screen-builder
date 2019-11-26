@@ -109,6 +109,15 @@
         </div>
       </div>
       <data-mapping v-model="config.script_configuration" />
+
+      <form-input
+        ref="propOutputVariableName"
+        v-model="config.output_variable"
+        :label="$t('Output Variable Name')"
+        :name="$t('Output Variable Name')"
+        :helper="$t('Name of Variable to store the output')"
+        :validation="ruleWatcherOutputVariable"
+      />
     </div>
 
     <form-checkbox
@@ -245,9 +254,6 @@ export default {
       this.ruleWatcherVariable = 'required';
       this.ruleWatcherScript = 'required';
       this.ruleWatcherOutputVariable = 'required';
-      if (this.isDatasource) {
-        this.ruleWatcherOutputVariable = '';
-      }
     },
     getConfig() {
       try {
