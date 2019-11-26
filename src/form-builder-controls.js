@@ -309,6 +309,7 @@ export default [
       },
       inspector: [
         keyNameProperty,
+        DataTypeBooleanProperty,
         labelProperty,
         helperTextProperty,
         validationRulesProperty,
