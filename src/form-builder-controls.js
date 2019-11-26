@@ -47,6 +47,7 @@ export default [
         content: '<p>Rich text editor</p>',
       },
       inspector: [
+        keyNameProperty,
         {
           type: 'FormTextArea',
           field: 'content',
@@ -378,6 +379,7 @@ export default [
 
       },
       inspector: [
+        keyNameProperty,
         {
           type: 'PageSelect',
           field: 'eventData',
@@ -420,6 +422,7 @@ export default [
         ],
       },
       inspector: [
+        keyNameProperty,
         {
           type: 'ContainerColumns',
           field: 'options',
@@ -510,41 +513,35 @@ export default [
         name: null,
         value: null,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Name',
-          helper: 'Image name',
+      inspector: [
+        keyNameProperty,
+        {
+          type: 'ImageUpload',
+          field: 'image',
+          config: {
+            label: 'Upload',
+            helper: 'Upload image',
+          },
         },
-      },
-      {
-        type: 'ImageUpload',
-        field: 'image',
-        config: {
-          label: 'Upload',
-          helper: 'Upload image',
+        helperTextProperty,
+        {
+          type: 'FormInput',
+          field: 'height',
+          config: {
+            label: 'Height',
+            helper: 'Image height',
+            type: 'number',
+          },
         },
-      },
-      helperTextProperty,
-      {
-        type: 'FormInput',
-        field: 'height',
-        config: {
-          label: 'Height',
-          helper: 'Image height',
-          type: 'number',
+        {
+          type: 'FormInput',
+          field: 'width',
+          config: {
+            label: 'Width',
+            helper: 'image width',
+            type: 'number',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'width',
-        config: {
-          label: 'Width',
-          helper: 'image width',
-          type: 'number',
-        },
-      },
       ],
     },
   },
@@ -574,15 +571,7 @@ export default [
           helper: 'The label describes the button\'s text',
         },
       },
-      {
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          helper: 'A variable name is a symbolic name to reference information.',
-        },
-      },
+      keyNameProperty,
       {
         type: 'FormInput',
         field: 'fieldValue',
