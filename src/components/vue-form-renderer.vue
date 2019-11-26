@@ -43,7 +43,7 @@
 <script>
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
-import debounce from 'lodash/debounce';
+import _ from 'lodash';
 import { getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
@@ -157,7 +157,7 @@ export default {
     },
   },
   created() {
-    this.parseCss = debounce(this.parseCss, 500, {leading: true});
+    this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
     this.parseCss();
