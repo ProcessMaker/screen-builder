@@ -165,7 +165,7 @@
       <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
+    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
@@ -173,9 +173,7 @@
       <label for="value">{{ $t('Content') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
-    </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">Advanced data search</small>
