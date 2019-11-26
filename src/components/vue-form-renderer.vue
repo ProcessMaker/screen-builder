@@ -151,6 +151,7 @@ export default {
         }
       },
       deep: true,
+      immediate: true,
     },
     customCss() {
       this.parseCss();
