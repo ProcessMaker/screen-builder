@@ -151,17 +151,11 @@
           </div>
         </b-modal>
       </div>
-      
+
       <a @click="editAsOptionList()" href="#" class="text-right">
         <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as Option List') }}</small>
       </a>
     </div>
-
-    <!--<div v-if="dataSource === dataSourceValues.dataObject">-->
-      <!--<label for="data-name">{{ $t('Data Name OLD BORRAME') }}</label>-->
-      <!--<b-form-input id="data-name" v-model="dataName"/>-->
-      <!--<small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>-->
-    <!--</div>-->
 
     <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="data-sources-list">{{ $t('Data Source Name') }}</label>
@@ -294,7 +288,7 @@ export default {
     dataSource(val) {
       if (val === 'dataObject') {
         this.jsonData = '';
-        this.getDataSourceList(); 
+        this.getDataSourceList();
       } else {
         this.dataName = '';
         this.selectedDataSource = '';
@@ -398,7 +392,7 @@ export default {
         });
     },
 
-    getEndPointsList () {
+    getEndPointsList() {
       //If no ProcessMaker is found, datasources can't be loaded
       if (typeof ProcessMaker === 'undefined' || typeof this.selectedDataSource === 'undefined') {
         this.endPointList = [];
@@ -414,7 +408,7 @@ export default {
             this.endPointList.push({
               text: endpoint,
               value: endpoint,
-            })
+            });
           }
         })
         .catch(err => {
@@ -422,27 +416,27 @@ export default {
         });
     },
 
-    jsonDataChange() {	
-      let jsonList = [];	
-      try {	
-        jsonList = JSON.parse(this.jsonData);	
-        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {	
-          throw Error('String does not represent a valid JSON');	
-        }	
-      }	
-      catch (err) {	
-        this.jsonError = err.message;	
-        return;	
-      }	
-      this.optionsList = [];	
-      const that = this;	
-      jsonList.forEach (item => {	
-        that.optionsList.push({	
-          [that.keyField] : item[that.keyField],	
-          [that.valueField] : item[that.valueField],	
-        });	
-      });	
-      this.jsonError = '';	
+    jsonDataChange() {
+      let jsonList = [];
+      try {
+        jsonList = JSON.parse(this.jsonData);
+        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
+          throw Error('String does not represent a valid JSON');
+        }
+      }
+      catch (err) {
+        this.jsonError = err.message;
+        return;
+      }
+      this.optionsList = [];
+      const that = this;
+      jsonList.forEach (item => {
+        that.optionsList.push({
+          [that.keyField] : item[that.keyField],
+          [that.valueField] : item[that.valueField],
+        });
+      });
+      this.jsonError = '';
     },
     defaultOptionClick() {
       if (this.defaultOptionKey === event.target.value) {
@@ -547,7 +541,7 @@ export default {
   .editor-container {
     height: 70vh;
   }
-  
+
   .editor-container .editor {
     height: inherit;
   }

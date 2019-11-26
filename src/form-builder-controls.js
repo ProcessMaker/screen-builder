@@ -175,8 +175,8 @@ export default [
         placeholder: '',
         validation: '',
         dataFormat: 'array',
-        dataSourceUrl:'/requests/data_sources/1',
-        dataSourceEndpoint:'list',
+        dataSourceUrl:'',
+        dataSourceEndpoint:'',
         rootElement:'response',
         options: {
           showRenderAs: true,
