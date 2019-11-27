@@ -1,9 +1,9 @@
 <template>
   <div>
     <label for="data-sources">{{ $t('Data Source') }}</label>
-    <b-form-select id="data-sources" v-model="dataSource" :options="dataSources" class="mb-3"/>
+    <b-form-select id="data-sources" v-model="dataSource" :options="dataSourceTypes" class="mb-3"/>
 
-    <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
+    <div v-if="!showJsonEditor && dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
           <label for="data-sources"><b>{{ $t('Options') }}</b></label>
@@ -112,9 +112,10 @@
       </div>
       <div class="row">
         <div class="col text-right">
-          <a @click="editAsJson()" href="#">
-            <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as JSON') }}</small>
-          </a>
+          <button type="button" @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3">
+            <i class="fas fa-code" aria-hidden="true"/>
+            {{ $t('Edit as JSON') }}
+          </button>
         </div>
       </div>
       <div class="row mb-3" v-if="showRenderAs">
@@ -131,39 +132,54 @@
       </div>
     </div>
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
-      <div v-if="dataSource === dataSourceValues.provideData">
-        <div class="mb-2">
-          <label for="json-data">{{ $t('JSON Data') }}</label>
-          <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
-        </div>
-        <div class="small-editor-container">
-          <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" @change="jsonDataChange"/>
-        </div>
-
-        <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
-          <div class="editor-container">
-            <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor" @change="jsonDataChange"/>
-          </div>
-          <div slot="modal-footer">
-            <b-button @click="closePopup" class="btn btn-secondary">
-              {{ $t('CLOSE') }}
-            </b-button>
-          </div>
-        </b-modal>
+      <div class="mb-2">
+        <label for="json-data">{{ $t('JSON Data') }}</label>
+        <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
       </div>
-      
-      <a @click="editAsOptionList()" href="#" class="text-right">
-        <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as Option List') }}</small>
-      </a>
+      <div class="small-editor-container">
+        <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
+          @change="jsonDataChange"
+        />
+      </div>
+
+      <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
+        <div class="editor-container">
+          <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
+            @change="jsonDataChange"
+          />
+        </div>
+        <div slot="modal-footer">
+          <b-button @click="closePopup" class="btn btn-secondary">
+            {{ $t('CLOSE') }}
+          </b-button>
+        </div>
+      </b-modal>
+
+      <button type="button" @click="showJsonEditor = false" class="edit-json text-muted mt-1 mb-3">
+        <i class="fas fa-code" aria-hidden="true"/>
+        {{ $t('Edit as Option List') }}
+      </button>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
-      <label for="data-name">{{ $t('Data Name') }}</label>
-      <b-form-input id="data-name" v-model="dataName"/>
-      <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
+      <label for="data-sources-list">{{ $t('Data Source Name') }}</label>
+      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" class="mb-3"/>
+      <small class="form-text text-muted mb-3">{{ $t('Data source to use') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
+    <div v-if="dataSource === dataSourceValues.dataObject">
+      <label for="endpoint-list">{{ $t('End Point') }}</label>
+      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
+      <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.dataObject">
+      <label for="element-name">{{ $t('Element Name') }}</label>
+      <b-form-input id="element-name" v-model="elementName"/>
+      <small class="form-text text-muted mb-3">{{ $t('Element of the response to be used') }}</small>
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
@@ -171,9 +187,7 @@
       <label for="value">{{ $t('Content') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
-    </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">Advanced data search</small>
@@ -185,7 +199,6 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
-require('monaco-editor/esm/vs/editor/editor.main');
 
 export default {
   components: {
@@ -208,6 +221,11 @@ export default {
       key: null,
       value: null,
       dataName: '',
+      selectedDataSource: '',
+      dataSourcesList: [],
+      selectedEndPoint: '',
+      endPointList: [],
+      elementName: '',
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -248,6 +266,11 @@ export default {
       this.dataSource = this.options.dataSource;
       this.jsonData = this.options.jsonData;
       this.dataName = this.options.dataName;
+      this.selectedDataSource = this.options.selectedDataSource;
+      this.dataSourcesList = this.options.dataSourcesList;
+      this.selectedEndPoint = this.options.selectedEndPoint;
+      this.endPointList = this.options.endPointList;
+      this.elementName = this.options.elementName;
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
@@ -266,15 +289,26 @@ export default {
     dataSource(val) {
       if (val === 'dataObject') {
         this.jsonData = '';
+        this.getDataSourceList();
       } else {
         this.dataName = '';
+        this.selectedDataSource = '';
       }
+    },
+    selectedDataSource(val) {
+      this.getEndPointsList();
     },
     dataObjectOptions(dataObjectOptions) {
       this.$emit('change', dataObjectOptions);
     },
   },
   computed: {
+    dataSourceTypes(val) {
+      if (typeof this.options.allowMultiSelect === 'undefined') {
+        return [this.dataSources[0]];
+      }
+      return this.dataSources;
+    },
     optionKeyClass() {
       return this.optionError ? 'is-invalid' : '';
     },
@@ -299,6 +333,11 @@ export default {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
         dataName: this.dataName,
+        selectedDataSource: this.selectedDataSource,
+        dataSourcesList: this.dataSourcesList,
+        selectedEndPoint: this.selectedEndPoint,
+        endPointList: this.endPointList,
+        elementName: this.elementName,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -320,6 +359,11 @@ export default {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
+    this.selectedDataSource = this.options.selectedDataSource,
+    this.dataSourcesList = this.options.dataSourcesList,
+    this.selectedEndPoint = this.options.selectedEndPoint,
+    this.endPointList = this.options.endPointList,
+    this.elementName = this.options.elementName,
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -332,27 +376,75 @@ export default {
     this.allowMultiSelect = this.options.allowMultiSelect;
   },
   methods: {
-    jsonDataChange() {	
-      let jsonList = [];	
-      try {	
-        jsonList = JSON.parse(this.jsonData);	
-        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {	
-          throw Error('String does not represent a valid JSON');	
-        }	
-      }	
-      catch (err) {	
-        this.jsonError = err.message;	
-        return;	
-      }	
-      this.optionsList = [];	
-      const that = this;	
-      jsonList.forEach (item => {	
-        that.optionsList.push({	
-          [that.keyField] : item[that.keyField],	
-          [that.valueField] : item[that.valueField],	
-        });	
-      });	
-      this.jsonError = '';	
+    getDataSourceList() {
+      //If no ProcessMaker is found, datasources can't be loaded
+      if (typeof ProcessMaker === 'undefined') {
+        this.dataSourcesList = [];
+        return;
+      }
+
+      ProcessMaker.apiClient
+        .get('/data_sources')
+        .then(response => {
+          let jsonData = response.data.data;
+          const convertToSelectOptions = option => ({
+            value: option['id'],
+            text: option['name'],
+          });
+          // Map the data sources response to value/text items list
+          this.dataSourcesList = jsonData.map(convertToSelectOptions);
+        })
+        .catch(err => {
+          this.dataSourcesList = [];
+        });
+    },
+
+    getEndPointsList() {
+      //If no ProcessMaker is found, datasources can't be loaded
+      if (typeof ProcessMaker === 'undefined'
+        || typeof this.selectedDataSource === 'undefined'
+        || this.selectedDataSource === '') {
+        this.endPointList = [];
+        return;
+      }
+
+      ProcessMaker.apiClient
+        .get('/data_sources/' + this.selectedDataSource)
+        .then(response => {
+          let jsonData = response.data.endpoints;
+
+          for (var endpoint in jsonData) {
+            this.endPointList.push({
+              text: endpoint,
+              value: endpoint,
+            });
+          }
+        })
+        .catch(err => {
+          this.endPointList = [];
+        });
+    },
+    jsonDataChange() {
+      let jsonList = [];
+      try {
+        jsonList = JSON.parse(this.jsonData);
+        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
+          throw Error('String does not represent a valid JSON');
+        }
+      }
+      catch (err) {
+        this.jsonError = err.message;
+        return;
+      }
+      this.optionsList = [];
+      const that = this;
+      jsonList.forEach (item => {
+        that.optionsList.push({
+          [that.keyField] : item[that.keyField],
+          [that.valueField] : item[that.valueField],
+        });
+      });
+      this.jsonError = '';
     },
     defaultOptionClick() {
       if (this.defaultOptionKey === event.target.value) {
@@ -372,12 +464,6 @@ export default {
       this.jsonData = JSON.stringify(this.optionsList);
       this.$emit('change', this.dataObjectOptions);
 
-    },
-    editAsJson() {
-      this.showJsonEditor = true;
-    },
-    editAsOptionList() {
-      this.showJsonEditor = false;
     },
     showEditOption(index) {
       this.optionCardType = 'edit';
@@ -430,7 +516,6 @@ export default {
       this.showRemoveWarning = false;
       this.removeIndex = null;
     },
-
     removeOption(index) {
       this.removeIndex = index;
       this.showRemoveWarning = true;
@@ -444,7 +529,22 @@ export default {
   },
 };
 </script>
-<style scoped>
+
+<style scoped lang="scss">
+  .edit-json {
+    font-size: 0.75rem;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: right;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .striped {
     background-color: rgba(0,0,0,.05);
   }
@@ -457,7 +557,7 @@ export default {
   .editor-container {
     height: 70vh;
   }
-  
+
   .editor-container .editor {
     height: inherit;
   }

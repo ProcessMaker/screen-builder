@@ -44,6 +44,7 @@
 <script>
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
+import _ from 'lodash';
 import debounce from 'lodash/debounce';
 import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
 import * as editor from './editor';
@@ -155,13 +156,14 @@ export default {
         }
       },
       deep: true,
+      immediate: true,
     },
     customCss() {
       this.parseCss();
     },
   },
   created() {
-    this.parseCss = debounce(this.parseCss, 500, {leading: true});
+    this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
     this.parseCss();
