@@ -47,12 +47,6 @@ export function getDefaultValueForItem(item, transientData) {
     defaultValue = '';
   }
 
-  if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
-    const options = getOptionsFromDataSource(item.config.options, transientData);
-
-    defaultValue = options[0] ? options[0].value : null;
-  }
-
   if (item.component === 'FormCheckbox') {
     defaultValue = item.config.initiallyChecked || false;
   }
