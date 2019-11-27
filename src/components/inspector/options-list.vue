@@ -197,7 +197,6 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
-require('monaco-editor/esm/vs/editor/editor.main');
 
 export default {
   components: {
@@ -423,7 +422,6 @@ export default {
           this.endPointList = [];
         });
     },
-
     jsonDataChange() {
       let jsonList = [];
       try {
@@ -431,7 +429,7 @@ export default {
         if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
           throw Error('String does not represent a valid JSON');
         }
-      }
+      }	
       catch (err) {
         this.jsonError = err.message;
         return;
