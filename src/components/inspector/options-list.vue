@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="data-sources">{{ $t('Data Source') }}</label>
-    <b-form-select id="data-sources" v-model="dataSource" :options="dataSources" class="mb-3"/>
+    <b-form-select id="data-sources" v-model="dataSource" :options="dataSourceTypes" class="mb-3"/>
 
     <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
@@ -302,6 +302,12 @@ export default {
     },
   },
   computed: {
+    dataSourceTypes(val) {
+      if (typeof this.options.allowMultiSelect === 'undefined') {
+        return [this.dataSources[0]];
+      }
+      return this.dataSources;
+    },
     optionKeyClass() {
       return this.optionError ? 'is-invalid' : '';
     },
