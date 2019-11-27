@@ -117,18 +117,6 @@
           </a>
         </div>
       </div>
-      <div class="row mb-3" v-if="showRenderAs">
-        <div class="col-12">
-          <input type="checkbox"  v-model="allowMultiSelect">
-          Allow multiple selections
-        </div>
-      </div>
-      <div class="row mb-3" v-if="showRenderAs">
-        <div class="col">
-          <label for="render-as">{{ $t('Render Options As') }}</label>
-          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
-        </div>
-      </div>
     </div>
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div v-if="dataSource === dataSourceValues.provideData">
@@ -190,6 +178,21 @@
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">Advanced data search</small>
     </div>
+
+    <div class="row mb-3 mt-3" v-if="showRenderAs">
+      <div class="col-12">
+        <input type="checkbox"  v-model="allowMultiSelect">
+        Allow multiple selections
+      </div>
+    </div>
+
+    <div class="row mb-3" v-if="showRenderAs">
+      <div class="col">
+        <label for="render-as">{{ $t('Render Options As') }}</label>
+        <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
+      </div>
+    </div>
+    
   </div>
 </template>
 
