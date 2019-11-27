@@ -3,7 +3,7 @@ import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
-import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
+import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
@@ -133,7 +133,6 @@ export default [
         labelProperty,
         placeholderProperty,
         keyNameProperty,
-        DataTypeProperty,
         helperTextProperty,
         {
           type: 'FormCheckbox',
@@ -175,6 +174,9 @@ export default [
         placeholder: '',
         validation: '',
         dataFormat: 'array',
+        dataSourceUrl:'',
+        dataSourceEndpoint:'',
+        rootElement:'response',
         options: {
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
@@ -309,7 +311,6 @@ export default [
       },
       inspector: [
         keyNameProperty,
-        DataTypeBooleanProperty,
         labelProperty,
         helperTextProperty,
         validationRulesProperty,
