@@ -345,7 +345,7 @@ export default {
         });
         return response;
       },
-      this.$t('Property already exists.')
+      this.$t('Property already exists')
     );
   },
 
