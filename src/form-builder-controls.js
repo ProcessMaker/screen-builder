@@ -133,7 +133,6 @@ export default [
         labelProperty,
         placeholderProperty,
         keyNameProperty,
-        DataTypeProperty,
         helperTextProperty,
         {
           type: 'FormCheckbox',

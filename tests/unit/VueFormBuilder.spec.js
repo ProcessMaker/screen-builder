@@ -23,6 +23,10 @@ function isFormCheckbox(config) {
   return config.control.component === 'FormCheckbox';
 }
 
+function isTextArea(config) {
+  return config.control.component === 'FormTextArea';
+}
+
 describe('App', () => {
   it('Contains Rich Text control', () => {
     const richTextConfig = controlConfig.find(isFormHtmlEditor);
@@ -45,6 +49,25 @@ describe('App', () => {
     );
 
     expect(wrapper.vm.controls).toHaveLength(1);
+  });
+
+  it('should not contain datatype select on textarea element', function() {
+    let store = new Vuex.Store();
+    const wrapper = shallowMount(VueFormBuilder, {i18n, store, localVue});
+    const checkboxConfig = controlConfig.find(isTextArea);
+
+    wrapper.vm.addControl(
+      checkboxConfig.control,
+      checkboxConfig.rendererComponent,
+      checkboxConfig.rendererBinding,
+      checkboxConfig.builderComponent,
+      checkboxConfig.builderBinding,
+      checkboxConfig.inspector
+    );
+
+    checkboxConfig.control.inspector.forEach(item => {
+      expect(item.field.dataFormat).toBeUndefined();
+    });
   });
 
   it('should not contain datatype select drop down ', function() {
