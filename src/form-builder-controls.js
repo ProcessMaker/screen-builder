@@ -174,6 +174,9 @@ export default [
         placeholder: '',
         validation: '',
         dataFormat: 'array',
+        dataSourceUrl:'',
+        dataSourceEndpoint:'',
+        rootElement:'response',
         options: {
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
