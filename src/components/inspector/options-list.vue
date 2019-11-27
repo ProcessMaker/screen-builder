@@ -138,13 +138,15 @@
       </div>
       <div class="small-editor-container">
         <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
-                      @change="jsonDataChange"/>
+          @change="jsonDataChange"
+        />
       </div>
 
       <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
         <div class="editor-container">
           <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
-                        @change="jsonDataChange"/>
+            @change="jsonDataChange"
+          />
         </div>
         <div slot="modal-footer">
           <b-button @click="closePopup" class="btn btn-secondary">
