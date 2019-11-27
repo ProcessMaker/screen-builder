@@ -151,7 +151,7 @@
           </div>
         </b-modal>
       </div>
-      
+
       <a @click="editAsOptionList()" href="#" class="text-right">
         <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as Option List') }}</small>
       </a>
@@ -185,7 +185,6 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
-require('monaco-editor/esm/vs/editor/editor.main');
 
 export default {
   components: {
@@ -332,27 +331,27 @@ export default {
     this.allowMultiSelect = this.options.allowMultiSelect;
   },
   methods: {
-    jsonDataChange() {	
-      let jsonList = [];	
-      try {	
-        jsonList = JSON.parse(this.jsonData);	
-        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {	
-          throw Error('String does not represent a valid JSON');	
-        }	
+    jsonDataChange() {
+      let jsonList = [];
+      try {
+        jsonList = JSON.parse(this.jsonData);
+        if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
+          throw Error('String does not represent a valid JSON');
+        }
       }	
-      catch (err) {	
-        this.jsonError = err.message;	
-        return;	
-      }	
-      this.optionsList = [];	
-      const that = this;	
-      jsonList.forEach (item => {	
-        that.optionsList.push({	
-          [that.keyField] : item[that.keyField],	
-          [that.valueField] : item[that.valueField],	
-        });	
-      });	
-      this.jsonError = '';	
+      catch (err) {
+        this.jsonError = err.message;
+        return;
+      }
+      this.optionsList = [];
+      const that = this;
+      jsonList.forEach (item => {
+        that.optionsList.push({
+          [that.keyField] : item[that.keyField],
+          [that.valueField] : item[that.valueField],
+        });
+      });
+      this.jsonError = '';
     },
     defaultOptionClick() {
       if (this.defaultOptionKey === event.target.value) {
@@ -457,7 +456,7 @@ export default {
   .editor-container {
     height: 70vh;
   }
-  
+
   .editor-container .editor {
     height: inherit;
   }
