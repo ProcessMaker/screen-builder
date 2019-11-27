@@ -19,6 +19,9 @@ const i18n = new VueI18Next(i18next);
 function isFormHtmlEditor(config) {
   return config.control.component === 'FormHtmlEditor' || config.control.component === 'FormHtmlViewer';
 }
+function isFormCheckbox(config) {
+  return config.control.component === 'FormCheckbox';
+}
 
 describe('App', () => {
   it('Contains Rich Text control', () => {
@@ -42,5 +45,24 @@ describe('App', () => {
     );
 
     expect(wrapper.vm.controls).toHaveLength(1);
+  });
+
+  it('should not contain datatype select drop down ', function() {
+    let store = new Vuex.Store();
+    const wrapper = shallowMount(VueFormBuilder, {i18n, store, localVue});
+    const checkboxConfig = controlConfig.find(isFormCheckbox);
+
+    wrapper.vm.addControl(
+      checkboxConfig.control,
+      checkboxConfig.rendererComponent,
+      checkboxConfig.rendererBinding,
+      checkboxConfig.builderComponent,
+      checkboxConfig.builderBinding,
+      checkboxConfig.inspector
+    );
+
+    checkboxConfig.control.inspector.forEach(item => {
+      expect(item.field.dataFormat).toBeUndefined();
+    });
   });
 });
