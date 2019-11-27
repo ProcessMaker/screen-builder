@@ -3,7 +3,7 @@
     <label for="data-sources">{{ $t('Data Source') }}</label>
     <b-form-select id="data-sources" v-model="dataSource" :options="dataSources" class="mb-3"/>
 
-    <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
+    <div v-if="!showJsonEditor && dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
           <label for="data-sources"><b>{{ $t('Options') }}</b></label>
@@ -112,9 +112,10 @@
       </div>
       <div class="row">
         <div class="col text-right">
-          <a @click="editAsJson()" href="#">
-            <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as JSON') }}</small>
-          </a>
+          <button type="button" @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3">
+            <i class="fas fa-code" aria-hidden="true"/>
+            {{ $t('Edit as JSON') }}
+          </button>
         </div>
       </div>
       <div class="row mb-3" v-if="showRenderAs">
@@ -131,30 +132,33 @@
       </div>
     </div>
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
-      <div v-if="dataSource === dataSourceValues.provideData">
-        <div class="mb-2">
-          <label for="json-data">{{ $t('JSON Data') }}</label>
-          <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
-        </div>
-        <div class="small-editor-container">
-          <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" @change="jsonDataChange"/>
-        </div>
-
-        <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
-          <div class="editor-container">
-            <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor" @change="jsonDataChange"/>
-          </div>
-          <div slot="modal-footer">
-            <b-button @click="closePopup" class="btn btn-secondary">
-              {{ $t('CLOSE') }}
-            </b-button>
-          </div>
-        </b-modal>
+      <div class="mb-2">
+        <label for="json-data">{{ $t('JSON Data') }}</label>
+        <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+      </div>
+      <div class="small-editor-container">
+        <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
+          @change="jsonDataChange"
+        />
       </div>
 
-      <a @click="editAsOptionList()" href="#" class="text-right">
-        <small class="form-text text-muted mb-3"><b>&#x3C;/&#x3E;</b> {{ $t('Edit as Option List') }}</small>
-      </a>
+      <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
+        <div class="editor-container">
+          <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
+            @change="jsonDataChange"
+          />
+        </div>
+        <div slot="modal-footer">
+          <b-button @click="closePopup" class="btn btn-secondary">
+            {{ $t('CLOSE') }}
+          </b-button>
+        </div>
+      </b-modal>
+
+      <button type="button" @click="showJsonEditor = false" class="edit-json text-muted mt-1 mb-3">
+        <i class="fas fa-code" aria-hidden="true"/>
+        {{ $t('Edit as Option List') }}
+      </button>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
@@ -163,7 +167,7 @@
       <small class="form-text text-muted mb-3">{{ $t('Data source to populate select') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject || showJsonEditor">
+    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
@@ -171,9 +175,7 @@
       <label for="value">{{ $t('Content') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
-    </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">Advanced data search</small>
@@ -338,7 +340,7 @@ export default {
         if (jsonList.constructor !== Array && jsonList.constructor !== Object) {
           throw Error('String does not represent a valid JSON');
         }
-      }	
+      }
       catch (err) {
         this.jsonError = err.message;
         return;
@@ -371,12 +373,6 @@ export default {
       this.jsonData = JSON.stringify(this.optionsList);
       this.$emit('change', this.dataObjectOptions);
 
-    },
-    editAsJson() {
-      this.showJsonEditor = true;
-    },
-    editAsOptionList() {
-      this.showJsonEditor = false;
     },
     showEditOption(index) {
       this.optionCardType = 'edit';
@@ -429,7 +425,6 @@ export default {
       this.showRemoveWarning = false;
       this.removeIndex = null;
     },
-
     removeOption(index) {
       this.removeIndex = index;
       this.showRemoveWarning = true;
@@ -443,7 +438,22 @@ export default {
   },
 };
 </script>
-<style scoped>
+
+<style scoped lang="scss">
+  .edit-json {
+    font-size: 0.75rem;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: right;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .striped {
     background-color: rgba(0,0,0,.05);
   }
