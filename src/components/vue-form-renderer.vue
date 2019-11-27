@@ -56,8 +56,6 @@ import {
   FormHtmlEditor,
   FormHtmlViewer,
   FormInput,
-  FormRadioButtonGroup,
-  FormSelect,
   FormSelectList,
   FormTextArea,
 } from '@processmaker/vue-form-elements';
@@ -85,10 +83,8 @@ export default {
   mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
   components: {
     FormInput,
-    FormSelect,
     FormSelectList,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
