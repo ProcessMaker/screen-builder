@@ -394,7 +394,9 @@ export default {
 
     getEndPointsList() {
       //If no ProcessMaker is found, datasources can't be loaded
-      if (typeof ProcessMaker === 'undefined' || typeof this.selectedDataSource === 'undefined') {
+      if (typeof ProcessMaker === 'undefined'
+        || typeof this.selectedDataSource === 'undefined'
+        || this.selectedDataSource === '') {
         this.endPointList = [];
         return;
       }
