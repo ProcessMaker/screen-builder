@@ -287,12 +287,16 @@ export default {
       this.removeIndex = this.options.removeIndex;
     },
     dataSource(val) {
-      if (val === 'dataConnector') {
-        this.jsonData = '';
-        this.getDataSourceList();
-      } else {
-        this.dataName = '';
-        this.selectedDataSource = '';
+      switch(val) {
+        case 'dataConnector':
+        case 'dataObject':
+          this.jsonData = '';
+          this.getDataSourceList();
+          break;
+        case 'provideData':
+          this.dataName = '';
+          this.selectedDataSource = '';
+          break;
       }
     },
     selectedDataSource(val) {
