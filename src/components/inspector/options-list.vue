@@ -31,7 +31,7 @@
         </div>
 
         <div class="card-footer text-right p-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="showOptionCard=false">
+          <button type="button" class="btn btn-sm btn-outline-secondartr mr-2" @click="showOptionCard=false">
             {{ $t('Cancel') }}
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
@@ -161,25 +161,25 @@
       </button>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="data-sources-list">{{ $t('Data Source Name') }}</label>
       <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" class="mb-3"/>
       <small class="form-text text-muted mb-3">{{ $t('Data source to use') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="endpoint-list">{{ $t('End Point') }}</label>
       <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="element-name">{{ $t('Element Name') }}</label>
       <b-form-input id="element-name" v-model="elementName"/>
       <small class="form-text text-muted mb-3">{{ $t('Element of the response to be used') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
@@ -287,7 +287,7 @@ export default {
       this.removeIndex = this.options.removeIndex;
     },
     dataSource(val) {
-      if (val === 'dataObject') {
+      if (val === 'dataConnector') {
         this.jsonData = '';
         this.getDataSourceList();
       } else {
