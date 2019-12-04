@@ -173,13 +173,13 @@
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataConnector">
+    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
       <label for="element-name">{{ $t('Element Name') }}</label>
       <b-form-input id="element-name" v-model="elementName"/>
-      <small class="form-text text-muted mb-3">{{ $t('Element of the response to be used') }}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Element to be used as root reference') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataConnector">
+    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
