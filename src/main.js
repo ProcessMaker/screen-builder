@@ -9,6 +9,11 @@ import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 
 window.ProcessMaker = {
+  EventBus: {
+    $on() {
+      return null;
+    },
+  },
   apiClient: {
     get(params) {
 
