@@ -289,9 +289,12 @@ export default {
     dataSource(val) {
       switch(val) {
         case 'dataConnector':
+          this.jsonData = '';
+          this.dataName = '';
+          this.getDataSourceList();
         case 'dataObject':
           this.jsonData = '';
-          this.getDataSourceList();
+          this.selectedDataSource = '';
           break;
         case 'provideData':
           this.dataName = '';
