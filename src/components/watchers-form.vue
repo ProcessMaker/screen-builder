@@ -40,7 +40,7 @@
       @search-change="loadSources"
     />
 
-    <div v-show="isScript">
+    <div v-if="isScript">
       <div class="form-group" style='position: relative;'>
         <label>{{ $t('Input Data') }}</label>
         <div class="editor-border" :class="{'is-invalid':inputDataInvalid}"/>
@@ -53,6 +53,9 @@
         <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
         <div v-if="inputDataInvalid" class="invalid-feedback d-block">
           <div>{{ $t('The Input Data field is required.') }}</div>
+        </div>
+        <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+          <div>{{ $t('It must be a correct json format') }}</div>
         </div>
       </div>
 
@@ -69,6 +72,9 @@
         <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
           <div>{{ $t('The Script Configuration field is required.') }}</div>
         </div>
+        <div v-if="!jsonIsValid('script_configuration')" class="invalid-feedback d-block">
+          <div>{{ $t('It must be a correct json format') }}</div>
+        </div>
       </div>
 
       <form-input
@@ -80,7 +86,7 @@
         :validation="ruleWatcherOutputVariable"
       />
     </div>
-    <div v-show="isDatasource">
+    <div v-if="isDatasource">
       <form-multi-select
         :name="$t('Endpoint')"
         :label="$t('Endpoint')"
@@ -106,6 +112,9 @@
         <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
         <div v-if="inputDataInvalid" class="invalid-feedback d-block">
           <div>{{ $t('The Input Data field is required.') }}</div>
+        </div>
+        <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+          <div>{{ $t('It must be a correct json format') }}</div>
         </div>
       </div>
       <data-mapping v-model="config.script_configuration" />
@@ -315,6 +324,14 @@ export default {
     displayTableList() {
       this.$emit('display-list');
     },
+    jsonIsValid(item) {
+      try {
+        JSON.parse(this.config[item]);
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
     validateData() {
       this.setValidations();
 
@@ -327,6 +344,12 @@ export default {
         if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
           valid = false;
         }
+      }
+      if (!this.jsonIsValid('input_data')) {
+        valid = false;
+      }
+      if (!this.jsonIsValid('script_configuration')) {
+        valid = false;
       }
 
       if (valid ) {
