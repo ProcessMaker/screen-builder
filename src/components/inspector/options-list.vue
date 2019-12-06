@@ -175,7 +175,7 @@
 
     <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
       <label for="element-name">{{ $t('Element Name') }}</label>
-      <b-form-input id="element-name" v-model="elementName"/>
+      <b-form-input id="element-name" v-model="dataName"/>
       <small class="form-text text-muted mb-3">{{ $t('Element to be used as root reference') }}</small>
     </div>
 
@@ -225,7 +225,6 @@ export default {
       dataSourcesList: [],
       selectedEndPoint: '',
       endPointList: [],
-      elementName: '',
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -270,7 +269,6 @@ export default {
       this.dataSourcesList = this.options.dataSourcesList;
       this.selectedEndPoint = this.options.selectedEndPoint;
       this.endPointList = this.options.endPointList;
-      this.elementName = this.options.elementName;
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
@@ -312,7 +310,7 @@ export default {
   computed: {
     dataSourceTypes(val) {
       if (typeof this.options.allowMultiSelect === 'undefined') {
-        return [this.dataSources[0]];
+        return [this.dataSources[0], this.dataSources[1]];
       }
       return this.dataSources;
     },
@@ -344,7 +342,6 @@ export default {
         dataSourcesList: this.dataSourcesList,
         selectedEndPoint: this.selectedEndPoint,
         endPointList: this.endPointList,
-        elementName: this.elementName,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -370,7 +367,6 @@ export default {
     this.dataSourcesList = this.options.dataSourcesList,
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.endPointList = this.options.endPointList,
-    this.elementName = this.options.elementName,
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
