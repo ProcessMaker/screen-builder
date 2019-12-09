@@ -144,7 +144,7 @@
       <button class="btn btn-outline-secondary" @click.stop="displayTableList">{{ $t('Cancel') }}</button>
       <button
         class="btn btn-secondary ml-2"
-        @click="validateData"
+        @click="validateDataAndSave"
       >
         {{ $t('Save') }}
       </button>
@@ -342,36 +342,32 @@ export default {
       }
       return true;
     },
-    validateData() {
+    isFormValid() {
       this.setValidations();
+      for (let item in this.$refs) {
+        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
+          return false;
+        }
+      }
+
+      return !(!this.config.watching ||
+        !this.config.script ||
+        !this.jsonIsValid('input_data') ||
+        !this.jsonIsValid('script_configuration'));
+    },
+    validateDataAndSave() {
+      if (!this.isFormValid()) {
+        if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
+          globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
+        }
+        return;
+      }
 
       if (!this.config.uid) {
         this.config.uid = _.uniqueId(new Date().getTime());
       }
 
-      let valid = true;
-      for (let item in this.$refs) {
-        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
-          valid = false;
-        }
-      }
-
-      if (
-        !this.config.watching ||
-        !this.config.script ||
-        !this.jsonIsValid('input_data') ||
-        !this.jsonIsValid('script_configuration')
-      ) {
-        valid = false;
-      }
-
-      if (!valid && globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-        globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
-      }
-
-      if (valid) {
-        this.save();
-      }
+      this.save();
     },
     save() {
       this.$emit('save-form');
