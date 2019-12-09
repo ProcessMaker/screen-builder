@@ -30,8 +30,7 @@ export default {
      * @param {object} data
      */
     checkWatcher(watcher, data) {
-      const trigger = _.get(this.watching, watcher.watching) != _.get(data, watcher.watching);
-      if (trigger) {
+      if (!_.isEqual(_.get(this.watching, watcher.watching), _.get(data, watcher.watching))) {
         this.callWatcher(watcher, data);
       }
       this.watching[watcher.watching] = data[watcher.watching];
