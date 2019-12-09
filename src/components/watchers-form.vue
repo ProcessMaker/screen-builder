@@ -20,6 +20,9 @@
       :validation="ruleWatcherVariable"
       @open="loadVariables"
     />
+    <div v-if="!config.watching" class="invalid-feedback d-block">
+      <div>{{ $t('The Variable to Watch field is required') }}</div>
+    </div>
 
     <form-multi-select
       :name="$t('Script Source')"
@@ -39,8 +42,11 @@
       @open="loadSources"
       @search-change="loadSources"
     />
+    <div v-if="!config.script" class="invalid-feedback d-block">
+      <div>{{ $t('The Script field is required') }}</div>
+    </div>
 
-    <div v-show="isScript">
+    <div v-if="isScript">
       <div class="form-group" style='position: relative;'>
         <label>{{ $t('Input Data') }}</label>
         <div class="editor-border" :class="{'is-invalid':inputDataInvalid}"/>
@@ -53,6 +59,9 @@
         <small class="form-text text-muted">{{ $t('Valid JSON Object, Variables Supported') }}</small>
         <div v-if="inputDataInvalid" class="invalid-feedback d-block">
           <div>{{ $t('The Input Data field is required.') }}</div>
+        </div>
+        <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+          <div>{{ $t('It must be a correct json format') }}</div>
         </div>
       </div>
 
@@ -69,6 +78,9 @@
         <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
           <div>{{ $t('The Script Configuration field is required.') }}</div>
         </div>
+        <div v-if="!jsonIsValid('script_configuration')" class="invalid-feedback d-block">
+          <div>{{ $t('It must be a correct json format') }}</div>
+        </div>
       </div>
 
       <form-input
@@ -80,7 +92,7 @@
         :validation="ruleWatcherOutputVariable"
       />
     </div>
-    <div v-show="isDatasource">
+    <div v-if="isDatasource">
       <form-multi-select
         :name="$t('Endpoint')"
         :label="$t('Endpoint')"
@@ -107,6 +119,9 @@
         <div v-if="inputDataInvalid" class="invalid-feedback d-block">
           <div>{{ $t('The Input Data field is required.') }}</div>
         </div>
+        <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+          <div>{{ $t('It must be a correct json format') }}</div>
+        </div>
       </div>
       <data-mapping v-model="config.script_configuration" />
 
@@ -129,7 +144,7 @@
       <button class="btn btn-outline-secondary" @click.stop="displayTableList">{{ $t('Cancel') }}</button>
       <button
         class="btn btn-secondary ml-2"
-        @click="validateData"
+        @click="validateDataAndSave"
       >
         {{ $t('Save') }}
       </button>
@@ -149,6 +164,10 @@ import {
 import MonacoEditor from 'vue-monaco';
 import DataMapping from './inspector/data-mapping';
 import _ from 'lodash';
+
+const globalObject = typeof window === 'undefined'
+  ? global
+  : window;
 
 export default {
   components: {
@@ -315,23 +334,40 @@ export default {
     displayTableList() {
       this.$emit('display-list');
     },
-    validateData() {
+    jsonIsValid(item) {
+      try {
+        JSON.parse(this.config[item]);
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
+    isFormValid() {
       this.setValidations();
+      for (let item in this.$refs) {
+        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
+          return false;
+        }
+      }
+
+      return !(!this.config.watching ||
+        !this.config.script ||
+        !this.jsonIsValid('input_data') ||
+        !this.jsonIsValid('script_configuration'));
+    },
+    validateDataAndSave() {
+      if (!this.isFormValid()) {
+        if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
+          globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
+        }
+        return;
+      }
 
       if (!this.config.uid) {
         this.config.uid = _.uniqueId(new Date().getTime());
       }
 
-      let valid = true;
-      for (let item in this.$refs) {
-        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
-          valid = false;
-        }
-      }
-
-      if (valid ) {
-        this.save();
-      }
+      this.save();
     },
     save() {
       this.$emit('save-form');
