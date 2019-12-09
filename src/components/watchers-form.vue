@@ -20,6 +20,9 @@
       :validation="ruleWatcherVariable"
       @open="loadVariables"
     />
+    <div v-if="!config.watching" class="invalid-feedback d-block">
+      <div>{{ $t('The Variable to Watch field is required') }}</div>
+    </div>
 
     <form-multi-select
       :name="$t('Script Source')"
@@ -39,6 +42,9 @@
       @open="loadSources"
       @search-change="loadSources"
     />
+    <div v-if="!config.script" class="invalid-feedback d-block">
+      <div>{{ $t('The Script field is required') }}</div>
+    </div>
 
     <div v-if="isScript">
       <div class="form-group" style='position: relative;'>
@@ -158,6 +164,10 @@ import {
 import MonacoEditor from 'vue-monaco';
 import DataMapping from './inspector/data-mapping';
 import _ from 'lodash';
+
+const globalObject = typeof window === 'undefined'
+  ? global
+  : window;
 
 export default {
   components: {
@@ -345,14 +355,21 @@ export default {
           valid = false;
         }
       }
-      if (!this.jsonIsValid('input_data')) {
-        valid = false;
-      }
-      if (!this.jsonIsValid('script_configuration')) {
+
+      if (
+        !this.config.watching ||
+        !this.config.script ||
+        !this.jsonIsValid('input_data') ||
+        !this.jsonIsValid('script_configuration')
+      ) {
         valid = false;
       }
 
-      if (valid ) {
+      if (!valid && globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
+        globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
+      }
+
+      if (valid) {
         this.save();
       }
     },
