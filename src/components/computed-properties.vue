@@ -345,7 +345,7 @@ export default {
         });
         return response;
       },
-      this.$t('Property already exists.')
+      this.$t('Property already exists')
     );
   },
 
@@ -362,7 +362,7 @@ export default {
     border: 1px solid #ced4da;
     border-radius: 4px;
     overflow: hidden;
-    height: 8.5em;
+    height: 8.8em;
     position: absolute;
     pointer-events: none;
     width: 100%;

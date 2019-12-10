@@ -25,7 +25,7 @@
                   >
                     <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
                     <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                    {{ element.config.name || $t('Key Name') }}
+                    {{ element.config.name || $t('Variable Name') }}
                     <button
                       class="btn btn-sm btn-danger ml-auto"
                       @click="deleteItem(index, row)"
@@ -55,7 +55,7 @@
                   >
                     <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
                     <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                    {{ element.config.name || $t('Key Name') }}
+                    {{ element.config.name || $t('Variable Name') }}
                     <button
                       class="btn btn-sm btn-danger ml-auto"
                       @click="deleteItem(index, row)"
@@ -89,12 +89,12 @@ import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
 import {
   FormInput,
-  FormSelect,
+  FormSelectList,
   FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
+  FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
 
 const defaultColumnWidth = 1;
@@ -106,12 +106,12 @@ export default {
   components: {
     draggable,
     FormInput,
-    FormSelect,
+    FormSelectList,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormHtmlViewer,
     ...renderer,
   },
   data() {

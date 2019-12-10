@@ -36,6 +36,7 @@
         </div>
       </div>
       <custom-css>{{ customCssWrapped }}</custom-css>
+      <watchers-synchronous ref="watchersSynchronous"/>
     </div><!-- end page -->
   </div><!-- end custom-css-scope -->
 </template>
@@ -43,8 +44,9 @@
 <script>
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
+import _ from 'lodash';
 import debounce from 'lodash/debounce';
-import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins';
+import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -52,16 +54,18 @@ import FormMultiColumn from '@/components/renderer/form-multi-column';
 import FormMaskedInput from '@/components/renderer/form-masked-input';
 import CustomCSS from './custom-css';
 import {
-  FormInput,
-  FormSelect,
-  FormSelectList,
-  FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
+  FormHtmlViewer,
+  FormInput,
+  FormSelectList,
+  FormTextArea,
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
+import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
+import WatchersSynchronous from '@/components/watchers-synchronous';
+import { ValidatorFactory } from '../factories/ValidatorFactory';
 
 const csstree = require('css-tree');
 
@@ -73,60 +77,24 @@ Vue.component('custom-css', {
 
 Vue.use(VueDeepSet);
 
-function removeInvalidOptions(option) {
-  return Object.keys(option).includes('value', 'contemnt') &&
-    option.content != null;
-}
-
-function getOptionsFromDataSource(inputOptions, data) {
-  const { jsonData, key, value, dataName } = inputOptions;
-  let options = [];
-
-  const convertToSelectOptions = option => ({
-    value: option[key || 'value'],
-    content: option[value || 'content'],
-  });
-
-  if (jsonData) {
-    try {
-      options = JSON.parse(jsonData)
-        .map(convertToSelectOptions)
-        .filter(removeInvalidOptions);
-    } catch (error) {
-      /* Ignore error */
-    }
-  }
-
-  if (dataName) {
-    try {
-      options = data[dataName]
-        .map(convertToSelectOptions)
-        .filter(removeInvalidOptions);
-    } catch (error) {
-      /* Ignore error */
-    }
-  }
-
-  return options;
-}
-
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
   model: {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers],
   components: {
     FormInput: FormMaskedInput,
     FormSelect,
+    WatchersSynchronous,
     FormSelectList,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormHtmlViewer,
     FormMultiColumn,
     CustomCSS,
     ...editor,
@@ -147,18 +115,6 @@ export default {
       errors: [],
       currentPage: this.page || 0,
       transientData: JSON.parse(JSON.stringify(this.data)),
-      defaultValues: {
-        FormInput: '',
-        FormMaskedInput: '',
-        FormSelect: null,
-        FormSelectList: [],
-        FormCheckbox: false,
-        FormRadioButtonGroup: null,
-        FormTextArea: '',
-        FormText: '',
-        FormDatePicker: null,
-        FormRecordList: [],
-      },
       customCssWrapped: '',
     };
   },
@@ -168,6 +124,7 @@ export default {
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
+      this.setDefaultValues();
     },
     transientData: {
       handler() {
@@ -175,38 +132,42 @@ export default {
           this.computed.forEach(prop => {
             let value;
             try {
-              if (prop.type==='expression') {
+              if (prop.type === 'expression') {
                 value = Parser.evaluate(prop.formula, this.transientData);
-              } else if (prop.type==='javascript') {
-                var func = new Function(prop.formula);
-                value = this.transientData[prop.property] = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
+              } else if (prop.type === 'javascript') {
+                const func = new Function(prop.formula);
+                value = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
               }
             } catch (e) {
               value = String(e);
             }
-            this.$set(this.transientData, prop.property, value);
-            this.$set(this.data, prop.property, value);
+            JSON.stringify(this.transientData[prop.property]) !== JSON.stringify(value) ? this.$set(this.transientData, prop.property, value) : null;
+            JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
           });
         }
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
-        if (JSON.stringify(this.transientData) != JSON.stringify(this.data)) {
+        if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
           this.$emit('update', this.transientData);
-          return;
+          this.watchDataChanges(this.transientData);
         }
       },
       deep: true,
+      immediate: true,
     },
     customCss() {
       this.parseCss();
     },
   },
   created() {
-    this.parseCss = debounce(this.parseCss, 500, { leading: true });
+    this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
     this.parseCss();
+    if (window.ProcessMaker) {
+      window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
+    }
   },
   methods: {
     submit() {
@@ -215,36 +176,10 @@ export default {
         this.$emit('submit', this.transientData);
       }
     },
-    validateElements(elements) {
-      elements.forEach(element => {
-        if (element.validator && element.validator.errorCount !== 0) {
-          this.valid = false;
-          this.errors.push(element.validator.errors.errors);
-        }
-      });
-    },
-    validateContainer(container) {
-      if (container.$refs && container.$refs.container) {
-        this.validateContainer(container.$refs.container);
-      }
-      container.forEach(element => {
-        if (element.$refs && element.$refs.elements) {
-          this.validateElements(element.$refs.elements);
-        }
-      });
-    },
     isValid() {
-      this.errors = [];
-      this.valid = true;
-
-      if (this.$refs && this.$refs.elements) {
-        this.validateElements(this.$refs.elements);
-      }
-
-      if (this.$refs && this.$refs.container) {
-        this.validateContainer(this.$refs.container);
-      }
-      return this.valid;
+      this.dataTypeValidator = ValidatorFactory(this.config, this.data);
+      this.errors = this.dataTypeValidator.getErrors();
+      return _.size(this.errors) === 0;
     },
     pageNavigate(page) {
       if (!this.config[page]) {
@@ -254,52 +189,18 @@ export default {
       this.currentPage = page;
     },
     setDefaultValues() {
-      // Iterate through config, if item has a name property,
-      // then we set the default value
-      this.config.forEach(page => {
-        page.items.forEach(item => {
-          this.setDefaultValueItem(item);
-        });
-      });
-    },
-    setDefaultValueItem(item) {
-      if (item.component === 'FormMultiColumn') {
-        item.items.forEach(column => {
-          column.forEach(innerItem => {
-            this.setDefaultValueItem(innerItem);
-          });
-        });
-      }
+      const shouldHaveDefaultValue = item => {
+        const shouldHaveDefaultValueSet = item.config.name &&
+            this.model[this.getValidPath(item.config.name)] === undefined &&
+            item.component !== 'FormButton';
 
-      if (
-        !item.config.name ||
-        this.model[this.getValidPath(item.config.name)] !== undefined ||
-        item.component === 'FormButton'
-      ) {
-        return;
-      }
+        const isNotFormAccordion = item.component !== 'FormAccordion';
 
-      let defaultValue = null;
-
-      if (['FormInput', 'FormMaskedInput', 'FormTextArea', 'FormText'].includes(item.component)) {
-        defaultValue = '';
-      }
-
-      if (['FormSelect', 'FormRadioButtonGroup'].includes(item.component) && item.config.options) {
-        const options = getOptionsFromDataSource(item.config.options, this.transientData);
-
-        defaultValue = options[0] ? options[0].value : null;
-      }
-
-      if (item.component === 'FormCheckbox') {
-        defaultValue = item.config.initiallyChecked || false;
-      }
-
-      if (item.component === 'FormRecordList') {
-        defaultValue = [];
-      }
-
-      this.model[this.getValidPath(item.config.name)] = defaultValue;
+        return shouldHaveDefaultValueSet && isNotFormAccordion;
+      };
+      getItemsFromConfig(this.config)
+        .filter(shouldHaveDefaultValue)
+        .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
     },
     parseCss() {
       const containerSelector = '.custom-css-scope';
@@ -317,12 +218,12 @@ export default {
           }
           if (
             node.type.match(/^.+Selector$/) &&
-            node.name !== containerSelector &&
-            list
+              node.name !== containerSelector &&
+              list
           ) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
-              list.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
+              list.prependData({type: 'WhiteSpace', loc: null, value: ' '});
               list.prependData({
                 type: 'TypeSelector',
                 loc: null,

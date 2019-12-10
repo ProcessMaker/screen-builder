@@ -27,16 +27,18 @@
       >
         <template slot="actions" slot-scope="props">
           <div class="actions">
-            {{ $t('Json Options') }}
-            <div class="btn-group" role="group" aria-label="Actions">
-              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary">
-                {{ $t('Edit') }}
+            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')">
+                <i class="fas fa-edit"/>
               </button>
-              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-primary">
-                {{ $t('Delete') }}
+              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')">
+                <i class="fas fa-trash-alt"/>
               </button>
             </div>
           </div>
+        </template>
+        <template slot="mustache" slot-scope="{rowData, rowField}">
+          {{ mustache(rowField, rowData) }}
         </template>
       </vuetable>
       <vuetable-pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
@@ -56,7 +58,7 @@
         :page="form"
         ref="addRenderer"
         v-model="addItem"
-        :config="fetchFormConfig()"
+        :config="formConfig"
       />
     </b-modal>
     <b-modal
@@ -73,7 +75,7 @@
         :page="form"
         ref="editRenderer"
         v-model="editItem"
-        :config="fetchFormConfig()"
+        :config="formConfig"
       />
     </b-modal>
     <b-modal
@@ -108,6 +110,7 @@
 <script>
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
+import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -121,7 +124,8 @@ export default {
     Vuetable,
     VuetablePagination,
   },
-  props: ['label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
+  mixins: [mustacheEvaluation],
+  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
   data() {
     return {
       addItem: {},
@@ -132,6 +136,9 @@ export default {
     };
   },
   computed: {
+    formConfig() {
+      return this.fetchFormConfig();
+    },
     // The fields used for our vue table
     tableData() {
       let data = {
@@ -162,11 +169,16 @@ export default {
     },
   },
   methods: {
+    setUploadDataNamePrefix(index = null) {
+      this.$root.$emit('set-upload-data-name', this, index);
+    },
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
 
       const convertToVuetableFormat = option => ({
-        name: option[key || 'value'],
+        //name: '__component:mustache',
+        name: '__slot:mustache',
+        sortField: option[key || 'value'],
         title: option[value || 'content'],
       });
 
@@ -221,6 +233,7 @@ export default {
       this.editItem = JSON.parse(JSON.stringify(this.value[index]));
       this.editIndex = index;
       this.$refs.editRenderer.currentPage = this.form;
+      this.setUploadDataNamePrefix(index);
       this.$refs.editModal.show();
     },
     edit() {
@@ -242,6 +255,7 @@ export default {
       // This form is a numerical index to the form we want to show
       this.$refs.addRenderer.currentPage = this.form;
       // Open form
+      this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
     },
     add() {

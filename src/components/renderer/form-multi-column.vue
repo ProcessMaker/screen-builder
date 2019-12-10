@@ -31,7 +31,7 @@
               @pageNavigate="pageNavigate"
               v-bind="element.config"
               :is="element.component"
-              :disabled="element.config.interactive"
+              :disabled="element.config.interactive || element.config.disabled"
             />
           </div>
         </template>
@@ -47,12 +47,12 @@ import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins
 
 import {
   FormInput,
-  FormSelect,
+  FormSelectList,
   FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
+  FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
 
 const defaultColumnWidth = 1;
@@ -64,12 +64,12 @@ export default {
   components: {
     draggable,
     FormInput,
-    FormSelect,
+    FormSelectList,
     FormTextArea,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormDatePicker,
     FormHtmlEditor,
+    FormHtmlViewer,
     ...renderer,
   },
   data() {
