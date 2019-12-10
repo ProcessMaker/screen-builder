@@ -5,7 +5,6 @@
     id="watchers-synchronous"
     title=""
     hide-header
-    hide-footer
     no-close-on-esc
     hide-header-close
     no-close-on-backdrop
@@ -31,6 +30,10 @@
       </div>
       <h3 class="display-6">{{ $t('Something has gone wrong.') }}</h3>
       <p class="lead">{{ $t("Unfortunately this screen has had an issue. We've notified the administrator.") }}</p>
+    </div>
+
+    <div slot="modal-footer" class="w-100 text-right">
+      <button type="button" class="btn btn-outline-secondary" @click="hide" v-if="display === 'error'">{{ $t('Close') }}</button>
     </div>
 
   </b-modal>
