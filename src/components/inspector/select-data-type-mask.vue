@@ -44,7 +44,7 @@ export default {
     },
     maskOptionsLabel() {
       return this.maskConfig.optionsLabel;
-    }
+    },
   },
 };
 </script>

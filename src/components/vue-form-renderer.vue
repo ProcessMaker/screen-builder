@@ -45,7 +45,6 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import debounce from 'lodash/debounce';
 import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
@@ -58,7 +57,6 @@ import {
   FormDatePicker,
   FormHtmlEditor,
   FormHtmlViewer,
-  FormInput,
   FormSelectList,
   FormTextArea,
 } from '@processmaker/vue-form-elements';
@@ -87,7 +85,6 @@ export default {
   mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers],
   components: {
     FormInput: FormMaskedInput,
-    FormSelect,
     WatchersSynchronous,
     FormSelectList,
     FormCheckbox,
