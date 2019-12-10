@@ -140,7 +140,7 @@
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
               <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-              {{ element.config.name || $t('Key Name') }}
+              {{ element.config.name || $t('Variable Name') }}
               <button
                 class="btn btn-sm btn-danger ml-auto"
                 :title="$t('Delete Control')"
@@ -170,20 +170,20 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              :key="`${accordion.name}-button`"
+              :key="`${accordionName(accordion)}-button`"
               v-if="getInspectorFields(accordion).length > 0"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
               @click="toggleAccordion(accordion)"
             >
               <i class="fas fa-cog mr-2"/>
-              {{ $t(accordion.name) }}
+              {{ $t(accordionName(accordion)) }}
               <i
                 class="fas fa-angle-down ml-auto"
                 :class="{ 'fas fa-angle-right' : !accordion.open }"
               />
             </b-button>
-            <b-collapse :key="`${accordion.name}-collapse`" :id="accordion.name" v-model="accordion.open">
+            <b-collapse :key="`${accordionName(accordion)}-collapse`" :id="accordionName(accordion)" v-model="accordion.open">
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :formConfig="config"
@@ -212,6 +212,7 @@
       :title="$t('Add New Page')"
     >
       <form-input v-model="addPageName"
+        :name="$t('Page Name')"
         :label="$t('Page Name')"
         :helper="$t('The name of the new page to add')"
         validation="unique-page-name|required"
@@ -286,13 +287,12 @@ Validator.register(
 
 import {
   FormInput,
-  FormSelect,
   FormSelectList,
   FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
+  FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
 
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
@@ -323,13 +323,12 @@ export default {
   components: {
     draggable,
     FormInput,
-    FormSelect,
     FormSelectList,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
+    FormHtmlViewer,
     FormMultiColumn,
     ...editor,
     ...inspector,
@@ -421,6 +420,9 @@ export default {
     },
   },
   methods: {
+    accordionName(accordion) {
+      return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
+    },
     toggleAccordion(accordion) {
       this.accordions.forEach(panel => panel !== accordion ? panel.open = false : null);
       accordion.open = !accordion.open;
@@ -431,8 +433,6 @@ export default {
     },
     migrateConfig(config = this.config) {
       config.forEach(page => this.replaceFormText(page.items));
-      config.forEach(page => this.migrateFormSelect(page.items));
-      config.forEach(page => this.migrateFormRadioButtonGroup(page.items));
       config.forEach(page => this.migrateFormSubmit(page.items));
     },
     replaceFormText(items) {
@@ -454,51 +454,18 @@ export default {
         }
       });
     },
-    migrateFormSelect(items) {
-      items.forEach(item => {
-        if (item.component === 'FormSelect' && item.config.options instanceof Array) {
-          item.config.options = {
-            defaultOptionKey: '',
-            dataSource: 'provideData',
-            key: 'value',
-            value: 'content',
-            optionsList: item.config.options,
-            jsonData: JSON.stringify(item.config.options),
-          };
-        } else if (item.component === 'FormSelect' && item.config.options instanceof Object && !item.config.options.optionsList ) {
-          item.config.options.optionsList = JSON.parse(item.config.options.jsonData);
-        }
-        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
-          item.items.forEach(column => this.migrateFormSelect(column));
-        }
-      });
-    },
-    migrateFormRadioButtonGroup(items) {
-      items.forEach(item => {
-        if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Array) {
-          item.config.options = {
-            defaultOptionKey: '',
-            dataSource: 'provideData',
-            key: 'value',
-            value: 'content',
-            optionsList: item.config.options,
-            jsonData: JSON.stringify(item.config.options),
-          };
-        } else if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Object && !item.config.options.optionsList ) {
-          item.config.options.optionsList = JSON.parse(item.config.options.jsonData);
-        }
-        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
-          item.items.forEach(column => this.migrateFormRadioButtonGroup(column));
-        }
-      });
-    },
     migrateFormSubmit(items) {
       items.forEach(item => {
         item['editor-control'] = item['editor-component'];
-        if (item.component === 'FormSubmit') {
-          item['editor-control'] = item.config.event === 'submit' ? 'FormSubmit' : 'PageNavigation';
+
+        if (item.config.event === 'submit') {
+          item['editor-control'] = 'FormSubmit';
+        }
+        if (item.config.event === 'pageNavigate') {
+          item['editor-control'] = 'PageNavigation';
         }
         if (item.items instanceof Array && item.component === 'FormMultiColumn') {
+          item['editor-control'] = 'FormMultiColumn';
           item.items.forEach(column => this.migrateFormSubmit(column));
         }
       });

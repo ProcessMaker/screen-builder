@@ -4,14 +4,12 @@ import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
-import {DataTypeProperty, DataFormatProperty, DataTypeWithoutDateProperty, DataTypeBooleanProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
+import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
-  FormSelect,
   FormSelectList,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
@@ -40,7 +38,7 @@ export default [
     rendererBinding: 'FormHtmlEditor',
     control: {
       label: 'Rich Text',
-      component: 'FormHtmlEditor',
+      component: 'FormHtmlViewer',
       'editor-component': 'FormHtmlEditor',
       'editor-control': 'FormHtmlEditor',
       config: {
@@ -142,8 +140,6 @@ export default [
         labelProperty,
         placeholderProperty,
         keyNameProperty,
-        DataTypeProperty,
-        DataFormatProperty,
         helperTextProperty,
         {
           type: 'FormCheckbox',
@@ -185,6 +181,9 @@ export default [
         placeholder: '',
         validation: '',
         dataFormat: 'array',
+        dataSourceUrl:'',
+        dataSourceEndpoint:'',
+        rootElement:'response',
         options: {
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
@@ -215,90 +214,6 @@ export default [
     },
   },
   {
-    editorComponent: FormSelect,
-    editorBinding: 'FormSelect',
-    rendererComponent: FormSelect,
-    rendererBinding: 'FormSelect',
-    control: {
-      label: 'Select',
-      component: 'FormSelect',
-      'editor-component': 'FormSelect',
-      'editor-control': 'FormSelect',
-      config: {
-        icon: 'fas fa-chevron-circle-down',
-        label: 'New Select',
-        placeholder: '',
-        validation: '',
-        options: {
-          dataSource: dataSourceValues.provideData,
-          jsonData: '',
-          selectedOptions: [],
-          optionsList: [],
-          key:'value',
-          value:'content',
-        },
-        helper: null,
-      },
-      inspector: [
-        keyNameProperty,
-        labelProperty,
-        placeholderProperty,
-        validationRulesProperty,
-        disabledProperty,
-        helperTextProperty,
-        {
-          type: 'OptionsList',
-          field: 'options',
-          config: {},
-        },
-        colorProperty,
-        bgcolorProperty,
-      ],
-    },
-  },
-  {
-    editorComponent: FormRadioButtonGroup,
-    editorBinding: 'FormRadioButtonGroup',
-    rendererComponent: FormRadioButtonGroup,
-    rendererBinding: 'FormRadioButtonGroup',
-    control: {
-      label: 'Radio Button Group',
-      component: 'FormRadioButtonGroup',
-      'editor-component': 'FormRadioButtonGroup',
-      'editor-control': 'FormRadioButtonGroup',
-      config: {
-        icon: 'fas fa-list-ul',
-        label: 'New Radio Button Group',
-        options: {
-          dataSource: dataSourceValues.provideData,
-          jsonData: '',
-          optionsList: [],
-          key:'value',
-          value:'content',
-        },
-
-        toggle: false,
-        helper: null,
-      },
-      inspector: [
-        keyNameProperty,
-        DataTypeWithoutDateProperty,
-        validationRulesProperty,
-        labelProperty,
-        helperTextProperty,
-        {
-          type: 'OptionsList',
-          field: 'options',
-          config: {},
-        },
-        colorProperty,
-        bgcolorProperty,
-        toggleStyleProperty,
-        disabledProperty,
-      ],
-    },
-  },
-  {
     editorComponent: FormCheckbox,
     editorBinding: 'FormCheckbox',
     rendererComponent: FormCheckbox,
@@ -319,7 +234,6 @@ export default [
       },
       inspector: [
         keyNameProperty,
-        DataTypeBooleanProperty,
         labelProperty,
         helperTextProperty,
         validationRulesProperty,
@@ -364,7 +278,7 @@ export default [
         helperTextProperty,
         colorProperty,
         bgcolorProperty,
-        disabledProperty
+        disabledProperty,
       ],
     },
   },
@@ -481,13 +395,12 @@ export default [
             helper: 'Should records be editable/removable and can new records be added',
           },
         },
-
         {
-          type: 'OptionsList',
+          type: 'ColumnSetup',
           field: 'fields',
           config: {
-            label: 'Fields List',
-            helper: 'List of fields to display in the record list',
+            label: 'Columns',
+            helper: 'List of columns to display in the record list',
           },
         },
         {
@@ -589,9 +502,9 @@ export default [
         type: 'FormInput',
         field: 'name',
         config: {
-          label: 'Key Name',
-          name: 'Key Name',
-          helper: 'A variable key name is a symbolic name to reference information.',
+          label: 'Variable Name',
+          name: 'Variable Name',
+          helper: 'A variable name is a symbolic name to reference information.',
         },
       },
       {
