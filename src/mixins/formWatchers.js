@@ -1,6 +1,10 @@
 import Mustache from 'mustache';
 import _ from 'lodash';
 
+const globalObject = typeof window === 'undefined'
+  ? global
+  : window;
+
 export default {
   data() {
     return {
@@ -43,6 +47,12 @@ export default {
      */
     callWatcher(watcher, data) {
       if (this.watchers_config.api.execute) {
+        const scriptId = watcher.script_key || watcher.script_id;
+        if (!scriptId) {
+          globalObject.ProcessMaker.alert(this.$t('Script not found for the Watcher'), 'warning');
+          return;
+        }
+
         const input = Mustache.render(watcher.input_data, data);
         const config = Mustache.render(watcher.script_configuration, data);
         if (watcher.synchronous) {
@@ -52,8 +62,7 @@ export default {
           }
         }
 
-        let scriptId = watcher.script_key || watcher.script_id;
-        window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id\/script_key/, scriptId), {
+        globalObject.window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id\/script_key/, scriptId), {
           watcher: watcher.uid,
           data: input,
           config,
@@ -84,7 +93,7 @@ export default {
         channel,
         event,
       });
-      window.Echo.private(channel).listen(
+      globalObject.window.Echo.private(channel).listen(
         event,
         callback,
       );
@@ -94,17 +103,17 @@ export default {
      */
     cleanEchoListeners() {
       this.echoListeners.forEach(element => {
-        window.Echo.private(
+        globalObject.window.Echo.private(
           element.channel
         ).stopListening(element.event);
       });
     },
   },
   mounted() {
-    if (window.ProcessMaker && window.ProcessMaker.user) {
-      const channel = `ProcessMaker.Models.User.${window.ProcessMaker.user.id}`;
+    if (globalObject.window.ProcessMaker && globalObject.window.ProcessMaker.user) {
+      const channel = `ProcessMaker.Models.User.${globalObject.window.ProcessMaker.user.id}`;
       const event = 'ProcessMaker\\Notifications\\ScriptResponseNotification';
-      window.Echo.private(channel).notification(
+      globalObject.window.Echo.private(channel).notification(
         (data) => {
           if (data.type === event) {
             this.loadWatcherResponse(data.watcher, data.response);
