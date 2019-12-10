@@ -187,7 +187,9 @@
       <label for="value">{{ $t('Content') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
+    </div>
 
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">Advanced data search</small>
