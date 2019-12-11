@@ -118,13 +118,15 @@
           </button>
         </div>
       </div>
-      <div class="row mb-3" v-if="showRenderAs">
+    </div>
+    <div v-if="showRenderAs">
+      <div class="row mb-3">
         <div class="col-12">
           <input type="checkbox"  v-model="allowMultiSelect">
           Allow multiple selections
         </div>
       </div>
-      <div class="row mb-3" v-if="showRenderAs">
+      <div class="row mb-3">
         <div class="col">
           <label for="render-as">{{ $t('Render Options As') }}</label>
           <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
@@ -287,6 +289,7 @@ export default {
       this.removeIndex = this.options.removeIndex;
     },
     dataSource(val) {
+      this.showRenderAs = true;
       switch(val) {
         case 'dataConnector':
           this.jsonData = '';
@@ -337,6 +340,7 @@ export default {
     },
     dataObjectOptions() {
       if (!this.dataName) {
+        console.log('antes de');
         this.dataName = this.options.dataName;
       }
       return {

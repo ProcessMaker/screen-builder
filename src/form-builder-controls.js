@@ -181,6 +181,7 @@ export default [
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
           jsonData: '',
+          dataName: 'response',
           renderAs: 'dropdown',
           allowMultiSelect: false,
           selectedOptions: [],
