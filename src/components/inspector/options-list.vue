@@ -336,6 +336,9 @@ export default {
       return '';
     },
     dataObjectOptions() {
+      if (!this.dataName) {
+        this.dataName = this.options.dataName;
+      }
       return {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
