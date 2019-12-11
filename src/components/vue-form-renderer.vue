@@ -162,7 +162,7 @@ export default {
   },
   mounted() {
     this.parseCss();
-    if (window.ProcessMaker) {
+    if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
   },
