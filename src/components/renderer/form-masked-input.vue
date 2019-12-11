@@ -29,15 +29,15 @@
 import { createUniqIdsMixin } from 'vue-uniq-ids';
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
+import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
-import { Money } from 'v-money';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
-  currency: 'money',
+  currency: 'inputmasked',
   date: 'the-mask',
   datetime: 'the-mask',
-  percentage: 'money', // We use money because it stores properly the unmasked value
+  percentage: 'inputmasked',
 };
 const componentTypesConfigs = {
   currency: 'getCurrencyFormat',
@@ -48,7 +48,7 @@ const componentTypesConfigs = {
 
 export default {
   inheritAttrs: false,
-  components: { TheMask, Money },
+  components: { TheMask, Inputmasked },
   mixins: [uniqIdsMixin, ValidationMixin, DataFormatMixin],
   props: [
     'value',
