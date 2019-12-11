@@ -388,6 +388,7 @@ export default {
         return;
       }
 
+      var currentDataSource = this.selectedDataSource;
       ProcessMaker.apiClient
         .get('/data_sources')
         .then(response => {
@@ -398,6 +399,7 @@ export default {
           });
           // Map the data sources response to value/text items list
           this.dataSourcesList = jsonData.map(convertToSelectOptions);
+          this.selectedDataSource = currentDataSource;
         })
         .catch(err => {
           this.dataSourcesList = [];
@@ -405,14 +407,15 @@ export default {
     },
 
     getEndPointsList() {
+      this.endPointList = [];
       //If no ProcessMaker is found, datasources can't be loaded
       if (typeof ProcessMaker === 'undefined'
         || typeof this.selectedDataSource === 'undefined'
         || this.selectedDataSource === '') {
-        this.endPointList = [];
         return;
       }
 
+      var currentEndPoint = this.selectedEndPoint;
       ProcessMaker.apiClient
         .get('/data_sources/' + this.selectedDataSource)
         .then(response => {
@@ -424,6 +427,8 @@ export default {
               value: endpoint,
             });
           }
+
+          this.selectedEndPoint = currentEndPoint;
         })
         .catch(err => {
           this.endPointList = [];
