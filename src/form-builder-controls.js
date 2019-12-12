@@ -3,7 +3,8 @@ import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
-import {DataTypeProperty, DataTypeWithoutDateProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
+import FormMaskedInput from './components/renderer/form-masked-input';
+import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
@@ -13,6 +14,7 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
+
 import {
   bgcolorProperty,
   colorProperty,
@@ -61,8 +63,8 @@ export default [
   {
     builderComponent: FormInput,
     builderBinding: 'FormInput',
-    rendererComponent: FormInput,
-    rendererBinding: 'FormInput',
+    rendererComponent: FormMaskedInput,
+    rendererBinding: 'FormMaskedInput',
     control: {
       label: 'Line Input',
       component: 'FormInput',
@@ -80,6 +82,7 @@ export default [
       inspector: [
         keyNameProperty,
         DataTypeProperty,
+        DataFormatProperty,
         labelProperty,
         {
           type: 'FormMultiselect',
@@ -126,6 +129,12 @@ export default [
         helper: null,
         rows: 2,
         richtext: false,
+        currency: {
+          code: 'USD',
+          name: 'US Dollar',
+          format: '#,###.##',
+          symbol: '$',
+        },
       },
       inspector: [
         labelProperty,

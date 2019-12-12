@@ -5,6 +5,7 @@ export default [
       { name: 'name', hideFor: 'FormImage' },
       'fieldValue',
       'dataFormat',
+      'dataMask',
       'validation',
       'readonly',
       'disabled',
