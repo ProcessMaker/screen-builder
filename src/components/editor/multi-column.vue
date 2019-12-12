@@ -89,11 +89,9 @@ import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
 import {
   FormInput,
-  FormSelect,
   FormSelectList,
   FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
   FormHtmlViewer,
@@ -108,10 +106,8 @@ export default {
   components: {
     draggable,
     FormInput,
-    FormSelect,
     FormSelectList,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,

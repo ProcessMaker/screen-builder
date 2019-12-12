@@ -36,6 +36,7 @@
         </div>
       </div>
       <custom-css>{{ customCssWrapped }}</custom-css>
+      <watchers-synchronous ref="watchersSynchronous"/>
     </div><!-- end page -->
   </div><!-- end custom-css-scope -->
 </template>
@@ -44,7 +45,8 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import { getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
+import debounce from 'lodash/debounce';
+import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -56,13 +58,12 @@ import {
   FormHtmlEditor,
   FormHtmlViewer,
   FormInput,
-  FormRadioButtonGroup,
-  FormSelect,
   FormSelectList,
   FormTextArea,
 } from '@processmaker/vue-form-elements';
 import { Parser } from 'expr-eval';
 import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
+import WatchersSynchronous from '@/components/watchers-synchronous';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 
 const csstree = require('css-tree');
@@ -77,18 +78,17 @@ Vue.use(VueDeepSet);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
   model: {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers],
   components: {
+    WatchersSynchronous,
     FormInput,
-    FormSelect,
     FormSelectList,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
@@ -148,6 +148,12 @@ export default {
 
         if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
           this.$emit('update', this.transientData);
+
+          //Verify changes in the Data for the watchers call
+          let diff = this.dataChanges(this.transientData, this.data);
+          if (diff.length) {
+            this.watchDataChanges(this.transientData, diff);
+          }
         }
       },
       deep: true,
@@ -162,8 +168,28 @@ export default {
   },
   mounted() {
     this.parseCss();
+    if (window.ProcessMaker) {
+      window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
+    }
   },
   methods: {
+    /**
+     * Returns the names of the fields that have changed.
+     *
+     * @param {object} newData
+     * @param {object} oldData
+     * @returns {[]}
+     */
+    dataChanges(newData, oldData) {
+      let changes = [];
+      for (const field in newData) {
+        if (oldData[field] !== undefined &&
+          JSON.stringify(newData[field]) !== JSON.stringify(oldData[field])) {
+          changes.push(field);
+        }
+      }
+      return changes;
+    },
     submit() {
       if (this.isValid()) {
         this.setDefaultValues();
