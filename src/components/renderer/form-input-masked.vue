@@ -24,6 +24,10 @@ export default {
       type: String,
       default: ' USD',
     },
+    precision: {
+      type: Number,
+      default: 2,
+    },
   },
   computed: {
     currencyInput() {

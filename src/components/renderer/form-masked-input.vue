@@ -84,15 +84,17 @@ export default {
       return Object.assign({}, (config ? this[config] : {}) , this.$attrs);
     },
     getCurrencyFormat() {
-      const separators = this.dataMask && this.dataMask ? this.dataMask && this.dataMask.format.match(/[.,]/g) : ['.', ','];
-      if (separators.length === 0) separators.push('', '');
-      else if (separators.length === 1) separators.splice(0, 0, '');
+      const format = this.dataMask && this.dataMask ? this.dataMask && this.dataMask.format : null;
+      const separators = format ? format.match(/[.,]/g) : ['.', ','];
+      if (separators.length === 0) separators.push('', '.');
+      else if (separators.length === 1) separators.push(separators[0] === '.' ? ',': '.');
+      const presicion = format ? (format.split(separators[1])[1] || '').length : 2;
       return {
         decimal: separators[1],
         thousands: separators[0],
         prefix: this.dataMask ? this.dataMask.symbol + ' ' : '',
         suffix: this.dataMask ? ' ' + this.dataMask.code : '',
-        precision: 2,
+        precision: presicion,
         masked: false,
       };
     },
