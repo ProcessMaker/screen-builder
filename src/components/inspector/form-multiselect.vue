@@ -44,6 +44,7 @@ export default {
     'helper',
     'name',
     'value',
+    'selectedControl',
   ],
   computed: {
     classList() {
