@@ -118,13 +118,15 @@
           </button>
         </div>
       </div>
-      <div class="row mb-3" v-if="showRenderAs">
+    </div>
+    <div v-if="showRenderAs">
+      <div class="row mb-3">
         <div class="col-12">
           <input type="checkbox"  v-model="allowMultiSelect">
           Allow multiple selections
         </div>
       </div>
-      <div class="row mb-3" v-if="showRenderAs">
+      <div class="row mb-3">
         <div class="col">
           <label for="render-as">{{ $t('Render Options As') }}</label>
           <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
@@ -161,25 +163,25 @@
       </button>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="data-sources-list">{{ $t('Data Source Name') }}</label>
       <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" class="mb-3"/>
       <small class="form-text text-muted mb-3">{{ $t('Data source to use') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="endpoint-list">{{ $t('End Point') }}</label>
       <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
       <label for="element-name">{{ $t('Element Name') }}</label>
-      <b-form-input id="element-name" v-model="elementName"/>
-      <small class="form-text text-muted mb-3">{{ $t('Element of the response to be used') }}</small>
+      <b-form-input id="element-name" v-model="dataName"/>
+      <small class="form-text text-muted mb-3">{{ $t('Element to be used as root reference') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
@@ -187,7 +189,9 @@
       <label for="value">{{ $t('Content') }}</label>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
+    </div>
 
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">Advanced data search</small>
@@ -225,7 +229,6 @@ export default {
       dataSourcesList: [],
       selectedEndPoint: '',
       endPointList: [],
-      elementName: '',
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -270,7 +273,6 @@ export default {
       this.dataSourcesList = this.options.dataSourcesList;
       this.selectedEndPoint = this.options.selectedEndPoint;
       this.endPointList = this.options.endPointList;
-      this.elementName = this.options.elementName;
       this.key = this.options.key;
       this.value = this.options.value;
       this.pmqlQuery = this.options.pmqlQuery;
@@ -287,12 +289,20 @@ export default {
       this.removeIndex = this.options.removeIndex;
     },
     dataSource(val) {
-      if (val === 'dataObject') {
-        this.jsonData = '';
-        this.getDataSourceList();
-      } else {
-        this.dataName = '';
-        this.selectedDataSource = '';
+      this.showRenderAs = true;
+      switch(val) {
+        case 'dataConnector':
+          this.jsonData = '';
+          this.dataName = '';
+          this.getDataSourceList();
+        case 'dataObject':
+          this.jsonData = '';
+          this.selectedDataSource = '';
+          break;
+        case 'provideData':
+          this.dataName = '';
+          this.selectedDataSource = '';
+          break;
       }
     },
     selectedDataSource(val) {
@@ -305,7 +315,7 @@ export default {
   computed: {
     dataSourceTypes(val) {
       if (typeof this.options.allowMultiSelect === 'undefined') {
-        return [this.dataSources[0]];
+        return [this.dataSources[0], this.dataSources[1]];
       }
       return this.dataSources;
     },
@@ -329,6 +339,9 @@ export default {
       return '';
     },
     dataObjectOptions() {
+      if (!this.dataName) {
+        this.dataName = this.options.dataName;
+      }
       return {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
@@ -337,7 +350,6 @@ export default {
         dataSourcesList: this.dataSourcesList,
         selectedEndPoint: this.selectedEndPoint,
         endPointList: this.endPointList,
-        elementName: this.elementName,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -363,7 +375,6 @@ export default {
     this.dataSourcesList = this.options.dataSourcesList,
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.endPointList = this.options.endPointList,
-    this.elementName = this.options.elementName,
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -383,6 +394,7 @@ export default {
         return;
       }
 
+      var currentDataSource = this.selectedDataSource;
       ProcessMaker.apiClient
         .get('/data_sources')
         .then(response => {
@@ -393,6 +405,7 @@ export default {
           });
           // Map the data sources response to value/text items list
           this.dataSourcesList = jsonData.map(convertToSelectOptions);
+          this.selectedDataSource = currentDataSource;
         })
         .catch(err => {
           this.dataSourcesList = [];
@@ -400,14 +413,15 @@ export default {
     },
 
     getEndPointsList() {
+      this.endPointList = [];
       //If no ProcessMaker is found, datasources can't be loaded
       if (typeof ProcessMaker === 'undefined'
         || typeof this.selectedDataSource === 'undefined'
         || this.selectedDataSource === '') {
-        this.endPointList = [];
         return;
       }
 
+      var currentEndPoint = this.selectedEndPoint;
       ProcessMaker.apiClient
         .get('/data_sources/' + this.selectedDataSource)
         .then(response => {
@@ -419,6 +433,8 @@ export default {
               value: endpoint,
             });
           }
+
+          this.selectedEndPoint = currentEndPoint;
         })
         .catch(err => {
           this.endPointList = [];
