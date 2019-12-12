@@ -31,7 +31,7 @@
         </div>
 
         <div class="card-footer text-right p-2">
-          <button type="button" class="btn btn-sm btn-outline-secondartr mr-2" @click="showOptionCard=false">
+          <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="showOptionCard=false">
             {{ $t('Cancel') }}
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
@@ -340,7 +340,6 @@ export default {
     },
     dataObjectOptions() {
       if (!this.dataName) {
-        console.log('antes de');
         this.dataName = this.options.dataName;
       }
       return {
