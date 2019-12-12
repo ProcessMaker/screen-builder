@@ -123,10 +123,11 @@ export default {
             const options = { alias: 'currency' };
             if (definition) {
               const separators = definition.format.match(/[.,]/g);
-              if (separators.length === 0) separators.push('', '');
-              else if (separators.length === 1) separators.splice(0, 0, '');
-              options.decimal = separators[1];
-              options.thousands = separators[0];
+              if (separators.length === 0) separators.push('', '.');
+              else if (separators.length === 1) separators.push(separators[0] === '.' ? ',': '.');
+              options.digits = (definition.format.split(separators[1])[1] || '').length;
+              options.radixPoint = separators[1];
+              options.groupSeparator = separators[0];
               options.prefix = definition.symbol + ' ';
               options.suffix = ' ' + definition.code;
             }
