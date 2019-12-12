@@ -173,7 +173,12 @@ export default {
 
         if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
           this.$emit('update', this.transientData);
-          this.watchDataChanges(this.transientData);
+
+          //Verify changes in the Data for the watchers call
+          let diff = this.dataChanges(this.transientData, this.data);
+          if (diff.length) {
+            this.watchDataChanges(this.transientData, diff);
+          }
         }
       },
       deep: true,
@@ -209,6 +214,23 @@ export default {
       if (node.$children instanceof Array) {
         node.$children.forEach(child => this.registerCustomFunctions(child));
       }
+    },
+    /**
+     * Returns the names of the fields that have changed.
+     *
+     * @param {object} newData
+     * @param {object} oldData
+     * @returns {[]}
+     */
+    dataChanges(newData, oldData) {
+      let changes = [];
+      for (const field in newData) {
+        if (oldData[field] !== undefined &&
+          JSON.stringify(newData[field]) !== JSON.stringify(oldData[field])) {
+          changes.push(field);
+        }
+      }
+      return changes;
     },
     submit() {
       if (this.isValid()) {

@@ -1,5 +1,6 @@
 import Mustache from 'mustache';
-import _ from 'lodash';
+import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
 
 const globalObject = typeof window === 'undefined'
   ? global
@@ -21,10 +22,15 @@ export default {
     /**
      * Watch data changes
      * @param {object} data
+     * @param {array} changes
      */
-    watchDataChanges(data) {
+    watchDataChanges(data, changes) {
       if (this.watchers && this.watchers instanceof Array) {
-        this.watchers.forEach(watcher => this.checkWatcher(watcher, data));
+        this.watchers.forEach(watcher =>  {
+          if (changes.indexOf(watcher.watching) !== -1) {
+            this.checkWatcher(watcher, data);
+          }
+        });
       }
     },
     /**
@@ -34,8 +40,7 @@ export default {
      * @param {object} data
      */
     checkWatcher(watcher, data) {
-      const trigger = _.get(this.watching, watcher.watching) != _.get(data, watcher.watching);
-      if (trigger) {
+      if (!isEqual(this.watching[watcher.watching], get(data, watcher.watching))) {
         this.callWatcher(watcher, data);
       }
       this.watching[watcher.watching] = data[watcher.watching];
