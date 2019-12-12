@@ -286,11 +286,9 @@ Validator.register(
 
 import {
   FormInput,
-  FormSelect,
   FormSelectList,
   FormTextArea,
   FormCheckbox,
-  FormRadioButtonGroup,
   FormDatePicker,
   FormHtmlEditor,
   FormHtmlViewer,
@@ -324,10 +322,8 @@ export default {
   components: {
     draggable,
     FormInput,
-    FormSelect,
     FormSelectList,
     FormCheckbox,
-    FormRadioButtonGroup,
     FormTextArea,
     FormDatePicker,
     FormHtmlEditor,
@@ -436,8 +432,6 @@ export default {
     },
     migrateConfig(config = this.config) {
       config.forEach(page => this.replaceFormText(page.items));
-      config.forEach(page => this.migrateFormSelect(page.items));
-      config.forEach(page => this.migrateFormRadioButtonGroup(page.items));
       config.forEach(page => this.migrateFormSubmit(page.items));
     },
     replaceFormText(items) {
@@ -456,46 +450,6 @@ export default {
         }
         if (item.items instanceof Array) {
           this.replaceFormText(item.items);
-        }
-      });
-    },
-    migrateFormSelect(items) {
-      items.forEach(item => {
-        if (item.component === 'FormSelect' && item.config.options instanceof Array) {
-          item.config.options = {
-            defaultOptionKey: '',
-            dataSource: 'provideData',
-            key: 'value',
-            value: 'content',
-            optionsList: item.config.options,
-            jsonData: JSON.stringify(item.config.options),
-          };
-        } else if (item.component === 'FormSelect' && item.config.options instanceof Object && !item.config.options.optionsList ) {
-          try {item.config.options.optionsList = JSON.parse(item.config.options.jsonData);}
-          catch (e) {item.config.options.optionsList = [];}
-        }
-        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
-          item.items.forEach(column => this.migrateFormSelect(column));
-        }
-      });
-    },
-    migrateFormRadioButtonGroup(items) {
-      items.forEach(item => {
-        if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Array) {
-          item.config.options = {
-            defaultOptionKey: '',
-            dataSource: 'provideData',
-            key: 'value',
-            value: 'content',
-            optionsList: item.config.options,
-            jsonData: JSON.stringify(item.config.options),
-          };
-        } else if (item.component === 'FormRadioButtonGroup' && item.config.options instanceof Object && !item.config.options.optionsList ) {
-          try {item.config.options.optionsList = JSON.parse(item.config.options.jsonData);}
-          catch (e) {item.config.options.optionsList = [];}
-        }
-        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
-          item.items.forEach(column => this.migrateFormRadioButtonGroup(column));
         }
       });
     },
