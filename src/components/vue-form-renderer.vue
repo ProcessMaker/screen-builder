@@ -64,6 +64,8 @@ import { Parser } from 'expr-eval';
 import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
+import currencies from '../currency.json';
+import Inputmask from 'inputmask';
 
 const csstree = require('css-tree');
 
@@ -113,6 +115,29 @@ export default {
       currentPage: this.page || 0,
       transientData: JSON.parse(JSON.stringify(this.data)),
       customCssWrapped: '',
+      // Custom Functions for Rich Text Control
+      customFunctions: {
+        formatCurrency() {
+          const format = (value, currency) => {
+            const definition = currencies.find(definition => definition.code === currency);
+            const options = { alias: 'currency' };
+            if (definition) {
+              const separators = definition.format.match(/[.,]/g);
+              if (separators.length === 0) separators.push('', '');
+              else if (separators.length === 1) separators.splice(0, 0, '');
+              options.decimal = separators[1];
+              options.thousands = separators[0];
+              options.prefix = definition.symbol + ' ';
+              options.suffix = ' ' + definition.code;
+            }
+            return Inputmask.format(value, options);
+          };
+          return function(text) {
+            const params = JSON.parse(`[${text}]`);
+            return format(_.get(this, params[0]), params[1]);
+          };
+        },
+      },
     };
   },
   watch: {
@@ -156,17 +181,34 @@ export default {
     customCss() {
       this.parseCss();
     },
+    config: {
+      deep: true,
+      handler() {
+        this.$nextTick(() => {this.registerCustomFunctions();});
+      },
+    },
   },
   created() {
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
     this.parseCss();
+    this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
   },
   methods: {
+    registerCustomFunctions(node=this) {
+      if (node.registerCustomFunction instanceof Function) {
+        Object.keys(this.customFunctions).forEach(key => {
+          node.registerCustomFunction(key, this.customFunctions[key]);
+        });
+      }
+      if (node.$children instanceof Array) {
+        node.$children.forEach(child => this.registerCustomFunctions(child));
+      }
+    },
     submit() {
       if (this.isValid()) {
         this.setDefaultValues();
