@@ -5,73 +5,53 @@
     id="computed-properties"
     :title="$t('Computed Properties')"
     @hidden="displayTableList"
+    content-class="p-3"
+    header-class="m-0 p-0 mb-3"
+    body-class="m-0 p-0"
+    title-class="m-0"
+    footer-class="m-0 p-0"
     no-close-on-backdrop
   >
 
     <template v-if="displayList">
-      <b-row class="float-right">
-        <div class="m-2">
-          <b-btn size="sm" variant="secondary" @click.stop="displayFormProperty">
-            <i class="fas fa-plus"/> {{ $t('Add Property') }}
-          </b-btn>
-        </div>
-      </b-row>
-
-      <b-table :items="current" :fields="fields" responsive striped bordered small hover fixed>
-        <template slot="HEAD_property" slot-scope="data">
-          {{ $t(data.label) }}
-        </template>
-        <template slot="HEAD_actions" slot-scope="data">
-          {{ $t(data.label) }}
-        </template>
-
-        <template slot="actions" slot-scope="row">
-          <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
-          <a
-            variant="action"
-            @click.stop="row.toggleDetails"
-            class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-            :title="$t('Details')"
-          >
-            <i class="fa fa-list-alt fa-1x"/>
-          </a>
-          <a
-            size="lg"
-            variant="action"
-            :title="$t('edit')"
-            class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-            @click.stop="editProperty(row.item)"
-          >
-            <i class="fa fa-edit fa-1x"/>
-          </a>
-          <a
-            size="lg"
-            variant="action"
-            :title="$t('Delete')"
-            class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-            @click.stop="deleteProperty(row.item)"
-          >
-            <i class="fa fa-trash fa-1x"/>
-          </a>
-        </template>
-        <template slot="row-details" slot-scope="row">
-          <b-card>
-            <b-row class="mb-1">
-              <b-col sm="3" class="text-sm-right">
-                <b>{{ $t('Field:') }}</b>
-              </b-col>
-              <b-col>{{ $t(row.item.property) }}</b-col>
-            </b-row>
-            <b-row class="mb-1">
-              <b-col sm="3" class="text-sm-right">
-                <b>{{ $t('Formula:') }}</b>
-              </b-col>
-              <b-col>{{ $t(row.item.formula) }}</b-col>
-            </b-row>
-            <b-button class="float-right" size="sm" @click="row.toggleDetails">{{ $t('Hide Details') }}</b-button>
-          </b-card>
-        </template>
-      </b-table>
+      <div class="d-flex align-items-end flex-column mb-3">
+        <button type="button" @click.stop="displayFormProperty" class="btn btn-secondary">
+            <i class="fas fa-plus"></i> {{ $t('Property') }}
+        </button>
+      </div>
+      <div class="card card-body table-card">
+        <vuetable
+          :api-mode="false"
+          :css="css"
+          :fields="fields"
+          :data="current"
+          data-path="data"
+          :noDataTemplate="$t('No Data Available')"
+        >
+          <template slot="actions" slot-scope="row">
+            <div class="actions">
+              <div class="popout">
+                <b-btn
+                  variant="link"
+                  @click="editProperty(row)"
+                  v-b-tooltip.hover
+                  :title="$t('Edit')"
+                >
+                  <i class="fas fa-edit fa-lg fa-fw"></i>
+                </b-btn>
+                <b-btn
+                  variant="link"
+                  @click="deleteProperty(row)"
+                  v-b-tooltip.hover
+                  :title="$t('Delete')"
+                >
+                  <i class="fas fa-trash-alt fa-lg fa-fw"></i>
+                </b-btn>
+              </div>
+            </div>
+          </template>
+        </vuetable>
+      </div>
       <template slot="modal-footer">
         <span/>
       </template>
@@ -84,6 +64,7 @@
         :label="$t('Property Name')"
         :name="$t('Property Name')"
         :validation="rulePropName"
+        class="mb-3"
       />
       <form-text-area
         ref="propDescription"
@@ -91,8 +72,9 @@
         :label="$t('Description')"
         :name="$t('Description')"
         :validation="ruleDescription"
+        class="mb-3"
       />
-      <div class="form-group" style='position: relative;'>
+      <div class="form-group mb-3" style='position: relative;'>
         <label v-show="isJS">{{ $t('Formula') }}</label>
         <div class="float-right">
           <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType">
@@ -121,13 +103,15 @@
         </div>
       </div>
       <template slot="modal-footer">
-        <button class="btn btn-outline-secondary" @click="displayTableList">{{ $t('Cancel') }}</button>
-        <button
-          class="btn btn-secondary ml-2"
-          @click="validateData"
-        >
-          {{ $t('Save') }}
-        </button>
+        <div class="d-flex align-items-end">
+          <button class="btn btn-outline-secondary" @click="displayTableList">{{ $t('Cancel') }}</button>
+          <button
+            class="btn btn-secondary ml-3"
+            @click="validateData"
+          >
+            {{ $t('Save') }}
+          </button>
+        </div>
       </template>
     </template>
 
@@ -140,6 +124,8 @@ import {
   FormTextArea,
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
+
+import Vuetable from "vuetable-2/src/components/Vuetable";
 
 let Validator = require('validatorjs');
 
@@ -172,19 +158,33 @@ export default {
         type: 'expression',
         formula: '',
       },
+      css: {
+          tableClass: "table table-hover table-responsive text-break mb-0",
+          loadingClass: "loading",
+          detailRowClass: "vuetable-detail-row",
+          handleIcon: "grey sidebar icon",
+          sortableIcon: "fas fa-sort",
+          ascendingIcon: "fas fa-sort-up",
+          descendingIcon: "fas fa-sort-down",
+          ascendingClass: "ascending",
+          descendingClass: "descending",
+          renderIcon(classes, options) {
+              return `<i class="${classes.join(" ")}"></i>`;
+          }
+      },
       fields: [
         {
-          key: 'property',
-          label: 'Property Name',
-          class: 'text-center',
-          sortable: true,
+          title: () => this.$t("Property Name"),
+          name: "property"
         },
         {
-          key: 'actions',
-          label: '',
-          class: 'text-center',
-          sortable: false,
+          title: () => this.$t("Description"),
+          name: "name"
         },
+        {
+          name: "__slot:actions",
+          title: ""
+        }
       ],
       monacoOptions: {
         automaticLayout: true,
@@ -295,7 +295,6 @@ export default {
           formula: this.add.formula,
           type: this.add.type,
         });
-        this.showAlert(this.$t('Property Saved'));
       } else {
         this.current.forEach(item => {
           if (item.id === this.add.id) {
@@ -305,13 +304,13 @@ export default {
             item.type = this.add.type;
           }
         });
-        this.showAlert(this.$t('Property Edited'));
       }
 
       this.$emit('input', this.current);
       this.displayTableList();
     },
     editProperty(item) {
+      item = item.rowData;
       this.add.id = item.id;
       this.add.name = item.name;
       this.add.property = item.property;
@@ -320,11 +319,11 @@ export default {
       this.displayList = false;
     },
     deleteProperty(item) {
+      item = item.rowData;
       this.current = this.current.filter(val => {
         return val.id !== item.id;
       });
       this.$emit('input', this.current);
-      this.showAlert(this.$t('Property deleted'));
       this.displayTableList();
     },
     showAlert(message) {
