@@ -44,6 +44,7 @@
 import draggable from 'vuedraggable';
 import * as renderer from '@/components/renderer';
 import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins';
+import FormMaskedInput from '@/components/renderer/form-masked-input';
 
 import {
   FormInput,
@@ -63,7 +64,7 @@ export default {
   props: ['value', 'selected', 'name', 'config', 'transientData'],
   components: {
     draggable,
-    FormInput,
+    FormInput: FormMaskedInput,
     FormSelectList,
     FormTextArea,
     FormCheckbox,
