@@ -16,7 +16,7 @@
     <template v-if="displayList">
       <div class="d-flex align-items-end flex-column mb-3">
         <button type="button" @click.stop="displayFormProperty" class="btn btn-secondary">
-            <i class="fas fa-plus"></i> {{ $t('Property') }}
+          <i class="fas fa-plus"/> {{ $t('Property') }}
         </button>
       </div>
       <div class="card card-body table-card">
@@ -37,7 +37,7 @@
                   v-b-tooltip.hover
                   :title="$t('Edit')"
                 >
-                  <i class="fas fa-edit fa-lg fa-fw"></i>
+                  <i class="fas fa-edit fa-lg fa-fw"/>
                 </b-btn>
                 <b-btn
                   variant="link"
@@ -45,7 +45,7 @@
                   v-b-tooltip.hover
                   :title="$t('Delete')"
                 >
-                  <i class="fas fa-trash-alt fa-lg fa-fw"></i>
+                  <i class="fas fa-trash-alt fa-lg fa-fw"/>
                 </b-btn>
               </div>
             </div>
@@ -125,7 +125,7 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 
-import Vuetable from "vuetable-2/src/components/Vuetable";
+import Vuetable from 'vuetable-2/src/components/Vuetable';
 
 let Validator = require('validatorjs');
 
@@ -159,32 +159,32 @@ export default {
         formula: '',
       },
       css: {
-          tableClass: "table table-hover table-responsive text-break mb-0",
-          loadingClass: "loading",
-          detailRowClass: "vuetable-detail-row",
-          handleIcon: "grey sidebar icon",
-          sortableIcon: "fas fa-sort",
-          ascendingIcon: "fas fa-sort-up",
-          descendingIcon: "fas fa-sort-down",
-          ascendingClass: "ascending",
-          descendingClass: "descending",
-          renderIcon(classes, options) {
-              return `<i class="${classes.join(" ")}"></i>`;
-          }
+        tableClass: 'table table-hover table-responsive text-break mb-0',
+        loadingClass: 'loading',
+        detailRowClass: 'vuetable-detail-row',
+        handleIcon: 'grey sidebar icon',
+        sortableIcon: 'fas fa-sort',
+        ascendingIcon: 'fas fa-sort-up',
+        descendingIcon: 'fas fa-sort-down',
+        ascendingClass: 'ascending',
+        descendingClass: 'descending',
+        renderIcon(classes, options) {
+          return `<i class="${classes.join(' ')}"></i>`;
+        },
       },
       fields: [
         {
-          title: () => this.$t("Property Name"),
-          name: "property"
+          title: () => this.$t('Property Name'),
+          name: 'property',
         },
         {
-          title: () => this.$t("Description"),
-          name: "name"
+          title: () => this.$t('Description'),
+          name: 'name',
         },
         {
-          name: "__slot:actions",
-          title: ""
-        }
+          name: '__slot:actions',
+          title: '',
+        },
       ],
       monacoOptions: {
         automaticLayout: true,

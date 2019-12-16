@@ -290,7 +290,7 @@ export default {
     },
     dataSource(val) {
       this.showRenderAs = true;
-      switch(val) {
+      switch (val) {
         case 'dataConnector':
           this.jsonData = '';
           this.dataName = '';
