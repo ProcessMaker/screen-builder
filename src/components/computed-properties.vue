@@ -95,7 +95,11 @@
           :validation="ruleFormula"
         />
         <div v-show="isJS" class="editor-border" :class="{'is-invalid':editorInvalid}"/>
-        <monaco-editor v-show="isJS" :options="monacoOptions" class="editor" v-model="add.formula"
+        <monaco-editor
+          v-show="isJS"
+          :options="monacoOptions"
+          class="editor"
+          v-model="add.formula"
           language="javascript"
         />
         <div v-if="isJS && editorInvalid" class="invalid-feedback d-block">
@@ -119,13 +123,8 @@
 </template>
 
 <script>
-import {
-  FormInput,
-  FormTextArea,
-} from '@processmaker/vue-form-elements';
+import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
-
-import Vuetable from 'vuetable-2/src/components/Vuetable';
 
 let Validator = require('validatorjs');
 
@@ -145,9 +144,9 @@ export default {
       required: true,
       numberItem: 0,
       displayList: true,
-      ruleDescription:'',
-      ruleFormula:'',
-      rulePropName:'',
+      ruleDescription: '',
+      ruleFormula: '',
+      rulePropName: '',
       editorInvalid: false,
       existsProperty: false,
       current: [],
@@ -344,7 +343,7 @@ export default {
         });
         return response;
       },
-      this.$t('Property already exists')
+      this.$t('Property already exists'),
     );
   },
 
