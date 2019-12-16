@@ -167,9 +167,6 @@ export default {
         descendingIcon: 'fas fa-sort-down',
         ascendingClass: 'ascending',
         descendingClass: 'descending',
-        renderIcon(classes, options) {
-          return `<i class="${classes.join(' ')}"></i>`;
-        },
       },
       fields: [
         {

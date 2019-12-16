@@ -1,6 +1,7 @@
 import Mustache from 'mustache';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
+import debounce from 'lodash/debounce';
 
 const globalObject = typeof window === 'undefined'
   ? global
@@ -127,7 +128,7 @@ export default {
         },
       );
     }
-    this.callWatcher = _.debounce(this.callWatcher, 1000);
+    this.callWatcher = debounce(this.callWatcher, 1000);
   },
   destroyed() {
     this.cleanEchoListeners();
