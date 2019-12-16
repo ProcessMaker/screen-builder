@@ -42,8 +42,6 @@
 <script>
 
 export default {
-  components: {
-  },
   props: ['value'],
   data() {
     return {
@@ -53,7 +51,7 @@ export default {
   },
   computed: {
     message() {
-      return this.$t('{{variable}} is running.', {'variable': this.variable});
+      return this.$t('{{variable}} is running.', {variable: this.variable});
     },
   },
   methods: {

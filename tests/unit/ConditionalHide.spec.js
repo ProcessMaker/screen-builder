@@ -1,10 +1,18 @@
-import {mount} from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
+import BootstrapVue from 'bootstrap-vue';
 import Renderer from '../../src/components/vue-form-renderer';
+
+const localVue = createLocalVue();
+localVue.use(BootstrapVue);
 
 describe('Hide or show controls', () => {
 
   // Now mount the component and you have the wrapper
   const wrapper = mount(Renderer, {
+    localVue,
+    mocks: {
+      $t: text => text,
+    },
     sync: false,
     propsData: {
       config: [{
