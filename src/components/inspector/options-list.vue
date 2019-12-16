@@ -296,7 +296,6 @@ export default {
           this.jsonData = '';
           this.dataName = '';
           this.getDataSourceList();
-          break;
         case 'dataObject':
           this.jsonData = '';
           this.selectedDataSource = '';
