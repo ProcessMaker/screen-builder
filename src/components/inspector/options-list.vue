@@ -200,6 +200,7 @@
 </template>
 
 <script>
+/* global ProcessMaker */
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
@@ -295,6 +296,7 @@ export default {
           this.jsonData = '';
           this.dataName = '';
           this.getDataSourceList();
+          break;
         case 'dataObject':
           this.jsonData = '';
           this.selectedDataSource = '';
@@ -305,7 +307,7 @@ export default {
           break;
       }
     },
-    selectedDataSource(val) {
+    selectedDataSource() {
       this.getEndPointsList();
     },
     dataObjectOptions(dataObjectOptions) {
@@ -313,7 +315,7 @@ export default {
     },
   },
   computed: {
-    dataSourceTypes(val) {
+    dataSourceTypes() {
       if (typeof this.options.allowMultiSelect === 'undefined') {
         return [this.dataSources[0], this.dataSources[1]];
       }
@@ -407,7 +409,7 @@ export default {
           this.dataSourcesList = jsonData.map(convertToSelectOptions);
           this.selectedDataSource = currentDataSource;
         })
-        .catch(err => {
+        .catch(() => {
           this.dataSourcesList = [];
         });
     },
@@ -436,7 +438,7 @@ export default {
 
           this.selectedEndPoint = currentEndPoint;
         })
-        .catch(err => {
+        .catch(() => {
           this.endPointList = [];
         });
     },
