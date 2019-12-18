@@ -1,31 +1,3 @@
-function removeInvalidOptions(option) {
-  return Object.keys(option).includes('value') &&
-    option.content != null;
-}
-
-function getOptionsFromDataSource(inputOptions, data) {
-  const {jsonData, key, value, dataName} = inputOptions;
-
-  const convertToSelectOptions = option => ({
-    value: option[key || 'value'],
-    content: option[value || 'content'],
-  });
-
-  try {
-    if (jsonData) {
-      return JSON.parse(jsonData)
-        .map(convertToSelectOptions)
-        .filter(removeInvalidOptions);
-    }
-
-    return data[dataName]
-      .map(convertToSelectOptions)
-      .filter(removeInvalidOptions);
-  } catch (error) {
-    return [];
-  }
-}
-
 function processFormItem(item) {
   if (item.component !== 'FormMultiColumn') {
     return item;
@@ -40,7 +12,7 @@ export function getItemsFromConfig(config) {
     .flatMap(processFormItem);
 }
 
-export function getDefaultValueForItem(item, transientData) {
+export function getDefaultValueForItem(item) {
   let defaultValue = null;
 
   if (['FormInput', 'FormTextArea', 'FormText'].includes(item.component)) {
