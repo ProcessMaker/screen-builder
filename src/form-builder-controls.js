@@ -78,6 +78,7 @@ export default [
         validation: '',
         helper: null,
         type: 'text',
+        dataFormat: 'string',
       },
       inspector: [
         keyNameProperty,
