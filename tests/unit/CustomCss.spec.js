@@ -1,10 +1,18 @@
-import {mount} from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 import Renderer from '../../src/components/vue-form-renderer';
+import BootstrapVue from 'bootstrap-vue';
+
+const localVue = createLocalVue();
+localVue.use(BootstrapVue);
 
 describe('Test custom css', () => {
 
   // Now mount the component and you have the wrapper
   const wrapper = mount(Renderer, {
+    localVue,
+    mocks: {
+      $t: text => text,
+    },
     sync: false,
     propsData: {
       config: [{
