@@ -22,6 +22,6 @@ module.exports = {
   ],
   testURL: 'http://localhost/',
   transformIgnorePatterns: [
-    'node_modules/(?!(vuetable-2)/)',
+    'node_modules/(?!(vuetable-2|vue-uniq-ids|@processmaker/vue-form-elements/src)/)',
   ],
 };
