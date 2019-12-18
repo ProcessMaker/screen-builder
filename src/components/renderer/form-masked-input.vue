@@ -2,6 +2,7 @@
   <div class="form-group">
     <label v-uni-for="name">{{ label }}</label>
     <component
+      v-if="componentType!=='input'"
       :is="componentType"
       v-model="localValue"
       v-bind="componentConfig"
@@ -9,10 +10,17 @@
       :name="name"
       class="form-control"
       :class="classList"
-      v-on:blur="formatFloatValue()"
       type="text"
-      @input="updateInput"
     />
+    <input v-else
+      v-model="localValue"
+      v-bind="componentConfig"
+      v-uni-id="name"
+      :name="name"
+      class="form-control"
+      :class="classList"
+      type="text"
+    >
     <template v-if="validator && validator.errorCount">
       <div class="invalid-feedback" v-for="(errors, index) in validator.errors.all()" :key="index">
         <div v-for="(error, subIndex) in errors" :key="subIndex">
@@ -70,12 +78,6 @@ export default {
     convertFromData(value) {
       if (this.dataFormat === 'percentage') return value * 100;
       return value;
-    },
-    updateInput(value)
-    {
-      if (this.componentType === 'input') {
-        this.localValue = value.target.value;
-      }
     },
   },
   computed: {
