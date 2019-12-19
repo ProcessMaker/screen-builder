@@ -341,7 +341,7 @@ export default {
     },
     dataObjectOptions() {
       if (!this.dataName) {
-        this.dataName = this.options.dataName;
+        this.dataName = this.options.dataName ? this.options.dataName : "response";
       }
       return {
         dataSource: this.dataSource,
