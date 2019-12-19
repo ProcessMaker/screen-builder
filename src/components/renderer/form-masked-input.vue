@@ -20,6 +20,7 @@
       class="form-control"
       :class="classList"
       type="text"
+      :maxlength="maxlength"
     >
     <template v-if="validator && validator.errorCount">
       <div class="invalid-feedback" v-for="(errors, index) in validator.errors.all()" :key="index">
@@ -81,6 +82,12 @@ export default {
     },
   },
   computed: {
+    maxlength() {
+      if (this.dataFormat === 'int' || this.dataFormat === 'float') {
+        return 15;
+      }
+      return null;
+    },
     componentConfig() {
       const config = componentTypesConfigs[this.dataFormat];
       return Object.assign({}, (config ? this[config] : {}) , this.$attrs);
