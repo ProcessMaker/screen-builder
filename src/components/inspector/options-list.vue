@@ -204,6 +204,8 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
+require('monaco-editor/esm/vs/editor/editor.main');
+
 
 export default {
   components: {
