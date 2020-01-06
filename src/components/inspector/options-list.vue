@@ -151,8 +151,8 @@
           />
         </div>
         <div slot="modal-footer">
-          <b-button @click="closePopup" class="btn btn-secondary">
-            {{ $t('CLOSE') }}
+          <b-button @click="closePopup" class="btn btn-secondary text-uppercase">
+            {{ $t('Close') }}
           </b-button>
         </div>
       </b-modal>
