@@ -264,6 +264,7 @@ import BootstrapVue from 'bootstrap-vue';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
+import { keyNameProperty } from '../form-control-common-properties';
 
 Vue.use(BootstrapVue);
 
@@ -434,6 +435,21 @@ export default {
     migrateConfig(config = this.config) {
       config.forEach(page => this.replaceFormText(page.items));
       config.forEach(page => this.migrateFormSubmit(page.items));
+      config.forEach(page => this.updateFieldNameValidation(page.items));
+    },
+    updateFieldNameValidation(items) {
+      items.forEach(item => {
+        if (item.inspector) {
+          item.inspector.forEach((inspector) => {
+            if (inspector.field === 'name') {
+              inspector.config = keyNameProperty.config;
+            }
+          });
+        }
+        if (item.items instanceof Array) {
+          this.replaceFormText(item.items);
+        }
+      });
     },
     replaceFormText(items) {
       items.forEach(item => {
