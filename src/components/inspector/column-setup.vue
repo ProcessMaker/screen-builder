@@ -142,8 +142,8 @@
             <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor" @change="jsonDataChange"/>
           </div>
           <div slot="modal-footer">
-            <b-button @click="closePopup" class="btn btn-secondary">
-              {{ $t('CLOSE') }}
+            <b-button @click="closePopup" class="btn btn-secondary text-uppercase">
+              {{ $t('Close') }}
             </b-button>
           </div>
         </b-modal>
@@ -438,7 +438,7 @@ export default {
       this.removeIndex = index;
       this.showRemoveWarning = true;
     },
-    
+
     expandEditor() {
       this.showPopup = true;
     },
@@ -461,7 +461,7 @@ export default {
   .editor-container {
     height: 70vh;
   }
-  
+
   .editor-container .editor {
     height: inherit;
   }
