@@ -19,7 +19,7 @@
       :name="name"
       class="form-control"
       :class="classList"
-      type="text"
+      :type="dataType"
       :maxlength="maxlength"
     >
     <template v-if="validator && validator.errorCount">
@@ -137,6 +137,13 @@ export default {
         'is-invalid': (this.validator && this.validator.errorCount) || this.error,
         [this.controlClass]: !!this.controlClass,
       };
+    },
+    dataType() {
+      if (this.dataFormat === 'password') {
+        return 'password';
+      }
+
+      return 'text';
     },
   },
   watch: {

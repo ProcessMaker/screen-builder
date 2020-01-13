@@ -3,13 +3,14 @@ import SelectDataTypeMask from './components/inspector/select-data-type-mask';
 const string = { value: 'string', content: 'Text' };
 const int = { value: 'int', content: 'Integer' };
 const currency = { value: 'currency', content: 'Currency' };
+const password = { value: 'password', content: 'Password' };
 const percentage = { value: 'percentage', content: 'Percentage' };
 const float = { value: 'float', content: 'Decimal' };
 const datetime = { value: 'datetime', content: 'Datetime' };
 const date = { value: 'date', content: 'Date' };
 const boolean = { value: 'boolean', content: 'Boolean' };
 
-const allOptions = [string, int, currency, percentage, float, datetime, date];
+const allOptions = [string, int, currency, percentage, float, datetime, date, password];
 const allOptionsWithoutDate = [string, int, float];
 
 function dataTypeFactory(options) {
