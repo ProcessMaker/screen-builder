@@ -85,24 +85,6 @@ export default [
         DataTypeProperty,
         DataFormatProperty,
         labelProperty,
-        {
-          type: 'FormMultiselect',
-          field: 'type',
-          config: {
-            label: 'Type',
-            name: 'Type',
-            helper: 'The type for this field',
-            options: [{
-              value: 'text',
-              content: 'Text',
-            },
-            {
-              value: 'password',
-              content: 'Password',
-            },
-            ],
-          },
-        },
         validationRulesProperty,
         placeholderProperty,
         helperTextProperty,
