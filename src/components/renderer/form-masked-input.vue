@@ -40,6 +40,8 @@ import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixi
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
+import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
+import moment from 'moment';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -72,6 +74,8 @@ export default {
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
     },
+    getUserDateFormat,
+    getUserDateTimeFormat,
     convertToData(value) {
       if (this.dataFormat === 'percentage') return value / 100;
       return value;
@@ -79,6 +83,16 @@ export default {
     convertFromData(value) {
       if (this.dataFormat === 'percentage') return value * 100;
       return value;
+    },
+    dateMask() {
+      return moment().format(this.getUserDateFormat()).toString()
+        .replace(/[am|pm]+/gi, 'SS')
+        .replace(/[0-9]/g, '#');
+    },
+    dateTimeMask() {
+      return moment().format(this.getUserDateTimeFormat()).toString()
+        .replace(/[am|pm]+/gi, 'SS')
+        .replace(/[0-9]/g, '#');
     },
   },
   computed: {
@@ -120,13 +134,13 @@ export default {
     getDateFormat() {
       return {
         masked: true,
-        mask: this.getUserConfig().date_mask || '##-##-####',
+        mask: this.getUserConfig().date_mask || this.dateMask(),
       };
     },
     getDatetimeFormat() {
       return {
         masked: true,
-        mask: this.getUserConfig().datetime_mask || '##-##-#### ##:##',
+        mask: this.getUserConfig().datetime_mask || this.dateTimeMask(),
       };
     },
     componentType() {
