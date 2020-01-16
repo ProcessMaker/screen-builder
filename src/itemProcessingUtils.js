@@ -40,7 +40,7 @@ function generateNewDate(dataFormat) {
   let timezone = moment.tz.guess();
 
   if (typeof ProcessMaker !== 'undefined' && ProcessMaker.user && ProcessMaker.user.timzone) {
-    timezone = ProcessMaker.user.timzone;
+    timezone = ProcessMaker.user.timezone;
   }
 
   const date = moment.tz(timezone);
