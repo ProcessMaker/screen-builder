@@ -57,6 +57,33 @@ const componentTypesConfigs = {
   percentage: 'getPercentageFormat',
 };
 
+function defaultMask()
+{
+  return {
+    date: ['##/##/####'],
+    dateTime: ['##/##/#### #:## SS', '##/##/#### ##:## SS'],
+  };
+}
+
+const masks = {
+  'MM/DD/YYYY': defaultMask(),
+  'MM/DD/YYYY h:mm A': defaultMask(),
+  'DD/MM/YYYY': defaultMask(),
+  'DD/MM/YYYY HH:mm': {
+    date: ['##/##/####'],
+    dateTime: ['##/##/#### ##:##'],
+  },
+  'YYYY/MM/DD': {
+    date: ['####/##/##'],
+    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
+  },
+  'YYYY/MM/DD HH:mm': {
+    date: ['####/##/##'],
+    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
+  },
+  'default': defaultMask(),
+};
+
 export default {
   inheritAttrs: false,
   components: { TheMask, Inputmasked },
@@ -82,17 +109,15 @@ export default {
     },
     convertFromData(value) {
       if (this.dataFormat === 'percentage') return value * 100;
+      if (this.dataFormat === 'datetime') return moment(value).format(this.getUserDateTimeFormat());
+      if (this.dataFormat === 'date') return moment(value).format(this.getUserDateFormat());
       return value;
     },
-    dateMask() {
-      return moment().format(this.getUserDateFormat()).toString()
-        .replace(/[am|pm]+/gi, 'SS')
-        .replace(/[0-9]/g, '#');
-    },
-    dateTimeMask() {
-      return moment().format(this.getUserDateTimeFormat()).toString()
-        .replace(/[am|pm]+/gi, 'SS')
-        .replace(/[0-9]/g, '#');
+    getMask() {
+      const format = this.dataFormat === 'date' ? this.getUserDateFormat() : this.getUserDateTimeFormat();
+      return typeof masks[format] === 'undefined'
+        ? masks['default']
+        : masks[format];
     },
   },
   computed: {
@@ -134,13 +159,13 @@ export default {
     getDateFormat() {
       return {
         masked: true,
-        mask: this.getUserConfig().date_mask || this.dateMask(),
+        mask: this.getUserConfig().date_mask || this.getMask().date,
       };
     },
     getDatetimeFormat() {
       return {
         masked: true,
-        mask: this.getUserConfig().datetime_mask || this.dateTimeMask(),
+        mask: this.getUserConfig().datetime_mask || this.getMask().dateTime,
       };
     },
     componentType() {
