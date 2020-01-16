@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 function processFormItem(item) {
   if (item.component !== 'FormMultiColumn') {
     return item;
@@ -28,8 +30,24 @@ export function getDefaultValueForItem(item) {
   }
 
   if (item.component === 'FormDatePicker') {
-    const date = new Date();
-    defaultValue = date.toISOString();
+    defaultValue = generateNewDate(item.config.dataFormat);
   }
+
   return defaultValue;
+}
+
+function generateNewDate(dataFormat) {
+  let timezone = moment.tz.guess();
+
+  if (typeof ProcessMaker !== 'undefined' && ProcessMaker.user && ProcessMaker.user.timezone) {
+    timezone = ProcessMaker.user.timezone;
+  }
+
+  const date = moment.tz(timezone);
+
+  if (dataFormat !== 'datetime') {
+    date.startOf('day');
+  }
+
+  return date.toISOString();
 }
