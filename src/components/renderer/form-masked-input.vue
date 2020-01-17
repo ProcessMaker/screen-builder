@@ -68,6 +68,10 @@ function defaultMask()
 const masks = {
   'MM/DD/YYYY': defaultMask(),
   'MM/DD/YYYY h:mm A': defaultMask(),
+  'MM/DD/YYYY HH:mm': {
+    date: ['##/##/####'],
+    dateTime: ['##/##/#### ##:##'],
+  },
   'DD/MM/YYYY': defaultMask(),
   'DD/MM/YYYY HH:mm': {
     date: ['##/##/####'],
@@ -81,7 +85,6 @@ const masks = {
     date: ['####/##/##'],
     dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
   },
-  'default': defaultMask(),
 };
 
 export default {
@@ -116,7 +119,7 @@ export default {
     getMask() {
       const format = this.dataFormat === 'date' ? this.getUserDateFormat() : this.getUserDateTimeFormat();
       return typeof masks[format] === 'undefined'
-        ? masks['default']
+        ? defaultMask()
         : masks[format];
     },
   },
