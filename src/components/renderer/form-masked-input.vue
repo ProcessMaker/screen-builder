@@ -57,22 +57,19 @@ const componentTypesConfigs = {
   percentage: 'getPercentageFormat',
 };
 
-function defaultMask()
-{
-  return {
-    date: ['##/##/####'],
-    dateTime: ['##/##/#### #:## SS', '##/##/#### ##:## SS'],
-  };
-}
+const defaultMask = {
+  date: ['##/##/####'],
+  dateTime: ['##/##/#### #:## SS', '##/##/#### ##:## SS'],
+};
 
 const masks = {
-  'MM/DD/YYYY': defaultMask(),
-  'MM/DD/YYYY h:mm A': defaultMask(),
+  'MM/DD/YYYY': defaultMask,
+  'MM/DD/YYYY h:mm A': defaultMask,
   'MM/DD/YYYY HH:mm': {
     date: ['##/##/####'],
     dateTime: ['##/##/#### ##:##'],
   },
-  'DD/MM/YYYY': defaultMask(),
+  'DD/MM/YYYY': defaultMask,
   'DD/MM/YYYY HH:mm': {
     date: ['##/##/####'],
     dateTime: ['##/##/#### ##:##'],
@@ -119,7 +116,7 @@ export default {
     getMask() {
       const format = this.dataFormat === 'date' ? this.getUserDateFormat() : this.getUserDateTimeFormat();
       return typeof masks[format] === 'undefined'
-        ? defaultMask()
+        ? defaultMask
         : masks[format];
     },
   },
