@@ -19,6 +19,34 @@ Vue.use(ScreenBuilder);
 
 const store = new Vuex.Store({ modules: {} });
 
+window.ProcessMaker = {
+  apiClient: {
+    get(url) {
+      return new Promise((resolve) => {
+        const exampleScreen = {
+          id: 1,
+          screen_category_id: 1,
+          title: 'Sub screen example',
+          description: 'A sub screen example',
+          type: 'FORM',
+          config: [],
+          computed: [],
+          watchers: [],
+          custom_css: null,
+          status: 'ACTIVE',
+        };
+        if (url === 'screens/1') {
+          resolve({ data: exampleScreen });
+        } else if (url.substr(0, 7) === 'screens') {
+          resolve({data:{
+            data: [exampleScreen],
+          }});
+        }
+      });
+    },
+  },
+};
+
 new Vue({
   store,
   render: h => h(App),
