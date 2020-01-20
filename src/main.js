@@ -29,7 +29,36 @@ window.ProcessMaker = {
           title: 'Sub screen example',
           description: 'A sub screen example',
           type: 'FORM',
-          config: [],
+          config: [
+            {
+              name: 'Sub screen example',
+              items: [
+                {
+                  'label': 'Line Input',
+                  'config': {
+                    'icon': 'far fa-square',
+                    'name': 'amount',
+                    'type': 'text',
+                    'label': 'Amount (USD)',
+                    'helper': null,
+                    'dataMask': {
+                      'code': 'USD',
+                      'name': 'US Dollar',
+                      'format': '#,###.##',
+                      'symbol': '$',
+                    },
+                    'dataFormat': 'currency',
+                    'validation': null,
+                    'placeholder': null,
+                  },
+                  'component': 'FormInput',
+                  'inspector': [],
+                  'editor-control': 'FormInput',
+                  'editor-component': 'FormInput',
+                },
+              ],
+            },
+          ],
           computed: [],
           watchers: [],
           custom_css: null,
