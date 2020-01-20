@@ -10,6 +10,7 @@ export default [
       'readonly',
       'disabled',
       'initiallyChecked',
+      'screen',
     ],
     open: true,
   },

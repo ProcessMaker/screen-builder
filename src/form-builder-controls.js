@@ -525,7 +525,7 @@ export default [
       inspector: [
         {
           type: 'FormInput',
-          field: 'data',
+          field: 'name',
           config: {
             label: 'Data variable',
             name: 'DataVariable',
