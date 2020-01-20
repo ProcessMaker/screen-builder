@@ -1,19 +1,73 @@
 <template>
-  <div class="form-group">
-    hello world
-  </div>
+  <vue-form-renderer
+    class="form-nested-screen"
+    :placeholder="placeholder"
+    v-model="localData"
+    :config="config"
+    mode="preview"
+    :computed="computed"
+    :custom-css="customCSS"
+    :watchers="watchers"
+    v-on:css-errors="cssErrors = $event"
+  />
 </template>
 
 <script>
-
+const defaultConfig = [
+  {
+    name: 'empty',
+    items: [],
+  },
+];
 export default {
-  props: ['id'],
+  props: ['data', 'screen'],
+  data() {
+    return {
+      api: 'screens',
+      localData: {},
+      config: defaultConfig,
+      computed: [],
+      customCSS: null,
+      watchers: [],
+    };
+  },
   computed: {
+    placeholder() {
+      return this.screen ? '' : this.$t('Select a screen to nest');
+    },
   },
   methods: {
+    loadScreen(id) {
+      if (id) {
+        window.ProcessMaker.apiClient
+          .get(this.api + '/' + id)
+          .then(response => {
+            this.config = response.data.config;
+            this.computed = response.data.computed;
+            this.customCSS = response.data.custom_css;
+            this.watchers = response.data.watchers;
+          });
+      } else {
+        this.config = defaultConfig;
+        this.computed = [];
+        this.customCSS = null;
+        this.watchers = [];
+      }
+    },
+  },
+  watch: {
+    screen(screen) {
+      this.loadScreen(screen);
+    },
+  },
+  mounted() {
+    this.loadScreen(this.screen);
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  .prevent-interaction.form-nested-screen::after {
+    content: attr(placeholder);
+  }
 </style>
