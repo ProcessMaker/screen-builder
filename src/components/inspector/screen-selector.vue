@@ -1,0 +1,51 @@
+<template>
+  <div>
+    <label class="typo__label">{{ label }}</label>
+
+    <multiselect
+      v-bind="$attrs"
+      v-on="$listeners"
+      :placeholder="$t('Select...')"
+      :show-labels="false"
+      :options="options.map(option => option.value)"
+      :custom-label="getLabelFromValue"
+    >
+      <template slot="noResult">
+        {{ $t('No elements found. Consider changing the search query.') }}
+      </template>
+      <template slot="noOptions">
+        {{ $t('No Data Available') }}
+      </template>
+    </multiselect>
+    <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+    @import "~vue-multiselect/dist/vue-multiselect.min.css";
+</style>
+
+<script>
+import Multiselect from 'vue-multiselect';
+
+export default {
+  inheritAttrs: false,
+  props: ['label', 'helper', 'formConfig', 'currentPage'],
+  methods: {
+    getLabelFromValue(value) {
+      const selectedOption = this.options.find(option => option.value == value);
+      return selectedOption ? selectedOption.content : null;
+    },
+  },
+  components: {
+    Multiselect,
+  },
+  computed: {
+    options() {
+      return Object.keys(this.formConfig)
+        .filter(page => page != this.currentPage)
+        .map(page => ({ value: page, content: this.formConfig[page].name }));
+    },
+  },
+};
+</script>
