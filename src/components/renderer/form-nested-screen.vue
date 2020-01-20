@@ -2,7 +2,7 @@
   <vue-form-renderer
     class="form-nested-screen"
     :placeholder="placeholder"
-    v-model="localData"
+    v-model="data"
     :config="config"
     mode="preview"
     :computed="computed"
@@ -32,6 +32,20 @@ export default {
     };
   },
   computed: {
+    data: {
+      get() {
+        return !this.validationData || this.name ? this.localData : this.validationData;
+      },
+      set(data) {
+        if (this.name) {
+          this.$emit('input', data);
+        } else {
+          Object.keys(data).forEach((variable) => {
+            this.$set(this.validationData, variable, data[variable]);
+          });
+        }
+      },
+    },
     placeholder() {
       return this.screen ? '' : this.$t('Select a screen to nest');
     },
@@ -59,15 +73,11 @@ export default {
     screen(screen) {
       this.loadScreen(screen);
     },
-    localData: {
+    value: {
       deep: true,
-      handler(data) {
+      handler() {
         if (this.name) {
-          this.$emit('input', this.localData);
-        } else {
-          Object.keys(data).forEach((variable) => {
-            this.$set(this.validationData, variable, data[variable]);
-          });
+          this.$set(this, 'localData', this.value);
         }
       },
     },

@@ -37,7 +37,7 @@ window.ProcessMaker = {
                   'config': {
                     'icon': 'far fa-square',
                     'label': 'First name',
-                    'name': 'firsname',
+                    'name': 'firstname',
                     'placeholder': '',
                     'validation': '',
                     'helper': null,
