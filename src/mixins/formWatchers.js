@@ -10,6 +10,7 @@ const globalObject = typeof window === 'undefined'
 export default {
   data() {
     return {
+      watchersQueue: [],
       watchers_config: {
         api: {
           execute: null,
@@ -43,9 +44,28 @@ export default {
      */
     checkWatcher(watcher, data) {
       if (!isEqual(this.watching[watcher.watching], get(data, watcher.watching))) {
+        this.queueWatcher(watcher, data);
+      }
+      this.watching[watcher.watching] = JSON.parse(JSON.stringify(get(data, watcher.watching)));
+    },
+    /**
+     * Queue a watcher
+     * @param {object} watcher 
+     * @param {object} data 
+     */
+    queueWatcher(watcher, data) {
+      this.watchersQueue.indexOf(watcher) === -1 ? this.watchersQueue.push(watcher) : null;
+      this.processWatchersQueue(data);
+    },
+    /**
+     * Process the watchers queue
+     * @param {object} data 
+     */
+    processWatchersQueue(data) {
+      while (this.watchersQueue.length) {
+        const watcher = this.watchersQueue.shift();
         this.callWatcher(watcher, data);
       }
-      this.watching[watcher.watching] = data[watcher.watching];
     },
     /**
      * Call a watcher
@@ -78,8 +98,8 @@ export default {
       }
     },
     loadWatcherResponse(watcherUid, response) {
+      const watcher = this.watchers.find(watcher => watcher.uid === watcherUid);
       new Promise((resolve, exception) => {
-        const watcher = this.watchers.find(watcher => watcher.uid === watcherUid);
         if (response.exception) {
           exception(response.message);
         } else if (watcher) {
@@ -89,19 +109,23 @@ export default {
               if (response.exception) {
                 exception(response.message);
               } else {
-                resolve({watcher, response});
+                resolve({response});
               }
             });
           } else {
-            resolve({watcher, response});
+            resolve({response});
           }
         }
-      }).then(({watcher, response}) => {
+      }).then(({response}) => {
         this.$set(this.transientData, watcher.output_variable, response.output);
         this.$refs.watchersSynchronous.hide(watcher.name);
       }).catch(error => {
-        if (this.$el.offsetParent) {
-          this.$refs.watchersSynchronous.error(error);
+        if (watcher.synchronous) {
+          if (this.$el.offsetParent) {
+            this.$refs.watchersSynchronous.error(error);
+          }
+        } else {
+          globalObject.ProcessMaker.alert(error, 'danger');
         }
       });
     },
@@ -144,7 +168,7 @@ export default {
         },
       );
     }
-    this.callWatcher = debounce(this.callWatcher, 1000);
+    this.processWatchersQueue = debounce(this.processWatchersQueue, 1000);
   },
   destroyed() {
     this.cleanEchoListeners();
