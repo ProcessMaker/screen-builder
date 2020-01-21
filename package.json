@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/screen-builder",
-  "version": "0.21.0",
+  "version": "0.21.3",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -21,13 +21,15 @@
   "dependencies": {
     "inputmask": "^5.0.0",
     "lodash": "latest",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.27",
     "vue-loader": "latest",
     "vue-the-mask": "^0.11.1"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.6.1",
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "0.12.8",
+    "@processmaker/vue-form-elements": "^0.13.1",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-plugin-e2e-cypress": "^4.0.3",
     "@vue/cli-plugin-eslint": "^3.6.0",
@@ -63,7 +65,7 @@
   },
   "peerDependencies": {
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "0.12.8",
+    "@processmaker/vue-form-elements": "^0.13.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.14",
     "i18next": "^15.0.8",

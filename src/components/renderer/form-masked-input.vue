@@ -40,6 +40,8 @@ import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixi
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
+import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
+import moment from 'moment';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -53,6 +55,33 @@ const componentTypesConfigs = {
   date: 'getDateFormat',
   datetime: 'getDatetimeFormat',
   percentage: 'getPercentageFormat',
+};
+
+const defaultMask = {
+  date: ['##/##/####'],
+  dateTime: ['##/##/#### #:## SS', '##/##/#### ##:## SS'],
+};
+
+const masks = {
+  'MM/DD/YYYY': defaultMask,
+  'MM/DD/YYYY h:mm A': defaultMask,
+  'MM/DD/YYYY HH:mm': {
+    date: ['##/##/####'],
+    dateTime: ['##/##/#### ##:##'],
+  },
+  'DD/MM/YYYY': defaultMask,
+  'DD/MM/YYYY HH:mm': {
+    date: ['##/##/####'],
+    dateTime: ['##/##/#### ##:##'],
+  },
+  'YYYY/MM/DD': {
+    date: ['####/##/##'],
+    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
+  },
+  'YYYY/MM/DD HH:mm': {
+    date: ['####/##/##'],
+    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
+  },
 };
 
 export default {
@@ -72,13 +101,23 @@ export default {
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
     },
+    getUserDateFormat,
+    getUserDateTimeFormat,
     convertToData(value) {
       if (this.dataFormat === 'percentage') return value / 100;
       return value;
     },
     convertFromData(value) {
       if (this.dataFormat === 'percentage') return value * 100;
+      if (this.dataFormat === 'datetime') return moment(value).format(this.getUserDateTimeFormat());
+      if (this.dataFormat === 'date') return moment(value).format(this.getUserDateFormat());
       return value;
+    },
+    getMask() {
+      const format = this.dataFormat === 'date' ? this.getUserDateFormat() : this.getUserDateTimeFormat();
+      return typeof masks[format] === 'undefined'
+        ? defaultMask
+        : masks[format];
     },
   },
   computed: {
@@ -120,13 +159,13 @@ export default {
     getDateFormat() {
       return {
         masked: true,
-        mask: this.getUserConfig().date_mask || '##-##-####',
+        mask: this.getUserConfig().date_mask || this.getMask().date,
       };
     },
     getDatetimeFormat() {
       return {
         masked: true,
-        mask: this.getUserConfig().datetime_mask || '##-##-#### ##:##',
+        mask: this.getUserConfig().datetime_mask || this.getMask().dateTime,
       };
     },
     componentType() {
