@@ -13,6 +13,7 @@ export default {
       watchers_config: {
         api: {
           execute: null,
+          execution: null,
         },
       },
       watching: {},
@@ -77,17 +78,32 @@ export default {
       }
     },
     loadWatcherResponse(watcherUid, response) {
-      const watcher = this.watchers.find(watcher => watcher.uid = watcherUid);
-      if (response.exception) {
-        // change to error popup
-        if (this.$el.offsetParent) {
-          this.$refs.watchersSynchronous.error();
+      new Promise((resolve, exception) => {
+        const watcher = this.watchers.find(watcher => watcher.uid === watcherUid);
+        if (response.exception) {
+          exception(response.message);
+        } else if (watcher) {
+          if (response.key) {
+            globalObject.window.ProcessMaker.apiClient.get(this.watchers_config.api.execution.replace(/execution_key/, response.key)).then((result) => {
+              const response = result.data;
+              if (response.exception) {
+                exception(response.message);
+              } else {
+                resolve({watcher, response});
+              }
+            });
+          } else {
+            resolve({watcher, response});
+          }
         }
-      } else if (watcher) {
+      }).then(({watcher, response}) => {
         this.$set(this.transientData, watcher.output_variable, response.output);
-        // unlock screen
-        this.$refs.watchersSynchronous.hide();
-      }
+        this.$refs.watchersSynchronous.hide(watcher.name);
+      }).catch(error => {
+        if (this.$el.offsetParent) {
+          this.$refs.watchersSynchronous.error(error);
+        }
+      });
     },
     /**
      * Add a Echo listener
