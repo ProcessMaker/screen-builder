@@ -265,6 +265,7 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
+import VariableNameGenerator from '@/components/VariableNameGenerator';
 
 Vue.use(BootstrapVue);
 
@@ -338,6 +339,8 @@ export default {
   data() {
     const config = this.initialConfig || defaultConfig;
     this.migrateConfig(config);
+    const generator = new VariableNameGenerator();
+    let variables = generator.GetVariableNames(config);
 
     if (this.title && config[0].name === 'Default') {
       config[0].name = this.title;
@@ -364,6 +367,8 @@ export default {
       showDesign: false,
       filterQuery: '',
       accordions,
+      variables,
+      generator,
     };
   },
   computed: {
@@ -654,6 +659,10 @@ export default {
         copy['items'] = JSON.parse(JSON.stringify(control.items));
         copy.container = true;
       }
+
+      //Generate Variable Name
+      [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control']);
+
       return copy;
     },
   },
