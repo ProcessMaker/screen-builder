@@ -661,7 +661,7 @@ export default {
       }
 
       //Generate Variable Name
-      [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control']);
+      [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control'] ? copy['editor-control'] :  copy['component']);
 
       return copy;
     },
