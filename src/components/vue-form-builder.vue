@@ -441,8 +441,8 @@ export default {
       items.forEach(item => {
         if (item.inspector) {
           item.inspector.forEach((inspector) => {
-            if (inspector.field === 'name') {
-              inspector.config = keyNameProperty.config;
+            if (inspector.field === 'name' && 'validation' in inspector.config) {
+              inspector.config.validation = keyNameProperty.config.validation;
             }
           });
         }
