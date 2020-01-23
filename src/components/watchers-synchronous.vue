@@ -29,11 +29,12 @@
         <i class="fas fa-sad-tear fa-10x"/>
       </div>
       <h3 class="display-6">{{ $t('Something has gone wrong.') }}</h3>
-      <p class="lead">{{ $t("Unfortunately this screen has had an issue. We've notified the administrator.") }}</p>
+      <p class="lead">{{ $t("Unfortunately this screen has had an issue. We've notified the administrator.") }} <a href="javascript:void(0)" @click="showMessage=!showMessage"><i class="fas fa-info-circle"></i></a></p>
+      <small v-if="showMessage" class="text-danger text-left small">{{ errorMessage }}</small>
     </div>
 
     <div slot="modal-footer" class="w-100 text-right">
-      <button type="button" class="btn btn-outline-secondary" @click="hide" v-if="display === 'error'">{{ $t('Close') }}</button>
+      <button type="button" class="btn btn-outline-secondary" @click="hide(-1)" v-if="display === 'error'">{{ $t('Close') }}</button>
     </div>
 
   </b-modal>
@@ -46,27 +47,36 @@ export default {
   data() {
     return {
       display:'running',
-      variable: '',
+      errorMessage: '',
+      showMessage: false,
+      variables: [],
     };
   },
   computed: {
     message() {
-      return this.$t('{{variable}} is running.', {variable: this.variable});
+      return this.$t('{{variable}} running.', {variable: this.variables.join(', ')});
     },
   },
   methods: {
     run() {
       this.display = 'running';
     },
-    error() {
+    error(message) {
       this.display = 'error';
+      this.errorMessage = message;
     },
     show(variableName) {
-      this.variable = variableName;
+      (this.variables.indexOf(variableName) === -1) ? this.variables.push(variableName) : null;
+      this.display = 'running';
+      this.errorMessage = '';
+      this.showMessage = false;
       this.$refs.modal.show();
     },
-    hide() {
-      this.$refs.modal.hide();
+    hide(variableName) {
+      (variableName === -1) ? this.variables.splice(0) : null;
+      const index = this.variables.indexOf(variableName);
+      index > -1 ? this.variables.splice(index, 1) : null;
+      this.variables.length === 0 ? this.$refs.modal.hide() : null;
     },
   },
 };
