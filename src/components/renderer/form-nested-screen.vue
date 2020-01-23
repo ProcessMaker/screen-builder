@@ -77,7 +77,7 @@ export default {
       deep: true,
       handler() {
         if (this.name) {
-          this.$set(this, 'localData', this.value);
+          this.$set(this, 'localData', this.value || {});
         }
       },
     },
