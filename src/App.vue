@@ -33,7 +33,7 @@
             <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2" :title="$t('Load Screen')">
               <i class="fas fa-upload mr-1"/>
             </b-btn>
-            <button type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
+            <button v-b-modal.preview-config type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
           </b-col>
           <b-modal
             ref="uploadmodal"
@@ -158,6 +158,9 @@
     <computed-properties v-model="computed" ref="computedProperties"/>
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
     <watchers-popup v-model="watchers" ref="watchersPopup"/>
+    <b-modal id="preview-config" size="xl" title="Screen Config JSON Preview">
+      <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"></monaco-editor>
+    </b-modal>
   </b-container>
 </template>
 
@@ -265,6 +268,13 @@ export default {
         return false;
       }
     },
+    previewConfig: {
+      get() {
+        return JSON.stringify(this.config);
+      },
+      set(val) {
+      }
+    },
     displayBuilder() {
       return this.mode === 'editor';
     },
@@ -309,6 +319,9 @@ export default {
     });
   },
   methods: {
+    editorDidMount(editor) {
+      editor.getAction('editor.action.formatDocument').run();
+    },
     getValidationErrorsForItems(items, page) {
       const validationErrors = [];
 
