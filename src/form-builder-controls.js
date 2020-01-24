@@ -28,6 +28,7 @@ import {
   toggleStyleProperty,
   buttonVariantStyleProperty,
   disabledProperty,
+  defaultValueProperty,
 } from './form-control-common-properties';
 
 export default [
@@ -91,6 +92,7 @@ export default [
         readonlyProperty,
         colorProperty,
         bgcolorProperty,
+        defaultValueProperty,
       ],
     },
   },
@@ -145,6 +147,7 @@ export default [
         readonlyProperty,
         colorProperty,
         bgcolorProperty,
+        defaultValueProperty,
       ],
     },
   },
@@ -194,6 +197,7 @@ export default [
         },
         colorProperty,
         bgcolorProperty,
+        defaultValueProperty,
       ],
     },
   },
@@ -263,6 +267,7 @@ export default [
         colorProperty,
         bgcolorProperty,
         disabledProperty,
+        defaultValueProperty,
       ],
     },
   },
