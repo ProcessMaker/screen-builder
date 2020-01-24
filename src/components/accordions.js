@@ -48,7 +48,7 @@ export default [
   },
   {
     name: 'Advanced',
-    fields: ['conditionalHide', 'customCssSelector'],
+    fields: ['conditionalHide', 'customCssSelector', 'defaultValue'],
     open: false,
   },
 ];
