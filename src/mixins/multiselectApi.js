@@ -27,6 +27,7 @@ export default {
   },
   data() {
     return {
+      pmql: null,
       options: [],
       selectedOption: null,
     };
@@ -47,8 +48,9 @@ export default {
       this.$emit('input', this.storeId ? get(value, this.trackBy) : value);
     },
     loadOptions(filter) {
+      const pmql = this.pmql;
       window.ProcessMaker.apiClient
-        .get(this.api, { params: { filter } })
+        .get(this.api, { params: { filter, pmql } })
         .then(response => {
           this.options = response.data.data || [];
         });
