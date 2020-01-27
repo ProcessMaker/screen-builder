@@ -48,7 +48,7 @@ export default {
     },
     loadOptions(filter) {
       window.ProcessMaker.apiClient
-        .get(this.api + (typeof filter === 'string' ? '?filter=' + filter : ''))
+        .get(this.api, { params: { filter } })
         .then(response => {
           this.options = response.data.data || [];
         });
