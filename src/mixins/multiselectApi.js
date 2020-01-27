@@ -55,7 +55,7 @@ export default {
     },
     loadSelected(value) {
       window.ProcessMaker.apiClient
-        .get(this.api + '/' + value)
+        .get(`${this.api}/${value}`)
         .then(response => {
           this.selectedOption = response.data;
         });
