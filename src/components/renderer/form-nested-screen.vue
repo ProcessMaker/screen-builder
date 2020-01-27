@@ -8,7 +8,7 @@
     :computed="computed"
     :custom-css="customCSS"
     :watchers="watchers"
-    v-on:css-errors="cssErrors = $event"
+    @css-errors="cssErrors = $event"
   />
 </template>
 
