@@ -538,6 +538,7 @@ export default [
           field: 'screen',
           config: {
             label: 'Screen',
+            name: 'SelectScreen',
             helper: 'Select a screen',
           },
         },

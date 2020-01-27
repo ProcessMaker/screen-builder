@@ -21,12 +21,13 @@
         <b-card-body no-body class="p-0 overflow-auto">
           <draggable
             id="controls"
+            data-cy="controls"
             v-model="filteredControls"
             :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
             :clone="cloneControl"
             class="controls list-group w-auto list-group-flush"
           >
-            <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
+            <b-list-group-item v-for="(element, index) in filteredControls" :key="index" :data-cy="'controls-' + element.component">
               <i v-if="element.config.icon" :class="element.config.icon"/>
               {{ $t(element.label) }}
             </b-list-group-item>
@@ -82,7 +83,7 @@
       </b-input-group>
 
 
-      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
+      <div v-if="isCurrentPageEmpty" data-cy="screen-drop-zone"  class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
         {{ $t('Drag an element here') }}
       </div>
 
@@ -103,7 +104,7 @@
           :key="index"
           @click="inspect(element)"
         >
-          <div v-if="element.container" @click="inspect(element)" class="card">
+          <div v-if="element.container" @click="inspect(element)" class="card" data-cy="screen-element-container">
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
@@ -133,7 +134,7 @@
             />
           </div>
 
-          <div v-else class="card">
+          <div v-else class="card" data-cy="screen-element-container">
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
@@ -186,6 +187,7 @@
             <b-collapse :key="`${accordionName(accordion)}-collapse`" :id="accordionName(accordion)" v-model="accordion.open">
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
+                :data-cy="'inspector-' + item.config.name"
                 :formConfig="config"
                 :currentPage="currentPage"
                 :key="index"
@@ -441,7 +443,7 @@ export default {
       items.forEach(item => {
         if (item.inspector) {
           item.inspector.forEach((inspector) => {
-            if (inspector.field === 'name' && 'validation' in inspector.config) {
+            if (inspector.field === 'name' && 'validation' in inspector.config && inspector.config.name !== 'DataVariable') {
               inspector.config.validation = keyNameProperty.config.validation;
             }
           });
