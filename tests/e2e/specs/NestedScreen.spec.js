@@ -1,4 +1,4 @@
-describe('Test Nested screen', () => {
+describe('Nested screen', () => {
   it('With a variable defined', () => {
     cy.visit('/');
     cy.get('#controls > div:contains("Nested Screen")').drag('#screen-container div:contains("Drag an element here")', 'bottom');
