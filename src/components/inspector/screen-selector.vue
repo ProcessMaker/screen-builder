@@ -37,6 +37,15 @@ export default {
       type: String,
       default: 'screens',
     },
+    builder: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      pmql: this.builder.screen ? 'id!=' + this.builder.screen.id : null,
+    };
   },
 };
 </script>

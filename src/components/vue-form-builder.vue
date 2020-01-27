@@ -188,6 +188,7 @@
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :data-cy="'inspector-' + item.config.name"
+                :builder="builder"
                 :formConfig="config"
                 :currentPage="currentPage"
                 :key="index"
@@ -321,6 +322,9 @@ export default {
       type: String,
       default: formTypes.form,
     },
+    screen: {
+      type: Object,
+    },
   },
   mixins: [HasColorProperty],
   components: {
@@ -369,6 +373,9 @@ export default {
     };
   },
   computed: {
+    builder() {
+      return this;
+    },
     canUndo() {
       return this.$store.getters[`page-${this.currentPage}/canUndo`];
     },
