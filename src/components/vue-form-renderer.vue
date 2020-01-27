@@ -21,18 +21,20 @@
         />
 
         <div v-else :id="element.config.name ? element.config.name : undefined" :selector="element.config.customCssSelector">
-          <component
-            :class="elementCssClass(element)"
-            ref="elements"
-            :validationData="transientData"
-            v-model="model[getValidPath(element.config.name)]"
-            @submit="submit"
-            @pageNavigate="pageNavigate"
-            :name="element.config.name !== undefined ? element.config.name : null"
-            v-bind="element.config"
-            :is="element.component"
-            :disabled="element.config.interactive || element.config.disabled"
-          />
+          <keep-alive>
+            <component
+              :class="elementCssClass(element)"
+              ref="elements"
+              :validationData="transientData"
+              v-model="model[getValidPath(element.config.name)]"
+              @submit="submit"
+              @pageNavigate="pageNavigate"
+              :name="element.config.name !== undefined ? element.config.name : null"
+              v-bind="element.config"
+              :is="element.component"
+              :disabled="element.config.interactive || element.config.disabled"
+            />
+          </keep-alive>
         </div>
       </div>
       <custom-css>{{ customCssWrapped }}</custom-css>
