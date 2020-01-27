@@ -3,7 +3,7 @@
     class="form-nested-screen"
     :placeholder="placeholder"
     v-model="data"
-    :config="config"
+    :config="validatedConfig"
     mode="preview"
     :computed="computed"
     :custom-css="customCSS"
@@ -32,6 +32,9 @@ export default {
     };
   },
   computed: {
+    validatedConfig() {
+      return this.config && this.config[0] ? this.config : defaultConfig;
+    },
     data: {
       get() {
         return !this.validationData || this.name ? this.localData : this.validationData;
