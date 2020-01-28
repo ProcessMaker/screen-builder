@@ -6,8 +6,6 @@
     </div>
     <div v-if="showCard" class="card mb-2">
       <div class="card-body p-2">
-        <!-- <b-form-select v-model="selected" :options="options"></b-form-select> -->
-        <!-- TODO: USE MULITSELECT instead of a basic form select -->
         <multiselect
           label="content"
           track-by="value"
@@ -15,54 +13,54 @@
           :placeholder="$t('Select...')"
           :show-labels="false"
           :options="options"
+          :class="fieldClass"
         >
-          <template slot="noResult">
-            {{ $t('No elements found. Consider changing the search query.') }}
-          </template>
-          <template slot="noOptions">
-            {{ $t('No Data Available') }}
-          </template>
+          <template slot="noResult">{{ $t('No elements found. Consider changing the search query.') }}</template>
+          <template slot="noOptions">{{ $t('No Data Available') }}</template>
         </multiselect>
+        <div v-if="optionError" class="invalid-feedback d-block">
+          <div>{{ optionError }}</div>
+        </div>
       </div>
       <div class="card-footer text-right p-2">
-        <b-button @click="hideCard">{{ $t('Cancel') }}</b-button>
-        <b-button @click="saveRule">{{ $t('Save') }}</b-button>
+        <b-button @click="hideCard" variant="outline-secondary" size="sm" class="mr-2">{{ $t('Cancel') }}</b-button>
+        <b-button @click="saveRule" :disabled="disableBtn" variant="secondary" size="sm">{{ $t('Save') }}</b-button>
       </div>
     </div>
     <p v-if="!rules.length && !showCard">{{ $t('No validation rule(s)') }}</p>
     <div v-if="rules.length">
       <div role="tablist">
         <b-card v-for="(rule, index) in rules" class="mb-2" :key="index">
+          <div v-if="showDeleteConfirmCard && removeIndex == index" class="card mb-3 bg-danger text-white text-right">
+            <div class="card-body p-2">
+              {{ confirmMessage }}
+            </div>
+            <div class="card-footer text-right p-2">
+              <button type="button" class="btn btn-sm btn-light mr-2" @click="hideDeleteConfirmCard">
+                {{ $t('Cancel') }}
+              </button>
+              <button type="button" class="btn btn-sm btn-danger" @click="deleteRule(index)">
+                {{ $t('Delete') }}
+              </button>
+            </div>
+          </div>
           <b-card-header header-tag="header" class="p-0" role="tab">
             <div class="p-1 d-flex justify-content-between align-items-center">
               {{ rule.content }}
               <div class="actions">
-                <b-button variant="link" class="p-0 mr-1" v-if="rule.configs.length" v-b-toggle="rule.content"><i class="fas fa-cogs fa-fw"/></b-button>
-                <b-button variant="link" class="p-0" @click="deleteRule(index)"><i class="fas fa-trash-alt fa-fw"/></b-button>
+                <b-button variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" v-b-toggle="rule.content"><i class="fas fa-cog fa-fw text-secondary"/></b-button>
+                <b-button variant="link" class="p-0" @click="confirmDelete(index)"><i class="fas fa-trash-alt fa-fw text-secondary"/></b-button>
               </div>
             </div>
           </b-card-header>
-          <b-collapse :id="rule.content" :accordion="rule.content" role="tabpanel">
+          <b-collapse :id="rule.content" :accordion="rule.content" :visible="rule.visible" role="tabpanel">
             <b-card-body class="p-2"> 
-              <div v-for="(config, index) in rule.configs" :key="index" class="mb-2">
+              <div v-for="config in rule.configs" :key="config.label" class="mb-2">
                 <div v-if="config.type === 'FormInput'">
-                  <label>
-                    {{ config.label }} 
-                  </label>
-                  <!-- TODO: Setup a way to configure validations that needs additional inputs. Currently trying to import vue-form-elements -->
-                  <form-input v-model="config.value" class="form-control" :validation="config.validation"/>
-                  <small class="form-text text-muted">{{ config.helper }}</small>
+                  <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
                 </div>
-                <label v-if="config.type === 'FormCheckBox'">
-                  <b-form-checkbox   
-                    :id="config.field" 
-                    :name="config.field" 
-                    v-model="config.value"
-                  >
-                    {{ config.label }} 
-                  </b-form-checkbox>
-                </label>
               </div>
+              <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
             </b-card-body>
           </b-collapse>
         </b-card>
@@ -74,65 +72,228 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
+import { FormInput } from '@processmaker/vue-form-elements';
 
 export default {
-  props: ['label', 'value', 'helper', 'options', 'name'],
+  props: ['label', 'value', 'helper', 'name'],
   components: {
     Multiselect,
+    FormInput,
   },
   data() {
     return {
       rules: [],
       showCard: false,
+      showDeleteConfirmCard: false,
       selectedOption: '',
+      confirmMessage: '',
+      removeIndex: null,
+      optionError: '',
+      disableBtn: false,
+      configValue: null,
+      options: [
+        {
+          value: 'accepted',
+          content: 'Accepted',
+          helper: 'The field under validation must be yes, on, 1 or true.',
+        },
+        {
+          value: 'alpha',
+          content: 'Alpha',
+          helper: 'The field under validation must be entirely alphabetic characters.',
+        },
+        {
+          value: 'alpha_num',
+          content: 'Alpha-Numeric',
+          helper: 'The field under validation must be entirely alpha-numeric characters.',
+        },
+        {
+          value: '',
+          field: 'between:',
+          content: 'Between Min & Max',
+          helper: 'The field under validation must have a size between the given min and max.',
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: 'Min', helper: '', validation:'required|integer' },
+            { type: 'FormInput', label: 'Max', helper: '', validation:'required|integer' },
+          ],
+        },
+        {
+          value: 'email',
+          content: 'Email',
+          helper: 'The field under validation must be formatted as an e-mail address.',
+        },
+        {
+          value: '',
+          field: 'in:',
+          content: 'In',
+          helper: 'The field under validation must be included in the given list of values. The field can be an array or string.',
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: 'Values', helper: '', validation:'required' },
+          ],
+        },
+        {
+          value: '',
+          field: 'max:',
+          content: 'Max Length',
+          helper: '',
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: 'Max Input', helper: 'Validate that an attribute is no greater than a given size.', validation:'required|integer' },
+          ],
+        },
+        {
+          value: '',
+          field: 'min:',
+          content: 'Min Length',
+          helper: '',
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: 'Max Input', helper: 'Validate that an attribute is at least a given size.', validation:'required|integer' },
+          ],
+        },
+        {
+          value: '',
+          field: 'not_in:',
+          content: 'Not In',
+          helper: 'The field under validation must not be included in the given list of values.',
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: 'Values', helper: '', validation:'required' },
+          ],
+        },
+        {
+          value: 'required',
+          content: 'Required',
+          helper: 'Checks if the length of the String representation of the value is >',
+        },
+        {
+          value: '',
+          field: 'required_if:',
+          content: 'Required If',
+          helper: 'The field under validation must be present and not empty if the anotherfield field is equal to any value.',
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: 'Variable Name', helper: '', validation:'required' },
+            { type: 'FormInput', label: 'Variable Value', helper: '', validation:'required' },
+          ],
+        },
+        {
+          value: '',
+          field: 'required_unless:',
+          content: 'Required Unless',
+          helper: 'The field under validation must be present and not empty unless the anotherfield field is equal to any value.',
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: 'Variable Name', helper: '', validation:'required' },
+            { type: 'FormInput', label: 'Variable Value', helper: '', validation:'required' },
+          ],
+        },
+        {
+          value: '',
+          field: 'same:',
+          content: 'Same',
+          helper: 'The given field must match the field under validation.',
+          visible: true,
+          configs: [
+            {type: 'FormInput', label: 'Variable Name', helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: 'url',
+          content: 'URL',
+          helper: 'Validate that an attribute has a valid URL format',
+        },
+      ],
     };
   },
   computed: {
+    fieldClass() {
+      return this.optionError ? 'is-invalid' : '';
+    },
   },
   watch: {
     rules: {
       deep: true,
       handler(rules) {
-        rules.forEach(rule => {
-          console.log('rule', rule);
-          // TODO: Setup a way to allow additional configurations for validartions
-          if (rule.configs && rule.configs.length) {
-            console.log('has config', rule.configs);
-          }
-        });
-        
-        // TODO: EMIT the rules
-        // this.$emit('input', this.rules);
-      }
+        if (typeof rules === 'string' || rules === undefined) {
+          this.rules = [];
+        }
+        if (this.rules) {
+          this.setRuleConfigs();
+        }
+        this.$emit('input', rules);
+      },
     },
     value() {
-      if (typeof this.value === 'string') {
-        this.value = [];
-      }
       this.rules = this.value;
-    }
+    },
+    selectedOption: {
+      deep: true,
+      handler(value) {
+        if (this.rules && this.rules.find(item => { return item.content === value.content; })) {
+          this.optionError = this.$t('This field already exists');
+          this.disableBtn = true;
+        } else {
+          this.disableBtn = false;
+          this.optionError = '';
+        }
+      },
+    },
   },
   methods: {
     showAddCard() {
       this.showCard = true;
+      if (this.selectedOption == '') {
+        this.disableBtn = true;
+      }
     },
     hideCard() {
       this.showCard = false;
+      this.selectedOption = '';
+      this.optionError = '';
     },
     saveRule() {
       this.rules.push(this.selectedOption);
       this.hideCard();
       this.selectedOption = '';
     },
+    confirmDelete(index) {
+      this.removeIndex = index;
+      this.showDeleteConfirmCard = true;
+      this.confirmMessage = this.$t('Are you sure you want to delete the "{{item}}" rule?', {item: this.rules[index].content});
+    },
+    hideDeleteConfirmCard() {
+      this.removeIndex = null;
+      this.showConfirmationCard = false;
+    },
     deleteRule(index) {
       this.rules.splice(index, 1);
+      this.hideDeleteConfirmCard();
     },
+    setRuleConfigs() {
+      this.rules.forEach(rule => {
+        if (rule.configs) {
+          let ruleConfigs = [];
+          rule.configs.forEach(config => {
+            if (config.value) {
+              ruleConfigs.push(config.value);
+            }
+          });
+
+          if (ruleConfigs.length > 1) {  
+            ruleConfigs = ruleConfigs.join(',');
+          }
+          if (ruleConfigs.length) {
+            rule.value = rule.field + ruleConfigs;
+          }
+          
+        }
+      });
+    }, 
   },
   mounted() {
-    if (typeof this.value === 'string') {
-      this.value = [];
-    }
     this.rules = this.value;
   },
 };
