@@ -17,64 +17,16 @@
               :key="row"
               @click.stop="inspect(element)"
             >
-              <div v-if="element.container" @click.stop="inspect(element)">
-                <div class="m-2 card border-0">
-                  <div
-                    v-if="selected === element"
-                    class="card-header form-element-header d-flex align-items-center border rounded"
-                  >
-                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                    {{ element.config.name || $t('Variable Name') }}
-                    <button
-                      class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index, row)"
-                    >
-                      <i class="far fa-trash-alt text-light"/>
-                    </button>
-                  </div>
 
-                  <component :class="elementCssClass(element)"
-                    :validationErrors="validationErrors"
-                    class="mb-3 mr-3 ml-3"
-                    :selected="selected"
-                    @inspect="inspect"
-                    @update-state="$emit('update-state')"
-                    v-model="element.items"
-                    :config="element.config"
-                    :is="element['editor-component']"
-                  />
-                </div>
-              </div>
-
-              <div v-else :id="element.config.name ? element.config.name : undefined">
-                <div class="m-2" :class="{ 'card' : selected === element }">
-                  <div
-                    v-if="selected === element"
-                    class="card-header form-element-header d-flex align-items-center"
-                  >
-                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                    {{ element.config.name || $t('Variable Name') }}
-                    <button
-                      class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index, row)"
-                    >
-                      <i class="far fa-trash-alt text-light"/>
-                    </button>
-                  </div>
-
-                  <component
-                    class="p-3"
-                    :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
-                    :tabindex="element.config.interactive ? 0 : -1"
-                    v-bind="element.config"
-                    :config="element.config"
-                    @input="element.config.interactive ? element.config.content = $event : null"
-                    :is="element['editor-component']"
-                  />
-                </div>
-              </div>
+              <container
+                :element="element"
+                :selected="selected"
+                :validationErrors="validationErrors"
+                @delete-item="deleteItem(index, row)"
+                @inspect="inspect"
+                @update-state="$emit('update-state')"
+              ></container>
+              
             </div>
           </draggable>
         </template>

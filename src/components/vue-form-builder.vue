@@ -103,63 +103,16 @@
           :key="index"
           @click="inspect(element)"
         >
-          <div v-if="element.container" @click="inspect(element)" class="card">
-            <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-            >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-              {{ element.config.name || element.label || $t('Field Name') }}
-              <button
-                class="btn btn-sm btn-danger ml-auto"
-                :title="$t('Delete Control')"
-                @click="deleteItem(index)"
-              >
-                <i class="far fa-trash-alt text-light"/>
-              </button>
-            </div>
 
-            <component
-              :validationErrors="validationErrors"
-              class="card-body"
-              :class="elementCssClass(element)"
-              @inspect="inspect"
-              @update-state="updateState"
-              :selected="selected"
-              v-model="element.items"
-              :config="element.config"
-              :is="element['editor-component']"
-            />
-          </div>
-
-          <div v-else class="card">
-            <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-            >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-              {{ element.config.name || $t('Variable Name') }}
-              <button
-                class="btn btn-sm btn-danger ml-auto"
-                :title="$t('Delete Control')"
-                @click="deleteItem(index)"
-              >
-                <i class="far fa-trash-alt text-light"/>
-              </button>
-            </div>
-
-            <component
-              :tabindex="element.config.interactive ? 0 : -1"
-              class="card-body m-0 pb-4 pt-4"
-              :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
-              v-bind="element.config"
-              :is="element['editor-component']"
-              @input="element.config.interactive ? element.config.content = $event : null"
-              @focusout.native="updateState"
-            />
-          </div>
+        <container
+          :element="element"
+          :selected="selected"
+          :validationErrors="validationErrors"
+          @delete-item="deleteItem(index)"
+          @inspect="inspect"
+          @update-state="updateState"
+        ></container>
+          
         </div>
       </draggable>
     </b-col>
@@ -267,6 +220,8 @@ import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 
 Vue.use(BootstrapVue);
+Vue.component('Container', editor.Container);
+Vue.component('MultiColumn', editor.MultiColumn);
 
 let Validator = require('validatorjs');
 // To include another language in the Validator with variable processmaker
@@ -320,7 +275,6 @@ export default {
       default: formTypes.form,
     },
   },
-  mixins: [HasColorProperty],
   components: {
     draggable,
     FormInput,
@@ -331,17 +285,11 @@ export default {
     FormHtmlEditor,
     FormHtmlViewer,
     FormMultiColumn,
-    ...editor,
     ...inspector,
     ...renderer,
   },
   data() {
-    const config = this.initialConfig || defaultConfig;
-    this.migrateConfig(config);
-
-    if (this.title && config[0].name === 'Default') {
-      config[0].name = this.title;
-    }
+    this.loadInitailConfig();
 
     return {
       currentPage: 0,
@@ -355,7 +303,7 @@ export default {
       editPageIndex: null,
       editPageName: '',
       originalPageName: null,
-      config,
+      config: defaultConfig,
       confirmMessage: '',
       pageDelete: 0,
       translated: [],
@@ -398,6 +346,9 @@ export default {
       },
       deep: true,
     },
+    initialConfig() {
+      this.loadInitailConfig();
+    },
     currentPage() {
       this.inspect();
     },
@@ -421,6 +372,16 @@ export default {
     },
   },
   methods: {
+    loadInitailConfig() {
+      const config = this.initialConfig;
+      this.migrateConfig(config);
+
+      if (this.title && config[0].name === 'Default') {
+        config[0].name = this.title;
+      }
+
+      this.config = config;
+    },
     accordionName(accordion) {
       return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
     },
