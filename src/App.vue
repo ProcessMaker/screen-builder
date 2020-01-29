@@ -33,7 +33,7 @@
             <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2" :title="$t('Load Screen')">
               <i class="fas fa-upload mr-1"/>
             </b-btn>
-            <button type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
+            <button type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')" @click="saveToLocalStorage()"><i class="fas fa-save"/></button>
           </b-col>
           <b-modal
             ref="uploadmodal"
@@ -59,7 +59,7 @@
       <!-- Card Body -->
       <b-card-body class="overflow-auto p-0 m-0">
         <!-- Vue-form-builder -->
-        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
+        <vue-form-builder :initialConfig="config" :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
 
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview">
@@ -307,8 +307,18 @@ export default {
         config.builderBinding
       );
     });
+    this.loadFromLocalStorage();
   },
   methods: {
+    loadFromLocalStorage() {
+      const savedConfig = localStorage.getItem('savedConfig');
+      if (savedConfig) {
+        this.config = JSON.parse(savedConfig);
+      }
+    },
+    saveToLocalStorage() {
+      localStorage.setItem('savedConfig', JSON.stringify(this.config));
+    },
     getValidationErrorsForItems(items, page) {
       const validationErrors = [];
 
