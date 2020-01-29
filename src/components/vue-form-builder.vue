@@ -222,6 +222,7 @@ import { keyNameProperty } from '../form-control-common-properties';
 Vue.use(BootstrapVue);
 Vue.component('Container', editor.Container);
 Vue.component('MultiColumn', editor.MultiColumn);
+Vue.component('Loop', editor.Loop);
 
 let Validator = require('validatorjs');
 // To include another language in the Validator with variable processmaker

@@ -14,6 +14,7 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
+import Loop from  './components/editor/loop'
 
 import {
   bgcolorProperty,
@@ -326,6 +327,36 @@ export default [
           content: '6',
         },
         ],
+      },
+      inspector: [
+        {
+          type: 'ContainerColumns',
+          field: 'options',
+          config: {
+            label: 'Column Width',
+          },
+        },
+        colorProperty,
+        bgcolorProperty,
+      ],
+    },
+  },
+  {
+    editorComponent: Loop,
+    editorBinding: 'Loop',
+    rendererComponent: Loop,
+    rendererBinding: 'Loop',
+    control: {
+      label: 'Loop',
+      component: 'Loop',
+      'editor-component': 'Loop',
+      'editor-control': 'Loop',
+      container: true,
+      // Default items container
+      items: [],
+      config: {
+        icon: 'fas fa-redo',
+        options: [],
       },
       inspector: [
         {
