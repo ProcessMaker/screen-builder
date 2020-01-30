@@ -19,6 +19,76 @@ Vue.use(ScreenBuilder);
 
 const store = new Vuex.Store({ modules: {} });
 
+window.ProcessMaker = {
+  apiClient: {
+    get(url) {
+      return new Promise((resolve) => {
+        const exampleScreen = {
+          id: 1,
+          screen_category_id: 1,
+          title: 'Sub screen example',
+          description: 'A sub screen example',
+          type: 'FORM',
+          config: [
+            {
+              name: 'Sub screen example',
+              items: [
+                {
+                  'config': {
+                    'icon': 'far fa-square',
+                    'label': 'First name',
+                    'name': 'firstname',
+                    'placeholder': '',
+                    'validation': '',
+                    'helper': null,
+                    'type': 'text',
+                    'dataFormat': 'string',
+                  },
+                  'inspector': [],
+                  'component': 'FormInput',
+                  'editor-component': 'FormInput',
+                  'editor-control': 'FormInput',
+                  'label': 'Line Input',
+                  'value': '__vue_devtool_undefined__',
+                },
+                {
+                  'config': {
+                    'icon': 'far fa-square',
+                    'label': 'Last name',
+                    'name': 'lastname',
+                    'placeholder': '',
+                    'validation': '',
+                    'helper': null,
+                    'type': 'text',
+                    'dataFormat': 'string',
+                  },
+                  'inspector': [],
+                  'component': 'FormInput',
+                  'editor-component': 'FormInput',
+                  'editor-control': 'FormInput',
+                  'label': 'Line Input',
+                  'value': '__vue_devtool_undefined__',
+                },
+              ],
+            },
+          ],
+          computed: [],
+          watchers: [],
+          custom_css: null,
+          status: 'ACTIVE',
+        };
+        if (url === 'screens/1') {
+          resolve({ data: exampleScreen });
+        } else if (url.substr(0, 7) === 'screens') {
+          resolve({data:{
+            data: [exampleScreen],
+          }});
+        }
+      });
+    },
+  },
+};
+
 new Vue({
   store,
   render: h => h(App),

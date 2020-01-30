@@ -6,10 +6,10 @@
         <b-row>
           <b-col>
             <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'">
+              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'" data-cy="mode-editor">
                 <i class="fas fa-drafting-compass pr-1"/>{{ $t('Design') }}
               </b-button>
-              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'">
+              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'" data-cy="mode-preview">
                 <i class="fas fa-cogs pr-1"/>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
@@ -59,10 +59,10 @@
       <!-- Card Body -->
       <b-card-body class="overflow-auto p-0 m-0">
         <!-- Vue-form-builder -->
-        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
+        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" :screen="screen" />
 
         <!-- Preview -->
-        <b-row class="h-100 m-0" id="preview" v-show="displayPreview">
+        <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
           <b-col class="overflow-auto h-100">
             <vue-form-renderer ref="renderer"
               v-model="previewData"
@@ -101,7 +101,7 @@
                   <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-down' : 'fa-angle-right'"/>
                 </b-button>
 
-                <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
+                <b-collapse v-model="showDataPreview" id="showDataPreview" data-cy="preview-data-content" class="mt-2">
                   <vue-json-pretty :data="previewData" class="p-2 data-collapse"/>
                 </b-collapse>
 
@@ -198,6 +198,9 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      screen: {
+        id: 1,
+      },
       watchers_config: {
         api: {
           scripts: [],
