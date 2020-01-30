@@ -212,3 +212,12 @@ export const buttonVariantStyleProperty = {
     ],
   },
 };
+
+export const defaultValueProperty = {
+  type: 'FormInput',
+  field: 'defaultValue',
+  config: {
+    label: 'Default Value',
+    helper: 'Takes precedence over value set in data.',
+  },
+};

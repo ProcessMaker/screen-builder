@@ -4,6 +4,7 @@ import FormMultiColumn from './components/renderer/form-multi-column';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
+import FormNestedScreen from './components/renderer/form-nested-screen';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -28,6 +29,7 @@ import {
   toggleStyleProperty,
   buttonVariantStyleProperty,
   disabledProperty,
+  defaultValueProperty,
 } from './form-control-common-properties';
 
 export default [
@@ -91,6 +93,7 @@ export default [
         readonlyProperty,
         colorProperty,
         bgcolorProperty,
+        defaultValueProperty,
       ],
     },
   },
@@ -145,6 +148,7 @@ export default [
         readonlyProperty,
         colorProperty,
         bgcolorProperty,
+        defaultValueProperty,
       ],
     },
   },
@@ -194,6 +198,7 @@ export default [
         },
         colorProperty,
         bgcolorProperty,
+        defaultValueProperty,
       ],
     },
   },
@@ -263,6 +268,7 @@ export default [
         colorProperty,
         bgcolorProperty,
         disabledProperty,
+        defaultValueProperty,
       ],
     },
   },
@@ -500,6 +506,47 @@ export default [
         },
       },
       buttonVariantStyleProperty,
+      ],
+    },
+  },
+  {
+    editorComponent: FormNestedScreen,
+    editorBinding: 'FormNestedScreen',
+    rendererComponent: FormNestedScreen,
+    rendererBinding: 'FormNestedScreen',
+    control: {
+      label: 'Nested Screen',
+      component: 'FormNestedScreen',
+      'editor-component': 'FormNestedScreen',
+      'editor-control': 'FormNestedScreen',
+      config: {
+        label: 'Nested Screen',
+        icon: 'fas fa-file-invoice',
+        variant: 'primary',
+        event: 'submit',
+        name: null,
+        value: null,
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Data variable',
+            name: 'DataVariable',
+            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/',
+            helper: 'A variable name is a symbolic name to reference information.',
+          },
+        },
+        {
+          type: 'ScreenSelector',
+          field: 'screen',
+          config: {
+            label: 'Screen',
+            name: 'SelectScreen',
+            helper: 'Select a screen',
+          },
+        },
       ],
     },
   },
