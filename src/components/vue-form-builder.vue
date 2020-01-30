@@ -21,12 +21,13 @@
         <b-card-body no-body class="p-0 overflow-auto">
           <draggable
             id="controls"
+            data-cy="controls"
             v-model="filteredControls"
             :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
             :clone="cloneControl"
             class="controls list-group w-auto list-group-flush"
           >
-            <b-list-group-item v-for="(element, index) in filteredControls" :key="index">
+            <b-list-group-item v-for="(element, index) in filteredControls" :key="index" :data-cy="'controls-' + element.component">
               <i v-if="element.config.icon" :class="element.config.icon"/>
               {{ $t(element.label) }}
             </b-list-group-item>
@@ -40,7 +41,7 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
+    <b-col id="screen-container" class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
       <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select v-if="showToolbar" v-model="currentPage" class="form-control">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
@@ -82,7 +83,7 @@
       </b-input-group>
 
 
-      <div v-if="isCurrentPageEmpty" class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
+      <div v-if="isCurrentPageEmpty" data-cy="screen-drop-zone"  class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
         {{ $t('Drag an element here') }}
       </div>
 
@@ -103,7 +104,7 @@
           :key="index"
           @click="inspect(element)"
         >
-          <div v-if="element.container" @click="inspect(element)" class="card">
+          <div v-if="element.container" @click="inspect(element)" class="card" data-cy="screen-element-container">
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
@@ -133,7 +134,7 @@
             />
           </div>
 
-          <div v-else class="card">
+          <div v-else class="card" data-cy="screen-element-container">
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
@@ -186,6 +187,8 @@
             <b-collapse :key="`${accordionName(accordion)}-collapse`" :id="accordionName(accordion)" v-model="accordion.open">
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
+                :data-cy="'inspector-' + item.config.name"
+                :builder="builder"
                 :formConfig="config"
                 :currentPage="currentPage"
                 :key="index"
@@ -265,6 +268,7 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
+import VariableNameGenerator from '@/components/VariableNameGenerator';
 
 Vue.use(BootstrapVue);
 
@@ -319,6 +323,9 @@ export default {
       type: String,
       default: formTypes.form,
     },
+    screen: {
+      type: Object,
+    },
   },
   mixins: [HasColorProperty],
   components: {
@@ -338,6 +345,8 @@ export default {
   data() {
     const config = this.initialConfig || defaultConfig;
     this.migrateConfig(config);
+    const generator = new VariableNameGenerator();
+    let variables = generator.GetVariableNames(config);
 
     if (this.title && config[0].name === 'Default') {
       config[0].name = this.title;
@@ -364,9 +373,14 @@ export default {
       showDesign: false,
       filterQuery: '',
       accordions,
+      variables,
+      generator,
     };
   },
   computed: {
+    builder() {
+      return this;
+    },
     canUndo() {
       return this.$store.getters[`page-${this.currentPage}/canUndo`];
     },
@@ -441,7 +455,7 @@ export default {
       items.forEach(item => {
         if (item.inspector) {
           item.inspector.forEach((inspector) => {
-            if (inspector.field === 'name' && 'validation' in inspector.config) {
+            if (inspector.field === 'name' && 'validation' in inspector.config && inspector.config.name !== 'DataVariable') {
               inspector.config.validation = keyNameProperty.config.validation;
             }
           });
@@ -654,6 +668,10 @@ export default {
         copy['items'] = JSON.parse(JSON.stringify(control.items));
         copy.container = true;
       }
+
+      //Generate Variable Name
+      [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control'] ? copy['editor-control'] :  copy['component']);
+
       return copy;
     },
   },

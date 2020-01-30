@@ -6,3 +6,4 @@ export { default as OptionsList } from './options-list';
 export { default as ColumnSetup } from './column-setup';
 export { default as PageSelect } from './page-select';
 export { default as ValidationSelect } from './validation-select';
+export { default as ScreenSelector } from './screen-selector';

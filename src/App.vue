@@ -6,10 +6,10 @@
         <b-row>
           <b-col>
             <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'">
+              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'" data-cy="mode-editor">
                 <i class="fas fa-drafting-compass pr-1"/>{{ $t('Design') }}
               </b-button>
-              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'">
+              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'" data-cy="mode-preview">
                 <i class="fas fa-cogs pr-1"/>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
@@ -33,7 +33,7 @@
             <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2" :title="$t('Load Screen')">
               <i class="fas fa-upload mr-1"/>
             </b-btn>
-            <button type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
+            <button v-b-modal.preview-config type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
           </b-col>
           <b-modal
             ref="uploadmodal"
@@ -59,10 +59,10 @@
       <!-- Card Body -->
       <b-card-body class="overflow-auto p-0 m-0">
         <!-- Vue-form-builder -->
-        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" />
+        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" :screen="screen" />
 
         <!-- Preview -->
-        <b-row class="h-100 m-0" id="preview" v-show="displayPreview">
+        <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
           <b-col class="overflow-auto h-100">
             <vue-form-renderer ref="renderer"
               v-model="previewData"
@@ -101,7 +101,7 @@
                   <i class="fas ml-auto" :class="showDataPreview ? 'fa-angle-down' : 'fa-angle-right'"/>
                 </b-button>
 
-                <b-collapse v-model="showDataPreview" id="showDataPreview" class="mt-2">
+                <b-collapse v-model="showDataPreview" id="showDataPreview" data-cy="preview-data-content" class="mt-2">
                   <vue-json-pretty :data="previewData" class="p-2 data-collapse"/>
                 </b-collapse>
 
@@ -158,6 +158,9 @@
     <computed-properties v-model="computed" ref="computedProperties"/>
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
     <watchers-popup v-model="watchers" ref="watchersPopup"/>
+    <b-modal id="preview-config" size="xl" title="Screen Config JSON Preview">
+      <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"></monaco-editor>
+    </b-modal>
   </b-container>
 </template>
 
@@ -195,6 +198,9 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      screen: {
+        id: 1,
+      },
       watchers_config: {
         api: {
           scripts: [],
@@ -265,6 +271,13 @@ export default {
         return false;
       }
     },
+    previewConfig: {
+      get() {
+        return JSON.stringify(this.config);
+      },
+      set(val) {
+      }
+    },
     displayBuilder() {
       return this.mode === 'editor';
     },
@@ -309,6 +322,9 @@ export default {
     });
   },
   methods: {
+    editorDidMount(editor) {
+      editor.getAction('editor.action.formatDocument').run();
+    },
     getValidationErrorsForItems(items, page) {
       const validationErrors = [];
 
