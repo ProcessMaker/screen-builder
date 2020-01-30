@@ -66,6 +66,7 @@ import WatchersSynchronous from '@/components/watchers-synchronous';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
+import Mustache from 'mustache'
 
 const csstree = require('css-tree');
 
@@ -144,6 +145,7 @@ export default {
   watch: {
     mode() {
       this.currentPage = 0;
+      this.applyConfiguredDefaultValues();
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
@@ -203,8 +205,19 @@ export default {
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
+    this.applyConfiguredDefaultValues();
   },
   methods: {
+    applyConfiguredDefaultValues() {
+      this.$nextTick(() => {
+        getItemsFromConfig(this.config)
+          .forEach(item => {
+            if (item.config.defaultValue) {
+              this.model[this.getValidPath(item.config.name)] = Mustache.render(item.config.defaultValue, this.transientData);
+            }
+        });
+      });
+    },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {
         Object.keys(this.customFunctions).forEach(key => {
