@@ -30,7 +30,15 @@ export function ValidatorFactory(config, data) {
       //If the element has configuration only
       if (item.config && item.config.name && item.config.validation) {
         validate.elements[`${item.config.name}`] = validate.data[item.config.name];
-        validate.rules[`${item.config.name}`] = item.config.validation;
+        if (typeof item.config.validation === 'string') {
+          validate.rules[`${item.config.name}`] = item.config.validation;
+        } else {
+          let validationRule = [];
+          item.config.validation.forEach(validation => {
+            validationRule.push(validation.value);
+          });
+          validate.rules[`${item.config.name}`] = validationRule;
+        }
       }
     });
   };

@@ -147,7 +147,7 @@ export const disabledProperty = {
 };
 
 export const validationRulesProperty = {
-  type: 'FormInput',
+  type: 'ValidationSelect',
   field: 'validation',
   config: {
     label: 'Validation Rules',
