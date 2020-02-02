@@ -325,6 +325,9 @@ export default {
       items.forEach(item => {
         if (item.container) {
           item.items.forEach(containerItems => {
+            if (!Array.isArray(containerItems)) {
+              containerItems = [containerItems];
+            }
             validationErrors.push(...this.getValidationErrorsForItems(containerItems, page));
           });
         }

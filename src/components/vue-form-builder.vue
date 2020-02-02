@@ -219,10 +219,14 @@ import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 
+import Container from './editor/container';
+import Loop from './editor/loop';
+
 Vue.use(BootstrapVue);
-Vue.component('Container', editor.Container);
+
+Vue.component('Container', Container);
+Vue.component('Loop', Loop);
 Vue.component('MultiColumn', editor.MultiColumn);
-Vue.component('Loop', editor.Loop);
 
 let Validator = require('validatorjs');
 // To include another language in the Validator with variable processmaker
@@ -395,6 +399,7 @@ export default {
       accordion.open = true;
     },
     migrateConfig(config = this.config) {
+      console.log("migrateConfig", config);
       config.forEach(page => this.replaceFormText(page.items));
       config.forEach(page => this.migrateFormSubmit(page.items));
       config.forEach(page => this.updateFieldNameValidation(page.items));

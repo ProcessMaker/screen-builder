@@ -1,32 +1,26 @@
 <template>
-  <div :class="classContainer" class="">
-    <div>
-      <!-- <div class="row"> -->
-        <!-- <template v-for="(item, index) in items"> -->
-          <draggable
-            class="column-draggable"
-            v-model="items"
-            :options="{group: {name: 'controls'}}"
-          >
-            <div class="control-item"
-              :class="{selected: selected === element, hasError: hasError(element)}"
-              v-for="(element,index) in items"
-              :key="index"
-              @click.stop="inspect(element)"
-            >
-              <container
-                :element="element"
-                :selected="selected"
-                :validationErrors="validationErrors"
-                @delete-item="deleteItem(index)"
-                @inspect="inspect"
-                @update-state="$emit('update-state')"
-              ></container>
-            </div>
-          </draggable>
-        <!-- </template> -->
-      <!-- </div> -->
-    </div>
+  <div class="column-draggable">
+    <draggable
+      style="min-height: 80px;"
+      v-model="items"
+      :options="{group: {name: 'controls'}}"
+    >
+      <div class="control-item"
+        :class="{selected: selected === element, hasError: hasError(element)}"
+        v-for="(element,index) in items"
+        :key="index"
+        @click.stop="inspect(element)"
+      >
+        <container
+          :element="element"
+          :selected="selected"
+          :validationErrors="validationErrors"
+          @delete-item="deleteItem(index)"
+          @inspect="inspect"
+          @update-state="$emit('update-state')"
+        ></container>
+      </div>
+    </draggable>
   </div>
 </template>
 
@@ -69,44 +63,19 @@ export default {
   watch: {
     value: {
       handler() {
-        console.log("VALUE IS NOW", this.value)
+        this.items = this.value;
       },
       immediate: true,
     },
     items() {
-      console.log("Emitting", this.items);
       this.$emit('input', this.items);
-    },
-    // 'config.options'(options) {
-    //   this.items = options.map((option, index) => {
-    //     return this.items[index]
-    //       ? this.items[index]
-    //       : [];
-    //   });
-    // },
-  },
-  computed: {
-    classContainer() {
-      // return this.items.length > 0 ? 'form-group' : 'column-draggable';
-      return 'column-draggable'
     },
   },
   methods: {
     hasError(element) {
+      if (!this.validationErrors) { return false; }
       return this.validationErrors.some(({ item }) => item === element);
     },
-    // updateContainerConfig(config, index) {
-    //   this.items = config;
-    // },
-    // classColumn(index) {
-    //   let column = defaultColumnWidth;
-
-    //   if (this.config.options[index] && this.config.options[index].content) {
-    //     column = this.config.options[index].content;
-    //   }
-
-    //   return 'col-sm-' + column;
-    // },
     inspect(element) {
       this.$emit('inspect', element);
     },
@@ -134,6 +103,10 @@ export default {
         border: 1px dashed #000;
         min-height: 80px;
         content: "Drag Controls";
+    }
+
+    .selected .column-draggable {
+      border: none;
     }
 
     .control-item {

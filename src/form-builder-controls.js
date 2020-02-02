@@ -14,7 +14,9 @@ import {
   FormHtmlEditor,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
+
 import Loop from  './components/editor/loop'
+import FormLoop from  './components/renderer/form-loop'
 
 import {
   bgcolorProperty,
@@ -344,11 +346,11 @@ export default [
   {
     editorComponent: Loop,
     editorBinding: 'Loop',
-    rendererComponent: Loop,
-    rendererBinding: 'Loop',
+    rendererComponent: FormLoop,
+    rendererBinding: 'FormLoop',
     control: {
       label: 'Loop',
-      component: 'Loop',
+      component: 'FormLoop',
       'editor-component': 'Loop',
       'editor-control': 'Loop',
       container: true,
@@ -356,18 +358,18 @@ export default [
       items: [],
       config: {
         icon: 'fas fa-redo',
-        options: [],
+        times: "2",
       },
       inspector: [
+        keyNameProperty,
         {
-          type: 'ContainerColumns',
-          field: 'options',
+          type: 'FormInput',
+          field: 'times',
           config: {
-            label: 'Column Width',
+            label: 'Number of times',
+            helper: 'Enter the number of times to repeat the element(s)',
           },
         },
-        colorProperty,
-        bgcolorProperty,
       ],
     },
   },
