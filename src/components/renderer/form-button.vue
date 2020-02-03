@@ -28,7 +28,7 @@ export default {
       }
     },
     click() {
-      if (this.name) {
+      if (this.event !== 'pageNavigate' && this.name) {
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
       this.$emit(this.event, this.eventData);
