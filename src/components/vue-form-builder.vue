@@ -269,6 +269,7 @@ import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
+import Loop from './editor/loop';
 
 Vue.use(BootstrapVue);
 
@@ -330,6 +331,7 @@ export default {
   mixins: [HasColorProperty],
   components: {
     draggable,
+    Loop,
     FormInput,
     FormSelectList,
     FormCheckbox,
