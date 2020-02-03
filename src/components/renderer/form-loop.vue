@@ -15,16 +15,12 @@
 </template>
 
 <script>
-import VueFormRenderer from '../vue-form-renderer.vue';
 import Mustache from 'mustache';
 
 export default {
   name: 'FormLoop',
   mixins: [],
   props: ['value', 'name', 'config', 'transientData'],
-  components: {
-    VueFormRenderer
-  },
   data() {
     return {
       matrix: [],

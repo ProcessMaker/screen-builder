@@ -52,6 +52,7 @@ import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
+import FormLoop from '@/components/renderer/form-loop';
 import FormMaskedInput from '@/components/renderer/form-masked-input';
 import CustomCSS from './custom-css';
 import {
@@ -99,6 +100,7 @@ export default {
     FormHtmlViewer,
     FormMultiColumn,
     CustomCSS,
+    FormLoop,
     ...editor,
     ...inspector,
     ...renderer,
