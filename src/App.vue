@@ -33,7 +33,7 @@
             <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2" :title="$t('Load Screen')">
               <i class="fas fa-upload mr-1"/>
             </b-btn>
-            <button v-b-modal.preview-config type="button" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
+            <button v-b-modal.preview-config type="button" @click="saveToLocalStorage()" class="btn btn-secondary btn-sm ml-1" :title="$t('Save Screen')"><i class="fas fa-save"/></button>
           </b-col>
           <b-modal
             ref="uploadmodal"
@@ -320,8 +320,20 @@ export default {
         config.builderBinding
       );
     });
+
+    this.loadFromLocalStorage();
   },
   methods: {
+    loadFromLocalStorage() {
+      const savedConfig = localStorage.getItem('savedConfig');
+      if (savedConfig) {
+        let config = JSON.parse(savedConfig);
+        this.$refs.builder.config = config;
+      }
+    },
+    saveToLocalStorage() {
+      localStorage.setItem('savedConfig', JSON.stringify(this.config));
+    },
     editorDidMount(editor) {
       editor.getAction('editor.action.formatDocument').run();
     },
@@ -331,6 +343,9 @@ export default {
       items.forEach(item => {
         if (item.container) {
           item.items.forEach(containerItems => {
+            if (!Array.isArray(containerItems)) {
+              containerItems = [containerItems];
+            }
             validationErrors.push(...this.getValidationErrorsForItems(containerItems, page));
           });
         }
