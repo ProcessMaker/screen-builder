@@ -4,6 +4,7 @@ export default [
     fields: [
       { name: 'name', hideFor: 'FormImage' },
       'fieldValue',
+      'label',
       'dataFormat',
       'dataMask',
       'validation',
@@ -20,7 +21,6 @@ export default [
       { name: 'name', showFor: 'FormImage' },
       'image',
       'eventData',
-      'label',
       'type',
       'placeholder',
       'content',
