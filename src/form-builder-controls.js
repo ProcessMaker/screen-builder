@@ -84,9 +84,9 @@ export default [
       },
       inspector: [
         keyNameProperty,
+        labelProperty,
         DataTypeProperty,
         DataFormatProperty,
-        labelProperty,
         validationRulesProperty,
         placeholderProperty,
         helperTextProperty,
@@ -123,9 +123,9 @@ export default [
         },
       },
       inspector: [
+        keyNameProperty,
         labelProperty,
         placeholderProperty,
-        keyNameProperty,
         helperTextProperty,
         {
           type: 'FormCheckbox',
@@ -260,9 +260,9 @@ export default [
       },
       inspector: [
         keyNameProperty,
+        labelProperty,
         DataTypeDateTimeProperty,
         validationRulesProperty,
-        labelProperty,
         placeholderProperty,
         helperTextProperty,
         colorProperty,
