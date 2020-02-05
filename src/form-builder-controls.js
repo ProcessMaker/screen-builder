@@ -1,6 +1,8 @@
 import FormText from './components/renderer/form-text';
 import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
+import FormLoop from './components/renderer/form-loop';
+import Loop from './components/editor/loop';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
@@ -343,6 +345,36 @@ export default [
         },
         colorProperty,
         bgcolorProperty,
+      ],
+    },
+  },
+  {
+    editorComponent: Loop,
+    editorBinding: 'Loop',
+    rendererComponent: FormLoop,
+    rendererBinding: 'FormLoop',
+    control: {
+      label: 'Loop',
+      component: 'FormLoop',
+      'editor-component': 'Loop',
+      'editor-control': 'Loop',
+      container: true,
+      // Default items container
+      items: [],
+      config: {
+        icon: 'fas fa-redo',
+        times: '2',
+      },
+      inspector: [
+        keyNameProperty,
+        {
+          type: 'FormInput',
+          field: 'times',
+          config: {
+            label: 'Number of times',
+            helper: 'Enter the number of times to repeat the element(s)',
+          },
+        },
       ],
     },
   },
