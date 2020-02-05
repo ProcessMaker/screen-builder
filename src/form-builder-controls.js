@@ -371,8 +371,8 @@ export default [
           type: 'FormInput',
           field: 'times',
           config: {
-            label: 'Number of times',
-            helper: 'Enter the number of times to repeat the element(s)',
+            label: 'Default Number Of Times',
+            helper: 'Enter the number of times to repeat if the data does not exist.',
           },
         },
       ],

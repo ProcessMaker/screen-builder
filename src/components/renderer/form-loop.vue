@@ -36,6 +36,12 @@ export default {
       }];
     },
     times() {
+      // If there is existing data, set the length to what ever it is
+      const itemsFromData = _.get(this.transientData, this.name, null);
+      if (Array.isArray(itemsFromData)) {
+        return [...itemsFromData.keys()];
+      }
+
       if (!this.config) {
         return [];
       }
