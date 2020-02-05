@@ -164,7 +164,7 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
-      <label for="data-sources-list">{{ $t('Data Connector Name') }}</label>
+      <label for="data-sources-list">{{ $t('Data Connector') }}</label>
       <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList"/>
       <small class="form-text text-muted mb-3">{{ $t('Data Connector to use') }}</small>
     </div>
