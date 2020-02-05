@@ -25,8 +25,8 @@
     </div>
 
     <form-multi-select
-      :name="$t('Script Source')"
-      :label="$t('Script Source')"
+      :name="$t('Source')"
+      :label="$t('Source')"
       :options="scripts"
       v-model="config.script"
       :placeholder="$t('None')"
