@@ -88,13 +88,14 @@
                   <div v-if="isScript">
                     <div class="form-group">
                       <label>{{ $t('Input Data') }}</label>
-                      <div class="editor-border" :class="{'is-invalid':inputDataInvalid}"/>
-                      <monaco-editor
-                        :options="monacoOptions"
-                        class="editor"
-                        v-model="config.input_data"
-                        language="json"
-                      />
+                      <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
+                        <monaco-editor
+                          :options="monacoOptions"
+                          class="editor"
+                          v-model="config.input_data"
+                          language="json"
+                        />
+                      </div>
                       <small class="form-text text-muted">{{ $t('Data to pass to the script (valid JSON object, variables supported)') }}</small>
                       <div v-if="inputDataInvalid" class="invalid-feedback d-block">
                         <div>{{ $t('The Input Data field is required') }}</div>
@@ -106,13 +107,14 @@
 
                     <div class="form-group">
                       <label>{{ $t('Script Configuration') }}</label>
-                      <div class="editor-border" :class="{'is-invalid':scriptConfigurationInvalid}"/>
-                      <monaco-editor
-                        :options="monacoOptions"
-                        class="editor"
-                        v-model="config.script_configuration"
-                        language="json"
-                      />
+                      <div class="form-border" :class="{'is-invalid': !jsonIsValid('script_configuration')}">
+                        <monaco-editor
+                          :options="monacoOptions"
+                          class="editor"
+                          v-model="config.script_configuration"
+                          language="json"
+                        />
+                      </div>
                       <small class="form-text text-muted">{{ $t('Configuration data for the script (valid JSON object, variables supported)') }}</small>
                       <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
                         <div>{{ $t('The Script Configuration field is required') }}</div>
@@ -139,13 +141,14 @@
                     />
                     <div class="form-group">
                       <label>{{ $t('Input Data') }}</label>
-                      <div class="editor-border" :class="{'is-invalid':inputDataInvalid}"/>
-                      <monaco-editor
-                        :options="monacoOptions"
-                        class="editor"
-                        v-model="config.input_data"
-                        language="json"
-                      />
+                      <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
+                        <monaco-editor
+                          :options="monacoOptions"
+                          class="editor"
+                          v-model="config.input_data"
+                          language="json"
+                        />
+                      </div>
                       <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
                       <div v-if="inputDataInvalid" class="invalid-feedback d-block">
                         <div>{{ $t('The Input Data field is required') }}</div>
@@ -375,6 +378,7 @@ export default {
     },
     jsonIsValid(item) {
       try {
+        console.log('jsonIsValid', item);
         JSON.parse(this.config[item]);
       } catch (e) {
         return false;
@@ -443,18 +447,13 @@ export default {
     z-index: 0;
   }
 
-  .editor-border {
-    border: 1px solid #ced4da;
-    border-radius: 4px;
+  .form-border {
     overflow: hidden;
-    height: 8.5em;
-    position: absolute;
-    pointer-events: none;
+    position: relative;
     width: 100%;
-    z-index: 1;
   }
 
-  .editor-border.is-invalid {
+  .form-border.is-invalid {
     border-color: #dc3545;
   }
 </style>
