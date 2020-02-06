@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="d-flex mb-1">
-      <label class="flex-grow-1 m-0">{{ $t('Output Data Mapping') }}</label>
+      <label class="flex-grow-1 m-0">{{ $t('Output Variable Property Mapping') }}</label>
       <button
         type="button"
         class="btn-special-assignment-action btn btn-secondary btn-sm px-2"
         @click="addMapping"
-      >+ {{ $t('Data') }}
+      >+ {{ $t('Property') }}
       </button>
     </div>
     <table class="table table-striped table-sm border mb-1">
@@ -45,7 +45,11 @@
         </tr>
       </tbody>
     </table>
-    <small class="form-text text-muted mb-3">{{ $t('Keys and values to map from the Data Connector into the output variable') }}</small>
+    <small class="form-text text-muted mb-3">
+      {{ $t('Properties to map from the Data Connector into the output variable') }}
+      <br>
+      {{ $t('(If empty, all data returned will be mapped to the output variable)') }}
+    </small>
   </div>
 </template>
 
