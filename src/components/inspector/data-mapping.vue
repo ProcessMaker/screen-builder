@@ -45,7 +45,7 @@
         </tr>
       </tbody>
     </table>
-    <small class="form-text text-muted mb-3">Keys and values to map from the Data Connector into the output variable</small>
+    <small class="form-text text-muted mb-3">{{ $t('Keys and values to map from the Data Connector into the output variable') }}</small>
   </div>
 </template>
 
