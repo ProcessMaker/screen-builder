@@ -1,66 +1,51 @@
 <template>
   <div>
-    <b-row class="mb-2">
-      <b-col class="d-flex">
-        <input class="form-control mr-2 flex-grow-1" v-model="filter" :placeholder="$t('Filter')">
-        <b-btn class="mr-2" size="sm" variant="primary" @click.stop="search" style="width:6em;">
-          <i class="fas fa-search" />
-        </b-btn>
-        <b-btn class="text-nowrap" size="sm" variant="secondary" @click.stop="displayFormProperty">
-          <i class="fas fa-plus" />
-          {{ $t('Watcher') }}
-        </b-btn>
+    <b-row class="mb-3">
+      <b-col>
+        <basic-search v-model="filter" @submit="search">
+          <template slot="buttons">
+            <b-btn class="text-nowrap" variant="secondary" @click.stop="displayFormProperty">
+              <i class="fas fa-plus" />
+              {{ $t('Watcher') }}
+            </b-btn>
+          </template>
+        </basic-search>
       </b-col>
     </b-row>
 
-    <b-table :items="filtered" :fields="fields" responsive striped bordered small hover fixed>
-      <template slot="HEAD_property" slot-scope="data">{{ $t(data.label) }}</template>
-      <template slot="HEAD_actions" slot-scope="data">{{ $t(data.label) }}</template>
-
-      <template v-slot:cell(actions)="row">
-        <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
-        <a
-          size="lg"
-          variant="action"
-          :title="$t('edit')"
-          class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-          @click.stop="editProperty(row.item)"
-        >
-          <i class="fa fa-edit fa-1x" />
-        </a>
-        <a
-          size="lg"
-          variant="action"
-          :title="$t('Delete')"
-          class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-          @click.stop="deleteProperty(row.item)"
-        >
-          <i class="fa fa-trash fa-1x" />
-        </a>
-      </template>
-      <!-- Keeps compatibility with the bootstrap-vue version in ProcessMaker -->
-      <template slot="actions" slot-scope="row">
-        <!-- we use @click.stop here to prevent emitting of a 'row-clicked' event  -->
-        <a
-          size="lg"
-          variant="action"
-          :title="$t('edit')"
-          class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-          @click.stop="editProperty(row.item)"
-        >
-          <i class="fa fa-edit fa-1x" />
-        </a>
-        <a
-          size="lg"
-          variant="action"
-          :title="$t('Delete')"
-          class="btn btn-lg p-0 mr-2 border-0 bg-transparent"
-          @click.stop="deleteProperty(row.item)"
-        >
-          <i class="fa fa-trash fa-1x" />
-        </a>
-      </template>
-    </b-table>
+    <div class="card card-body table-card">
+      <vuetable
+        :api-mode="false"
+        :css="css"
+        :fields="fields"
+        :data="filtered"
+        data-path="data"
+        :noDataTemplate="$t('No Data Available')"
+      >
+        <template slot="actions" slot-scope="row">
+          <div class="actions">
+            <div class="popout">
+              <b-btn
+                variant="link"
+                @click="editProperty(row.rowData)"
+                v-b-tooltip.hover
+                :title="$t('Edit')"
+              >
+                <i class="fas fa-edit fa-lg fa-fw"/>
+              </b-btn>
+              <b-btn
+                variant="link"
+                @click="deleteProperty(row.rowData)"
+                v-b-tooltip.hover
+                :title="$t('Delete')"
+              >
+                <i class="fas fa-trash-alt fa-lg fa-fw"/>
+              </b-btn>
+            </div>
+          </div>
+        </template>
+      </vuetable>
+    </div>
     <template slot="modal-footer">
       <span />
     </template>
@@ -68,10 +53,13 @@
 </template>
 
 <script>
+import BasicSearch from './basic-search';
 import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
+import Vuetable from "vuetable-2/src/components/Vuetable";
 
 export default {
   components: {
+    BasicSearch,
     FormInput,
     FormTextArea,
   },
@@ -84,36 +72,37 @@ export default {
   data() {
     return {
       filter: '',
+      css: {
+        tableClass: 'table table-hover table-responsive text-break mb-0',
+        loadingClass: 'loading',
+        detailRowClass: 'vuetable-detail-row',
+        handleIcon: 'grey sidebar icon',
+        sortableIcon: 'fas fa-sort',
+        ascendingIcon: 'fas fa-sort-up',
+        descendingIcon: 'fas fa-sort-down',
+        ascendingClass: 'ascending',
+        descendingClass: 'descending',
+      },
       fields: [
         {
-          key: 'name',
-          label: this.$t('Name'),
-          class: 'text-center',
-          sortable: true,
+          title: () => this.$t('Name'),
+          name: 'name',
         },
         {
-          key: 'watching',
-          label: this.$t('Watching'),
-          class: 'text-center',
-          sortable: true,
+          title: () => this.$t('Watching Variable'),
+          name: 'watching',
         },
         {
-          key: 'output_variable',
-          label: this.$t('Variable'),
-          class: 'text-center',
-          sortable: true,
+          title: () => this.$t('Output Variable'),
+          name: 'output_variable',
         },
         {
-          key: 'script.title',
-          label: this.$t('Script'),
-          class: 'text-center',
-          sortable: true,
+          title: () => this.$t('Source'),
+          name: 'script.title',
         },
         {
-          key: 'actions',
-          label: '',
-          class: 'text-center',
-          sortable: false,
+          name: '__slot:actions',
+          title: '',
         },
       ],
     };
