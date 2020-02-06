@@ -4,7 +4,7 @@
     
     
     <div class="accordion" id="watcherAccordion">
-        <div class="card">
+        <div class="card card-overflow">
             <div class="card-header p-0">
                 <div class="mb-0">
                     <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig">
@@ -417,6 +417,10 @@ export default {
 
 <style lang="scss" scoped>
   .accordion {
+    .card-overflow {
+      overflow: visible;
+    }
+    
     .card-body label {
       display: block;
     }
