@@ -94,7 +94,7 @@ export default {
       if (globalObject.ProcessMaker && globalObject.ProcessMaker.confirmModal) {
         globalObject.ProcessMaker.confirmModal(
           this.$t("Caution!"),
-          this.$t("Are you sure you want to delete the watcher?"),
+          this.$t("Are you sure you want to delete the Watcher?"),
           '',
           () => {
             this.remove(item);
