@@ -25,8 +25,8 @@
     </div>
 
     <form-multi-select
-      :name="$t('Script Source')"
-      :label="$t('Script Source')"
+      :name="$t('Data Source')"
+      :label="$t('Data Source')"
       :options="scripts"
       v-model="config.script"
       :placeholder="$t('None')"
@@ -43,7 +43,7 @@
       @search-change="loadSources"
     />
     <div v-if="!config.script" class="invalid-feedback d-block">
-      <div>{{ $t('The Script field is required') }}</div>
+      <div>{{ $t('The Data Source field is required') }}</div>
     </div>
 
     <div v-if="isScript">

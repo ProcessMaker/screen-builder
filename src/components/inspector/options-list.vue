@@ -164,14 +164,14 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
-      <label for="data-sources-list">{{ $t('Data Source Name') }}</label>
-      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" class="mb-3"/>
-      <small class="form-text text-muted mb-3">{{ $t('Data source to use') }}</small>
+      <label for="data-sources-list">{{ $t('Data Connector') }}</label>
+      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList"/>
+      <small class="form-text text-muted mb-3">{{ $t('Data Connector to use') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="endpoint-list">{{ $t('End Point') }}</label>
-      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" class="mb-3"/>
+      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList"/>
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
