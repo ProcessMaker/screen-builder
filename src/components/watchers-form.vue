@@ -97,7 +97,7 @@
                       />
                       <small class="form-text text-muted">{{ $t('Data to pass to the script (valid JSON object, variables supported)') }}</small>
                       <div v-if="inputDataInvalid" class="invalid-feedback d-block">
-                        <div>{{ $t('The Input Data field is required.') }}</div>
+                        <div>{{ $t('The Input Data field is required') }}</div>
                       </div>
                       <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
                         <div>{{ $t('This must be valid JSON') }}</div>
@@ -115,7 +115,7 @@
                       />
                       <small class="form-text text-muted">{{ $t('Configuration data for the script (valid JSON object, variables supported)') }}</small>
                       <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
-                        <div>{{ $t('The Script Configuration field is required.') }}</div>
+                        <div>{{ $t('The Script Configuration field is required') }}</div>
                       </div>
                       <div v-if="!jsonIsValid('script_configuration')" class="invalid-feedback d-block">
                         <div>{{ $t('This must be valid JSON') }}</div>
@@ -148,7 +148,7 @@
                       />
                       <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
                       <div v-if="inputDataInvalid" class="invalid-feedback d-block">
-                        <div>{{ $t('The Input Data field is required.') }}</div>
+                        <div>{{ $t('The Input Data field is required') }}</div>
                       </div>
                       <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
                         <div>{{ $t('This must be valid JSON') }}</div>
