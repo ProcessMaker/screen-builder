@@ -100,7 +100,7 @@
                         <div>{{ $t('The Input Data field is required.') }}</div>
                       </div>
                       <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
-                        <div>{{ $t('It must be a correct json format') }}</div>
+                        <div>{{ $t('This must be valid JSON') }}</div>
                       </div>
                     </div>
 
@@ -118,7 +118,7 @@
                         <div>{{ $t('The Script Configuration field is required.') }}</div>
                       </div>
                       <div v-if="!jsonIsValid('script_configuration')" class="invalid-feedback d-block">
-                        <div>{{ $t('It must be a correct json format') }}</div>
+                        <div>{{ $t('This must be valid JSON') }}</div>
                       </div>
                     </div>
                   </div>
@@ -151,7 +151,7 @@
                         <div>{{ $t('The Input Data field is required.') }}</div>
                       </div>
                       <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
-                        <div>{{ $t('It must be a correct json format') }}</div>
+                        <div>{{ $t('This must be valid JSON') }}</div>
                       </div>
                     </div>
 
