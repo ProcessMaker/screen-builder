@@ -70,7 +70,6 @@ import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import Mustache from 'mustache'
-import Ajv from 'ajv'
 
 const csstree = require('css-tree');
 
@@ -84,7 +83,7 @@ Vue.use(VueDeepSet);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'jsonSchema'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
   model: {
     prop: 'data',
     event: 'update',
@@ -145,16 +144,9 @@ export default {
           };
         },
       },
-      ajv: new Ajv({ verbose: true }),
     };
   },
   watch: {
-    jsonSchema: {
-      handler() {
-        this.validateJsonSchema();
-      },
-      immediate: true,
-   },
     mode() {
       this.currentPage = 0;
       this.applyConfiguredDefaultValues();
@@ -162,7 +154,6 @@ export default {
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
       this.setDefaultValues();
-      this.validateJsonSchema();
     },
     transientData: {
       handler() {
@@ -221,16 +212,6 @@ export default {
     this.applyConfiguredDefaultValues();
   },
   methods: {
-    validateJsonSchema() {
-        if (this.jsonSchema) {
-          try {
-            const result = this.ajv.validate(this.jsonSchema, this.data);
-            this.$emit('json-schema-valid', true, this.ajv.errors);
-          } catch(error) {
-            this.$emit('json-schema-valid', false, [error]);
-          }
-        }
-    },
     applyConfiguredDefaultValues() {
       this.$nextTick(() => {
         getItemsFromConfig(this.config)
