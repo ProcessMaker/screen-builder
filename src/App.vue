@@ -72,12 +72,38 @@
               :computed="computed"
               :custom-css="customCSS"
               v-on:css-errors="cssErrors = $event"
+              :json-schema="jsonSchema"
+              @json-schema-valid="jsonSchemaValidated"
             />
           </b-col>
 
           <b-col class="overflow-hidden h-100 preview-inspector p-0">
             <b-card no-body class="p-0 h-100 rounded-0 border-top-0 border-right-0 border-bottom-0">
               <b-card-body class="p-0 overflow-auto">
+
+                <b-button variant="outline"
+                  v-b-toggle.schema-validator
+                  class="text-left card-header d-flex align-items-center w-100 shadow-none text-capitalize"
+                  >
+                  <i class="fas fa-file-import mr-2"></i>
+                    {{ $t('JSON Schema') }}
+                  <i class="fas ml-auto" :class="showSv ? 'fa-angle-right' : 'fa-angle-down'"></i>
+                </b-button>
+                <b-collapse id="schema-validator" v-model="showSv">
+                  <div class="p-2">
+                    <b-form-file @change="loadSchema" placeholder="JSON Schema File"></b-form-file>
+
+                    <div class="alert mt-2 mb-0" v-if="jsonSchema" :class="{'alert-success': !jsonSchemaErrors, 'alert-danger': jsonSchemaErrors}">
+                      <span v-if="!jsonSchemaErrors">{{ $t('Data Valid for JSON Schema') }}</span>
+                      <div v-else>
+                        <template v-if="jsonSchemaErrors">
+                          <span v-for="(error, i) of jsonSchemaErrors" :key="i">{{ formatDataPath(error.dataPath) }} {{ error.message }}</span>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                </b-collapse>
+
                 <b-button variant="outline"
                   class="text-left card-header d-flex align-items-center w-100 shadow-none"
                   @click="showDataInput = !showDataInput"
@@ -252,6 +278,9 @@ export default {
         lineNumbers: 'off',
         minimap: false,
       },
+      showSv: true,
+      jsonSchema: null,
+      jsonSchemaErrors: null
     };
   },
   components: {
@@ -344,6 +373,23 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
+    formatDataPath(dataPath) {
+      const rep = /^\./;
+      return dataPath.replace(rep, '');
+    },
+    loadSchema(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const text = e.target.result;
+        this.jsonSchema = JSON.parse(text);
+      };
+      reader.readAsText(file);
+    },
+    jsonSchemaValidated(schemaValid, validationErrors) {
+      this.jsonSchemaErrors = validationErrors;
+    },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
       const savedWatchers = localStorage.getItem('savedWatchers');

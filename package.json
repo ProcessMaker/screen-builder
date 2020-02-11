@@ -19,6 +19,7 @@
     "*.js"
   ],
   "dependencies": {
+    "ajv": "^6.11.0",
     "inputmask": "^5.0.0",
     "lodash": "latest",
     "moment": "^2.24.0",
