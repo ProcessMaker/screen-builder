@@ -254,7 +254,8 @@ export default {
       this.optionError = '';
     },
     saveRule() {
-      this.rules.push(this.selectedOption);
+      const option = _.cloneDeep(this.selectedOption);
+      this.rules.push(option);
       this.hideCard();
       this.selectedOption = '';
     },
