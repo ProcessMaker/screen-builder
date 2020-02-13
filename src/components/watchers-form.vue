@@ -378,7 +378,6 @@ export default {
     },
     jsonIsValid(item) {
       try {
-        console.log('jsonIsValid', item);
         JSON.parse(this.config[item]);
       } catch (e) {
         return false;
