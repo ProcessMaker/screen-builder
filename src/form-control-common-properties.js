@@ -221,3 +221,22 @@ export const defaultValueProperty = {
     helper: 'Takes precedence over value set in data.',
   },
 };
+
+export const buttonTypeEvent = {
+  type: 'FormMultiselect',
+  field: 'event',
+  config: {
+    label: 'Type Button',
+    helper: 'Determine execution of button',
+    options: [
+      {
+        value: 'submit',
+        content: 'Submit',
+      },
+      {
+        value: 'script',
+        content: 'Script',
+      },
+    ],
+  },
+};
