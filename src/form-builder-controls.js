@@ -32,6 +32,7 @@ import {
   buttonVariantStyleProperty,
   disabledProperty,
   defaultValueProperty,
+  buttonTypeEvent,
 } from './form-control-common-properties';
 
 export default [
@@ -509,35 +510,38 @@ export default [
         label: 'New Submit',
         variant: 'primary',
         event: 'submit',
+        defaultSubmit: true,
         name: null,
         fieldValue: null,
       },
-      inspector: [{
-        type: 'FormInput',
-        field: 'label',
-        config: {
-          label: 'Label',
-          helper: 'The label describes the button\'s text',
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The label describes the button\'s text',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'name',
-        config: {
-          label: 'Variable Name',
-          name: 'Variable Name',
-          helper: 'A variable name is a symbolic name to reference information.',
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Variable Name',
+            name: 'Variable Name',
+            helper: 'A variable name is a symbolic name to reference information.',
+          },
         },
-      },
-      {
-        type: 'FormInput',
-        field: 'fieldValue',
-        config: {
-          label: 'Value',
-          helper: 'The value being submitted',
+        buttonTypeEvent,
+        {
+          type: 'FormInput',
+          field: 'fieldValue',
+          config: {
+            label: 'Value',
+            helper: 'The value being submitted',
+          },
         },
-      },
-      buttonVariantStyleProperty,
+        buttonVariantStyleProperty,
       ],
     },
   },
