@@ -34,7 +34,9 @@ export default {
     },
     click() {
       if (this.event === 'script') {
-        this.$emit('input', this.countExecutionScript++);
+        this.countExecutionScript++;
+        this.$emit('input', this.countExecutionScript);
+        this.setValue(this.$parent, this.name, this.countExecutionScript);
       }
       if (this.event !== 'pageNavigate' && this.name) {
         this.setValue(this.$parent, this.name, this.fieldValue);
