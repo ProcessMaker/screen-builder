@@ -33,6 +33,10 @@ export function getDefaultValueForItem(item) {
     defaultValue = generateNewDate(item.config.dataFormat);
   }
 
+  if (item.component === 'FormButton' && item.config.event === 'script') {
+    defaultValue = 0;
+  }
+
   return defaultValue;
 }
 
