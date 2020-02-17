@@ -1,43 +1,43 @@
 <template>
   <div>
-    <div class="d-flex">
-      <label class="flex-grow-1">{{ $t('Form Data') }}</label>
+    <div class="d-flex mb-1">
+      <label class="flex-grow-1 m-0">{{ $t('Output Variable Property Mapping') }}</label>
       <button
         type="button"
-        class="btn-special-assignment-action btn btn-secondary btn-sm"
+        class="btn-special-assignment-action btn btn-secondary btn-sm px-2"
         @click="addMapping"
-      >+ {{ $t('Data') }}
+      >+ {{ $t('Property') }}
       </button>
     </div>
-    <table class="table table-striped table-sm">
+    <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('key') }}</th>
-          <th scope="col">{{ $t('value') }}</th>
+          <th scope="col">{{ $t('Key') }}</th>
+          <th scope="col">{{ $t('Value') }}</th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(row,i) in dataMapping" :key="i">
-          <td>
+          <td class="p-1">
             <input
               v-model="row.key"
               name="key"
-              :placeholder="$t('new key')"
+              :placeholder="$t('New Key')"
               type="text"
               class="form-control form-control-sm"
             >
           </td>
-          <td>
+          <td class="p-1">
             <input
               v-model="row.value"
               name="value"
-              :placeholder="$t('value')"
+              :placeholder="$t('New Value')"
               type="text"
               class="form-control form-control-sm"
             >
           </td>
-          <td class="align-middle">
+          <td class="align-middle text-right p-1">
             <a href="javascript:void(0)" class="btn btn-sm btn-danger" @click="removeRowIndex(i)">
               <i class="fa fa-trash-alt" />
             </a>
@@ -45,6 +45,11 @@
         </tr>
       </tbody>
     </table>
+    <small class="form-text text-muted mb-3">
+      {{ $t('Properties to map from the Data Connector into the output variable') }}
+      <br>
+      {{ $t('(If empty, all data returned will be mapped to the output variable)') }}
+    </small>
   </div>
 </template>
 
