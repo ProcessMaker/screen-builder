@@ -9,7 +9,7 @@
     no-close-on-backdrop
   >
     <template v-if="enableList">
-      <watchers-list v-model="current" @display-form="displayForm" @edit-form="edit" @delete-form="remove"/>
+      <watchers-list v-model="current" @display-form="displayForm" @edit-form="edit" @delete-form="confirmRemoval"/>
     </template>
     <template v-else>
       <watchers-form refs="form" :config="add" @display-list="displayList" @save-form="save"/>
@@ -89,6 +89,20 @@ export default {
     edit(item) {
       this.displayForm();
       this.$set(this, 'add', item);
+    },
+    confirmRemoval(item) {
+      if (globalObject.ProcessMaker && globalObject.ProcessMaker.confirmModal) {
+        globalObject.ProcessMaker.confirmModal(
+          this.$t("Caution!"),
+          this.$t("Are you sure you want to delete the Watcher?"),
+          '',
+          () => {
+            this.remove(item);
+          }
+        );
+      } else {
+        this.remove(item);
+      }
     },
     remove(item) {
       this.current = this.current.filter(val => {
