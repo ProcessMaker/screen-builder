@@ -87,6 +87,7 @@ export default {
   },
   mounted() {
     this.loadScreen(this.screen);
+    this.name ? this.$set(this, 'localData', this.value || {}) : null;
   },
 };
 </script>
