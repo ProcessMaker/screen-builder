@@ -61,7 +61,7 @@
       <form-input
         ref="propName"
         v-model="add.property"
-        :label="$t('Property Name')"
+        :label="$t('Property Name') + ' *'"
         :name="$t('Property Name')"
         :validation="rulePropName"
         class="mb-3"
@@ -69,13 +69,13 @@
       <form-text-area
         ref="propDescription"
         v-model="add.name"
-        :label="$t('Description')"
+        :label="$t('Description') + ' *'"
         :name="$t('Description')"
         :validation="ruleDescription"
         class="mb-3"
       />
       <div class="form-group mb-3" style='position: relative;'>
-        <label v-show="isJS">{{ $t('Formula') }}</label>
+        <label v-show="isJS">{{ $t('Formula') + ' *' }}</label>
         <div class="float-right">
           <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType">
             <i class="fas fa-square-root-alt"/>
@@ -90,7 +90,7 @@
           v-show="!isJS"
           rows="5"
           v-model="add.formula"
-          :label="$t('Formula')"
+          :label="$t('Formula') + ' *'"
           :name="$t('Formula')"
           :validation="ruleFormula"
         />

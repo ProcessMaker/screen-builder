@@ -18,14 +18,14 @@
                   <form-input
                     ref="name"
                     v-model="config.name"
-                    :label="$t('Watcher Name')"
+                    :label="$t('Watcher Name') + ' *'"
                     :name="$t('Watcher Name')"
                     :validation="ruleWatcherName"
                     :helper="$t('A name to describe this Watcher')"
                   />
 
                   <form-multi-select
-                    :name="$t('Variable to Watch')"
+                    :name="$t('Variable to Watch') + ' *'"
                     :label="$t('Variable to Watch')"
                     :options="variables"
                     v-model="config.watching"
@@ -64,7 +64,7 @@
                 <div class="card-body pt-3 px-3 pb-0">
                   <form-multi-select
                     :name="$t('Source')"
-                    :label="$t('Source')"
+                    :label="$t('Source') + ' *'"
                     :options="scripts"
                     v-model="config.script"
                     :placeholder="$t('None')"
@@ -177,7 +177,7 @@
                   <form-input
                     ref="propOutputVariableName"
                     v-model="config.output_variable"
-                    :label="$t('Output Variable')"
+                    :label="$t('Output Variable') + ' *'"
                     :name="$t('Output Variable')"
                     :helper="$t('The variable that will store the output of the Watcher')"
                     :validation="ruleWatcherOutputVariable"
