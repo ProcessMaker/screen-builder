@@ -4,7 +4,6 @@
       <div
         v-for="(element, index) in visibleElements"
         :key="index"
-        :selector="element.config.customCssSelector"
       >
         <component
           v-if="element.container"
