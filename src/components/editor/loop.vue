@@ -1,5 +1,5 @@
 <template>
-  <div class="column-draggable" :selector="config.customCssSelector">
+  <div class="column-draggable">
     <draggable
       style="min-height: 80px;"
       v-model="items"
