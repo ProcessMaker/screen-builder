@@ -141,16 +141,17 @@ export default {
     },
     // The fields used for our vue table
     tableData() {
+      const value = this.value || [];
       let data = {
-        total: this.value.length,
+        total: value.length,
         per_page: this.perPage,
         current_page: 1,
-        last_page: Math.floor(this.value.length / this.perPage),
+        last_page: Math.floor(value.length / this.perPage),
         next_page_url: null,
         prev_page_url: null,
         from: 1,
-        to: this.value.length,
-        data: this.value.slice(0, this.perPage),
+        to: value.length,
+        data: value.slice(0, this.perPage),
       };
       return data;
     },
@@ -167,6 +168,13 @@ export default {
     selfReferenced() {
       return this.form && this.form === this.$parent.currentPage;
     },
+  },
+  watch: {
+    tableFields() {
+      this.$nextTick(() => {
+        this.$refs.vuetable.normalizeFields();
+      });
+    }
   },
   methods: {
     setUploadDataNamePrefix(index = null) {
