@@ -139,7 +139,7 @@ export default {
           helper: '',
           visible: true,
           configs: [
-            { type: 'FormInput', label: this.$t('Max Input'), helper: this.$t('Validate that an attribute is no greater than a given size.'), validation:'required|integer' },
+            { type: 'FormInput', label: this.$t('Max Input'), helper: this.$t('Validate that an attribute is no greater than a given length.'), validation:'required|integer' },
           ],
         },
         {
@@ -149,7 +149,7 @@ export default {
           helper: '',
           visible: true,
           configs: [
-            { type: 'FormInput', label: this.$t('Min Input'), helper: this.$t('Validate that an attribute is at least a given size.'), validation:'required|integer' },
+            { type: 'FormInput', label: this.$t('Min Input'), helper: this.$t('Validate that an attribute is at least a given length.'), validation:'required|integer' },
           ],
         },
         {
