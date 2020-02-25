@@ -94,11 +94,11 @@
       size="sm"
       v-if="editable && !selfReferenced"
       ref="infoModal"
-      :ok-title="$t('Save')"
+      :ok-title="$t('OK')"
       :title="$t('Information form')"
       ok-only
     >
-      <p>{{ $t('The form to be displayed is not assigned..') }}</p>
+      <p>{{ $t('The form to be displayed is not assigned.') }}</p>
     </b-modal>
     <div v-if="editable && selfReferenced" class="alert alert-danger">
       {{ $t('The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.') }}
