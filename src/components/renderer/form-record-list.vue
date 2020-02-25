@@ -46,7 +46,7 @@
 
     <b-modal
       :static="true"
-      @ok="add"
+      @ok="handleOk"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
@@ -111,6 +111,7 @@
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
+import { ValidatorFactory } from '../../factories/ValidatorFactory';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -258,13 +259,26 @@ export default {
       this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
     },
-    add() {
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefault();
+      
+      this.handleSubmit();
+    },
+    handleSubmit() {
+      if (!this.isValid()) {
+        return;
+      }
+
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       data[data.length] = JSON.parse(JSON.stringify(this.addItem));
       // Emit the newly updated data model
       this.$emit('input', data);
+
+      this.$nextTick(() => {
+        this.$refs.addModal.hide();
+      });
     },
     showDeleteConfirmation(index) {
       this.deleteIndex = index;
@@ -278,6 +292,11 @@ export default {
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
+    },
+    isValid() {
+      const validate = ValidatorFactory(this.$refs.addRenderer.config[this.form].items, this.$refs.addRenderer.transientData);
+      this.errors = validate.getErrors();
+      return _.size(this.errors) === 0;
     },
   },
 };
