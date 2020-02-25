@@ -73,6 +73,7 @@ import Inputmask from 'inputmask';
 import Mustache from 'mustache'
 
 const csstree = require('css-tree');
+const Scrollparent = require("scrollparent");
 
 Vue.component('custom-css', {
   render(createElement) {
@@ -145,6 +146,7 @@ export default {
           };
         },
       },
+      scrollable: null,
     };
   },
   watch: {
@@ -211,6 +213,7 @@ export default {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
     this.applyConfiguredDefaultValues();
+    this.scrollable = Scrollparent(this.$el);
   },
   methods: {
     applyConfiguredDefaultValues() {
@@ -267,6 +270,11 @@ export default {
       }
 
       this.currentPage = page;
+
+      // Scroll to top
+      if (this.scrollable) {
+        this.scrollable.scrollTop = 0;
+      }
     },
     setDefaultValues() {
       const shouldHaveDefaultValue = item => {
