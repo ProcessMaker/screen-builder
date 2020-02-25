@@ -256,7 +256,19 @@ export default {
       }
     },
     isValid() {
-      this.dataTypeValidator = ValidatorFactory(this.config, this.data);
+      const config = _.cloneDeep(this.config);
+      config.forEach(page => {
+        page.items.forEach(item => {
+          if (item.component !== 'FormRecordList') {
+            return;
+          }
+
+          const associatedRecordListPageId = item.config.form;
+          delete config[associatedRecordListPageId];
+        });
+      });
+      
+      this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
       return _.size(this.errors) === 0;
     },
