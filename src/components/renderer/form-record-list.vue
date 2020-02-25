@@ -182,6 +182,8 @@ export default {
         title: option[value || 'content'],
       });
 
+      this.reinitializeFields();
+
       return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
     },
     getValidFieldData(jsonData, dataName) {
@@ -279,6 +281,11 @@ export default {
       // Emit the newly updated data model
       this.$emit('input', data);
     },
+    reinitializeFields() {
+      this.$nextTick(() => {
+        this.$refs.vuetable.normalizeFields();
+      });
+    }
   },
 };
 </script>
