@@ -182,11 +182,14 @@ export default {
                 return;
               }
               const associatedRecordListPageId = item.config.form;
-              this.config[associatedRecordListPageId].items.forEach(field => {
-                if (field.config.name in this.transientData) {
-                  delete this.transientData[field.config.name];
-                } 
-              });
+              if (this.config[associatedRecordListPageId] && this.config[associatedRecordListPageId].items ) {
+                this.config[associatedRecordListPageId].items.forEach(field => {
+                  if (field.config.name in this.transientData) {
+                    delete this.transientData[field.config.name];
+                  } 
+                });
+              }
+              
             });
           });
         }
