@@ -19,6 +19,11 @@ export default {
       };
     },
   },
+  data() {
+    return {
+      countExecutionScript: 0,
+    }
+  },
   methods: {
     setValue(parent, name, value) {
       if (parent.items) {
@@ -28,6 +33,11 @@ export default {
       }
     },
     click() {
+      if (this.event === 'script') {
+        this.countExecutionScript++;
+        this.$emit('input', this.countExecutionScript);
+        this.setValue(this.$parent, this.name, this.countExecutionScript);
+      }
       if (this.event !== 'pageNavigate' && this.name) {
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
