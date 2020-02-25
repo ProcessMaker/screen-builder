@@ -271,7 +271,7 @@ export default {
       const shouldHaveDefaultValue = item => {
         const shouldHaveDefaultValueSet = item.config.name &&
             this.model[this.getValidPath(item.config.name)] === undefined &&
-            item.component !== 'FormButton';
+          (item.component !== 'FormButton' || item.config.event === 'script');
 
         const isNotFormAccordion = item.component !== 'FormAccordion';
 
