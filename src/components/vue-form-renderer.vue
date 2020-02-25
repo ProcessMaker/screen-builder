@@ -174,6 +174,23 @@ export default {
             JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
           });
         }
+
+        if (this.config) {
+          this.config.forEach(page => {
+            page.items.forEach(item => {
+              if (item.component !== 'FormRecordList') {
+                return;
+              }
+              const associatedRecordListPageId = item.config.form;
+              this.config[associatedRecordListPageId].items.forEach(field => {
+                if (field.config.name in this.transientData) {
+                  delete this.transientData[field.config.name];
+                } 
+              });
+            });
+          });
+        }
+        
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
