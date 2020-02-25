@@ -90,120 +90,119 @@ export default {
       removeIndex: null,
       optionError: '',
       disableBtn: false,
-      configValue: null,
       options: [
         {
           value: 'accepted',
-          content: 'Accepted',
-          helper: 'The field under validation must be yes, on, 1 or true.',
+          content: this.$t('Accepted'),
+          helper: this.$t('The field under validation must be yes, on, 1 or true.'),
         },
         {
           value: 'alpha',
-          content: 'Alpha',
-          helper: 'The field under validation must be entirely alphabetic characters.',
+          content: this.$t('Alpha'),
+          helper: this.$t('The field under validation must be entirely alphabetic characters.'),
         },
         {
           value: 'alpha_num',
-          content: 'Alpha-Numeric',
-          helper: 'The field under validation must be entirely alpha-numeric characters.',
+          content: this.$t('Alpha-Numeric'),
+          helper: this.$t('The field under validation must be entirely alpha-numeric characters.'),
         },
         {
           value: '',
           field: 'between:',
-          content: 'Between Min & Max',
-          helper: 'The field under validation must have a size between the given min and max.',
+          content: this.$t('Between Min & Max'),
+          helper: this.$t('The field under validation must have a size between the given min and max.'),
           visible: true,
           configs: [
-            { type: 'FormInput', label: 'Min', helper: '', validation:'required|integer' },
-            { type: 'FormInput', label: 'Max', helper: '', validation:'required|integer' },
+            { type: 'FormInput', label: this.$t('Min'), helper: '', validation:'required|integer' },
+            { type: 'FormInput', label: this.$t('Max'), helper: '', validation:'required|integer' },
           ],
         },
         {
           value: 'email',
-          content: 'Email',
-          helper: 'The field under validation must be formatted as an e-mail address.',
+          content: this.$t('Email'),
+          helper: this.$t('The field under validation must be formatted as an e-mail address.'),
         },
         {
           value: '',
           field: 'in:',
-          content: 'In',
-          helper: 'The field under validation must be included in the given list of values. The field can be an array or string.',
+          content: this.$t('In'),
+          helper: this.$t('The field under validation must be included in the given list of values. The field can be an array or string.'),
           visible: true,
           configs: [
-            { type: 'FormInput', label: 'Values', helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Values'), helper: '', validation:'required' },
           ],
         },
         {
           value: '',
           field: 'max:',
-          content: 'Max Length',
+          content: this.$t('Max Length'),
           helper: '',
           visible: true,
           configs: [
-            { type: 'FormInput', label: 'Max Input', helper: 'Validate that an attribute is no greater than a given size.', validation:'required|integer' },
+            { type: 'FormInput', label: this.$t('Max Input'), helper: this.$t('Validate that an attribute is no greater than a given length.'), validation:'required|integer' },
           ],
         },
         {
           value: '',
           field: 'min:',
-          content: 'Min Length',
+          content: this.$t('Min Length'),
           helper: '',
           visible: true,
           configs: [
-            { type: 'FormInput', label: 'Max Input', helper: 'Validate that an attribute is at least a given size.', validation:'required|integer' },
+            { type: 'FormInput', label: this.$t('Min Input'), helper: this.$t('Validate that an attribute is at least a given length.'), validation:'required|integer' },
           ],
         },
         {
           value: '',
           field: 'not_in:',
-          content: 'Not In',
-          helper: 'The field under validation must not be included in the given list of values.',
+          content: this.$t('Not In'),
+          helper: this.$t('The field under validation must not be included in the given list of values.'),
           visible: true,
           configs: [
-            { type: 'FormInput', label: 'Values', helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Values'), helper: '', validation:'required' },
           ],
         },
         {
           value: 'required',
-          content: 'Required',
-          helper: 'Checks if the length of the String representation of the value is >',
+          content: this.$t('Required'),
+          helper: this.$t('Checks if the length of the String representation of the value is >'),
         },
         {
           value: '',
           field: 'required_if:',
-          content: 'Required If',
-          helper: 'The field under validation must be present and not empty if the anotherfield field is equal to any value.',
+          content: this.$t('Required If'),
+          helper: this.$t('The field under validation must be present and not empty if the Variable Name field is equal to any value.'),
           visible: true,
           configs: [
-            { type: 'FormInput', label: 'Variable Name', helper: '', validation:'required' },
-            { type: 'FormInput', label: 'Variable Value', helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Variable Name'), helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'required' },
           ],
         },
         {
           value: '',
           field: 'required_unless:',
-          content: 'Required Unless',
-          helper: 'The field under validation must be present and not empty unless the anotherfield field is equal to any value.',
+          content: this.$t('Required Unless'),
+          helper: this.$t('The field under validation must be present and not empty unless the Variable Name field is equal to any value.'),
           visible: true,
           configs: [
-            { type: 'FormInput', label: 'Variable Name', helper: '', validation:'required' },
-            { type: 'FormInput', label: 'Variable Value', helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Variable Name'), helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'required' },
           ],
         },
         {
           value: '',
           field: 'same:',
-          content: 'Same',
-          helper: 'The given field must match the field under validation.',
+          content: this.$t('Same'),
+          helper: this.$t('The given field must match the field under validation.'),
           visible: true,
           configs: [
-            {type: 'FormInput', label: 'Variable Name', helper: '', validation: 'required'},
+            {type: 'FormInput', label: this.$t('Variable Name'), helper: '', validation: 'required'},
           ],
         },
         {
           value: 'url',
           content: 'URL',
-          helper: 'Validate that an attribute has a valid URL format',
+          helper: this.$t('Validate that an attribute has a valid URL format.'),
         },
       ],
     };
@@ -255,7 +254,8 @@ export default {
       this.optionError = '';
     },
     saveRule() {
-      this.rules.push(this.selectedOption);
+      const option = _.cloneDeep(this.selectedOption);
+      this.rules.push(option);
       this.hideCard();
       this.selectedOption = '';
     },
