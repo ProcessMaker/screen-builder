@@ -23,7 +23,7 @@
             id="controls"
             data-cy="controls"
             v-model="filteredControls"
-            :options="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+            v-bind="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
             :clone="cloneControl"
             class="controls list-group w-auto list-group-flush"
           >
@@ -92,7 +92,7 @@
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
         @input="updateConfig"
-        :options="{
+        v-bind="{
           group: {name: 'controls'},
           swapThreshold: 0.5
         }"
