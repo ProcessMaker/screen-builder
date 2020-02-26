@@ -279,19 +279,29 @@ export default {
         this.$emit('submit', this.transientData);
       }
     },
-    isValid() {
-      const config = _.cloneDeep(this.config);
-      config.forEach(page => {
-        page.items.forEach(item => {
-          if (item.component !== 'FormRecordList') {
-            return;
-          }
+    checkForRecordList(items, config) {
+      items.forEach(item => {
+        if (item.items) {
+          this.checkForRecordList(item.items, config);
+        }
 
-          const associatedRecordListPageId = item.config.form;
-          delete config[associatedRecordListPageId];
-        });
+        if (item.component === 'FormRecordList') {
+          this.removeRecordListForms(item, config);
+        }
       });
+
+      return config;
+    },
+    removeRecordListForms(item, config) {
+      const recordListFormId = item.config.form;
+      delete config[recordListFormId];
+      return config;
+    },
+    isValid() {
+      const items = getItemsFromConfig(this.config);
+      let config = _.cloneDeep(this.config);
       
+      this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
       return _.size(this.errors) === 0;
