@@ -256,12 +256,13 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
+      // Reset our add item
+      this.addItem = {};
+
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
       }
-      // Reset our add item
-      this.addItem = {};
       // We switch our renderer to the form specified
       // This form is a numerical index to the form we want to show
       this.$refs.addRenderer.currentPage = this.form;
@@ -271,7 +272,7 @@ export default {
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
-      
+
       this.handleSubmit();
     },
     handleSubmit() {
@@ -285,6 +286,9 @@ export default {
       data[data.length] = JSON.parse(JSON.stringify(this.addItem));
       // Emit the newly updated data model
       this.$emit('input', data);
+
+      // Reset our add item
+      this.addItem = {};
 
       this.$nextTick(() => {
         this.$refs.addModal.hide();
