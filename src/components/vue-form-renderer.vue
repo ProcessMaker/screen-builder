@@ -14,6 +14,7 @@
           v-model="element.items"
           @submit="submit"
           :config="element.config"
+          :ancestor-screens="ancestorScreens"
           :name="element.config.name !== undefined ? element.config.name : null"
           @pageNavigate="pageNavigate"
           v-bind="element.config"
@@ -28,6 +29,7 @@
               :validationData="transientData"
               v-model="model[getValidPath(element.config.name)]"
               @submit="submit"
+              :ancestor-screens="ancestorScreens"
               @pageNavigate="pageNavigate"
               :name="element.config.name !== undefined ? element.config.name : null"
               v-bind="element.config"
@@ -47,7 +49,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
+import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -69,7 +71,7 @@ import WatchersSynchronous from '@/components/watchers-synchronous';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import Mustache from 'mustache'
+import Mustache from 'mustache';
 
 const csstree = require('css-tree');
 
@@ -83,7 +85,7 @@ Vue.use(VueDeepSet);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'ancestorScreens'],
   model: {
     prop: 'data',
     event: 'update',

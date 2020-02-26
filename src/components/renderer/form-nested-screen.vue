@@ -1,9 +1,11 @@
 <template>
   <vue-form-renderer
+    v-if="!ancestorScreens.includes(screenTitle)"
     class="form-nested-screen"
     :placeholder="placeholder"
     v-model="data"
     :config="validatedConfig"
+    :ancestor-screens="[...ancestorScreens, screenTitle]"
     mode="preview"
     :computed="computed"
     :custom-css="customCSS"
@@ -13,14 +15,25 @@
 </template>
 
 <script>
+const globalObject = typeof window === 'undefined'
+  ? global
+  : window;
+
 const defaultConfig = [
   {
     name: 'empty',
     items: [],
   },
 ];
+
 export default {
-  props: ['name', 'screen', 'value', 'validationData'],
+  props: {
+    name: String,
+    screen: Number,
+    value: null,
+    validationData: null,
+    ancestorScreens: {type: Array, default: () => []},
+  },
   data() {
     return {
       api: 'screens',
@@ -29,6 +42,7 @@ export default {
       computed: [],
       customCSS: null,
       watchers: [],
+      screenTitle: null,
     };
   },
   computed: {
@@ -63,12 +77,18 @@ export default {
             this.computed = response.data.computed;
             this.customCSS = response.data.custom_css;
             this.watchers = response.data.watchers;
+            this.screenTitle = response.data.title;
+
+            if (this.ancestorScreens.includes(this.screenTitle)) {
+              globalObject.ProcessMaker.alert(`Rendering of nested "${this.screenTitle}" screen was disallowed to prevent loop.`, 'warning');
+            }
           });
       } else {
         this.config = defaultConfig;
         this.computed = [];
         this.customCSS = null;
         this.watchers = [];
+        this.screenTitle = null;
       }
     },
   },
