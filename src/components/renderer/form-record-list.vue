@@ -191,8 +191,6 @@ export default {
         title: option[value || 'content'],
       });
 
-      this.reinitializeFields();
-
       return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
     },
     getValidFieldData(jsonData, dataName) {
@@ -307,11 +305,6 @@ export default {
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
-    },
-    reinitializeFields() {
-      this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
-      });
     },
     isValid() {
       const validate = ValidatorFactory(this.$refs.addRenderer.config[this.form].items, this.$refs.addRenderer.transientData);
