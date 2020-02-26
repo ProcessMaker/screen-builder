@@ -4,6 +4,7 @@
       <div
         v-for="(element, index) in visibleElements"
         :key="index"
+        :selector="element.config.customCssSelector"
       >
         <component
           v-if="element.container"
@@ -72,6 +73,7 @@ import Inputmask from 'inputmask';
 import Mustache from 'mustache'
 
 const csstree = require('css-tree');
+const Scrollparent = require("scrollparent");
 
 Vue.component('custom-css', {
   render(createElement) {
@@ -144,6 +146,7 @@ export default {
           };
         },
       },
+      scrollable: null,
     };
   },
   watch: {
@@ -174,6 +177,26 @@ export default {
             JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
           });
         }
+
+        if (this.config) {
+          this.config.forEach(page => {
+            page.items.forEach(item => {
+              if (item.component !== 'FormRecordList') {
+                return;
+              }
+              const associatedRecordListPageId = item.config.form;
+              if (this.config[associatedRecordListPageId] && this.config[associatedRecordListPageId].items ) {
+                this.config[associatedRecordListPageId].items.forEach(field => {
+                  if (field.config.name in this.transientData) {
+                    delete this.transientData[field.config.name];
+                  } 
+                });
+              }
+              
+            });
+          });
+        }
+        
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
@@ -210,6 +233,7 @@ export default {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
     this.applyConfiguredDefaultValues();
+    this.scrollable = Scrollparent(this.$el);
   },
   methods: {
     applyConfiguredDefaultValues() {
@@ -256,7 +280,19 @@ export default {
       }
     },
     isValid() {
-      this.dataTypeValidator = ValidatorFactory(this.config, this.data);
+      const config = _.cloneDeep(this.config);
+      config.forEach(page => {
+        page.items.forEach(item => {
+          if (item.component !== 'FormRecordList') {
+            return;
+          }
+
+          const associatedRecordListPageId = item.config.form;
+          delete config[associatedRecordListPageId];
+        });
+      });
+      
+      this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
       return _.size(this.errors) === 0;
     },
@@ -266,6 +302,11 @@ export default {
       }
 
       this.currentPage = page;
+
+      // Scroll to top
+      if (this.scrollable) {
+        this.scrollable.scrollTop = 0;
+      }
     },
     setDefaultValues() {
       const shouldHaveDefaultValue = item => {
