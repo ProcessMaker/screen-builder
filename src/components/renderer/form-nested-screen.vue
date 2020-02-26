@@ -37,7 +37,16 @@ export default {
     },
     data: {
       get() {
-        return !this.validationData || this.name ? this.localData : this.validationData;
+        const data = !this.validationData || this.name ? this.localData : this.validationData;
+        // Add magic _ variables to nested screens
+        if (this.validationData && this.name) {
+          Object.keys(this.validationData).forEach(key => {
+            if (key.substr(0, 1) === '_') {
+              data[key] = this.validationData[key];
+            }
+          });
+        }
+        return data;
       },
       set(data) {
         if (this.name) {
