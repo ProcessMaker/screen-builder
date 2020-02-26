@@ -46,7 +46,7 @@
 
     <b-modal
       :static="true"
-      @ok="add"
+      @ok="handleOk"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
@@ -94,11 +94,11 @@
       size="sm"
       v-if="editable && !selfReferenced"
       ref="infoModal"
-      :ok-title="$t('Save')"
+      :ok-title="$t('OK')"
       :title="$t('Information form')"
       ok-only
     >
-      <p>{{ $t('The form to be displayed is not assigned..') }}</p>
+      <p>{{ $t('The form to be displayed is not assigned.') }}</p>
     </b-modal>
     <div v-if="editable && selfReferenced" class="alert alert-danger">
       {{ $t('The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.') }}
@@ -111,6 +111,7 @@
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
+import { ValidatorFactory } from '../../factories/ValidatorFactory';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -141,16 +142,17 @@ export default {
     },
     // The fields used for our vue table
     tableData() {
+      const value = this.value || [];
       let data = {
-        total: this.value.length,
+        total: value.length,
         per_page: this.perPage,
         current_page: 1,
-        last_page: Math.floor(this.value.length / this.perPage),
+        last_page: Math.floor(value.length / this.perPage),
         next_page_url: null,
         prev_page_url: null,
         from: 1,
-        to: this.value.length,
-        data: this.value.slice(0, this.perPage),
+        to: value.length,
+        data: value.slice(0, this.perPage),
       };
       return data;
     },
@@ -167,6 +169,13 @@ export default {
     selfReferenced() {
       return this.form && this.form === this.$parent.currentPage;
     },
+  },
+  watch: {
+    tableFields() {
+      this.$nextTick(() => {
+        this.$refs.vuetable.normalizeFields();
+      });
+    }
   },
   methods: {
     setUploadDataNamePrefix(index = null) {
@@ -260,13 +269,26 @@ export default {
       this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
     },
-    add() {
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefault();
+      
+      this.handleSubmit();
+    },
+    handleSubmit() {
+      if (!this.isValid()) {
+        return;
+      }
+
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       data[data.length] = JSON.parse(JSON.stringify(this.addItem));
       // Emit the newly updated data model
       this.$emit('input', data);
+
+      this.$nextTick(() => {
+        this.$refs.addModal.hide();
+      });
     },
     showDeleteConfirmation(index) {
       this.deleteIndex = index;
@@ -285,7 +307,12 @@ export default {
       this.$nextTick(() => {
         this.$refs.vuetable.normalizeFields();
       });
-    }
+    },
+    isValid() {
+      const validate = ValidatorFactory(this.$refs.addRenderer.config[this.form].items, this.$refs.addRenderer.transientData);
+      this.errors = validate.getErrors();
+      return _.size(this.errors) === 0;
+    },
   },
 };
 </script>

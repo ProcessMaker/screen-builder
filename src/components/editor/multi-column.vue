@@ -1,6 +1,6 @@
 <template>
   <div :class="classContainer" class="mb-1 mt-1 pb-0 pt-0">
-    <div>
+    <div :selector="config.customCssSelector">
       <div class="row">
         <template v-for="(item, index) in items">
           <draggable :class="classColumn(index)"
