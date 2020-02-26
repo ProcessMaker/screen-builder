@@ -232,6 +232,11 @@ export default {
         return [{items: []}];
       }
       let config = JSON.parse(JSON.stringify(this.$parent.config));
+      
+      if (config.name && config.name.includes('multi_column')) {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.config));
+      }
+ 
       for (let index = 0; index < config.length; index++) {
         if (index != this.form) {
           config[index].items = [];
