@@ -50,8 +50,8 @@ export default {
     },
     /**
      * Queue a watcher
-     * @param {object} watcher 
-     * @param {object} data 
+     * @param {object} watcher
+     * @param {object} data
      */
     queueWatcher(watcher, data) {
       this.watchersQueue.indexOf(watcher) === -1 ? this.watchersQueue.push(watcher) : null;
@@ -59,7 +59,7 @@ export default {
     },
     /**
      * Process the watchers queue
-     * @param {object} data 
+     * @param {object} data
      */
     processWatchersQueue(data) {
       while (this.watchersQueue.length) {
@@ -98,6 +98,9 @@ export default {
       }
     },
     loadWatcherResponse(watcherUid, response) {
+      if (!this.watchers)  {
+        return;
+      }
       const watcher = this.watchers.find(watcher => watcher.uid === watcherUid);
       new Promise((resolve, exception) => {
         if (response.exception) {
