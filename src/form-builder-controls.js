@@ -342,6 +342,7 @@ export default [
           field: 'options',
           config: {
             label: 'Column Width',
+            validation: 'columns-adds-to-12'
           },
         },
         colorProperty,
