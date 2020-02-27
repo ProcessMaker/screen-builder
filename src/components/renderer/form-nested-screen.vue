@@ -54,21 +54,41 @@ export default {
     },
   },
   methods: {
+    elementsValid(config) {
+      config.forEach(item => {
+
+        //If the element has containers
+        if (Array.isArray(item)) {
+          this.elementsValid(item);
+        }
+
+        //If the element has items
+        if (item.items) {
+          this.elementsValid(item.items);
+        }
+
+        //hidden buttons
+        if (item.config && item.component === 'FormButton' && item.config.event === 'submit') {
+          item.config.hidden = true;
+        }
+
+      });
+    },
     loadScreen(id) {
+      this.config = defaultConfig;
+      this.computed = [];
+      this.customCSS = null;
+      this.watchers = [];
       if (id) {
         window.ProcessMaker.apiClient
           .get(this.api + '/' + id)
           .then(response => {
             this.config = response.data.config;
+            this.elementsValid(this.config);
             this.computed = response.data.computed;
             this.customCSS = response.data.custom_css;
             this.watchers = response.data.watchers;
           });
-      } else {
-        this.config = defaultConfig;
-        this.computed = [];
-        this.customCSS = null;
-        this.watchers = [];
       }
     },
   },
