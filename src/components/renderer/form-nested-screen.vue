@@ -54,21 +54,24 @@ export default {
     },
   },
   methods: {
-    elementsValid(config) {
+    isSubmitButton(item) {
+      return item.config && item.component === 'FormButton' && item.config.event === 'submit';
+    },
+    hideSubmitButtons(config) {
       config.forEach(item => {
 
         //If the element has containers
         if (Array.isArray(item)) {
-          this.elementsValid(item);
+          this.hideSubmitButtons(item);
         }
 
         //If the element has items
         if (item.items) {
-          this.elementsValid(item.items);
+          this.hideSubmitButtons(item.items);
         }
 
         //hidden buttons
-        if (item.config && item.component === 'FormButton' && item.config.event === 'submit') {
+        if (this.isSubmitButton(item)) {
           item.config.hidden = true;
         }
 
@@ -84,7 +87,7 @@ export default {
           .get(this.api + '/' + id)
           .then(response => {
             this.config = response.data.config;
-            this.elementsValid(this.config);
+            this.hideSubmitButtons(this.config);
             this.computed = response.data.computed;
             this.customCSS = response.data.custom_css;
             this.watchers = response.data.watchers;
