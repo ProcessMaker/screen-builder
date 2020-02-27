@@ -20,7 +20,7 @@ const defaultConfig = [
   },
 ];
 export default {
-  props: ['name', 'screen', 'value', 'validationData'],
+  props: ['screen', 'value', 'validationData'],
   data() {
     return {
       api: 'screens',
@@ -37,16 +37,12 @@ export default {
     },
     data: {
       get() {
-        return !this.validationData || this.name ? this.localData : this.validationData;
+        return this.validationData || this.localData;
       },
       set(data) {
-        if (this.name) {
-          this.$emit('input', data);
-        } else {
-          Object.keys(data).forEach((variable) => {
-            this.$set(this.validationData, variable, data[variable]);
-          });
-        }
+        Object.keys(data).forEach((variable) => {
+          this.$set(this.validationData, variable, data[variable]);
+        });
       },
     },
     placeholder() {
@@ -99,18 +95,9 @@ export default {
     screen(screen) {
       this.loadScreen(screen);
     },
-    value: {
-      deep: true,
-      handler() {
-        if (this.name) {
-          this.$set(this, 'localData', this.value || {});
-        }
-      },
-    },
   },
   mounted() {
     this.loadScreen(this.screen);
-    this.name ? this.$set(this, 'localData', this.value || {}) : null;
   },
 };
 </script>
