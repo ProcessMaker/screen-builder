@@ -54,21 +54,44 @@ export default {
     },
   },
   methods: {
+    isSubmitButton(item) {
+      return item.config && item.component === 'FormButton' && item.config.event === 'submit';
+    },
+    hideSubmitButtons(config) {
+      config.forEach(item => {
+
+        //If the element has containers
+        if (Array.isArray(item)) {
+          this.hideSubmitButtons(item);
+        }
+
+        //If the element has items
+        if (item.items) {
+          this.hideSubmitButtons(item.items);
+        }
+
+        //hidden buttons
+        if (this.isSubmitButton(item)) {
+          item.config.hidden = true;
+        }
+
+      });
+    },
     loadScreen(id) {
+      this.config = defaultConfig;
+      this.computed = [];
+      this.customCSS = null;
+      this.watchers = [];
       if (id) {
         window.ProcessMaker.apiClient
           .get(this.api + '/' + id)
           .then(response => {
             this.config = response.data.config;
+            this.hideSubmitButtons(this.config);
             this.computed = response.data.computed;
             this.customCSS = response.data.custom_css;
             this.watchers = response.data.watchers;
           });
-      } else {
-        this.config = defaultConfig;
-        this.computed = [];
-        this.customCSS = null;
-        this.watchers = [];
       }
     },
   },
