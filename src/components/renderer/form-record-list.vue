@@ -40,6 +40,9 @@
         <template slot="mustache" slot-scope="{rowData, rowField}">
           {{ mustache(rowField, rowData) }}
         </template>
+        <template slot="filedownload" slot-scope="{rowData, rowField}">
+          <a href="javascript:alert(222)">{{ mustache(rowField, rowData) }}</a>
+        </template>
       </vuetable>
       <vuetable-pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
     </template>
@@ -184,12 +187,21 @@ export default {
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
 
-      const convertToVuetableFormat = option => ({
-        //name: '__component:mustache',
-        name: '__slot:mustache',
-        sortField: option[key || 'value'],
-        title: option[value || 'content'],
-      });
+      console.log('*getTableFieldsFromDataSource', this.fields);
+      const convertToVuetableFormat = option => {
+        let isFileDownload = true;
+        let slot = '__slot:mustache';
+
+        if (isFileDownload) {
+          slot = '__slot:filedownload';
+        }
+
+        return {
+          name: slot,
+          sortField: option[key || 'value'],
+          title: option[value || 'content'],
+        };
+      }
 
       this.reinitializeFields();
 
@@ -271,7 +283,7 @@ export default {
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
-      
+
       this.handleSubmit();
     },
     handleSubmit() {
