@@ -234,6 +234,10 @@ export default {
       if (config.name && config.name.includes('multi_column')) {
         config = JSON.parse(JSON.stringify(this.$parent.$parent.config));
       }
+
+      if (config[0].name && config[0].name === 'LoopItem') {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.$parent.config));
+      }
  
       for (let index = 0; index < config.length; index++) {
         if (index != this.form) {
