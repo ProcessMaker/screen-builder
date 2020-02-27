@@ -34,7 +34,7 @@ export default {
       let items = this.items;
       return [{
         name: 'LoopItem',
-        items: items,
+        items,
       }];
     },
     times() {
@@ -52,12 +52,12 @@ export default {
 
       try {
         times = Mustache.render(times, this.transientData);
-      } catch (error) { }
-  
+      } catch (error) {}
+
       times = parseInt(times);
 
       if (Number.isNaN(times)) {
-        return []
+        return [];
       }
 
       if (times > 100) {
@@ -65,7 +65,7 @@ export default {
       }
 
       return [...Array(times).keys()];
-    }
+    },
   },
   watch: {
     transientData: {
@@ -93,7 +93,7 @@ export default {
     },
     times() {
       this.setupMatrix();
-    }
+    },
   },
   methods: {
     setMatrixValue(i, v) {
