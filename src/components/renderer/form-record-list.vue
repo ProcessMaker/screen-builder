@@ -186,15 +186,22 @@ export default {
     },
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
+      let formItems = (this.$refs && this.$refs.addRenderer) ? this.$refs.addRenderer.config[this.form].items : [];
 
-      console.log('*getTableFieldsFromDataSource', this.fields);
-      const convertToVuetableFormat = option => {
-        let isFileDownload = true;
-        let slot = '__slot:mustache';
+      const componentFromVariableName =  (variable, items) => {
+        let result = null;
+        items.forEach(x => {
+          if (x.config.name === variable) {
+            result = x.component;
+          }
+        });
+        return result;
+      }
 
-        if (isFileDownload) {
-          slot = '__slot:filedownload';
-        }
+      const convertToVuetableFormat = (option, items) => {
+        let formItems = items;
+        const isFileDownload = componentFromVariableName(option[key || 'value'], formItems) == 'FormInput';
+        let slot = isFileDownload ? '__slot:filedownload' : '__slot:mustache';
 
         return {
           name: slot,
@@ -205,7 +212,15 @@ export default {
 
       this.reinitializeFields();
 
-      return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
+      //return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat, {items: formItems});
+
+      let validatedList = this.getValidFieldData(jsonData, dataName);
+      let result=[];
+      for (var i = 0; i < validatedList.length; i++) {
+        let converted = convertToVuetableFormat(validatedList[i], formItems);
+        result.push(converted);
+      }
+      return result;
     },
     getValidFieldData(jsonData, dataName) {
       let validationData = this.validationData[dataName];
