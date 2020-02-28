@@ -40,8 +40,8 @@
         <template slot="mustache" slot-scope="{rowData, rowField}">
           {{ mustache(rowField, rowData) }}
         </template>
-        <template slot="filedownload" slot-scope="{rowData, rowField}">
-          <a href="javascript:alert(222)">{{ mustache(rowField, rowData) }}</a>
+        <template slot="filedownload" slot-scope="{rowData, rowField, rowIndex}">
+          <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
         </template>
       </vuetable>
       <vuetable-pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
@@ -178,7 +178,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.vuetable.normalizeFields();
       });
-    }
+    },
   },
   methods: {
     setUploadDataNamePrefix(index = null) {
@@ -201,7 +201,7 @@ export default {
       const convertToVuetableFormat = (option, items) => {
         let formItems = items;
         const isFileDownload = componentFromVariableName(option[key || 'value'], formItems) == 'FormInput';
-        let slot = isFileDownload ? '__slot:filedownload' : '__slot:mustache';
+        let slot = !isFileDownload ?  '__slot:mustache' : '__slot:filedownload';
 
         return {
           name: slot,
@@ -321,6 +321,39 @@ export default {
       this.deleteIndex = index;
       this.$refs.deleteModal.show();
     },
+
+    downloadFile(rowData, rowField, rowIndex) {
+
+      let requestId = this.$parent.data._request.id;
+      let name = this.name + "." + rowIndex + "." + rowField;
+
+      ProcessMaker.apiClient
+        .get("requests/" + requestId + "/files?name=" + name)
+        .then(response => {
+          if (response.data && response.data.length) {
+            let file = response.data[0];
+            this.downloadRecordListFile(file, requestId);
+          }
+      });
+    },
+
+    downloadRecordListFile(file, requestId) {
+      ProcessMaker.apiClient({
+          baseURL: "/",
+          url: "/request/" + requestId + "/files/" + file.id,
+          method: "GET",
+          responseType: "blob" // important
+        }).then(response => {
+          //axios needs to be told to open the file
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", file.file_name);
+          document.body.appendChild(link);
+          link.click();
+        });
+    },
+
     remove() {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
