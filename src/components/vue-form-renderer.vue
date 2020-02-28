@@ -1,5 +1,5 @@
 <template>
-  <div :class="containerClass" class="nolantest">
+  <div class="custom-css-scope">
     <div class="page">
       <div
         v-for="(element, index) in visibleElements"
@@ -21,7 +21,7 @@
           :is="element.component"
         />
 
-        <div v-else :id="element.config.name ? element.config.name : undefined">
+        <div v-else :id="element.config.name ? element.config.name : undefined" :selector="element.config.customCssSelector">
           <keep-alive>
             <component
               :class="elementCssClass(element)"
@@ -113,14 +113,6 @@ export default {
     },
     visibleElements() {
       return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
-    },
-    containerClass() {
-      return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
-    },
-    parentScreen() {
-      // if we are inside a nested screen, get the screen's id
-      const screen = _.get(this, '$parent.screen', null);
-      return typeof screen === 'number' ? screen : null;
     },
   },
   data() {
@@ -331,7 +323,7 @@ export default {
         .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
     },
     parseCss() {
-      let containerSelector = '.' + this.containerClass;
+      const containerSelector = '.custom-css-scope';
       try {
         const ast = csstree.parse(this.customCss, {
           onParseError(error) {

@@ -43,7 +43,6 @@ window.ProcessMaker = {
                     'helper': null,
                     'type': 'text',
                     'dataFormat': 'string',
-                    'customCssSelector': 'first-name'
                   },
                   'inspector': [],
                   'component': 'FormInput',
@@ -62,7 +61,6 @@ window.ProcessMaker = {
                     'helper': null,
                     'type': 'text',
                     'dataFormat': 'string',
-                    'customCssSelector': ''
                   },
                   'inspector': [],
                   'component': 'FormInput',
@@ -76,7 +74,7 @@ window.ProcessMaker = {
           ],
           computed: [],
           watchers: [],
-          custom_css: "[selector='first-name'] label { font-style: italic; }",
+          custom_css: null,
           status: 'ACTIVE',
         };
         if (url === 'screens/1') {
