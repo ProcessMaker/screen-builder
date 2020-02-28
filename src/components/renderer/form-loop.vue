@@ -7,7 +7,9 @@
         :computed="null"
         :custom-css="null"
         :watchers="null"
+        :is-loop="true"
         @submit="submit"
+        @pageNavigate="$emit('pageNavigate', $event)"
         @update="setMatrixValue(loopIndex, $event)"
       />
     </form>

@@ -48,7 +48,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
+import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -70,7 +70,7 @@ import WatchersSynchronous from '@/components/watchers-synchronous';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import Mustache from 'mustache'
+import Mustache from 'mustache';
 
 const csstree = require('css-tree');
 const Scrollparent = require("scrollparent");
@@ -85,7 +85,7 @@ Vue.use(VueDeepSet);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop'],
   model: {
     prop: 'data',
     event: 'update',
@@ -189,14 +189,14 @@ export default {
                 this.config[associatedRecordListPageId].items.forEach(field => {
                   if (field.config.name in this.transientData) {
                     delete this.transientData[field.config.name];
-                  } 
+                  }
                 });
               }
-              
+
             });
           });
         }
-        
+
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
@@ -291,12 +291,17 @@ export default {
           delete config[associatedRecordListPageId];
         });
       });
-      
+
       this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
       return _.size(this.errors) === 0;
     },
     pageNavigate(page) {
+      if (this.isLoop) {
+        this.$emit('pageNavigate', page);
+        return;
+      }
+
       if (!this.config[page]) {
         return;
       }
