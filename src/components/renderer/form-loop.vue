@@ -1,16 +1,16 @@
 <template>
-  <div class="form-group">
-    <vue-form-renderer
-      v-for="loopIndex in times"
-      :key="loopIndex"
-      :data="getMatrixValue(loopIndex)"
-      :config="rendererConfig"
-      :computed="null"
-      :custom-css="null"
-      :watchers="null"
-      @submit="submit"
-      @update="setMatrixValue(loopIndex, $event)"
-    />
+  <div>
+    <form v-for="loopIndex in times" :key="loopIndex" @submit.prevent>
+      <vue-form-renderer
+        :data="getMatrixValue(loopIndex)"
+        :config="rendererConfig"
+        :computed="null"
+        :custom-css="null"
+        :watchers="null"
+        @submit="submit"
+        @update="setMatrixValue(loopIndex, $event)"
+      />
+    </form>
   </div>
 </template>
 
