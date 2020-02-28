@@ -331,7 +331,7 @@ export default {
         .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
     },
     parseCss() {
-      let containerSelector = '.' + this.containerClass;
+      const containerSelector = '.' + this.containerClass;
       try {
         const ast = csstree.parse(this.customCss, {
           onParseError(error) {
