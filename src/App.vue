@@ -330,15 +330,9 @@ export default {
         let config = JSON.parse(savedConfig);
         this.$refs.builder.config = config;
       }
-      
-      const customCSS = localStorage.getItem('customCSS');
-      if (customCSS) {
-        this.customCSS = customCSS;
-      }
     },
     saveToLocalStorage() {
       localStorage.setItem('savedConfig', JSON.stringify(this.config));
-      localStorage.setItem('customCSS', this.customCSS);
     },
     editorDidMount(editor) {
       editor.getAction('editor.action.formatDocument').run();
