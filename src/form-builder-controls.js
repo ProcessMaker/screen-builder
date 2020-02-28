@@ -565,16 +565,6 @@ export default [
       },
       inspector: [
         {
-          type: 'FormInput',
-          field: 'name',
-          config: {
-            label: 'Data variable',
-            name: 'DataVariable',
-            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/',
-            helper: 'A variable name is a symbolic name to reference information.',
-          },
-        },
-        {
           type: 'ScreenSelector',
           field: 'screen',
           config: {
