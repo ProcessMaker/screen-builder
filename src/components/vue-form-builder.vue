@@ -88,7 +88,7 @@
       </div>
 
       <draggable
-        class="h-100"
+        class="h-100 custom-css-scope"
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
         @input="updateConfig"
@@ -103,6 +103,7 @@
           v-for="(element,index) in config[currentPage].items"
           :key="index"
           @click="inspect(element)"
+          :selector="element.config.customCssSelector"
         >
           <div v-if="element.container" @click="inspect(element)" class="card" data-cy="screen-element-container">
             <div
@@ -452,6 +453,7 @@ export default {
       config.forEach(page => this.replaceFormText(page.items));
       config.forEach(page => this.migrateFormSubmit(page.items));
       config.forEach(page => this.updateFieldNameValidation(page.items));
+      config.forEach(page => this.removeDataVariableFromNestedScreens(page.items));
     },
     updateFieldNameValidation(items) {
       items.forEach(item => {
@@ -466,6 +468,17 @@ export default {
           this.replaceFormText(item.items);
         }
       });
+    },
+    removeDataVariableFromNestedScreens(items) {
+      items.forEach(item => {
+        if (item.inspector) {
+          const hasDataVariable = item.inspector.find(inspector => inspector.config.name === 'DataVariable');
+          item.inspector = item.inspector.filter(inspector => inspector.config.name !== 'DataVariable');
+          if (hasDataVariable) {
+            delete item.config.name;
+          }
+        }
+      });      
     },
     replaceFormText(items) {
       items.forEach(item => {
@@ -672,7 +685,9 @@ export default {
       }
 
       //Generate Variable Name
-      [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control'] ? copy['editor-control'] :  copy['component']);
+      if (control.inspector.indexOf(keyNameProperty) !== -1) {
+        [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control'] ? copy['editor-control'] :  copy['component']);
+      }
 
       return copy;
     },

@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import debounce from 'lodash/debounce';
 
 export default {
   props: {
@@ -62,5 +63,8 @@ export default {
           this.selectedOption = response.data;
         });
     },
+  },
+  mounted() {
+    this.loadOptions = debounce(this.loadOptions, 1000);
   },
 };
