@@ -1,5 +1,5 @@
 <template>
-  <div :class="containerClass" class="nolantest">
+  <div :class="containerClass">
     <div class="page">
       <div
         v-for="(element, index) in visibleElements"
