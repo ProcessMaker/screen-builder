@@ -39,7 +39,7 @@
 
       <div class="row">
         <div class="col">
-          <draggable @update="updateSort" :element="'div'" v-model="optionsList" v-bind="{group:'options'}" @start="drag=true" @end="drag=false" >
+          <draggable @update="updateSort" :element="'div'" v-model="optionsList" group="options" @start="drag=true" @end="drag=false" >
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
                 <div class="card mb-3 bg-danger text-white text-right">

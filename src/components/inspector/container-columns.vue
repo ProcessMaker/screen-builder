@@ -40,7 +40,7 @@
           @update="updateSort"
           :element="'tbody'"
           v-model="existingOptions"
-          v-bind="{group:'options'}"
+          group="options"
         >
           <tr v-for="(option, index) in existingOptions" :key="index">
             <td>{{ option.value }}</td>

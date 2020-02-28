@@ -3,7 +3,7 @@
     <draggable
       style="min-height: 80px;"
       v-model="items"
-      v-bind="{group: {name: 'controls'}}"
+      group="controls"
     >
       <div class="control-item"
         :class="{selected: selected === element, hasError: hasError(element)}"
