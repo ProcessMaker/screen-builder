@@ -88,7 +88,7 @@ export default {
     },
     edit(item) {
       this.displayForm();
-      this.$set(this, 'add', item);
+      this.$set(this, 'add', _.cloneDeep(item));
     },
     confirmRemoval(item) {
       if (globalObject.ProcessMaker && globalObject.ProcessMaker.confirmModal) {
