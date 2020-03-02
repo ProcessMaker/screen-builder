@@ -1,8 +1,5 @@
 <template>
   <div>
-    
-    
-    
     <div class="accordion" id="watcherAccordion">
         <div class="card card-overflow">
             <div class="card-header p-0">
@@ -71,14 +68,12 @@
                     :multiple="false"
                     :show-labels="false"
                     :searchable="true"
-                    :internal-search="false"
                     optionValue="id"
                     optionContent="title"
                     group-values="items"
                     group-label="type"
                     :validation="ruleWatcherScript"
                     @open="loadSources"
-                    @search-change="loadSources"
                     :helper="$t('The source to access when this Watcher runs')"
                   />
                   <div v-if="ruleWatcherScript && !config.script" class="invalid-feedback d-block mt-n2 mb-3">
@@ -365,12 +360,11 @@ export default {
         }
       });
     },
-    loadSources(filter) {
+    loadSources() {
       this.scripts =  [];
-
       //call load data
       this.$root.$children[0].watchers_config.api.scripts.forEach( callback => {
-        callback(this.scripts, filter);
+        callback(this.scripts);
       });
     },
     displayTableList() {
