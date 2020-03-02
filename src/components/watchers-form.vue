@@ -120,20 +120,25 @@
                     </div>
                   </div>
                   <div v-if="isDatasource">
-                    <form-multi-select
-                      :name="$t('Endpoint')"
-                      :label="$t('Endpoint')"
-                      :options="endpoints"
-                      v-model="endpoint"
-                      :placeholder="$t('Select an endpoint')"
-                      :multiple="false"
-                      :show-labels="false"
-                      :searchable="true"
-                      :internal-search="false"
-                      @search-change="loadEndpoints"
-                      @open="loadEndpoints"
-                      :helper="$t('The Data Connector endpoint to access when this Watcher runs')"
-                    />
+                    <div class="form-group">
+                      <form-multi-select
+                        :name="$t('Endpoint')"
+                        :label="$t('Endpoint')"
+                        :options="endpoints"
+                        v-model="endpoint"
+                        :placeholder="$t('Select an endpoint')"
+                        :multiple="false"
+                        :show-labels="false"
+                        :searchable="true"
+                        :internal-search="false"
+                        @search-change="loadEndpoints"
+                        @open="loadEndpoints"
+                        :helper="$t('The Data Connector endpoint to access when this Watcher runs')"
+                      />
+                      <div v-if="endpointError" class="invalid-feedback d-block">
+                        <div>{{ endpointError }}</div>
+                      </div>
+                    </div>
                     <div class="form-group">
                       <label>{{ $t('Input Data') }}</label>
                       <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
@@ -258,6 +263,7 @@ export default {
         lineNumbers: 'on',
         minimap: { enabled: false },
       },
+      endpointError: null,
     };
   },
   watch: {
@@ -379,7 +385,13 @@ export default {
       return true;
     },
     isFormValid() {
-      this.setValidations();
+
+      if (this.isDatasource && !this.endpoint) {
+        this.endpointError = this.$t("Endpoint is required");
+      } else {
+        this.endpointError = null;
+      }
+
       for (let item in this.$refs) {
         if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
           return false;
@@ -388,22 +400,27 @@ export default {
 
       return !(!this.config.watching ||
         !this.config.script ||
+        this.endpointError ||
         !this.jsonIsValid('input_data') ||
         !this.jsonIsValid('script_configuration'));
     },
     validateDataAndSave() {
-      if (!this.isFormValid()) {
-        if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-          globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
+      this.setValidations();
+      this.$nextTick(() => { // allow validations to do their thing
+        
+        if (!this.isFormValid()) {
+          if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
+            globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
+          }
+          return;
         }
-        return;
-      }
 
-      if (!this.config.uid) {
-        this.config.uid = _.uniqueId(new Date().getTime());
-      }
+        if (!this.config.uid) {
+          this.config.uid = _.uniqueId(new Date().getTime());
+        }
 
-      this.save();
+        this.save();
+      });
     },
     save() {
       this.$emit('save-form');
