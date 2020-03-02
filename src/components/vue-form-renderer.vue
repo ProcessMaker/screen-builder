@@ -307,13 +307,28 @@ export default {
       delete config[recordListFormId];
       return config;
     },
+    checkForNestedScreenErrors(child) {
+      if (child.$options._componentTag !== 'FormNestedScreen') {
+        return;
+      }
+      
+      return child.errors();
+    },
     isValid() {
       const items = getItemsFromConfig(this.config);
       let config = _.cloneDeep(this.config);
       
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
-      this.errors = this.dataTypeValidator.getErrors();
+      this.errors = this.dataTypeValidator.getErrors()      
+      
+      this.$children.forEach(child => {
+        const childErrors = this.checkForNestedScreenErrors(child);
+        if (!childErrors) {
+          return;
+        }
+        this.errors = Object.assign(this.errors, childErrors);
+      });
       return _.size(this.errors) === 0;
     },
     pageNavigate(page) {
