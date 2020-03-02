@@ -284,12 +284,23 @@ if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.
   Validator.useLang(globalObject.ProcessMaker.user.lang);
 }
 
+// Todo: Validation messages are not translated. These will need to be converted
+// to Validator.registerAsync() in order to get the $t translator.
+// Should also probably be converted to a mixin. These changes would then
+// require modifications to to App.vue and PM4 Core implementations
 Validator.register(
-  'attr-value',
-  value => {
-    return value.match(/^[a-zA-Z0-9-_]+$/);
-  },
-  'Must be letters, numbers, underscores or dashes'
+    'columns-adds-to-12',
+    value => {
+        const sum = value.reduce((total, options) => {
+            return total + parseInt(options['content']);
+        }, 0);
+
+        if (sum === 12) {
+            return true;
+        }
+        return false;
+    },
+    "Columns must add to 12"
 );
 
 import {
