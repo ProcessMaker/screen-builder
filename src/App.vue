@@ -347,18 +347,26 @@ export default {
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
       const savedWatchers = localStorage.getItem('savedWatchers');
+      const customCSS = localStorage.getItem('customCSS');
+
       if (savedConfig) {
         let config = JSON.parse(savedConfig);
         this.$refs.builder.config = config;
       }
+      
       if (savedWatchers) {
         let watcherConfig = JSON.parse(savedWatchers);
         this.watchers = watcherConfig;
+      }
+
+      if (customCSS) {
+        this.customCSS = customCSS;
       }
     },
     saveToLocalStorage() {
       localStorage.setItem('savedConfig', JSON.stringify(this.config));
       localStorage.setItem('savedWatchers', JSON.stringify(this.watchers));
+      localStorage.setItem('customCSS', this.customCSS);
     },
     editorDidMount(editor) {
       editor.getAction('editor.action.formatDocument').run();
