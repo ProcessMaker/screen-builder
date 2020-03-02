@@ -165,6 +165,7 @@
 </template>
 
 <script>
+require("bootstrap");
 import ComputedProperties from './components/computed-properties.vue';
 import WatchersPopup from './components/watchers-popup.vue';
 import CustomCSS from './components/custom-css.vue';
@@ -193,6 +194,25 @@ Validator.register('attr-value', value => {
   return value.match(/^[a-zA-Z0-9-_]+$/);
 }, 'Must be letters, numbers, underscores or dashes');
 
+const exampleScriptsForWatchers = [
+  (items, filter) => {
+    items.push({
+      type: "Test Data Sources",
+      items: [{
+        id: 'data_source-1',
+        title: 'Test Data Source'
+      }]
+    })
+    items.push({
+      type: "Test Script",
+      items: [{
+        id: 'script-1',
+        title: 'Test Script'
+      }]
+    })
+  }
+];
+
 export default {
   name: 'app',
   mixins: [canOpenJsonFile],
@@ -203,7 +223,7 @@ export default {
       },
       watchers_config: {
         api: {
-          scripts: [],
+          scripts: exampleScriptsForWatchers,
           execute: null,
         },
       },
@@ -326,13 +346,19 @@ export default {
   methods: {
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
+      const savedWatchers = localStorage.getItem('savedWatchers');
       if (savedConfig) {
         let config = JSON.parse(savedConfig);
         this.$refs.builder.config = config;
       }
+      if (savedWatchers) {
+        let watcherConfig = JSON.parse(savedWatchers);
+        this.watchers = watcherConfig;
+      }
     },
     saveToLocalStorage() {
       localStorage.setItem('savedConfig', JSON.stringify(this.config));
+      localStorage.setItem('savedWatchers', JSON.stringify(this.watchers));
     },
     editorDidMount(editor) {
       editor.getAction('editor.action.formatDocument').run();
