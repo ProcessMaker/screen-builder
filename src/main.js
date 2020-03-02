@@ -85,6 +85,14 @@ window.ProcessMaker = {
           resolve({data:{
             data: [exampleScreen],
           }});
+        } else if (url === '/data_sources/1') {
+          resolve({
+            data: {
+              endpoints: {
+                "list": { }
+              }
+            }
+          });
         }
       });
     },
