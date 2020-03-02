@@ -191,8 +191,6 @@ export default {
         title: option[value || 'content'],
       });
 
-      this.reinitializeFields();
-
       return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
     },
     getValidFieldData(jsonData, dataName) {
@@ -232,6 +230,15 @@ export default {
         return [{items: []}];
       }
       let config = JSON.parse(JSON.stringify(this.$parent.config));
+      
+      if (config.name && config.name.includes('multi_column')) {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.config));
+      }
+
+      if (config[0].name && config[0].name === 'LoopItem') {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.$parent.config));
+      }
+ 
       for (let index = 0; index < config.length; index++) {
         if (index != this.form) {
           config[index].items = [];
@@ -306,11 +313,6 @@ export default {
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
-    },
-    reinitializeFields() {
-      this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
-      });
     },
     isValid() {
       const validate = ValidatorFactory(this.$refs.addRenderer.config[this.form].items, this.$refs.addRenderer.transientData);
