@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-css-scope">
+  <div :class="containerClass">
     <div class="page">
       <div
         v-for="(element, index) in visibleElements"
@@ -15,13 +15,14 @@
           v-model="element.items"
           @submit="submit"
           :config="element.config"
+          :ancestor-screens="ancestorScreens"
           :name="element.config.name !== undefined ? element.config.name : null"
           @pageNavigate="pageNavigate"
           v-bind="element.config"
           :is="element.component"
         />
 
-        <div v-else :id="element.config.name ? element.config.name : undefined" :selector="element.config.customCssSelector">
+        <div v-else :id="element.config.name ? element.config.name : undefined">
           <keep-alive>
             <component
               :class="elementCssClass(element)"
@@ -29,6 +30,7 @@
               :validationData="transientData"
               v-model="model[getValidPath(element.config.name)]"
               @submit="submit"
+              :ancestor-screens="ancestorScreens"
               @pageNavigate="pageNavigate"
               :name="element.config.name !== undefined ? element.config.name : null"
               v-bind="element.config"
@@ -48,7 +50,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import { getValidPath, HasColorProperty, shouldElementBeVisible, formWatchers } from '@/mixins';
+import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -70,7 +72,7 @@ import WatchersSynchronous from '@/components/watchers-synchronous';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import Mustache from 'mustache'
+import Mustache from 'mustache';
 
 const csstree = require('css-tree');
 const Scrollparent = require("scrollparent");
@@ -85,7 +87,7 @@ Vue.use(VueDeepSet);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'ancestorScreens'],
   model: {
     prop: 'data',
     event: 'update',
@@ -113,6 +115,14 @@ export default {
     },
     visibleElements() {
       return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
+    },
+    containerClass() {
+      return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
+    },
+    parentScreen() {
+      // if we are inside a nested screen, get the screen's id
+      const screen = _.get(this, '$parent.screen', null);
+      return typeof screen === 'number' ? screen : null;
     },
   },
   data() {
@@ -279,19 +289,29 @@ export default {
         this.$emit('submit', this.transientData);
       }
     },
-    isValid() {
-      const config = _.cloneDeep(this.config);
-      config.forEach(page => {
-        page.items.forEach(item => {
-          if (item.component !== 'FormRecordList') {
-            return;
-          }
+    checkForRecordList(items, config) {
+      items.forEach(item => {
+        if (item.items) {
+          this.checkForRecordList(item.items, config);
+        }
 
-          const associatedRecordListPageId = item.config.form;
-          delete config[associatedRecordListPageId];
-        });
+        if (item.component === 'FormRecordList') {
+          this.removeRecordListForms(item, config);
+        }
       });
+
+      return config;
+    },
+    removeRecordListForms(item, config) {
+      const recordListFormId = item.config.form;
+      delete config[recordListFormId];
+      return config;
+    },
+    isValid() {
+      const items = getItemsFromConfig(this.config);
+      let config = _.cloneDeep(this.config);
       
+      this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
       return _.size(this.errors) === 0;
@@ -323,7 +343,7 @@ export default {
         .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
     },
     parseCss() {
-      const containerSelector = '.custom-css-scope';
+      const containerSelector = '.' + this.containerClass;
       try {
         const ast = csstree.parse(this.customCss, {
           onParseError(error) {

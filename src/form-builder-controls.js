@@ -342,6 +342,7 @@ export default [
           field: 'options',
           config: {
             label: 'Column Width',
+            validation: 'columns-adds-to-12'
           },
         },
         colorProperty,
@@ -564,16 +565,6 @@ export default [
         value: null,
       },
       inspector: [
-        {
-          type: 'FormInput',
-          field: 'name',
-          config: {
-            label: 'Data variable',
-            name: 'DataVariable',
-            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/',
-            helper: 'A variable name is a symbolic name to reference information.',
-          },
-        },
         {
           type: 'ScreenSelector',
           field: 'screen',

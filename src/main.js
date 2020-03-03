@@ -43,6 +43,7 @@ window.ProcessMaker = {
                     'helper': null,
                     'type': 'text',
                     'dataFormat': 'string',
+                    'customCssSelector': 'first-name'
                   },
                   'inspector': [],
                   'component': 'FormInput',
@@ -61,6 +62,7 @@ window.ProcessMaker = {
                     'helper': null,
                     'type': 'text',
                     'dataFormat': 'string',
+                    'customCssSelector': ''
                   },
                   'inspector': [],
                   'component': 'FormInput',
@@ -74,7 +76,7 @@ window.ProcessMaker = {
           ],
           computed: [],
           watchers: [],
-          custom_css: null,
+          custom_css: "[selector='first-name'] label { font-style: italic; }",
           status: 'ACTIVE',
         };
         if (url === 'screens/1') {
@@ -83,6 +85,14 @@ window.ProcessMaker = {
           resolve({data:{
             data: [exampleScreen],
           }});
+        } else if (url === '/data_sources/1') {
+          resolve({
+            data: {
+              endpoints: {
+                "list": { }
+              }
+            }
+          });
         }
       });
     },
