@@ -10,6 +10,7 @@
     :computed="computed"
     :custom-css="customCSS"
     :watchers="watchers"
+
     @css-errors="cssErrors = $event"
   />
 </template>
@@ -33,10 +34,10 @@ export default {
     value: null,
     validationData: null,
     ancestorScreens: {type: Array, default: () => []},
+    endpoint: { type: String, default: 'screens' }
   },
   data() {
     return {
-      api: 'screens',
       localData: {},
       config: defaultConfig,
       computed: [],
@@ -96,7 +97,7 @@ export default {
 
       if (id) {
         window.ProcessMaker.apiClient
-          .get(this.api + '/' + id)
+          .get(this.endpoint + '/' + id)
           .then(response => {
             this.config = response.data.config;
             this.hideSubmitButtons(this.config);
