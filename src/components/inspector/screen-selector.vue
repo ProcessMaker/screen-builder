@@ -42,10 +42,12 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      pmql: this.builder.screen ? 'id!=' + this.builder.screen.id : null,
-    };
-  },
+  mounted() {
+    let pmql = '(type = "FORM" or type = "DISPLAY")'
+    if (this.builder.screen) {
+      pmql += ' and id != ' + this.builder.screen.id;
+    }
+    this.pmql = pmql;
+  }
 };
 </script>

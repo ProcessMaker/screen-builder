@@ -186,23 +186,9 @@ export default {
     },
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
-      let formItems = (this.$refs && this.$refs.addRenderer) ? this.$refs.addRenderer.config[this.form].items : [];
 
-      const componentFromVariableName =  (variable, items) => {
-        let result = null;
-        items.forEach(x => {
-          if (x.config.name === variable) {
-            result = x.component;
-          }
-        });
-        return result;
-      }
-
-      const convertToVuetableFormat = (option, items) => {
-        let formItems = items;
-        const isFileDownload = componentFromVariableName(option[key || 'value'], formItems) == 'FormInput';
-        let slot = !isFileDownload ?  '__slot:mustache' : '__slot:filedownload';
-
+      const convertToVuetableFormat = (option) => {
+        let slot = '__slot:filedownload';
         return {
           name: slot,
           sortField: option[key || 'value'],
@@ -210,17 +196,7 @@ export default {
         };
       }
 
-      this.reinitializeFields();
-
-      //return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat, {items: formItems});
-
-      let validatedList = this.getValidFieldData(jsonData, dataName);
-      let result=[];
-      for (var i = 0; i < validatedList.length; i++) {
-        let converted = convertToVuetableFormat(validatedList[i], formItems);
-        result.push(converted);
-      }
-      return result;
+      return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
     },
     getValidFieldData(jsonData, dataName) {
       let validationData = this.validationData[dataName];
@@ -259,6 +235,15 @@ export default {
         return [{items: []}];
       }
       let config = JSON.parse(JSON.stringify(this.$parent.config));
+
+      if (config.name && config.name.includes('multi_column')) {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.config));
+      }
+
+      if (config[0].name && config[0].name === 'LoopItem') {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.$parent.config));
+      }
+
       for (let index = 0; index < config.length; index++) {
         if (index != this.form) {
           config[index].items = [];
@@ -283,12 +268,13 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
+      // Reset our add item
+      this.addItem = {};
+
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
       }
-      // Reset our add item
-      this.addItem = {};
       // We switch our renderer to the form specified
       // This form is a numerical index to the form we want to show
       this.$refs.addRenderer.currentPage = this.form;
@@ -313,6 +299,9 @@ export default {
       // Emit the newly updated data model
       this.$emit('input', data);
 
+      // Reset our add item
+      this.addItem = {};
+
       this.$nextTick(() => {
         this.$refs.addModal.hide();
       });
@@ -321,39 +310,35 @@ export default {
       this.deleteIndex = index;
       this.$refs.deleteModal.show();
     },
-
     downloadFile(rowData, rowField, rowIndex) {
-
       let requestId = this.$parent.data._request.id;
       let name = this.name + "." + rowIndex + "." + rowField;
-
       ProcessMaker.apiClient
-        .get("requests/" + requestId + "/files?name=" + name)
-        .then(response => {
-          if (response.data && response.data.length) {
-            let file = response.data[0];
-            this.downloadRecordListFile(file, requestId);
-          }
-      });
+              .get("requests/" + requestId + "/files?name=" + name)
+              .then(response => {
+                let respData = response.data;
+                if (respData && respData.data && respData.data.length) {
+                  let file = respData.data[0];
+                  this.downloadRecordListFile(file, requestId);
+                }
+              });
     },
-
     downloadRecordListFile(file, requestId) {
       ProcessMaker.apiClient({
-          baseURL: "/",
-          url: "/request/" + requestId + "/files/" + file.id,
-          method: "GET",
-          responseType: "blob" // important
-        }).then(response => {
-          //axios needs to be told to open the file
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", file.file_name);
-          document.body.appendChild(link);
-          link.click();
-        });
+        baseURL: "/",
+        url: "/request/" + requestId + "/files/" + file.id,
+        method: "GET",
+        responseType: "blob" // important
+      }).then(response => {
+        //axios needs to be told to open the file
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", file.file_name);
+        document.body.appendChild(link);
+        link.click();
+      });
     },
-
     remove() {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
@@ -362,11 +347,6 @@ export default {
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
-    },
-    reinitializeFields() {
-      this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
-      });
     },
     isValid() {
       const validate = ValidatorFactory(this.$refs.addRenderer.config[this.form].items, this.$refs.addRenderer.transientData);
