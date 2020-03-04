@@ -209,6 +209,9 @@ export default {
     tableFields() {
       this.$nextTick(() => {
         this.$refs.vuetable.normalizeFields();
+        if (this.$refs.vuetable) {
+          this.$refs.vuetable.normalizeFields();
+        }
       });
     },
   },
@@ -274,12 +277,8 @@ export default {
       }
       let config = JSON.parse(JSON.stringify(this.$parent.config));
 
-      if (config.name && config.name.includes('multi_column')) {
-        config = JSON.parse(JSON.stringify(this.$parent.$parent.config));
-      }
-
-      if (config[0].name && config[0].name === 'LoopItem') {
-        config = JSON.parse(JSON.stringify(this.$parent.$parent.$parent.config));
+      if (config.name && config.name.includes('multi_column') || config[0].name && config[0].name === 'LoopItem') {
+        config = JSON.parse(JSON.stringify(this.$root.$children[0].config));
       }
 
       for (let index = 0; index < config.length; index++) {
