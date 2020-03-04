@@ -1,6 +1,7 @@
 <template>
   <vue-form-renderer
     v-if="!ancestorScreens.includes(screenTitle)"
+    ref="nestedScreen"
     class="form-nested-screen"
     :placeholder="placeholder"
     v-model="data"
@@ -111,6 +112,10 @@ export default {
           });
       }
     },
+    errors() {
+      this.$refs.nestedScreen.isValid();
+      return this.$refs.nestedScreen.errors;
+    }
   },
   watch: {
     screen(screen) {
