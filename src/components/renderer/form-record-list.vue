@@ -208,7 +208,6 @@ export default {
   watch: {
     tableFields() {
       this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
         if (this.$refs.vuetable) {
           this.$refs.vuetable.normalizeFields();
         }
@@ -275,12 +274,9 @@ export default {
         // User has not chosen an add/edit page yet
         return [{items: []}];
       }
-      let config = JSON.parse(JSON.stringify(this.$parent.config));
-
-      if (config.name && config.name.includes('multi_column') || config[0].name && config[0].name === 'LoopItem') {
-        config = JSON.parse(JSON.stringify(this.$root.$children[0].config));
-      }
-
+      
+      let config = JSON.parse(JSON.stringify(this.$root.$children[0].config));
+      
       for (let index = 0; index < config.length; index++) {
         if (index != this.form) {
           config[index].items = [];
