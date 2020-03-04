@@ -3,7 +3,7 @@
     ref="modal"
     size="lg"
     id="computed-properties"
-    :title="$t('Computed Properties')"
+    :title="$t('Calculated Properties')"
     @hidden="displayTableList"
     content-class="p-3"
     header-class="m-0 p-0 mb-3"

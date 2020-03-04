@@ -191,8 +191,6 @@ export default {
         title: option[value || 'content'],
       });
 
-      this.reinitializeFields();
-
       return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
     },
     getValidFieldData(jsonData, dataName) {
@@ -232,6 +230,15 @@ export default {
         return [{items: []}];
       }
       let config = JSON.parse(JSON.stringify(this.$parent.config));
+      
+      if (config.name && config.name.includes('multi_column')) {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.config));
+      }
+
+      if (config[0].name && config[0].name === 'LoopItem') {
+        config = JSON.parse(JSON.stringify(this.$parent.$parent.$parent.config));
+      }
+ 
       for (let index = 0; index < config.length; index++) {
         if (index != this.form) {
           config[index].items = [];
@@ -256,12 +263,13 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
+      // Reset our add item
+      this.addItem = {};
+
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
       }
-      // Reset our add item
-      this.addItem = {};
       // We switch our renderer to the form specified
       // This form is a numerical index to the form we want to show
       this.$refs.addRenderer.currentPage = this.form;
@@ -271,7 +279,7 @@ export default {
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
-      
+
       this.handleSubmit();
     },
     handleSubmit() {
@@ -285,6 +293,9 @@ export default {
       data[data.length] = JSON.parse(JSON.stringify(this.addItem));
       // Emit the newly updated data model
       this.$emit('input', data);
+
+      // Reset our add item
+      this.addItem = {};
 
       this.$nextTick(() => {
         this.$refs.addModal.hide();
@@ -302,11 +313,6 @@ export default {
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
-    },
-    reinitializeFields() {
-      this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
-      });
     },
     isValid() {
       const validate = ValidatorFactory(this.$refs.addRenderer.config[this.form].items, this.$refs.addRenderer.transientData);
