@@ -1,9 +1,11 @@
 <template>
   <vue-form-renderer
+    v-if="!ancestorScreens.includes(screenTitle)"
     class="form-nested-screen"
     :placeholder="placeholder"
     v-model="data"
     :config="validatedConfig"
+    :ancestor-screens="[...ancestorScreens, screenTitle]"
     mode="preview"
     :computed="computed"
     :custom-css="customCSS"
@@ -13,14 +15,25 @@
 </template>
 
 <script>
+const globalObject = typeof window === 'undefined'
+  ? global
+  : window;
+
 const defaultConfig = [
   {
     name: 'empty',
     items: [],
   },
 ];
+
 export default {
-  props: ['name', 'screen', 'value', 'validationData'],
+  props: {
+    name: String,
+    screen: Number,
+    value: null,
+    validationData: null,
+    ancestorScreens: {type: Array, default: () => []},
+  },
   data() {
     return {
       api: 'screens',
@@ -29,6 +42,7 @@ export default {
       computed: [],
       customCSS: null,
       watchers: [],
+      screenTitle: null,
     };
   },
   computed: {
@@ -37,16 +51,12 @@ export default {
     },
     data: {
       get() {
-        return !this.validationData || this.name ? this.localData : this.validationData;
+        return this.validationData || this.localData;
       },
       set(data) {
-        if (this.name) {
-          this.$emit('input', data);
-        } else {
-          Object.keys(data).forEach((variable) => {
-            this.$set(this.validationData, variable, data[variable]);
-          });
-        }
+        Object.keys(data).forEach((variable) => {
+          this.$set(this.validationData, variable, data[variable]);
+        });
       },
     },
     placeholder() {
@@ -54,21 +64,51 @@ export default {
     },
   },
   methods: {
+    isSubmitButton(item) {
+      return item.config && item.component === 'FormButton' && item.config.event === 'submit';
+    },
+    hideSubmitButtons(config) {
+      config.forEach(item => {
+
+        //If the element has containers
+        if (Array.isArray(item)) {
+          this.hideSubmitButtons(item);
+        }
+
+        //If the element has items
+        if (item.items) {
+          this.hideSubmitButtons(item.items);
+        }
+
+        //hidden buttons
+        if (this.isSubmitButton(item)) {
+          item.config.hidden = true;
+        }
+
+      });
+    },
     loadScreen(id) {
+      this.config = defaultConfig;
+      this.computed = [];
+      this.customCSS = null;
+      this.watchers = [];
+      this.screenTitle = null;
+
       if (id) {
         window.ProcessMaker.apiClient
           .get(this.api + '/' + id)
           .then(response => {
             this.config = response.data.config;
+            this.hideSubmitButtons(this.config);
             this.computed = response.data.computed;
             this.customCSS = response.data.custom_css;
             this.watchers = response.data.watchers;
+            this.screenTitle = response.data.title;
+
+            if (this.ancestorScreens.includes(this.screenTitle)) {
+              globalObject.ProcessMaker.alert(`Rendering of nested "${this.screenTitle}" screen was disallowed to prevent loop.`, 'warning');
+            }
           });
-      } else {
-        this.config = defaultConfig;
-        this.computed = [];
-        this.customCSS = null;
-        this.watchers = [];
       }
     },
   },
@@ -76,18 +116,9 @@ export default {
     screen(screen) {
       this.loadScreen(screen);
     },
-    value: {
-      deep: true,
-      handler() {
-        if (this.name) {
-          this.$set(this, 'localData', this.value || {});
-        }
-      },
-    },
   },
   mounted() {
     this.loadScreen(this.screen);
-    this.name ? this.$set(this, 'localData', this.value || {}) : null;
   },
 };
 </script>

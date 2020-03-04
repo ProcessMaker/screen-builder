@@ -8,7 +8,7 @@
             v-model="items[index]"
             :value="items[index]"
             @input="updateContainerConfig($event, index)"
-            :options="{group: {name: 'controls'}}"
+            group="controls"
             :key="index"
           >
             <div class="control-item"
