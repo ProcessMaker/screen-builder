@@ -40,6 +40,9 @@
         <template slot="mustache" slot-scope="{rowData, rowField}">
           {{ mustache(rowField, rowData) }}
         </template>
+        <template slot="filedownload" slot-scope="{rowData, rowField, rowIndex}">
+          <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
+        </template>
       </vuetable>
       <vuetable-pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
     </template>
@@ -175,7 +178,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.vuetable.normalizeFields();
       });
-    }
+    },
   },
   methods: {
     setUploadDataNamePrefix(index = null) {
@@ -184,12 +187,14 @@ export default {
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
 
-      const convertToVuetableFormat = option => ({
-        //name: '__component:mustache',
-        name: '__slot:mustache',
-        sortField: option[key || 'value'],
-        title: option[value || 'content'],
-      });
+      const convertToVuetableFormat = (option) => {
+        let slot = '__slot:filedownload';
+        return {
+          name: slot,
+          sortField: option[key || 'value'],
+          title: option[value || 'content'],
+        };
+      }
 
       return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
     },
@@ -230,7 +235,7 @@ export default {
         return [{items: []}];
       }
       let config = JSON.parse(JSON.stringify(this.$parent.config));
-      
+
       if (config.name && config.name.includes('multi_column')) {
         config = JSON.parse(JSON.stringify(this.$parent.$parent.config));
       }
@@ -238,7 +243,7 @@ export default {
       if (config[0].name && config[0].name === 'LoopItem') {
         config = JSON.parse(JSON.stringify(this.$parent.$parent.$parent.config));
       }
- 
+
       for (let index = 0; index < config.length; index++) {
         if (index != this.form) {
           config[index].items = [];
@@ -304,6 +309,35 @@ export default {
     showDeleteConfirmation(index) {
       this.deleteIndex = index;
       this.$refs.deleteModal.show();
+    },
+    downloadFile(rowData, rowField, rowIndex) {
+      let requestId = this.$parent.data._request.id;
+      let name = this.name + "." + rowIndex + "." + rowField;
+      ProcessMaker.apiClient
+              .get("requests/" + requestId + "/files?name=" + name)
+              .then(response => {
+                let respData = response.data;
+                if (respData && respData.data && respData.data.length) {
+                  let file = respData.data[0];
+                  this.downloadRecordListFile(file, requestId);
+                }
+              });
+    },
+    downloadRecordListFile(file, requestId) {
+      ProcessMaker.apiClient({
+        baseURL: "/",
+        url: "/request/" + requestId + "/files/" + file.id,
+        method: "GET",
+        responseType: "blob" // important
+      }).then(response => {
+        //axios needs to be told to open the file
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", file.file_name);
+        document.body.appendChild(link);
+        link.click();
+      });
     },
     remove() {
       // Add the item to our model and emit change
