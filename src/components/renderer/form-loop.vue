@@ -1,18 +1,18 @@
 <template>
-  <div class="form-group">
-    <div v-for="loopIndex in times" :key="loopIndex">
-      <form>
-        <vue-form-renderer
-          @submit="submit"
-          :data="getMatrixValue(loopIndex)"
-          @update="setMatrixValue(loopIndex, $event)"
-          :config="rendererConfig"
-          :computed="null"
-          :custom-css="null"
-          :watchers="null"
-        />
-      </form>
-    </div>
+  <div>
+    <form v-for="loopIndex in times" :key="loopIndex" @submit.prevent>
+      <vue-form-renderer
+        :data="getMatrixValue(loopIndex)"
+        :config="rendererConfig"
+        :computed="null"
+        :custom-css="null"
+        :watchers="null"
+        :is-loop="true"
+        @submit="submit"
+        @pageNavigate="$emit('pageNavigate', $event)"
+        @update="setMatrixValue(loopIndex, $event)"
+      />
+    </form>
   </div>
 </template>
 
@@ -34,7 +34,7 @@ export default {
       let items = this.items;
       return [{
         name: 'LoopItem',
-        items: items,
+        items,
       }];
     },
     times() {
@@ -52,12 +52,12 @@ export default {
 
       try {
         times = Mustache.render(times, this.transientData);
-      } catch (error) { }
-  
+      } catch (error) {}
+
       times = parseInt(times);
 
       if (Number.isNaN(times)) {
-        return []
+        return [];
       }
 
       if (times > 100) {
@@ -65,7 +65,7 @@ export default {
       }
 
       return [...Array(times).keys()];
-    }
+    },
   },
   watch: {
     transientData: {
@@ -93,7 +93,7 @@ export default {
     },
     times() {
       this.setupMatrix();
-    }
+    },
   },
   methods: {
     setMatrixValue(i, v) {
