@@ -87,7 +87,7 @@ Vue.use(VueDeepSet);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'ancestorScreens'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens'],
   model: {
     prop: 'data',
     event: 'update',
@@ -199,14 +199,14 @@ export default {
                 this.config[associatedRecordListPageId].items.forEach(field => {
                   if (field.config.name in this.transientData) {
                     delete this.transientData[field.config.name];
-                  } 
+                  }
                 });
               }
-              
+
             });
           });
         }
-        
+
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
 
@@ -332,6 +332,11 @@ export default {
       return _.size(this.errors) === 0;
     },
     pageNavigate(page) {
+      if (this.isLoop) {
+        this.$emit('pageNavigate', page);
+        return;
+      }
+
       if (!this.config[page]) {
         return;
       }
