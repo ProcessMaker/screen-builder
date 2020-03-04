@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="data-table">
     <div class="row mb-2">
       <div class="col">
         <h4>{{ label }}</h4>
@@ -20,6 +20,7 @@
         :data-manager="dataManager"
         :fields="tableFields"
         :data="tableData"
+        :css="css"
         :api-mode="false"
         pagination-path=""
         :noDataTemplate="$t('No Data Available')"
@@ -44,7 +45,7 @@
           <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
         </template>
       </vuetable>
-      <vuetable-pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
+      <pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
     </template>
 
     <b-modal
@@ -112,9 +113,9 @@
 
 <script>
 import Vuetable from 'vuetable-2/src/components/Vuetable';
-import VuetablePagination from 'vuetable-2/src/components/VuetablePagination';
+import Pagination from '@/components/Pagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import { ValidatorFactory } from '../../factories/ValidatorFactory';
+import {ValidatorFactory} from '../../factories/ValidatorFactory';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -126,7 +127,7 @@ const jsonOptionsActionsColumn = {
 export default {
   components: {
     Vuetable,
-    VuetablePagination,
+    Pagination,
   },
   mixins: [mustacheEvaluation],
   props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
@@ -136,29 +137,60 @@ export default {
       editItem: {},
       editIndex: null,
       currentPage: 0,
+      paginatorPage: 1,
       perPage: 50,
+      lastPage: 1,
+      css: {
+        tableClass: 'table table-hover table-responsive text-break mb-0',
+        loadingClass: 'loading',
+        detailRowClass: 'vuetable-detail-row',
+        handleIcon: 'grey sidebar icon',
+        sortableIcon: 'fas fa-sort',
+        ascendingIcon: 'fas fa-sort-up',
+        descendingIcon: 'fas fa-sort-down',
+        ascendingClass: 'ascending',
+        descendingClass: 'descending',
+        renderIcon(classes, options) {
+          return `<i class="${classes.join(' ')}"></i>`;
+        },
+      },
     };
   },
   computed: {
+    dataManager() {
+      if (this.$refs.vuetable) {
+        let pagination = this.$refs.vuetable.makePagination(this.value.length);
+        return {
+          pagination,
+          data: this.value.slice(pagination.from - 1, pagination.to),
+        };
+      } else {
+        console.log('refs vuetable not exists');
+      }
+
+    },
     formConfig() {
       return this.fetchFormConfig();
     },
-    // The fields used for our vue table
     tableData() {
       const value = this.value || [];
+      let from = this.paginatorPage - 1;
+      this.lastPage = Math.ceil(value.length / this.perPage);
+
       let data = {
         total: value.length,
         per_page: this.perPage,
-        current_page: 1,
-        last_page: Math.floor(value.length / this.perPage),
+        current_page: this.paginatorPage,
+        last_page: this.lastPage,
         next_page_url: null,
         prev_page_url: null,
-        from: 1,
+        from: from,
         to: value.length,
-        data: value.slice(0, this.perPage),
+        data: value.slice(from * this.perPage, (from * this.perPage) + this.perPage),
       };
       return data;
     },
+    // The fields used for our vue table
     tableFields() {
       const fields = this.getTableFieldsFromDataSource();
 
@@ -185,7 +217,7 @@ export default {
       this.$root.$emit('set-upload-data-name', this, index);
     },
     getTableFieldsFromDataSource() {
-      const { jsonData, key, value, dataName } = this.fields;
+      const {jsonData, key, value, dataName} = this.fields;
 
       const convertToVuetableFormat = (option) => {
         let slot = '__slot:filedownload';
@@ -216,17 +248,23 @@ export default {
     hideInformation() {
       this.$refs.infoModal.hide();
     },
-    dataManager() {
-      let pagination = this.$refs.vuetable.makePagination(this.value.length);
-      return {
-        pagination,
-        data: this.value.slice(pagination.from - 1, pagination.to),
-      };
-    },
     onPaginationData(paginationData) {
       this.$refs.pagination.setPaginationData(paginationData);
     },
     onChangePage(page) {
+      if (page == 'next') {
+        this.paginatorPage = this.paginatorPage + 1;
+      } else if (page == 'prev') {
+        this.paginatorPage = this.paginatorPage - 1;
+      } else {
+        this.paginatorPage = page;
+      }
+      if (this.paginatorPage <= 0) {
+        this.paginatorPage = 1;
+      }
+      if (this.paginatorPage > this.lastPage) {
+        this.paginatorPage = this.lastPage;
+      }
       this.$refs.vuetable.changePage(page);
     },
     fetchFormConfig() {
@@ -252,15 +290,15 @@ export default {
       return config;
     },
     showEditForm(index) {
+      let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(JSON.stringify(this.value[index]));
-      this.editIndex = index;
+      this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
+      this.editIndex = pageIndex;
       this.$refs.editRenderer.currentPage = this.form;
-      this.setUploadDataNamePrefix(index);
+      this.setUploadDataNamePrefix(pageIndex);
       this.$refs.editModal.show();
     },
     edit() {
-
       // Edit the item in our model and emit change
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       data[this.editIndex] = JSON.parse(JSON.stringify(this.editItem));
@@ -307,7 +345,8 @@ export default {
       });
     },
     showDeleteConfirmation(index) {
-      this.deleteIndex = index;
+      let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
+      this.deleteIndex = pageIndex;
       this.$refs.deleteModal.show();
     },
     downloadFile(rowData, rowField, rowIndex) {
