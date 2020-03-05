@@ -74,12 +74,6 @@ export default {
       },
       immediate: true,
     },
-    // 'inspectionConfig.name': {
-    //   handler() {
-    //     this.settings.varname = this.inspectionConfig.name;
-    //   },
-    //   immediate: true,
-    // }
   },
   computed: {
   },
