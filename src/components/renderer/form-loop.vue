@@ -82,11 +82,8 @@ export default {
   watch: {
     transientData: {
       handler() {
-        if (this.transientData && this.transientData[this.name]) {
-          this.matrix = this.transientData[this.name];
-        } else {
-          this.matrix = [];
-        }
+        const data = _.get(this, 'transientData.' + this.name, null);
+        this.matrix = data ? data : [];
         this.setupMatrix();
       },
       immediate: true,
@@ -99,7 +96,7 @@ export default {
     },
     matrix: {
       handler() {
-        this.$parent.model[this.name] = this.matrix;
+        this.$set(this.$parent.model, this.name, this.matrix);
       },
       deep: true,
     },
