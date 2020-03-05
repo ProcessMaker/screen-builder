@@ -6,7 +6,7 @@
       </div>
       <div class="col text-right">
         <button class="btn btn-primary" v-if="editable && !selfReferenced" @click="showAddForm">
-          {{ $t('Add Record') }}
+          {{ $t('Add') }}
         </button>
       </div>
     </div>
