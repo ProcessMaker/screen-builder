@@ -199,6 +199,7 @@
                 v-bind="item.config"
                 v-model="inspection.config[item.field]"
                 @focusout.native="updateState"
+                @setName="inspection.config.name = $event"
               />
             </b-collapse>
           </template>
