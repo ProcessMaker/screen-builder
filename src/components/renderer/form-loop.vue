@@ -22,7 +22,7 @@ import Mustache from 'mustache';
 export default {
   name: 'FormLoop',
   mixins: [],
-  props: ['value', 'name', 'config', 'transientData'],
+  props: ['value', 'config', 'transientData', 'name'],
   data() {
     return {
       matrix: [],
@@ -44,11 +44,11 @@ export default {
         return [...itemsFromData.keys()];
       }
 
-      if (!this.config) {
+      if (!this.config.settings) {
         return [];
       }
 
-      let times = this.config.times;
+      let times = this.config.settings.times;
 
       try {
         times = Mustache.render(times, this.transientData);

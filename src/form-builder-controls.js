@@ -364,17 +364,20 @@ export default [
       // Default items container
       items: [],
       config: {
+        name: '',
         icon: 'fas fa-redo',
-        times: '2',
+        settings: {
+          type: 'new',
+          varname: '',
+          times: '3',
+          add: false,
+        },
       },
       inspector: [
-        keyNameProperty,
         {
-          type: 'FormInput',
-          field: 'times',
+          type: 'LoopInspector',
+          field: 'settings',
           config: {
-            label: 'Default Number Of Times',
-            helper: 'Enter the number of times to repeat if the data does not exist.',
           },
         },
       ],
