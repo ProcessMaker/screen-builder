@@ -13,6 +13,13 @@
         @update="setMatrixValue(loopIndex, $event)"
       />
     </form>
+    <b-row class="justify-content-md-center" v-if="config.settings.add">
+      <b-col md="auto">
+        <b-button size="sm" variant="secondary" class="ml-1 mr-1" @click="add" :title="$t('Add Item')">
+          <i class="fas fa-plus"/>
+        </b-button>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -22,11 +29,12 @@ import Mustache from 'mustache';
 export default {
   name: 'FormLoop',
   mixins: [],
-  props: ['value', 'name', 'config', 'transientData'],
+  props: ['value', 'config', 'transientData', 'name'],
   data() {
     return {
       matrix: [],
       items: [],
+      additionalItems: 0,
     };
   },
   computed: {
@@ -38,17 +46,19 @@ export default {
       }];
     },
     times() {
-      // If there is existing data, set the length to what ever it is
-      const itemsFromData = _.get(this.transientData, this.name, null);
-      if (Array.isArray(itemsFromData)) {
-        return [...itemsFromData.keys()];
-      }
-
-      if (!this.config) {
+      if (!this.config || !this.config.settings) {
         return [];
       }
 
-      let times = this.config.times;
+      if (this.config.settings.type === 'existing') {
+        const itemsFromData = _.get(this.transientData, this.name, null);
+        if (!itemsFromData) {
+          return [];
+        }
+        return [...itemsFromData.keys()];
+      }
+
+      let times = this.config.settings.times;
 
       try {
         times = Mustache.render(times, this.transientData);
@@ -63,6 +73,8 @@ export default {
       if (times > 100) {
         times = 100;
       }
+
+      times += this.additionalItems;
 
       return [...Array(times).keys()];
     },
@@ -94,8 +106,27 @@ export default {
     times() {
       this.setupMatrix();
     },
+    'config.settings.times': {
+      handler() {
+        this.additionalItems = 0;
+      }
+    }
   },
   methods: {
+    add() {
+      if (this.config.settings.type === 'existing') {
+        this.setMatrixValue(this.matrix.length, {});
+      } else {
+        this.additionalItems++;
+      }
+    },
+    remove() {
+      if (this.config.settings.type === 'existing') {
+        this.$delete(this.matrix, this.matrix.length - 1);
+      } else {
+        this.additionalItems--;
+      }
+    },
     setMatrixValue(i, v) {
       this.$set(this.matrix, i, v);
     },
@@ -109,7 +140,7 @@ export default {
     setupMatrix() {
       for (const i of this.times) {
         if (typeof this.matrix[i] === 'undefined') {
-          this.$set(this.matrix, i, {});
+          this.setMatrixValue(i, {});
         } else {
         }
       }
