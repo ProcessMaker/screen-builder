@@ -56,7 +56,7 @@
       ref="addModal"
       :ok-title="$t('Ok')"
       :cancel-title="$t('Cancel')"
-      :title="$t('Add Record')"
+      :title="$t('Add')"
     >
       <vue-form-renderer
         :page="form"
