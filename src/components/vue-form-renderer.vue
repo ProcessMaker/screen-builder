@@ -20,6 +20,7 @@
           @pageNavigate="pageNavigate"
           v-bind="element.config"
           :is="element.component"
+          :formConfig="config"
         />
 
         <div v-else :id="element.config.name ? element.config.name : undefined">
@@ -36,6 +37,7 @@
               v-bind="element.config"
               :is="element.component"
               :disabled="element.config.interactive || element.config.disabled"
+              :formConfig="config"
             />
           </keep-alive>
         </div>
@@ -114,6 +116,10 @@ export default {
       return this.$deepModel(this.transientData);
     },
     visibleElements() {
+      if (!this.config[this.currentPage]) {
+        return;
+      }
+      
       return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
     },
     containerClass() {
@@ -188,7 +194,7 @@ export default {
           });
         }
 
-        if (this.config) {
+        if (!typeof this.config == undefined) {
           this.config.forEach(page => {
             page.items.forEach(item => {
               if (item.component !== 'FormRecordList') {
@@ -202,7 +208,6 @@ export default {
                   }
                 });
               }
-
             });
           });
         }
@@ -248,12 +253,14 @@ export default {
   methods: {
     applyConfiguredDefaultValues() {
       this.$nextTick(() => {
-        getItemsFromConfig(this.config)
-          .forEach(item => {
-            if (item.config.defaultValue) {
-              this.model[this.getValidPath(item.config.name)] = Mustache.render(item.config.defaultValue, this.transientData);
-            }
-        });
+        if (!typeof this.config == undefined) {
+          getItemsFromConfig(this.config)
+            .forEach(item => {
+              if (item.config.defaultValue) {
+                this.model[this.getValidPath(item.config.name)] = Mustache.render(item.config.defaultValue, this.transientData);
+              }
+          });
+        }
       });
     },
     registerCustomFunctions(node=this) {
@@ -358,9 +365,12 @@ export default {
 
         return shouldHaveDefaultValueSet && isNotFormAccordion;
       };
-      getItemsFromConfig(this.config)
-        .filter(shouldHaveDefaultValue)
-        .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
+      if (!typeof this.config == undefined) {
+        getItemsFromConfig(this.config)
+          .filter(shouldHaveDefaultValue)
+          .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));  
+      }
+      
     },
     parseCss() {
       const containerSelector = '.' + this.containerClass;

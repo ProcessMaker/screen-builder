@@ -32,6 +32,7 @@
               v-bind="element.config"
               :is="element.component"
               :disabled="element.config.interactive || element.config.disabled"
+              :formConfig="formConfig"
             />
           </div>
         </template>
@@ -61,7 +62,7 @@ const defaultColumnWidth = 1;
 export default {
   name: 'FormMultiColumn',
   mixins: [HasColorProperty, shouldElementBeVisible, getValidPath],
-  props: ['value', 'selected', 'name', 'config', 'transientData'],
+  props: ['value', 'selected', 'name', 'config', 'transientData', 'formConfig'],
   components: {
     draggable,
     FormInput: FormMaskedInput,
