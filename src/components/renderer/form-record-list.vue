@@ -141,7 +141,7 @@ export default {
       perPage: 50,
       lastPage: 1,
       css: {
-        tableClass: 'table table-hover table-responsive text-break mb-0',
+        tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
         loadingClass: 'loading',
         detailRowClass: 'vuetable-detail-row',
         handleIcon: 'grey sidebar icon',
