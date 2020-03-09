@@ -20,12 +20,21 @@
                     <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
                     <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
                     {{ element.config.name || $t('Variable Name') }}
-                    <button
-                      class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index)"
-                    >
-                      <i class="far fa-trash-alt text-light"/>
-                    </button>
+                    <div class="ml-auto">
+                      <button
+                        class="btn btn-sm btn-secondary mr-2"
+                        :title="$t('Duplicate Control')"
+                        @click="duplicateItem(index)"
+                      >
+                        <i class="fas fa-copy text-light"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-danger"
+                        @click="deleteItem(index)"
+                      >
+                        <i class="far fa-trash-alt text-light"/>
+                      </button>
+                    </div>
                   </div>
 
                   <component :class="elementCssClass(element)"
@@ -50,12 +59,21 @@
                     <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
                     <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
                     {{ element.config.name || $t('Variable Name') }}
-                    <button
-                      class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index)"
-                    >
-                      <i class="far fa-trash-alt text-light"/>
-                    </button>
+                    <div class="ml-auto">
+                      <button
+                        class="btn btn-sm btn-secondary mr-2"
+                        :title="$t('Duplicate Control')"
+                        @click="duplicateItem(index)"
+                      >
+                        <i class="fas fa-copy text-light"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-danger"
+                        @click="deleteItem(index)"
+                      >
+                        <i class="far fa-trash-alt text-light"/>
+                      </button>
+                    </div>
                   </div>
 
                   <component
@@ -136,6 +154,11 @@ export default {
       this.items.splice(index, 1);
       this.$emit('update-state');
     },
+    duplicateItem(index) {
+      const duplicate = _.cloneDeep(this.items[index]);
+      this.items.push(duplicate);
+      this.$emit('update-state');
+    }
   },
 };
 </script>
