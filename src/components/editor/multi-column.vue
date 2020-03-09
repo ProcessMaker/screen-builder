@@ -26,14 +26,21 @@
                     <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
                     <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
                     {{ element.config.name || $t('Variable Name') }}
-                    <button
-                      class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index, row)"
-                    >
-                      <i class="far fa-trash-alt text-light"/>
-                    </button>
+                    <div class="ml-auto">
+                      <button
+                        class="btn btn-sm btn-danger mr-2"
+                        @click="duplicateItem(index, row)"
+                      >
+                        <i class="far fa-trash-alt text-light"/>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-danger"
+                        @click="deleteItem(index, row)"
+                      >
+                        <i class="far fa-trash-alt text-light"/>
+                      </button>
+                    </div>
                   </div>
-
                   <component :class="elementCssClass(element)"
                     :validationErrors="validationErrors"
                     class="mb-3 mr-3 ml-3"
@@ -56,12 +63,21 @@
                     <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
                     <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
                     {{ element.config.name || $t('Variable Name') }}
-                    <button
-                      class="btn btn-sm btn-danger ml-auto"
-                      @click="deleteItem(index, row)"
-                    >
-                      <i class="far fa-trash-alt text-light"/>
-                    </button>
+                      <div class="ml-auto">
+                        <button
+                          class="btn btn-sm btn-secondary mr-2"
+                          :title="$t('Duplicate Control')"
+                          @click="duplicateItem(index, row)"
+                        >
+                          <i class="fas fa-copy text-light"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-danger"
+                          @click="deleteItem(index, row)"
+                        >
+                          <i class="far fa-trash-alt text-light"/>
+                        </button>
+                      </div>
                   </div>
 
                   <component
@@ -165,6 +181,11 @@ export default {
     deleteItem(col, index) {
       // Remove the item from the array in currentPage
       this.items[col].splice(index, 1);
+      this.$emit('update-state');
+    },
+    duplicateItem(col,index) {
+      const duplicate = _.cloneDeep(this.items[col][index]);
+      this.items[col].push(duplicate);
       this.$emit('update-state');
     },
   },
