@@ -27,8 +27,8 @@
         <b-button @click="saveRule" :disabled="disableBtn" variant="secondary" size="sm">{{ $t('Save') }}</b-button>
       </div>
     </div>
-    <p v-if="!rules.length && !showCard">{{ $t('No validation rule(s)') }}</p>
-    <div v-if="rules.length">
+    <p v-if="!hasRules && !showCard">{{ $t('No validation rule(s)') }}</p>
+    <div v-if="hasRules">
       <div role="tablist">
         <b-card v-for="(rule, index) in rules" class="mb-2" :key="index">
           <div v-if="showDeleteConfirmCard && removeIndex == index" class="card mb-3 bg-danger text-white text-right">
@@ -211,6 +211,13 @@ export default {
     fieldClass() {
       return this.optionError ? 'is-invalid' : '';
     },
+    hasRules() {
+      if (this.rules && this.rules.length) {
+        return true;
+      }
+      
+      return false;
+    }
   },
   watch: {
     rules: {
