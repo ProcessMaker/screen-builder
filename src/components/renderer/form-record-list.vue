@@ -59,10 +59,10 @@
       :title="$t('Add')"
     >
       <vue-form-renderer
-        :page="form"
+        :page="0"
         ref="addRenderer"
         v-model="addItem"
-        :config="formConfig"
+        :config="[formConfig[form]]"
       />
     </b-modal>
     <b-modal
@@ -75,11 +75,11 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Edit Record')"
     >
-      <vue-form-renderer
-        :page="form"
+     <vue-form-renderer
+        :page="0"
         ref="editRenderer"
         v-model="editItem"
-        :config="formConfig"
+        :config="[formConfig[form]]"
       />
     </b-modal>
     <b-modal
@@ -130,7 +130,7 @@ export default {
     Pagination,
   },
   mixins: [mustacheEvaluation],
-  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData'],
+  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig'],
   data() {
     return {
       addItem: {},
@@ -168,9 +168,6 @@ export default {
         console.log('refs vuetable not exists');
       }
 
-    },
-    formConfig() {
-      return this.fetchFormConfig();
     },
     tableData() {
       const value = this.value || [];
@@ -269,27 +266,11 @@ export default {
       }
       this.$refs.vuetable.changePage(page);
     },
-    fetchFormConfig() {
-      if (this.form === '') {
-        // User has not chosen an add/edit page yet
-        return [{items: []}];
-      }
-      
-      let config = JSON.parse(JSON.stringify(this.$root.$children[0].config));
-      
-      for (let index = 0; index < config.length; index++) {
-        if (index != this.form) {
-          config[index].items = [];
-        }
-      }
-      return config;
-    },
     showEditForm(index) {
       let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
       this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
       this.editIndex = pageIndex;
-      this.$refs.editRenderer.currentPage = this.form;
       this.setUploadDataNamePrefix(pageIndex);
       this.$refs.editModal.show();
     },
@@ -308,9 +289,6 @@ export default {
         this.$refs.infoModal.show();
         return;
       }
-      // We switch our renderer to the form specified
-      // This form is a numerical index to the form we want to show
-      this.$refs.addRenderer.currentPage = this.form;
       // Open form
       this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
@@ -383,7 +361,7 @@ export default {
       this.$emit('input', data);
     },
     isValid() {
-      const validate = ValidatorFactory(this.$refs.addRenderer.config[this.form].items, this.$refs.addRenderer.transientData);
+      const validate = ValidatorFactory(this.formConfig[this.form].items, this.$refs.addRenderer.transientData);
       this.errors = validate.getErrors();
       return _.size(this.errors) === 0;
     },
