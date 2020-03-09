@@ -113,15 +113,23 @@
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
               <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || element.label || $t('Field Name') }}
-              <button
-                class="btn btn-sm btn-danger ml-auto"
-                :title="$t('Delete Control')"
-                @click="deleteItem(index)"
-              >
-                <i class="far fa-trash-alt text-light"/>
-              </button>
+              <div class="ml-auto"> 
+                <button
+                  class="btn btn-sm btn-secondary mr-2"
+                  :title="$t('Duplicate Control')"
+                  @click="duplicateItem(index)"
+                >
+                  <i class="fas fa-copy text-light"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  :title="$t('Delete Control')"
+                  @click="deleteItem(index)"
+                >
+                  <i class="far fa-trash-alt text-light"/>
+                </button>
+              </div>
             </div>
-
             <component
               :validationErrors="validationErrors"
               class="card-body"
@@ -143,15 +151,23 @@
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
               <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || $t('Variable Name') }}
-              <button
-                class="btn btn-sm btn-danger ml-auto"
-                :title="$t('Delete Control')"
-                @click="deleteItem(index)"
-              >
-                <i class="far fa-trash-alt text-light"/>
-              </button>
-            </div>
-
+              <div class="ml-auto"> 
+                <button
+                  class="btn btn-sm btn-secondary mr-2"
+                  :title="$t('Duplicate Control')"
+                  @click="duplicateItem(index)"
+                >
+                  <i class="fas fa-copy text-light"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  :title="$t('Delete Control')"
+                  @click="deleteItem(index)"
+                >
+                  <i class="far fa-trash-alt text-light"/>
+                </button>
+              </div>
+            </div> 
             <component
               :tabindex="element.config.interactive ? 0 : -1"
               class="card-body m-0 pb-4 pt-4"
@@ -629,6 +645,10 @@ export default {
       this.config[this.currentPage].items.splice(index, 1);
       this.inspection.inspector.splice(0, this.inspection.inspector.length);
       this.updateState();
+    },
+    duplicateItem(index) {
+      const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+      this.config[this.currentPage].items.push(duplicate);
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
