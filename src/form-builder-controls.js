@@ -392,7 +392,7 @@ export default [
       label: 'Record List',
       component: 'FormRecordList',
       'editor-component': 'FormText',
-      'editor-control': 'FormText',
+      'editor-control': 'FormRecordList',
       config: {
         name: '',
         icon: 'fas fa-th-list',
