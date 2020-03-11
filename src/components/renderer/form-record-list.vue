@@ -323,7 +323,10 @@ export default {
       this.$refs.deleteModal.show();
     },
     downloadFile(rowData, rowField, rowIndex) {
-      let requestId = this.$parent.data._request.id;
+    
+      //let requestId = this.$parent.data._request.id;
+      let requestId = this.$root.task.request_data._request.id; 
+
       let name = this.name + "." + rowIndex + "." + rowField;
       ProcessMaker.apiClient
               .get("requests/" + requestId + "/files?name=" + name)
