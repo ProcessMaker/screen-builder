@@ -125,14 +125,15 @@ export default {
       }
     },
     setMatrixValue(i, v) {
+      delete v._parent;
       this.$set(this.matrix, i, v);
     },
     getMatrixValue(i) {
       let val = this.matrix[i];
       if (!val) {
-        val = '';
+        val = {};
       }
-      return val;
+      return Object.assign({}, val, { '_parent' : this.transientData });
     },
     setupMatrix() {
       for (const i of this.times) {
