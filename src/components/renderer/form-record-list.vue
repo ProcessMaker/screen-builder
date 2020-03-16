@@ -61,7 +61,7 @@
       <vue-form-renderer
         :page="0"
         ref="addRenderer"
-        v-model="addItem"
+        v-model="addItemWithParent"
         :config="[formConfig[form]]"
       />
     </b-modal>
@@ -78,7 +78,7 @@
      <vue-form-renderer
         :page="0"
         ref="editRenderer"
-        v-model="editItem"
+        v-model="editItemWithParent"
         :config="[formConfig[form]]"
       />
     </b-modal>
@@ -157,6 +157,24 @@ export default {
     };
   },
   computed: {
+    addItemWithParent: {
+      get() {
+        return Object.assign({}, { "_parent" : this.$parent.transientData})
+      },
+      set(val) {
+        delete val._parent;
+        this.addItem = val;
+      }
+    },
+    editItemWithParent: {
+      get() {
+        return Object.assign({}, this.editItem, { "_parent" : this.$parent.transientData})
+      },
+      set(val) {
+        delete val._parent;
+        this.editItem = val;
+      }
+    },
     dataManager() {
       if (this.$refs.vuetable) {
         let pagination = this.$refs.vuetable.makePagination(this.value.length);
