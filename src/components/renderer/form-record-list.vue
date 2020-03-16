@@ -159,7 +159,7 @@ export default {
   computed: {
     addItemWithParent: {
       get() {
-        return Object.assign({}, { "_parent" : this.$parent.transientData})
+        return Object.assign({}, this.addItem, { "_parent" : this.$parent.transientData})
       },
       set(val) {
         delete val._parent;
@@ -302,6 +302,7 @@ export default {
     showAddForm() {
       // Reset our add item
       this.addItem = {};
+      this.$refs.addRenderer.applyConfiguredDefaultValues();
 
       if (!this.form) {
         this.$refs.infoModal.show();

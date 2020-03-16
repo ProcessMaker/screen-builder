@@ -253,7 +253,7 @@ export default {
   methods: {
     applyConfiguredDefaultValues() {
       this.$nextTick(() => {
-        if (!typeof this.config == undefined) {
+        if (typeof this.config !== undefined) {
           getItemsFromConfig(this.config)
             .forEach(item => {
               if (item.config.defaultValue) {
