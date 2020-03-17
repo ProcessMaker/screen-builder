@@ -61,7 +61,7 @@
       <vue-form-renderer
         :page="0"
         ref="addRenderer"
-        v-model="addItem"
+        v-model="addItemWithParent"
         :config="[formConfig[form]]"
       />
     </b-modal>
@@ -78,7 +78,7 @@
      <vue-form-renderer
         :page="0"
         ref="editRenderer"
-        v-model="editItem"
+        v-model="editItemWithParent"
         :config="[formConfig[form]]"
       />
     </b-modal>
@@ -157,6 +157,26 @@ export default {
     };
   },
   computed: {
+    addItemWithParent: {
+      get() {
+        this.addItem._parent = this.$parent.transientData;
+        return this.addItem;
+      },
+      set(val) {
+        this.$set(this.$parent, 'transientData', val._parent);
+        this.addItem = val;
+      }
+    },
+    editItemWithParent: {
+      get() {
+        this.editItem._parent = this.$parent.transientData;
+        return this.editItem;
+      },
+      set(val) {
+        this.$set(this.$parent, 'transientData', val._parent);
+        this.editItem = val;
+      }
+    },
     dataManager() {
       if (this.$refs.vuetable) {
         let pagination = this.$refs.vuetable.makePagination(this.value.length);
@@ -278,12 +298,17 @@ export default {
       // Edit the item in our model and emit change
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       data[this.editIndex] = JSON.parse(JSON.stringify(this.editItem));
+
+      // Remove the parent object
+      delete data[this.editIndex]._parent;
+
       // Emit the newly updated data model
       this.$emit('input', data);
     },
     showAddForm() {
       // Reset our add item
       this.addItem = {};
+      this.$refs.addRenderer.applyConfiguredDefaultValues();
 
       if (!this.form) {
         this.$refs.infoModal.show();
@@ -306,7 +331,11 @@ export default {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
-      data[data.length] = JSON.parse(JSON.stringify(this.addItem));
+
+      const item = JSON.parse(JSON.stringify(this.addItem));
+      delete item._parent;
+      data[data.length] = item;
+      
       // Emit the newly updated data model
       this.$emit('input', data);
 
