@@ -340,11 +340,7 @@ export default {
       }
     },
     valueTypeReturned() {
-      if (this.valueTypeReturned === 'object') {
-        this.key = 'title';
-      } else {
-        this.key = '';
-      }
+      this.key = '';
     },
     selectedDataSource() {
       this.getEndPointsList();
