@@ -140,8 +140,8 @@ export default {
       return {
         decimal: separators[1],
         thousands: separators[0],
-        prefix: this.dataMask ? this.dataMask.symbol + ' ' : '',
-        suffix: this.dataMask ? ' ' + this.dataMask.code : '',
+        prefix: this.dataMask && this.dataMask.symbol ? this.dataMask.symbol + ' ' : '',
+        suffix: this.dataMask && this.dataMask.code ? ' ' + this.dataMask.code : '',
         precision: presicion,
         masked: false,
       };
