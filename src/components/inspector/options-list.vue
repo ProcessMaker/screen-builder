@@ -213,7 +213,7 @@
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
-      <small class="form-text text-muted">Advanced data search</small>
+      <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
   </div>
 </template>
@@ -268,11 +268,11 @@ export default {
       selectedOptions: [],
       renderAsOptions: [
         {
-          text:'Dropdown/Multiselect' ,
+          text: this.$t('Dropdown/Multiselect'),
           value: 'dropdown',
         },
         {
-          text: 'Radio/Checkbox Group',
+          text: this.$t('Radio/Checkbox Group'),
           value: 'checkbox',
         },
       ],
@@ -286,11 +286,11 @@ export default {
       showPopup: false,
       returnValueOptions: [
         {
-          text: 'Single Value',
+          text: this.$t('Single Value'),
           value: 'single'
         },
         {
-          text: 'Object',
+          text: this.$t('Object'),
           value: 'object'
         }
       ],
