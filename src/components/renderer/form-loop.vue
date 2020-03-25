@@ -144,7 +144,10 @@ export default {
       if (!val) {
         val = {};
       }
-      val._parent = this.$parent.transientData;
+      
+      let parent = _.clone(this.$parent.transientData);
+      delete parent[this.name];
+      val._parent = parent;
       return val;
     },
     setupMatrix() {
