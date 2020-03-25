@@ -119,17 +119,29 @@
         </div>
       </div>
     </div>
+    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
+      <label for="element-name">{{ $t('Existing Request Data Variable') }}</label>
+      <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name"/>
+      <small class="form-text text-muted mb-3">{{ $t('Enter the request data variable to populate values of the select list. This variable must contain an array or an array of objects.') }}</small>
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.dataObject">
+      <label for="value">{{ $t('Option Label Shown') }}</label>
+      <b-form-input id="value" v-model="value" placeholder="Request Variable Property" @change="valueChanged"/>
+      <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that displays to the user on the screen.') }}</small>
+    </div>
+
     <div v-if="showRenderAs">
-      <div class="row mb-3">
-        <div class="col-12">
-          <input type="checkbox"  v-model="allowMultiSelect">
-          Allow multiple selections
+       <div class="row mb-3">
+        <div class="col">
+          <label for="render-as">{{ $t('Show Control As') }}</label>
+          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
         </div>
       </div>
       <div class="row mb-3">
-        <div class="col">
-          <label for="render-as">{{ $t('Render Options As') }}</label>
-          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
+        <div class="col-12">
+          <input type="checkbox"  v-model="allowMultiSelect">
+          {{ $t('Allow Multiple Selections') }}
         </div>
       </div>
     </div>
@@ -163,6 +175,18 @@
       </button>
     </div>
 
+    <div v-if="dataSource === dataSourceValues.dataObject">
+      <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
+      <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
+      <small class="form-text text-muted mb-3">{{ $t('Select whether to return a Single Value or an Object containing all properties from the Request Variable Object.') }}</small>
+
+      <div v-if="valueTypeReturned === 'single'">
+        <label for="key">{{ $t('Variable Data Property') }}</label>
+        <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
+        <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passes as the value when selected.') }}</small>
+      </div>
+    </div>
+
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="data-sources-list">{{ $t('Data Connector') }}</label>
       <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList"/>
@@ -175,13 +199,8 @@
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
-      <label for="element-name">{{ $t('Element Name') }}</label>
-      <b-form-input id="element-name" v-model="dataName"/>
-      <small class="form-text text-muted mb-3">{{ $t('Element to be used as root reference') }}</small>
-    </div>
 
-    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="key">{{ $t('Value') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
@@ -194,7 +213,7 @@
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
-      <small class="form-text text-muted">Advanced data search</small>
+      <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
   </div>
 </template>
@@ -249,11 +268,11 @@ export default {
       selectedOptions: [],
       renderAsOptions: [
         {
-          text:'Dropdown/Multiselect' ,
+          text: this.$t('Dropdown/Multiselect'),
           value: 'dropdown',
         },
         {
-          text: 'Radio/Checkbox Group',
+          text: this.$t('Radio/Checkbox Group'),
           value: 'checkbox',
         },
       ],
@@ -265,6 +284,17 @@ export default {
         automaticLayout: true,
       },
       showPopup: false,
+      returnValueOptions: [
+        {
+          text: this.$t('Single Value'),
+          value: 'single'
+        },
+        {
+          text: this.$t('Object'),
+          value: 'object'
+        }
+      ],
+      valueTypeReturned: '',
     };
   },
   watch: {
@@ -290,6 +320,7 @@ export default {
       this.showJsonEditor = this.options.showJsonEditor;
       this.editIndex = this.options.editIndex;
       this.removeIndex = this.options.removeIndex;
+      this.valueTypeReturned = this.options.valueTypeReturned;
     },
     dataSource(val) {
       this.showRenderAs = true;
@@ -307,6 +338,9 @@ export default {
           this.selectedDataSource = '';
           break;
       }
+    },
+    valueTypeReturned() {
+      this.key = '';
     },
     selectedDataSource() {
       this.getEndPointsList();
@@ -367,6 +401,7 @@ export default {
         showJsonEditor: this.showJsonEditor,
         editIndex: this.editIndex,
         removeIndex: this.removeIndex,
+        valueTypeReturned: this.valueTypeReturned,
       };
     },
   },
@@ -388,6 +423,7 @@ export default {
     this.showRenderAs = this.options.showRenderAs;
     this.renderAs = this.options.renderAs;
     this.allowMultiSelect = this.options.allowMultiSelect;
+    this.valueTypeReturned = this.options.valueTypeReturned;
   },
   methods: {
     getDataSourceList() {
