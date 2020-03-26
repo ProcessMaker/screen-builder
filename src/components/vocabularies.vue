@@ -6,7 +6,7 @@
       class="text-left card-header d-flex align-items-center w-100 shadow-none text-capitalize"
     >
       <i class="fas fa-file-import mr-2"></i>
-      {{ $t('JSON Schema') }}
+      {{ $t('Vocabulary') }}
       <i
         class="fas ml-auto"
         :class="showSv ? 'fa-angle-right' : 'fa-angle-down'"
@@ -14,7 +14,6 @@
     </b-button>
     <b-collapse id="schema-validator" v-model="showSv">
       <div class="p-2">
-        <!-- <b-form-file @change="loadSchema" placeholder="JSON Schema File"></b-form-file> -->
         <b-input-group>
           <b-form-select
             :options="selectOptions"
@@ -52,7 +51,7 @@ export default {
       showSv: true,
       jsonSchema: null,
       jsonSchemaErrors: null,
-      ajv: new Ajv({ verbose: true }),
+      ajv: null,
       selectedSchemaId: null,
     };
   },
@@ -73,6 +72,7 @@ export default {
     selectedSchemaId() {
       const vocab = this.vocabularies.find(v => v.id === this.selectedSchemaId);
       if (vocab) {
+        this.ajv = new Ajv({ verbose: true });
         this.jsonSchema = JSON.parse(vocab.content);
       } else {
         this.jsonSchema = null;
