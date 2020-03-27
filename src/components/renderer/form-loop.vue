@@ -96,7 +96,12 @@ export default {
     },
     matrix: {
       handler() {
-        this.$set(this.$parent.model, this.name, this.matrix);
+        let result = this.matrix.map(row => {
+          let rowCopy = _.clone(row);
+          delete rowCopy._parent;
+          return rowCopy;
+        });
+        this.$set(this.$parent.transientData, this.name, result);
       },
       deep: true,
     },
@@ -125,7 +130,13 @@ export default {
       }
     },
     setMatrixValue(i, v) {
-      delete v._parent;
+      if (v._parent) {
+        Object.keys(v._parent).forEach(parentKey => {
+          if (parentKey != this.name) {
+            this.$set(this.$parent.transientData, parentKey, v._parent[parentKey]);
+          }
+        });
+      }
       this.$set(this.matrix, i, v);
     },
     getMatrixValue(i) {
@@ -133,7 +144,11 @@ export default {
       if (!val) {
         val = {};
       }
-      return Object.assign({}, val, { '_parent' : this.transientData });
+      
+      let parent = _.clone(this.$parent.transientData);
+      delete parent[this.name];
+      val._parent = parent;
+      return val;
     },
     setupMatrix() {
       for (const i of this.times) {
