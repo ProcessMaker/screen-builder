@@ -6,7 +6,6 @@ import VueI18Next from '@panter/vue-i18next';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
-import vocabulariesExample from './vocabulariesExample';
 
 Vue.config.productionTip = false;
 
@@ -83,8 +82,6 @@ window.ProcessMaker = {
         };
         if (url === 'screens/1') {
           resolve({data: exampleScreen});
-        } else if (url === '/vocabularies') {
-          resolve({ data: vocabulariesExample });
         } else if (url.substr(0, 7) === 'screens') {
           resolve({ data: {
             data: [exampleScreen],

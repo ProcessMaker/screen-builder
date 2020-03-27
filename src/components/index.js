@@ -6,7 +6,6 @@ import * as renderer from './renderer';
 import FormMultiColumn from './renderer/form-multi-column';
 import * as inspector from './inspector';
 import FormBuilderControls from '../form-builder-controls';
-import Vocabularies from './vocabularies';
 
 const rendererComponents = {
   ...renderer,
@@ -21,7 +20,6 @@ export {
   inspector,
   rendererComponents as renderer,
   FormBuilderControls,
-  Vocabularies,
 };
 
 // Export our Vue plugin as our default

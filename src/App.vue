@@ -79,8 +79,6 @@
             <b-card no-body class="p-0 h-100 rounded-0 border-top-0 border-right-0 border-bottom-0">
               <b-card-body class="p-0 overflow-auto">
 
-                <vocabularies :data="previewData"></vocabularies>
-
                 <b-button variant="outline"
                   class="text-left card-header d-flex align-items-center w-100 shadow-none"
                   @click="showDataInput = !showDataInput"
@@ -174,11 +172,9 @@ import WatchersPopup from './components/watchers-popup.vue';
 import CustomCSS from './components/custom-css.vue';
 import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
-import Vocabularies from './components/vocabularies.vue';
 import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
-import './vocabulariesExample';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -269,7 +265,6 @@ export default {
     VueJsonPretty,
     MonacoEditor,
     WatchersPopup,
-    Vocabularies,
   },
   watch: {
     mode(mode) {
