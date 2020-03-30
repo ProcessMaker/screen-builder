@@ -28,10 +28,10 @@
                     {{ element.config.name || $t('Variable Name') }}
                     <div class="ml-auto">
                       <button
-                        class="btn btn-sm btn-danger mr-2"
+                        class="btn btn-sm btn-secondary mr-2"
                         @click="duplicateItem(index, row)"
                       >
-                        <i class="far fa-trash-alt text-light"/>
+                        <i class="fas fa-copy text-light"/>
                       </button>
                       <button
                         class="btn btn-sm btn-danger"
@@ -112,7 +112,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
-
+import Loop from './loop';
 const defaultColumnWidth = 1;
 
 export default {
@@ -128,6 +128,7 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
+    Loop,
     ...renderer,
   },
   data() {
