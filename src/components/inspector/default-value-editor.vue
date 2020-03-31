@@ -46,7 +46,6 @@ export default {
     watch: {
         value: {
             handler() {
-            console.log("Value chacnged", this.value)
             if (typeof this.value === 'string') {
                 this.mode       = 'basic';
                 this.basicValue = this.value;
@@ -75,7 +74,6 @@ export default {
                 mode: this.mode,
                 value: this.mode === 'js' ? this.jsValue : this.basicValue
             };
-            console.log("Emitting", value);
             this.$emit('input', value);
         }
     }
