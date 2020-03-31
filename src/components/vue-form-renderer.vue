@@ -163,12 +163,13 @@ export default {
         },
       },
       scrollable: null,
+      activeDefaultValues: {},
     };
   },
   watch: {
     mode() {
       this.currentPage = 0;
-      this.applyConfiguredDefaultValues();
+      this.initializeDefaultValues();
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
@@ -211,6 +212,7 @@ export default {
             });
           });
         }
+        this.updateDefaultValues();
 
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
@@ -247,21 +249,69 @@ export default {
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
-    this.applyConfiguredDefaultValues();
+    this.initializeDefaultValues();
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    applyConfiguredDefaultValues() {
+    initializeDefaultValues() {
       this.$nextTick(() => {
         if (typeof this.config !== undefined) {
           getItemsFromConfig(this.config)
             .forEach(item => {
               if (item.config.defaultValue) {
-                this.model[this.getValidPath(item.config.name)] = Mustache.render(item.config.defaultValue, this.transientData);
+                const path = this.getValidPath(item.config.name);
+                this.applyDefaultValues(path, item);
               }
           });
         }
       });
+    },
+    applyDefaultValues(path, item) {
+      if (typeof item.config.defaultValue === 'string') {
+        this.setBasicDefaultValue(path, item.config.defaultValue);
+      } else {
+        const value = item.config.defaultValue.value;
+        if (item.config.defaultValue.mode === 'js') {
+          this.setJsDefaultValue(path, value);
+        } else {
+          this.setBasicDefaultValue(path, value);
+        }
+      }
+
+      const setValue = JSON.parse(JSON.stringify(this.model[path]));
+      this.activeDefaultValues[path] = { item, setValue };
+    },
+    updateDefaultValues() {
+      for (const path in this.activeDefaultValues) {
+
+        if (!(path in this.model) || typeof this.model[path] === 'undefined') {
+          // the element was removed so delete it from our active elements
+          this.$delete(this.activeDefaultValues, path);
+          continue;
+        }
+
+        const current = JSON.parse(JSON.stringify(this.model[path]));
+        const cached = this.activeDefaultValues[path].setValue;
+        
+        // Check if any fields were modified from their original default values
+        // If so, we no longer want to apply any defaults.
+        if (_.isEqual(current, cached)) {
+          // No changes, so we can apply the default values
+          this.applyDefaultValues(path, this.activeDefaultValues[path].item);
+        } else {
+          // There are changes, so lets remove it from our list of active elements
+          this.$delete(this.activeDefaultValues, path);
+        }
+
+      };
+    },
+    setBasicDefaultValue(path, value) {
+      this.model[path] = Mustache.render(value, this.transientData);
+    },
+    setJsDefaultValue(path, value) {
+      const func = new Function(value);
+      const result = func.bind(_.clone(this.transientData))();
+      this.model[path] = result;
     },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {
