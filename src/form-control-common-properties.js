@@ -1,3 +1,5 @@
+import defaultValueEditor from './components/inspector/default-value-editor';
+
 export const bgcolorProperty = {
   type: 'ColorSelect',
   field: 'bgcolor',
@@ -214,7 +216,7 @@ export const buttonVariantStyleProperty = {
 };
 
 export const defaultValueProperty = {
-  type: 'FormInput',
+  type: defaultValueEditor,
   field: 'defaultValue',
   config: {
     label: 'Default Value',
