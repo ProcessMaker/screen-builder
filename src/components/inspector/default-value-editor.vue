@@ -46,15 +46,22 @@ export default {
     watch: {
         value: {
             handler() {
-            if (typeof this.value === 'string') {
-                this.mode       = 'basic';
-                this.basicValue = this.value;
-                this.jsValue    = '';
-            } else {
-                this.mode       = this.value.mode;
-                this.basicValue = this.mode === 'basic' ? this.value.value : '';
-                this.jsValue    = this.mode === 'js' ? this.value.value : '';
-            }
+                if (!this.value) {
+                    this.mode       = 'basic';
+                    this.basicValue = '';
+                    this.jsValue    = '';
+                    return;
+                }
+
+                if (typeof this.value === 'string') {
+                    this.mode       = 'basic';
+                    this.basicValue = this.value;
+                    this.jsValue    = '';
+                } else {
+                    this.mode       = this.value.mode;
+                    this.basicValue = this.mode === 'basic' ? this.value.value : '';
+                    this.jsValue    = this.mode === 'js' ? this.value.value : '';
+                }
             },
             immediate: true,
         },
@@ -68,12 +75,23 @@ export default {
             this.emit();
         },
     },
+    computed: {
+        effectiveValue() {
+            return this.mode === 'js' ? this.jsValue : this.basicValue;
+        }
+    },
     methods: {
         emit() {
+            if (this.effectiveValue === '') {
+                this.$emit('input', null);
+                return;
+            }
+
             const value = {
                 mode: this.mode,
-                value: this.mode === 'js' ? this.jsValue : this.basicValue
+                value: this.effectiveValue,
             };
+
             this.$emit('input', value);
         }
     }
