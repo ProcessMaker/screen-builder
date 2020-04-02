@@ -46,7 +46,7 @@ import draggable from 'vuedraggable';
 import * as renderer from '@/components/renderer';
 import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins';
 import FormMaskedInput from '@/components/renderer/form-masked-input';
-import FormLoop from './form-loop';
+// import FormLoop from './form-loop';
 
 import {
   FormInput,
@@ -73,7 +73,7 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
-    FormLoop,
+    // FormLoop,
     ...renderer,
   },
   data() {

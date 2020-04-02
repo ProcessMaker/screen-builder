@@ -96,7 +96,7 @@
 import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
-import * as editor from '@/components/editor';
+// import * as editor from '@/components/editor';
 import {
   FormInput,
   FormSelectList,
@@ -123,7 +123,6 @@ export default {
     FormHtmlEditor,
     FormHtmlViewer,
     ...renderer,
-    ...editor,
   },
   data() {
     return {
