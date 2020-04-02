@@ -46,16 +46,17 @@ export default {
     watch: {
         value: {
             handler() {
-                if (!this.value) {
-                    return;
-                }
-
                 if (_.isEqual(this.configValue, this.value)) {
                     return;
                 }
                 
+                this.mode = 'basic';
                 this.basicValue = '';
                 this.jsValue    = '';
+                
+                if (!this.value) {
+                    return;
+                }
 
                 if (typeof this.value === 'string') {
                     this.mode = 'basic';
@@ -76,12 +77,6 @@ export default {
         basicValue() {
             this.emit();
         },
-    },
-    mounted() {
-
-    },
-    created() {
-
     },
     computed: {
         effectiveValue: {
