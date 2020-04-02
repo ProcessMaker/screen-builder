@@ -325,7 +325,6 @@ export default {
       const func = new Function(value);
       const result = func.bind(_.clone(this.transientData))();
       if (!_.isEqual(this.model[path], result)) {
-        console.log("Setting to", result);
         this.model[path] = result;
       }
     },
