@@ -280,16 +280,21 @@ import HasColorProperty from '../mixins/HasColorProperty';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
-import FormMultiColumn from '@/components/renderer/form-multi-column';
 import BootstrapVue from 'bootstrap-vue';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
-import Loop from './editor/loop';
 
 Vue.use(BootstrapVue);
+
+// Container elements must be registered globally because they
+// could rely on eachother.
+Vue.component('Loop', editor.Loop);
+Vue.component('FormLoop', renderer.FormLoop);
+Vue.component('MultiColumn', editor.MultiColumn);
+Vue.component('FormMultiColumn', renderer.FormMultiColumn);
 
 let Validator = require('validatorjs');
 // To include another language in the Validator with variable processmaker
@@ -360,7 +365,6 @@ export default {
   mixins: [HasColorProperty],
   components: {
     draggable,
-    Loop,
     FormInput,
     FormSelectList,
     FormCheckbox,
@@ -368,7 +372,6 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
-    FormMultiColumn,
     ...editor,
     ...inspector,
     ...renderer,
