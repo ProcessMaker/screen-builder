@@ -306,12 +306,17 @@ export default {
       };
     },
     setBasicDefaultValue(path, value) {
-      this.model[path] = Mustache.render(value, this.transientData);
+      const result = Mustache.render(value, this.transientData);
+      if (!_.isEqual(this.model[path], result)) {
+        this.model[path] = result;
+      }
     },
     setJsDefaultValue(path, value) {
       const func = new Function(value);
       const result = func.bind(_.clone(this.transientData))();
-      this.model[path] = result;
+      if (!_.isEqual(this.model[path], result)) {
+        this.model[path] = result;
+      }
     },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {

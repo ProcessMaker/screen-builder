@@ -47,20 +47,22 @@ export default {
         value: {
             handler() {
                 if (!this.value) {
-                    this.mode       = 'basic';
-                    this.basicValue = '';
-                    this.jsValue    = '';
                     return;
                 }
 
+                if (_.isEqual(this.configValue, this.value)) {
+                    return;
+                }
+                
+                this.basicValue = '';
+                this.jsValue    = '';
+
                 if (typeof this.value === 'string') {
-                    this.mode       = 'basic';
-                    this.basicValue = this.value;
-                    this.jsValue    = '';
+                    this.mode = 'basic';
+                    this.effectiveValue = this.value;
                 } else {
-                    this.mode       = this.value.mode;
-                    this.basicValue = this.mode === 'basic' ? this.value.value : '';
-                    this.jsValue    = this.mode === 'js' ? this.value.value : '';
+                    this.mode = this.value.mode;
+                    this.effectiveValue = this.value.value;
                 }
             },
             immediate: true,
@@ -75,24 +77,35 @@ export default {
             this.emit();
         },
     },
+    mounted() {
+
+    },
+    created() {
+
+    },
     computed: {
-        effectiveValue() {
-            return this.mode === 'js' ? this.jsValue : this.basicValue;
+        effectiveValue: {
+            get() {
+                return this.mode === 'js' ? this.jsValue : this.basicValue;
+            },
+            set(value) {
+                if (this.mode === 'js') {
+                    this.jsValue = value;
+                } else {
+                    this.basicValue = value;
+                }
+            }
+        },
+        configValue() {
+            return {
+                mode: this.mode,
+                value: this.effectiveValue,
+            };
         }
     },
     methods: {
         emit() {
-            if (this.effectiveValue === '') {
-                this.$emit('input', null);
-                return;
-            }
-
-            const value = {
-                mode: this.mode,
-                value: this.effectiveValue,
-            };
-
-            this.$emit('input', value);
+            this.$emit('input', this.configValue);
         }
     }
 }
