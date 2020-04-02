@@ -164,6 +164,7 @@ export default {
       },
       scrollable: null,
       activeDefaultValues: {},
+      defaultValueApplied: false,
     };
   },
   watch: {
@@ -278,19 +279,28 @@ export default {
         }
       }
 
-      const setValue = JSON.parse(JSON.stringify(this.model[path]));
+      this.defaultValueApplied = true;
+      this.$nextTick(() => this.defaultValueApplied = false);
+
+      const setValue = this.model[path];
       this.activeDefaultValues[path] = { item, setValue };
     },
     updateDefaultValues() {
-      for (const path in this.activeDefaultValues) {
 
+      // Prevent endless parsing of dynamic defaults, like `new Date()`
+      if (this.defaultValueApplied) {
+        return;
+      }
+
+      for (const path in this.activeDefaultValues) {
+      
         if (!(path in this.model) || typeof this.model[path] === 'undefined') {
           // the element was removed so delete it from our active elements
           this.$delete(this.activeDefaultValues, path);
           continue;
         }
 
-        const current = JSON.parse(JSON.stringify(this.model[path]));
+        const current = this.model[path];
         const cached = this.activeDefaultValues[path].setValue;
         
         // Check if any fields were modified from their original default values
@@ -315,6 +325,7 @@ export default {
       const func = new Function(value);
       const result = func.bind(_.clone(this.transientData))();
       if (!_.isEqual(this.model[path], result)) {
+        console.log("Setting to", result);
         this.model[path] = result;
       }
     },
