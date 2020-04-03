@@ -66,7 +66,7 @@
                       <div class="ml-auto">
                         <button
                           class="btn btn-sm btn-secondary mr-2"
-                          :title="$t('Duplicate Control')"
+                          :title="$t('Copy Control')"
                           @click="duplicateItem(index, row)"
                         >
                           <i class="fas fa-copy text-light"></i>
