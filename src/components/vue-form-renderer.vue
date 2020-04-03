@@ -21,6 +21,7 @@
           v-bind="element.config"
           :is="element.component"
           :formConfig="config"
+          :mode="mode"
         />
 
         <div v-else :id="element.config.name ? element.config.name : undefined">
@@ -52,7 +53,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
+import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible, defaultValues } from '@/mixins';
 import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
@@ -94,7 +95,7 @@ export default {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers, defaultValues],
   components: {
     FormInput: FormMaskedInput,
     WatchersSynchronous,
@@ -164,7 +165,6 @@ export default {
       },
       scrollable: null,
       activeDefaultValues: {},
-      defaultValueApplied: false,
     };
   },
   watch: {
@@ -254,80 +254,6 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    initializeDefaultValues() {
-      this.$nextTick(() => {
-        if (typeof this.config !== undefined) {
-          getItemsFromConfig(this.config)
-            .forEach(item => {
-              if (item.config.defaultValue) {
-                const path = this.getValidPath(item.config.name);
-                this.applyDefaultValues(path, item);
-              }
-          });
-        }
-      });
-    },
-    applyDefaultValues(path, item) {
-      if (typeof item.config.defaultValue === 'string') {
-        this.setBasicDefaultValue(path, item.config.defaultValue);
-      } else {
-        const value = item.config.defaultValue.value;
-        if (item.config.defaultValue.mode === 'js') {
-          this.setJsDefaultValue(path, value);
-        } else {
-          this.setBasicDefaultValue(path, value);
-        }
-      }
-
-      this.defaultValueApplied = true;
-      this.$nextTick(() => this.defaultValueApplied = false);
-
-      const setValue = this.model[path];
-      this.activeDefaultValues[path] = { item, setValue };
-    },
-    updateDefaultValues() {
-
-      // Prevent endless parsing of dynamic defaults, like `new Date()`
-      if (this.defaultValueApplied) {
-        return;
-      }
-
-      for (const path in this.activeDefaultValues) {
-      
-        if (!(path in this.model) || typeof this.model[path] === 'undefined') {
-          // the element was removed so delete it from our active elements
-          this.$delete(this.activeDefaultValues, path);
-          continue;
-        }
-
-        const current = this.model[path];
-        const cached = this.activeDefaultValues[path].setValue;
-        
-        // Check if any fields were modified from their original default values
-        // If so, we no longer want to apply any defaults.
-        if (_.isEqual(current, cached)) {
-          // No changes, so we can apply the default values
-          this.applyDefaultValues(path, this.activeDefaultValues[path].item);
-        } else {
-          // There are changes, so lets remove it from our list of active elements
-          this.$delete(this.activeDefaultValues, path);
-        }
-
-      };
-    },
-    setBasicDefaultValue(path, value) {
-      const result = Mustache.render(value, this.transientData);
-      if (!_.isEqual(this.model[path], result)) {
-        this.model[path] = result;
-      }
-    },
-    setJsDefaultValue(path, value) {
-      const func = new Function(value);
-      const result = func.bind(_.clone(this.transientData))();
-      if (!_.isEqual(this.model[path], result)) {
-        this.model[path] = result;
-      }
-    },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {
         Object.keys(this.customFunctions).forEach(key => {
