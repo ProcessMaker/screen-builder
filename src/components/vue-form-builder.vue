@@ -277,7 +277,6 @@
 import Vue from 'vue';
 import draggable from 'vuedraggable';
 import HasColorProperty from '../mixins/HasColorProperty';
-import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import BootstrapVue from 'bootstrap-vue';
@@ -286,15 +285,9 @@ import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
+import './registerGlobalComponents';
 
 Vue.use(BootstrapVue);
-
-// Container elements must be registered globally because they
-// could rely on eachother.
-Vue.component('Loop', editor.Loop);
-Vue.component('FormLoop', renderer.FormLoop);
-Vue.component('MultiColumn', editor.MultiColumn);
-Vue.component('FormMultiColumn', renderer.FormMultiColumn);
 
 let Validator = require('validatorjs');
 // To include another language in the Validator with variable processmaker
@@ -372,7 +365,6 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
-    ...editor,
     ...inspector,
     ...renderer,
   },
