@@ -54,7 +54,6 @@ import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
 import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible, defaultValues } from '@/mixins';
-import * as editor from './editor';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
@@ -108,7 +107,6 @@ export default {
     FormMultiColumn,
     CustomCSS,
     FormLoop,
-    ...editor,
     ...inspector,
     ...renderer,
   },
