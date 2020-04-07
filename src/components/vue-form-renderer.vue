@@ -338,10 +338,14 @@ export default {
       }
 
       this.currentPage = page;
-
-      // Scroll to top
+      this.scrollToTop();
+    },
+    scrollToTop() {
       if (this.scrollable) {
         this.scrollable.scrollTop = 0;
+      }
+      if (typeof window !== 'undefined') {
+        window.top.postMessage({ event: 'scrollToTop' }, '*');
       }
     },
     setDefaultValues() {

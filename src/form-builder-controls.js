@@ -259,8 +259,26 @@ export default [
         type: 'datetime',
         name: '',
         placeholder: '',
+        minDate: '',
+        maxDate: '',
       },
       inspector: [
+        {
+          type: 'FormInput',
+          field: 'minDate',
+          config: {
+            label: 'Minimum Date',
+            validation: 'date_or_mustache',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'maxDate',
+          config: {
+            label: 'Maximum Date',
+            validation: 'date_or_mustache',
+          },
+        },
         keyNameProperty,
         labelProperty,
         DataTypeDateTimeProperty,
