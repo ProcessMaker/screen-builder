@@ -1,7 +1,6 @@
 // Import our components
 import VueFormBuilder from './vue-form-builder';
 import VueFormRenderer from './vue-form-renderer';
-import * as editor from './editor';
 import * as renderer from './renderer';
 import FormMultiColumn from './renderer/form-multi-column';
 import * as inspector from './inspector';
@@ -16,7 +15,6 @@ const rendererComponents = {
 export {
   VueFormBuilder,
   VueFormRenderer,
-  editor,
   inspector,
   rendererComponents as renderer,
   FormBuilderControls,

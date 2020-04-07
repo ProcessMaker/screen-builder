@@ -103,6 +103,7 @@
 import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
+
 import {
   FormInput,
   FormSelectList,
@@ -112,7 +113,6 @@ import {
   FormHtmlEditor,
   FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
-import Loop from './loop';
 const defaultColumnWidth = 1;
 
 export default {
@@ -128,7 +128,6 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
-    Loop,
     ...renderer,
   },
   data() {

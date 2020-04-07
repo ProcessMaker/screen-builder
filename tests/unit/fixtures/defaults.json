@@ -1,0 +1,3338 @@
+[
+    {
+        "name": "Order form",
+        "items": [
+            {
+                "config": {
+                    "icon": "far fa-square",
+                    "label": "input1",
+                    "name": "input1",
+                    "placeholder": "",
+                    "validation": [],
+                    "helper": null,
+                    "type": "text",
+                    "dataFormat": "string",
+                    "defaultValue": {
+                        "mode": "basic",
+                        "value": "input3: {{ input3 }}"
+                    }
+                },
+                "inspector": [
+                    {
+                        "type": "FormInput",
+                        "field": "name",
+                        "config": {
+                            "label": "Variable Name",
+                            "name": "Variable Name",
+                            "validation": "regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required",
+                            "helper": "A variable name is a symbolic name to reference information."
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "label",
+                        "config": {
+                            "label": "Label",
+                            "helper": "The label describes the field's name"
+                        }
+                    },
+                    {
+                        "type": "FormMultiselect",
+                        "field": "dataFormat",
+                        "config": {
+                            "label": "Data Type",
+                            "name": "Data Type",
+                            "helper": "The data type specifies what kind of data is stored in the variable.",
+                            "validation": "required",
+                            "options": [
+                                {
+                                    "value": "string",
+                                    "content": "Text"
+                                },
+                                {
+                                    "value": "int",
+                                    "content": "Integer"
+                                },
+                                {
+                                    "value": "currency",
+                                    "content": "Currency"
+                                },
+                                {
+                                    "value": "percentage",
+                                    "content": "Percentage"
+                                },
+                                {
+                                    "value": "float",
+                                    "content": "Decimal"
+                                },
+                                {
+                                    "value": "datetime",
+                                    "content": "Datetime"
+                                },
+                                {
+                                    "value": "date",
+                                    "content": "Date"
+                                },
+                                {
+                                    "value": "password",
+                                    "content": "Password"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": {
+                            "extends": {
+                                "inheritAttrs": false,
+                                "components": {
+                                    "Multiselect": {
+                                        "name": "vue-multiselect",
+                                        "mixins": [
+                                            {
+                                                "props": {
+                                                    "internalSearch": {
+                                                        "default": true
+                                                    },
+                                                    "options": {
+                                                        "required": true
+                                                    },
+                                                    "multiple": {
+                                                        "default": false
+                                                    },
+                                                    "value": {
+                                                        "type": null
+                                                    },
+                                                    "trackBy": {},
+                                                    "label": {},
+                                                    "searchable": {
+                                                        "default": true
+                                                    },
+                                                    "clearOnSelect": {
+                                                        "default": true
+                                                    },
+                                                    "hideSelected": {
+                                                        "default": false
+                                                    },
+                                                    "placeholder": {
+                                                        "default": "Select option"
+                                                    },
+                                                    "allowEmpty": {
+                                                        "default": true
+                                                    },
+                                                    "resetAfter": {
+                                                        "default": false
+                                                    },
+                                                    "closeOnSelect": {
+                                                        "default": true
+                                                    },
+                                                    "customLabel": {},
+                                                    "taggable": {
+                                                        "default": false
+                                                    },
+                                                    "tagPlaceholder": {
+                                                        "default": "Press enter to create a tag"
+                                                    },
+                                                    "tagPosition": {
+                                                        "default": "top"
+                                                    },
+                                                    "max": {
+                                                        "type": [
+                                                            null,
+                                                            null
+                                                        ],
+                                                        "default": false
+                                                    },
+                                                    "id": {
+                                                        "default": null
+                                                    },
+                                                    "optionsLimit": {
+                                                        "default": 1000
+                                                    },
+                                                    "groupValues": {},
+                                                    "groupLabel": {},
+                                                    "groupSelect": {
+                                                        "default": false
+                                                    },
+                                                    "blockKeys": {},
+                                                    "preserveSearch": {
+                                                        "default": false
+                                                    },
+                                                    "preselectFirst": {
+                                                        "default": false
+                                                    }
+                                                },
+                                                "computed": {},
+                                                "watch": {},
+                                                "methods": {}
+                                            },
+                                            {
+                                                "props": {
+                                                    "showPointer": {
+                                                        "default": true
+                                                    },
+                                                    "optionHeight": {
+                                                        "default": 40
+                                                    }
+                                                },
+                                                "computed": {},
+                                                "watch": {},
+                                                "methods": {}
+                                            }
+                                        ],
+                                        "props": {
+                                            "name": {
+                                                "default": ""
+                                            },
+                                            "selectLabel": {
+                                                "default": "Press enter to select"
+                                            },
+                                            "selectGroupLabel": {
+                                                "default": "Press enter to select group"
+                                            },
+                                            "selectedLabel": {
+                                                "default": "Selected"
+                                            },
+                                            "deselectLabel": {
+                                                "default": "Press enter to remove"
+                                            },
+                                            "deselectGroupLabel": {
+                                                "default": "Press enter to deselect group"
+                                            },
+                                            "showLabels": {
+                                                "default": true
+                                            },
+                                            "limit": {
+                                                "default": 99999
+                                            },
+                                            "maxHeight": {
+                                                "default": 300
+                                            },
+                                            "limitText": {},
+                                            "loading": {
+                                                "default": false
+                                            },
+                                            "disabled": {
+                                                "default": false
+                                            },
+                                            "openDirection": {
+                                                "default": ""
+                                            },
+                                            "showNoOptions": {
+                                                "default": true
+                                            },
+                                            "showNoResults": {
+                                                "default": true
+                                            },
+                                            "tabindex": {
+                                                "default": 0
+                                            }
+                                        },
+                                        "computed": {},
+                                        "staticRenderFns": [],
+                                        "_compiled": true,
+                                        "beforeCreate": [
+                                            null
+                                        ]
+                                    }
+                                },
+                                "mixins": [
+                                    {
+                                        "props": {
+                                            "validationMessages": {
+                                                "type": null
+                                            },
+                                            "validationField": {
+                                                "type": null
+                                            },
+                                            "validationData": {
+                                                "type": null
+                                            },
+                                            "validation": {
+                                                "type": null
+                                            }
+                                        },
+                                        "watch": {
+                                            "validationData": {
+                                                "deep": true,
+                                                "user": true
+                                            }
+                                        },
+                                        "methods": {}
+                                    }
+                                ],
+                                "props": [
+                                    "label",
+                                    "error",
+                                    "options",
+                                    "helper",
+                                    "name",
+                                    "value",
+                                    "selectedControl"
+                                ],
+                                "computed": {},
+                                "methods": {},
+                                "staticRenderFns": [],
+                                "_compiled": true,
+                                "beforeCreate": [
+                                    null
+                                ],
+                                "beforeDestroy": [
+                                    null
+                                ],
+                                "__file": "src/components/inspector/form-multiselect.vue"
+                            },
+                            "computed": {},
+                            "staticRenderFns": [],
+                            "_compiled": true,
+                            "beforeCreate": [
+                                null
+                            ],
+                            "beforeDestroy": [
+                                null
+                            ],
+                            "__file": "src/components/inspector/select-data-type-mask.vue"
+                        },
+                        "field": "dataMask",
+                        "config": {
+                            "label": "Data Format",
+                            "name": "Data Format",
+                            "helper": "The data format for the selected type."
+                        }
+                    },
+                    {
+                        "type": "ValidationSelect",
+                        "field": "validation",
+                        "config": {
+                            "label": "Validation Rules",
+                            "helper": "The validation rules needed for this field"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "placeholder",
+                        "config": {
+                            "label": "Placeholder Text",
+                            "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "helper",
+                        "config": {
+                            "label": "Helper Text",
+                            "helper": "Help text is meant to provide additional guidance on the field's value"
+                        }
+                    },
+                    {
+                        "type": "FormCheckbox",
+                        "field": "readonly",
+                        "config": {
+                            "label": "Read Only",
+                            "helper": ""
+                        }
+                    },
+                    {
+                        "type": "ColorSelect",
+                        "field": "color",
+                        "config": {
+                            "label": "Text Color",
+                            "helper": "Set the element's text color",
+                            "options": [
+                                {
+                                    "value": "text-primary",
+                                    "content": "primary"
+                                },
+                                {
+                                    "value": "text-secondary",
+                                    "content": "secondary"
+                                },
+                                {
+                                    "value": "text-success",
+                                    "content": "success"
+                                },
+                                {
+                                    "value": "text-danger",
+                                    "content": "danger"
+                                },
+                                {
+                                    "value": "text-warning",
+                                    "content": "warning"
+                                },
+                                {
+                                    "value": "text-info",
+                                    "content": "info"
+                                },
+                                {
+                                    "value": "text-light",
+                                    "content": "light"
+                                },
+                                {
+                                    "value": "text-dark",
+                                    "content": "dark"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "ColorSelect",
+                        "field": "bgcolor",
+                        "config": {
+                            "label": "Background Color",
+                            "helper": "Set the element's background color",
+                            "options": [
+                                {
+                                    "value": "alert alert-primary",
+                                    "content": "primary"
+                                },
+                                {
+                                    "value": "alert alert-secondary",
+                                    "content": "secondary"
+                                },
+                                {
+                                    "value": "alert alert-success",
+                                    "content": "success"
+                                },
+                                {
+                                    "value": "alert alert-danger",
+                                    "content": "danger"
+                                },
+                                {
+                                    "value": "alert alert-warning",
+                                    "content": "warning"
+                                },
+                                {
+                                    "value": "alert alert-info",
+                                    "content": "info"
+                                },
+                                {
+                                    "value": "alert alert-light",
+                                    "content": "light"
+                                },
+                                {
+                                    "value": "alert alert-dark",
+                                    "content": "dark"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": {
+                            "props": [
+                                "value"
+                            ],
+                            "components": {
+                                "MonacoEditor": {
+                                    "name": "MonacoEditor",
+                                    "props": {
+                                        "value": {},
+                                        "theme": {
+                                            "default": "vs"
+                                        },
+                                        "language": {},
+                                        "options": {},
+                                        "amdRequire": {}
+                                    },
+                                    "model": {
+                                        "event": "change"
+                                    },
+                                    "watch": {
+                                        "options": {
+                                            "deep": true,
+                                            "user": true
+                                        }
+                                    },
+                                    "methods": {},
+                                    "_Ctor": {}
+                                }
+                            },
+                            "watch": {
+                                "value": {
+                                    "immediate": true
+                                }
+                            },
+                            "computed": {
+                                "effectiveValue": {}
+                            },
+                            "methods": {},
+                            "staticRenderFns": [],
+                            "_compiled": true,
+                            "_scopeId": "data-v-4f1374fd",
+                            "beforeCreate": [
+                                null
+                            ],
+                            "beforeDestroy": [
+                                null
+                            ],
+                            "__file": "src/components/inspector/default-value-editor.vue"
+                        },
+                        "field": "defaultValue",
+                        "config": {
+                            "label": "Default Value",
+                            "helper": "Takes precedence over value set in data."
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "conditionalHide",
+                        "config": {
+                            "label": "Visibility Rule",
+                            "helper": "This control is hidden until this expression is true"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "customCssSelector",
+                        "config": {
+                            "label": "CSS Selector Name",
+                            "helper": "Use this in your custom css rules",
+                            "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                        }
+                    }
+                ],
+                "component": "FormInput",
+                "editor-component": "FormInput",
+                "editor-control": "FormInput",
+                "label": "Line Input"
+            },
+            {
+                "config": {
+                    "icon": "fas fa-table",
+                    "options": [
+                        {
+                            "value": "1",
+                            "content": "6"
+                        },
+                        {
+                            "value": "2",
+                            "content": "6"
+                        }
+                    ],
+                    "label": ""
+                },
+                "inspector": [
+                    {
+                        "type": "ContainerColumns",
+                        "field": "options",
+                        "config": {
+                            "label": "Column Width",
+                            "validation": "columns-adds-to-12",
+                            "helper": ""
+                        }
+                    },
+                    {
+                        "type": "ColorSelect",
+                        "field": "color",
+                        "config": {
+                            "label": "Text Color",
+                            "helper": "Set the element's text color",
+                            "options": [
+                                {
+                                    "value": "text-primary",
+                                    "content": "primary"
+                                },
+                                {
+                                    "value": "text-secondary",
+                                    "content": "secondary"
+                                },
+                                {
+                                    "value": "text-success",
+                                    "content": "success"
+                                },
+                                {
+                                    "value": "text-danger",
+                                    "content": "danger"
+                                },
+                                {
+                                    "value": "text-warning",
+                                    "content": "warning"
+                                },
+                                {
+                                    "value": "text-info",
+                                    "content": "info"
+                                },
+                                {
+                                    "value": "text-light",
+                                    "content": "light"
+                                },
+                                {
+                                    "value": "text-dark",
+                                    "content": "dark"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "ColorSelect",
+                        "field": "bgcolor",
+                        "config": {
+                            "label": "Background Color",
+                            "helper": "Set the element's background color",
+                            "options": [
+                                {
+                                    "value": "alert alert-primary",
+                                    "content": "primary"
+                                },
+                                {
+                                    "value": "alert alert-secondary",
+                                    "content": "secondary"
+                                },
+                                {
+                                    "value": "alert alert-success",
+                                    "content": "success"
+                                },
+                                {
+                                    "value": "alert alert-danger",
+                                    "content": "danger"
+                                },
+                                {
+                                    "value": "alert alert-warning",
+                                    "content": "warning"
+                                },
+                                {
+                                    "value": "alert alert-info",
+                                    "content": "info"
+                                },
+                                {
+                                    "value": "alert alert-light",
+                                    "content": "light"
+                                },
+                                {
+                                    "value": "alert alert-dark",
+                                    "content": "dark"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "conditionalHide",
+                        "config": {
+                            "label": "Visibility Rule",
+                            "helper": "This control is hidden until this expression is true"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "customCssSelector",
+                        "config": {
+                            "label": "CSS Selector Name",
+                            "helper": "Use this in your custom css rules",
+                            "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                        }
+                    }
+                ],
+                "component": "FormMultiColumn",
+                "editor-component": "MultiColumn",
+                "editor-control": "MultiColumn",
+                "label": "Multicolumn / Table",
+                "items": [
+                    [
+                        {
+                            "config": {
+                                "icon": "far fa-square",
+                                "label": "input2",
+                                "name": "input2",
+                                "placeholder": "",
+                                "validation": [],
+                                "helper": null,
+                                "type": "text",
+                                "dataFormat": "string",
+                                "defaultValue": {
+                                    "mode": "basic",
+                                    "value": "foo"
+                                }
+                            },
+                            "inspector": [
+                                {
+                                    "type": "FormInput",
+                                    "field": "name",
+                                    "config": {
+                                        "label": "Variable Name",
+                                        "name": "Variable Name",
+                                        "validation": "regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required",
+                                        "helper": "A variable name is a symbolic name to reference information."
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "label",
+                                    "config": {
+                                        "label": "Label",
+                                        "helper": "The label describes the field's name"
+                                    }
+                                },
+                                {
+                                    "type": "FormMultiselect",
+                                    "field": "dataFormat",
+                                    "config": {
+                                        "label": "Data Type",
+                                        "name": "Data Type",
+                                        "helper": "The data type specifies what kind of data is stored in the variable.",
+                                        "validation": "required",
+                                        "options": [
+                                            {
+                                                "value": "string",
+                                                "content": "Text"
+                                            },
+                                            {
+                                                "value": "int",
+                                                "content": "Integer"
+                                            },
+                                            {
+                                                "value": "currency",
+                                                "content": "Currency"
+                                            },
+                                            {
+                                                "value": "percentage",
+                                                "content": "Percentage"
+                                            },
+                                            {
+                                                "value": "float",
+                                                "content": "Decimal"
+                                            },
+                                            {
+                                                "value": "datetime",
+                                                "content": "Datetime"
+                                            },
+                                            {
+                                                "value": "date",
+                                                "content": "Date"
+                                            },
+                                            {
+                                                "value": "password",
+                                                "content": "Password"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": {
+                                        "extends": {
+                                            "inheritAttrs": false,
+                                            "components": {
+                                                "Multiselect": {
+                                                    "name": "vue-multiselect",
+                                                    "mixins": [
+                                                        {
+                                                            "props": {
+                                                                "internalSearch": {
+                                                                    "default": true
+                                                                },
+                                                                "options": {
+                                                                    "required": true
+                                                                },
+                                                                "multiple": {
+                                                                    "default": false
+                                                                },
+                                                                "value": {
+                                                                    "type": null
+                                                                },
+                                                                "trackBy": {},
+                                                                "label": {},
+                                                                "searchable": {
+                                                                    "default": true
+                                                                },
+                                                                "clearOnSelect": {
+                                                                    "default": true
+                                                                },
+                                                                "hideSelected": {
+                                                                    "default": false
+                                                                },
+                                                                "placeholder": {
+                                                                    "default": "Select option"
+                                                                },
+                                                                "allowEmpty": {
+                                                                    "default": true
+                                                                },
+                                                                "resetAfter": {
+                                                                    "default": false
+                                                                },
+                                                                "closeOnSelect": {
+                                                                    "default": true
+                                                                },
+                                                                "customLabel": {},
+                                                                "taggable": {
+                                                                    "default": false
+                                                                },
+                                                                "tagPlaceholder": {
+                                                                    "default": "Press enter to create a tag"
+                                                                },
+                                                                "tagPosition": {
+                                                                    "default": "top"
+                                                                },
+                                                                "max": {
+                                                                    "type": [
+                                                                        null,
+                                                                        null
+                                                                    ],
+                                                                    "default": false
+                                                                },
+                                                                "id": {
+                                                                    "default": null
+                                                                },
+                                                                "optionsLimit": {
+                                                                    "default": 1000
+                                                                },
+                                                                "groupValues": {},
+                                                                "groupLabel": {},
+                                                                "groupSelect": {
+                                                                    "default": false
+                                                                },
+                                                                "blockKeys": {},
+                                                                "preserveSearch": {
+                                                                    "default": false
+                                                                },
+                                                                "preselectFirst": {
+                                                                    "default": false
+                                                                }
+                                                            },
+                                                            "computed": {},
+                                                            "watch": {},
+                                                            "methods": {}
+                                                        },
+                                                        {
+                                                            "props": {
+                                                                "showPointer": {
+                                                                    "default": true
+                                                                },
+                                                                "optionHeight": {
+                                                                    "default": 40
+                                                                }
+                                                            },
+                                                            "computed": {},
+                                                            "watch": {},
+                                                            "methods": {}
+                                                        }
+                                                    ],
+                                                    "props": {
+                                                        "name": {
+                                                            "default": ""
+                                                        },
+                                                        "selectLabel": {
+                                                            "default": "Press enter to select"
+                                                        },
+                                                        "selectGroupLabel": {
+                                                            "default": "Press enter to select group"
+                                                        },
+                                                        "selectedLabel": {
+                                                            "default": "Selected"
+                                                        },
+                                                        "deselectLabel": {
+                                                            "default": "Press enter to remove"
+                                                        },
+                                                        "deselectGroupLabel": {
+                                                            "default": "Press enter to deselect group"
+                                                        },
+                                                        "showLabels": {
+                                                            "default": true
+                                                        },
+                                                        "limit": {
+                                                            "default": 99999
+                                                        },
+                                                        "maxHeight": {
+                                                            "default": 300
+                                                        },
+                                                        "limitText": {},
+                                                        "loading": {
+                                                            "default": false
+                                                        },
+                                                        "disabled": {
+                                                            "default": false
+                                                        },
+                                                        "openDirection": {
+                                                            "default": ""
+                                                        },
+                                                        "showNoOptions": {
+                                                            "default": true
+                                                        },
+                                                        "showNoResults": {
+                                                            "default": true
+                                                        },
+                                                        "tabindex": {
+                                                            "default": 0
+                                                        }
+                                                    },
+                                                    "computed": {},
+                                                    "staticRenderFns": [],
+                                                    "_compiled": true,
+                                                    "beforeCreate": [
+                                                        null
+                                                    ],
+                                                    "_Ctor": {}
+                                                }
+                                            },
+                                            "mixins": [
+                                                {
+                                                    "props": {
+                                                        "validationMessages": {
+                                                            "type": null
+                                                        },
+                                                        "validationField": {
+                                                            "type": null
+                                                        },
+                                                        "validationData": {
+                                                            "type": null
+                                                        },
+                                                        "validation": {
+                                                            "type": null
+                                                        }
+                                                    },
+                                                    "watch": {
+                                                        "validationData": {
+                                                            "deep": true,
+                                                            "user": true
+                                                        }
+                                                    },
+                                                    "methods": {}
+                                                }
+                                            ],
+                                            "props": {
+                                                "selectedControl": {
+                                                    "type": null
+                                                },
+                                                "value": {
+                                                    "type": null
+                                                },
+                                                "name": {
+                                                    "type": null
+                                                },
+                                                "helper": {
+                                                    "type": null
+                                                },
+                                                "options": {
+                                                    "type": null
+                                                },
+                                                "error": {
+                                                    "type": null
+                                                },
+                                                "label": {
+                                                    "type": null
+                                                }
+                                            },
+                                            "computed": {},
+                                            "methods": {},
+                                            "staticRenderFns": [],
+                                            "_compiled": true,
+                                            "beforeCreate": [
+                                                null
+                                            ],
+                                            "beforeDestroy": [
+                                                null
+                                            ],
+                                            "__file": "src/components/inspector/form-multiselect.vue",
+                                            "_Ctor": {}
+                                        },
+                                        "computed": {},
+                                        "staticRenderFns": [],
+                                        "_compiled": true,
+                                        "beforeCreate": [
+                                            null
+                                        ],
+                                        "beforeDestroy": [
+                                            null
+                                        ],
+                                        "__file": "src/components/inspector/select-data-type-mask.vue"
+                                    },
+                                    "field": "dataMask",
+                                    "config": {
+                                        "label": "Data Format",
+                                        "name": "Data Format",
+                                        "helper": "The data format for the selected type."
+                                    }
+                                },
+                                {
+                                    "type": "ValidationSelect",
+                                    "field": "validation",
+                                    "config": {
+                                        "label": "Validation Rules",
+                                        "helper": "The validation rules needed for this field"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "placeholder",
+                                    "config": {
+                                        "label": "Placeholder Text",
+                                        "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "helper",
+                                    "config": {
+                                        "label": "Helper Text",
+                                        "helper": "Help text is meant to provide additional guidance on the field's value"
+                                    }
+                                },
+                                {
+                                    "type": "FormCheckbox",
+                                    "field": "readonly",
+                                    "config": {
+                                        "label": "Read Only",
+                                        "helper": ""
+                                    }
+                                },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "color",
+                                    "config": {
+                                        "label": "Text Color",
+                                        "helper": "Set the element's text color",
+                                        "options": [
+                                            {
+                                                "value": "text-primary",
+                                                "content": "primary"
+                                            },
+                                            {
+                                                "value": "text-secondary",
+                                                "content": "secondary"
+                                            },
+                                            {
+                                                "value": "text-success",
+                                                "content": "success"
+                                            },
+                                            {
+                                                "value": "text-danger",
+                                                "content": "danger"
+                                            },
+                                            {
+                                                "value": "text-warning",
+                                                "content": "warning"
+                                            },
+                                            {
+                                                "value": "text-info",
+                                                "content": "info"
+                                            },
+                                            {
+                                                "value": "text-light",
+                                                "content": "light"
+                                            },
+                                            {
+                                                "value": "text-dark",
+                                                "content": "dark"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "bgcolor",
+                                    "config": {
+                                        "label": "Background Color",
+                                        "helper": "Set the element's background color",
+                                        "options": [
+                                            {
+                                                "value": "alert alert-primary",
+                                                "content": "primary"
+                                            },
+                                            {
+                                                "value": "alert alert-secondary",
+                                                "content": "secondary"
+                                            },
+                                            {
+                                                "value": "alert alert-success",
+                                                "content": "success"
+                                            },
+                                            {
+                                                "value": "alert alert-danger",
+                                                "content": "danger"
+                                            },
+                                            {
+                                                "value": "alert alert-warning",
+                                                "content": "warning"
+                                            },
+                                            {
+                                                "value": "alert alert-info",
+                                                "content": "info"
+                                            },
+                                            {
+                                                "value": "alert alert-light",
+                                                "content": "light"
+                                            },
+                                            {
+                                                "value": "alert alert-dark",
+                                                "content": "dark"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": {
+                                        "props": [
+                                            "value"
+                                        ],
+                                        "components": {
+                                            "MonacoEditor": {
+                                                "name": "MonacoEditor",
+                                                "props": {
+                                                    "value": {},
+                                                    "theme": {
+                                                        "default": "vs"
+                                                    },
+                                                    "language": {},
+                                                    "options": {},
+                                                    "amdRequire": {}
+                                                },
+                                                "model": {
+                                                    "event": "change"
+                                                },
+                                                "watch": {
+                                                    "options": {
+                                                        "deep": true,
+                                                        "user": true
+                                                    }
+                                                },
+                                                "methods": {},
+                                                "_Ctor": {}
+                                            }
+                                        },
+                                        "watch": {
+                                            "value": {
+                                                "immediate": true
+                                            }
+                                        },
+                                        "computed": {
+                                            "effectiveValue": {}
+                                        },
+                                        "methods": {},
+                                        "staticRenderFns": [],
+                                        "_compiled": true,
+                                        "_scopeId": "data-v-4f1374fd",
+                                        "beforeCreate": [
+                                            null
+                                        ],
+                                        "beforeDestroy": [
+                                            null
+                                        ]
+                                    },
+                                    "field": "defaultValue",
+                                    "config": {
+                                        "label": "Default Value",
+                                        "helper": "Takes precedence over value set in data."
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "conditionalHide",
+                                    "config": {
+                                        "label": "Visibility Rule",
+                                        "helper": "This control is hidden until this expression is true"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customCssSelector",
+                                    "config": {
+                                        "label": "CSS Selector Name",
+                                        "helper": "Use this in your custom css rules",
+                                        "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "conditionalHide",
+                                    "config": {
+                                        "label": "Visibility Rule",
+                                        "helper": "This control is hidden until this expression is true"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customCssSelector",
+                                    "config": {
+                                        "label": "CSS Selector Name",
+                                        "helper": "Use this in your custom css rules",
+                                        "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                                    }
+                                }
+                            ],
+                            "component": "FormInput",
+                            "editor-component": "FormInput",
+                            "editor-control": "FormInput",
+                            "label": "Line Input"
+                        }
+                    ],
+                    [
+                        {
+                            "config": {
+                                "icon": "far fa-square",
+                                "label": "input3",
+                                "name": "input3",
+                                "placeholder": "",
+                                "validation": [],
+                                "helper": null,
+                                "type": "text",
+                                "dataFormat": "string",
+                                "defaultValue": {
+                                    "mode": "js",
+                                    "value": "return 'input2: ' + this.input2;"
+                                }
+                            },
+                            "inspector": [
+                                {
+                                    "type": "FormInput",
+                                    "field": "name",
+                                    "config": {
+                                        "label": "Variable Name",
+                                        "name": "Variable Name",
+                                        "validation": "regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required",
+                                        "helper": "A variable name is a symbolic name to reference information."
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "label",
+                                    "config": {
+                                        "label": "Label",
+                                        "helper": "The label describes the field's name"
+                                    }
+                                },
+                                {
+                                    "type": "FormMultiselect",
+                                    "field": "dataFormat",
+                                    "config": {
+                                        "label": "Data Type",
+                                        "name": "Data Type",
+                                        "helper": "The data type specifies what kind of data is stored in the variable.",
+                                        "validation": "required",
+                                        "options": [
+                                            {
+                                                "value": "string",
+                                                "content": "Text"
+                                            },
+                                            {
+                                                "value": "int",
+                                                "content": "Integer"
+                                            },
+                                            {
+                                                "value": "currency",
+                                                "content": "Currency"
+                                            },
+                                            {
+                                                "value": "percentage",
+                                                "content": "Percentage"
+                                            },
+                                            {
+                                                "value": "float",
+                                                "content": "Decimal"
+                                            },
+                                            {
+                                                "value": "datetime",
+                                                "content": "Datetime"
+                                            },
+                                            {
+                                                "value": "date",
+                                                "content": "Date"
+                                            },
+                                            {
+                                                "value": "password",
+                                                "content": "Password"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": {
+                                        "extends": {
+                                            "inheritAttrs": false,
+                                            "components": {
+                                                "Multiselect": {
+                                                    "name": "vue-multiselect",
+                                                    "mixins": [
+                                                        {
+                                                            "props": {
+                                                                "internalSearch": {
+                                                                    "default": true
+                                                                },
+                                                                "options": {
+                                                                    "required": true
+                                                                },
+                                                                "multiple": {
+                                                                    "default": false
+                                                                },
+                                                                "value": {
+                                                                    "type": null
+                                                                },
+                                                                "trackBy": {},
+                                                                "label": {},
+                                                                "searchable": {
+                                                                    "default": true
+                                                                },
+                                                                "clearOnSelect": {
+                                                                    "default": true
+                                                                },
+                                                                "hideSelected": {
+                                                                    "default": false
+                                                                },
+                                                                "placeholder": {
+                                                                    "default": "Select option"
+                                                                },
+                                                                "allowEmpty": {
+                                                                    "default": true
+                                                                },
+                                                                "resetAfter": {
+                                                                    "default": false
+                                                                },
+                                                                "closeOnSelect": {
+                                                                    "default": true
+                                                                },
+                                                                "customLabel": {},
+                                                                "taggable": {
+                                                                    "default": false
+                                                                },
+                                                                "tagPlaceholder": {
+                                                                    "default": "Press enter to create a tag"
+                                                                },
+                                                                "tagPosition": {
+                                                                    "default": "top"
+                                                                },
+                                                                "max": {
+                                                                    "type": [
+                                                                        null,
+                                                                        null
+                                                                    ],
+                                                                    "default": false
+                                                                },
+                                                                "id": {
+                                                                    "default": null
+                                                                },
+                                                                "optionsLimit": {
+                                                                    "default": 1000
+                                                                },
+                                                                "groupValues": {},
+                                                                "groupLabel": {},
+                                                                "groupSelect": {
+                                                                    "default": false
+                                                                },
+                                                                "blockKeys": {},
+                                                                "preserveSearch": {
+                                                                    "default": false
+                                                                },
+                                                                "preselectFirst": {
+                                                                    "default": false
+                                                                }
+                                                            },
+                                                            "computed": {},
+                                                            "watch": {},
+                                                            "methods": {}
+                                                        },
+                                                        {
+                                                            "props": {
+                                                                "showPointer": {
+                                                                    "default": true
+                                                                },
+                                                                "optionHeight": {
+                                                                    "default": 40
+                                                                }
+                                                            },
+                                                            "computed": {},
+                                                            "watch": {},
+                                                            "methods": {}
+                                                        }
+                                                    ],
+                                                    "props": {
+                                                        "name": {
+                                                            "default": ""
+                                                        },
+                                                        "selectLabel": {
+                                                            "default": "Press enter to select"
+                                                        },
+                                                        "selectGroupLabel": {
+                                                            "default": "Press enter to select group"
+                                                        },
+                                                        "selectedLabel": {
+                                                            "default": "Selected"
+                                                        },
+                                                        "deselectLabel": {
+                                                            "default": "Press enter to remove"
+                                                        },
+                                                        "deselectGroupLabel": {
+                                                            "default": "Press enter to deselect group"
+                                                        },
+                                                        "showLabels": {
+                                                            "default": true
+                                                        },
+                                                        "limit": {
+                                                            "default": 99999
+                                                        },
+                                                        "maxHeight": {
+                                                            "default": 300
+                                                        },
+                                                        "limitText": {},
+                                                        "loading": {
+                                                            "default": false
+                                                        },
+                                                        "disabled": {
+                                                            "default": false
+                                                        },
+                                                        "openDirection": {
+                                                            "default": ""
+                                                        },
+                                                        "showNoOptions": {
+                                                            "default": true
+                                                        },
+                                                        "showNoResults": {
+                                                            "default": true
+                                                        },
+                                                        "tabindex": {
+                                                            "default": 0
+                                                        }
+                                                    },
+                                                    "computed": {},
+                                                    "staticRenderFns": [],
+                                                    "_compiled": true,
+                                                    "beforeCreate": [
+                                                        null
+                                                    ],
+                                                    "_Ctor": {}
+                                                }
+                                            },
+                                            "mixins": [
+                                                {
+                                                    "props": {
+                                                        "validationMessages": {
+                                                            "type": null
+                                                        },
+                                                        "validationField": {
+                                                            "type": null
+                                                        },
+                                                        "validationData": {
+                                                            "type": null
+                                                        },
+                                                        "validation": {
+                                                            "type": null
+                                                        }
+                                                    },
+                                                    "watch": {
+                                                        "validationData": {
+                                                            "deep": true,
+                                                            "user": true
+                                                        }
+                                                    },
+                                                    "methods": {}
+                                                }
+                                            ],
+                                            "props": [
+                                                "label",
+                                                "error",
+                                                "options",
+                                                "helper",
+                                                "name",
+                                                "value",
+                                                "selectedControl"
+                                            ],
+                                            "computed": {},
+                                            "methods": {},
+                                            "staticRenderFns": [],
+                                            "_compiled": true,
+                                            "beforeCreate": [
+                                                null
+                                            ],
+                                            "beforeDestroy": [
+                                                null
+                                            ],
+                                            "__file": "src/components/inspector/form-multiselect.vue"
+                                        },
+                                        "computed": {},
+                                        "staticRenderFns": [],
+                                        "_compiled": true,
+                                        "beforeCreate": [
+                                            null
+                                        ],
+                                        "beforeDestroy": [
+                                            null
+                                        ],
+                                        "__file": "src/components/inspector/select-data-type-mask.vue"
+                                    },
+                                    "field": "dataMask",
+                                    "config": {
+                                        "label": "Data Format",
+                                        "name": "Data Format",
+                                        "helper": "The data format for the selected type."
+                                    }
+                                },
+                                {
+                                    "type": "ValidationSelect",
+                                    "field": "validation",
+                                    "config": {
+                                        "label": "Validation Rules",
+                                        "helper": "The validation rules needed for this field"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "placeholder",
+                                    "config": {
+                                        "label": "Placeholder Text",
+                                        "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "helper",
+                                    "config": {
+                                        "label": "Helper Text",
+                                        "helper": "Help text is meant to provide additional guidance on the field's value"
+                                    }
+                                },
+                                {
+                                    "type": "FormCheckbox",
+                                    "field": "readonly",
+                                    "config": {
+                                        "label": "Read Only",
+                                        "helper": ""
+                                    }
+                                },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "color",
+                                    "config": {
+                                        "label": "Text Color",
+                                        "helper": "Set the element's text color",
+                                        "options": [
+                                            {
+                                                "value": "text-primary",
+                                                "content": "primary"
+                                            },
+                                            {
+                                                "value": "text-secondary",
+                                                "content": "secondary"
+                                            },
+                                            {
+                                                "value": "text-success",
+                                                "content": "success"
+                                            },
+                                            {
+                                                "value": "text-danger",
+                                                "content": "danger"
+                                            },
+                                            {
+                                                "value": "text-warning",
+                                                "content": "warning"
+                                            },
+                                            {
+                                                "value": "text-info",
+                                                "content": "info"
+                                            },
+                                            {
+                                                "value": "text-light",
+                                                "content": "light"
+                                            },
+                                            {
+                                                "value": "text-dark",
+                                                "content": "dark"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "bgcolor",
+                                    "config": {
+                                        "label": "Background Color",
+                                        "helper": "Set the element's background color",
+                                        "options": [
+                                            {
+                                                "value": "alert alert-primary",
+                                                "content": "primary"
+                                            },
+                                            {
+                                                "value": "alert alert-secondary",
+                                                "content": "secondary"
+                                            },
+                                            {
+                                                "value": "alert alert-success",
+                                                "content": "success"
+                                            },
+                                            {
+                                                "value": "alert alert-danger",
+                                                "content": "danger"
+                                            },
+                                            {
+                                                "value": "alert alert-warning",
+                                                "content": "warning"
+                                            },
+                                            {
+                                                "value": "alert alert-info",
+                                                "content": "info"
+                                            },
+                                            {
+                                                "value": "alert alert-light",
+                                                "content": "light"
+                                            },
+                                            {
+                                                "value": "alert alert-dark",
+                                                "content": "dark"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": {
+                                        "props": [
+                                            "value"
+                                        ],
+                                        "components": {
+                                            "MonacoEditor": {
+                                                "name": "MonacoEditor",
+                                                "props": {
+                                                    "value": {},
+                                                    "theme": {
+                                                        "default": "vs"
+                                                    },
+                                                    "language": {},
+                                                    "options": {},
+                                                    "amdRequire": {}
+                                                },
+                                                "model": {
+                                                    "event": "change"
+                                                },
+                                                "watch": {
+                                                    "options": {
+                                                        "deep": true,
+                                                        "user": true
+                                                    }
+                                                },
+                                                "methods": {},
+                                                "_Ctor": {}
+                                            }
+                                        },
+                                        "watch": {
+                                            "value": {
+                                                "immediate": true
+                                            }
+                                        },
+                                        "computed": {
+                                            "effectiveValue": {}
+                                        },
+                                        "methods": {},
+                                        "staticRenderFns": [],
+                                        "_compiled": true,
+                                        "_scopeId": "data-v-4f1374fd",
+                                        "beforeCreate": [
+                                            null
+                                        ],
+                                        "beforeDestroy": [
+                                            null
+                                        ],
+                                        "__file": "src/components/inspector/default-value-editor.vue"
+                                    },
+                                    "field": "defaultValue",
+                                    "config": {
+                                        "label": "Default Value",
+                                        "helper": "Takes precedence over value set in data."
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "conditionalHide",
+                                    "config": {
+                                        "label": "Visibility Rule",
+                                        "helper": "This control is hidden until this expression is true"
+                                    }
+                                },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customCssSelector",
+                                    "config": {
+                                        "label": "CSS Selector Name",
+                                        "helper": "Use this in your custom css rules",
+                                        "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                                    }
+                                }
+                            ],
+                            "component": "FormInput",
+                            "editor-component": "FormInput",
+                            "editor-control": "FormInput",
+                            "label": "Line Input"
+                        }
+                    ]
+                ],
+                "container": true
+            },
+            {
+                "config": {
+                    "name": "loop",
+                    "icon": "fas fa-redo",
+                    "settings": {
+                        "type": "new",
+                        "varname": "loop",
+                        "times": "1",
+                        "add": false
+                    },
+                    "label": ""
+                },
+                "inspector": [
+                    {
+                        "type": "LoopInspector",
+                        "field": "settings",
+                        "config": {
+                            "label": "",
+                            "helper": ""
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "conditionalHide",
+                        "config": {
+                            "label": "Visibility Rule",
+                            "helper": "This control is hidden until this expression is true"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "customCssSelector",
+                        "config": {
+                            "label": "CSS Selector Name",
+                            "helper": "Use this in your custom css rules",
+                            "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                        }
+                    }
+                ],
+                "component": "FormLoop",
+                "editor-component": "Loop",
+                "editor-control": "Loop",
+                "label": "Loop",
+                "items": [
+                    {
+                        "config": {
+                            "icon": "fas fa-table",
+                            "options": [
+                                {
+                                    "value": "1",
+                                    "content": "6"
+                                },
+                                {
+                                    "value": "2",
+                                    "content": "6"
+                                }
+                            ],
+                            "label": ""
+                        },
+                        "inspector": [
+                            {
+                                "type": "ContainerColumns",
+                                "field": "options",
+                                "config": {
+                                    "label": "Column Width",
+                                    "validation": "columns-adds-to-12"
+                                }
+                            },
+                            {
+                                "type": "ColorSelect",
+                                "field": "color",
+                                "config": {
+                                    "label": "Text Color",
+                                    "helper": "Set the element's text color",
+                                    "options": [
+                                        {
+                                            "value": "text-primary",
+                                            "content": "primary"
+                                        },
+                                        {
+                                            "value": "text-secondary",
+                                            "content": "secondary"
+                                        },
+                                        {
+                                            "value": "text-success",
+                                            "content": "success"
+                                        },
+                                        {
+                                            "value": "text-danger",
+                                            "content": "danger"
+                                        },
+                                        {
+                                            "value": "text-warning",
+                                            "content": "warning"
+                                        },
+                                        {
+                                            "value": "text-info",
+                                            "content": "info"
+                                        },
+                                        {
+                                            "value": "text-light",
+                                            "content": "light"
+                                        },
+                                        {
+                                            "value": "text-dark",
+                                            "content": "dark"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "type": "ColorSelect",
+                                "field": "bgcolor",
+                                "config": {
+                                    "label": "Background Color",
+                                    "helper": "Set the element's background color",
+                                    "options": [
+                                        {
+                                            "value": "alert alert-primary",
+                                            "content": "primary"
+                                        },
+                                        {
+                                            "value": "alert alert-secondary",
+                                            "content": "secondary"
+                                        },
+                                        {
+                                            "value": "alert alert-success",
+                                            "content": "success"
+                                        },
+                                        {
+                                            "value": "alert alert-danger",
+                                            "content": "danger"
+                                        },
+                                        {
+                                            "value": "alert alert-warning",
+                                            "content": "warning"
+                                        },
+                                        {
+                                            "value": "alert alert-info",
+                                            "content": "info"
+                                        },
+                                        {
+                                            "value": "alert alert-light",
+                                            "content": "light"
+                                        },
+                                        {
+                                            "value": "alert alert-dark",
+                                            "content": "dark"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "type": "FormInput",
+                                "field": "conditionalHide",
+                                "config": {
+                                    "label": "Visibility Rule",
+                                    "helper": "This control is hidden until this expression is true"
+                                }
+                            },
+                            {
+                                "type": "FormInput",
+                                "field": "customCssSelector",
+                                "config": {
+                                    "label": "CSS Selector Name",
+                                    "helper": "Use this in your custom css rules",
+                                    "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                                }
+                            }
+                        ],
+                        "component": "FormMultiColumn",
+                        "editor-component": "MultiColumn",
+                        "editor-control": "MultiColumn",
+                        "label": "Multicolumn / Table",
+                        "items": [
+                            [
+                                {
+                                    "config": {
+                                        "icon": "far fa-square",
+                                        "label": "loop input1",
+                                        "name": "input1",
+                                        "placeholder": "",
+                                        "validation": [],
+                                        "helper": null,
+                                        "type": "text",
+                                        "dataFormat": "string",
+                                        "defaultValue": {
+                                            "mode": "basic",
+                                            "value": "foo"
+                                        }
+                                    },
+                                    "inspector": [
+                                        {
+                                            "type": "FormInput",
+                                            "field": "name",
+                                            "config": {
+                                                "label": "Variable Name",
+                                                "name": "Variable Name",
+                                                "validation": "regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required",
+                                                "helper": "A variable name is a symbolic name to reference information."
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "label",
+                                            "config": {
+                                                "label": "Label",
+                                                "helper": "The label describes the field's name"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormMultiselect",
+                                            "field": "dataFormat",
+                                            "config": {
+                                                "label": "Data Type",
+                                                "name": "Data Type",
+                                                "helper": "The data type specifies what kind of data is stored in the variable.",
+                                                "validation": "required",
+                                                "options": [
+                                                    {
+                                                        "value": "string",
+                                                        "content": "Text"
+                                                    },
+                                                    {
+                                                        "value": "int",
+                                                        "content": "Integer"
+                                                    },
+                                                    {
+                                                        "value": "currency",
+                                                        "content": "Currency"
+                                                    },
+                                                    {
+                                                        "value": "percentage",
+                                                        "content": "Percentage"
+                                                    },
+                                                    {
+                                                        "value": "float",
+                                                        "content": "Decimal"
+                                                    },
+                                                    {
+                                                        "value": "datetime",
+                                                        "content": "Datetime"
+                                                    },
+                                                    {
+                                                        "value": "date",
+                                                        "content": "Date"
+                                                    },
+                                                    {
+                                                        "value": "password",
+                                                        "content": "Password"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": {
+                                                "extends": {
+                                                    "inheritAttrs": false,
+                                                    "components": {
+                                                        "Multiselect": {
+                                                            "name": "vue-multiselect",
+                                                            "mixins": [
+                                                                {
+                                                                    "props": {
+                                                                        "internalSearch": {
+                                                                            "default": true
+                                                                        },
+                                                                        "options": {
+                                                                            "required": true
+                                                                        },
+                                                                        "multiple": {
+                                                                            "default": false
+                                                                        },
+                                                                        "value": {
+                                                                            "type": null
+                                                                        },
+                                                                        "trackBy": {},
+                                                                        "label": {},
+                                                                        "searchable": {
+                                                                            "default": true
+                                                                        },
+                                                                        "clearOnSelect": {
+                                                                            "default": true
+                                                                        },
+                                                                        "hideSelected": {
+                                                                            "default": false
+                                                                        },
+                                                                        "placeholder": {
+                                                                            "default": "Select option"
+                                                                        },
+                                                                        "allowEmpty": {
+                                                                            "default": true
+                                                                        },
+                                                                        "resetAfter": {
+                                                                            "default": false
+                                                                        },
+                                                                        "closeOnSelect": {
+                                                                            "default": true
+                                                                        },
+                                                                        "customLabel": {},
+                                                                        "taggable": {
+                                                                            "default": false
+                                                                        },
+                                                                        "tagPlaceholder": {
+                                                                            "default": "Press enter to create a tag"
+                                                                        },
+                                                                        "tagPosition": {
+                                                                            "default": "top"
+                                                                        },
+                                                                        "max": {
+                                                                            "type": [
+                                                                                null,
+                                                                                null
+                                                                            ],
+                                                                            "default": false
+                                                                        },
+                                                                        "id": {
+                                                                            "default": null
+                                                                        },
+                                                                        "optionsLimit": {
+                                                                            "default": 1000
+                                                                        },
+                                                                        "groupValues": {},
+                                                                        "groupLabel": {},
+                                                                        "groupSelect": {
+                                                                            "default": false
+                                                                        },
+                                                                        "blockKeys": {},
+                                                                        "preserveSearch": {
+                                                                            "default": false
+                                                                        },
+                                                                        "preselectFirst": {
+                                                                            "default": false
+                                                                        }
+                                                                    },
+                                                                    "computed": {},
+                                                                    "watch": {},
+                                                                    "methods": {}
+                                                                },
+                                                                {
+                                                                    "props": {
+                                                                        "showPointer": {
+                                                                            "default": true
+                                                                        },
+                                                                        "optionHeight": {
+                                                                            "default": 40
+                                                                        }
+                                                                    },
+                                                                    "computed": {},
+                                                                    "watch": {},
+                                                                    "methods": {}
+                                                                }
+                                                            ],
+                                                            "props": {
+                                                                "name": {
+                                                                    "default": ""
+                                                                },
+                                                                "selectLabel": {
+                                                                    "default": "Press enter to select"
+                                                                },
+                                                                "selectGroupLabel": {
+                                                                    "default": "Press enter to select group"
+                                                                },
+                                                                "selectedLabel": {
+                                                                    "default": "Selected"
+                                                                },
+                                                                "deselectLabel": {
+                                                                    "default": "Press enter to remove"
+                                                                },
+                                                                "deselectGroupLabel": {
+                                                                    "default": "Press enter to deselect group"
+                                                                },
+                                                                "showLabels": {
+                                                                    "default": true
+                                                                },
+                                                                "limit": {
+                                                                    "default": 99999
+                                                                },
+                                                                "maxHeight": {
+                                                                    "default": 300
+                                                                },
+                                                                "limitText": {},
+                                                                "loading": {
+                                                                    "default": false
+                                                                },
+                                                                "disabled": {
+                                                                    "default": false
+                                                                },
+                                                                "openDirection": {
+                                                                    "default": ""
+                                                                },
+                                                                "showNoOptions": {
+                                                                    "default": true
+                                                                },
+                                                                "showNoResults": {
+                                                                    "default": true
+                                                                },
+                                                                "tabindex": {
+                                                                    "default": 0
+                                                                }
+                                                            },
+                                                            "computed": {},
+                                                            "staticRenderFns": [],
+                                                            "_compiled": true,
+                                                            "beforeCreate": [
+                                                                null
+                                                            ]
+                                                        }
+                                                    },
+                                                    "mixins": [
+                                                        {
+                                                            "props": {
+                                                                "validationMessages": {
+                                                                    "type": null
+                                                                },
+                                                                "validationField": {
+                                                                    "type": null
+                                                                },
+                                                                "validationData": {
+                                                                    "type": null
+                                                                },
+                                                                "validation": {
+                                                                    "type": null
+                                                                }
+                                                            },
+                                                            "watch": {
+                                                                "validationData": {
+                                                                    "deep": true,
+                                                                    "user": true
+                                                                }
+                                                            },
+                                                            "methods": {}
+                                                        }
+                                                    ],
+                                                    "props": [
+                                                        "label",
+                                                        "error",
+                                                        "options",
+                                                        "helper",
+                                                        "name",
+                                                        "value",
+                                                        "selectedControl"
+                                                    ],
+                                                    "computed": {},
+                                                    "methods": {},
+                                                    "staticRenderFns": [],
+                                                    "_compiled": true,
+                                                    "beforeCreate": [
+                                                        null
+                                                    ],
+                                                    "beforeDestroy": [
+                                                        null
+                                                    ],
+                                                    "__file": "src/components/inspector/form-multiselect.vue"
+                                                },
+                                                "computed": {},
+                                                "staticRenderFns": [],
+                                                "_compiled": true,
+                                                "beforeCreate": [
+                                                    null
+                                                ],
+                                                "beforeDestroy": [
+                                                    null
+                                                ],
+                                                "__file": "src/components/inspector/select-data-type-mask.vue"
+                                            },
+                                            "field": "dataMask",
+                                            "config": {
+                                                "label": "Data Format",
+                                                "name": "Data Format",
+                                                "helper": "The data format for the selected type."
+                                            }
+                                        },
+                                        {
+                                            "type": "ValidationSelect",
+                                            "field": "validation",
+                                            "config": {
+                                                "label": "Validation Rules",
+                                                "helper": "The validation rules needed for this field"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "placeholder",
+                                            "config": {
+                                                "label": "Placeholder Text",
+                                                "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "helper",
+                                            "config": {
+                                                "label": "Helper Text",
+                                                "helper": "Help text is meant to provide additional guidance on the field's value"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormCheckbox",
+                                            "field": "readonly",
+                                            "config": {
+                                                "label": "Read Only",
+                                                "helper": ""
+                                            }
+                                        },
+                                        {
+                                            "type": "ColorSelect",
+                                            "field": "color",
+                                            "config": {
+                                                "label": "Text Color",
+                                                "helper": "Set the element's text color",
+                                                "options": [
+                                                    {
+                                                        "value": "text-primary",
+                                                        "content": "primary"
+                                                    },
+                                                    {
+                                                        "value": "text-secondary",
+                                                        "content": "secondary"
+                                                    },
+                                                    {
+                                                        "value": "text-success",
+                                                        "content": "success"
+                                                    },
+                                                    {
+                                                        "value": "text-danger",
+                                                        "content": "danger"
+                                                    },
+                                                    {
+                                                        "value": "text-warning",
+                                                        "content": "warning"
+                                                    },
+                                                    {
+                                                        "value": "text-info",
+                                                        "content": "info"
+                                                    },
+                                                    {
+                                                        "value": "text-light",
+                                                        "content": "light"
+                                                    },
+                                                    {
+                                                        "value": "text-dark",
+                                                        "content": "dark"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": "ColorSelect",
+                                            "field": "bgcolor",
+                                            "config": {
+                                                "label": "Background Color",
+                                                "helper": "Set the element's background color",
+                                                "options": [
+                                                    {
+                                                        "value": "alert alert-primary",
+                                                        "content": "primary"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-secondary",
+                                                        "content": "secondary"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-success",
+                                                        "content": "success"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-danger",
+                                                        "content": "danger"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-warning",
+                                                        "content": "warning"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-info",
+                                                        "content": "info"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-light",
+                                                        "content": "light"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-dark",
+                                                        "content": "dark"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": {
+                                                "props": [
+                                                    "value"
+                                                ],
+                                                "components": {
+                                                    "MonacoEditor": {
+                                                        "name": "MonacoEditor",
+                                                        "props": {
+                                                            "value": {},
+                                                            "theme": {
+                                                                "default": "vs"
+                                                            },
+                                                            "language": {},
+                                                            "options": {},
+                                                            "amdRequire": {}
+                                                        },
+                                                        "model": {
+                                                            "event": "change"
+                                                        },
+                                                        "watch": {
+                                                            "options": {
+                                                                "deep": true,
+                                                                "user": true
+                                                            }
+                                                        },
+                                                        "methods": {},
+                                                        "_Ctor": {}
+                                                    }
+                                                },
+                                                "watch": {
+                                                    "value": {
+                                                        "immediate": true
+                                                    }
+                                                },
+                                                "computed": {
+                                                    "effectiveValue": {}
+                                                },
+                                                "methods": {},
+                                                "staticRenderFns": [],
+                                                "_compiled": true,
+                                                "_scopeId": "data-v-4f1374fd",
+                                                "beforeCreate": [
+                                                    null
+                                                ],
+                                                "beforeDestroy": [
+                                                    null
+                                                ],
+                                                "__file": "src/components/inspector/default-value-editor.vue"
+                                            },
+                                            "field": "defaultValue",
+                                            "config": {
+                                                "label": "Default Value",
+                                                "helper": "Takes precedence over value set in data."
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "conditionalHide",
+                                            "config": {
+                                                "label": "Visibility Rule",
+                                                "helper": "This control is hidden until this expression is true"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "customCssSelector",
+                                            "config": {
+                                                "label": "CSS Selector Name",
+                                                "helper": "Use this in your custom css rules",
+                                                "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                                            }
+                                        }
+                                    ],
+                                    "component": "FormInput",
+                                    "editor-component": "FormInput",
+                                    "editor-control": "FormInput",
+                                    "label": "Line Input"
+                                }
+                            ],
+                            [
+                                {
+                                    "config": {
+                                        "icon": "far fa-square",
+                                        "label": "loop input2",
+                                        "name": "input2",
+                                        "placeholder": "",
+                                        "validation": [],
+                                        "helper": null,
+                                        "type": "text",
+                                        "dataFormat": "string",
+                                        "defaultValue": {
+                                            "mode": "basic",
+                                            "value": "loop input1: {{ input1 }}"
+                                        }
+                                    },
+                                    "inspector": [
+                                        {
+                                            "type": "FormInput",
+                                            "field": "name",
+                                            "config": {
+                                                "label": "Variable Name",
+                                                "name": "Variable Name",
+                                                "validation": "regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required",
+                                                "helper": "A variable name is a symbolic name to reference information."
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "label",
+                                            "config": {
+                                                "label": "Label",
+                                                "helper": "The label describes the field's name"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormMultiselect",
+                                            "field": "dataFormat",
+                                            "config": {
+                                                "label": "Data Type",
+                                                "name": "Data Type",
+                                                "helper": "The data type specifies what kind of data is stored in the variable.",
+                                                "validation": "required",
+                                                "options": [
+                                                    {
+                                                        "value": "string",
+                                                        "content": "Text"
+                                                    },
+                                                    {
+                                                        "value": "int",
+                                                        "content": "Integer"
+                                                    },
+                                                    {
+                                                        "value": "currency",
+                                                        "content": "Currency"
+                                                    },
+                                                    {
+                                                        "value": "percentage",
+                                                        "content": "Percentage"
+                                                    },
+                                                    {
+                                                        "value": "float",
+                                                        "content": "Decimal"
+                                                    },
+                                                    {
+                                                        "value": "datetime",
+                                                        "content": "Datetime"
+                                                    },
+                                                    {
+                                                        "value": "date",
+                                                        "content": "Date"
+                                                    },
+                                                    {
+                                                        "value": "password",
+                                                        "content": "Password"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": {
+                                                "extends": {
+                                                    "inheritAttrs": false,
+                                                    "components": {
+                                                        "Multiselect": {
+                                                            "name": "vue-multiselect",
+                                                            "mixins": [
+                                                                {
+                                                                    "props": {
+                                                                        "internalSearch": {
+                                                                            "default": true
+                                                                        },
+                                                                        "options": {
+                                                                            "required": true
+                                                                        },
+                                                                        "multiple": {
+                                                                            "default": false
+                                                                        },
+                                                                        "value": {
+                                                                            "type": null
+                                                                        },
+                                                                        "trackBy": {},
+                                                                        "label": {},
+                                                                        "searchable": {
+                                                                            "default": true
+                                                                        },
+                                                                        "clearOnSelect": {
+                                                                            "default": true
+                                                                        },
+                                                                        "hideSelected": {
+                                                                            "default": false
+                                                                        },
+                                                                        "placeholder": {
+                                                                            "default": "Select option"
+                                                                        },
+                                                                        "allowEmpty": {
+                                                                            "default": true
+                                                                        },
+                                                                        "resetAfter": {
+                                                                            "default": false
+                                                                        },
+                                                                        "closeOnSelect": {
+                                                                            "default": true
+                                                                        },
+                                                                        "customLabel": {},
+                                                                        "taggable": {
+                                                                            "default": false
+                                                                        },
+                                                                        "tagPlaceholder": {
+                                                                            "default": "Press enter to create a tag"
+                                                                        },
+                                                                        "tagPosition": {
+                                                                            "default": "top"
+                                                                        },
+                                                                        "max": {
+                                                                            "type": [
+                                                                                null,
+                                                                                null
+                                                                            ],
+                                                                            "default": false
+                                                                        },
+                                                                        "id": {
+                                                                            "default": null
+                                                                        },
+                                                                        "optionsLimit": {
+                                                                            "default": 1000
+                                                                        },
+                                                                        "groupValues": {},
+                                                                        "groupLabel": {},
+                                                                        "groupSelect": {
+                                                                            "default": false
+                                                                        },
+                                                                        "blockKeys": {},
+                                                                        "preserveSearch": {
+                                                                            "default": false
+                                                                        },
+                                                                        "preselectFirst": {
+                                                                            "default": false
+                                                                        }
+                                                                    },
+                                                                    "computed": {},
+                                                                    "watch": {},
+                                                                    "methods": {}
+                                                                },
+                                                                {
+                                                                    "props": {
+                                                                        "showPointer": {
+                                                                            "default": true
+                                                                        },
+                                                                        "optionHeight": {
+                                                                            "default": 40
+                                                                        }
+                                                                    },
+                                                                    "computed": {},
+                                                                    "watch": {},
+                                                                    "methods": {}
+                                                                }
+                                                            ],
+                                                            "props": {
+                                                                "name": {
+                                                                    "default": ""
+                                                                },
+                                                                "selectLabel": {
+                                                                    "default": "Press enter to select"
+                                                                },
+                                                                "selectGroupLabel": {
+                                                                    "default": "Press enter to select group"
+                                                                },
+                                                                "selectedLabel": {
+                                                                    "default": "Selected"
+                                                                },
+                                                                "deselectLabel": {
+                                                                    "default": "Press enter to remove"
+                                                                },
+                                                                "deselectGroupLabel": {
+                                                                    "default": "Press enter to deselect group"
+                                                                },
+                                                                "showLabels": {
+                                                                    "default": true
+                                                                },
+                                                                "limit": {
+                                                                    "default": 99999
+                                                                },
+                                                                "maxHeight": {
+                                                                    "default": 300
+                                                                },
+                                                                "limitText": {},
+                                                                "loading": {
+                                                                    "default": false
+                                                                },
+                                                                "disabled": {
+                                                                    "default": false
+                                                                },
+                                                                "openDirection": {
+                                                                    "default": ""
+                                                                },
+                                                                "showNoOptions": {
+                                                                    "default": true
+                                                                },
+                                                                "showNoResults": {
+                                                                    "default": true
+                                                                },
+                                                                "tabindex": {
+                                                                    "default": 0
+                                                                }
+                                                            },
+                                                            "computed": {},
+                                                            "staticRenderFns": [],
+                                                            "_compiled": true,
+                                                            "beforeCreate": [
+                                                                null
+                                                            ]
+                                                        }
+                                                    },
+                                                    "mixins": [
+                                                        {
+                                                            "props": {
+                                                                "validationMessages": {
+                                                                    "type": null
+                                                                },
+                                                                "validationField": {
+                                                                    "type": null
+                                                                },
+                                                                "validationData": {
+                                                                    "type": null
+                                                                },
+                                                                "validation": {
+                                                                    "type": null
+                                                                }
+                                                            },
+                                                            "watch": {
+                                                                "validationData": {
+                                                                    "deep": true,
+                                                                    "user": true
+                                                                }
+                                                            },
+                                                            "methods": {}
+                                                        }
+                                                    ],
+                                                    "props": [
+                                                        "label",
+                                                        "error",
+                                                        "options",
+                                                        "helper",
+                                                        "name",
+                                                        "value",
+                                                        "selectedControl"
+                                                    ],
+                                                    "computed": {},
+                                                    "methods": {},
+                                                    "staticRenderFns": [],
+                                                    "_compiled": true,
+                                                    "beforeCreate": [
+                                                        null
+                                                    ],
+                                                    "beforeDestroy": [
+                                                        null
+                                                    ],
+                                                    "__file": "src/components/inspector/form-multiselect.vue"
+                                                },
+                                                "computed": {},
+                                                "staticRenderFns": [],
+                                                "_compiled": true,
+                                                "beforeCreate": [
+                                                    null
+                                                ],
+                                                "beforeDestroy": [
+                                                    null
+                                                ],
+                                                "__file": "src/components/inspector/select-data-type-mask.vue"
+                                            },
+                                            "field": "dataMask",
+                                            "config": {
+                                                "label": "Data Format",
+                                                "name": "Data Format",
+                                                "helper": "The data format for the selected type."
+                                            }
+                                        },
+                                        {
+                                            "type": "ValidationSelect",
+                                            "field": "validation",
+                                            "config": {
+                                                "label": "Validation Rules",
+                                                "helper": "The validation rules needed for this field"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "placeholder",
+                                            "config": {
+                                                "label": "Placeholder Text",
+                                                "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "helper",
+                                            "config": {
+                                                "label": "Helper Text",
+                                                "helper": "Help text is meant to provide additional guidance on the field's value"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormCheckbox",
+                                            "field": "readonly",
+                                            "config": {
+                                                "label": "Read Only",
+                                                "helper": ""
+                                            }
+                                        },
+                                        {
+                                            "type": "ColorSelect",
+                                            "field": "color",
+                                            "config": {
+                                                "label": "Text Color",
+                                                "helper": "Set the element's text color",
+                                                "options": [
+                                                    {
+                                                        "value": "text-primary",
+                                                        "content": "primary"
+                                                    },
+                                                    {
+                                                        "value": "text-secondary",
+                                                        "content": "secondary"
+                                                    },
+                                                    {
+                                                        "value": "text-success",
+                                                        "content": "success"
+                                                    },
+                                                    {
+                                                        "value": "text-danger",
+                                                        "content": "danger"
+                                                    },
+                                                    {
+                                                        "value": "text-warning",
+                                                        "content": "warning"
+                                                    },
+                                                    {
+                                                        "value": "text-info",
+                                                        "content": "info"
+                                                    },
+                                                    {
+                                                        "value": "text-light",
+                                                        "content": "light"
+                                                    },
+                                                    {
+                                                        "value": "text-dark",
+                                                        "content": "dark"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": "ColorSelect",
+                                            "field": "bgcolor",
+                                            "config": {
+                                                "label": "Background Color",
+                                                "helper": "Set the element's background color",
+                                                "options": [
+                                                    {
+                                                        "value": "alert alert-primary",
+                                                        "content": "primary"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-secondary",
+                                                        "content": "secondary"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-success",
+                                                        "content": "success"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-danger",
+                                                        "content": "danger"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-warning",
+                                                        "content": "warning"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-info",
+                                                        "content": "info"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-light",
+                                                        "content": "light"
+                                                    },
+                                                    {
+                                                        "value": "alert alert-dark",
+                                                        "content": "dark"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": {
+                                                "props": [
+                                                    "value"
+                                                ],
+                                                "components": {
+                                                    "MonacoEditor": {
+                                                        "name": "MonacoEditor",
+                                                        "props": {
+                                                            "value": {},
+                                                            "theme": {
+                                                                "default": "vs"
+                                                            },
+                                                            "language": {},
+                                                            "options": {},
+                                                            "amdRequire": {}
+                                                        },
+                                                        "model": {
+                                                            "event": "change"
+                                                        },
+                                                        "watch": {
+                                                            "options": {
+                                                                "deep": true,
+                                                                "user": true
+                                                            }
+                                                        },
+                                                        "methods": {},
+                                                        "_Ctor": {}
+                                                    }
+                                                },
+                                                "watch": {
+                                                    "value": {
+                                                        "immediate": true
+                                                    }
+                                                },
+                                                "computed": {
+                                                    "effectiveValue": {}
+                                                },
+                                                "methods": {},
+                                                "staticRenderFns": [],
+                                                "_compiled": true,
+                                                "_scopeId": "data-v-4f1374fd",
+                                                "beforeCreate": [
+                                                    null
+                                                ],
+                                                "beforeDestroy": [
+                                                    null
+                                                ],
+                                                "__file": "src/components/inspector/default-value-editor.vue"
+                                            },
+                                            "field": "defaultValue",
+                                            "config": {
+                                                "label": "Default Value",
+                                                "helper": "Takes precedence over value set in data."
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "conditionalHide",
+                                            "config": {
+                                                "label": "Visibility Rule",
+                                                "helper": "This control is hidden until this expression is true"
+                                            }
+                                        },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "customCssSelector",
+                                            "config": {
+                                                "label": "CSS Selector Name",
+                                                "helper": "Use this in your custom css rules",
+                                                "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                                            }
+                                        }
+                                    ],
+                                    "component": "FormInput",
+                                    "editor-component": "FormInput",
+                                    "editor-control": "FormInput",
+                                    "label": "Line Input"
+                                }
+                            ]
+                        ],
+                        "container": true
+                    }
+                ],
+                "container": true
+            }
+        ]
+    },
+    {
+        "name": "add",
+        "items": [
+            {
+                "config": {
+                    "icon": "far fa-square",
+                    "label": "New Input",
+                    "name": "form_input_1",
+                    "placeholder": "",
+                    "validation": [],
+                    "helper": null,
+                    "type": "text",
+                    "dataFormat": "string"
+                },
+                "inspector": [
+                    {
+                        "type": "FormInput",
+                        "field": "name",
+                        "config": {
+                            "label": "Variable Name",
+                            "name": "Variable Name",
+                            "validation": "regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required",
+                            "helper": "A variable name is a symbolic name to reference information."
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "label",
+                        "config": {
+                            "label": "Label",
+                            "helper": "The label describes the field's name"
+                        }
+                    },
+                    {
+                        "type": "FormMultiselect",
+                        "field": "dataFormat",
+                        "config": {
+                            "label": "Data Type",
+                            "name": "Data Type",
+                            "helper": "The data type specifies what kind of data is stored in the variable.",
+                            "validation": "required",
+                            "options": [
+                                {
+                                    "value": "string",
+                                    "content": "Text"
+                                },
+                                {
+                                    "value": "int",
+                                    "content": "Integer"
+                                },
+                                {
+                                    "value": "currency",
+                                    "content": "Currency"
+                                },
+                                {
+                                    "value": "percentage",
+                                    "content": "Percentage"
+                                },
+                                {
+                                    "value": "float",
+                                    "content": "Decimal"
+                                },
+                                {
+                                    "value": "datetime",
+                                    "content": "Datetime"
+                                },
+                                {
+                                    "value": "date",
+                                    "content": "Date"
+                                },
+                                {
+                                    "value": "password",
+                                    "content": "Password"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": {
+                            "extends": {
+                                "inheritAttrs": false,
+                                "components": {
+                                    "Multiselect": {
+                                        "name": "vue-multiselect",
+                                        "mixins": [
+                                            {
+                                                "props": {
+                                                    "internalSearch": {
+                                                        "default": true
+                                                    },
+                                                    "options": {
+                                                        "required": true
+                                                    },
+                                                    "multiple": {
+                                                        "default": false
+                                                    },
+                                                    "value": {
+                                                        "type": null
+                                                    },
+                                                    "trackBy": {},
+                                                    "label": {},
+                                                    "searchable": {
+                                                        "default": true
+                                                    },
+                                                    "clearOnSelect": {
+                                                        "default": true
+                                                    },
+                                                    "hideSelected": {
+                                                        "default": false
+                                                    },
+                                                    "placeholder": {
+                                                        "default": "Select option"
+                                                    },
+                                                    "allowEmpty": {
+                                                        "default": true
+                                                    },
+                                                    "resetAfter": {
+                                                        "default": false
+                                                    },
+                                                    "closeOnSelect": {
+                                                        "default": true
+                                                    },
+                                                    "customLabel": {},
+                                                    "taggable": {
+                                                        "default": false
+                                                    },
+                                                    "tagPlaceholder": {
+                                                        "default": "Press enter to create a tag"
+                                                    },
+                                                    "tagPosition": {
+                                                        "default": "top"
+                                                    },
+                                                    "max": {
+                                                        "type": [
+                                                            null,
+                                                            null
+                                                        ],
+                                                        "default": false
+                                                    },
+                                                    "id": {
+                                                        "default": null
+                                                    },
+                                                    "optionsLimit": {
+                                                        "default": 1000
+                                                    },
+                                                    "groupValues": {},
+                                                    "groupLabel": {},
+                                                    "groupSelect": {
+                                                        "default": false
+                                                    },
+                                                    "blockKeys": {},
+                                                    "preserveSearch": {
+                                                        "default": false
+                                                    },
+                                                    "preselectFirst": {
+                                                        "default": false
+                                                    }
+                                                },
+                                                "computed": {},
+                                                "watch": {},
+                                                "methods": {}
+                                            },
+                                            {
+                                                "props": {
+                                                    "showPointer": {
+                                                        "default": true
+                                                    },
+                                                    "optionHeight": {
+                                                        "default": 40
+                                                    }
+                                                },
+                                                "computed": {},
+                                                "watch": {},
+                                                "methods": {}
+                                            }
+                                        ],
+                                        "props": {
+                                            "name": {
+                                                "default": ""
+                                            },
+                                            "selectLabel": {
+                                                "default": "Press enter to select"
+                                            },
+                                            "selectGroupLabel": {
+                                                "default": "Press enter to select group"
+                                            },
+                                            "selectedLabel": {
+                                                "default": "Selected"
+                                            },
+                                            "deselectLabel": {
+                                                "default": "Press enter to remove"
+                                            },
+                                            "deselectGroupLabel": {
+                                                "default": "Press enter to deselect group"
+                                            },
+                                            "showLabels": {
+                                                "default": true
+                                            },
+                                            "limit": {
+                                                "default": 99999
+                                            },
+                                            "maxHeight": {
+                                                "default": 300
+                                            },
+                                            "limitText": {},
+                                            "loading": {
+                                                "default": false
+                                            },
+                                            "disabled": {
+                                                "default": false
+                                            },
+                                            "openDirection": {
+                                                "default": ""
+                                            },
+                                            "showNoOptions": {
+                                                "default": true
+                                            },
+                                            "showNoResults": {
+                                                "default": true
+                                            },
+                                            "tabindex": {
+                                                "default": 0
+                                            }
+                                        },
+                                        "computed": {},
+                                        "staticRenderFns": [],
+                                        "_compiled": true,
+                                        "beforeCreate": [
+                                            null
+                                        ],
+                                        "_Ctor": {}
+                                    }
+                                },
+                                "mixins": [
+                                    {
+                                        "props": {
+                                            "validationMessages": {
+                                                "type": null
+                                            },
+                                            "validationField": {
+                                                "type": null
+                                            },
+                                            "validationData": {
+                                                "type": null
+                                            },
+                                            "validation": {
+                                                "type": null
+                                            }
+                                        },
+                                        "watch": {
+                                            "validationData": {
+                                                "deep": true,
+                                                "user": true
+                                            }
+                                        },
+                                        "methods": {}
+                                    }
+                                ],
+                                "props": {
+                                    "selectedControl": {
+                                        "type": null
+                                    },
+                                    "value": {
+                                        "type": null
+                                    },
+                                    "name": {
+                                        "type": null
+                                    },
+                                    "helper": {
+                                        "type": null
+                                    },
+                                    "options": {
+                                        "type": null
+                                    },
+                                    "error": {
+                                        "type": null
+                                    },
+                                    "label": {
+                                        "type": null
+                                    }
+                                },
+                                "computed": {},
+                                "methods": {},
+                                "staticRenderFns": [],
+                                "_compiled": true,
+                                "beforeCreate": [
+                                    null
+                                ],
+                                "beforeDestroy": [
+                                    null
+                                ],
+                                "__file": "src/components/inspector/form-multiselect.vue",
+                                "_Ctor": {}
+                            },
+                            "computed": {},
+                            "staticRenderFns": [],
+                            "_compiled": true,
+                            "beforeCreate": [
+                                null
+                            ],
+                            "beforeDestroy": [
+                                null
+                            ],
+                            "__file": "src/components/inspector/select-data-type-mask.vue",
+                            "_Ctor": {}
+                        },
+                        "field": "dataMask",
+                        "config": {
+                            "label": "Data Format",
+                            "name": "Data Format",
+                            "helper": "The data format for the selected type."
+                        }
+                    },
+                    {
+                        "type": "ValidationSelect",
+                        "field": "validation",
+                        "config": {
+                            "label": "Validation Rules",
+                            "helper": "The validation rules needed for this field"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "placeholder",
+                        "config": {
+                            "label": "Placeholder Text",
+                            "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "helper",
+                        "config": {
+                            "label": "Helper Text",
+                            "helper": "Help text is meant to provide additional guidance on the field's value"
+                        }
+                    },
+                    {
+                        "type": "FormCheckbox",
+                        "field": "readonly",
+                        "config": {
+                            "label": "Read Only",
+                            "helper": ""
+                        }
+                    },
+                    {
+                        "type": "ColorSelect",
+                        "field": "color",
+                        "config": {
+                            "label": "Text Color",
+                            "helper": "Set the element's text color",
+                            "options": [
+                                {
+                                    "value": "text-primary",
+                                    "content": "primary"
+                                },
+                                {
+                                    "value": "text-secondary",
+                                    "content": "secondary"
+                                },
+                                {
+                                    "value": "text-success",
+                                    "content": "success"
+                                },
+                                {
+                                    "value": "text-danger",
+                                    "content": "danger"
+                                },
+                                {
+                                    "value": "text-warning",
+                                    "content": "warning"
+                                },
+                                {
+                                    "value": "text-info",
+                                    "content": "info"
+                                },
+                                {
+                                    "value": "text-light",
+                                    "content": "light"
+                                },
+                                {
+                                    "value": "text-dark",
+                                    "content": "dark"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "ColorSelect",
+                        "field": "bgcolor",
+                        "config": {
+                            "label": "Background Color",
+                            "helper": "Set the element's background color",
+                            "options": [
+                                {
+                                    "value": "alert alert-primary",
+                                    "content": "primary"
+                                },
+                                {
+                                    "value": "alert alert-secondary",
+                                    "content": "secondary"
+                                },
+                                {
+                                    "value": "alert alert-success",
+                                    "content": "success"
+                                },
+                                {
+                                    "value": "alert alert-danger",
+                                    "content": "danger"
+                                },
+                                {
+                                    "value": "alert alert-warning",
+                                    "content": "warning"
+                                },
+                                {
+                                    "value": "alert alert-info",
+                                    "content": "info"
+                                },
+                                {
+                                    "value": "alert alert-light",
+                                    "content": "light"
+                                },
+                                {
+                                    "value": "alert alert-dark",
+                                    "content": "dark"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": {
+                            "props": {
+                                "value": {
+                                    "type": null
+                                }
+                            },
+                            "components": {
+                                "MonacoEditor": {
+                                    "name": "MonacoEditor",
+                                    "props": {
+                                        "value": {},
+                                        "theme": {
+                                            "default": "vs"
+                                        },
+                                        "language": {},
+                                        "options": {},
+                                        "amdRequire": {}
+                                    },
+                                    "model": {
+                                        "event": "change"
+                                    },
+                                    "watch": {
+                                        "options": {
+                                            "deep": true,
+                                            "user": true
+                                        }
+                                    },
+                                    "methods": {},
+                                    "_Ctor": {}
+                                }
+                            },
+                            "watch": {
+                                "value": {
+                                    "immediate": true,
+                                    "user": true
+                                }
+                            },
+                            "computed": {
+                                "effectiveValue": {}
+                            },
+                            "methods": {},
+                            "staticRenderFns": [],
+                            "_compiled": true,
+                            "_scopeId": "data-v-4f1374fd",
+                            "beforeCreate": [
+                                null
+                            ],
+                            "beforeDestroy": [
+                                null
+                            ],
+                            "__file": "src/components/inspector/default-value-editor.vue",
+                            "_Ctor": {}
+                        },
+                        "field": "defaultValue",
+                        "config": {
+                            "label": "Default Value",
+                            "helper": "Takes precedence over value set in data."
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "conditionalHide",
+                        "config": {
+                            "label": "Visibility Rule",
+                            "helper": "This control is hidden until this expression is true"
+                        }
+                    },
+                    {
+                        "type": "FormInput",
+                        "field": "customCssSelector",
+                        "config": {
+                            "label": "CSS Selector Name",
+                            "helper": "Use this in your custom css rules",
+                            "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                        }
+                    }
+                ],
+                "component": "FormInput",
+                "editor-component": "FormInput",
+                "editor-control": "FormInput",
+                "label": "Line Input"
+            }
+        ]
+    }
+]

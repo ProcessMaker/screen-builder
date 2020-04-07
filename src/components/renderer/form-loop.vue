@@ -11,6 +11,7 @@
         @submit="submit"
         @pageNavigate="$emit('pageNavigate', $event)"
         @update="setMatrixValue(loopIndex, $event)"
+        :mode="mode"
       />
     </form>
     <b-row class="justify-content-md-center" v-if="config.settings.add">
@@ -29,7 +30,7 @@ import Mustache from 'mustache';
 export default {
   name: 'FormLoop',
   mixins: [],
-  props: ['value', 'config', 'transientData', 'name'],
+  props: ['value', 'config', 'transientData', 'name', 'mode'],
   data() {
     return {
       matrix: [],

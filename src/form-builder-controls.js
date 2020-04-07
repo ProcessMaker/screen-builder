@@ -2,7 +2,6 @@ import FormText from './components/renderer/form-text';
 import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormLoop from './components/renderer/form-loop';
-import Loop from './components/editor/loop';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
@@ -369,8 +368,8 @@ export default [
     },
   },
   {
-    editorComponent: Loop,
-    editorBinding: 'Loop',
+    editorComponent: FormLoop,
+    editorBinding: 'FormLoop',
     rendererComponent: FormLoop,
     rendererBinding: 'FormLoop',
     control: {
@@ -386,7 +385,7 @@ export default [
         icon: 'fas fa-redo',
         settings: {
           type: 'new',
-          varname: '',
+          varname: 'loop',
           times: '3',
           add: false,
         },
