@@ -59,6 +59,9 @@
                 <div v-if="config.type === 'FormInput'">
                   <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
                 </div>
+                <div v-if="config.type === 'FormDatePicker'">
+                  <form-date-picker :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
+                </div>
               </div>
               <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
             </b-card-body>
@@ -72,13 +75,14 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import { FormInput } from '@processmaker/vue-form-elements';
+import { FormInput, FormDatePicker } from '@processmaker/vue-form-elements';
 
 export default {
   props: ['label', 'value', 'helper', 'name'],
   components: {
     Multiselect,
     FormInput,
+    FormDatePicker,
   },
   data() {
     return {
@@ -203,6 +207,56 @@ export default {
           value: 'url',
           content: 'URL',
           helper: this.$t('Validate that an attribute has a valid URL format.'),
+        },
+        {
+          value: '',
+          field: 'after:',
+          content: this.$t('After Date'),
+          helper: this.$t('The field under validation must be after the given date.'),
+          visible: true,
+          configs: [
+            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'after_or_equal:',
+          content: this.$t('After or Equal to Date'),
+          helper: this.$t('The field unter validation must be after or equal to the given field.'),
+          visible: true,
+          configs: [
+            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'before:',
+          content: this.$t('Before Date'),
+          helper: this.$t('The field unter validation must be before the given date.'),
+          visible: true,
+          configs: [
+            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'before_or_equal:',
+          content: this.$t('Before or Equal to Date'),
+          helper: this.$t('The field unter validation must be before or equal to the given field.'),
+          visible: true,
+          configs: [
+            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'regex:',
+          content: this.$t('Regex'),
+          helper: this.$t('The field under validation must match the given regular expression.'),
+          visible: true,
+          configs: [
+            {type: 'FormInput', label: this.$t('Regex Pattern'), helper: '', validation: 'required'},
+          ],
         },
       ],
     };
