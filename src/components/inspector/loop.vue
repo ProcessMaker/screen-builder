@@ -38,12 +38,10 @@
 
 <script>
 import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
-// import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 
 export default {
   components: { },
-  props: ['value', 'name', 'formConfig', 'inspectionConfig'],
-  // mixins: [ValidationMixin],
+  props: ['value'],
   inheritAttrs: false,
   components: { FormInput, FormCheckbox },
   data() {

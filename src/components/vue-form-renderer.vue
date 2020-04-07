@@ -21,6 +21,7 @@
           v-bind="element.config"
           :is="element.component"
           :formConfig="config"
+          :mode="mode"
         />
 
         <div v-else :id="element.config.name ? element.config.name : undefined">
@@ -52,8 +53,7 @@
 import Vue from 'vue';
 import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible } from '@/mixins';
-import * as editor from './editor';
+import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible, defaultValues } from '@/mixins';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
 import FormMultiColumn from '@/components/renderer/form-multi-column';
@@ -94,7 +94,7 @@ export default {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers, defaultValues],
   components: {
     FormInput: FormMaskedInput,
     WatchersSynchronous,
@@ -107,7 +107,6 @@ export default {
     FormMultiColumn,
     CustomCSS,
     FormLoop,
-    ...editor,
     ...inspector,
     ...renderer,
   },
@@ -163,12 +162,13 @@ export default {
         },
       },
       scrollable: null,
+      activeDefaultValues: {},
     };
   },
   watch: {
     mode() {
       this.currentPage = 0;
-      this.applyConfiguredDefaultValues();
+      this.initializeDefaultValues();
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
@@ -211,6 +211,7 @@ export default {
             });
           });
         }
+        this.updateDefaultValues();
 
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
@@ -247,22 +248,10 @@ export default {
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
-    this.applyConfiguredDefaultValues();
+    this.initializeDefaultValues();
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    applyConfiguredDefaultValues() {
-      this.$nextTick(() => {
-        if (typeof this.config !== undefined) {
-          getItemsFromConfig(this.config)
-            .forEach(item => {
-              if (item.config.defaultValue) {
-                this.model[this.getValidPath(item.config.name)] = Mustache.render(item.config.defaultValue, this.transientData);
-              }
-          });
-        }
-      });
-    },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {
         Object.keys(this.customFunctions).forEach(key => {
