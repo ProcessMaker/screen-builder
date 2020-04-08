@@ -204,6 +204,61 @@ export default {
           content: 'URL',
           helper: this.$t('Validate that an attribute has a valid URL format.'),
         },
+        {
+          value: 'date',
+          content: 'Date',
+          helper: this.$t('The field under validation must be a valid date format which is acceptable by Javascript\'s Date object.'),
+        },
+        {
+          value: '',
+          field: 'after:',
+          content: this.$t('After Date'),
+          helper: this.$t('The field under validation must be after the given date.'),
+          visible: true,
+          configs: [
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'after_or_equal:',
+          content: this.$t('After or Equal to Date'),
+          helper: this.$t('The field unter validation must be after or equal to the given field.'),
+          visible: true,
+          configs: [
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'before:',
+          content: this.$t('Before Date'),
+          helper: this.$t('The field unter validation must be before the given date.'),
+          visible: true,
+          configs: [
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'before_or_equal:',
+          content: this.$t('Before or Equal to Date'),
+          helper: this.$t('The field unter validation must be before or equal to the given field.'),
+          visible: true,
+          configs: [
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
+          ],
+        },
+        {
+          value: '',
+          field: 'regex:',
+          content: this.$t('Regex'),
+          helper: this.$t('The field under validation must match the given regular expression.'),
+          visible: true,
+          configs: [
+            {type: 'FormInput', label: this.$t('Regex Pattern'), helper: '', validation: 'required'},
+          ],
+        },
       ],
     };
   },
