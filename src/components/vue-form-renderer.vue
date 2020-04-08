@@ -162,13 +162,11 @@ export default {
         },
       },
       scrollable: null,
-      activeDefaultValues: {},
     };
   },
   watch: {
     mode() {
       this.currentPage = 0;
-      this.initializeDefaultValues();
     },
     data() {
       this.transientData = JSON.parse(JSON.stringify(this.data));
@@ -211,7 +209,6 @@ export default {
             });
           });
         }
-        this.updateDefaultValues();
 
         // Only emit the update message if transientData does NOT equal this.data
         // Instead of deep object property comparison, we'll just compare the JSON representations of both
@@ -248,7 +245,6 @@ export default {
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
-    this.initializeDefaultValues();
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
