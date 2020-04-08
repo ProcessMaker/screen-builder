@@ -59,9 +59,6 @@
                 <div v-if="config.type === 'FormInput'">
                   <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
                 </div>
-                <div v-if="config.type === 'FormDatePicker'">
-                  <form-date-picker :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
-                </div>
               </div>
               <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
             </b-card-body>
@@ -75,14 +72,13 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import { FormInput, FormDatePicker } from '@processmaker/vue-form-elements';
+import { FormInput } from '@processmaker/vue-form-elements';
 
 export default {
   props: ['label', 'value', 'helper', 'name'],
   components: {
     Multiselect,
     FormInput,
-    FormDatePicker,
   },
   data() {
     return {
@@ -215,7 +211,7 @@ export default {
           helper: this.$t('The field under validation must be after the given date.'),
           visible: true,
           configs: [
-            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
         },
         {
@@ -225,7 +221,7 @@ export default {
           helper: this.$t('The field unter validation must be after or equal to the given field.'),
           visible: true,
           configs: [
-            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
         },
         {
@@ -235,7 +231,7 @@ export default {
           helper: this.$t('The field unter validation must be before the given date.'),
           visible: true,
           configs: [
-            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
         },
         {
@@ -245,7 +241,7 @@ export default {
           helper: this.$t('The field unter validation must be before or equal to the given field.'),
           visible: true,
           configs: [
-            {type: 'FormDatePicker', label: this.$t('Date'), helper: '', validation: 'required'},
+            {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
         },
         {
