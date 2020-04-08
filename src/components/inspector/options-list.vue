@@ -175,12 +175,12 @@
       </button>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataObject">
+    <div>
       <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
       <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
       <small class="form-text text-muted mb-3">{{ $t('Select whether to return a Single Value or an Object containing all properties from the Request Variable Object.') }}</small>
 
-      <div v-if="valueTypeReturned === 'single'">
+      <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
         <label for="key">{{ $t('Variable Data Property') }}</label>
         <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
         <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passes as the value when selected.') }}</small>
