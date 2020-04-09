@@ -19,6 +19,9 @@
         <b-button size="sm" variant="secondary" class="ml-1 mr-1" @click="add" :title="$t('Add Item')">
           <i class="fas fa-plus"/>
         </b-button>
+        <b-button size="sm" variant="outline-danger" class="ml-1 mr-1" @click="removeConfirm" :title="$t('Add Item')">
+          <i class="fas fa-minus"/>
+        </b-button>
       </b-col>
     </b-row>
   </div>
@@ -130,6 +133,25 @@ export default {
         this.additionalItems--;
       }
     },
+    removeConfirm() {
+      const message = this.$t('Are you sure you want to delete this?');
+      if (_.has(window, 'ProcessMaker.confirmModal')) {
+        window.ProcessMaker.confirmModal(
+          this.$t("Caution!"),
+          message,
+          '',
+          () => {
+            this.remove();
+          }
+        );
+      } else if (_.has(window, 'confirm')) {
+        if (window.confirm(message)) {
+          this.remove();
+        }
+      } else {
+        this.remove();
+      }
+    },
     setMatrixValue(i, v) {
       if (v._parent) {
         Object.keys(v._parent).forEach(parentKey => {
@@ -155,8 +177,11 @@ export default {
       for (const i of this.times) {
         if (typeof this.matrix[i] === 'undefined') {
           this.setMatrixValue(i, {});
-        } else {
         }
+      }
+      // Exclude any elements that were removed
+      if (this.matrix.length !== this.times.length) {
+        this.matrix = this.matrix.slice(0, this.times.length);
       }
     },
     submit() {
