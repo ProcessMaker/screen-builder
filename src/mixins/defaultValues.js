@@ -16,24 +16,30 @@ export default {
     }
   },
   watch: {
-    transientData(val) {
-      this.debug("---> transientData", JSON.stringify(val));
-      if (this.defaultsInitialized) {
+    transientData: {
+      handler(val) {
+        this.debug("---> transientData", JSON.stringify(val));
+        if (!this.defaultsInitialized) {
+          this.initializeDefaultValues();
+        }
         this.update(val);
-      }
+      },
+      deep: true,
+      immediate: true,
     },
     config: {
       handler() {
-        this.debug("---> config");
+        this.debug("---> config", JSON.stringify(this.data));
         this.initializeDefaultValues();
-        this.update(this.transientData);
+        this.update(this.data);
       },
       deep: true,
       immediate: true,
     },
     mode() {
+      this.debug("MODE changed", JSON.stringify(this.data));
       this.initializeDefaultValues();
-      this.update(this.transientData);
+      this.update(this.data);
     },
   },
   methods: {
@@ -46,6 +52,7 @@ export default {
       this.debug("update()", JSON.stringify(data));
 
       if (this.isEqual(data, this.lastSetTransientData)) {
+        this.debug("R1");
         return;
       }
 
@@ -54,17 +61,19 @@ export default {
       // Run this again so previous set defaults get later updates
       this.updateDefaultValues();
       if (this.isEqual(this.transientData, this.defaultsFormData)) {
+        this.debug("R2");
         return
       }
       this.lastSetTransientData = _.cloneDeep(this.defaultsFormData);
       this.transientData = _.cloneDeep(this.defaultsFormData);
+      this.debug("SET transient data to", JSON.stringify(this.transientData));
     },
     initializeDefaultValues() {
-      this.count = 0;
-      this.lastSetTransientData = {};
+      this.lastSetTransientData = null;
       this.activeDefaultValues = [];
       this.itemsWithDefaultValues(this.config);
       this.defaultsInitialized = true;
+      this.debug('initializeDefaultValues done', this.config[0].items.length);
     },
     itemsWithDefaultValues(items) {
       if (!Array.isArray(items)) {
@@ -109,25 +118,36 @@ export default {
         return;
       }
 
+      const changes = {};
       this.activeDefaultValues.forEach(({path, item, setValue, inactive}, index) => {
         if (inactive) {
           return;
         }
 
         const current = _.get(this.defaultsFormData, path, null);
+
+        if (current !== null && setValue === null) {
+          // This is a value already set in the data object. Make inactive.
+          this.activeDefaultValues[index].inactive = true;
+          changes[path] = "Inactive";
+          return;
+        }
         
         // Check if any fields were modified from their original default values
         // If so, we no longer want to apply any defaults.
         if (current === null || setValue === null || this.isEqual(current, setValue)) {
           // No changes, so we can apply the default values
           this.applyDefaultValue(path, item);
+          changes[path] = String(setValue) + " --> " + String(this.defaultsFormData[path]);
           this.activeDefaultValues[index].setValue = this.defaultsFormData[path];
 
         } else {
           // There are changes, so lets remove it from our list of active elements
           this.activeDefaultValues[index].inactive = true;
+          changes[path] = "Inactive";
         }
       });
+      this.debug('Changes', changes);
     },
 
     isEqual(a, b) {

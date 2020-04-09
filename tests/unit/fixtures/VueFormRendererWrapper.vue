@@ -29,7 +29,6 @@ export default {
   },
   watch: {
     previewData() {
-      // console.log("PREVIEW DATA CAHNGED", this.previewData.input2);
     }
   }
 }
