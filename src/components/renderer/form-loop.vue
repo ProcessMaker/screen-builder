@@ -19,7 +19,7 @@
         <b-button size="sm" variant="secondary" class="ml-1 mr-1" @click="add" :title="$t('Add Item')">
           <i class="fas fa-plus"/>
         </b-button>
-        <b-button size="sm" variant="outline-danger" class="ml-1 mr-1" @click="removeConfirm" :title="$t('Add Item')">
+        <b-button v-if="times.length > 0" size="sm" variant="outline-danger" class="ml-1 mr-1" @click="removeConfirm" :title="$t('Add Item')">
           <i class="fas fa-minus"/>
         </b-button>
       </b-col>
