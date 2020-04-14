@@ -44,6 +44,7 @@
             :ok-disabled="!uploadedJson"
             cancel-variant="outline-secondary"
             ok-variant="secondary"
+            header-close-content="&times;"
             @hidden="this.clearUpload"
             @ok="loadScreenPackage"
           >
@@ -158,7 +159,7 @@
     <computed-properties v-model="computed" ref="computedProperties"/>
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
     <watchers-popup v-model="watchers" ref="watchersPopup"/>
-    <b-modal id="preview-config" size="xl" title="Screen Config JSON Preview">
+    <b-modal id="preview-config" size="xl" title="Screen Config JSON Preview" header-close-content="&times;">
       <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"></monaco-editor>
     </b-modal>
   </b-container>
@@ -353,7 +354,7 @@ export default {
         let config = JSON.parse(savedConfig);
         this.$refs.builder.config = config;
       }
-      
+
       if (savedWatchers) {
         let watcherConfig = JSON.parse(savedWatchers);
         this.watchers = watcherConfig;
