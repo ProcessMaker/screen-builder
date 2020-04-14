@@ -6,6 +6,7 @@
     :title="$t('Watchers')"
     @hidden="displayList"
     hide-footer
+    header-close-content="&times;"
     no-close-on-backdrop
   >
     <template v-if="enableList">

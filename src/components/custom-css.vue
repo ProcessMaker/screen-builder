@@ -12,6 +12,7 @@
     no-close-on-backdrop
     :ok-title="$t('Save')"
     :cancel-title="$t('Cancel')"
+    header-close-content="&times;"
   >
     <p>{{ $t("You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']") }}</p>
     <div class="editor">

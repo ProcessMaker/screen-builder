@@ -113,7 +113,7 @@
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
               <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || element.label || $t('Field Name') }}
-              <div class="ml-auto"> 
+              <div class="ml-auto">
                 <button
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
@@ -151,7 +151,7 @@
               <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
               <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
               {{ element.config.name || $t('Variable Name') }}
-              <div class="ml-auto"> 
+              <div class="ml-auto">
                 <button
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
@@ -167,7 +167,7 @@
                   <i class="far fa-trash-alt text-light"/>
                 </button>
               </div>
-            </div> 
+            </div>
             <component
               :tabindex="element.config.interactive ? 0 : -1"
               class="card-body m-0 pb-4 pt-4"
@@ -231,6 +231,7 @@
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
       :title="$t('Add New Page')"
+      header-close-content="&times;"
     >
       <form-input v-model="addPageName"
         :name="$t('Page Name')"
@@ -248,6 +249,7 @@
       :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
+      header-close-content="&times;"
     >
       <form-input v-model="editPageName"
         :label="$t('Page Name')"
@@ -265,6 +267,7 @@
       @cancel="hideConfirmModal"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
+      header-close-content="&times;"
     >
       <p>{{ confirmMessage }}</p>
       <div slot="modal-ok">{{ $t('Delete') }}</div>
@@ -501,7 +504,7 @@ export default {
             delete item.config.name;
           }
         }
-      });      
+      });
     },
     replaceFormText(items) {
       items.forEach(item => {
