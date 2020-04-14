@@ -137,7 +137,7 @@
           <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" @change="jsonDataChange"/>
         </div>
 
-        <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
+        <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak header-close-content="&times;">
           <div class="editor-container">
             <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor" @change="jsonDataChange"/>
           </div>

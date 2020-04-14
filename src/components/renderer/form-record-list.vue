@@ -57,6 +57,7 @@
       :ok-title="$t('Ok')"
       :cancel-title="$t('Cancel')"
       :title="$t('Add')"
+      header-close-content="&times;"
     >
       <vue-form-renderer
         :page="0"
@@ -74,6 +75,7 @@
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
       :title="$t('Edit Record')"
+      header-close-content="&times;"
     >
      <vue-form-renderer
         :page="0"
@@ -90,6 +92,7 @@
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
       :title="$t('Delete Record')"
+      header-close-content="&times;"
     >
       <p>{{ $t('Are you sure you want to remove this record?') }}</p>
     </b-modal>
@@ -100,6 +103,7 @@
       ref="infoModal"
       :ok-title="$t('OK')"
       :title="$t('Information form')"
+      header-close-content="&times;"
       ok-only
     >
       <p>{{ $t('The form to be displayed is not assigned.') }}</p>
@@ -335,7 +339,7 @@ export default {
       const item = JSON.parse(JSON.stringify(this.addItem));
       delete item._parent;
       data[data.length] = item;
-      
+
       // Emit the newly updated data model
       this.$emit('input', data);
 
@@ -352,7 +356,7 @@ export default {
       this.$refs.deleteModal.show();
     },
     downloadFile(rowData, rowField, rowIndex) {
-      let requestId = this.$root.task.request_data._request.id; 
+      let requestId = this.$root.task.request_data._request.id;
       let name = this.name + "." + rowIndex + "." + rowField;
 
       ProcessMaker.apiClient

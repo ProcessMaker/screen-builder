@@ -11,6 +11,8 @@
     title-class="m-0"
     footer-class="m-0 p-0"
     no-close-on-backdrop
+    header-close-content="&times;"
+
   >
 
     <template v-if="displayList">
