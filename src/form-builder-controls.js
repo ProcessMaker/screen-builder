@@ -49,6 +49,7 @@ export default [
         icon: 'fas fa-pencil-ruler',
         interactive: true,
         content: '<p>Rich text editor</p>',
+        renderVarHtml: null,
       },
       inspector: [
         {
@@ -61,6 +62,15 @@ export default [
             value: '',
           },
         },
+        {
+          type: 'FormCheckbox',
+          field: 'renderVarHtml',
+          config: {
+            label: 'Render HTML from a Variable',
+            helper: '',
+            value: '',
+          },
+        }
       ],
     },
   },
