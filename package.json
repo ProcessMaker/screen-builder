@@ -20,7 +20,6 @@
     "*.js"
   ],
   "dependencies": {
-    "inputmask": "^5.0.0",
     "lodash": "latest",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
@@ -48,6 +47,7 @@
     "expr-eval": "^2.0.2",
     "i18next": "^15.0.8",
     "identity-obj-proxy": "^3.0.0",
+    "inputmask": "^5.0.4-beta.33",
     "monaco-editor-webpack-plugin": "~1.7.0",
     "mustache": "^3.0.1",
     "node-sass": "^4.9.1",
