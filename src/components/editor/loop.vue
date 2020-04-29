@@ -2,7 +2,7 @@
   <div class="column-draggable" :selector="config.customCssSelector">
     <draggable
       style="min-height: 80px;"
-      v-model="items"
+      :list="items"
       group="controls"
     >
       <div class="control-item"
