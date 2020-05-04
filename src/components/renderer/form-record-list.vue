@@ -64,6 +64,8 @@
         ref="addRenderer"
         v-model="addItemWithParent"
         :config="[formConfig[form]]"
+        debug-context="Record List Add"
+        :key="Array.isArray(value) ? value.length : 0"
       />
     </b-modal>
     <b-modal
@@ -82,6 +84,7 @@
         ref="editRenderer"
         v-model="editItemWithParent"
         :config="[formConfig[form]]"
+        debug-context="Record List Edit"
       />
     </b-modal>
     <b-modal
@@ -312,7 +315,6 @@ export default {
     showAddForm() {
       // Reset our add item
       this.addItem = {};
-      this.$refs.addRenderer.applyConfiguredDefaultValues();
 
       if (!this.form) {
         this.$refs.infoModal.show();
