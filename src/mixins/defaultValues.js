@@ -5,6 +5,10 @@ export default {
     showDebug: {
       type: Boolean,
       default: false, 
+    },
+    debugContext: {
+      type: String,
+      default: 'Root', 
     }
   },
   data() {
@@ -13,6 +17,7 @@ export default {
       defaultsFormData: {},
       activeDefaultValues: [],
       lastSetTransientData: null,
+      lastConfig: null,
     }
   },
   watch: {
@@ -29,7 +34,12 @@ export default {
     },
     config: {
       handler() {
-        this.debug("---> config", JSON.stringify(this.data));
+        if (this.isEqual(this.lastConfig, this.config)) {
+          return;
+        }
+        this.lastConfig = _.clone(this.config);
+
+        this.debug("---> config", _.truncate(JSON.stringify(this.config)));
         this.initializeDefaultValues();
         this.update(this.data);
       },
@@ -45,7 +55,7 @@ export default {
   methods: {
     debug() {
       if (this.showDebug) {
-        console.log(this.isLoop, ...arguments);
+        console.log(this.debugContext, ...arguments);
       }
     },
     update(data) {
@@ -60,10 +70,17 @@ export default {
       this.updateDefaultValues();
       // Run this again so previous set defaults get later updates
       this.updateDefaultValues();
+
       if (this.isEqual(this.transientData, this.defaultsFormData)) {
         this.debug("R2");
         return
       }
+
+      if (this.isEqual(this.defaultsFormData, this.lastSetTransientData)) {
+        this.debug('R3');
+        return;
+      }
+      
       this.lastSetTransientData = _.cloneDeep(this.defaultsFormData);
       this.transientData = _.cloneDeep(this.defaultsFormData);
       this.debug("SET transient data to", JSON.stringify(this.transientData));
@@ -73,7 +90,7 @@ export default {
       this.activeDefaultValues = [];
       this.itemsWithDefaultValues(this.config);
       this.defaultsInitialized = true;
-      this.debug('initializeDefaultValues done', this.config[0].items.length);
+      this.debug('initializeDefaultValues done');
     },
     itemsWithDefaultValues(items) {
       if (!Array.isArray(items)) {
@@ -81,7 +98,12 @@ export default {
       }
 
       items.forEach(item => {
-        if (item.component === 'FormLoop' || item.component === 'FormNestedScreen') {
+        if (!item) {
+          // Record list starts with a single, undefined item.
+          return;
+        }
+
+        if (['FormLoop', 'FormNestedScreen', 'FormRecordList'].includes(item.component)) {
           return;
         }
 

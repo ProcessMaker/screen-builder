@@ -80,7 +80,7 @@ it('updates when a referenced field changes', async () => {
   expect(wrapper.vm.previewData.input1).toBe("input3: input2: bar");
 });
 
-it.only('does not update a field once the field has been edited', async () => {
+it('does not update a field once the field has been edited', async () => {
   const wrapper = wrapperFactory();
   wrapper.setData({
     config: require('./fixtures/defaults.json'),
