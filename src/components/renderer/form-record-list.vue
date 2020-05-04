@@ -164,13 +164,20 @@ export default {
     };
   },
   computed: {
+    parentObj() {
+      let parent = this.$parent;
+      while ('transientData' in parent.$props) {
+        parent = parent.$parent;
+      }
+      return parent;
+    },
     addItemWithParent: {
       get() {
         this.addItem._parent = this.$parent.transientData;
         return this.addItem;
       },
       set(val) {
-        this.$set(this.$parent, 'transientData', val._parent);
+        this.$set(this.parentObj, 'transientData', val._parent);
         this.addItem = val;
       }
     },
@@ -180,7 +187,7 @@ export default {
         return this.editItem;
       },
       set(val) {
-        this.$set(this.$parent, 'transientData', val._parent);
+        this.$set(this.parentObj, 'transientData', val._parent);
         this.editItem = val;
       }
     },
