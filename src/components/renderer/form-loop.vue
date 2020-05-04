@@ -8,6 +8,7 @@
         :custom-css="null"
         :watchers="null"
         :is-loop="true"
+        :debug-context="'Loop #' + loopIndex"
         @submit="submit"
         @pageNavigate="$emit('pageNavigate', $event)"
         @update="setMatrixValue(loopIndex, $event)"
