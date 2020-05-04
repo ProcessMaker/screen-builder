@@ -11,7 +11,7 @@
     :computed="computed"
     :custom-css="customCSS"
     :watchers="watchers"
-
+    debug-context="Nested Screen"
     @css-errors="cssErrors = $event"
   />
 </template>
