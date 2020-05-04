@@ -10,8 +10,8 @@
         </button>
       </div>
     </div>
-    <div class="alert alert-danger" v-if="!value">
-      {{ $t('There is no records in this list or the data is invalid.') }}
+    <div v-if="!value">
+      {{ $t('This record list is empty or contains no data.') }}
     </div>
     <template v-else>
       <vuetable
