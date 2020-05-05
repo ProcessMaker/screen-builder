@@ -1,6 +1,6 @@
 <template>
   <div :class="containerClass">
-    <div class="page">
+    <div class="page" :class="formSubmitErrorClass">
       <div
         v-for="(element, index) in visibleElements"
         :key="index"
@@ -162,6 +162,7 @@ export default {
         },
       },
       scrollable: null,
+      formSubmitErrorClass: '',
     };
   },
   watch: {
@@ -321,6 +322,9 @@ export default {
         }
         this.errors = Object.assign(this.errors, childErrors);
       });
+      if (this.errors) {
+        this.formSubmitErrorClass = 'invalid-form-submission';
+      }
       return _.size(this.errors) === 0;
     },
     pageNavigate(page) {
