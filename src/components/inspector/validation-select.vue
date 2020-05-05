@@ -61,6 +61,9 @@
                 </div>
               </div>
               <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
+              <div class="text-right">
+                <b-button @click="onUpdate(rule, index)" variant="secondary" size="sm">{{ $t('Update') }}</b-button>
+              </div>
             </b-card-body>
           </b-collapse>
         </b-card>
@@ -353,7 +356,11 @@ export default {
           
         }
       });
-    }, 
+    },
+    onUpdate(rule, index) {
+      this.$root.$emit('bv::toggle::collapse', rule.content)
+      this.$set(this.rules[index], 'visible', false);
+    }
   },
   mounted() {
     this.rules = this.value;
