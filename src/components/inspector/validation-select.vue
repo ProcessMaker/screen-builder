@@ -54,16 +54,19 @@
             </div>
           </b-card-header>
           <b-collapse :id="rule.content" :accordion="rule.content" :visible="rule.visible" role="tabpanel">
-            <b-card-body class="p-2"> 
-              <div v-for="config in rule.configs" :key="config.label" class="mb-2">
-                <div v-if="config.type === 'FormInput'">
-                  <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
+            <b-card-body> 
+              <div class="p-2"> 
+                <div v-for="config in rule.configs" :key="config.label" class="mb-2">
+                  <div v-if="config.type === 'FormInput'">
+                    <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
+                  </div>
                 </div>
+                <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
               </div>
-              <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
-              <div class="text-right">
+              <b-card-footer class="text-right">
+                <b-button @click="onCancel(index)" variant="outline-secondary" size="sm" class="mr-2">{{ $t('Cancel') }}</b-button>
                 <b-button @click="onUpdate(rule, index)" variant="secondary" size="sm">{{ $t('Update') }}</b-button>
-              </div>
+              </b-card-footer>
             </b-card-body>
           </b-collapse>
         </b-card>
@@ -93,6 +96,7 @@ export default {
       removeIndex: null,
       optionError: '',
       disableBtn: false,
+      cloneRules: [],
       options: [
         {
           value: 'accepted',
@@ -360,10 +364,15 @@ export default {
     onUpdate(rule, index) {
       this.$root.$emit('bv::toggle::collapse', rule.content)
       this.$set(this.rules[index], 'visible', false);
+      this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    },
+    onCancel(index) {
+      Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
     }
   },
   mounted() {
     this.rules = this.value;
+    this.cloneRules = JSON.parse(JSON.stringify(this.rules));
   },
 };
 </script>
