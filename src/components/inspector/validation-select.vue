@@ -339,6 +339,7 @@ export default {
     },
     deleteRule(index) {
       this.rules.splice(index, 1);
+      this.cloneRules.splice(index, 1);
       this.hideDeleteConfirmCard();
     },
     setRuleConfigs() {
