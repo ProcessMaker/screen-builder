@@ -190,7 +190,7 @@ export default {
       value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
     },
     localValue(value) {
-      value !== this.value ? this.$emit('input', this.convertToData(value)) : null;
+      moment(value).toISOString() !== this.value ? this.$emit('input', this.convertToData(value)) : null;
     },
   },
   data() {
