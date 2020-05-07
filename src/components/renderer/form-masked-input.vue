@@ -190,7 +190,17 @@ export default {
       value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
     },
     localValue(value) {
-      moment(value).toISOString() !== this.value ? this.$emit('input', this.convertToData(value)) : null;
+      switch(this.dataFormat) {
+        case 'date': 
+          value.length >= 10 && moment(value).toISOString() !== this.value ? this.$emit('input', this.convertToData(value)) : null;  
+          break;
+        case 'datetime':
+          value.length >= 10 && moment(value).toISOString() !== moment(this.value).toISOString() ? this.$emit('input', this.convertToData(value)) : null;  
+          break;
+        default:
+          value !== this.value ? this.$emit('input', this.convertToData(value)) : null;    
+          break;
+      }
     },
   },
   data() {
