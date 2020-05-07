@@ -381,7 +381,9 @@ export default {
   },
   mounted() {
     this.rules = this.value;
-    this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    if (this.cloneRules.length) {
+      this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    }
   },
 };
 </script>
