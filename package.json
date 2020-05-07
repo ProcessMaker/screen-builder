@@ -20,11 +20,11 @@
     "*.js"
   ],
   "dependencies": {
-    "lodash": "latest",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
     "scrollparent": "^2.0.1",
-    "vue-loader": "latest",
+    "vue-loader": "^15.9.2",
     "vue-the-mask": "^0.11.1"
   },
   "devDependencies": {
