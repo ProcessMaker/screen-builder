@@ -228,16 +228,16 @@ export const buttonTypeEvent = {
   type: 'FormMultiselect',
   field: 'event',
   config: {
-    label: 'Type Button',
-    helper: 'Determine execution of button',
+    label: 'Type',
+    helper: 'Choose whether the button should submit the form',
     options: [
       {
         value: 'submit',
-        content: 'Submit',
+        content: 'Submit Button',
       },
       {
         value: 'script',
-        content: 'Script',
+        content: 'Regular Button',
       },
     ],
   },
