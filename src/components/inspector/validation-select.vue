@@ -64,7 +64,7 @@
                 <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
               </div>
               <b-card-footer class="text-right">
-                <b-button @click="onCancel(index)" variant="outline-secondary" size="sm" class="mr-2">{{ $t('Cancel') }}</b-button>
+                <b-button @click="onCancel(rule,index)" variant="outline-secondary" size="sm" class="mr-2">{{ $t('Cancel') }}</b-button>
                 <b-button @click="onUpdate(rule, index)" variant="secondary" size="sm">{{ $t('Update') }}</b-button>
               </b-card-footer>
             </b-card-body>
@@ -366,13 +366,24 @@ export default {
       this.$set(this.rules[index], 'visible', false);
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
     },
-    onCancel(index) {
-      Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
+    onCancel(rule, index) {
+      if (this.cloneRules && this.cloneRules[index]) {
+        Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
+      } else {
+        rule.configs.forEach(config => {
+          if (config.value) {
+            config.value = '';
+          }
+        });
+        this.rules[index].configs = rule.configs;
+      }
     }
   },
   mounted() {
     this.rules = this.value;
-    this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    if (this.cloneRules.length) {
+      this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    }
   },
 };
 </script>
