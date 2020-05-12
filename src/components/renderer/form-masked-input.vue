@@ -40,7 +40,7 @@ import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixi
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
-import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
+import { getUserDateFormat, getUserDateTimeFormat, getTimezone } from '@processmaker/vue-form-elements/src/dateUtils';
 import moment from 'moment';
 
 const uniqIdsMixin = createUniqIdsMixin();
@@ -187,15 +187,30 @@ export default {
   },
   watch: {
     value(value) {
-      value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
+      let date;
+      switch(this.dataFormat) {
+        case 'date': 
+          date = moment(value, moment.ISO_8601, true).tz(getTimezone());
+          if (date.isValid()) {
+            this.localValue = date.format(getUserDateFormat());
+          }
+          break;
+        case 'datetime': 
+          date = moment(value, moment.ISO_8601, true).tz(getTimezone());
+          if (date.isValid()) {
+            this.localValue = date.format(getUserDateTimeFormat());
+          }
+          break;
+        default:
+          value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
+          break;
+      }
     },
     localValue(value) {
       switch(this.dataFormat) {
-        case 'date': 
-          value.length >= 10 && moment(value).toISOString() !== this.value ? this.$emit('input', this.convertToData(value)) : null;  
-          break;
+        case 'date':
         case 'datetime':
-          value.length >= 10 && moment(value).toISOString() !== moment(this.value).toISOString() ? this.$emit('input', this.convertToData(value)) : null;  
+          this.$emit('input', value);
           break;
         default:
           value !== this.value ? this.$emit('input', this.convertToData(value)) : null;    
