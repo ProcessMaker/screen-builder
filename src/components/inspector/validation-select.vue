@@ -212,7 +212,7 @@ export default {
           helper: this.$t('Validate that an attribute has a valid URL format.'),
         },
         {
-          value: 'date',
+          value: 'custom-date',
           content: 'Date',
           helper: this.$t('The field under validation must be a valid date format which is acceptable by Javascript\'s Date object.'),
         },
