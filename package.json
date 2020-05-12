@@ -68,7 +68,7 @@
   },
   "peerDependencies": {
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "^0.14.3",
+    "@processmaker/vue-form-elements": "^0.14.4",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.14",
     "i18next": "^15.0.8",
