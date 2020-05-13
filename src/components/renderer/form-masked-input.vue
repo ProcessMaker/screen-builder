@@ -211,17 +211,26 @@ export default {
       }      
     },
     localValue(value) {
-      value !== this.value ? this.$emit('input', this.convertToData(value)) : null;    
+      if (value == this.value) {
+        this.localValue = this.convertFromData(value);
+      } else {
+        this.$emit('input', this.convertToData(value));
+      }
     },
   },
   data() {
     return {
       validator: null,
-      localValue: this.value,
+      localValue: null,
       validationRules: {
         'percentage': 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
       },
     };
   },
+  mounted() {
+    if (this.value) {
+      this.localValue = this.value;
+    }
+  }
 };
 </script>
