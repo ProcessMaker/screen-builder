@@ -40,6 +40,8 @@ export default {
       matrix: [],
       items: [],
       additionalItems: 0,
+      transientDataCopy: null,
+      parentObjectChanges: [],
     };
   },
   computed: {
@@ -87,6 +89,9 @@ export default {
   watch: {
     transientData: {
       handler() {
+        this.transientDataCopy = _.cloneDeep(this.transientData);
+        this.$delete(this.transientDataCopy, this.name);
+
         const data = _.get(this, 'transientData.' + this.name, null);
         this.matrix = data ? data : [];
         this.setupMatrix();
@@ -107,6 +112,8 @@ export default {
           return rowCopy;
         });
         this.$set(this.$parent.transientData, this.name, result);
+        
+        this.setChagnedParentVariables();
       },
       deep: true,
     },
@@ -154,14 +161,23 @@ export default {
       }
     },
     setMatrixValue(i, v) {
-      if (v._parent) {
-        Object.keys(v._parent).forEach(parentKey => {
-          if (parentKey != this.name) {
-            this.$set(this.$parent.transientData, parentKey, v._parent[parentKey]);
+      this.registerParentVariableChanges(v);
+      this.$set(this.matrix, i, v);
+    },
+    registerParentVariableChanges(obj) {
+      if (obj._parent) {
+        Object.keys(obj._parent).forEach(parentKey => {
+          if (!_.isEqual(this.transientDataCopy[parentKey], obj._parent[parentKey])) {
+            this.parentObjectChanges.push({key: parentKey, value: obj._parent[parentKey]});
           }
         });
       }
-      this.$set(this.matrix, i, v);
+    },
+    setChagnedParentVariables() {
+      this.parentObjectChanges.forEach(change => {
+        this.$set(this.$parent.transientData, change.key, change.value);
+      });
+      this.parentObjectChanges = [];
     },
     getMatrixValue(i) {
       let val = this.matrix[i];
@@ -169,9 +185,7 @@ export default {
         val = {};
       }
       
-      let parent = _.clone(this.$parent.transientData);
-      delete parent[this.name];
-      val._parent = parent;
+      val._parent = _.cloneDeep(this.transientDataCopy);
       return val;
     },
     setupMatrix() {
