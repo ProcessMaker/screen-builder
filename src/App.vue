@@ -297,7 +297,7 @@ export default {
         return JSON.stringify(this.config);
       },
       set(val) {
-      }
+      },
     },
     displayBuilder() {
       return this.mode === 'editor';

@@ -77,7 +77,9 @@ export default {
         radixPoint: this.decimal,
         groupSeparator: this.thousands,
       }).mask(this.currencyInput);
-      this.currencyInput.inputmask.setValue(this.value);
+      if (this.value) {
+        this.currencyInput.inputmask.setValue(this.value);
+      }
     },
   },
   mounted() {
