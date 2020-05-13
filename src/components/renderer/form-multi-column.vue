@@ -19,6 +19,7 @@
             @pageNavigate="pageNavigate"
             :config="element.config"
             :is="element.component"
+            :name="element.config.name !== undefined ? element.config.name : null"
           />
 
           <div v-else :id="element.config.name ? element.config.name : undefined" :key="index" class="w-100" :selector="element.config.customCssSelector">
