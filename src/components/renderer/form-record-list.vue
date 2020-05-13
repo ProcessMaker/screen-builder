@@ -308,7 +308,14 @@ export default {
       this.setUploadDataNamePrefix(pageIndex);
       this.$refs.editModal.show();
     },
-    edit() {
+    edit(event) {
+      const validate = ValidatorFactory(this.formConfig[this.form].items, this.editItem);
+      this.errors = validate.getErrors();
+      if (_.size(this.errors) > 0) {
+        event.preventDefault();
+        return;
+      }
+
       // Edit the item in our model and emit change
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       data[this.editIndex] = JSON.parse(JSON.stringify(this.editItem));
