@@ -193,10 +193,10 @@ export default {
         let date;
         switch(this.dataFormat) {
           case 'date': 
-              date = moment(value, moment.ISO_8601, true).tz(getTimezone());
-              if (date.isValid()) {
-                this.localValue = date.format(getUserDateFormat());
-              }   
+            date = moment(value, moment.ISO_8601, true).tz(getTimezone());
+            if (date.isValid()) {
+              this.localValue = date.format(getUserDateFormat());
+            }
             break;
           case 'datetime': 
             date = moment(value, moment.ISO_8601, true).tz(getTimezone());
@@ -231,6 +231,6 @@ export default {
     if (this.value) {
       this.localValue = this.value;
     }
-  }
+  },
 };
 </script>
