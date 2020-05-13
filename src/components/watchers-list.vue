@@ -62,7 +62,7 @@ export default {
     BasicSearch,
     FormInput,
     FormTextArea,
-    Vuetable
+    Vuetable,
   },
   props: {
     value: {
