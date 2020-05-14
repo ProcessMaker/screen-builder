@@ -313,7 +313,7 @@ export default {
       
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
-      this.errors = this.dataTypeValidator.getErrors()      
+      this.errors = this.dataTypeValidator.getErrors();
       
       this.$children.forEach(child => {
         const childErrors = this.checkForNestedScreenErrors(child);
