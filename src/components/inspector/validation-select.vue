@@ -300,6 +300,10 @@ export default {
     selectedOption: {
       deep: true,
       handler(value) {
+        if (!value) {
+          this.optionError = '';
+          return;
+        }
         if (this.rules && this.rules.find(item => { return item.content === value.content; })) {
           this.optionError = this.$t('This field already exists');
           this.disableBtn = true;

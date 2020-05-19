@@ -44,7 +44,6 @@ import { getUserDateFormat, getUserDateTimeFormat, getTimezone } from '@processm
 import moment from 'moment';
 import debounce from 'lodash/debounce';
 
-
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
   currency: 'inputmasked',
