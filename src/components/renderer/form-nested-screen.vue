@@ -35,7 +35,6 @@ export default {
     value: null,
     validationData: null,
     ancestorScreens: {type: Array, default: () => []},
-    endpoint: { type: String, default: 'screens' }
   },
   data() {
     return {
@@ -48,6 +47,10 @@ export default {
     };
   },
   computed: {
+    endpoint() {
+      const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', null);
+      return endpoint ? endpoint : 'screens';
+    },
     validatedConfig() {
       return this.config && this.config[0] ? this.config : defaultConfig;
     },
