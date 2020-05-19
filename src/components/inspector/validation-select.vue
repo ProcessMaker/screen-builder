@@ -285,6 +285,8 @@ export default {
     rules: {
       deep: true,
       handler(rules) {
+        this.showCard = false;
+        this.selectedOption = '';
         if (typeof rules === 'string' || rules === undefined) {
           this.rules = [];
         }
@@ -317,7 +319,7 @@ export default {
   methods: {
     showAddCard() {
       this.showCard = true;
-      if (this.selectedOption == '') {
+      if (!this.selectedOption) {
         this.disableBtn = true;
       }
     },
