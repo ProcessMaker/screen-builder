@@ -42,7 +42,7 @@ import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
 import { getUserDateFormat, getUserDateTimeFormat, getTimezone } from '@processmaker/vue-form-elements/src/dateUtils';
 import moment from 'moment';
-import debounce from 'debounce';
+import debounce from 'lodash/debounce';
 
 
 const uniqIdsMixin = createUniqIdsMixin();
@@ -86,7 +86,7 @@ const masks = {
   },
 };
 
-const delayUpdate = debounce(callback => callback() );
+const delayUpdate = debounce(callback => callback() , 500);
 
 export default {
   inheritAttrs: false,
