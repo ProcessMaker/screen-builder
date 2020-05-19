@@ -13,6 +13,7 @@
         @pageNavigate="$emit('pageNavigate', $event)"
         @update="setMatrixValue(loopIndex, $event)"
         :mode="mode"
+        :loop-context="getLoopContext(loopIndex)"
       />
     </form>
     <b-row class="justify-content-md-center" v-if="config.settings.add">
@@ -45,6 +46,31 @@ export default {
     };
   },
   computed: {
+    parentLoopContext() {
+      let parent = this.$parent;
+      let i = 0;
+      let context = "";
+      while(!parent.loopContext) {
+        parent = parent.$parent;
+
+        if (parent === this.$root) {
+          parent = null;
+          break;
+        }
+        
+        if (i > 100) {
+          throw "Loop Error";
+        }
+
+        i++;
+      }
+
+      if (parent) {
+        context = parent.loopContext;
+      }
+
+      return context;
+    },
     rendererConfig() {
       let items = this.items;
       return [{
@@ -127,6 +153,13 @@ export default {
     }
   },
   methods: {
+    getLoopContext(i) {
+      let context = this.name + '.' + i.toString();
+      if (this.parentLoopContext !== '') {
+        context = this.parentLoopContext + '.' + context;
+      }
+      return context;
+    },
     add() {
       if (this.config.settings.type === 'existing') {
         this.setMatrixValue(this.matrix.length, {});
