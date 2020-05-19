@@ -89,7 +89,7 @@ Vue.use(VueDeepSet);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext'],
   model: {
     prop: 'data',
     event: 'update',
