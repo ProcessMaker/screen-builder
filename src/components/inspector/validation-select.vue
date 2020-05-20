@@ -302,16 +302,15 @@ export default {
     selectedOption: {
       deep: true,
       handler(value) {
+        this.optionError = '';
+        this.disableBtn = true;
         if (!value) {
-          this.optionError = '';
           return;
         }
         if (this.rules && this.rules.find(item => { return item.content === value.content; })) {
           this.optionError = this.$t('This field already exists');
-          this.disableBtn = true;
         } else {
           this.disableBtn = false;
-          this.optionError = '';
         }
       },
     },
