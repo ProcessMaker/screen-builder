@@ -119,7 +119,7 @@
         </div>
       </div>
     </div>
-    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.dataObject">
+    <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="element-name">{{ $t('Existing Request Data Variable') }}</label>
       <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name"/>
       <small class="form-text text-muted mb-3">{{ $t('Enter the request data variable to populate values of the select list. This variable must contain an array or an array of objects.') }}</small>
@@ -183,7 +183,7 @@
       <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
         <label for="key">{{ $t('Variable Data Property') }}</label>
         <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
-        <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passes as the value when selected.') }}</small>
+        <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
       </div>
     </div>
 
@@ -338,9 +338,6 @@ export default {
           this.selectedDataSource = '';
           break;
       }
-    },
-    valueTypeReturned() {
-      this.key = '';
     },
     selectedDataSource() {
       this.getEndPointsList();
