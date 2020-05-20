@@ -8,7 +8,7 @@
       <div class="card-body p-2">
         <multiselect
           label="content"
-          track-by="value"
+          track-by="content"
           v-model="selectedOption"
           :placeholder="$t('Select...')"
           :show-labels="false"
