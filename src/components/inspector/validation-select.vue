@@ -302,8 +302,9 @@ export default {
     selectedOption: {
       deep: true,
       handler(value) {
+        this.disableBtn = true;
+        this.optionError = '';
         if (!value) {
-          this.optionError = '';
           return;
         }
         if (this.rules && this.rules.find(item => { return item.content === value.content; })) {
@@ -311,7 +312,6 @@ export default {
           this.disableBtn = true;
         } else {
           this.disableBtn = false;
-          this.optionError = '';
         }
       },
     },
