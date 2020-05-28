@@ -120,9 +120,10 @@
       </div>
     </div>
     <div v-if="dataSource === dataSourceValues.dataObject || dataSource === dataSourceValues.dataConnector">
-      <label for="element-name">{{ $t('Existing Request Data Variable') }}</label>
+      <label for="element-name">{{ $t('Options Variable') }}</label>
+      <mustache-helper></mustache-helper>
       <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name"/>
-      <small class="form-text text-muted mb-3">{{ $t('Enter the request data variable to populate values of the select list. This variable must contain an array or an array of objects.') }}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Get options from this variable. Must be an array.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
@@ -175,16 +176,28 @@
       </button>
     </div>
 
-    <div>
-      <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
-      <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
-      <small class="form-text text-muted mb-3">{{ $t('Select whether to return a Single Value or an Object containing all properties from the Request Variable Object.') }}</small>
-
-      <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
-        <label for="key">{{ $t('Variable Data Property') }}</label>
-        <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
-        <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
+    <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
+    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
+    <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
+  
+    <div v-if="dataSource === dataSourceValues.dataConnector">
+      <div v-if="valueTypeReturned === 'single'">
+        <label for="key">{{ $t('Value') }}</label>
+        <mustache-helper></mustache-helper>
+        <b-form-input id="key" v-model="key" @change="keyChanged"/>
+        <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to use as the value of this control. Leave blank to use the entire selected value.') }}</small>
       </div>
+
+      <label for="value">{{ $t('Content') }}</label>
+      <mustache-helper></mustache-helper>
+      <b-form-input id="value" v-model="value" @change="valueChanged"/>
+      <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to display to the user in the select list. Leave blank to show the entire selected value.') }}</small>
+    </div>
+
+    <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
+      <label for="key">{{ $t('Variable Data Property') }}</label>
+      <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
+      <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
@@ -199,19 +212,9 @@
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
-
-    <div v-if="dataSource === dataSourceValues.dataConnector">
-      <label for="key">{{ $t('Value') }}</label>
-      <b-form-input id="key" v-model="key" @change="keyChanged"/>
-      <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
-
-      <label for="value">{{ $t('Content') }}</label>
-      <b-form-input id="value" v-model="value" @change="valueChanged"/>
-      <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
-    </div>
-
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
+      <mustache-helper></mustache-helper>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
@@ -223,6 +226,7 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
+import MustacheHelper from './mustache-helper'
 require('monaco-editor/esm/vs/editor/editor.main');
 
 
@@ -230,6 +234,7 @@ export default {
   components: {
     draggable,
     MonacoEditor,
+    MustacheHelper
   },
   props: ['options'],
   model: {

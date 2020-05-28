@@ -447,6 +447,7 @@ export default {
 
 <style lang="scss">
     @import "~bootstrap/dist/css/bootstrap";
+    @import '~bootstrap-vue/dist/bootstrap-vue';
 
     $validation-panel-bottom: 3.5rem;
     $validation-panel-right: 0;
