@@ -75,6 +75,7 @@ import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import Mustache from 'mustache';
+import DataProvider from '../DataProvider';
 
 const csstree = require('css-tree');
 const Scrollparent = require("scrollparent");
@@ -86,6 +87,7 @@ Vue.component('custom-css', {
 });
 
 Vue.use(VueDeepSet);
+Vue.use(DataProvider);
 
 export default {
   name: 'VueFormRenderer',

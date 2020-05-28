@@ -21,6 +21,7 @@ Vue.use(ScreenBuilder);
 const store = new Vuex.Store({ modules: {} });
 
 window.ProcessMaker = {
+  isStub: true,
   apiClient: {
     get(url) {
       return new Promise((resolve) => {
