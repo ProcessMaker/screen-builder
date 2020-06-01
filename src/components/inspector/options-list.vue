@@ -119,10 +119,11 @@
         </div>
       </div>
     </div>
-    <div v-if="dataSource === dataSourceValues.dataObject">
-      <label for="element-name">{{ $t('Existing Request Data Variable') }}</label>
+    <div v-if="dataSource === dataSourceValues.dataObject || dataSource === dataSourceValues.dataConnector">
+      <label for="element-name">{{ $t('Options Variable') }}</label>
+      <mustache-helper></mustache-helper>
       <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name"/>
-      <small class="form-text text-muted mb-3">{{ $t('Enter the request data variable to populate values of the select list. This variable must contain an array or an array of objects.') }}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Get options from this variable. Must be an array.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
@@ -175,16 +176,28 @@
       </button>
     </div>
 
-    <div>
-      <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
-      <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
-      <small class="form-text text-muted mb-3">{{ $t('Select whether to return a Single Value or an Object containing all properties from the Request Variable Object.') }}</small>
-
-      <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
-        <label for="key">{{ $t('Variable Data Property') }}</label>
-        <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
-        <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
+    <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
+    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
+    <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
+  
+    <div v-if="dataSource === dataSourceValues.dataConnector">
+      <div v-if="valueTypeReturned === 'single'">
+        <label for="key">{{ $t('Value') }}</label>
+        <mustache-helper></mustache-helper>
+        <b-form-input id="key" v-model="key" @change="keyChanged"/>
+        <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to use as the value of this control. Leave blank to use the entire selected value.') }}</small>
       </div>
+
+      <label for="value">{{ $t('Content') }}</label>
+      <mustache-helper></mustache-helper>
+      <b-form-input id="value" v-model="value" @change="valueChanged"/>
+      <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to display to the user in the select list. Leave blank to show the entire selected value.') }}</small>
+    </div>
+
+    <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
+      <label for="key">{{ $t('Variable Data Property') }}</label>
+      <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
+      <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
@@ -199,19 +212,9 @@
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
-
-    <div v-if="dataSource === dataSourceValues.dataConnector">
-      <label for="key">{{ $t('Value') }}</label>
-      <b-form-input id="key" v-model="key" @change="keyChanged"/>
-      <small class="form-text text-muted mb-3">{{ $t('Field to save to the data object') }}</small>
-
-      <label for="value">{{ $t('Content') }}</label>
-      <b-form-input id="value" v-model="value" @change="valueChanged"/>
-      <small class="form-text text-muted mb-3">{{ $t('Field to show in the select box') }}</small>
-    </div>
-
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
+      <mustache-helper></mustache-helper>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
@@ -223,6 +226,7 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
+import MustacheHelper from './mustache-helper'
 require('monaco-editor/esm/vs/editor/editor.main');
 
 
@@ -230,6 +234,7 @@ export default {
   components: {
     draggable,
     MonacoEditor,
+    MustacheHelper
   },
   props: ['options'],
   model: {
@@ -250,7 +255,7 @@ export default {
       selectedDataSource: '',
       dataSourcesList: [],
       selectedEndPoint: '',
-      endPointList: [],
+      endpoints: {},
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -298,29 +303,12 @@ export default {
     };
   },
   watch: {
-    options() {
-      this.dataSource = this.options.dataSource;
-      this.jsonData = this.options.jsonData;
-      this.dataName = this.options.dataName;
-      this.selectedDataSource = this.options.selectedDataSource;
-      this.dataSourcesList = this.options.dataSourcesList;
-      this.selectedEndPoint = this.options.selectedEndPoint;
-      this.endPointList = this.options.endPointList;
-      this.key = this.options.key;
-      this.value = this.options.value;
-      this.pmqlQuery = this.options.pmqlQuery;
-      this.defaultOptionKey = this.options.defaultOptionKey;
-      this.selectedOptions = this.options.selectedOptions;
-      this.optionsList = this.options.optionsList;
-      this.showRenderAs = this.options.showRenderAs;
-      this.renderAs = this.options.renderAs;
-      this.allowMultiSelect = this.options.allowMultiSelect;
-      this.showOptionCard = this.options.showOptionCard;
-      this.showRemoveWarning = this.options.showRemoveWarning;
-      this.showJsonEditor = this.options.showJsonEditor;
-      this.editIndex = this.options.editIndex;
-      this.removeIndex = this.options.removeIndex;
-      this.valueTypeReturned = this.options.valueTypeReturned;
+    options(newOptions) {
+      Object.keys(newOptions).forEach(key => {
+        if (typeof newOptions[key] !== 'undefined') {
+          this.$set(this, key, newOptions[key]);
+        }
+      });
     },
     dataSource(val) {
       this.showRenderAs = true;
@@ -329,6 +317,7 @@ export default {
           this.jsonData = '';
           this.dataName = '';
           this.getDataSourceList();
+          break;
         case 'dataObject':
           this.jsonData = '';
           this.selectedDataSource = '';
@@ -339,14 +328,33 @@ export default {
           break;
       }
     },
-    selectedDataSource() {
-      this.getEndPointsList();
-    },
     dataObjectOptions(dataObjectOptions) {
       this.$emit('change', dataObjectOptions);
     },
+    dataSourcesList() {
+      if (this.dataSourcesList.some(ds => ds.value === this.selectedDataSource)) {
+        return;
+      }
+      
+      if (this.dataSourcesList.length > 0) {
+        console.log("SETTING TO DEFAULT selectedDataSource")
+        this.selectedDataSource = this.dataSourcesList[0].value;
+      }
+    },
+    endPointList() {
+      if (this.endPointList.some(e => e.value === this.selectedEndPoint)) {
+        return;
+      }
+
+      if (this.endPointList.length > 0) {
+        this.selectedEndPoint = this.endPointList[0].value;
+      }
+    },
   },
   computed: {
+    endPointList() {
+      return _.get(this.endpoints, this.selectedDataSource, []);
+    },
     dataSourceTypes() {
       if (typeof this.options.allowMultiSelect === 'undefined') {
         return [this.dataSources[0], this.dataSources[1]];
@@ -381,9 +389,7 @@ export default {
         jsonData: this.jsonData,
         dataName: this.dataName,
         selectedDataSource: this.selectedDataSource,
-        dataSourcesList: this.dataSourcesList,
         selectedEndPoint: this.selectedEndPoint,
-        endPointList: this.endPointList,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -407,9 +413,7 @@ export default {
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
     this.selectedDataSource = this.options.selectedDataSource,
-    this.dataSourcesList = this.options.dataSourcesList,
     this.selectedEndPoint = this.options.selectedEndPoint,
-    this.endPointList = this.options.endPointList,
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -424,58 +428,31 @@ export default {
   },
   methods: {
     getDataSourceList() {
-      //If no ProcessMaker is found, datasources can't be loaded
-      if (typeof ProcessMaker === 'undefined') {
-        this.dataSourcesList = [];
-        return;
-      }
-
-      var currentDataSource = this.selectedDataSource;
-      ProcessMaker.apiClient
+      this.$dataProvider
         .get('/data_sources')
         .then(response => {
           let jsonData = response.data.data;
-          const convertToSelectOptions = option => ({
-            value: option['id'],
-            text: option['name'],
-          });
           // Map the data sources response to value/text items list
-          this.dataSourcesList = jsonData.map(convertToSelectOptions);
-          this.selectedDataSource = currentDataSource;
-        })
-        .catch(() => {
-          this.dataSourcesList = [];
+          this.dataSourcesList = jsonData.map(this.convertToSelectOptions);
+          this.setEndpointList(jsonData);
         });
     },
-
-    getEndPointsList() {
-      this.endPointList = [];
-      //If no ProcessMaker is found, datasources can't be loaded
-      if (typeof ProcessMaker === 'undefined'
-        || typeof this.selectedDataSource === 'undefined'
-        || this.selectedDataSource === '') {
-        return;
-      }
-
-      var currentEndPoint = this.selectedEndPoint;
-      ProcessMaker.apiClient
-        .get('/data_sources/' + this.selectedDataSource)
-        .then(response => {
-          let jsonData = response.data.endpoints;
-
-          for (var endpoint in jsonData) {
-            this.endPointList.push({
-              text: endpoint,
-              value: endpoint,
-            });
-          }
-
-          this.selectedEndPoint = currentEndPoint;
-        })
-        .catch(() => {
-          this.endPointList = [];
+    setEndpointList(dataSources) {
+      const endpoints = {};
+      dataSources.forEach(ds => {
+        endpoints[ds.id] = Object.keys(ds.endpoints).map(name => {
+          return { text: name, value: name };
         });
+      });
+      this.endpoints = endpoints;
     },
+    convertToSelectOptions(option) {
+      return {
+        value: option['id'],
+        text: option['name'],
+      };
+    },
+
     jsonDataChange() {
       let jsonList = [];
       try {
