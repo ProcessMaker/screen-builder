@@ -487,6 +487,7 @@ export default [
         event: 'submit',
         name: null,
         value: null,
+        renderImage: false,
       },
       inspector: [{
         type: 'FormInput',
@@ -502,6 +503,22 @@ export default [
         config: {
           label: 'Upload',
           helper: 'Upload image',
+        },
+      },
+      {
+        type: 'FormCheckbox',
+        field: 'renderImage',
+        config: {
+          label: 'Render image from a variable name',
+          helper: null,
+        },
+      },
+      {
+        type: 'FormInput',
+        field: 'variableName',
+        config: {
+          label: 'Variable Name',
+          helper: 'Variable of the image to render',
         },
       },
       helperTextProperty,
