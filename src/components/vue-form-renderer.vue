@@ -120,7 +120,7 @@ export default {
       if (!this.config[this.currentPage]) {
         return;
       }
-      
+
       return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
     },
     containerClass() {
@@ -190,6 +190,13 @@ export default {
             } catch (e) {
               value = String(e);
             }
+
+            // Computed properties updated in less than 100 milliseconds are not refreshed
+            if (typeof prop.lastUpdate !== 'undefined' && (new Date().getTime()) - prop.lastUpdate < 100) {
+              return;
+            }
+            prop.lastUpdate = new Date().getTime();
+
             JSON.stringify(this.transientData[prop.property]) !== JSON.stringify(value) ? this.$set(this.transientData, prop.property, value) : null;
             JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
           });
@@ -306,17 +313,17 @@ export default {
       if (child.$options._componentTag !== 'FormNestedScreen') {
         return;
       }
-      
+
       return child.errors();
     },
     isValid() {
       const items = getItemsFromConfig(this.config);
       let config = _.cloneDeep(this.config);
-      
+
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
-      
+
       this.$children.forEach(child => {
         const childErrors = this.checkForNestedScreenErrors(child);
         if (!childErrors) {
@@ -363,9 +370,9 @@ export default {
       if (!typeof this.config == undefined) {
         getItemsFromConfig(this.config)
           .filter(shouldHaveDefaultValue)
-          .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));  
+          .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
       }
-      
+
     },
     parseCss() {
       const containerSelector = '.' + this.containerClass;
