@@ -1,3 +1,4 @@
+import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
 import Mustache from 'mustache';
 
 export default {
@@ -53,6 +54,25 @@ export default {
     },
   },
   methods: {
+    setDefaultValues() {
+      return new Promise(complete => {
+        const shouldHaveDefaultValue = item => {
+          const shouldHaveDefaultValueSet = item.config.name &&
+              this.model[this.getValidPath(item.config.name)] === undefined &&
+            (item.component !== 'FormButton' || item.config.event === 'script');
+
+          const isNotFormAccordion = item.component !== 'FormAccordion';
+
+          return shouldHaveDefaultValueSet && isNotFormAccordion;
+        };
+        if (!typeof this.config == undefined) {
+          getItemsFromConfig(this.config)
+            .filter(shouldHaveDefaultValue)
+            .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));  
+        }
+        complete();
+      });
+    },
     debug() {
       if (this.showDebug) {
         console.log(this.debugContext, ...arguments);

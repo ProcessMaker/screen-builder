@@ -1,7 +1,6 @@
 import Mustache from 'mustache';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
-import debounce from 'lodash/debounce';
 
 const globalObject = typeof window === 'undefined'
   ? global
@@ -10,6 +9,7 @@ const globalObject = typeof window === 'undefined'
 export default {
   data() {
     return {
+      watcherObservers: [],
       watchersQueue: [],
       watchers_config: {
         api: {
@@ -27,14 +27,21 @@ export default {
      * @param {object} data
      * @param {array} changes
      */
-    watchDataChanges(data, changes) {
-      if (this.watchers && this.watchers instanceof Array) {
-        this.watchers.forEach(watcher =>  {
-          if (changes.indexOf(watcher.watching) !== -1) {
-            this.checkWatcher(watcher, data);
-          }
-        });
-      }
+    watchDataChanges(data) {
+      return new Promise(complete => {
+        if (this.watchers && this.watchers instanceof Array) {
+          let checked = 0;
+          this.watchers.forEach(watcher =>  {
+            checked++;
+            this.checkWatcher(watcher, data).then(() => {
+              checked--;
+              if (checked === 0) {
+                complete();
+              }
+            });
+          });
+        }
+      });
     },
     /**
      * Check and trigger a watcher if it matches the condition
@@ -43,10 +50,17 @@ export default {
      * @param {object} data
      */
     checkWatcher(watcher, data) {
-      if (!isEqual(this.watching[watcher.watching], get(data, watcher.watching))) {
-        this.queueWatcher(watcher, data);
-      }
-      this.watching[watcher.watching] = JSON.parse(JSON.stringify(get(data, watcher.watching)));
+      return new Promise(complete => {
+        const value = get(data, watcher.watching);
+        if (!isEqual(this.watching[watcher.watching], value)) {
+          this.queueWatcher(watcher, data).then(() => {
+            complete();
+          });
+        }
+        if (value !== undefined) {
+          this.watching[watcher.watching] = JSON.parse(JSON.stringify(value));
+        }
+      });
     },
     /**
      * Queue a watcher
@@ -54,18 +68,30 @@ export default {
      * @param {object} data
      */
     queueWatcher(watcher, data) {
-      this.watchersQueue.indexOf(watcher) === -1 ? this.watchersQueue.push(watcher) : null;
-      this.processWatchersQueue(data);
+      return new Promise(complete => {
+        this.watchersQueue.indexOf(watcher) === -1 ? this.watchersQueue.push(watcher) : null;
+        this.processWatchersQueue(data).then(() => {
+          complete();
+        });
+      });
     },
     /**
      * Process the watchers queue
      * @param {object} data
      */
     processWatchersQueue(data) {
-      while (this.watchersQueue.length) {
-        const watcher = this.watchersQueue.shift();
-        this.callWatcher(watcher, data);
-      }
+      return new Promise(complete => {
+        let count = this.watchersQueue.length;
+        while (this.watchersQueue.length) {
+          const watcher = this.watchersQueue.shift();
+          this.callWatcher(watcher, data).then(() => {
+            count--;
+            if (count === 0) {
+              complete();
+            }
+          });
+        }
+      });
     },
     /**
      * Call a watcher
@@ -74,35 +100,52 @@ export default {
      * @param {object} data
      */
     callWatcher(watcher, data) {
-      if (this.watchers_config.api.execute) {
-        const scriptId = watcher.script_key || watcher.script_id;
-        if (!scriptId) {
-          globalObject.ProcessMaker.alert(this.$t('Script not found for the Watcher'), 'warning');
-          return;
-        }
-
-        const input = Mustache.render(watcher.input_data, data);
-        const config = Mustache.render(watcher.script_configuration, data);
-        if (watcher.synchronous) {
-          // popup lock screen
-          if (this.$el.offsetParent) {
-            this.$refs.watchersSynchronous.show(watcher.name);
+      return new Promise(complete => {
+        if (this.watchers_config.api.execute) {
+          const scriptId = watcher.script_key || watcher.script_id;
+          if (!scriptId) {
+            globalObject.ProcessMaker.alert(this.$t('Script not found for the Watcher'), 'warning');
+            return;
           }
-        }
+  
+          const input = Mustache.render(watcher.input_data, data);
+          const config = Mustache.render(watcher.script_configuration, data);
+          if (watcher.synchronous) {
+            // popup lock screen
+            if (this.$el.offsetParent) {
+              this.$refs.watchersSynchronous.show(watcher.name);
+            }
+          }
+  
+          globalObject.window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id\/script_key/, scriptId), {
+            watcher: watcher.uid,
+            data: input,
+            config,
+          });
 
-        globalObject.window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id\/script_key/, scriptId), {
-          watcher: watcher.uid,
-          data: input,
-          config,
+          this.listenWatcher(watcher.uid).then(() => {
+            complete();
+          });
+        }
+      });
+    },
+    listenWatcher(watcherUid) {
+      return new Promise(complete => {
+        this.watcherObservers.push({ watcherUid, complete });
+      });
+    },
+    notifyWatcherObserver(watcherUid, result) {
+      this.watcherObservers.filter(w => w.watcherUid === watcherUid)
+        .forEach(observer => {
+          observer.complete(result);
         });
-      }
     },
     loadWatcherResponse(watcherUid, response) {
       if (!this.watchers)  {
         return;
       }
       const watcher = this.watchers.find(watcher => watcher.uid === watcherUid);
-      new Promise((resolve, exception) => {
+      return new Promise((resolve, exception) => {
         if (response.exception) {
           exception(response.message);
         } else if (watcher) {
@@ -122,6 +165,7 @@ export default {
       }).then(({response}) => {
         this.$set(this.transientData, watcher.output_variable, response.output);
         this.$refs.watchersSynchronous.hide(watcher.name);
+        this.notifyWatcherObserver(watcherUid, { response });
       }).catch(error => {
         if (watcher.synchronous) {
           if (this.$el.offsetParent) {
@@ -130,6 +174,7 @@ export default {
         } else {
           globalObject.ProcessMaker.alert(error, 'danger');
         }
+        this.notifyWatcherObserver(watcherUid, { error });
       });
     },
     /**
@@ -171,7 +216,6 @@ export default {
         },
       );
     }
-    this.processWatchersQueue = debounce(this.processWatchersQueue, 1000);
   },
   destroyed() {
     this.cleanEchoListeners();

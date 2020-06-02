@@ -1,6 +1,8 @@
 <template>
   <div :class="containerClass">
-    <div class="page" :class="formSubmitErrorClass">
+    <screen-renderer v-model="data" :definition="{ config, computed, customCss, watchers }" />
+    <hr>
+    <div v-if="false" class="page" :class="formSubmitErrorClass">
       <div
         v-for="(element, index) in visibleElements"
         :key="index"
@@ -75,6 +77,7 @@ import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import Mustache from 'mustache';
+import ScreenRenderer from './screen-renderer';
 
 const csstree = require('css-tree');
 const Scrollparent = require("scrollparent");
@@ -96,6 +99,7 @@ export default {
   },
   mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers, defaultValues],
   components: {
+    ScreenRenderer,
     FormInput: FormMaskedInput,
     WatchersSynchronous,
     FormSelectList,
@@ -173,7 +177,7 @@ export default {
       this.transientData = JSON.parse(JSON.stringify(this.data));
       this.setDefaultValues();
     },
-    transientData: {
+    transientDataDisabled: {
       handler() {
         if (this.computed) {
           this.computed.forEach(prop => {
