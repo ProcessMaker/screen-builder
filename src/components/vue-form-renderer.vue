@@ -1,5 +1,7 @@
 <template>
   <div :class="containerClass">
+    <screen-renderer :value="data" :definition="{ config, computed, customCss, watchers }" />
+    <hr>
     <div class="page" :class="formSubmitErrorClass">
       <div
         v-for="(element, index) in visibleElements"
@@ -76,6 +78,7 @@ import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import Mustache from 'mustache';
 import DataProvider from '../DataProvider';
+import ScreenRenderer from './screen-renderer';
 
 const csstree = require('css-tree');
 const Scrollparent = require("scrollparent");
@@ -111,6 +114,7 @@ export default {
     FormLoop,
     ...inspector,
     ...renderer,
+    ScreenRenderer,
   },
   computed: {
     model() {

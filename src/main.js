@@ -6,6 +6,7 @@ import VueI18Next from '@panter/vue-i18next';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
+import Vuetable from 'vuetable-2/src/components/Vuetable';
 
 Vue.config.productionTip = false;
 
@@ -17,6 +18,7 @@ i18next.init({lng: 'en'});
 Vue.mixin({i18n: new VueI18Next(i18next)});
 Vue.use(Vuex);
 Vue.use(ScreenBuilder);
+Vue.component('vuetable', Vuetable);
 
 const store = new Vuex.Store({ modules: {} });
 
