@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       component: null,
+      alias: {},
       extensions: [],
       nodeNameProperty: 'component',
       variables: [],
@@ -87,24 +88,16 @@ export default {
     },
     loadItems(items, component) {
       items.forEach(element => {
+        const componentName = element[this.nodeNameProperty];
+        const nodeName = this.alias[componentName] || componentName;
         const properties = { ...element.config };
-        if (element.container) {
-          element;
-        } else {
-          properties.class = this.elementCssClass(element);
-          properties[':validation-data'] = 'vdata';
-          this.registerVariable(element.config.name, element.config);
-          properties['v-model'] = `${element.config.name}`;
-          properties[':ancestor-screens'] = '$parent && $parent.ancestorScreens';
-          properties.name = element.config.name !== undefined ? element.config.name : null;
-          properties.disabled = element.config.interactive || element.config.disabled;
-          properties[':form-config'] = '$parent && $parent.definition.config';
-          // events
-          //properties.input="dataChanged";
-          //properties.submit="submit";
-          //properties.pageNavigate = '$parent.pageNavigate';
-        }
-        const node = this.createComponent(element[this.nodeNameProperty], properties);
+        // Extensions.onloadproperties
+        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName }));
+        // Create component
+        const node = this.createComponent(nodeName, properties);
+        // Extensions.onloaditems to add items to container
+        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node }));
+        // Append node
         component.appendChild(node);
       });
     },
