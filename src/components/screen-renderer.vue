@@ -8,7 +8,9 @@
 import Json2Vue from '../mixins/Json2Vue';
 import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
+import NewFormMultiColumn from '../components/renderer/new-form-multi-column';
 Vue.use(VueFormElements);
+Vue.component('NewFormMultiColumn', NewFormMultiColumn);
 
 export default {
   mixins: [ Json2Vue ],

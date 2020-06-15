@@ -7,7 +7,7 @@ export default {
       properties[':transientData'] = 'vdata';
       //properties['v-model'] = "element.items";
       //@submit="submit"
-      properties.config = JSON.stringify(element.config);
+      properties[':config'] = JSON.stringify(element.config);
       //:ancestor-screens="ancestorScreens"
       properties.name = element.config && element.config.name !== undefined ? element.config.name : null;
       //@pageNavigate="pageNavigate"
@@ -19,8 +19,13 @@ export default {
     loadContainerItems({ element, componentName, node }) {
       if (element.container) {
         if (componentName === 'FormMultiColumn') {
-          const columns = [];
-          this.loadItems(columns, node);
+          element.items.forEach((col, index) => {
+            const column = this.createComponent('div', {
+              class: `col-sm-${element.config.options[index].content}`,
+            });
+            this.loadItems(col, column);
+            node.appendChild(column);
+          });
         } else {
           this.loadItems(element.items, node);
         }
@@ -36,10 +41,10 @@ export default {
       },
       onloaditems(params) {
         if (params.element.container) {
-          this.loadContainerProperties(params);
+          this.loadContainerItems(params);
         }
       },
     });
-    this.alias['FormMultiColumn'] = 'div';
+    this.alias['FormMultiColumn'] = 'NewFormMultiColumn';
   },
 };
