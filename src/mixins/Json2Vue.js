@@ -132,6 +132,11 @@ export default {
           computed: {},
           methods: {
             setValue(name, value) {
+              const splittedName = name.split('.');
+              const baseName = splittedName[0];
+              if (this.vdata[baseName] === undefined) {
+                this.$set(this.vdata, baseName, splittedName.length > 1 ? {} : value);
+              }
               set(this.vdata, name, value);
             },
           },
@@ -143,8 +148,8 @@ export default {
         this.extensions.forEach((ext) => {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)(component) : null;
         });
-        Object.keys(component.watch).forEach(key => component.watch[key] = new Function('value', component.watch[key].join("\n")));
-        component.mounted = new Function(component.mounted.join("\n"));
+        Object.keys(component.watch).forEach(key => component.watch[key] = new Function('value', component.watch[key].join('\n')));
+        component.mounted = new Function(component.mounted.join('\n'));
         return component;
       } catch (e) {
         return {

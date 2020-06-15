@@ -16,6 +16,8 @@ export default {
           } else {
             throw JSON.stringify({name, config});
           }
+        } else {
+          this.setupDefaultValue(screen, name, 'null');
         }
         if (config.initiallyChecked) {
           this.setupDefaultValue(screen, name, 'true');
@@ -25,6 +27,7 @@ export default {
     setupDefaultValue(screen, name, value) {
       screen.mounted.push(`if (!this.${name}) {
         this.${name} = ${value};
+        this.setValue(${JSON.stringify(name)}, this.${name});
       }`);
     },
   },
