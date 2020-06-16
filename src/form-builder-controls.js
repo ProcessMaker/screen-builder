@@ -179,7 +179,7 @@ export default [
         label: 'New Select List',
         placeholder: '',
         validation: '',
-        dataFormat: 'array',
+        dataFormat: 'string',
         dataSourceUrl:'',
         dataSourceEndpoint:'',
         rootElement:'response',
