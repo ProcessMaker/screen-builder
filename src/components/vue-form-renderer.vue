@@ -2,7 +2,7 @@
   <div :class="containerClass">
     <screen-renderer :value="data" :definition="{ config, computed, customCss, watchers }" />
     <hr>
-    <div class="page" :class="formSubmitErrorClass">
+    <div v-if="false" class="page" :class="formSubmitErrorClass">
       <div
         v-for="(element, index) in visibleElements"
         :key="index"

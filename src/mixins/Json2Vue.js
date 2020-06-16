@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import extensions from './extensions';
 import { set } from 'lodash';
 
@@ -15,6 +16,7 @@ export default {
   },
   data() {
     return {
+      debugCmp: null,
       component: null,
       alias: {},
       extensions: [],
@@ -27,10 +29,10 @@ export default {
   methods: {
     buildComponent() {
       const component = this.componentDefinition();
-      const Vue = this.$root.constructor;
       const warnHandler = Vue.config.warnHandler;
       const errorHandler = Vue.config.errorHandler;
       const errors = [];
+      let VueComponent;
       try {
         Vue.config.warnHandler = err => {
           errors.push(err);
@@ -38,7 +40,7 @@ export default {
         Vue.config.errorHandler = err => {
           errors.push(err);
         };
-        const VueComponent = Vue.component('json2vue', component);
+        VueComponent = Vue.component('json2vue', component);
         const instance = new VueComponent({
           propsData: {
             vdata: {},
@@ -48,11 +50,12 @@ export default {
         if (errors.length > 0) {
           throw '';
         }
+        this.codigo = component;
         return VueComponent;
       } catch (error) {
         return {
-          data: () => ({error, errors}),
-          template: '<div class="text-danger"><h4>{{ error }}</h4><ul v-for="(error,index) in errors" :key="`error-${index}`"><li>{{ error }}</li></ul></div>',
+          data: () => ({error, errors, component }),
+          template: '<div class="text-danger">{{ component && component.template }}<h4>{{ error }}</h4><ul v-for="(error,index) in errors" :key="`error-${index}`"><li>{{ error }}</li></ul></div>',
         };
       } finally {
         Vue.config.warnHandler = warnHandler;
@@ -81,7 +84,11 @@ export default {
       for (let property in properties) {
         const value = properties[property];
         if (value !== false && value !== null && value !== undefined) {
-          node.setAttribute(this.snakeCase(property), value);
+          if (property.substr(0,1) === ':' || typeof value === 'string') {
+            node.setAttribute(this.snakeCase(property), value);
+          } else {
+            node.setAttribute(':' + this.snakeCase(property), JSON.stringify(value));
+          }
         }
       }
       return node;
@@ -102,6 +109,9 @@ export default {
       });
     },
     registerVariable(name, config) {
+      if (!name) {
+        return;
+      }
       const find = this.variables.find(v => v.name === name);
       if (!find) {
         this.variables.push({ name, config });
@@ -122,7 +132,7 @@ export default {
         });
         const component = {
           mixins: [],
-          components: this.components,
+          components: {}, //this.components,
           props: {
             vdata: {
               type: Object,
