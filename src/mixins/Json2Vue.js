@@ -84,14 +84,18 @@ export default {
       for (let property in properties) {
         const value = properties[property];
         if (value !== false && value !== null && value !== undefined) {
-          if (property.substr(0,1) === ':' || typeof value === 'string') {
+          if (property.substr(0,1) === ':' || (typeof value === 'string' && value.indexOf('{{') === -1)) {
             node.setAttribute(this.snakeCase(property), value);
           } else {
-            node.setAttribute(':' + this.snakeCase(property), JSON.stringify(value));
+            node.setAttribute(':' + this.snakeCase(property), this.escapeVueProperty(value));
           }
         }
       }
       return node;
+    },
+    // convert to json and escape interpolation
+    escapeVueProperty(value) {
+      return JSON.stringify(value).replace('{{', '\x7b\x7b').replace('}}', '\x7d\x7d');
     },
     loadItems(items, component) {
       items.forEach(element => {
