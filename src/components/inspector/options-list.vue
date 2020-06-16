@@ -236,7 +236,7 @@ export default {
     MonacoEditor,
     MustacheHelper
   },
-  props: ['options'],
+  props: ['options', 'selectedControl'],
   model: {
     prop: 'options',
     event: 'change',
@@ -303,6 +303,9 @@ export default {
     };
   },
   watch: {
+    allowMultiSelect(allow) {
+      this.selectedControl.config.dataFormat = allow ? 'array' : 'string';
+    },
     options(newOptions) {
       Object.keys(newOptions).forEach(key => {
         if (typeof newOptions[key] !== 'undefined') {
