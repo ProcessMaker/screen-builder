@@ -86,7 +86,7 @@ export default {
         if (value !== false && value !== null && value !== undefined) {
           if (property.substr(0,1) === ':' || (typeof value === 'string' && value.indexOf('{{') === -1)) {
             node.setAttribute(this.snakeCase(property), value);
-          } else {
+          } else if (value !== undefined) {
             node.setAttribute(':' + this.snakeCase(property), this.escapeVueProperty(value));
           }
         }
