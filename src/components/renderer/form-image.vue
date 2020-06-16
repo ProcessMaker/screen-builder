@@ -1,21 +1,17 @@
 <template>
   <div class="form-group form-image">
-    <img v-if="renderImage" :src="imageUrl" :name="variableName">
-    <img v-if="!renderImage && image" :src="image" :width="width" :height="height" :id="id">
-    <i v-else-if="mode == 'editor'" class="empty-image far fa-image" />
+    <img v-if="image" :src="image" :width="width" :height="height" :id="id">
+    <img v-else-if="imageUrl" :src="imageUrl" :width="width" :height="height" :id="id">
+    <i v-else class="empty-image far fa-image" />
   </div>
 </template>
 
 <script>
 import Vue from 'vue';
+import Mustache from 'mustache';
 
 export default {
-  props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName'],
-  data() {
-    return {
-      imageUrl: null,
-    }
-  },
+  props: ['id', 'image', 'width', 'height', 'name', 'imageName', 'validationData'],
   computed: {
     classList() {
       let variant = this.variant || 'primary';
@@ -24,16 +20,17 @@ export default {
         ['btn-' + variant]: true,
       };
     },
-    mode() {
-      return this.$root.$children[0].mode;
-    },
   },
-  watch: {
-    mode() {
-      if (this.mode == 'editor') {
+  computed: {
+    imageUrl() {
+      if (!this.validationData) {
         return;
       }
-      this.displayRenderedImage();
+      try {
+        return Mustache.render('{' + this.imageName + '}', this.validationData);
+      } catch (error) {
+        return;
+      }
     },
   },
   methods: {
@@ -50,18 +47,7 @@ export default {
       }
       this.$emit(this.event, this.eventData);
     },
-    displayRenderedImage() {      
-      if (!this.renderImage) {
-        return;
-      }
-      if (this.$parent.data) {
-        this.imageUrl = this.$parent.data[this.variableName];
-      }
-    }
   },
-  mounted() {
-    this.displayRenderedImage();
-  }
 };
 </script>
 
