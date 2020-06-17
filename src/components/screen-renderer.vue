@@ -8,7 +8,9 @@
 import Json2Vue from '../mixins/Json2Vue';
 import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
+import FormButton from '../components/renderer/form-button';
 Vue.use(VueFormElements);
+Vue.component('FormButton', FormButton);
 
 export default {
   mixins: [ Json2Vue ],

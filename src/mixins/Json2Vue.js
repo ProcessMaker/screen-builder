@@ -46,6 +46,7 @@ export default {
             vdata: {},
           },
         });
+        instance.$parent = this;
         instance.$mount();
         if (errors.length > 0) {
           throw '';
@@ -69,11 +70,14 @@ export default {
     },
     loadPages(pages, owner) {
       this.variables.splice(0);
-      pages.forEach(page => {
-        const component = this.createComponent('div', {name: page.name, class:'page'});
+      pages.forEach((page, index) => {
+        const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
         this.loadItems(page.items, component);
         owner.appendChild(component);
       });
+    },
+    escapeVuePropertyName(name) {
+      return name.substr(0, 1) === '@' ? name.replace('@', 'v-on:') : this.snakeCase(name);
     },
     snakeCase(name) {
       return name.replace(/[A-Z]/g, m => `-${m}`).toLowerCase().replace(/^-/, '');
@@ -85,9 +89,9 @@ export default {
         const value = properties[property];
         if (value !== false && value !== null && value !== undefined) {
           if (property.substr(0,1) === ':' || (typeof value === 'string' && value.indexOf('{{') === -1)) {
-            node.setAttribute(this.snakeCase(property), value);
+            node.setAttribute(this.escapeVuePropertyName(property), value);
           } else if (value !== undefined) {
-            node.setAttribute(':' + this.snakeCase(property), this.escapeVueProperty(value));
+            node.setAttribute(':' + this.escapeVuePropertyName(property), this.escapeVueProperty(value));
           }
         }
       }
@@ -154,6 +158,7 @@ export default {
               set(this.vdata, name, value);
             },
           },
+          data: {},
           watch: {},
           template,
           mounted: [],
@@ -162,7 +167,11 @@ export default {
         this.extensions.forEach((ext) => {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)(component) : null;
         });
+        // Build data
+        component.data = new Function('return {' + Object.keys(component.data).map(key => `${JSON.stringify(key)}:${component.data[key]}`).join(',\n') + '};');
+        // Build watchers
         Object.keys(component.watch).forEach(key => component.watch[key] = new Function('value', component.watch[key].join('\n')));
+        // Build mounted
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
       } catch (e) {
@@ -170,6 +179,9 @@ export default {
           template: '<h4 class="text-danger">' + e + '</h4>',
         };
       }
+    },
+    addData(screen, name, code) {
+      screen.data[name] = code;
     },
     addWatch(screen, name, code) {
       if (screen.watch[name]) {

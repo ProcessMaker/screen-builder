@@ -42,6 +42,9 @@ export default {
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
       this.$emit(this.event, this.eventData);
+      if (this.event === 'pageNavigate') {
+        this.$emit('page-navigate', this.eventData);
+      }
     },
   },
 };
