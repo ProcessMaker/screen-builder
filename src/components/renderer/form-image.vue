@@ -11,11 +11,6 @@ import Vue from 'vue';
 
 export default {
   props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName'],
-  data() {
-    return {
-      imageUrl: null,
-    }
-  },
   computed: {
     classList() {
       let variant = this.variant || 'primary';
@@ -26,6 +21,15 @@ export default {
     },
     mode() {
       return this.$root.$children[0].mode;
+    },
+    imageUrl() {
+      let imageUrl;
+      if (this.$parent.data) {
+        imageUrl = this.$parent.data[this.variableName];
+      } else if (this.$parent.vdata) {
+        imageUrl = this.$parent.vdata[this.variableName];
+      }
+      return imageUrl;
     },
   },
   watch: {
@@ -50,18 +54,7 @@ export default {
       }
       this.$emit(this.event, this.eventData);
     },
-    displayRenderedImage() {      
-      if (!this.renderImage) {
-        return;
-      }
-      if (this.$parent.data) {
-        this.imageUrl = this.$parent.data[this.variableName];
-      }
-    }
   },
-  mounted() {
-    this.displayRenderedImage();
-  }
 };
 </script>
 

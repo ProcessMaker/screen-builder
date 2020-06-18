@@ -7,6 +7,8 @@ import NewFormMultiColumn from '../components/renderer/new-form-multi-column';
 import FormNestedScreen from '../components/renderer/form-nested-screen';
 import ScreenRenderer from '../components/screen-renderer';
 import AddLoopRow from '../components/renderer/add-loop-row';
+import FormRecordList from '../components/renderer/form-record-list';
+import FormImage from '../components/renderer/form-image';
 
 // Container elements must be registered globally because they
 // could rely on eachother.
@@ -18,3 +20,5 @@ Vue.component('NewFormMultiColumn', NewFormMultiColumn);
 Vue.component('FormNestedScreen', FormNestedScreen);
 Vue.component('ScreenRenderer', ScreenRenderer);
 Vue.component('AddLoopRow', AddLoopRow);
+Vue.component('FormRecordList', FormRecordList);
+Vue.component('FormImage', FormImage);
