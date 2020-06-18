@@ -13,6 +13,9 @@ export default {
       properties.name = element.config.name !== undefined ? element.config.name : null;
       properties.disabled = element.config.interactive || element.config.disabled;
       properties[':form-config'] = '$parent && $parent.definition.config';
+      // Evenst
+      //properties['@input'] = 'dataChanged';
+      properties['@submit'] = 'submit';
     },
   },
   mounted() {

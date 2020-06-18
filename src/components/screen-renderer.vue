@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <component ref="david" :is="component" :vdata="value" />
+    <component :is="component" :vdata="value" @submit="submit" />
   </b-container>
 </template>
 
