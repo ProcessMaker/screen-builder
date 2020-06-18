@@ -64,7 +64,7 @@
 
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
-          <b-col class="overflow-auto h-100">
+          <b-col class="overflow-auto h-100" data-cy="preview-content">
             <vue-form-renderer ref="renderer"
               v-model="previewData"
               @submit="previewSubmit"
@@ -89,7 +89,7 @@
                 </b-button>
 
                 <b-collapse v-model="showDataInput" id="showDataInput">
-                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json"/>
+                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json" data-cy="preview-data-input"/>
                 </b-collapse>
 
                 <b-button variant="outline"

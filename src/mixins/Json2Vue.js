@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import extensions from './extensions';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
-
 import ScreenBase from './ScreenBase';
 
 export default {
