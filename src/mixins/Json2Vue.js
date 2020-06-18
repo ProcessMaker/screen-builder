@@ -2,7 +2,7 @@ import Vue from 'vue';
 import extensions from './extensions';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
 
-import { set, get } from 'lodash';
+import ScreenBase from './ScreenBase';
 
 export default {
   mixins: extensions,
@@ -30,6 +30,9 @@ export default {
     };
   },
   methods: {
+    submit() {
+      this.$emit('submit', this.value);
+    },
     buildComponent() {
       const component = this.componentDefinition();
       const warnHandler = Vue.config.warnHandler;
@@ -152,32 +155,11 @@ export default {
           ext.onparse instanceof Function ? ext.onparse.bind(this)(template) : null;
         });
         component = {
-          mixins: [],
+          mixins: [ScreenBase],
           components: {}, //this.components,
-          props: {
-            vdata: {
-              type: Object,
-              required: true,
-            },
-          },
-          computed: {
-            references__() {
-              return this.$parent && this.$parent.references__;
-            },
-          },
-          methods: {
-            getValue(name) {
-              get(this, name);
-            },
-            setValue(name, value) {
-              const splittedName = name.split('.');
-              const baseName = splittedName[0];
-              if (this.vdata[baseName] === undefined) {
-                this.$set(this.vdata, baseName, splittedName.length > 1 ? {} : value);
-              }
-              set(this.vdata, name, value);
-            },
-          },
+          props: {},
+          computed: {},
+          methods: {},
           data: {},
           watch: {},
           template,
