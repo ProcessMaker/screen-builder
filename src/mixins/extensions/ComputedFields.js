@@ -13,7 +13,9 @@ export default {
   mounted() {
     this.extensions.push({
       onbuild(screen) {
-        this.computedFields(screen);
+        if (this.definition.computed) {
+          this.computedFields(screen);
+        }
       },
     });
   },

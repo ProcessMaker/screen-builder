@@ -25,7 +25,7 @@ export default {
       });
     },
     setupDefaultValue(screen, name, value) {
-      screen.mounted.push(`if (!this.${name}) {
+      this.addMounted(screen, `if (!this.${name}) {
         this.${name} = ${value};
         this.setValue(${JSON.stringify(name)}, this.${name});
       }`);

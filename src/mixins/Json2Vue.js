@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import extensions from './extensions';
-import { set } from 'lodash';
+import { set, get } from 'lodash';
 
 export default {
   mixins: extensions,
@@ -91,14 +91,14 @@ export default {
           if (property.substr(0,1) === ':' || (typeof value === 'string' && value.indexOf('{{') === -1)) {
             node.setAttribute(this.escapeVuePropertyName(property), value);
           } else if (value !== undefined) {
-            node.setAttribute(':' + this.escapeVuePropertyName(property), this.escapeVueProperty(value));
+            node.setAttribute(':' + this.escapeVuePropertyName(property), this.byValue(value));
           }
         }
       }
       return node;
     },
     // convert to json and escape interpolation
-    escapeVueProperty(value) {
+    byValue(value) {
       return JSON.stringify(value).replace('{{', '\x7b\x7b').replace('}}', '\x7d\x7d');
     },
     loadItems(items, component) {
@@ -149,6 +149,9 @@ export default {
           },
           computed: {},
           methods: {
+            getValue(name) {
+              get(this, name);
+            },
             setValue(name, value) {
               const splittedName = name.split('.');
               const baseName = splittedName[0];
@@ -189,6 +192,9 @@ export default {
       } else {
         screen.watch[name] = [code];
       }
+    },
+    addMounted(screen, code) {
+      screen.mounted.push(code);
     },
   },
 };
