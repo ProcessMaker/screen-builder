@@ -10,9 +10,11 @@ export default {
     loadFormLoopProperties({ properties, element }) {
       this.registerVariable(element.config.settings.varname, {});
       this.loops.push({ variable: element.config.settings.varname, element, properties });
-      properties['v-for'] = `loopRow in ${element.config.settings.varname}`;
     },
     loadFormLoopItems({ element, node }) {
+      const loop = this.createComponent('div', {
+        'v-for': `loopRow in ${element.config.settings.varname}`,
+      });
       const child = this.createComponent('ScreenRenderer', {
         ':definition': this.byValue({
           config: [
@@ -22,9 +24,15 @@ export default {
           ],
         }),
         ':value': 'loopRow',
-        //'components': this.byRef(this.components),
+        ':components': this.byRef(this.components),
       });
-      node.appendChild(child);
+      const addLoopRow = this.createComponent('AddLoopRow', {
+        ':value': element.config.settings.varname,
+        ':config': this.byValue(element.config),
+      });
+      loop.appendChild(child);
+      node.appendChild(loop);
+      node.appendChild(addLoopRow);
     },
   },
   mounted() {

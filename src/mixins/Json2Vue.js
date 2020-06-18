@@ -16,6 +16,7 @@ export default {
   },
   data() {
     return {
+      references__: [],
       debugCmp: null,
       component: null,
       alias: {},
@@ -101,6 +102,12 @@ export default {
     byValue(value) {
       return JSON.stringify(value).replace('{{', '\x7b\x7b').replace('}}', '\x7d\x7d');
     },
+    byRef(value) {
+      const index = this.references__.indexOf(value) > -1 ? this.references__.indexOf(value) : this.references__.length;
+      const reference = `references__[${index}]`;
+      this.references__.push(value);
+      return reference;
+    },
     loadItems(items, component) {
       items.forEach(element => {
         const componentName = element[this.nodeNameProperty];
@@ -147,7 +154,11 @@ export default {
               required: true,
             },
           },
-          computed: {},
+          computed: {
+            references__() {
+              return this.$parent && this.$parent.references__;
+            },
+          },
           methods: {
             getValue(name) {
               get(this, name);
