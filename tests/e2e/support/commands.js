@@ -5,3 +5,16 @@ Cypress.Commands.add('setPreviewDataInput', (input) => {
     div[0].__vue__.previewInput = input;
   });
 });
+
+Cypress.Commands.add('assertPreviewData', (expectedData) => {
+  cy.get('#screen-builder-container').then((div) => {
+    const data = div[0].__vue__.previewData;
+    expect(data).to.eql(expectedData);
+  });
+});
+
+Cypress.Commands.add('setMultiselect', (selector, text) => {
+  cy.get(`${selector}`).click();
+  cy.get(`${selector} span:contains("${text}"):first`).click();
+});
+
