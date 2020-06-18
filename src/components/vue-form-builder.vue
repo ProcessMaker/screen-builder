@@ -204,7 +204,7 @@
             <b-collapse :key="`${accordionName(accordion)}-collapse`" :id="accordionName(accordion)" v-model="accordion.open">
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
-                :data-cy="'inspector-' + (item.config.name || item.field)"
+                :data-cy="'inspector-' + (item.field || item.config.name)"
                 :builder="builder"
                 :formConfig="config"
                 :currentPage="currentPage"
