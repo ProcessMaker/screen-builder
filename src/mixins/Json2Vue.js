@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import extensions from './extensions';
+import ScreenRendererError from '../components/renderer/screen-renderer-error';
+
 import { set, get } from 'lodash';
 
 export default {
@@ -41,7 +43,7 @@ export default {
         Vue.config.errorHandler = err => {
           errors.push(err);
         };
-        VueComponent = Vue.component('json2vue', component);
+        VueComponent = Vue.component('ScreenRedered', component);
         const instance = new VueComponent({
           propsData: {
             vdata: {},
@@ -50,14 +52,17 @@ export default {
         instance.$parent = this;
         instance.$mount();
         if (errors.length > 0) {
-          throw '';
+          throw 'Building error';
         }
         this.codigo = component;
         return VueComponent;
       } catch (error) {
         return {
-          data: () => ({error, errors, component }),
-          template: '<div class="text-danger">{{ component && component.template }}<h4>{{ error }}</h4><ul v-for="(error,index) in errors" :key="`error-${index}`"><li>{{ error }}</li></ul></div>',
+          components: { ScreenRendererError },
+          data() {
+            return { component, error, errors };
+          },
+          template: '<screen-renderer-error :component="component" :error="error" :errors="errors" />',
         };
       } finally {
         Vue.config.warnHandler = warnHandler;
@@ -123,7 +128,7 @@ export default {
         component.appendChild(node);
       });
     },
-    registerVariable(name, config) {
+    registerVariable(name, config = {}) {
       if (!name) {
         return;
       }
@@ -139,13 +144,14 @@ export default {
       return css.join(' ');
     },
     componentDefinition() {
+      let component;
       try {
         const template = this.parse();
         // Extensions.onparse
         this.extensions.forEach((ext) => {
           ext.onparse instanceof Function ? ext.onparse.bind(this)(template) : null;
         });
-        const component = {
+        component = {
           mixins: [],
           components: {}, //this.components,
           props: {
@@ -188,9 +194,13 @@ export default {
         // Build mounted
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
-      } catch (e) {
+      } catch (error) {
         return {
-          template: '<h4 class="text-danger">' + e + '</h4>',
+          components: { ScreenRendererError },
+          data() {
+            return { component, error, errors: [] };
+          },
+          template: '<screen-renderer-error :component="component" :error="error" :errors="errors" />',
         };
       }
     },
