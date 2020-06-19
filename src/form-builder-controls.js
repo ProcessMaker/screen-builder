@@ -194,6 +194,7 @@ export default [
           optionsList: [],
           key:'value',
           value:'content',
+          valueTypeReturned: 'single'
         },
         helper: null,
       },
