@@ -21,8 +21,8 @@ export default {
     }
 
     // use a dummy api client
-    if (!this.axiosInstance) {
-      this.axiosInstance = {
+    if (!this.apiInstance) {
+      this.apiInstance = {
         get(...args) {
           return Promise.resolve({
             data: {
