@@ -22,7 +22,7 @@ describe('Form Input', () => {
       firstname: 'Bob',
     });
   });
-  it('Data type', () => {
+  it('Data type Integer', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
@@ -31,6 +31,18 @@ describe('Form Input', () => {
     cy.get('[data-cy=preview-content] [name=form_input_1]').type('123');
     cy.assertPreviewData({
       form_input_1: 123,
+    });
+  });
+  it('Data type Currency', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Currency');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]').type('1234');
+    cy.get('[name=form_input_1]:visible').should('have.value', '1.234,00');
+    cy.assertPreviewData({
+      form_input_1: 1234,
     });
   });
   it('Validation rule', () => {
