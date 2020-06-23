@@ -1,7 +1,3 @@
-# testing using CircleCI orb
-# see https://on.cypress.io/circleci-orb
-
-# to use CircleCI orbs need to use version >= 2.1
 version: 2.1
 orbs:
   # use Cypress orb from CircleCI registry
@@ -17,7 +13,7 @@ workflows:
       - cypress/run:
           executor: with-chrome
           browser: chrome
-          command: 'npm install -g npm@latest && npm run lint && npm run-cypress'
+          command: 'npm install -g npm@latest && npm run run-cypress'
           post-steps:
             - store_artifacts:
                 path: coverage
