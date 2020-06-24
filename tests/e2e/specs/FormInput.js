@@ -86,4 +86,17 @@ describe('Form Input', () => {
       form_input_1: 0.5,
     });
   });
+  it('Data type Datetime', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]').type('01312020 230 pm');
+    cy.get('[name=form_input_1]:visible').should('have.value', '01/31/2020 2:30 pm');
+    cy.assertPreviewData({
+      // todo: Fix format in vue-form-elements
+      form_input_1: '01/31/2020 2:30 pm',
+    });
+  });
 });
