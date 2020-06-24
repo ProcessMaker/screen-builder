@@ -12,6 +12,7 @@
         :name="$t('Variable Name')"
         :helper="$t('This variable will contain an array of objects')"
         validation="regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required"
+        data-cy="inspector-name"
       />
     </div>
 
@@ -23,6 +24,7 @@
         :name="$t('Default Loop Count')"
         :helper="$t('Number of times to show the loop. Value must be greater than zero.')"
         validation="required|integer|min:1|max:100"
+        data-cy="inspector-times"
       />
     </div>
 
@@ -30,6 +32,7 @@
       :label="$t('Allow additional loops')"
       v-model="settings.add"
       :helper="$t('Check this box to allow task assignee to add additional loops')"
+      data-cy="inspector-add"
     />
   </div>
 </template>

@@ -39,6 +39,9 @@ export default {
   mounted() {
     this.alias['FormLoop'] = 'div';
     this.extensions.push({
+      beforeload() {
+        this.loops.splice(0);
+      },
       onloadproperties(params) {
         if (params.element.container && params.componentName === 'FormLoop') {
           this.loadFormLoopProperties(params);

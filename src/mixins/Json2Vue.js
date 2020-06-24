@@ -78,6 +78,8 @@ export default {
     },
     loadPages(pages, owner) {
       this.variables.splice(0);
+      // Extensions.onloadproperties
+      this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner }));
       pages.forEach((page, index) => {
         const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
         this.loadItems(page.items, component);
