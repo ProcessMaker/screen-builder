@@ -92,11 +92,31 @@ describe('Form Input', () => {
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=mode-preview]').click();
-    cy.get('[data-cy=preview-content] [name=form_input_1]').type('01312020 230 pm');
-    cy.get('[name=form_input_1]:visible').should('have.value', '01/31/2020 2:30 pm');
+    cy.get('[data-cy=preview-content] [name=form_input_1]').type('01312020 230 PM');
+    cy.get('[name=form_input_1]:visible').should('have.value', '01/31/2020 2:30 PM');
     cy.assertPreviewData({
-      // todo: Fix format in vue-form-elements
-      form_input_1: '01/31/2020 2:30 pm',
+      form_input_1: '2020-01-31T14:30:00.000Z',
     });
+  });
+  it('Data type Date', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]').type('01312020');
+    cy.get('[name=form_input_1]:visible').should('have.value', '01/31/2020');
+    cy.assertPreviewData({
+      form_input_1: '01/31/2020',
+    });
+  });
+  it('Data type password', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Password');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]').should('have.attr', 'type', 'password');
+    cy.get('[data-cy=preview-content] [name=form_input_1]').type('12345678');
   });
 });
