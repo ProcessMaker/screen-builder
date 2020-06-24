@@ -45,6 +45,18 @@ describe('Form Input', () => {
       form_input_1: 1234,
     });
   });
+  it('Data type Currency with initial data', () => {
+    cy.visit('/');
+    cy.setPreviewDataInput('{"form_input_1":1234}');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Currency');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[name=form_input_1]:visible').should('have.value', '1.234,00');
+    cy.assertPreviewData({
+      form_input_1: 1234,
+    });
+  });
   it('Validation rule', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
@@ -61,5 +73,17 @@ describe('Form Input', () => {
     cy.get('[data-cy=inspector-placeholder]').clear().type('enter text here');
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=form_input_1]').should('have.attr', 'placeholder', 'enter text here');
+  });
+  it('Data type Percentage', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Percentage');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]').type('50');
+    cy.get('[name=form_input_1]:visible').should('have.value', '50.00 %');
+    cy.assertPreviewData({
+      form_input_1: 0.5,
+    });
   });
 });
