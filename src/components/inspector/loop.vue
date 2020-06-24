@@ -12,8 +12,7 @@
         :name="$t('Variable Name')"
         :helper="$t('This variable will contain an array of objects')"
         validation="regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required"
-        >
-      </FormInput>
+      />
     </div>
 
 
@@ -24,15 +23,14 @@
         :name="$t('Default Loop Count')"
         :helper="$t('Number of times to show the loop. Value must be greater than zero.')"
         validation="required|integer|min:1|max:100"
-        >
-      </FormInput>
+      />
     </div>
 
     <form-checkbox name="add"
       :label="$t('Allow additional loops')"
       v-model="settings.add"
-      :helper="$t('Check this box to allow task assignee to add additional loops')">
-    </form-checkbox>
+      :helper="$t('Check this box to allow task assignee to add additional loops')"
+    />
   </div>
 </template>
 
@@ -40,7 +38,6 @@
 import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
 
 export default {
-  components: { },
   props: ['value'],
   inheritAttrs: false,
   components: { FormInput, FormCheckbox },
@@ -55,8 +52,8 @@ export default {
         varname: '',
         times: '3',
         add: false,
-      }
-    }
+      },
+    };
   },
   watch: {
     settings: {

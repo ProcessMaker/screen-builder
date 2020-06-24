@@ -55,7 +55,7 @@
 <script>
 import BasicSearch from './basic-search';
 import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
-import Vuetable from "vuetable-2/src/components/Vuetable";
+import Vuetable from 'vuetable-2/src/components/Vuetable';
 
 export default {
   components: {

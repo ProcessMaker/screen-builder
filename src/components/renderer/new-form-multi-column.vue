@@ -9,7 +9,7 @@ export default {
   props: {
     config: Object,
   },
-}
+};
 </script>
 
 <style>

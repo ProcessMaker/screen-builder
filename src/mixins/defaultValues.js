@@ -1,4 +1,5 @@
 import Mustache from 'mustache';
+import _ from 'lodash';
 
 export default {
   props: {
@@ -9,7 +10,7 @@ export default {
     debugContext: {
       type: String,
       default: 'Root', 
-    }
+    },
   },
   data() {
     return {
@@ -18,12 +19,12 @@ export default {
       activeDefaultValues: [],
       lastSetTransientData: null,
       lastConfig: null,
-    }
+    };
   },
   watch: {
     transientData: {
       handler(val) {
-        this.debug("---> transientData", JSON.stringify(val));
+        this.debug('---> transientData', JSON.stringify(val));
         if (!this.defaultsInitialized) {
           this.initializeDefaultValues();
         }
@@ -39,7 +40,7 @@ export default {
         }
         this.lastConfig = _.clone(this.config);
 
-        this.debug("---> config", _.truncate(JSON.stringify(this.config)));
+        this.debug('---> config', _.truncate(JSON.stringify(this.config)));
         this.initializeDefaultValues();
         this.update(this.data);
       },
@@ -47,7 +48,7 @@ export default {
       immediate: true,
     },
     mode() {
-      this.debug("MODE changed", JSON.stringify(this.data));
+      this.debug('MODE changed', JSON.stringify(this.data));
       this.initializeDefaultValues();
       this.update(this.data);
     },
@@ -55,14 +56,15 @@ export default {
   methods: {
     debug() {
       if (this.showDebug) {
+        // eslint-disable-next-line no-console
         console.log(this.debugContext, ...arguments);
       }
     },
     update(data) {
-      this.debug("update()", JSON.stringify(data));
+      this.debug('update()', JSON.stringify(data));
 
       if (this.isEqual(data, this.lastSetTransientData)) {
-        this.debug("R1");
+        this.debug('R1');
         return;
       }
 
@@ -72,8 +74,8 @@ export default {
       this.updateDefaultValues();
 
       if (this.isEqual(this.transientData, this.defaultsFormData)) {
-        this.debug("R2");
-        return
+        this.debug('R2');
+        return;
       }
 
       if (this.isEqual(this.defaultsFormData, this.lastSetTransientData)) {
@@ -83,7 +85,7 @@ export default {
       
       this.lastSetTransientData = _.cloneDeep(this.defaultsFormData);
       this.transientData = _.cloneDeep(this.defaultsFormData);
-      this.debug("SET transient data to", JSON.stringify(this.transientData));
+      this.debug('SET transient data to', JSON.stringify(this.transientData));
     },
     initializeDefaultValues() {
       this.lastSetTransientData = null;
@@ -129,7 +131,7 @@ export default {
     addToActiveDefaultValues(item) {
       this.activeDefaultValues.push({
         path: this.getValidPath(item.config.name),
-        item: item,
+        item,
         setValue: null,
         inactive: false,
       });
@@ -151,7 +153,7 @@ export default {
         if (current !== null && setValue === null) {
           // This is a value already set in the data object. Make inactive.
           this.activeDefaultValues[index].inactive = true;
-          changes[path] = "Inactive";
+          changes[path] = 'Inactive';
           return;
         }
         
@@ -160,13 +162,13 @@ export default {
         if (current === null || setValue === null || this.isEqual(current, setValue)) {
           // No changes, so we can apply the default values
           this.applyDefaultValue(path, item);
-          changes[path] = String(setValue) + " --> " + String(this.defaultsFormData[path]);
+          changes[path] = String(setValue) + ' --> ' + String(this.defaultsFormData[path]);
           this.activeDefaultValues[index].setValue = this.defaultsFormData[path];
 
         } else {
           // There are changes, so lets remove it from our list of active elements
           this.activeDefaultValues[index].inactive = true;
-          changes[path] = "Inactive";
+          changes[path] = 'Inactive';
         }
       });
       this.debug('Changes', changes);
@@ -199,7 +201,7 @@ export default {
       let result = value;
       try {
         result = Mustache.render(value, this.defaultsFormData);
-      } catch(e) { }
+      } catch (e) { e; }
       this.defaultsFormData[path] = result;
     },
     setJsDefaultValue(path, value) {
@@ -208,5 +210,5 @@ export default {
       this.defaultsFormData[path] = result;
     },
 
-  }
-}
+  },
+};

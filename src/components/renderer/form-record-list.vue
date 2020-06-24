@@ -79,7 +79,7 @@
       :title="$t('Edit Record')"
       header-close-content="&times;"
     >
-     <vue-form-renderer
+      <vue-form-renderer
         :page="0"
         ref="editRenderer"
         v-model="editItemWithParent"
@@ -123,6 +123,7 @@ import Vuetable from 'vuetable-2/src/components/Vuetable';
 import Pagination from '@/components/Pagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import {ValidatorFactory} from '../../factories/ValidatorFactory';
+import _ from 'lodash';
 
 const jsonOptionsActionsColumn = {
   name: '__slot:actions',
@@ -157,7 +158,7 @@ export default {
         descendingIcon: 'fas fa-sort-down',
         ascendingClass: 'ascending',
         descendingClass: 'descending',
-        renderIcon(classes, options) {
+        renderIcon(classes) {
           return `<i class="${classes.join(' ')}"></i>`;
         },
       },
@@ -173,23 +174,25 @@ export default {
     },
     addItemWithParent: {
       get() {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.addItem._parent = this.$parent.transientData;
         return this.addItem;
       },
       set(val) {
         this.$set(this.parentObj, 'transientData', val._parent);
         this.addItem = val;
-      }
+      },
     },
     editItemWithParent: {
       get() {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.editItem._parent = this.$parent.transientData;
         return this.editItem;
       },
       set(val) {
         this.$set(this.parentObj, 'transientData', val._parent);
         this.editItem = val;
-      }
+      },
     },
     dataManager() {
       if (this.$refs.vuetable) {
@@ -199,6 +202,7 @@ export default {
           data: this.value.slice(pagination.from - 1, pagination.to),
         };
       } else {
+        // eslint-disable-next-line no-console
         console.log('refs vuetable not exists');
       }
 
@@ -206,6 +210,7 @@ export default {
     tableData() {
       const value = this.value || [];
       let from = this.paginatorPage - 1;
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
 
       let data = {
@@ -215,7 +220,7 @@ export default {
         last_page: this.lastPage,
         next_page_url: null,
         prev_page_url: null,
-        from: from,
+        from,
         to: value.length,
         data: value.slice(from * this.perPage, (from * this.perPage) + this.perPage),
       };
@@ -259,7 +264,7 @@ export default {
           sortField: option[key || 'value'],
           title: option[value || 'content'],
         };
-      }
+      };
 
       return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
     },
@@ -373,30 +378,30 @@ export default {
     },
     downloadFile(rowData, rowField, rowIndex) {
       let requestId = this.$root.task.request_data._request.id;
-      let name = this.name + "." + rowIndex + "." + rowField;
+      let name = this.name + '.' + rowIndex + '.' + rowField;
 
-      ProcessMaker.apiClient
-              .get("requests/" + requestId + "/files?name=" + name)
-              .then(response => {
-                let respData = response.data;
-                if (respData && respData.data && respData.data.length) {
-                  let file = respData.data[0];
-                  this.downloadRecordListFile(file, requestId);
-                }
-              });
+      window.ProcessMaker.apiClient
+        .get('requests/' + requestId + '/files?name=' + name)
+        .then(response => {
+          let respData = response.data;
+          if (respData && respData.data && respData.data.length) {
+            let file = respData.data[0];
+            this.downloadRecordListFile(file, requestId);
+          }
+        });
     },
     downloadRecordListFile(file, requestId) {
-      ProcessMaker.apiClient({
-        baseURL: "/",
-        url: "/request/" + requestId + "/files/" + file.id,
-        method: "GET",
-        responseType: "blob" // important
+      window.ProcessMaker.apiClient({
+        baseURL: '/',
+        url: '/request/' + requestId + '/files/' + file.id,
+        method: 'GET',
+        responseType: 'blob', // important
       }).then(response => {
         //axios needs to be told to open the file
         const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = url;
-        link.setAttribute("download", file.file_name);
+        link.setAttribute('download', file.file_name);
         document.body.appendChild(link);
         link.click();
       });

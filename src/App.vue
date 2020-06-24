@@ -160,13 +160,13 @@
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
     <watchers-popup v-model="watchers" ref="watchersPopup"/>
     <b-modal id="preview-config" size="xl" title="Screen Config JSON Preview" header-close-content="&times;">
-      <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"></monaco-editor>
+      <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"/>
     </b-modal>
   </b-container>
 </template>
 
 <script>
-require("bootstrap");
+require('bootstrap');
 import ComputedProperties from './components/computed-properties.vue';
 import WatchersPopup from './components/watchers-popup.vue';
 import CustomCSS from './components/custom-css.vue';
@@ -196,22 +196,23 @@ Validator.register('attr-value', value => {
 }, 'Must be letters, numbers, underscores or dashes');
 
 const exampleScriptsForWatchers = [
+  // eslint-disable-next-line no-unused-vars
   (items, filter) => {
     items.push({
-      type: "Test Data Sources",
+      type: 'Test Data Sources',
       items: [{
         id: 'data_source-1',
-        title: 'Test Data Source'
-      }]
-    })
+        title: 'Test Data Source',
+      }],
+    });
     items.push({
-      type: "Test Script",
+      type: 'Test Script',
       items: [{
         id: 'script-1',
-        title: 'Test Script'
-      }]
-    })
-  }
+        title: 'Test Script',
+      }],
+    });
+  },
 ];
 
 export default {
@@ -296,6 +297,7 @@ export default {
       get() {
         return JSON.stringify(this.config);
       },
+      // eslint-disable-next-line no-unused-vars
       set(val) {
       },
     },

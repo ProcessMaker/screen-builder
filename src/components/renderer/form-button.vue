@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       countExecutionScript: 0,
-    }
+    };
   },
   methods: {
     setValue(parent, name, value) {

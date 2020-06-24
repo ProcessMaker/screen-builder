@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import _ from 'lodash';
+
 const globalObject = typeof window === 'undefined'
   ? global
   : window;
@@ -119,7 +121,7 @@ export default {
     errors() {
       this.$refs.nestedScreen.isValid();
       return this.$refs.nestedScreen.errors;
-    }
+    },
   },
   watch: {
     screen(screen) {

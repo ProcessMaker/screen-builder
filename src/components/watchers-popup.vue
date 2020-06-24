@@ -23,6 +23,7 @@ import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 import WatchersList from './watchers-list';
 import WatchersForm from './watchers-form';
+import _ from 'lodash';
 
 const globalObject = typeof window === 'undefined' ? global : window;
 
@@ -94,8 +95,8 @@ export default {
     confirmRemoval(item) {
       if (globalObject.ProcessMaker && globalObject.ProcessMaker.confirmModal) {
         globalObject.ProcessMaker.confirmModal(
-          this.$t("Caution!"),
-          this.$t("Are you sure you want to delete the Watcher?"),
+          this.$t('Caution!'),
+          this.$t('Are you sure you want to delete the Watcher?'),
           '',
           () => {
             this.remove(item);

@@ -76,12 +76,11 @@ import WatchersSynchronous from '@/components/watchers-synchronous';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import Mustache from 'mustache';
 import DataProvider from '../DataProvider';
 import ScreenRenderer from './screen-renderer';
 
 const csstree = require('css-tree');
-const Scrollparent = require("scrollparent");
+const Scrollparent = require('scrollparent');
 
 Vue.component('custom-css', {
   render(createElement) {
