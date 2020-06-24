@@ -17,7 +17,7 @@
 
           <b-col class="text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-secondary" :title="$t('Calculated Properties')" @click="openComputedProperties">
+              <button type="button" class="btn btn-secondary" :title="$t('Calculated Properties')" @click="openComputedProperties" data-cy="topbar-calcs">
                 <i class="fas fa-flask"/>
                 {{ $t('Calcs') }}
               </button>

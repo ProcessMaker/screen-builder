@@ -18,3 +18,8 @@ Cypress.Commands.add('setMultiselect', (selector, text) => {
   cy.get(`${selector} span:contains("${text}"):first`).click();
 });
 
+Cypress.Commands.add('setVueComponentValue', (selector, value) => {
+  cy.get(selector).then((div) => {
+    div[0].__vue__.$emit('change', value);
+  });
+});
