@@ -13,7 +13,8 @@ workflows:
       - cypress/run:
           executor: with-chrome
           browser: chrome
-          command: 'npm install -g npm@latest && npm run lint && npm run run-cypress'
+          start: npm run serve
+          command: 'npm run lint && npm run run-cypress'
           post-steps:
             - store_artifacts:
                 path: coverage
