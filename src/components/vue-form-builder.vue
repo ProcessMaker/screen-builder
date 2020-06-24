@@ -119,7 +119,7 @@
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
                 >
-                  <i class="fas fa-copy text-light"></i>
+                  <i class="fas fa-copy text-light"/>
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
@@ -157,7 +157,7 @@
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
                 >
-                  <i class="fas fa-copy text-light"></i>
+                  <i class="fas fa-copy text-light"/>
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
@@ -308,18 +308,18 @@ if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.
 // Should also probably be converted to a mixin. These changes would then
 // require modifications to to App.vue and PM4 Core implementations
 Validator.register(
-    'columns-adds-to-12',
-    value => {
-        const sum = value.reduce((total, options) => {
-            return total + parseInt(options['content']);
-        }, 0);
+  'columns-adds-to-12',
+  value => {
+    const sum = value.reduce((total, options) => {
+      return total + parseInt(options['content']);
+    }, 0);
 
-        if (sum === 12) {
-            return true;
-        }
-        return false;
-    },
-    "Columns must add to 12"
+    if (sum === 12) {
+      return true;
+    }
+    return false;
+  },
+  'Columns must add to 12'
 );
 
 import {
@@ -334,6 +334,7 @@ import {
 
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import { formTypes } from '@/global-properties';
+import _ from 'lodash';
 
 const defaultConfig = [{
   name: 'Default',

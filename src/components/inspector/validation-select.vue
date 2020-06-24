@@ -79,6 +79,7 @@
 <script>
 import Multiselect from 'vue-multiselect';
 import { FormInput } from '@processmaker/vue-form-elements';
+import _ from 'lodash';
 
 export default {
   props: ['label', 'value', 'helper', 'name'],
@@ -279,7 +280,7 @@ export default {
       }
       
       return false;
-    }
+    },
   },
   watch: {
     rules: {
@@ -369,7 +370,7 @@ export default {
       });
     },
     onUpdate(rule, index) {
-      this.$root.$emit('bv::toggle::collapse', rule.content)
+      this.$root.$emit('bv::toggle::collapse', rule.content);
       this.$set(this.rules[index], 'visible', false);
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
     },
@@ -384,7 +385,7 @@ export default {
         });
         this.rules[index].configs = rule.configs;
       }
-    }
+    },
   },
   mounted() {
     this.rules = this.value;

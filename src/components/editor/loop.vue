@@ -11,82 +11,82 @@
         :key="index"
         @click.stop="inspect(element)"
       >
-              <div v-if="element.container" @click.stop="inspect(element)">
-                <div class="m-2 card border-0">
-                  <div
-                    v-if="selected === element"
-                    class="card-header form-element-header d-flex align-items-center border rounded"
-                  >
-                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                    {{ element.config.name || $t('Variable Name') }}
-                    <div class="ml-auto">
-                      <button
-                        class="btn btn-sm btn-secondary mr-2"
-                        :title="$t('Copy Control')"
-                        @click="duplicateItem(index)"
-                      >
-                        <i class="fas fa-copy text-light"></i>
-                      </button>
-                      <button
-                        class="btn btn-sm btn-danger"
-                        @click="deleteItem(index)"
-                      >
-                        <i class="far fa-trash-alt text-light"/>
-                      </button>
-                    </div>
-                  </div>
-
-                  <component :class="elementCssClass(element)"
-                    :validationErrors="validationErrors"
-                    class="mb-3 mr-3 ml-3"
-                    :selected="selected"
-                    @inspect="inspect"
-                    @update-state="$emit('update-state')"
-                    v-model="element.items"
-                    :config="element.config"
-                    :is="element['editor-component']"
-                  />
-                </div>
+        <div v-if="element.container" @click.stop="inspect(element)">
+          <div class="m-2 card border-0">
+            <div
+              v-if="selected === element"
+              class="card-header form-element-header d-flex align-items-center border rounded"
+            >
+              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
+              {{ element.config.name || $t('Variable Name') }}
+              <div class="ml-auto">
+                <button
+                  class="btn btn-sm btn-secondary mr-2"
+                  :title="$t('Copy Control')"
+                  @click="duplicateItem(index)"
+                >
+                  <i class="fas fa-copy text-light"/>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  @click="deleteItem(index)"
+                >
+                  <i class="far fa-trash-alt text-light"/>
+                </button>
               </div>
+            </div>
 
-              <div v-else :id="element.config.name ? element.config.name : undefined">
-                <div class="m-2" :class="{ 'card' : selected === element }">
-                  <div
-                    v-if="selected === element"
-                    class="card-header form-element-header d-flex align-items-center"
-                  >
-                    <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-                    <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-                    {{ element.config.name || $t('Variable Name') }}
-                    <div class="ml-auto">
-                      <button
-                        class="btn btn-sm btn-secondary mr-2"
-                        :title="$t('Copy Control')"
-                        @click="duplicateItem(index)"
-                      >
-                        <i class="fas fa-copy text-light"></i>
-                      </button>
-                      <button
-                        class="btn btn-sm btn-danger"
-                        @click="deleteItem(index)"
-                      >
-                        <i class="far fa-trash-alt text-light"/>
-                      </button>
-                    </div>
-                  </div>
+            <component :class="elementCssClass(element)"
+              :validationErrors="validationErrors"
+              class="mb-3 mr-3 ml-3"
+              :selected="selected"
+              @inspect="inspect"
+              @update-state="$emit('update-state')"
+              v-model="element.items"
+              :config="element.config"
+              :is="element['editor-component']"
+            />
+          </div>
+        </div>
 
-                  <component
-                    class="p-3"
-                    :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
-                    :tabindex="element.config.interactive ? 0 : -1"
-                    v-bind="element.config"
-                    :config="element.config"
-                    @input="element.config.interactive ? element.config.content = $event : null"
-                    :is="element['editor-component']"
-                  />
-                </div>
+        <div v-else :id="element.config.name ? element.config.name : undefined">
+          <div class="m-2" :class="{ 'card' : selected === element }">
+            <div
+              v-if="selected === element"
+              class="card-header form-element-header d-flex align-items-center"
+            >
+              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
+              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
+              {{ element.config.name || $t('Variable Name') }}
+              <div class="ml-auto">
+                <button
+                  class="btn btn-sm btn-secondary mr-2"
+                  :title="$t('Copy Control')"
+                  @click="duplicateItem(index)"
+                >
+                  <i class="fas fa-copy text-light"/>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  @click="deleteItem(index)"
+                >
+                  <i class="far fa-trash-alt text-light"/>
+                </button>
               </div>
+            </div>
+
+            <component
+              class="p-3"
+              :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
+              :tabindex="element.config.interactive ? 0 : -1"
+              v-bind="element.config"
+              :config="element.config"
+              @input="element.config.interactive ? element.config.content = $event : null"
+              :is="element['editor-component']"
+            />
+          </div>
+        </div>
       </div>
     </draggable>
   </div>
@@ -96,6 +96,7 @@
 import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
+import _ from 'lodash';
 import {
   FormInput,
   FormSelectList,
@@ -105,8 +106,6 @@ import {
   FormHtmlEditor,
   FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
-
-const defaultColumnWidth = 1;
 
 export default {
   name: 'Loop',
@@ -156,7 +155,7 @@ export default {
       const duplicate = _.cloneDeep(this.items[index]);
       this.items.push(duplicate);
       this.$emit('update-state');
-    }
+    },
   },
 };
 </script>

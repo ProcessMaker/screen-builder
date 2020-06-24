@@ -29,7 +29,7 @@
         <i class="fas fa-sad-tear fa-10x"/>
       </div>
       <h3 class="display-6">{{ $t('Something has gone wrong.') }}</h3>
-      <p class="lead">{{ $t("Unfortunately this screen has had an issue. We've notified the administrator.") }} <a href="javascript:void(0)" @click="showMessage=!showMessage"><i class="fas fa-info-circle"></i></a></p>
+      <p class="lead">{{ $t("Unfortunately this screen has had an issue. We've notified the administrator.") }} <a href="javascript:void(0)" @click="showMessage=!showMessage"><i class="fas fa-info-circle"/></a></p>
       <small v-if="showMessage" class="text-danger text-left small">{{ errorMessage }}</small>
     </div>
 

@@ -121,7 +121,7 @@
     </div>
     <div v-if="dataSource === dataSourceValues.dataObject || dataSource === dataSourceValues.dataConnector">
       <label for="element-name">{{ $t('Options Variable') }}</label>
-      <mustache-helper></mustache-helper>
+      <mustache-helper/>
       <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name"/>
       <small class="form-text text-muted mb-3">{{ $t('Get options from this variable. Must be an array.') }}</small>
     </div>
@@ -133,7 +133,7 @@
     </div>
 
     <div v-if="showRenderAs">
-       <div class="row mb-3">
+      <div class="row mb-3">
         <div class="col">
           <label for="render-as">{{ $t('Show Control As') }}</label>
           <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
@@ -183,13 +183,13 @@
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <div v-if="valueTypeReturned === 'single'">
         <label for="key">{{ $t('Value') }}</label>
-        <mustache-helper></mustache-helper>
+        <mustache-helper/>
         <b-form-input id="key" v-model="key" @change="keyChanged"/>
         <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to use as the value of this control. Leave blank to use the entire selected value.') }}</small>
       </div>
 
       <label for="value">{{ $t('Content') }}</label>
-      <mustache-helper></mustache-helper>
+      <mustache-helper/>
       <b-form-input id="value" v-model="value" @change="valueChanged"/>
       <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to display to the user in the select list. Leave blank to show the entire selected value.') }}</small>
     </div>
@@ -214,7 +214,7 @@
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
-      <mustache-helper></mustache-helper>
+      <mustache-helper/>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
@@ -222,19 +222,19 @@
 </template>
 
 <script>
-/* global ProcessMaker */
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
-import MustacheHelper from './mustache-helper'
-require('monaco-editor/esm/vs/editor/editor.main');
+import MustacheHelper from './mustache-helper';
+import _ from 'lodash';
 
+require('monaco-editor/esm/vs/editor/editor.main');
 
 export default {
   components: {
     draggable,
     MonacoEditor,
-    MustacheHelper
+    MustacheHelper,
   },
   props: ['options', 'selectedControl'],
   model: {
@@ -292,12 +292,12 @@ export default {
       returnValueOptions: [
         {
           text: this.$t('Single Value'),
-          value: 'single'
+          value: 'single',
         },
         {
           text: this.$t('Object'),
-          value: 'object'
-        }
+          value: 'object',
+        },
       ],
       valueTypeReturned: '',
     };
@@ -340,7 +340,8 @@ export default {
       }
       
       if (this.dataSourcesList.length > 0) {
-        console.log("SETTING TO DEFAULT selectedDataSource")
+        // eslint-disable-next-line no-console
+        console.log('SETTING TO DEFAULT selectedDataSource');
         this.selectedDataSource = this.dataSourcesList[0].value;
       }
     },
@@ -385,7 +386,8 @@ export default {
     },
     dataObjectOptions() {
       if (!this.dataName) {
-        this.dataName = this.options.dataName ? this.options.dataName : "response";
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.dataName = this.options.dataName ? this.options.dataName : 'response';
       }
       return {
         dataSource: this.dataSource,

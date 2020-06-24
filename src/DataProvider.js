@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default {
   apiInstance: null,
-  install(Vue, options) {
+  install(Vue) {
     Vue.prototype.$dataProvider = this;
     
     // make sure we're not using the stub in main.js
@@ -23,19 +23,19 @@ export default {
     // use a dummy api client
     if (!this.axiosInstance) {
       this.axiosInstance = {
-        get(...args) {
+        get() {
           return Promise.resolve({
             data: {
-              data: []
-            }
+              data: [],
+            },
           });
         },
-      }
+      };
     }
 
   },
   get(...args) {
-   return this.apiInstance.get(...args);
+    return this.apiInstance.get(...args);
   },
   token() {
     return localStorage.getItem('token');
@@ -43,4 +43,4 @@ export default {
   baseURL() {
     return localStorage.getItem('baseURL');
   },
-}
+};
