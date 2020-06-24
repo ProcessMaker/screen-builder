@@ -102,7 +102,7 @@ export default {
       if (this.dataFormat === 'percentage') {
         return value;
       } else {
-        return DataFormatMixin.formatValueIfValid.bin(this)(value);
+        return DataFormatMixin.methods.formatValueIfValid.bind(this)(value);
       }
     },
     getUserConfig() {
