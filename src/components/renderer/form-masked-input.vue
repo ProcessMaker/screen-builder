@@ -98,6 +98,13 @@ export default {
     'dataMask',
   ],
   methods: {
+    formatValueIfValid(value) {
+      if (this.dataFormat === 'percentage') {
+        return value;
+      } else {
+        return DataFormatMixin.formatValueIfValid.bin(this)(value);
+      }
+    },
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
     },
