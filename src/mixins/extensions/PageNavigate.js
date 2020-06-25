@@ -1,8 +1,7 @@
 export default {
   methods: {
-    pageNavigate(page) {
-      this.currentPage__ = page;
-    },
+    /* istanbul ignore next */
+    pageNavigate() {},
     pageNavigationProperties({ properties }) {
       properties['@page-navigate'] = 'pageNavigate';
     },
