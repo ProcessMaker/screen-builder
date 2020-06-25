@@ -7,54 +7,18 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import { get } from 'lodash';
 
 export default {
-  props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName'],
+  props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName', 'validationData'],
   data() {
     return {
       mode: this.$root.$children[0].mode,
     };
   },
   computed: {
-    classList() {
-      let variant = this.variant || 'primary';
-      return {
-        btn: true,
-        ['btn-' + variant]: true,
-      };
-    },
     imageUrl() {
-      let imageUrl;
-      if (this.$parent.data) {
-        imageUrl = this.$parent.data[this.variableName];
-      } else if (this.$parent.vdata) {
-        imageUrl = this.$parent.vdata[this.variableName];
-      }
-      return imageUrl;
-    },
-  },
-  watch: {
-    mode() {
-      if (this.mode == 'editor') {
-        return;
-      }
-      this.displayRenderedImage();
-    },
-  },
-  methods: {
-    setValue(parent, name, value) {
-      if (parent.items) {
-        this.setValue(parent.$parent, name, value);
-      } else {
-        Vue.set(parent.data, name, value);
-      }
-    },
-    click() {
-      if (this.name) {
-        this.setValue(this.$parent, this.name, this.$attrs.value);
-      }
-      this.$emit(this.event, this.eventData);
+      return get(this.validationData, this.variableName);
     },
   },
 };
