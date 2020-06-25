@@ -29,6 +29,7 @@
           :data="current"
           data-path="data"
           :noDataTemplate="$t('No Data Available')"
+          data-cy="calcs-table"
         >
           <template slot="actions" slot-scope="row">
             <div class="actions">
@@ -38,6 +39,7 @@
                   @click="editProperty(row)"
                   v-b-tooltip.hover
                   :title="$t('Edit')"
+                  data-cy="calcs-table-edit"
                 >
                   <i class="fas fa-edit fa-lg fa-fw"/>
                 </b-btn>
@@ -46,6 +48,7 @@
                   @click="deleteProperty(row)"
                   v-b-tooltip.hover
                   :title="$t('Delete')"
+                  data-cy="calcs-table-remove"
                 >
                   <i class="fas fa-trash-alt fa-lg fa-fw"/>
                 </b-btn>
@@ -328,11 +331,6 @@ export default {
       });
       this.$emit('input', this.current);
       this.displayTableList();
-    },
-    showAlert(message) {
-      if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-        globalObject.ProcessMaker.alert(message, 'success');
-      }
     },
   },
   created() {

@@ -1,4 +1,5 @@
 import '@4tw/cypress-drag-drop';
+import { set } from 'lodash';
 
 Cypress.Commands.add('setPreviewDataInput', (input) => {
   cy.get('#screen-builder-container').then((div) => {
@@ -21,6 +22,12 @@ Cypress.Commands.add('setMultiselect', (selector, text) => {
 Cypress.Commands.add('setVueComponentValue', (selector, value) => {
   cy.get(selector).then((div) => {
     div[0].__vue__.$emit('change', value);
+  });
+});
+
+Cypress.Commands.add('setVueComponentProperty', (selector, property, value) => {
+  cy.get(selector).then((div) => {
+    set(div[0].__vue__, property, value);
   });
 });
 
