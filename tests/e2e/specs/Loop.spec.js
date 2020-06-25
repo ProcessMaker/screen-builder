@@ -28,5 +28,16 @@ describe('Loop control', () => {
         { form_input_1: 'three' },
       ],
     });
+
+    // Remove items
+    cy.get('[data-cy=preview-content] [data-cy=loop-rows-remove]').click();
+    cy.on('window:confirm', () => true);
+
+    cy.assertPreviewData({
+      rows: [
+        { form_input_1: 'one' },
+        { form_input_1: 'two' },
+      ],
+    });
   });
 });
