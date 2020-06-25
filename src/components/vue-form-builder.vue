@@ -43,7 +43,7 @@
     <!-- Renderer -->
     <b-col id="screen-container" class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
       <b-input-group size="sm" class="bg-white mt-3">
-        <b-form-select v-if="showToolbar" v-model="currentPage" class="form-control">
+        <b-form-select v-if="showToolbar" v-model="currentPage" class="form-control" data-cy="toolbar-page">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
         </b-form-select>
 
@@ -54,6 +54,7 @@
             class="ml-1"
             :title="$t('Edit Page Title')"
             @click="openEditPageModal(currentPage)"
+            data-cy="toolbar-edit"
           >
             <i class="far fa-edit"/>
           </b-button>
@@ -65,18 +66,27 @@
             :title="$t('Delete Page')"
             @click="confirmDelete()"
             :disabled="!displayDelete"
+            data-cy="toolbar-remove"
           >
             <i class="far fa-trash-alt"/>
           </b-button>
 
-          <b-button size="sm" variant="secondary" class="ml-1 mr-1" @click="originalPageName=null" :title="$t('Add New Page')" v-b-modal.addPageModal>
+          <b-button
+            size="sm"
+            variant="secondary"
+            class="ml-1 mr-1"
+            @click="originalPageName=null"
+            :title="$t('Add New Page')"
+            v-b-modal.addPageModal
+            data-cy="toolbar-add"
+          >
             <i class="fas fa-plus"/>
           </b-button>
         </div>
 
         <b-button-group size="sm" class="ml-1 ml-auto">
-          <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
-          <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
+          <b-button @click="undo" :disabled="!canUndo" data-cy="toolbar-undo">{{ $t('Undo') }}</b-button>
+          <b-button @click="redo" :disabled="!canRedo" data-cy="toolbar-redo">{{ $t('Redo') }}</b-button>
         </b-button-group>
 
         <hr class="w-100">
@@ -233,6 +243,7 @@
       ok-variant="btn btn-secondary ml-2"
       :title="$t('Add New Page')"
       header-close-content="&times;"
+      data-cy="add-page-modal"
     >
       <form-input v-model="addPageName"
         :name="$t('Page Name')"
@@ -240,6 +251,7 @@
         :helper="$t('The name of the new page to add')"
         validation="unique-page-name|required"
         ref="addPageInput"
+        data-cy="add-page-name"
       />
     </b-modal>
 
