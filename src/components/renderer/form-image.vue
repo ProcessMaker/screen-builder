@@ -1,7 +1,7 @@
 <template>
   <div class="form-group form-image">
-    <img v-if="renderImage" :src="imageUrl" :name="variableName">
-    <img v-if="!renderImage && image" :src="image" :width="width" :height="height" :id="id">
+    <img v-if="renderImage" :src="imageUrl" :width="width" :height="height" :name="variableName">
+    <img v-else-if="!renderImage && image" :src="image" :width="width" :height="height" :id="id">
     <i v-else-if="mode == 'editor'" class="empty-image far fa-image" />
   </div>
 </template>
@@ -11,6 +11,11 @@ import Vue from 'vue';
 
 export default {
   props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName'],
+  data() {
+    return {
+      mode: this.$root.$children[0].mode,
+    };
+  },
   computed: {
     classList() {
       let variant = this.variant || 'primary';
@@ -18,9 +23,6 @@ export default {
         btn: true,
         ['btn-' + variant]: true,
       };
-    },
-    mode() {
-      return this.$root.$children[0].mode;
     },
     imageUrl() {
       let imageUrl;

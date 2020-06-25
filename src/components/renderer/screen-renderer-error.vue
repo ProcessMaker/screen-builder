@@ -3,6 +3,8 @@
     <h4>{{ error }}</h4>
     <ul v-for="(error,index) in errors" :key="`error-${index}`"><li>{{ error }}</li></ul>
     {{ component && component.template }}
+    <hr>
+    {{ component && component.data }}
   </div>
 </template>
 
