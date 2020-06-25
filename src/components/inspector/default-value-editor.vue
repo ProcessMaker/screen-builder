@@ -2,11 +2,11 @@
   <div>
     <label>Default Value</label>
     <div class="float-right buttons">
-      <b-button variant="light" size="sm" :class="{ active: mode === 'basic'}" @click="mode = 'basic'"><i class="fas fa-i-cursor"/></b-button>
-      <b-button variant="light" size="sm" :class="{ active: mode === 'js'}" @click="mode = 'js'"><i class="fab fa-js-square"/></b-button>
+      <b-button variant="light" size="sm" :class="{ active: mode === 'basic'}" @click="mode = 'basic'" data-cy="inspector-defaultValue-basic"><i class="fas fa-i-cursor"/></b-button>
+      <b-button variant="light" size="sm" :class="{ active: mode === 'js'}" @click="mode = 'js'" data-cy="inspector-defaultValue-js"><i class="fab fa-js-square"/></b-button>
     </div>
     <div v-if="mode === 'basic'">
-      <b-form-input v-model="basicValue"/>
+      <b-form-input v-model="basicValue" data-cy="inspector-defaultValue-basicValue"/>
     </div>
     <div v-if="mode === 'js'">
       <MonacoEditor
@@ -14,6 +14,7 @@
         :options="monacoOptions"
         class="editor"
         language="javascript"
+        data-cy="inspector-defaultValue-jsValue"
       />
     </div>
   </div>

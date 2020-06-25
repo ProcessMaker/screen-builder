@@ -13,8 +13,6 @@ export default {
             this.setupDefaultValue(screen, name, JSON.stringify(config.defaultValue.value));
           } else if (config.defaultValue.mode === 'js') {
             this.setupDefaultValue(screen, name, `(()=>{${config.defaultValue.value}})()`);
-          } else {
-            throw JSON.stringify({name, config});
           }
         } else {
           this.setupDefaultValue(screen, name, 'null');
