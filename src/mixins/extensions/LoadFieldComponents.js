@@ -3,11 +3,13 @@ export default {
     loadFieldProperties({ properties, element, componentName }) {
       properties.class = this.elementCssClass(element);
       properties[':validation-data'] = 'vdata';
-      if (element.config.name && componentName !== 'FormImage' ) {
+      if (componentName === 'FormImage') {
+        this.registerVariable(element.config.variableName, element.config);
+        delete properties.image;
+        properties[':image'] = this.byRef(element.config.image);
+      } else if (element.config.name) {
         this.registerVariable(element.config.name, element.config);
         properties['v-model'] = `${element.config.name}`;
-      } else if (componentName === 'FormImage') {
-        this.registerVariable(element.config.variableName, element.config);
       }
       properties[':ancestor-screens'] = '$parent && $parent.ancestorScreens';
       properties.name = element.config.name !== undefined ? element.config.name : null;
