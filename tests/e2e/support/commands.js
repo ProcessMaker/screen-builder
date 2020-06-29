@@ -16,7 +16,8 @@ Cypress.Commands.add('assertPreviewData', (expectedData) => {
 
 Cypress.Commands.add('setMultiselect', (selector, text) => {
   cy.get(`${selector}`).click();
-  cy.get(`${selector} span:contains("${text}"):first`).click();
+  cy.get(`${selector} input`).clear().type(text);
+  cy.get(`${selector} span:not(.multiselect__option--disabled) span:contains("${text}"):first`).click();
 });
 
 Cypress.Commands.add('setVueComponentValue', (selector, value) => {

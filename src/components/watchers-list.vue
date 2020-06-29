@@ -70,6 +70,7 @@ export default {
   props: {
     value: {
       type: Array,
+      /* istanbul ignore next */
       default: () => [],
     },
   },
