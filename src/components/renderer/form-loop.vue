@@ -177,22 +177,14 @@ export default {
     },
     removeConfirm() {
       const message = this.$t('Are you sure you want to delete this?');
-      if (_.has(window, 'ProcessMaker.confirmModal')) {
-        window.ProcessMaker.confirmModal(
-          this.$t('Caution!'),
-          message,
-          '',
-          () => {
-            this.remove();
-          }
-        );
-      } else if (_.has(window, 'confirm')) {
-        if (window.confirm(message)) {
+      window.ProcessMaker.confirmModal(
+        this.$t('Caution!'),
+        message,
+        '',
+        () => {
           this.remove();
         }
-      } else {
-        this.remove();
-      }
+      );
     },
     setMatrixValue(i, v) {
       this.registerParentVariableChanges(v);

@@ -4,7 +4,7 @@
       <div class="card card-overflow">
         <div class="card-header p-0">
           <div class="mb-0">
-            <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig">
+            <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig"data-cy="watchers-accordion-configuration">
               <div><i class="fas fa-fw fa-cog"/> Configuration</div>
               <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
             </button>
@@ -19,6 +19,7 @@
               :name="$t('Watcher Name')"
               :validation="ruleWatcherName"
               :helper="$t('A name to describe this Watcher')"
+              data-cy="watchers-watcher-name"
             />
 
             <form-multi-select
@@ -33,6 +34,7 @@
               :validation="ruleWatcherVariable"
               :helper="$t('The variable to watch on this screen')"
               @open="loadVariables"
+              data-cy="watchers-watcher-variable"
             />
             <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
               <div>{{ $t('The Variable to Watch field is required') }}</div>
@@ -44,6 +46,7 @@
               v-model="config.synchronous"
               :toggle="true"
               :helper="$t('Wait for the Watcher to run before accepting more input')"
+              data-cy="watchers-watcher-synchronous"
             />
           </div>
         </div>
@@ -51,7 +54,7 @@
       <div class="card">
         <div class="card-header p-0">
           <div class="mb-0">
-            <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherSource">
+            <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherSource" data-cy="watchers-accordion-source">
               <div><i class="fas fa-fw fa-file-upload"/> Source</div>
               <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
             </button>
@@ -75,6 +78,7 @@
               :validation="ruleWatcherScript"
               @open="loadSources"
               :helper="$t('The source to access when this Watcher runs')"
+              data-cy="watchers-watcher-source"
             />
             <div v-if="ruleWatcherScript && !config.script" class="invalid-feedback d-block mt-n2 mb-3">
               <div>{{ $t('The Source field is required') }}</div>
@@ -89,6 +93,7 @@
                     class="editor"
                     v-model="config.input_data"
                     language="json"
+                    data-cy="watchers-watcher-input_data"
                   />
                 </div>
                 <small class="form-text text-muted">{{ $t('Data to pass to the script (valid JSON object, variables supported)') }}</small>
@@ -108,6 +113,7 @@
                     class="editor"
                     v-model="config.script_configuration"
                     language="json"
+                    data-cy="watchers-watcher-script_configuration"
                   />
                 </div>
                 <small class="form-text text-muted">{{ $t('Configuration data for the script (valid JSON object, variables supported)') }}</small>
@@ -134,6 +140,7 @@
                   @search-change="loadEndpoints"
                   @open="loadEndpoints"
                   :helper="$t('The Data Connector endpoint to access when this Watcher runs')"
+                  data-cy="watchers-watcher-endpoint"
                 />
                 <div v-if="endpointError" class="invalid-feedback d-block">
                   <div>{{ endpointError }}</div>
@@ -147,6 +154,7 @@
                     class="editor"
                     v-model="config.input_data"
                     language="json"
+                    data-cy="watchers-watcher-input_data"
                   />
                 </div>
                 <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
@@ -166,7 +174,7 @@
       <div class="card">
         <div class="card-header p-0">
           <div class="mb-0">
-            <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherOutput">
+            <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherOutput" data-cy="watchers-accordion-output">
               <div><i class="fas fa-fw fa-file-download"/> Output</div>
               <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
             </button>
@@ -181,6 +189,7 @@
               :name="$t('Output Variable')"
               :helper="$t('The variable that will store the output of the Watcher')"
               :validation="ruleWatcherOutputVariable"
+              data-cy="watchers-watcher-output_variable"
             />
             <data-mapping v-if="isDatasource" v-model="config.script_configuration" />
           </div>                
@@ -193,6 +202,7 @@
       <button
         class="btn btn-secondary ml-3"
         @click="validateDataAndSave"
+        data-cy="watchers-button-save"
       >
         {{ $t('Save') }}
       </button>
@@ -409,9 +419,7 @@ export default {
       this.$nextTick(() => { // allow validations to do their thing
         
         if (!this.isFormValid()) {
-          if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-            globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
-          }
+          globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
           return;
         }
 

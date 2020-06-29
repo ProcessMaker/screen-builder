@@ -8,6 +8,7 @@
     hide-footer
     header-close-content="&times;"
     no-close-on-backdrop
+    data-cy="watchers-modal"
   >
     <template v-if="enableList">
       <watchers-list v-model="current" @display-form="displayForm" @edit-form="edit" @delete-form="confirmRemoval"/>
@@ -93,18 +94,14 @@ export default {
       this.$set(this, 'add', _.cloneDeep(item));
     },
     confirmRemoval(item) {
-      if (globalObject.ProcessMaker && globalObject.ProcessMaker.confirmModal) {
-        globalObject.ProcessMaker.confirmModal(
-          this.$t('Caution!'),
-          this.$t('Are you sure you want to delete the Watcher?'),
-          '',
-          () => {
-            this.remove(item);
-          }
-        );
-      } else {
-        this.remove(item);
-      }
+      globalObject.ProcessMaker.confirmModal(
+        this.$t('Caution!'),
+        this.$t('Are you sure you want to delete the Watcher?'),
+        '',
+        () => {
+          this.remove(item);
+        }
+      );
     },
     remove(item) {
       this.current = this.current.filter(val => {
@@ -115,9 +112,7 @@ export default {
       this.displayList();
     },
     showAlert(message) {
-      if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-        globalObject.ProcessMaker.alert(message, 'success');
-      }
+      globalObject.ProcessMaker.alert(message, 'success');
     },
   },
 };
