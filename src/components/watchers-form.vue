@@ -198,7 +198,7 @@
     </div>
 
     <div class="d-flex justify-content-end mt-3">
-      <button class="btn btn-outline-secondary" @click.stop="displayTableList">{{ $t('Cancel') }}</button>
+      <button class="btn btn-outline-secondary" @click.stop="displayTableList" data-cy="watchers-button-cancel">{{ $t('Cancel') }}</button>
       <button
         class="btn btn-secondary ml-3"
         @click="validateDataAndSave"
@@ -239,6 +239,7 @@ export default {
   props: {
     config: {
       type: Object,
+      /* istanbul ignore next */
       default() {
         return {
           name:'',
@@ -358,9 +359,9 @@ export default {
       //Search in all config screen
       this.findElements(this.$root.$children[0].config);
     },
-    findElements(items) {
+    findElements(items, screens=[]) {
       items.forEach(item => {
-        //If the element has containers
+        //If the element has containers (Multi-columns)
         if (Array.isArray(item)) {
           this.findElements(item);
         }
@@ -374,7 +375,26 @@ export default {
         if (item.config && item.config.name) {
           this.variables.push(item.config.name);
         }
+
+        // Variables from Nested screens
+        if (item.component === 'FormNestedScreen') {
+          this.loadVariablesFromScreen(item.config.screen, screens);
+        }
       });
+    },
+    loadVariablesFromScreen(id, screens) {
+      if (screens.indexOf(id) > -1) {
+        return;
+      }
+      screens.push(id);
+      const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', null) || 'screens';
+      if (id) {
+        window.ProcessMaker.apiClient
+          .get(endpoint + '/' + id)
+          .then(response => {
+            this.findElements(response.data.config);
+          });
+      }
     },
     loadSources() {
       this.scripts =  [];
