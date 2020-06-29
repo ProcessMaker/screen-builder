@@ -21,11 +21,11 @@
                 <i class="fas fa-flask"/>
                 {{ $t('Calcs') }}
               </button>
-              <button type="button" class="btn btn-secondary" :title="$t('Custom CSS')" @click="openCustomCSS">
+              <button type="button" class="btn btn-secondary" :title="$t('Custom CSS')" @click="openCustomCSS" data-cy="topbar-css">
                 <i class="fab fa-css3"/>
                 {{ $t('CSS') }}
               </button>
-              <button type="button" class="btn btn-secondary" :title="$t('Watchers')" @click="openWatchersPopup">
+              <button type="button" class="btn btn-secondary" :title="$t('Watchers')" @click="openWatchersPopup" data-cy="topbar-watchers">
                 <i class="fas fa-mask"/>
                 {{ $t('Watchers') }}
               </button>
