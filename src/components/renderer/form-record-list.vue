@@ -327,9 +327,6 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
-      // Reset our add item
-      this.addItem = {};
-
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
