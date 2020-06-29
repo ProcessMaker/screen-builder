@@ -102,6 +102,15 @@ window.ProcessMaker = {
     },
   },
   EventBus: new Vue(),
+  confirmModal(title, message, variant, callback) {
+    if (window.confirm(`${title}: ${message}`)) {
+      callback();
+    }
+  },
+  alert(message, variant) {
+    variant;
+    message;
+  },
 };
 
 new Vue({
