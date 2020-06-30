@@ -16,14 +16,14 @@
   >
     <p>{{ $t("You can set CSS Selector names in the inspector. Use them here with [selector='my-selector']") }}</p>
     <div class="editor">
-      <monaco-editor :options="monacoOptions" class="monaco" v-model="innerValue"/>
+      <monaco-editor :options="monacoOptions" class="monaco" v-model="innerValue" data-cy="monaco-editor"/>
     </div>
 
     <b-alert :show="cssErrors != ''" variant="danger">
       <pre>{{ cssErrors }}</pre>
     </b-alert>
-    <div slot="modal-cancel">{{ $t('Cancel') }}</div>
-    <div slot="modal-ok">{{ $t('Save') }}</div>
+    <div slot="modal-cancel" data-cy="cancel-button">{{ $t('Cancel') }}</div>
+    <div slot="modal-ok" data-cy="save-button">{{ $t('Save') }}</div>
   </b-modal>
 </template>
 
