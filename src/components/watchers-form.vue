@@ -4,7 +4,7 @@
       <div class="card card-overflow">
         <div class="card-header p-0">
           <div class="mb-0">
-            <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig"data-cy="watchers-accordion-configuration">
+            <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig" data-cy="watchers-accordion-configuration">
               <div><i class="fas fa-fw fa-cog"/> Configuration</div>
               <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
             </button>

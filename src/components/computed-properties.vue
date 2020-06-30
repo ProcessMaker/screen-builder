@@ -138,10 +138,6 @@ import MonacoEditor from 'vue-monaco';
 
 let Validator = require('validatorjs');
 
-const globalObject = typeof window === 'undefined'
-  ? global
-  : window;
-
 export default {
   components: {
     FormInput,
