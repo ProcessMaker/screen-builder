@@ -51,6 +51,7 @@
     <b-modal
       :static="true"
       @ok="handleOk"
+      @hidden="addItem = initFormValues"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
@@ -161,6 +162,7 @@ export default {
           return `<i class="${classes.join(' ')}"></i>`;
         },
       },
+      initFormValues: {},
     };
   },
   computed: {
@@ -334,6 +336,9 @@ export default {
       // Open form
       this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
+
+      let {_parent, ...result} = this.addItem;
+      this.initFormValues = _.cloneDeep(result);
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
