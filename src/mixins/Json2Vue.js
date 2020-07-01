@@ -171,9 +171,14 @@ export default {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)(component) : null;
         });
         // Build data
-        component.data = new Function('return {' + Object.keys(component.data).map(key => `${JSON.stringify(key)}:${component.data[key]}`).join(',\n') + '};');
+        component.data = new Function('const data = {};' + Object.keys(component.data).map(key => `this.setValue(${JSON.stringify(key)}, ${component.data[key]}, data);`).join('\n') + 'return data;');
         // Build watchers
-        Object.keys(component.watch).forEach(key => component.watch[key] = new Function('value', component.watch[key].join('\n')));
+        Object.keys(component.watch).forEach((key) => {
+          const watch = { deep: true };
+          component.watch[key].forEach(w => Object.assign(watch, w.options));
+          watch.handler = new Function('value', component.watch[key].map(w => w.code).join('\n'));
+          component.watch[key] = watch;
+        });
         // Build mounted
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
@@ -190,11 +195,11 @@ export default {
     addData(screen, name, code) {
       screen.data[name] = code;
     },
-    addWatch(screen, name, code) {
+    addWatch(screen, name, code, options = {}) {
       if (screen.watch[name]) {
-        screen.watch[name].push(code);
+        screen.watch[name].push({code, options});
       } else {
-        screen.watch[name] = [code];
+        screen.watch[name] = [{code, options}];
       }
     },
     addMounted(screen, code) {

@@ -1,4 +1,4 @@
-import { set, get } from 'lodash';
+import { get } from 'lodash';
 
 export default {
   props: {
@@ -16,16 +16,21 @@ export default {
     submit() {
       this.$emit('submit', this.vdata);
     },
-    getValue(name) {
-      get(this, name);
+    getValue(name, object = this) {
+      return object ? get(object, name) : undefined;
     },
-    setValue(name, value) {
-      const splittedName = name.split('.');
-      const baseName = splittedName[0];
-      if (this.vdata[baseName] === undefined) {
-        this.$set(this.vdata, baseName, splittedName.length > 1 ? {} : value);
+    setValue(name, value, object = this, defaults = object) {
+      if (object) {
+        const splittedName = name.split('.');
+        splittedName.forEach((attr, index) => {
+          this.$set(
+            object,
+            attr,
+            index < splittedName.length - 1 ? get(object, attr) || get(defaults, attr) || {} : value
+          );
+          object = get(object, attr);
+        });
       }
-      set(this.vdata, name, value);
     },
   },
 };
