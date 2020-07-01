@@ -9,6 +9,12 @@ export default {
   },
   methods: {
     queueWatcher(watcher) {
+      if (watcher.synchronous) {
+        // lock screen with watcher's popup
+        if (this.$el.offsetParent) {
+          this.$parent.$refs.watchersSynchronous.show(watcher.name);
+        }
+      }
       return new Promise(complete => {
         const input = Mustache.render(watcher.input_data, this.vdata);
         const config = Mustache.render(watcher.script_configuration, this.vdata);
@@ -22,6 +28,8 @@ export default {
         });
       }).then((response) => {
         this.setValue(watcher.output_variable, response);
+        // hide watcher's popup
+        this.$parent.$refs.watchersSynchronous.hide(watcher.name);
         return response;
       });
     },

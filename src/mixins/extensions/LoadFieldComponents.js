@@ -16,7 +16,6 @@ export default {
       properties.disabled = element.config.interactive || element.config.disabled;
       properties[':form-config'] = '$parent && $parent.definition.config';
       // Evenst
-      //properties['@input'] = 'dataChanged';
       properties['@submit'] = 'submit';
     },
   },

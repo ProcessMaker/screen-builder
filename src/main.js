@@ -24,6 +24,9 @@ const store = new Vuex.Store({ modules: {} });
 
 window.ProcessMaker = {
   isStub: true,
+  user: {
+    id: 1,
+  },
   apiClient: {
     get(url) {
       return new Promise((resolve) => {
@@ -97,8 +100,23 @@ window.ProcessMaker = {
               },
             },
           });
+        } else if (url === '/scripts/execution/1') {
+          resolve({
+            data: {
+              name: 'Steve',
+            },
+          });
         }
       });
+    },
+    post(url, body) {
+      switch (url) {
+        case '/scripts/execute/1':
+          window.Echo.watcherMocks(body, {
+            key: '1',
+          });
+          break;
+      }
     },
   },
   EventBus: new Vue(),
@@ -112,7 +130,27 @@ window.ProcessMaker = {
     message;
   },
 };
-
+window.Echo = {
+  listeners: [],
+  watcherMocks(watcher, response) {
+    this.listeners.forEach((listener) => {
+      setTimeout(() => {
+        listener.callback({
+          type: 'ProcessMaker\\Notifications\\ScriptResponseNotification',
+          watcher: watcher.watcher,
+          response,
+        });
+      }, 1000);
+    });
+  },
+  private() {
+    return {
+      notification(callback) {
+        window.Echo.listeners.push({ callback });
+      },
+    };
+  },
+};
 new Vue({
   store,
   render: h => h(App),

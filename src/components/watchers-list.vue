@@ -71,7 +71,9 @@ export default {
     value: {
       type: Array,
       /* istanbul ignore next */
-      default: () => [],
+      default() {
+        return [];
+      },
     },
   },
   data() {

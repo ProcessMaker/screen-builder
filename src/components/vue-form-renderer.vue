@@ -98,7 +98,7 @@ export default {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers, defaultValues],
+  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, /*formWatchers,*/ defaultValues],
   components: {
     FormInput: FormMaskedInput,
     WatchersSynchronous,

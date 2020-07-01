@@ -383,17 +383,16 @@ export default {
       });
     },
     loadVariablesFromScreen(id, screens) {
-      if (screens.indexOf(id) > -1) {
-        return;
-      }
-      screens.push(id);
-      const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', null) || 'screens';
-      if (id) {
-        window.ProcessMaker.apiClient
-          .get(endpoint + '/' + id)
-          .then(response => {
-            this.findElements(response.data.config);
-          });
+      if (screens.indexOf(id) === -1) {
+        screens.push(id);
+        const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', null) || 'screens';
+        if (id) {
+          window.ProcessMaker.apiClient
+            .get(endpoint + '/' + id)
+            .then(response => {
+              this.findElements(response.data.config);
+            });
+        }
       }
     },
     loadSources() {

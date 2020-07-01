@@ -14,18 +14,19 @@ export default {
           } else if (config.defaultValue.mode === 'js') {
             this.setupDefaultValue(screen, name, `(()=>{${config.defaultValue.value}})()`);
           }
-        } else {
-          this.setupDefaultValue(screen, name, 'null');
         }
         if (config.initiallyChecked) {
           this.setupDefaultValue(screen, name, 'true');
         }
+        // Update vdata
+        this.addMounted(screen, `
+          this.setValue(${JSON.stringify(name)}, this.${name}, this.vdata, this);
+        `);
       });
     },
     setupDefaultValue(screen, name, value) {
       this.addMounted(screen, `if (!this.${name}) {
         this.${name} = ${value};
-        this.setValue(${JSON.stringify(name)}, this.${name});
       }`);
     },
   },
