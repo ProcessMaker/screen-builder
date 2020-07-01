@@ -9,7 +9,7 @@ export default {
           get: computed.type === 'expression' ? new Function(`return this.evaluateExpression(${JSON.stringify(computed.formula)});`) : new Function(computed.formula),
           set() {},
         };
-        this.addWatch(screen, computed.property, `this.setValue(${JSON.stringify(computed.property)}, value);`);
+        this.addWatch(screen, computed.property, `this.setValue(${JSON.stringify(computed.property)}, value, this.vdata);`);
       });
     },
   },
