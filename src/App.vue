@@ -72,6 +72,7 @@
               :mode="mode"
               :computed="computed"
               :custom-css="customCSS"
+              :watchers="watchers"
               v-on:css-errors="cssErrors = $event"
             />
           </b-col>
