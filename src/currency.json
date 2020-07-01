@@ -614,7 +614,7 @@
    {
      "code": "NGN",
      "name": "Nigeria, Naira",
-     "format": "####.##",
+     "format": "#,###.##",
      "symbol": ""
    },
    {
