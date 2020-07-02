@@ -7,6 +7,7 @@
       :label="$t('Show in Json Format')"
       v-model="displayList"
       helper=""
+      data-cy="inspector-jsonFormat"
     />
 
     <template v-if="displayList">
@@ -23,8 +24,9 @@
         rows="8"
         :helper="$t('It must be a correct json format')"
         v-model="dataJson"
+        data-cy="inspector-dataJson"
       />
-      <b-btn @click="saveDataJson" :disabled="!isValidJson">{{ $t('Save') }}</b-btn>
+      <b-btn @click="saveDataJson" :disabled="!isValidJson" data-cy="inspector-dataJson-save">{{ $t('Save') }}</b-btn>
     </template>
 
     <template v-else>
