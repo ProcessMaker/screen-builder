@@ -125,6 +125,14 @@ describe('Watchers', () => {
     cy.get('#watcherConfig').should('contain.text', 'The Variable to Watch field is required');
   });
   it('Test synchronous watcher', () => {
+    // Mock script response
+    cy.server();
+    cy.route('/api/1.0/scripts/execution/1', JSON.stringify({
+      output: {
+        name: 'Steve',
+      },
+    }));
+
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
@@ -161,6 +169,14 @@ describe('Watchers', () => {
     });
   });
   it('Test asynchronous watcher', () => {
+    // Mock script response
+    cy.server();
+    cy.route('/api/1.0/scripts/execution/1', JSON.stringify({
+      output: {
+        name: 'Steve',
+      },
+    }));
+
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
@@ -186,12 +202,51 @@ describe('Watchers', () => {
     // Assertion: Watcher popup is not displayed
     cy.get('#watchers-synchronous').should('not.be.visible');
     // wait for watcher execution
-    cy.wait(2000);
+    cy.wait(3000);
     cy.assertPreviewData({
       form_input_2: 'name',
       user: {
         name: 'Steve',
       },
     });
+  });
+  it('Test error in synchronous watcher', () => {
+    // Mock script response
+    cy.server();
+    cy.route('/api/1.0/scripts/execution/1', JSON.stringify({
+      exception: 'Exception',
+      message: 'Test exception response',
+    }));
+
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').eq(1).click();
+    cy.get('[data-cy=inspector-name]').clear().type('user.name');
+
+    // Create
+    cy.get('[data-cy="topbar-watchers"]').click();
+    cy.get('[data-cy="watchers-add-watcher"]').click();
+    cy.get('[data-cy="watchers-watcher-name"]').clear().type('Watcher test');
+    cy.setMultiselect('[data-cy="watchers-watcher-variable"]', 'form_input_2');
+    cy.get('.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label').click();
+    cy.get('[data-cy="watchers-accordion-source"]').click();
+    cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
+    cy.setVueComponentValue('[data-cy="watchers-watcher-input_data"]', '{"exception":"error"}');
+    cy.get('[data-cy="watchers-accordion-output"]').click();
+    cy.get('[data-cy="watchers-watcher-output_variable"]').clear().type('user');
+    cy.get('[data-cy="watchers-button-save"]').click();
+    cy.get('[data-cy="watchers-table"]').should('contain.text', 'Watcher test');
+    cy.get('[data-cy="watchers-modal"] .close').click();
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_2]').clear().type('name');
+    // Assertion: Watcher popup is displayed
+    cy.get('#watchers-synchronous').should('be.visible');
+    // wait for watcher execution
+    cy.wait(2000);
+    cy.get('#watchers-synchronous').should('be.visible');
+    cy.get('[data-cy="watchers-show-error-message"]').click();
+    cy.get('#watchers-synchronous').should('contain.text', 'Test exception response');
   });
 });
