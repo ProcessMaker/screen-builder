@@ -7,6 +7,7 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import Vuetable from 'vuetable-2/src/components/Vuetable';
+import axios from 'axios';
 
 Vue.config.productionTip = false;
 
@@ -22,6 +23,10 @@ Vue.component('vuetable', Vuetable);
 
 const store = new Vuex.Store({ modules: {} });
 
+window.axios = axios.create({
+  baseURL: '/api/1.0/',
+});
+
 window.ProcessMaker = {
   isStub: true,
   user: {
@@ -29,7 +34,7 @@ window.ProcessMaker = {
   },
   apiClient: {
     get(url) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         const exampleScreen = {
           id: 1,
           screen_category_id: 1,
@@ -100,12 +105,10 @@ window.ProcessMaker = {
               },
             },
           });
-        } else if (url === '/scripts/execution/1') {
-          resolve({
-            data: {
-              name: 'Steve',
-            },
-          });
+        } else {
+          window.axios.get(url)
+            .then(response => resolve(response))
+            .catch(error => reject(error));
         }
       });
     },
@@ -132,12 +135,12 @@ window.ProcessMaker = {
 };
 window.Echo = {
   listeners: [],
-  watcherMocks(watcher, response) {
+  watcherMocks(body, response) {
     this.listeners.forEach((listener) => {
       setTimeout(() => {
         listener.callback({
           type: 'ProcessMaker\\Notifications\\ScriptResponseNotification',
-          watcher: watcher.watcher,
+          watcher: body.watcher,
           response,
         });
       }, 1000);
@@ -147,6 +150,9 @@ window.Echo = {
     return {
       notification(callback) {
         window.Echo.listeners.push({ callback });
+      },
+      stopListening() {
+        window.Echo.listeners.splice(0);
       },
     };
   },
