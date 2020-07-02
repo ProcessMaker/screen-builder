@@ -146,7 +146,7 @@ export default {
       editIndex: null,
       currentPage: 0,
       paginatorPage: 1,
-      perPage: 50,
+      perPage: 1,
       lastPage: 1,
       css: {
         tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
