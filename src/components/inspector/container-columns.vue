@@ -44,17 +44,17 @@
           v-model="existingOptions"
           group="options"
         >
-          <tr v-for="(option, index) in existingOptions" :key="index">
+          <tr v-for="(option, index) in existingOptions" :key="index" :data-cy="`inspector-columns-tr-${index}`">
             <td>{{ option.value }}</td>
             <td>{{ option.content }}</td>
             <td>
-              <button @click="removeOption(index)" class="btn btn-danger btn-sm" v-if="deleteIf">x
+              <button @click="removeOption(index)" class="btn btn-danger btn-sm" v-if="deleteIf" data-cy="inspector-columns-remove">x
               </button>
             </td>
           </tr>
         </draggable>
       </table>
-      <b-btn v-b-modal.addOptionModal>{{ $t('Add Column') }}</b-btn>
+      <b-btn v-b-modal.addOptionModal data-cy="inspector-columns-add">{{ $t('Add Column') }}</b-btn>
       <small v-if="helper" class="form-text text-muted">{{ $t(helper) }}</small>
 
       <b-modal
@@ -64,12 +64,14 @@
         :cancel-title="$t('Cancel')"
         id="addOptionModal"
         :title="$t('Add New Column')"
+        data-cy="inspector-add-column-modal"
       >
         <form-input
           :label="$t('Column Width')"
           v-model="addContent"
           validate="required|numeric|between:1,12"
           :error="this.addError"
+          data-cy="inspector-add-column-width"
         />
       </b-modal>
     </template>
