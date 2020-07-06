@@ -21,25 +21,25 @@ beforeEach(() => {
 
 describe('Pagination', () => {
   it('Should Not Be Visible', () => {
-    cy.setPreviewDataInput({form_record_list_1: [{"form_input_1": "John"}]});
+    cy.setPreviewDataInput({form_record_list_1: [{'form_input_1': 'John'}]});
     cy.get('[data-cy=table-pagination]').should('not.be.visible');
   });
 
   it('Should Be Visible', () => {
     cy.setPreviewDataInput({
       form_record_list_1: [
-        {"form_input_1": "John"}, 
-        {"form_input_1": "Sarah"},
-        {"form_input_1": "Carl"},
-        {"form_input_1": "James"},
-        {"form_input_1": "Karen"},
-        {"form_input_1": "Kristen"},
-        {"form_input_1": "Lisa"},
-        {"form_input_1": "Jacky"},
-        {"form_input_1": "Rebecca"},
-        {"form_input_1": "Ariana"},
-        {"form_input_1": "Peter"}
-      ]
+        {'form_input_1': 'John'}, 
+        {'form_input_1': 'Sarah'},
+        {'form_input_1': 'Carl'},
+        {'form_input_1': 'James'},
+        {'form_input_1': 'Karen'},
+        {'form_input_1': 'Kristen'},
+        {'form_input_1': 'Lisa'},
+        {'form_input_1': 'Jacky'},
+        {'form_input_1': 'Rebecca'},
+        {'form_input_1': 'Ariana'},
+        {'form_input_1': 'Peter'},
+      ],
     });
     cy.get('[data-cy=table-pagination]').scrollIntoView().should('be.visible');
   });
@@ -47,18 +47,18 @@ describe('Pagination', () => {
   it('Should Display Data When Navigating Pages', () => {
     cy.setPreviewDataInput({
       form_record_list_1: [
-        {"form_input_1": "John"}, 
-        {"form_input_1": "Sarah"},
-        {"form_input_1": "Carl"},
-        {"form_input_1": "James"},
-        {"form_input_1": "Karen"},
-        {"form_input_1": "Kristen"},
-        {"form_input_1": "Lisa"},
-        {"form_input_1": "Jacky"},
-        {"form_input_1": "Rebecca"},
-        {"form_input_1": "Ariana"},
-        {"form_input_1": "Peter"}
-      ]
+        {'form_input_1': 'John'}, 
+        {'form_input_1': 'Sarah'},
+        {'form_input_1': 'Carl'},
+        {'form_input_1': 'James'},
+        {'form_input_1': 'Karen'},
+        {'form_input_1': 'Kristen'},
+        {'form_input_1': 'Lisa'},
+        {'form_input_1': 'Jacky'},
+        {'form_input_1': 'Rebecca'},
+        {'form_input_1': 'Ariana'},
+        {'form_input_1': 'Peter'},
+      ],
     });
     cy.get('[data-cy=table-pagination] .ui > :nth-child(4)').click();
     cy.get('.vuetable tbody').find('tr').should('have.length', '1');
@@ -67,31 +67,31 @@ describe('Pagination', () => {
   it('Update Per Page', () => {
     cy.setPreviewDataInput({
       form_record_list_1: [
-        {"form_input_1": "John"}, 
-        {"form_input_1": "Sarah"},
-        {"form_input_1": "Carl"},
-        {"form_input_1": "James"},
-        {"form_input_1": "Karen"},
-        {"form_input_1": "Kristen"},
-        {"form_input_1": "Lisa"},
-        {"form_input_1": "Jacky"},
-        {"form_input_1": "Rebecca"},
-        {"form_input_1": "Ariana"},
-        {"form_input_1": "Peter"},
-        {"form_input_1": "John"}, 
-        {"form_input_1": "Sarah"},
-        {"form_input_1": "Carl"},
-        {"form_input_1": "James"},
-        {"form_input_1": "Karen"},
-        {"form_input_1": "Kristen"},
-        {"form_input_1": "Lisa"},
-        {"form_input_1": "Jacky"},
-        {"form_input_1": "Rebecca"},
-        {"form_input_1": "Ariana"},
-        {"form_input_1": "Peter"},
-        {"form_input_1": "Peter"},
-        {"form_input_1": "Peter"}
-      ]
+        {'form_input_1': 'John'}, 
+        {'form_input_1': 'Sarah'},
+        {'form_input_1': 'Carl'},
+        {'form_input_1': 'James'},
+        {'form_input_1': 'Karen'},
+        {'form_input_1': 'Kristen'},
+        {'form_input_1': 'Lisa'},
+        {'form_input_1': 'Jacky'},
+        {'form_input_1': 'Rebecca'},
+        {'form_input_1': 'Ariana'},
+        {'form_input_1': 'Peter'},
+        {'form_input_1': 'John'}, 
+        {'form_input_1': 'Sarah'},
+        {'form_input_1': 'Carl'},
+        {'form_input_1': 'James'},
+        {'form_input_1': 'Karen'},
+        {'form_input_1': 'Kristen'},
+        {'form_input_1': 'Lisa'},
+        {'form_input_1': 'Jacky'},
+        {'form_input_1': 'Rebecca'},
+        {'form_input_1': 'Ariana'},
+        {'form_input_1': 'Peter'},
+        {'form_input_1': 'Peter'},
+        {'form_input_1': 'Peter'},
+      ],
     });
     cy.setVueComponentProperty('[data-cy=table-pagination]', 'perPageSelectEnabled', 'true');
     cy.get('.pagination-nav-drop').select('25');
@@ -99,7 +99,7 @@ describe('Pagination', () => {
   });
 
   it('Displays Single Title', () => {
-    cy.setPreviewDataInput({form_record_list_1: [{"form_input_1": "John"}]});
+    cy.setPreviewDataInput({form_record_list_1: [{'form_input_1': 'John'}]});
     cy.setVueComponentProperty('[data-cy=table-pagination]', 'single', 'Test');
     cy.get('[data-cy=table-pagination]').should('contain.text', 'Test');
   });
@@ -107,18 +107,18 @@ describe('Pagination', () => {
   it('Displays Plural Title', () => {
     cy.setPreviewDataInput({
       form_record_list_1: [
-        {"form_input_1": "John"}, 
-        {"form_input_1": "Sarah"},
-        {"form_input_1": "Carl"},
-        {"form_input_1": "James"},
-        {"form_input_1": "Karen"},
-        {"form_input_1": "Kristen"},
-        {"form_input_1": "Lisa"},
-        {"form_input_1": "Jacky"},
-        {"form_input_1": "Rebecca"},
-        {"form_input_1": "Ariana"},
-        {"form_input_1": "Peter"}
-      ]
+        {'form_input_1': 'John'}, 
+        {'form_input_1': 'Sarah'},
+        {'form_input_1': 'Carl'},
+        {'form_input_1': 'James'},
+        {'form_input_1': 'Karen'},
+        {'form_input_1': 'Kristen'},
+        {'form_input_1': 'Lisa'},
+        {'form_input_1': 'Jacky'},
+        {'form_input_1': 'Rebecca'},
+        {'form_input_1': 'Ariana'},
+        {'form_input_1': 'Peter'},
+      ],
     });
     cy.setVueComponentProperty('[data-cy=table-pagination]', 'plural', 'Tests');
     cy.get('[data-cy=table-pagination]').should('contain.text', 'Tests');
