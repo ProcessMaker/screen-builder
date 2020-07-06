@@ -11,6 +11,10 @@ export default {
         this.registerVariable(element.config.name, element.config);
         properties['v-model'] = `${element.config.name}`;
       }
+      // Add cypress testing tags
+      if (element.config.name) {
+        properties['data-cy'] = `screen-field-${element.config.name}`;
+      }
       properties[':ancestor-screens'] = '$parent && $parent.ancestorScreens';
       properties.name = element.config.name !== undefined ? element.config.name : null;
       properties.disabled = element.config.interactive || element.config.disabled;
