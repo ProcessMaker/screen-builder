@@ -50,10 +50,10 @@
                     {{ currentItemToDelete }}
                   </div>
                   <div class="card-footer text-right p-2">
-                    <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null">
+                    <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
                       {{ $t('Cancel') }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
+                    <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()" data-cy="inspector-options-remove-confirm">
                       {{ $t('Delete') }}
                     </button>
                   </div>
@@ -100,10 +100,10 @@
                   {{ option[valueField] }}
                 </div>
                 <div class="col-1">
-                  <a @click="showEditOption(index)" class="fas fa-cog" style="cursor:pointer"/>
+                  <a @click="showEditOption(index)" class="fas fa-cog" style="cursor:pointer" data-cy="inspector-options-edit"/>
                 </div>
                 <div class="col-1">
-                  <a @click="removeOption(index)" class="fas fa-trash-alt" style="cursor:pointer"/>
+                  <a @click="removeOption(index)" class="fas fa-trash-alt" style="cursor:pointer" data-cy="inspector-options-remove" />
                 </div>
               </div>
             </div>
