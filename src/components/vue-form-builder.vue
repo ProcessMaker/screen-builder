@@ -203,7 +203,7 @@
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
               @click="toggleAccordion(accordion)"
-              :data-cy="`accordion-${accordion.name}`"
+              :data-cy="`accordion-${ accordionName(accordion).replace(' ', '') }`"
             >
               <i class="fas fa-cog mr-2"/>
               {{ $t(accordionName(accordion)) }}
