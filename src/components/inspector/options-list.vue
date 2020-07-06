@@ -141,7 +141,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-12">
-          <input type="checkbox"  v-model="allowMultiSelect">
+          <input type="checkbox"  v-model="allowMultiSelect" data-cy="inspector-allow-multi-select">
           {{ $t('Allow Multiple Selections') }}
         </div>
       </div>
