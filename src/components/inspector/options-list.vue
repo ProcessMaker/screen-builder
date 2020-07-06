@@ -136,7 +136,7 @@
       <div class="row mb-3">
         <div class="col">
           <label for="render-as">{{ $t('Show Control As') }}</label>
-          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
+          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions" data-cy="inspector-render-as" />
         </div>
       </div>
       <div class="row mb-3">
