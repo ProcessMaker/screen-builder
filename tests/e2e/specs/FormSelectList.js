@@ -196,4 +196,27 @@ describe('Form Select List', () => {
       form_select_list_1: 'two',
     });
   });
+
+  it('Options from data connector (single value)', () => {
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-data-sources]').select('Data Connector');
+    cy.get('[data-cy=inspector-data-connector]').select('Persons');
+    cy.get('[data-cy=inspector-endpoint]').select('list');
+    cy.get('[data-cy=inspector-options-variable]').clear().type('response');
+    cy.get('[data-cy=inspector-datasource-content]').clear().type('content');
+    cy.get('[data-cy=inspector-value-returned]').select('Single Value');
+    cy.get('[data-cy=inspector-datasource-value]').clear().type('value');
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
+    cy.get('[data-cy=preview-content] span:contains(James)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(John)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(Mary)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(Patricia)').should('be.visible');
+
+    cy.get('[data-cy=preview-content] span:contains(John):first').click();
+    cy.assertPreviewData({
+      form_select_list_1: '2',
+    });
+  });
 });
