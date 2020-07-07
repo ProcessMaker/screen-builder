@@ -28,7 +28,7 @@ window.axios = axios.create({
 });
 
 window.ProcessMaker = {
-  isStub: true,
+  isStub: false,//true,
   user: {
     id: 1,
   },
@@ -105,6 +105,14 @@ window.ProcessMaker = {
               },
             },
           });
+        } else if (url === '/data_sources') {
+          resolve({data: {
+            data: [
+              {id: 1, name: 'Persons', endpoints: {
+                'list': { },
+              }},
+            ],
+          }});
         } else {
           window.axios.get(url)
             .then(response => resolve(response))
@@ -113,13 +121,29 @@ window.ProcessMaker = {
       });
     },
     post(url, body) {
-      switch (url) {
-        case '/scripts/execute/1':
-          window.Echo.watcherMocks(body, {
-            key: '1',
-          });
-          break;
-      }
+      return new Promise((resolve, reject) => {
+        switch (url) {
+          case '/scripts/execute/1':
+            window.Echo.watcherMocks(body, {
+              key: '1',
+            });
+            break;
+          case '/requests/data_sources/1':
+            resolve({data: {
+              response: [
+                {value: 1, content: 'James'},
+                {value: 2, content: 'John'},
+                {value: 3, content: 'Mary'},
+                {value: 4, content: 'Patricia'},
+              ], 
+            }});
+            break;
+          default:
+            window.axios.post(url, body)
+              .then(response => resolve(response))
+              .catch(error => reject(error));
+        }
+      });
     },
   },
   EventBus: new Vue(),

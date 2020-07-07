@@ -184,13 +184,13 @@
       <div v-if="valueTypeReturned === 'single'">
         <label for="key">{{ $t('Value') }}</label>
         <mustache-helper/>
-        <b-form-input id="key" v-model="key" @change="keyChanged"/>
+        <b-form-input id="key" v-model="key" @change="keyChanged" data-cy="inspector-datasource-value"/>
         <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to use as the value of this control. Leave blank to use the entire selected value.') }}</small>
       </div>
 
       <label for="value">{{ $t('Content') }}</label>
       <mustache-helper/>
-      <b-form-input id="value" v-model="value" @change="valueChanged"/>
+      <b-form-input id="value" v-model="value" @change="valueChanged" data-cy="inspector-datasource-content"/>
       <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to display to the user in the select list. Leave blank to show the entire selected value.') }}</small>
     </div>
 
@@ -202,13 +202,13 @@
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="data-sources-list">{{ $t('Data Connector') }}</label>
-      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList"/>
+      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" data-cy="inspector-data-connector" />
       <small class="form-text text-muted mb-3">{{ $t('Data Connector to use') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="endpoint-list">{{ $t('End Point') }}</label>
-      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList"/>
+      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" data-cy="inspector-endpoint" />
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
