@@ -45,6 +45,7 @@
           <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
         </template>
       </vuetable>
+      DEBUG: {{ debug }}
       <pagination
         ref="pagination"
         :per-page-select-enabled="perPageSelectEnabled"
@@ -175,6 +176,13 @@ export default {
     };
   },
   computed: {
+    debug() {
+      return {
+        perPageSelectEnabled: this.perPageSelectEnabled,
+        tablePagination: this.$refs.pagination &&  this.$refs.pagination.tablePagination,
+        perPageSelectEnabled2: this.$refs.pagination && this.$refs.pagination.perPageSelectEnabled,
+      };
+    },
     parentObj() {
       let parent = this.$parent;
       while ('transientData' in parent.$props) {
