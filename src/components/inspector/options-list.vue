@@ -112,7 +112,7 @@
       </div>
       <div class="row">
         <div class="col text-right">
-          <button type="button" @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3">
+          <button type="button" @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3" data-cy="inspector-edit-json">
             <i class="fas fa-code" aria-hidden="true"/>
             {{ $t('Edit as JSON') }}
           </button>
@@ -149,11 +149,12 @@
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div class="mb-2">
         <label for="json-data">{{ $t('JSON Data') }}</label>
-        <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+        <button type="button" @click="expandEditor" class="btn-sm float-right" data-cy="inspector-monaco-json-expand"><i class="fas fa-expand"/></button>
       </div>
       <div class="small-editor-container">
         <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
           @change="jsonDataChange"
+          data-cy="inspector-monaco-json"
         />
       </div>
 
@@ -161,10 +162,11 @@
         <div class="editor-container">
           <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
             @change="jsonDataChange"
+            data-cy="inspector-monaco-json-expanded"
           />
         </div>
         <div slot="modal-footer">
-          <b-button @click="closePopup" class="btn btn-secondary text-uppercase">
+          <b-button @click="closePopup" class="btn btn-secondary text-uppercase" data-cy="inspector-monaco-json-expanded-close">
             {{ $t('Close') }}
           </b-button>
         </div>
