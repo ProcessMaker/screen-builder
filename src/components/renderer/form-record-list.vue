@@ -45,7 +45,7 @@
           <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
         </template>
       </vuetable>
-      <pagination @vuetable-pagination:change-page="onChangePage" ref="pagination"/>
+      <pagination :per-page-select-enabled="perPageSelectEnabled" @vuetable-pagination:change-page="onChangePage" @changePerPage="onChangePerPage" ref="pagination"/>
     </template>
 
     <b-modal
@@ -146,6 +146,7 @@ export default {
       editIndex: null,
       currentPage: 0,
       paginatorPage: 1,
+      perPageSelectEnabled: false,
       perPage: 50,
       lastPage: 1,
       css: {
@@ -288,6 +289,9 @@ export default {
     },
     onPaginationData(paginationData) {
       this.$refs.pagination.setPaginationData(paginationData);
+    },
+    onChangePerPage(perPage) {
+      this.perPage = parseInt(perPage);
     },
     onChangePage(page) {
       if (page == 'next') {
