@@ -70,19 +70,19 @@
                   </div>
                   <div class="card-body p-2">
                     <label for="option-value">{{ $t('Value') }}</label>
-                    <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+                    <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" data-cy="inspector-option-value" />
                     <div v-if="optionError" class="invalid-feedback d-block text-right">
                       <div>{{ optionError }}</div>
                     </div>
                     <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
-                    <b-form-input id="option-content" v-model="optionContent"/>
+                    <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
                   </div>
 
                   <div class="card-footer text-right p-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="editIndex=null">
                       {{ $t('Cancel') }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+                    <button type="button" class="btn btn-sm btn-secondary" @click="addOption()" data-cy="inspector-option-save">
                       {{ $t('Update') }}
                     </button>
                   </div>
