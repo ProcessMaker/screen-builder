@@ -63,6 +63,14 @@ describe('Form Select List', () => {
     cy.get('[data-cy=inspector-option-content]').type('one');
     cy.get('[data-cy=inspector-option-save]').click();
     cy.get('div:contains("An item with the same key already exists")').should('be.visible');
+    cy.get('[data-cy=inspector-option-value]').clear().type('two');
+    cy.get('[data-cy=inspector-option-content]').clear().type('two');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('[data-cy=inspector-options-edit]').eq(1).click();
+    cy.get('[data-cy=inspector-option-value]').clear().type('one');
+    cy.get('[data-cy=inspector-option-content]').clear().type('one');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('div:contains("An item with the same key already exists")').should('be.visible');
   });
 
   it('Multi select list', () => {
