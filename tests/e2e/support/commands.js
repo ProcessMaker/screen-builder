@@ -75,3 +75,10 @@ Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
     });
   });
 });
+
+Cypress.Commands.add('assertComponentValue', (selector, expectedData) => {
+  cy.get(selector).then((div) => {
+    const data = div[0].__vue__.value;
+    expect(data).to.eql(expectedData);
+  });
+});

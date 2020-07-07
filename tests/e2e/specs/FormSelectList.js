@@ -248,4 +248,38 @@ describe('Form Select List', () => {
       },
     });
   });
+
+  it('Set data source by json', () => {
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-data-sources]').select('Provide Values');
+    cy.get('[data-cy=inspector-add-option]').click();
+    cy.get('[data-cy=inspector-option-value]').type('one');
+    cy.get('[data-cy=inspector-option-content]').type('one');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('[data-cy=inspector-edit-json]').click();
+    cy.assertComponentValue('[data-cy="inspector-monaco-json"]', JSON.stringify([
+      {content:'one', value: 'one'},
+    ]));
+    cy.setVueComponentValue('[data-cy="inspector-monaco-json"]', JSON.stringify([
+      {content:'one', value: 'one'},
+      {content:'two', value: 'two'},
+    ]));
+    cy.get('[data-cy=inspector-monaco-json-expand]').click();
+    cy.setVueComponentValue('[data-cy="inspector-monaco-json-expanded"]', JSON.stringify([
+      {content:'one', value: 'one'},
+      {content:'two', value: 'two'},
+    ], null, 2));
+    cy.get('[data-cy=inspector-monaco-json-expanded-close]').click();
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
+    cy.get('[data-cy=preview-content] span:contains(one)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(two)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(three)').should('not.exist');
+
+    cy.get('[data-cy=preview-content] span:contains(two):first').click();
+    cy.assertPreviewData({
+      form_select_list_1: 'two',
+    });
+  });
 });
