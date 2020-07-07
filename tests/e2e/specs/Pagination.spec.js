@@ -94,7 +94,7 @@ describe('Pagination', () => {
 
   it('Update Per Page', () => {
     cy.setPreviewDataInput(data);
-    cy.setVueComponentProperty('[data-cy=table-pagination]', 'perPageSelectEnabled', 'true');
+    cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'perPageSelectEnabled', true);
     cy.get('.pagination-nav-drop').select('25');
     cy.get('.vuetable tbody').find('tr').should('have.length', '25');
   });
@@ -111,4 +111,3 @@ describe('Pagination', () => {
     cy.get('[data-cy=table-pagination]').should('contain.text', 'Tests');
   });
 });
-  
