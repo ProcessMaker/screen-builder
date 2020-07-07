@@ -51,6 +51,20 @@ describe('Form Select List', () => {
     });
   });
 
+  it('Validate duplicated option', () => {
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-data-sources]').select('Provide Values');
+    cy.get('[data-cy=inspector-add-option]').click();
+    cy.get('[data-cy=inspector-option-value]').type('one');
+    cy.get('[data-cy=inspector-option-content]').type('one');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('[data-cy=inspector-add-option]').click();
+    cy.get('[data-cy=inspector-option-value]').type('one');
+    cy.get('[data-cy=inspector-option-content]').type('one');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('div:contains("An item with the same key already exists")').should('be.visible');
+  });
+
   it('Multi select list', () => {
     cy.get('[data-cy=accordion-DataSource]').click();
     cy.get('[data-cy=inspector-data-sources]').select('Provide Values');
