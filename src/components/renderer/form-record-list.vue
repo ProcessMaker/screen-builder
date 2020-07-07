@@ -45,7 +45,14 @@
           <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
         </template>
       </vuetable>
-      <pagination :per-page-select-enabled="perPageSelectEnabled" @vuetable-pagination:change-page="onChangePage" @changePerPage="onChangePerPage" ref="pagination"/>
+      <pagination
+        ref="pagination"
+        :per-page-select-enabled="perPageSelectEnabled"
+        :single="single"
+        :plural="plural"
+        @vuetable-pagination:change-page="onChangePage"
+        @changePerPage="onChangePerPage"
+      />
     </template>
 
     <b-modal
@@ -141,6 +148,8 @@ export default {
   props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig'],
   data() {
     return {
+      single: '',
+      plural: '',
       addItem: {},
       editItem: {},
       editIndex: null,

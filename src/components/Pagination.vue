@@ -1,14 +1,14 @@
 <template>
-  <div class="row my-2 px-2" v-if="tablePagination && tablePagination.last_page > 1" data-cy="table-pagination">
+  <div class="row my-2 px-2" v-if="tablePagination && (tablePagination.last_page > 1 || perPageSelectEnabled)" data-cy="table-pagination">
     <div class="col-md-6 col-sm-12 pt-1 d-flex">
       <div
         v-if="tablePagination && tablePagination.last_page > 1"
         class="pagination"
-      >{{ tablePagination.from + 1 }} - {{ tablePagination.to }} of {{ tablePagination.total }} {{ title }}
+      >{{ tablePagination.from + 1 }} - {{ tablePagination.to - 1 }} of {{ tablePagination.total }} {{ title }}
       </div>
       <div
         class="pagination"
-        v-if="tablePagination && tablePagination.last_page < 1"
+        v-if="tablePagination && tablePagination.last_page <= 1"
       >{{ tablePagination.total }} {{ title }}
       </div>
     </div>
@@ -80,7 +80,7 @@ export default {
   props: ['perPageSelectEnabled', 'single', 'plural'],
   data() {
     return {
-      perPage: 10,
+      perPage: this.$parent && this.$parent.perPage || 10,
     };
   },
   computed: {
