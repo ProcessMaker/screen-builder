@@ -149,6 +149,8 @@ describe('Form Select List', () => {
     cy.get('[data-cy=inspector-options-variable]').clear().type('options');
     cy.get('[data-cy=inspector-options-label]').clear().type('label');
     cy.get('[data-cy=inspector-value-returned]').select('Object');
+    // todo: fix in vue-form-elements validation (The form select list 1 must be a string.) when object is returned
+    // todo: fin in vue-form-lements default properties for: valueReturned, value and content
 
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
@@ -197,7 +199,7 @@ describe('Form Select List', () => {
     });
   });
 
-  it('Options from data connector (single value)', () => {
+  it('Options from Data Connector (single value)', () => {
     cy.get('[data-cy=accordion-DataSource]').click();
     cy.get('[data-cy=inspector-data-sources]').select('Data Connector');
     cy.get('[data-cy=inspector-data-connector]').select('Persons');
@@ -217,6 +219,33 @@ describe('Form Select List', () => {
     cy.get('[data-cy=preview-content] span:contains(John):first').click();
     cy.assertPreviewData({
       form_select_list_1: '2',
+    });
+  });
+
+  it('Options from Data Connector (object value)', () => {
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-data-sources]').select('Data Connector');
+    cy.get('[data-cy=inspector-data-connector]').select('Persons');
+    cy.get('[data-cy=inspector-endpoint]').select('list');
+    cy.get('[data-cy=inspector-options-variable]').clear().type('response');
+    cy.get('[data-cy=inspector-datasource-content]').clear().type('content');
+    cy.get('[data-cy=inspector-value-returned]').select('Object');
+    // todo: fix in vue-form-elements validation (The form select list 1 must be a string.) of object return and "value" as default id
+    // todo: fin in vue-form-lements default properties for: valueReturned, value and content
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
+    cy.get('[data-cy=preview-content] span:contains(James)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(John)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(Mary)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(Patricia)').should('be.visible');
+
+    cy.get('[data-cy=preview-content] span:contains(John):first').click();
+    cy.assertPreviewData({
+      form_select_list_1: {
+        value: '2',
+        content: 'John',
+      },
     });
   });
 });
