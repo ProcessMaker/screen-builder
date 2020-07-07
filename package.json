@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/screen-builder",
-  "version": "0.24.1",
+  "version": "0.24.2",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
