@@ -122,13 +122,13 @@
     <div v-if="dataSource === dataSourceValues.dataObject || dataSource === dataSourceValues.dataConnector">
       <label for="element-name">{{ $t('Options Variable') }}</label>
       <mustache-helper/>
-      <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name"/>
+      <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name" data-cy="inspector-options-variable" />
       <small class="form-text text-muted mb-3">{{ $t('Get options from this variable. Must be an array.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="value">{{ $t('Option Label Shown') }}</label>
-      <b-form-input id="value" v-model="value" placeholder="Request Variable Property" @change="valueChanged"/>
+      <b-form-input id="value" v-model="value" placeholder="Request Variable Property" @change="valueChanged" data-cy="inspector-options-label" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that displays to the user on the screen.') }}</small>
     </div>
 
@@ -177,7 +177,7 @@
     </div>
 
     <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
-    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
+    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
     <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
   
     <div v-if="dataSource === dataSourceValues.dataConnector">
@@ -196,7 +196,7 @@
 
     <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Variable Data Property') }}</label>
-      <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
+      <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property" data-cy="inspector-options-value" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
     </div>
 

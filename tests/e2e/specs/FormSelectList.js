@@ -5,7 +5,7 @@ describe('Form Select List', () => {
     cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
   });
-  
+
   it('Default properties', () => {
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
@@ -133,6 +133,67 @@ describe('Form Select List', () => {
 
     cy.assertPreviewData({
       form_select_list_1: 'one',
+    });
+  });
+
+  it('Options from Request Variable (object value)', () => {
+    cy.setPreviewDataInput({
+      options: [
+        {id:'one', label: 'one'},
+        {id:'two', label: 'two'},
+      ],
+    });
+
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-data-sources]').select('Request Data');
+    cy.get('[data-cy=inspector-options-variable]').clear().type('options');
+    cy.get('[data-cy=inspector-options-label]').clear().type('label');
+    cy.get('[data-cy=inspector-value-returned]').select('Object');
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
+    cy.get('[data-cy=preview-content] span:contains(one)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(two)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(three)').should('not.exist');
+
+    cy.get('[data-cy=preview-content] span:contains(two):first').click();
+    cy.assertPreviewData({
+      options: [
+        {id:'one', label: 'one'},
+        {id:'two', label: 'two'},
+      ],
+      form_select_list_1: {id:'two', label: 'two'},
+    });
+  });
+
+  it('Options from Request Variable (single value)', () => {
+    cy.setPreviewDataInput({
+      options: [
+        {id:'one', label: 'one'},
+        {id:'two', label: 'two'},
+      ],
+    });
+
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-data-sources]').select('Request Data');
+    cy.get('[data-cy=inspector-options-variable]').clear().type('options');
+    cy.get('[data-cy=inspector-options-label]').clear().type('label');
+    cy.get('[data-cy=inspector-value-returned]').select('Single Value');
+    cy.get('[data-cy=inspector-options-value]').clear().type('id');
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
+    cy.get('[data-cy=preview-content] span:contains(one)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(two)').should('be.visible');
+    cy.get('[data-cy=preview-content] span:contains(three)').should('not.exist');
+
+    cy.get('[data-cy=preview-content] span:contains(two):first').click();
+    cy.assertPreviewData({
+      options: [
+        {id:'one', label: 'one'},
+        {id:'two', label: 'two'},
+      ],
+      form_select_list_1: 'two',
     });
   });
 });
