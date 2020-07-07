@@ -94,6 +94,7 @@ describe('Pagination', () => {
 
   it('Update Per Page', () => {
     cy.setPreviewDataInput(data);
+    cy.wait(500);
     cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'perPageSelectEnabled', true);
     cy.get('.pagination-nav-drop').select('25');
     cy.get('.vuetable tbody').find('tr').should('have.length', '25');
@@ -101,6 +102,7 @@ describe('Pagination', () => {
 
   it('Displays Single Title', () => {
     cy.setPreviewDataInput({form_record_list_1: [{'form_input_1': 'John'}]});
+    cy.wait(500);
     cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'single', 'Test');
     cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'perPageSelectEnabled', true);
     cy.get('[data-cy=table-pagination]').should('contain.text', 'Test');
@@ -108,6 +110,7 @@ describe('Pagination', () => {
 
   it('Displays Plural Title', () => {
     cy.setPreviewDataInput(data);
+    cy.wait(500);
     cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'plural', 'Tests');
     cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'perPageSelectEnabled', true);
     cy.get('[data-cy=table-pagination]').should('contain.text', 'Tests');
