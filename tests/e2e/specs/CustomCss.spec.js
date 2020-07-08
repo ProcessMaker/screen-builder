@@ -9,7 +9,7 @@ describe('Custom CSS', () => {
     cy.get('#custom-css').should('be.visible');
   });
 
-  it('Closes Modal', () => {
+  it.skip('Closes Modal', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
