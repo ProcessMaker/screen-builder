@@ -31,6 +31,7 @@ describe('Custom CSS', () => {
     cy.get('[data-cy=topbar-css]').click();
     cy.get('[data-cy=monaco-editor]').type('div[selector=\'new_input_css\'] {background-color:red;padding:10px;}', {parseSpecialCharSequences: false} );
     cy.get('[data-cy=cancel-button]').click();
+    cy.wait(1000);
     cy.get('[data-cy=topbar-css]').click();
     cy.wait(1000);
     cy.assertComponentValue('[data-cy=monaco-editor]', '');
@@ -45,6 +46,7 @@ describe('Custom CSS', () => {
     cy.get('[data-cy=topbar-css]').click();
     cy.get('[data-cy=monaco-editor]').type('div[selector=\'new_input_css\'] {background-color:red;padding:10px;}', {parseSpecialCharSequences: false} );
     cy.get('[data-cy=save-button]').click();
+    cy.wait(1000);
     cy.get('[data-cy=topbar-css]').click();
     cy.wait(1000);
     cy.assertComponentValue('[data-cy=monaco-editor]', 'div[selector=\'new_input_css\'] {background-color:red;padding:10px;}');
