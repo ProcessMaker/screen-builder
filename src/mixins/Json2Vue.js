@@ -126,10 +126,13 @@ export default {
         this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName }));
         // Create component
         const node = this.createComponent(nodeName, properties);
+        // Create wrapper
+        const wrapper = this.ownerDocument.createElement('div');
+        wrapper.appendChild(node);
         // Extensions.onloaditems to add items to container
-        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node }));
+        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper }));
         // Append node
-        component.appendChild(node);
+        component.appendChild(wrapper);
       });
     },
     registerVariable(name, config = {}) {
