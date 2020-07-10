@@ -18,3 +18,5 @@ workflows:
           post-steps:
             - store_artifacts:
                 path: coverage
+            - store_artifacts:
+                path: tests/e2e/screenshots
