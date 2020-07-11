@@ -204,6 +204,8 @@
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
               @click="toggleAccordion(accordion)"
               :data-cy="`accordion-${ accordionName(accordion).replace(' ', '') }`"
+              :accordion-name="`accordion-${ accordionName(accordion).replace(' ', '') }`"
+              :is-open="accordion.open ? '1' : '0'"
             >
               <i class="fas fa-cog mr-2"/>
               {{ $t(accordionName(accordion)) }}
@@ -216,6 +218,8 @@
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :data-cy="'inspector-' + (item.field || item.config.name)"
+                :field-name="item.field"
+                :field-accordion="`accordion-${ accordionName(accordion).replace(' ', '') }`"
                 :builder="builder"
                 :formConfig="config"
                 :currentPage="currentPage"
@@ -642,6 +646,14 @@ export default {
       this.currentPage = this.config.indexOf(validation.page);
       this.$nextTick(() => {
         this.inspect(validation.item);
+        this.$nextTick(() => {
+          const field = this.$el.querySelector(`[field-name="${validation.field}"]`);
+          if (field) {
+            const accordion = this.$el.querySelector(`[accordion-name="${field.getAttribute('field-accordion')}"]`);
+            accordion && accordion.getAttribute('is-open') === '0' && accordion.click();
+            field.focus instanceof Function && field.focus();
+          }
+        });
       });
     },
     confirmDelete() {

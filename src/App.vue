@@ -121,7 +121,7 @@
         </b-form-checkbox>
 
         <div class="ml-3" @click="showValidationErrors = !showValidationErrors">
-          <button type="button" class="btn btn-light btn-sm">
+          <button type="button" class="btn btn-light btn-sm" data-cy="open-console">
             <i class="fas fa-angle-double-up"/>
             {{ $t('Open Console') }}
             <span v-if="allErrors === 0" class="badge badge-success">
@@ -136,7 +136,7 @@
           </button>
         </div>
 
-        <div v-if="showValidationErrors" class="validation-panel position-absolute border-left border-top overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+        <div v-if="showValidationErrors" class="validation-panel position-absolute border-left border-top overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}" data-cy="validation-panel">
           <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
             <i class="fas fa-times-circle text-danger mr-3"/>
             {{ $t('Invalid JSON Data Object') }}
@@ -145,6 +145,7 @@
             v-for="(validation,index) in validationErrors"
             :key="index"
             @click="focusInspector(validation)"
+            data-cy="focus-inspector"
           >
             <i class="fas fa-times-circle text-danger d-block mr-3"/>
             <span class="ml-2 text-dark font-weight-bold text-left">
@@ -412,6 +413,7 @@ export default {
                 message: error,
                 page,
                 item,
+                field,
               });
             });
           });
