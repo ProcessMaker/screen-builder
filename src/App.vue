@@ -60,7 +60,7 @@
       <!-- Card Body -->
       <b-card-body class="overflow-auto p-0 m-0">
         <!-- Vue-form-builder -->
-        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" :screen="screen" />
+        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" :screen="screen" title="Default" />
 
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
@@ -401,7 +401,7 @@ export default {
 
         // To include another language in the Validator with variable processmaker
         if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
-          validator.useLang(globalObject.ProcessMaker.user.lang);
+          Validator.useLang(globalObject.ProcessMaker.user.lang);
         }
 
         // Validation will not run until you call passes/fails on it
