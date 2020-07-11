@@ -189,10 +189,6 @@ let globalObject = typeof window === 'undefined'
   ? global
   : window;
 
-if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
-  Validator.useLang(globalObject.ProcessMaker.user.lang);
-}
-
 Validator.register('attr-value', value => {
   return value.match(/^[a-zA-Z0-9-_]+$/);
 }, 'Must be letters, numbers, underscores or dashes');
@@ -333,6 +329,9 @@ export default {
     },
   },
   mounted() {
+    if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+      Validator.useLang(globalObject.ProcessMaker.user.lang);
+    }
     // Iterate through our initial config set, calling this.addControl
     controlConfig.forEach(config => {
       config.control.inspector.push(...globalProperties[0].inspector);
