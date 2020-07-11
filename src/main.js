@@ -32,6 +32,7 @@ window.ProcessMaker = {
   isStub: false,//true,
   user: {
     id: 1,
+    lang: 'en',
   },
   apiClient: {
     get(url) {
