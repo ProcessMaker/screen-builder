@@ -44,9 +44,6 @@ export default {
     runSearch(advanced) {
       this.$emit('submit', this.query);
     },
-    hasButtons() {
-      return !!this.$slots.buttons;
-    },
   },
   mounted() {
     this.query = this.value;
