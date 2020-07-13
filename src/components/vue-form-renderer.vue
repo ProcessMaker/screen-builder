@@ -13,6 +13,8 @@ import CustomCSS from './custom-css';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import DataProvider from '../DataProvider';
+import { getItemsFromConfig } from '../itemProcessingUtils';
+import { ValidatorFactory } from '../factories/ValidatorFactory';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -41,6 +43,7 @@ export default {
   },
   data() {
     return {
+      formSubmitErrorClass: '',
       // watcher URLs
       watchers_config: {
         api: {
@@ -104,6 +107,50 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
+    checkForRecordList(items, config) {
+      items.forEach(item => {
+        if (item.items) {
+          this.checkForRecordList(item.items, config);
+        }
+
+        if (item.component === 'FormRecordList') {
+          this.removeRecordListForms(item, config);
+        }
+      });
+      return config;
+    },
+    removeRecordListForms(item, config) {
+      const recordListFormId = item.config.form;
+      delete config[recordListFormId];
+      return config;
+    },
+    checkForNestedScreenErrors(child) {
+      if (child.$options._componentTag !== 'FormNestedScreen') {
+        return;
+      }
+
+      return child.errors();
+    },
+    isValid() {
+      const items = getItemsFromConfig(this.config);
+      let config = _.cloneDeep(this.config);
+
+      this.checkForRecordList(items, config);
+      this.dataTypeValidator = ValidatorFactory(config, this.data);
+      this.errors = this.dataTypeValidator.getErrors();
+
+      this.$children.forEach(child => {
+        const childErrors = this.checkForNestedScreenErrors(child);
+        if (!childErrors) {
+          return;
+        }
+        this.errors = Object.assign(this.errors, childErrors);
+      });
+      if (this.errors) {
+        this.formSubmitErrorClass = 'invalid-form-submission';
+      }
+      return _.size(this.errors) === 0;
+    },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {
         Object.keys(this.customFunctions).forEach(key => {
@@ -116,8 +163,7 @@ export default {
     },
     submit() {
       if (this.isValid()) {
-        this.setDefaultValues();
-        this.$emit('submit', this.transientData);
+        this.$emit('submit', this.data);
       }
     },
     parseCss() {
