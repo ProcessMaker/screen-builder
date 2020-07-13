@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import Mustache from 'mustache';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';

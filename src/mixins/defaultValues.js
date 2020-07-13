@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import Mustache from 'mustache';
 import _ from 'lodash';
 
