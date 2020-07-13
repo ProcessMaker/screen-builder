@@ -15,4 +15,25 @@ describe('Screen Builder', () => {
     cy.get('[data-cy=focus-inspector]').click();
     cy.get('[data-cy=inspector-name]').should('have.class', 'is-invalid');
   });
+
+  it('Test switch between design and preview', () => {
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]').type('Bob');
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.assertPreviewData({
+      form_input_1: null,
+    });
+  });
+
+  it('Test invalid preview input data', () => {
+    cy.setPreviewDataInput('INVALID');
+    cy.get('[data-cy=mode-preview]').click();
+    // Assertion: The input data text editor has value "INVALID"
+    cy.assertComponentValue('[data-cy=preview-data-input]', 'INVALID');
+    // Assertion: Screen is still rendered with only default data
+    cy.assertComponentValue('[data-cy=screen-renderer]', {
+      form_input_1: null,
+    });
+  });
 });

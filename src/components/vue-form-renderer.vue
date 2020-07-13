@@ -1,6 +1,7 @@
 <template>
   <div :class="containerClass">
-    <screen-renderer :value="data" :definition="{ config, computed, customCss, watchers }" @submit="submit" />
+    <custom-css>{{ customCssWrapped }}</custom-css>
+    <screen-renderer :value="data" :definition="{ config, computed, customCss, watchers }" @submit="submit" data-cy="screen-renderer" />
     <hr>
     <div v-if="false" class="page" :class="formSubmitErrorClass">
       <div
