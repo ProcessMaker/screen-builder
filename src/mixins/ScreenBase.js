@@ -13,7 +13,7 @@ export default {
     },
   },
   methods: {
-    submit() {
+    submitForm() {
       this.$emit('submit', this.vdata);
     },
     getValue(name, object = this) {

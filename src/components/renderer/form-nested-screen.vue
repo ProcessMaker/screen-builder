@@ -62,7 +62,7 @@ export default {
       },
       set(data) {
         Object.keys(data).forEach((variable) => {
-          this.$set(this.validationData, variable, data[variable]);
+          this.validationData && this.$set(this.validationData, variable, data[variable]);
         });
       },
     },

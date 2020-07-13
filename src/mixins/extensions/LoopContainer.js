@@ -25,7 +25,7 @@ export default {
         }),
         ':value': 'loopRow',
         ':components': this.byRef(this.components),
-        '@submit': 'submit',
+        '@submit': 'submitForm',
       });
       const addLoopRow = this.createComponent('AddLoopRow', {
         ':value': element.config.settings.varname,

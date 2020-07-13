@@ -41,6 +41,13 @@ export default {
   },
   data() {
     return {
+      // watcher URLs
+      watchers_config: {
+        api: {
+          execute: null,
+          execution: null,
+        },
+      },
       customCssWrapped: '',
       // Custom Functions for Rich Text Control
       customFunctions: {
@@ -76,6 +83,12 @@ export default {
       deep: true,
       handler() {
         this.$nextTick(() => {this.registerCustomFunctions();});
+      },
+    },
+    data: {
+      deep: true,
+      handler() {
+        this.$emit('update', this.data);
       },
     },
   },

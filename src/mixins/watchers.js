@@ -80,6 +80,7 @@ export default {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker.user.id}`;
       const event = 'ProcessMaker\\Notifications\\ScriptResponseNotification';
       this.echoListeners.push({
+        event,
         channel,
         broadcastEvent,
       });

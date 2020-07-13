@@ -20,7 +20,7 @@ export default {
       properties.disabled = element.config.interactive || element.config.disabled;
       properties[':form-config'] = '$parent && $parent.definition.config';
       // Events
-      properties['@submit'] = 'submit';
+      properties['@submit'] = 'submitForm';
     },
   },
   mounted() {
