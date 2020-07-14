@@ -1,7 +1,7 @@
 <template>
   <div class="form-group">
-    <form-checkbox :label="$t('Render image from a variable name')" v-model="renderImage"></form-checkbox>
-    <form-input v-if="renderImage" :label="$t('Variable Name')" v-model="imageName"></form-input>
+    <form-checkbox :label="$t('Render image from a variable name')" v-model="renderImage"/>
+    <form-input v-if="renderImage" :label="$t('Variable Name')" v-model="imageName"/>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
   props: ['value'],
   components: {
     FormInput,
-    FormCheckbox
+    FormCheckbox,
   },
   data() {
     return {
@@ -27,29 +27,29 @@ export default {
   },
   watch: {
     value() {
-        if (this.value == undefined) {
-            this.renderImage = false;
-        } else  {
-            this.renderImage = true;
-            this.imageName = this.value;
-        }
+      if (this.value == undefined) {
+        this.renderImage = false;
+      } else  {
+        this.renderImage = true;
+        this.imageName = this.value;
+      }
     },
     imageName() {
-        this.$emit('input', this.imageName);
+      this.$emit('input', this.imageName);
     },
-    renderImage(value) {
-        if (!this.renderImage) {
-            this.renderImage = false;
-            this.imageName = null
-            this.$emit('input', this.imageName);
-        }
-    }
+    renderImage() {
+      if (!this.renderImage) {
+        this.renderImage = false;
+        this.imageName = null;
+        this.$emit('input', this.imageName);
+      }
+    },
   },
   mounted() {
     if (this.value) {
-        this.renderImage = true;
-        this.imageName = this.value;
+      this.renderImage = true;
+      this.imageName = this.value;
     }
-  }
+  },
 };
 </script>

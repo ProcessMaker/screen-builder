@@ -203,7 +203,9 @@ export default {
       if (value.includes('{{')) {
         try {
           result = Mustache.render('{' + value + '}', this.defaultsFormData);
-        } catch (e) {};
+        } catch (e) {
+          e;
+        }
       }
       this.defaultsFormData[path] = result;
     },

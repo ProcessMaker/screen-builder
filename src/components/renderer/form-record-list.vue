@@ -363,6 +363,7 @@ export default {
       this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
 
+      // eslint-disable-next-line no-unused-vars
       let {_parent, ...result} = this.addItem;
       this.initFormValues = _.cloneDeep(result);
     },
