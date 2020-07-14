@@ -200,9 +200,11 @@ export default {
 
     setBasicDefaultValue(path, value) {
       let result = value;
-      try {
-        result = Mustache.render(value, this.defaultsFormData);
-      } catch (e) { e; }
+      if (value.includes('{{')) {
+        try {
+          result = Mustache.render('{' + value + '}', this.defaultsFormData);
+        } catch (e) {};
+      }
       this.defaultsFormData[path] = result;
     },
     setJsDefaultValue(path, value) {

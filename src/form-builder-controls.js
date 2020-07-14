@@ -194,6 +194,7 @@ export default [
           optionsList: [],
           key:'value',
           value:'content',
+          valueTypeReturned: 'single'
         },
         helper: null,
       },
@@ -506,19 +507,11 @@ export default [
         },
       },
       {
-        type: 'FormCheckbox',
-        field: 'renderImage',
+        type: 'ImageVariable',
+        field: 'imageName',
         config: {
-          label: 'Render image from a variable name',
+          label: 'Render from a variable name',
           helper: null,
-        },
-      },
-      {
-        type: 'FormInput',
-        field: 'variableName',
-        config: {
-          label: 'Variable Name',
-          helper: 'Variable of the image to render',
         },
       },
       helperTextProperty,
