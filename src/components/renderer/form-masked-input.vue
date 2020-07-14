@@ -111,11 +111,9 @@ export default {
     getUserDateFormat,
     getUserDateTimeFormat,
     convertToData(value) {
-      if (this.dataFormat === 'percentage') return value / 100;
       return value;
     },
     convertFromData(value) {
-      if (this.dataFormat === 'percentage') return value * 100;
       if (this.dataFormat === 'datetime') return moment(value).format(this.getUserDateTimeFormat());
       if (this.dataFormat === 'date') return moment(value).format(this.getUserDateFormat());
       return value;
