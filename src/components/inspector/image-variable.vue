@@ -1,7 +1,7 @@
 <template>
   <div class="form-group">
-    <form-checkbox :label="$t('Render image from a variable name')" v-model="renderImage"/>
-    <form-input v-if="renderImage" :label="$t('Variable Name')" v-model="imageName"/>
+    <form-checkbox :label="$t('Render image from a variable name')" v-model="renderImage" data-cy="inspector-renderImage" />
+    <form-input v-if="renderImage" :label="$t('Variable Name')" v-model="imageName" data-cy="inspector-variableName" />
   </div>
 </template>
 
@@ -9,18 +9,25 @@
 import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
 
 export default {
-  props: ['value'],
+  props: ['value', 'selectedControl'],
   components: {
     FormInput,
     FormCheckbox,
   },
   data() {
     return {
-      renderImage: false,
       imageName: null,
     };
   },
   computed: {
+    renderImage: {
+      get() {
+        return this.selectedControl.config.renderImage;
+      },
+      set(value) {
+        this.selectedControl.config.renderImage = value;
+      },
+    },
     mode() {
       return this.$root.$children[0].mode;
     },

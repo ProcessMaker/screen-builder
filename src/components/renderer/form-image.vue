@@ -10,7 +10,7 @@
 import { get } from 'lodash';
 
 export default {
-  props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName', 'validationData'],
+  props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName', 'validationData', 'imageName'],
   data() {
     return {
       mode: this.$root.$children[0].mode,
@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     imageUrl() {
-      return get(this.validationData, this.variableName);
+      return get(this.validationData, this.variableName || this.imageName);
     },
   },
 };
