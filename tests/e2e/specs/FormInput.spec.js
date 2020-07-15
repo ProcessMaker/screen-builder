@@ -83,7 +83,7 @@ describe('Form Input', () => {
     cy.get('[data-cy=preview-content] [name=form_input_1]').type('50');
     cy.get('[name=form_input_1]:visible').should('have.value', '50.00 %');
     cy.assertPreviewData({
-      form_input_1: 0.5,
+      form_input_1: 50,
     });
   });
   it('Data type Datetime', () => {
