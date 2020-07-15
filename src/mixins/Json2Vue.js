@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import extensions from './extensions';
-import ScreenRendererError from '../components/renderer/screen-renderer-error';
 import ScreenBase from './ScreenBase';
 
 export default {
@@ -37,6 +36,9 @@ export default {
       const warnHandler = Vue.config.warnHandler;
       const errorHandler = Vue.config.errorHandler;
       const errors = [];
+      this.building.error = '';
+      this.building.component = '';
+      this.building.errors = [];
       let VueComponent;
       try {
         Vue.config.warnHandler = err => {
@@ -54,17 +56,16 @@ export default {
         instance.$parent = this;
         instance.$mount();
         if (errors.length > 0) {
-          throw 'Building error';
+          throw this.$t('Building error');
         }
         this.codigo = component;
         return VueComponent;
       } catch (error) {
-        return {
-          components: { ScreenRendererError },
-          data() {
-            return { component, error, errors };
-          },
-          template: '<screen-renderer-error :component="component" :error="error" :errors="errors" />',
+        this.building.error = error;
+        this.building.component = component;
+        this.building.errors = errors;
+        return VueComponent || {
+          template: '<div></div>',
         };
       } finally {
         Vue.config.warnHandler = warnHandler;
@@ -152,6 +153,9 @@ export default {
     },
     componentDefinition() {
       let component;
+      this.building.error = '';
+      this.building.component = '';
+      this.building.errors = [];
       try {
         const template = this.parse();
         // Extensions.onparse
@@ -186,12 +190,11 @@ export default {
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
       } catch (error) {
-        return {
-          components: { ScreenRendererError },
-          data() {
-            return { component, error, errors: [] };
-          },
-          template: '<screen-renderer-error :component="component" :error="error" :errors="errors" />',
+        this.building.error = error;
+        this.building.component = component;
+        this.building.errors = [];
+        return component || {
+          template: '<div></div>',
         };
       }
     },
