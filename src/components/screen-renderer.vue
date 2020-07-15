@@ -1,7 +1,7 @@
 <template>
   <b-container>
     <component :is="component" :vdata="value" @submit="submit" />
-    <screen-renderer-error v-if="building.error" :component="building.component" :error="building.error" :errors="building.errors" />
+    <screen-renderer-error v-if="building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
 </template>
@@ -25,6 +25,7 @@ export default {
       codigo: '',
       self: this,
       building: {
+        show: false,
         error: '',
         component: '',
         errors: [],

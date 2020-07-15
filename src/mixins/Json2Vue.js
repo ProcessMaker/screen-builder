@@ -39,6 +39,7 @@ export default {
       this.building.error = '';
       this.building.component = '';
       this.building.errors = [];
+      this.building.show = false;
       let VueComponent;
       try {
         Vue.config.warnHandler = err => {
@@ -64,6 +65,7 @@ export default {
         this.building.error = error;
         this.building.component = component;
         this.building.errors = errors;
+        this.building.show = true;
         return VueComponent || {
           template: '<div></div>',
         };
@@ -156,6 +158,7 @@ export default {
       this.building.error = '';
       this.building.component = '';
       this.building.errors = [];
+      this.building.show = false;
       try {
         const template = this.parse();
         // Extensions.onparse
@@ -193,6 +196,7 @@ export default {
         this.building.error = error;
         this.building.component = component;
         this.building.errors = [];
+        this.building.show = true;
         return component || {
           template: '<div></div>',
         };
