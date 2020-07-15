@@ -1,6 +1,7 @@
 <template>
   <b-container>
     <component :is="component" :vdata="value" @submit="submit" />
+    <screen-renderer-error v-if="building.error" :component="building.component" :error="building.error" :errors="building.errors" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
 </template>
@@ -11,16 +12,23 @@ import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
 import WatchersSynchronous from '@/components/watchers-synchronous';
+import ScreenRendererError from '../components/renderer/screen-renderer-error';
+
 Vue.use(VueFormElements);
 Vue.component('FormButton', FormButton);
 
 export default {
-  components: { WatchersSynchronous },
+  components: { WatchersSynchronous, ScreenRendererError },
   mixins: [ Json2Vue ],
   data() {
     return {
       codigo: '',
       self: this,
+      building: {
+        error: '',
+        component: '',
+        errors: [],
+      },
     };
   },
   mounted() {

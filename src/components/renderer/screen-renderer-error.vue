@@ -1,11 +1,10 @@
 <template>
-  <div class="text-danger">
-    <h4>{{ error }}</h4>
-    <ul v-for="(error,index) in errors" :key="`error-${index}`"><li>{{ error }}</li></ul>
-    {{ component && component.template }}
-    <hr>
-    {{ component && component.data }}
-  </div>
+  <b-alert show variant="danger" dismissible>
+    <b>
+      {{ error }}
+    </b>
+    <ul><li  v-for="(error,index) in errors" :key="`error-${index}`">{{ error }}</li></ul>
+  </b-alert>
 </template>
 
 <script>
@@ -14,6 +13,11 @@ export default {
     component: null,
     error: null,
     errors: null,
+  },
+  data() {
+    return {
+      show: false,
+    };
   },
 };
 </script>
