@@ -43,7 +43,7 @@
           </keep-alive>
         </div>
       </div>
-      <custom-css>{{ customCssWrapped }}</custom-css>
+      <custom-css-output>{{ customCssWrapped }}</custom-css-output>
       <watchers-synchronous ref="watchersSynchronous"/>
     </div><!-- end page -->
   </div><!-- end custom-css-scope -->
@@ -51,7 +51,6 @@
 
 <script>
 import Vue from 'vue';
-import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
 import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible, defaultValues } from '@/mixins';
 import * as renderer from './renderer';
@@ -76,17 +75,11 @@ import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import Mustache from 'mustache';
 import DataProvider from '../DataProvider';
+import CustomCssOutput from './custom-css-output';
 
 const csstree = require('css-tree');
 const Scrollparent = require("scrollparent");
 
-Vue.component('custom-css', {
-  render(createElement) {
-    return createElement('style', this.$slots.default);
-  },
-});
-
-Vue.use(VueDeepSet);
 Vue.use(DataProvider);
 
 export default {
@@ -109,6 +102,7 @@ export default {
     FormMultiColumn,
     CustomCSS,
     FormLoop,
+    CustomCssOutput,
     ...inspector,
     ...renderer,
   },

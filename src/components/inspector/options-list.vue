@@ -152,14 +152,14 @@
         <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
       </div>
       <div class="small-editor-container">
-        <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
+        <monaco-editor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
           @change="jsonDataChange"
         />
       </div>
 
       <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
         <div class="editor-container">
-          <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
+          <monaco-editor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
             @change="jsonDataChange"
           />
         </div>
@@ -227,8 +227,6 @@ import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
 import MustacheHelper from './mustache-helper'
-require('monaco-editor/esm/vs/editor/editor.main');
-
 
 export default {
   components: {
