@@ -29,7 +29,7 @@ export default {
         if (!params.element.container) {
           this.loadFieldProperties(params);
         }
-        params.properties[':config'] = this.byRef(params.element.config);
+        params.properties[':config'] = this.byValue(params.element.config);
         params.properties[':transientData'] = 'vdata';
       },
     });

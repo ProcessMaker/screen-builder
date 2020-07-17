@@ -6,10 +6,6 @@ export default {
       type: Object,
       required: true,
     },
-    showErrors: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     references__() {
