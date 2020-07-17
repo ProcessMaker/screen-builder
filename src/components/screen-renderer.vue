@@ -36,8 +36,11 @@ export default {
     this.component = this.buildComponent();
   },
   watch: {
-    definition() {
-      this.component = this.buildComponent();
+    definition: {
+      deep: true,
+      handler() {
+        this.component = this.buildComponent();
+      },
     },
   },
 };

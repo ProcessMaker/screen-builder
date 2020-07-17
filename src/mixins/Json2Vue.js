@@ -13,6 +13,10 @@ export default {
         return {};
       },
     },
+    showErrors: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
