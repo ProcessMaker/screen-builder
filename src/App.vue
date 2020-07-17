@@ -74,6 +74,7 @@
               :custom-css="customCSS"
               :watchers="watchers"
               v-on:css-errors="cssErrors = $event"
+              :show-errors="true"
             />
           </b-col>
 

@@ -1,7 +1,7 @@
 <template>
   <div :class="containerClass">
     <custom-css>{{ customCssWrapped }}</custom-css>
-    <screen-renderer :value="transientData" :definition="{ config, computed, customCss, watchers }" @submit="submit" data-cy="screen-renderer" />
+    <screen-renderer :value="transientData" :definition="{ config, computed, customCss, watchers }" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" />
   </div>
 </template>
 
@@ -31,7 +31,7 @@ Vue.use(DataProvider);
 export default {
   name: 'VueFormRenderer',
   components: { CustomCSS },
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors'],
   model: {
     prop: 'data',
     event: 'update',

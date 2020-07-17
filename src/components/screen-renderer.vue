@@ -1,7 +1,7 @@
 <template>
   <b-container>
     <component :is="component" :vdata="value" @submit="submit" />
-    <screen-renderer-error v-if="building.error" v-model="building" />
+    <screen-renderer-error v-if="showErrors && building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
 </template>
