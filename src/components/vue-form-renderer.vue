@@ -1,8 +1,8 @@
 <template>
   <div :class="containerClass">
     <custom-css>{{ customCssWrapped }}</custom-css>
-    <screen-renderer :value="data" :definition="{ config, computed, customCss, watchers }" @submit="submit" data-cy="screen-renderer" />
-  </div><!-- end custom-css-scope -->
+    <screen-renderer :value="transientData" :definition="{ config, computed, customCss, watchers }" @submit="submit" data-cy="screen-renderer" />
+  </div>
 </template>
 
 <script>
@@ -43,6 +43,7 @@ export default {
   },
   data() {
     return {
+      transientData: JSON.parse(JSON.stringify(this.data)),
       formSubmitErrorClass: '',
       // watcher URLs
       watchers_config: {
@@ -88,10 +89,10 @@ export default {
         this.$nextTick(() => {this.registerCustomFunctions();});
       },
     },
-    data: {
+    transientData: {
       deep: true,
       handler() {
-        this.$emit('update', this.data);
+        this.$emit('update', this.transientData);
       },
     },
   },
