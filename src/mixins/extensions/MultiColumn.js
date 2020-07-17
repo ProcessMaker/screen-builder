@@ -4,7 +4,6 @@ export default {
       properties.class = this.elementCssClass(element);
       properties.ref = 'container';
       properties.selected = 'selected';
-      properties[':transientData'] = 'vdata';
       //properties['v-model'] = "element.items";
       //@submit="submit"
       properties[':config'] = JSON.stringify(element.config);
