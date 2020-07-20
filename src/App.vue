@@ -6,10 +6,10 @@
         <b-row>
           <b-col>
             <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'" data-cy="mode-editor">
+              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('editor')" data-cy="mode-editor">
                 <i class="fas fa-drafting-compass pr-1"/>{{ $t('Design') }}
               </b-button>
-              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'" data-cy="mode-preview">
+              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('preview')" data-cy="mode-preview">
                 <i class="fas fa-cogs pr-1"/>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
@@ -66,6 +66,7 @@
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
           <b-col class="overflow-auto h-100" data-cy="preview-content">
             <vue-form-renderer ref="renderer"
+              :key="rendererKey"
               v-model="previewData"
               @submit="previewSubmit"
               :config="config"
@@ -220,6 +221,7 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      rendererKey: 0,
       screen: {
         id: 1,
       },
@@ -266,15 +268,6 @@ export default {
     WatchersPopup,
   },
   watch: {
-    mode(mode) {
-      if (mode === 'preview') {
-        this.previewData = this.previewInput ? JSON.parse(this.previewInput) : null;
-      }
-    },
-    config() {
-      // Reset the preview data with clean object to start
-      this.previewData = {};
-    },
     previewInput() {
       if (this.previewInputValid) {
         // Copy data over
@@ -350,6 +343,13 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
+    changeMode(mode) {
+      this.mode = mode;
+      this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
+      this.$nextTick(() => {
+        this.rendererKey++;
+      });
+    },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
       const savedWatchers = localStorage.getItem('savedWatchers');
