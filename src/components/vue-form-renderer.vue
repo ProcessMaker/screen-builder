@@ -1,7 +1,7 @@
 <template>
   <div :class="containerClass">
     <custom-css>{{ customCssWrapped }}</custom-css>
-    <screen-renderer :value="data" :definition="{ config, computed, customCss, watchers }" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" />
+    <screen-renderer :value="data" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" />
   </div>
 </template>
 
@@ -37,6 +37,14 @@ export default {
     event: 'update',
   },
   computed: {
+    definition() {
+      return {
+        config: this.config,
+        computed: this.computed,
+        customCss: this.customCss,
+        watcher: this.watchers,
+      };
+    },
     containerClass() {
       return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
     },
