@@ -37,20 +37,18 @@ export default {
     event: 'update',
   },
   computed: {
-    definition() {
-      return {
-        config: this.config,
-        computed: this.computed,
-        customCss: this.customCss,
-        watcher: this.watchers,
-      };
-    },
     containerClass() {
       return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
     },
   },
   data() {
     return {
+      definition: {
+        config: this.config,
+        computed: this.computed,
+        customCss: this.customCss,
+        watchers: this.watchers,
+      },
       formSubmitErrorClass: '',
       // watcher URLs
       watchers_config: {
