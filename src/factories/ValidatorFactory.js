@@ -1,7 +1,6 @@
 const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {
-
   const validate = {};
   validate.validator = null;
   validate.config = config;
@@ -9,14 +8,13 @@ export function ValidatorFactory(config, data) {
   validate.elements = {};
   validate.rules = {};
 
-
   /**
    * Search elements and validation rules from the screen configuration
    *
    * @param items from screen configuration.
    */
   validate.getDataAndRules = (items) => {
-    items.forEach(item => {
+    items.forEach((item) => {
       //If the element has containers
       if (Array.isArray(item)) {
         validate.getDataAndRules(item);
@@ -24,23 +22,39 @@ export function ValidatorFactory(config, data) {
 
       //If the element has items
       if (item.items) {
-        validate.getDataAndRules(item.items);
+        if (item.component === 'FormLoop') {
+          item.items.forEach((itemLoop) => {
+            if (
+              itemLoop.config &&
+              itemLoop.config.name &&
+              itemLoop.config.validation
+            ) {
+              let name = item.config.name + '.*.' + itemLoop.config.name;
+              validate.addRule(name, itemLoop.config.validation);
+            }
+          });
+        } else {
+          validate.getDataAndRules(item.items);
+        }
       }
 
       //If the element has configuration only
       if (item.config && item.config.name && item.config.validation) {
-        validate.elements[`${item.config.name}`] = validate.data[item.config.name];
-        if (typeof item.config.validation === 'string') {
-          validate.rules[`${item.config.name}`] = item.config.validation;
-        } else {
-          let validationRule = [];
-          item.config.validation.forEach(validation => {
-            validationRule.push(validation.value);
-          });
-          validate.rules[`${item.config.name}`] = validationRule;
-        }
+        validate.addRule(item.config.name, item.config.validation);
       }
     });
+  };
+
+  validate.addRule = (name, validation) => {
+    if (typeof validation === 'string') {
+      validate.rules[name] = validation;
+    } else {
+      let validationRule = [];
+      validation.forEach((rule) => {
+        validationRule.push(rule.value);
+      });
+      validate.rules[name] = validationRule;
+    }
   };
 
   /**
@@ -48,7 +62,7 @@ export function ValidatorFactory(config, data) {
    */
   validate.getValidator = () => {
     validate.getDataAndRules(validate.config);
-    validate.validator = new Validator(validate.elements, validate.rules);
+    validate.validator = new Validator(validate.data, validate.rules);
   };
 
   /**
