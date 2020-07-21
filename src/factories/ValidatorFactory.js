@@ -23,16 +23,7 @@ export function ValidatorFactory(config, data) {
       //If the element has items
       if (item.items) {
         if (item.component === 'FormLoop') {
-          item.items.forEach((itemLoop) => {
-            if (
-              itemLoop.config &&
-              itemLoop.config.name &&
-              itemLoop.config.validation
-            ) {
-              let name = item.config.name + '.*.' + itemLoop.config.name;
-              validate.addRule(name, itemLoop.config.validation);
-            }
-          });
+          validate.ruleFormLoop(item.config.name, item.items);
         } else {
           validate.getDataAndRules(item.items);
         }
@@ -55,6 +46,26 @@ export function ValidatorFactory(config, data) {
       });
       validate.rules[name] = validationRule;
     }
+  };
+
+  validate.ruleFormLoop = (loopName, items) => {
+    items.forEach((itemLoop) => {
+      if (Array.isArray(itemLoop)) {
+        validate.ruleFormLoop(loopName, itemLoop);
+      }
+
+      if (itemLoop.items) {
+        validate.ruleFormLoop(loopName, itemLoop.items);
+      }
+      if (
+        itemLoop.config &&
+        itemLoop.config.name &&
+        itemLoop.config.validation
+      ) {
+        let name = loopName + '.*.' + itemLoop.config.name;
+        validate.addRule(name, itemLoop.config.validation);
+      }
+    });
   };
 
   /**
