@@ -55,7 +55,11 @@ export function ValidatorFactory(config, data) {
       }
 
       if (itemLoop.items) {
-        validate.ruleFormLoop(loopName, itemLoop.items);
+        if (itemLoop.component === 'FormLoop') {
+          validate.ruleFormLoop(loopName +'.*.'+itemLoop.config.name, itemLoop.items);
+        } else {
+          validate.ruleFormLoop(loopName, itemLoop.items);
+        }
       }
       if (
         itemLoop.config &&
