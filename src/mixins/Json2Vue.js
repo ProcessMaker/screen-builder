@@ -78,18 +78,18 @@ export default {
         Vue.config.errorHandler = errorHandler;
       }
     },
-    parse() {
+    parse(screen) {
       const owner = this.ownerDocument.createElement('div');
-      this.loadPages(this.definition.config, owner);
+      this.loadPages(this.definition.config, owner, screen);
       return '<div>' + owner.innerHTML + '</div>';
     },
-    loadPages(pages, owner) {
+    loadPages(pages, owner, screen) {
       this.variables.splice(0);
       // Extensions.onloadproperties
       this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner }));
       pages.forEach((page, index) => {
         const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
-        this.loadItems(page.items, component);
+        this.loadItems(page.items, component, screen);
         owner.appendChild(component);
       });
     },
@@ -124,20 +124,20 @@ export default {
       this.references__.push(value);
       return reference;
     },
-    loadItems(items, component) {
+    loadItems(items, component, screen) {
       items.forEach(element => {
         const componentName = element[this.nodeNameProperty];
         const nodeName = this.alias[componentName] || componentName;
         const properties = { ...element.config };
         // Extensions.onloadproperties
-        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName }));
+        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen }));
         // Create component
         const node = this.createComponent(nodeName, properties);
         // Create wrapper
         const wrapper = this.ownerDocument.createElement('div');
         wrapper.appendChild(node);
         // Extensions.onloaditems to add items to container
-        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper }));
+        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper, screen }));
         // Append node
         component.appendChild(wrapper);
       });
@@ -164,22 +164,23 @@ export default {
       this.building.errors = [];
       this.building.show = false;
       try {
-        const template = this.parse();
-        // Extensions.onparse
-        this.extensions.forEach((ext) => {
-          ext.onparse instanceof Function ? ext.onparse.bind(this)(template) : null;
-        });
         component = {
           mixins: [ScreenBase],
-          components: {}, //this.components,
+          components: {},
           props: {},
           computed: {},
           methods: {},
           data: {},
           watch: {},
-          template,
           mounted: [],
+          validations: {},
         };
+        const template = this.parse(component);
+        // Extensions.onparse
+        this.extensions.forEach((ext) => {
+          ext.onparse instanceof Function ? ext.onparse.bind(this)(template) : null;
+        });
+        component.template = template;
         // Extensions.onbuild
         this.extensions.forEach((ext) => {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)(component) : null;
