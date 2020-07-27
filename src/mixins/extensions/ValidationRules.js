@@ -42,10 +42,26 @@ const validators = {
   ipAddress,
   macAddress,
   sameAs,
+  same: sameAs,
   url,
   not,
   or,
   and,
+};
+function locatorABParam(a, b) {
+  return function() {
+    return this.getValue(a, this) == b;
+  };
+}
+function locatorAParam(a) {
+  return function() {
+    return this.getValue(a, this);
+  };
+}
+const validationsWithLocator = {
+  requiredIf: locatorABParam,
+  requiredUnless: locatorABParam,
+  sameAs: locatorAParam,
 };
 export default {
   mounted() {
@@ -55,12 +71,25 @@ export default {
         const validationRule = get(screen.validations, element.config.name);
         if (element.config.validation instanceof Array) {
           element.config.validation.forEach((validation) => {
-            const rule = validation.value.split(':')[0];
-            validationRule[rule] = validators[rule];
+            const rule = this.camelCase(validation.value.split(':')[0]);
+            let validationFn = validators[rule];
+            if (validation.configs instanceof Array) {
+              const params = [];
+              validation.configs.forEach(cnf => {
+                params.push(cnf.value);
+              });
+              validationFn = validationsWithLocator[validationFn] && validationFn(validationsWithLocator[validationFn](...params)) || validationFn(...params);
+            }
+            validationRule[rule] = validationFn;
           });
         }
-        //validations[element.config.name]
         properties[':class'] = `{ 'form-group--error': $v.${element.config.name}.$invalid }`;
+        // Remove the validation from inside the control
+        delete properties[':validation'];
+        delete properties['validation'];
+        properties[':class'] = `{ 'form-group--error': $v.${element.config.name}.$invalid }`;
+        // todo: review the translations for validation errors
+        properties[':error'] = `$t($v.${element.config.name}.$invalid ? 'invalid' : '')`;
       },
       onbuild(component) {
         component.mixins.push(validationMixin);
