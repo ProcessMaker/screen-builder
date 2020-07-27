@@ -99,6 +99,9 @@ export default {
     snakeCase(name) {
       return name.replace(/[A-Z]/g, m => `-${m}`).toLowerCase().replace(/^-/, '');
     },
+    camelCase(name) {
+      return name.replace(/_\w/g, m => m.substr(1,1).toUpperCase());
+    },
     createComponent(nodeName, properties) {
       nodeName = this.snakeCase(nodeName);
       const node = this.ownerDocument.createElement(nodeName);
