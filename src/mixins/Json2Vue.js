@@ -110,6 +110,8 @@ export default {
         if (value !== false && value !== null && value !== undefined) {
           if (property.substr(0,1) === ':' || (typeof value === 'string' && value.indexOf('{{') === -1)) {
             node.setAttribute(this.escapeVuePropertyName(property), value);
+          } else if (typeof value === 'string' && value.indexOf('{{') !== -1) {
+            node.setAttribute(':' + this.escapeVuePropertyName(property), 'mustache('+this.byValue(value)+')');
           } else if (value !== undefined) {
             node.setAttribute(':' + this.escapeVuePropertyName(property), this.byValue(value));
           }
