@@ -2,6 +2,17 @@ const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {
   const validate = {};
+  const rules = {
+    int: 'integer',
+    boolean: 'boolean',
+    string: 'string',
+    datetime: 'custom-datetime',
+    date: 'custom-date',
+    float: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
+    currency: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
+    array: 'array',
+  };
+
   validate.validator = null;
   validate.config = config;
   validate.data = data;
@@ -33,19 +44,31 @@ export function ValidatorFactory(config, data) {
       if (item.config && item.config.name && item.config.validation) {
         validate.addRule(item.config.name, item.config.validation);
       }
+
+      //If the element has dataformat configurated
+      if (item.config && item.config.name && item.config.dataFormat) {
+        validate.addRuleFormat(item.config.name, item.config.dataFormat);
+      }
     });
   };
 
   validate.addRule = (name, validation) => {
+    let validationRule = [];
     if (typeof validation === 'string') {
-      validate.rules[name] = validation;
+      validationRule.push(validation);
     } else {
-      let validationRule = [];
       validation.forEach((rule) => {
         validationRule.push(rule.value);
       });
-      validate.rules[name] = validationRule;
     }
+    validate.rules[name] = validationRule;
+  };
+
+  validate.addRuleFormat = (name, validation) => {
+    if (!validate.rules[name]) {
+      validate.rules[name] = [];
+    }
+    validate.rules[name].push(rules[validation]);
   };
 
   validate.ruleFormLoop = (loopName, items) => {
@@ -56,18 +79,37 @@ export function ValidatorFactory(config, data) {
 
       if (itemLoop.items) {
         if (itemLoop.component === 'FormLoop') {
-          validate.ruleFormLoop(loopName +'.*.'+itemLoop.config.name, itemLoop.items);
+          validate.ruleFormLoop(
+            loopName + '.*.' + itemLoop.config.name,
+            itemLoop.items
+          );
         } else {
           validate.ruleFormLoop(loopName, itemLoop.items);
         }
       }
+
+      //If the element has validation configurated
       if (
         itemLoop.config &&
         itemLoop.config.name &&
         itemLoop.config.validation
       ) {
-        let name = loopName + '.*.' + itemLoop.config.name;
-        validate.addRule(name, itemLoop.config.validation);
+        validate.addRule(
+          loopName + '.*.' + itemLoop.config.name,
+          itemLoop.config.validation
+        );
+      }
+
+      //If the element has dataformat configurated
+      if (
+        itemLoop.config &&
+        itemLoop.config.name &&
+        itemLoop.config.dataFormat
+      ) {
+        validate.addRuleFormat(
+          loopName + '.*.' + itemLoop.config.name,
+          itemLoop.config.dataFormat
+        );
       }
     });
   };
