@@ -7,7 +7,7 @@ export default {
         this.registerVariable(element.config.variableName, element.config);
         delete properties.image;
         properties[':image'] = this.byRef(element.config.image);
-      } else if (element.config.name) {
+      } else if (this.validVariableName(element.config.name)) {
         this.registerVariable(element.config.name, element.config);
         properties['v-model'] = `${element.config.name}`;
       }
