@@ -86,7 +86,7 @@ export default {
   },
   watch: {
     customCss(customCss) {
-      this.customCss = customCss;
+      this.definition.customCss = customCss;
       this.parseCss();
     },
     config: {
