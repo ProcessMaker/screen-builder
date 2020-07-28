@@ -145,8 +145,11 @@ export default {
         component.appendChild(wrapper);
       });
     },
+    validVariableName(name) {
+      return name && typeof name === 'string' && name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/);
+    },
     registerVariable(name, config = {}) {
-      if (!name) {
+      if (!this.validVariableName(name)) {
         return;
       }
       const find = this.variables.find(v => v.name === name);
