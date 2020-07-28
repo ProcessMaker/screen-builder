@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import Mustache from 'mustache';
 
 const ValidationMsg = {
   required: 'Field is required',
@@ -35,6 +36,9 @@ export default {
     },
   },
   methods: {
+    mustache(text) {
+      return Mustache.render(text, this.vdata);
+    },
     submitForm() {
       this.$emit('submit', this.vdata);
     },
