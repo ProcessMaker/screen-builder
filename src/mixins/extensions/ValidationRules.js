@@ -88,8 +88,7 @@ export default {
         delete properties[':validation'];
         delete properties['validation'];
         properties[':class'] = `{ 'form-group--error': $v.${element.config.name}.$invalid }`;
-        // todo: review the translations for validation errors
-        properties[':error'] = `$t($v.${element.config.name}.$invalid ? 'invalid' : '')`;
+        properties[':error'] = `validationMessage($v.${element.config.name})`;
       },
       onbuild(component) {
         component.mixins.push(validationMixin);
