@@ -45,7 +45,6 @@
           <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
         </template>
       </vuetable>
-      DEBUG: {{ debug }}
       <pagination
         ref="pagination"
         :per-page-select-enabled="perPageSelectEnabled"
@@ -199,7 +198,7 @@ export default {
         return this.addItem;
       },
       set(val) {
-        this.$set(this.parentObj, 'transientData', val._parent);
+        //this.$set(this.parentObj, 'transientData', val._parent);
         this.addItem = val;
       },
     },
@@ -210,7 +209,7 @@ export default {
         return this.editItem;
       },
       set(val) {
-        this.$set(this.parentObj, 'transientData', val._parent);
+        //this.$set(this.parentObj, 'transientData', val._parent);
         this.editItem = val;
       },
     },
