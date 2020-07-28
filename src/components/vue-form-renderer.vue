@@ -85,12 +85,14 @@ export default {
     };
   },
   watch: {
-    customCss() {
+    customCss(customCss) {
+      this.customCss = customCss;
       this.parseCss();
     },
     config: {
       deep: true,
-      handler() {
+      handler(config) {
+        this.definition.config = config;
         this.$nextTick(() => {this.registerCustomFunctions();});
       },
     },
@@ -98,6 +100,18 @@ export default {
       deep: true,
       handler() {
         this.$emit('update', this.data);
+      },
+    },
+    computed: {
+      deep: true,
+      handler(computed) {
+        this.definition.computed = computed;
+      },
+    },
+    watchers: {
+      deep: true,
+      handler(watchers) {
+        this.definition.watchers = watchers;
       },
     },
   },
