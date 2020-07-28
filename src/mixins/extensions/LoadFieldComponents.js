@@ -11,6 +11,11 @@ export default {
         this.registerVariable(element.config.name, element.config);
         properties['v-model'] = `${element.config.name}`;
       }
+      // Do not replace mustache in RichText control, it is replaced by the control
+      if (componentName === 'FormHtmlViewer') {
+        delete properties.content;
+        properties[':content'] = this.byValue(element.config.content);
+      }
       // Add cypress testing tags
       if (element.config.name) {
         properties['data-cy'] = `screen-field-${element.config.name}`;
