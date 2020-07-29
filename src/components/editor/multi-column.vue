@@ -63,21 +63,21 @@
                     <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
                     <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
                     {{ element.config.name || $t('Variable Name') }}
-                      <div class="ml-auto">
-                        <button
-                          class="btn btn-sm btn-secondary mr-2"
-                          :title="$t('Copy Control')"
-                          @click="duplicateItem(index, row)"
-                        >
-                          <i class="fas fa-copy text-light"></i>
-                        </button>
-                        <button
-                          class="btn btn-sm btn-danger"
-                          @click="deleteItem(index, row)"
-                        >
-                          <i class="far fa-trash-alt text-light"/>
-                        </button>
-                      </div>
+                    <div class="ml-auto">
+                      <button
+                        class="btn btn-sm btn-secondary mr-2"
+                        :title="$t('Copy Control')"
+                        @click="duplicateItem(index, row)"
+                      >
+                        <i class="fas fa-copy text-light"/>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-danger"
+                        @click="deleteItem(index, row)"
+                      >
+                        <i class="far fa-trash-alt text-light"/>
+                      </button>
+                    </div>
                   </div>
 
                   <component
@@ -103,6 +103,7 @@
 import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
+import _ from 'lodash';
 
 import {
   FormInput,

@@ -1,198 +1,208 @@
 <template>
   <div>
     <div class="accordion" id="watcherAccordion">
-        <div class="card card-overflow">
-            <div class="card-header p-0">
-                <div class="mb-0">
-                    <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig">
-                        <div><i class="fas fa-fw fa-cog"></i> Configuration</div>
-                        <div><i class="fas fa-angle-down arrow-open mr-2"></i> <i class="fas fa-angle-right arrow-closed mr-2"></i></div>  
-                    </button>
-                </div>
-            </div>
-            <div id="watcherConfig" class="collapse show" data-parent="#watcherAccordion">
-                <div class="card-body pt-3 px-3 pb-0">
-                  <form-input
-                    ref="name"
-                    v-model="config.name"
-                    :label="$t('Watcher Name') + ' *'"
-                    :name="$t('Watcher Name')"
-                    :validation="ruleWatcherName"
-                    :helper="$t('A name to describe this Watcher')"
-                  />
+      <div class="card card-overflow">
+        <div class="card-header p-0">
+          <div class="mb-0">
+            <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig" data-cy="watchers-accordion-configuration">
+              <div><i class="fas fa-fw fa-cog"/> Configuration</div>
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+            </button>
+          </div>
+        </div>
+        <div id="watcherConfig" class="collapse show" data-parent="#watcherAccordion">
+          <div class="card-body pt-3 px-3 pb-0">
+            <form-input
+              ref="name"
+              v-model="config.name"
+              :label="$t('Watcher Name') + ' *'"
+              :name="$t('Watcher Name')"
+              :validation="ruleWatcherName"
+              :helper="$t('A name to describe this Watcher')"
+              data-cy="watchers-watcher-name"
+            />
 
-                  <form-multi-select
-                    :name="$t('Variable to Watch') + ' *'"
-                    :label="$t('Variable to Watch')"
-                    :options="variables"
-                    v-model="config.watching"
-                    :placeholder="$t('None')"
-                    :multiple="false"
-                    :show-labels="false"
-                    :internal-search="true"
-                    :validation="ruleWatcherVariable"
-                    :helper="$t('The variable to watch on this screen')"
-                    @open="loadVariables"
-                  />
-                  <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
-                    <div>{{ $t('The Variable to Watch field is required') }}</div>
-                  </div>
+            <form-multi-select
+              :name="$t('Variable to Watch') + ' *'"
+              :label="$t('Variable to Watch')"
+              :options="variables"
+              v-model="config.watching"
+              :placeholder="$t('None')"
+              :multiple="false"
+              :show-labels="false"
+              :internal-search="true"
+              :validation="ruleWatcherVariable"
+              :helper="$t('The variable to watch on this screen')"
+              @open="loadVariables"
+              data-cy="watchers-watcher-variable"
+            />
+            <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
+              <div>{{ $t('The Variable to Watch field is required') }}</div>
+            </div>
                   
-                  <form-checkbox
-                    :name="$t('Run Synchronously')"
-                    :label="$t('Run Synchronously')"
-                    v-model="config.synchronous"
-                    :toggle="true"
-                    :helper="$t('Wait for the Watcher to run before accepting more input')"
-                  />
-                </div>
-            </div>
+            <form-checkbox
+              :name="$t('Run Synchronously')"
+              :label="$t('Run Synchronously')"
+              v-model="config.synchronous"
+              :toggle="true"
+              :helper="$t('Wait for the Watcher to run before accepting more input')"
+              data-cy="watchers-watcher-synchronous"
+            />
+          </div>
         </div>
-        <div class="card">
-            <div class="card-header p-0">
-                <div class="mb-0">
-                    <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherSource">
-                        <div><i class="fas fa-fw fa-file-upload"></i> Source</div>
-                        <div><i class="fas fa-angle-down arrow-open mr-2"></i> <i class="fas fa-angle-right arrow-closed mr-2"></i></div>  
-                    </button>
-                </div>
-            </div>
-            <div id="watcherSource" class="collapse" data-parent="#watcherAccordion">
-                <div class="card-body pt-3 px-3 pb-0">
-                  <form-multi-select
-                    :name="$t('Source')"
-                    :label="$t('Source') + ' *'"
-                    :options="scripts"
-                    v-model="config.script"
-                    :placeholder="$t('None')"
-                    :multiple="false"
-                    :show-labels="false"
-                    :searchable="true"
-                    optionValue="id"
-                    optionContent="title"
-                    group-values="items"
-                    group-label="type"
-                    :validation="ruleWatcherScript"
-                    @open="loadSources"
-                    :helper="$t('The source to access when this Watcher runs')"
-                  />
-                  <div v-if="ruleWatcherScript && !config.script" class="invalid-feedback d-block mt-n2 mb-3">
-                    <div>{{ $t('The Source field is required') }}</div>
-                  </div>
-
-                  <div v-if="isScript">
-                    <div class="form-group">
-                      <label>{{ $t('Input Data') }}</label>
-                      <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
-                        <monaco-editor
-                          :options="monacoOptions"
-                          class="editor"
-                          v-model="config.input_data"
-                          language="json"
-                        />
-                      </div>
-                      <small class="form-text text-muted">{{ $t('Data to pass to the script (valid JSON object, variables supported)') }}</small>
-                      <div v-if="inputDataInvalid" class="invalid-feedback d-block">
-                        <div>{{ $t('The Input Data field is required') }}</div>
-                      </div>
-                      <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
-                        <div>{{ $t('This must be valid JSON') }}</div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label>{{ $t('Script Configuration') }}</label>
-                      <div class="form-border" :class="{'is-invalid': !jsonIsValid('script_configuration')}">
-                        <monaco-editor
-                          :options="monacoOptions"
-                          class="editor"
-                          v-model="config.script_configuration"
-                          language="json"
-                        />
-                      </div>
-                      <small class="form-text text-muted">{{ $t('Configuration data for the script (valid JSON object, variables supported)') }}</small>
-                      <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
-                        <div>{{ $t('The Script Configuration field is required') }}</div>
-                      </div>
-                      <div v-if="!jsonIsValid('script_configuration')" class="invalid-feedback d-block">
-                        <div>{{ $t('This must be valid JSON') }}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div v-if="isDatasource">
-                    <div class="form-group">
-                      <form-multi-select
-                        :name="$t('Endpoint')"
-                        :label="$t('Endpoint')"
-                        :options="endpoints"
-                        v-model="endpoint"
-                        :placeholder="$t('Select an endpoint')"
-                        :multiple="false"
-                        :show-labels="false"
-                        :searchable="true"
-                        :internal-search="false"
-                        @search-change="loadEndpoints"
-                        @open="loadEndpoints"
-                        :helper="$t('The Data Connector endpoint to access when this Watcher runs')"
-                      />
-                      <div v-if="endpointError" class="invalid-feedback d-block">
-                        <div>{{ endpointError }}</div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label>{{ $t('Input Data') }}</label>
-                      <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
-                        <monaco-editor
-                          :options="monacoOptions"
-                          class="editor"
-                          v-model="config.input_data"
-                          language="json"
-                        />
-                      </div>
-                      <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
-                      <div v-if="inputDataInvalid" class="invalid-feedback d-block">
-                        <div>{{ $t('The Input Data field is required') }}</div>
-                      </div>
-                      <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
-                        <div>{{ $t('This must be valid JSON') }}</div>
-                      </div>
-                    </div>
-
-
-                  </div>
-                </div>
-            </div>
+      </div>
+      <div class="card">
+        <div class="card-header p-0">
+          <div class="mb-0">
+            <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherSource" data-cy="watchers-accordion-source">
+              <div><i class="fas fa-fw fa-file-upload"/> Source</div>
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+            </button>
+          </div>
         </div>
-        <div class="card">
-            <div class="card-header p-0">
-                <div class="mb-0">
-                    <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherOutput">
-                        <div><i class="fas fa-fw fa-file-download"></i> Output</div>
-                        <div><i class="fas fa-angle-down arrow-open mr-2"></i> <i class="fas fa-angle-right arrow-closed mr-2"></i></div>  
-                    </button>
-                </div>
+        <div id="watcherSource" class="collapse" data-parent="#watcherAccordion">
+          <div class="card-body pt-3 px-3 pb-0">
+            <form-multi-select
+              :name="$t('Source')"
+              :label="$t('Source') + ' *'"
+              :options="scripts"
+              v-model="config.script"
+              :placeholder="$t('None')"
+              :multiple="false"
+              :show-labels="false"
+              :searchable="true"
+              optionValue="id"
+              optionContent="title"
+              group-values="items"
+              group-label="type"
+              :validation="ruleWatcherScript"
+              @open="loadSources"
+              :helper="$t('The source to access when this Watcher runs')"
+              data-cy="watchers-watcher-source"
+            />
+            <div v-if="ruleWatcherScript && !config.script" class="invalid-feedback d-block mt-n2 mb-3">
+              <div>{{ $t('The Source field is required') }}</div>
             </div>
-            <div id="watcherOutput" class="collapse" data-parent="#watcherAccordion">
-                <div class="card-body pt-3 px-3 pb-0">
-                  <form-input
-                    ref="propOutputVariableName"
-                    v-model="config.output_variable"
-                    :label="$t('Output Variable') + ' *'"
-                    :name="$t('Output Variable')"
-                    :helper="$t('The variable that will store the output of the Watcher')"
-                    :validation="ruleWatcherOutputVariable"
+
+            <div v-if="isScript">
+              <div class="form-group">
+                <label>{{ $t('Input Data') }}</label>
+                <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
+                  <monaco-editor
+                    :options="monacoOptions"
+                    class="editor"
+                    v-model="config.input_data"
+                    language="json"
+                    data-cy="watchers-watcher-input_data"
                   />
-                  <data-mapping v-if="isDatasource" v-model="config.script_configuration" />
-                </div>                
+                </div>
+                <small class="form-text text-muted">{{ $t('Data to pass to the script (valid JSON object, variables supported)') }}</small>
+                <div v-if="inputDataInvalid" class="invalid-feedback d-block">
+                  <div>{{ $t('The Input Data field is required') }}</div>
+                </div>
+                <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+                  <div>{{ $t('This must be valid JSON') }}</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ $t('Script Configuration') }}</label>
+                <div class="form-border" :class="{'is-invalid': !jsonIsValid('script_configuration')}">
+                  <monaco-editor
+                    :options="monacoOptions"
+                    class="editor"
+                    v-model="config.script_configuration"
+                    language="json"
+                    data-cy="watchers-watcher-script_configuration"
+                  />
+                </div>
+                <small class="form-text text-muted">{{ $t('Configuration data for the script (valid JSON object, variables supported)') }}</small>
+                <div v-if="scriptConfigurationInvalid" class="invalid-feedback d-block">
+                  <div>{{ $t('The Script Configuration field is required') }}</div>
+                </div>
+                <div v-if="!jsonIsValid('script_configuration')" class="invalid-feedback d-block">
+                  <div>{{ $t('This must be valid JSON') }}</div>
+                </div>
+              </div>
             </div>
-        </div>        
+            <div v-if="isDatasource">
+              <div class="form-group">
+                <form-multi-select
+                  :name="$t('Endpoint')"
+                  :label="$t('Endpoint')"
+                  :options="endpoints"
+                  v-model="endpoint"
+                  :placeholder="$t('Select an endpoint')"
+                  :multiple="false"
+                  :show-labels="false"
+                  :searchable="true"
+                  :internal-search="false"
+                  @search-change="loadEndpoints"
+                  @open="loadEndpoints"
+                  :helper="$t('The Data Connector endpoint to access when this Watcher runs')"
+                  data-cy="watchers-watcher-endpoint"
+                />
+                <div v-if="endpointError" class="invalid-feedback d-block">
+                  <div>{{ endpointError }}</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ $t('Input Data') }}</label>
+                <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
+                  <monaco-editor
+                    :options="monacoOptions"
+                    class="editor"
+                    v-model="config.input_data"
+                    language="json"
+                    data-cy="watchers-watcher-input_data"
+                  />
+                </div>
+                <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
+                <div v-if="inputDataInvalid" class="invalid-feedback d-block">
+                  <div>{{ $t('The Input Data field is required') }}</div>
+                </div>
+                <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+                  <div>{{ $t('This must be valid JSON') }}</div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header p-0">
+          <div class="mb-0">
+            <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherOutput" data-cy="watchers-accordion-output">
+              <div><i class="fas fa-fw fa-file-download"/> Output</div>
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+            </button>
+          </div>
+        </div>
+        <div id="watcherOutput" class="collapse" data-parent="#watcherAccordion">
+          <div class="card-body pt-3 px-3 pb-0">
+            <form-input
+              ref="propOutputVariableName"
+              v-model="config.output_variable"
+              :label="$t('Output Variable') + ' *'"
+              :name="$t('Output Variable')"
+              :helper="$t('The variable that will store the output of the Watcher')"
+              :validation="ruleWatcherOutputVariable"
+              data-cy="watchers-watcher-output_variable"
+            />
+            <data-mapping v-if="isDatasource" v-model="config.script_configuration" />
+          </div>                
+        </div>
+      </div>        
     </div>
 
     <div class="d-flex justify-content-end mt-3">
-      <button class="btn btn-outline-secondary" @click.stop="displayTableList">{{ $t('Cancel') }}</button>
+      <button class="btn btn-outline-secondary" @click.stop="displayTableList" data-cy="watchers-button-cancel">{{ $t('Cancel') }}</button>
       <button
         class="btn btn-secondary ml-3"
         @click="validateDataAndSave"
+        data-cy="watchers-button-save"
       >
         {{ $t('Save') }}
       </button>
@@ -229,6 +239,7 @@ export default {
   props: {
     config: {
       type: Object,
+      /* istanbul ignore next */
       default() {
         return {
           name:'',
@@ -348,9 +359,9 @@ export default {
       //Search in all config screen
       this.findElements(this.$root.$children[0].config);
     },
-    findElements(items) {
+    findElements(items, screens=[]) {
       items.forEach(item => {
-        //If the element has containers
+        //If the element has containers (Multi-columns)
         if (Array.isArray(item)) {
           this.findElements(item);
         }
@@ -364,7 +375,25 @@ export default {
         if (item.config && item.config.name) {
           this.variables.push(item.config.name);
         }
+
+        // Variables from Nested screens
+        if (item.component === 'FormNestedScreen') {
+          this.loadVariablesFromScreen(item.config.screen, screens);
+        }
       });
+    },
+    loadVariablesFromScreen(id, screens) {
+      if (screens.indexOf(id) === -1) {
+        screens.push(id);
+        const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', null) || 'screens';
+        if (id) {
+          window.ProcessMaker.apiClient
+            .get(endpoint + '/' + id)
+            .then(response => {
+              this.findElements(response.data.config);
+            });
+        }
+      }
     },
     loadSources() {
       this.scripts =  [];
@@ -387,7 +416,7 @@ export default {
     isFormValid() {
 
       if (this.isDatasource && !this.endpoint) {
-        this.endpointError = this.$t("Endpoint is required");
+        this.endpointError = this.$t('Endpoint is required');
       } else {
         this.endpointError = null;
       }
@@ -409,9 +438,7 @@ export default {
       this.$nextTick(() => { // allow validations to do their thing
         
         if (!this.isFormValid()) {
-          if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-            globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
-          }
+          globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
           return;
         }
 

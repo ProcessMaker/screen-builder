@@ -6,10 +6,10 @@
         <b-row>
           <b-col>
             <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'editor'" data-cy="mode-editor">
+              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('editor')" data-cy="mode-editor">
                 <i class="fas fa-drafting-compass pr-1"/>{{ $t('Design') }}
               </b-button>
-              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="mode = 'preview'" data-cy="mode-preview">
+              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('preview')" data-cy="mode-preview">
                 <i class="fas fa-cogs pr-1"/>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
@@ -17,15 +17,15 @@
 
           <b-col class="text-right" v-if="displayBuilder && !displayPreview">
             <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-secondary" :title="$t('Calculated Properties')" @click="openComputedProperties">
+              <button type="button" class="btn btn-secondary" :title="$t('Calculated Properties')" @click="openComputedProperties" data-cy="topbar-calcs">
                 <i class="fas fa-flask"/>
                 {{ $t('Calcs') }}
               </button>
-              <button type="button" class="btn btn-secondary" :title="$t('Custom CSS')" @click="openCustomCSS">
+              <button type="button" class="btn btn-secondary" :title="$t('Custom CSS')" @click="openCustomCSS" data-cy="topbar-css">
                 <i class="fab fa-css3"/>
                 {{ $t('CSS') }}
               </button>
-              <button type="button" class="btn btn-secondary" :title="$t('Watchers')" @click="openWatchersPopup">
+              <button type="button" class="btn btn-secondary" :title="$t('Watchers')" @click="openWatchersPopup" data-cy="topbar-watchers">
                 <i class="fas fa-mask"/>
                 {{ $t('Watchers') }}
               </button>
@@ -60,19 +60,22 @@
       <!-- Card Body -->
       <b-card-body class="overflow-auto p-0 m-0">
         <!-- Vue-form-builder -->
-        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" :screen="screen" />
+        <vue-form-builder :validationErrors="validationErrors" ref="builder" @change="updateConfig" :class="displayBuilder ? 'd-flex' : 'd-none'" :screen="screen" title="Default" />
 
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
-          <b-col class="overflow-auto h-100">
+          <b-col class="overflow-auto h-100" data-cy="preview-content">
             <vue-form-renderer ref="renderer"
+              :key="rendererKey"
               v-model="previewData"
               @submit="previewSubmit"
               :config="config"
               :mode="mode"
               :computed="computed"
               :custom-css="customCSS"
+              :watchers="watchers"
               v-on:css-errors="cssErrors = $event"
+              :show-errors="true"
             />
           </b-col>
 
@@ -89,7 +92,7 @@
                 </b-button>
 
                 <b-collapse v-model="showDataInput" id="showDataInput">
-                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json"/>
+                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json" data-cy="preview-data-input"/>
                 </b-collapse>
 
                 <b-button variant="outline"
@@ -120,7 +123,7 @@
         </b-form-checkbox>
 
         <div class="ml-3" @click="showValidationErrors = !showValidationErrors">
-          <button type="button" class="btn btn-light btn-sm">
+          <button type="button" class="btn btn-light btn-sm" data-cy="open-console">
             <i class="fas fa-angle-double-up"/>
             {{ $t('Open Console') }}
             <span v-if="allErrors === 0" class="badge badge-success">
@@ -135,7 +138,7 @@
           </button>
         </div>
 
-        <div v-if="showValidationErrors" class="validation-panel position-absolute border-left border-top overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}">
+        <div v-if="showValidationErrors" class="validation-panel position-absolute border-left border-top overflow-auto" :class="{'d-block':showValidationErrors && validationErrors.length}" data-cy="validation-panel">
           <div v-if="!previewInputValid" class="p-3 font-weight-bold text-dark">
             <i class="fas fa-times-circle text-danger mr-3"/>
             {{ $t('Invalid JSON Data Object') }}
@@ -144,6 +147,7 @@
             v-for="(validation,index) in validationErrors"
             :key="index"
             @click="focusInspector(validation)"
+            data-cy="focus-inspector"
           >
             <i class="fas fa-times-circle text-danger d-block mr-3"/>
             <span class="ml-2 text-dark font-weight-bold text-left">
@@ -160,13 +164,13 @@
     <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
     <watchers-popup v-model="watchers" ref="watchersPopup"/>
     <b-modal id="preview-config" size="xl" title="Screen Config JSON Preview" header-close-content="&times;">
-      <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"></monaco-editor>
+      <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"/>
     </b-modal>
   </b-container>
 </template>
 
 <script>
-require("bootstrap");
+require('bootstrap');
 import ComputedProperties from './components/computed-properties.vue';
 import WatchersPopup from './components/watchers-popup.vue';
 import CustomCSS from './components/custom-css.vue';
@@ -187,31 +191,29 @@ let globalObject = typeof window === 'undefined'
   ? global
   : window;
 
-if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
-  Validator.useLang(globalObject.ProcessMaker.user.lang);
-}
-
+/* istanbul ignore next */
 Validator.register('attr-value', value => {
   return value.match(/^[a-zA-Z0-9-_]+$/);
 }, 'Must be letters, numbers, underscores or dashes');
 
 const exampleScriptsForWatchers = [
+  // eslint-disable-next-line no-unused-vars
   (items, filter) => {
     items.push({
-      type: "Test Data Sources",
+      type: 'Test Data Sources',
       items: [{
         id: 'data_source-1',
-        title: 'Test Data Source'
-      }]
-    })
+        title: 'Test Data Source',
+      }],
+    });
     items.push({
-      type: "Test Script",
+      type: 'Test Script',
       items: [{
         id: 'script-1',
-        title: 'Test Script'
-      }]
-    })
-  }
+        title: 'Test Script',
+      }],
+    });
+  },
 ];
 
 export default {
@@ -219,6 +221,7 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      rendererKey: 0,
       screen: {
         id: 1,
       },
@@ -265,15 +268,6 @@ export default {
     WatchersPopup,
   },
   watch: {
-    mode(mode) {
-      if (mode === 'preview') {
-        this.previewData = this.previewInput ? JSON.parse(this.previewInput) : null;
-      }
-    },
-    config() {
-      // Reset the preview data with clean object to start
-      this.previewData = {};
-    },
     previewInput() {
       if (this.previewInputValid) {
         // Copy data over
@@ -296,6 +290,7 @@ export default {
       get() {
         return JSON.stringify(this.config);
       },
+      // eslint-disable-next-line no-unused-vars
       set(val) {
       },
     },
@@ -329,6 +324,9 @@ export default {
     },
   },
   mounted() {
+    if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+      Validator.useLang(globalObject.ProcessMaker.user.lang);
+    }
     // Iterate through our initial config set, calling this.addControl
     controlConfig.forEach(config => {
       config.control.inspector.push(...globalProperties[0].inspector);
@@ -345,6 +343,13 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
+    changeMode(mode) {
+      this.mode = mode;
+      this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
+      this.$nextTick(() => {
+        this.rendererKey++;
+      });
+    },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
       const savedWatchers = localStorage.getItem('savedWatchers');
@@ -398,7 +403,7 @@ export default {
 
         // To include another language in the Validator with variable processmaker
         if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
-          validator.useLang(globalObject.ProcessMaker.user.lang);
+          Validator.useLang(globalObject.ProcessMaker.user.lang);
         }
 
         // Validation will not run until you call passes/fails on it
@@ -409,6 +414,7 @@ export default {
                 message: error,
                 page,
                 item,
+                field,
               });
             });
           });

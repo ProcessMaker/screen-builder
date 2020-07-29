@@ -4,7 +4,7 @@
       <b-col>
         <basic-search v-model="filter" @submit="search">
           <template slot="buttons">
-            <b-btn class="text-nowrap" variant="secondary" @click.stop="displayFormProperty">
+            <b-btn class="text-nowrap" variant="secondary" @click.stop="displayFormProperty" data-cy="watchers-add-watcher">
               <i class="fas fa-plus" />
               {{ $t('Watcher') }}
             </b-btn>
@@ -21,6 +21,7 @@
         :data="filtered"
         data-path="data"
         :noDataTemplate="$t('No Data Available')"
+        data-cy="watchers-table"
       >
         <template slot="actions" slot-scope="row">
           <div class="actions">
@@ -30,6 +31,7 @@
                 @click="editProperty(row.rowData)"
                 v-b-tooltip.hover
                 :title="$t('Edit')"
+                data-cy="watchers-table-edit"
               >
                 <i class="fas fa-edit fa-lg fa-fw"/>
               </b-btn>
@@ -38,6 +40,7 @@
                 @click="deleteProperty(row.rowData)"
                 v-b-tooltip.hover
                 :title="$t('Delete')"
+                data-cy="watchers-table-remove"
               >
                 <i class="fas fa-trash-alt fa-lg fa-fw"/>
               </b-btn>
@@ -55,7 +58,7 @@
 <script>
 import BasicSearch from './basic-search';
 import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
-import Vuetable from "vuetable-2/src/components/Vuetable";
+import Vuetable from 'vuetable-2/src/components/Vuetable';
 
 export default {
   components: {
@@ -67,7 +70,10 @@ export default {
   props: {
     value: {
       type: Array,
-      default: () => [],
+      /* istanbul ignore next */
+      default() {
+        return [];
+      },
     },
   },
   data() {

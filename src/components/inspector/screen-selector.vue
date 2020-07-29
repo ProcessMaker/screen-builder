@@ -43,11 +43,11 @@ export default {
     },
   },
   mounted() {
-    let pmql = '(type = "FORM" or type = "DISPLAY")'
+    let pmql = '(type = "FORM" or type = "DISPLAY")';
     if (this.builder.screen) {
       pmql += ' and id != ' + this.builder.screen.id;
     }
     this.pmql = pmql;
-  }
+  },
 };
 </script>

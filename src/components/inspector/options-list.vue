@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="data-sources">{{ $t('Data Source') }}</label>
-    <b-form-select id="data-sources" v-model="dataSource" :options="dataSourceTypes" class="mb-3"/>
+    <b-form-select id="data-sources" v-model="dataSource" :options="dataSourceTypes" class="mb-3" data-cy="inspector-data-sources" />
 
     <div v-if="!showJsonEditor && dataSource === dataSourceValues.provideData">
       <div class="row">
@@ -9,7 +9,7 @@
           <label for="data-sources"><b>{{ $t('Options') }}</b></label>
         </div>
         <div class="col-2">
-          <a @click="showAddOption" class="fas fa-plus-square"/>
+          <a @click="showAddOption" class="fas fa-plus-square" data-cy="inspector-add-option" />
         </div>
       </div>
 
@@ -22,19 +22,19 @@
         </div>
         <div class="card-body p-2">
           <label for="option-value">{{ $t('Value') }}</label>
-          <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+          <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" data-cy="inspector-option-value" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
           </div>
           <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
-          <b-form-input id="option-content" v-model="optionContent"/>
+          <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
         </div>
 
         <div class="card-footer text-right p-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="showOptionCard=false">
+          <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="showOptionCard=false" data-cy="inspector-option-cancel">
             {{ $t('Cancel') }}
           </button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+          <button type="button" class="btn btn-sm btn-secondary" @click="addOption()" data-cy="inspector-option-save">
             {{ $t('Save') }}
           </button>
         </div>
@@ -50,10 +50,10 @@
                     {{ currentItemToDelete }}
                   </div>
                   <div class="card-footer text-right p-2">
-                    <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null">
+                    <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
                       {{ $t('Cancel') }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()">
+                    <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()" data-cy="inspector-options-remove-confirm">
                       {{ $t('Delete') }}
                     </button>
                   </div>
@@ -70,19 +70,19 @@
                   </div>
                   <div class="card-body p-2">
                     <label for="option-value">{{ $t('Value') }}</label>
-                    <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+                    <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" data-cy="inspector-option-value" />
                     <div v-if="optionError" class="invalid-feedback d-block text-right">
                       <div>{{ optionError }}</div>
                     </div>
                     <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
-                    <b-form-input id="option-content" v-model="optionContent"/>
+                    <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
                   </div>
 
                   <div class="card-footer text-right p-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="editIndex=null">
                       {{ $t('Cancel') }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+                    <button type="button" class="btn btn-sm btn-secondary" @click="addOption()" data-cy="inspector-option-save">
                       {{ $t('Update') }}
                     </button>
                   </div>
@@ -100,10 +100,10 @@
                   {{ option[valueField] }}
                 </div>
                 <div class="col-1">
-                  <a @click="showEditOption(index)" class="fas fa-cog" style="cursor:pointer"/>
+                  <a @click="showEditOption(index)" class="fas fa-cog" style="cursor:pointer" data-cy="inspector-options-edit"/>
                 </div>
                 <div class="col-1">
-                  <a @click="removeOption(index)" class="fas fa-trash-alt" style="cursor:pointer"/>
+                  <a @click="removeOption(index)" class="fas fa-trash-alt" style="cursor:pointer" data-cy="inspector-options-remove" />
                 </div>
               </div>
             </div>
@@ -112,7 +112,7 @@
       </div>
       <div class="row">
         <div class="col text-right">
-          <button type="button" @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3">
+          <button type="button" @click="showJsonEditor = true" class="edit-json text-muted mt-1 mb-3" data-cy="inspector-edit-json">
             <i class="fas fa-code" aria-hidden="true"/>
             {{ $t('Edit as JSON') }}
           </button>
@@ -121,27 +121,27 @@
     </div>
     <div v-if="dataSource === dataSourceValues.dataObject || dataSource === dataSourceValues.dataConnector">
       <label for="element-name">{{ $t('Options Variable') }}</label>
-      <mustache-helper></mustache-helper>
-      <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name"/>
+      <mustache-helper/>
+      <b-form-input id="element-name" v-model="dataName" placeholder="Request Variable Name" data-cy="inspector-options-variable" />
       <small class="form-text text-muted mb-3">{{ $t('Get options from this variable. Must be an array.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataObject">
       <label for="value">{{ $t('Option Label Shown') }}</label>
-      <b-form-input id="value" v-model="value" placeholder="Request Variable Property" @change="valueChanged"/>
+      <b-form-input id="value" v-model="value" placeholder="Request Variable Property" @change="valueChanged" data-cy="inspector-options-label" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that displays to the user on the screen.') }}</small>
     </div>
 
     <div v-if="showRenderAs">
-       <div class="row mb-3">
+      <div class="row mb-3">
         <div class="col">
           <label for="render-as">{{ $t('Show Control As') }}</label>
-          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions"/>
+          <b-form-select id="render-as" v-model="renderAs" :options="renderAsOptions" data-cy="inspector-render-as" />
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-12">
-          <input type="checkbox"  v-model="allowMultiSelect">
+          <input type="checkbox"  v-model="allowMultiSelect" data-cy="inspector-allow-multi-select">
           {{ $t('Allow Multiple Selections') }}
         </div>
       </div>
@@ -149,11 +149,12 @@
     <div v-if="showJsonEditor && dataSource === dataSourceValues.provideData">
       <div class="mb-2">
         <label for="json-data">{{ $t('JSON Data') }}</label>
-        <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+        <button type="button" @click="expandEditor" class="btn-sm float-right" data-cy="inspector-monaco-json-expand"><i class="fas fa-expand"/></button>
       </div>
       <div class="small-editor-container">
         <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
           @change="jsonDataChange"
+          data-cy="inspector-monaco-json"
         />
       </div>
 
@@ -161,10 +162,11 @@
         <div class="editor-container">
           <MonacoEditor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
             @change="jsonDataChange"
+            data-cy="inspector-monaco-json-expanded"
           />
         </div>
         <div slot="modal-footer">
-          <b-button @click="closePopup" class="btn btn-secondary text-uppercase">
+          <b-button @click="closePopup" class="btn btn-secondary text-uppercase" data-cy="inspector-monaco-json-expanded-close">
             {{ $t('Close') }}
           </b-button>
         </div>
@@ -177,44 +179,44 @@
     </div>
 
     <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
-    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" />
+    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
     <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
   
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <div v-if="valueTypeReturned === 'single'">
         <label for="key">{{ $t('Value') }}</label>
-        <mustache-helper></mustache-helper>
-        <b-form-input id="key" v-model="key" @change="keyChanged"/>
+        <mustache-helper/>
+        <b-form-input id="key" v-model="key" @change="keyChanged" data-cy="inspector-datasource-value"/>
         <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to use as the value of this control. Leave blank to use the entire selected value.') }}</small>
       </div>
 
       <label for="value">{{ $t('Content') }}</label>
-      <mustache-helper></mustache-helper>
-      <b-form-input id="value" v-model="value" @change="valueChanged"/>
+      <mustache-helper/>
+      <b-form-input id="value" v-model="value" @change="valueChanged" data-cy="inspector-datasource-content"/>
       <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to display to the user in the select list. Leave blank to show the entire selected value.') }}</small>
     </div>
 
     <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Variable Data Property') }}</label>
-      <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property"/>
+      <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property" data-cy="inspector-options-value" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="data-sources-list">{{ $t('Data Connector') }}</label>
-      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList"/>
+      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" data-cy="inspector-data-connector" />
       <small class="form-text text-muted mb-3">{{ $t('Data Connector to use') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="endpoint-list">{{ $t('End Point') }}</label>
-      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList"/>
+      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" data-cy="inspector-endpoint" />
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
-      <mustache-helper></mustache-helper>
+      <mustache-helper/>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
@@ -222,21 +224,21 @@
 </template>
 
 <script>
-/* global ProcessMaker */
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
-import MustacheHelper from './mustache-helper'
-require('monaco-editor/esm/vs/editor/editor.main');
+import MustacheHelper from './mustache-helper';
+import _ from 'lodash';
 
+require('monaco-editor/esm/vs/editor/editor.main');
 
 export default {
   components: {
     draggable,
     MonacoEditor,
-    MustacheHelper
+    MustacheHelper,
   },
-  props: ['options'],
+  props: ['options', 'selectedControl'],
   model: {
     prop: 'options',
     event: 'change',
@@ -292,17 +294,20 @@ export default {
       returnValueOptions: [
         {
           text: this.$t('Single Value'),
-          value: 'single'
+          value: 'single',
         },
         {
           text: this.$t('Object'),
-          value: 'object'
-        }
+          value: 'object',
+        },
       ],
       valueTypeReturned: '',
     };
   },
   watch: {
+    allowMultiSelect(allow) {
+      this.selectedControl.config.dataFormat = allow ? 'array' : 'string';
+    },
     options(newOptions) {
       Object.keys(newOptions).forEach(key => {
         if (typeof newOptions[key] !== 'undefined') {
@@ -337,7 +342,8 @@ export default {
       }
       
       if (this.dataSourcesList.length > 0) {
-        console.log("SETTING TO DEFAULT selectedDataSource")
+        // eslint-disable-next-line no-console
+        console.log('SETTING TO DEFAULT selectedDataSource');
         this.selectedDataSource = this.dataSourcesList[0].value;
       }
     },
@@ -382,7 +388,8 @@ export default {
     },
     dataObjectOptions() {
       if (!this.dataName) {
-        this.dataName = this.options.dataName ? this.options.dataName : "response";
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.dataName = this.options.dataName ? this.options.dataName : 'response';
       }
       return {
         dataSource: this.dataSource,

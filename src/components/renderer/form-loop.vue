@@ -31,6 +31,7 @@
 
 <script>
 import Mustache from 'mustache';
+import _ from 'lodash';
 
 export default {
   name: 'FormLoop',
@@ -49,8 +50,8 @@ export default {
     parentLoopContext() {
       let parent = this.$parent;
       let i = 0;
-      let context = "";
-      while(!parent.loopContext) {
+      let context = '';
+      while (!parent.loopContext) {
         parent = parent.$parent;
 
         if (parent === this.$root) {
@@ -59,7 +60,7 @@ export default {
         }
         
         if (i > 100) {
-          throw "Loop Error";
+          throw 'Loop Error';
         }
 
         i++;
@@ -95,7 +96,7 @@ export default {
 
       try {
         times = Mustache.render(times, this.transientData);
-      } catch (error) {}
+      } catch (error) { error; }
 
       times = parseInt(times);
 
@@ -149,8 +150,8 @@ export default {
     'config.settings.times': {
       handler() {
         this.additionalItems = 0;
-      }
-    }
+      },
+    },
   },
   methods: {
     getLoopContext(i) {
@@ -176,22 +177,14 @@ export default {
     },
     removeConfirm() {
       const message = this.$t('Are you sure you want to delete this?');
-      if (_.has(window, 'ProcessMaker.confirmModal')) {
-        window.ProcessMaker.confirmModal(
-          this.$t("Caution!"),
-          message,
-          '',
-          () => {
-            this.remove();
-          }
-        );
-      } else if (_.has(window, 'confirm')) {
-        if (window.confirm(message)) {
+      window.ProcessMaker.confirmModal(
+        this.$t('Caution!'),
+        message,
+        '',
+        () => {
           this.remove();
         }
-      } else {
-        this.remove();
-      }
+      );
     },
     setMatrixValue(i, v) {
       this.registerParentVariableChanges(v);

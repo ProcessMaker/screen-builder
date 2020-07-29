@@ -70,7 +70,7 @@ export default [
             helper: '',
             value: '',
           },
-        }
+        },
       ],
     },
   },
@@ -179,7 +179,7 @@ export default [
         label: 'New Select List',
         placeholder: '',
         validation: '',
-        dataFormat: 'array',
+        dataFormat: 'string',
         dataSourceUrl:'',
         dataSourceEndpoint:'',
         rootElement:'response',
@@ -194,7 +194,7 @@ export default [
           optionsList: [],
           key:'value',
           value:'content',
-          valueTypeReturned: 'single'
+          valueTypeReturned: 'single',
         },
         helper: null,
       },
@@ -370,7 +370,7 @@ export default [
           field: 'options',
           config: {
             label: 'Column Width',
-            validation: 'columns-adds-to-12'
+            validation: 'columns-adds-to-12',
           },
         },
         colorProperty,

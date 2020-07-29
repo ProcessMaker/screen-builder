@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Parser } from 'expr-eval';
 
 export default {
