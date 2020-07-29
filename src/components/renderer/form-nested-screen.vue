@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import _ from 'lodash';
+
 const globalObject = typeof window === 'undefined'
   ? global
   : window;
@@ -60,7 +62,7 @@ export default {
       },
       set(data) {
         Object.keys(data).forEach((variable) => {
-          this.$set(this.validationData, variable, data[variable]);
+          this.validationData && this.$set(this.validationData, variable, data[variable]);
         });
       },
     },
@@ -119,7 +121,7 @@ export default {
     errors() {
       this.$refs.nestedScreen.isValid();
       return this.$refs.nestedScreen.errors;
-    }
+    },
   },
   watch: {
     screen(screen) {

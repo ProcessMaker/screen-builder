@@ -41,21 +41,6 @@ export default {
     };
   },
   watch: {
-    precision() {
-      this.loadMasks();
-    },
-    prefix() {
-      this.loadMasks();
-    },
-    suffix() {
-      this.loadMasks();
-    },
-    decimal() {
-      this.loadMasks();
-    },
-    thousands() {
-      this.loadMasks();
-    },
     value: {
       handler(value) {
         value != this.unformattedValue ? this.currencyInput.inputmask.setValue(value) : null;

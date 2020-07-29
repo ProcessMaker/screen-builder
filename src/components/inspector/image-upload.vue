@@ -32,13 +32,6 @@ export default {
     };
   },
   computed: {
-    classList() {
-      let variant = this.variant || 'primary';
-      return {
-        btn: true,
-        ['btn-' + variant]: true,
-      };
-    },
     owner() {
       return this.$parent.$parent.inspection.config;
     },
