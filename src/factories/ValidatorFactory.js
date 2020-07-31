@@ -46,7 +46,7 @@ export function ValidatorFactory(config, data) {
       }
 
       //If the element has dataformat configurated
-      if (item.config && item.config.name && item.config.dataFormat) {
+      if (item.component ===  'FormInput' && item.config && item.config.name && item.config.dataFormat ){
         validate.addRuleFormat(item.config.name, item.config.dataFormat);
       }
     });
