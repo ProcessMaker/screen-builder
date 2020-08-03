@@ -2,17 +2,17 @@ import watchersMixin from '../../mixins/watchers';
 
 export default {
   methods: {
-    addWatcherVariables() {
-      if (this.definition.watchers) {
-        this.definition.watchers.forEach((watcher) => {
+    addWatcherVariables(definition) {
+      if (definition.watchers) {
+        definition.watchers.forEach((watcher) => {
           this.registerVariable(watcher.output_variable, {});
         });
       }
     },
-    watchers(screen) {
-      if (this.definition.watchers) {
+    watchers(screen, definition) {
+      if (definition.watchers) {
         screen.mixins.push(watchersMixin);
-        this.definition.watchers.forEach((watcher) => {
+        definition.watchers.forEach((watcher) => {
           this.addWatch(screen, watcher.watching, `this.queueWatcher(${JSON.stringify(watcher)});`);
         });
       }
@@ -20,11 +20,11 @@ export default {
   },
   mounted() {
     this.extensions.push({
-      onbuild(screen) {
-        this.watchers(screen);
+      onbuild({ screen, definition }) {
+        this.watchers(screen, definition);
       },
-      onparse() {
-        this.addWatcherVariables();
+      onparse({ definition }) {
+        this.addWatcherVariables(definition);
       },
     });
   },

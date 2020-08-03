@@ -86,12 +86,14 @@ export default {
   },
   watch: {
     customCss(customCss) {
+      console.log('customCss => rebuild');
       this.definition.customCss = customCss;
       this.parseCss();
     },
     config: {
       deep: true,
       handler(config) {
+        console.log('config => rebuild');
         this.definition.config = config;
         this.$nextTick(() => {this.registerCustomFunctions();});
       },
@@ -105,12 +107,14 @@ export default {
     computed: {
       deep: true,
       handler(computed) {
+        console.log('computed => rebuild');
         this.definition.computed = computed;
       },
     },
     watchers: {
       deep: true,
       handler(watchers) {
+        console.log('watchers => rebuild');
         this.definition.watchers = watchers;
       },
     },
@@ -152,8 +156,8 @@ export default {
       return child.errors();
     },
     isValid() {
-      const items = getItemsFromConfig(this.config);
-      let config = _.cloneDeep(this.config);
+      const items = getItemsFromConfig(this.definition.config);
+      let config = _.cloneDeep(this.definition.config);
 
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);

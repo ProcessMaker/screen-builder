@@ -13,6 +13,7 @@ import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
+import { cloneDeep } from 'lodash';
 
 Vue.use(VueFormElements);
 Vue.component('FormButton', FormButton);
@@ -33,13 +34,13 @@ export default {
     };
   },
   mounted() {
-    this.component = this.buildComponent();
+    this.component = this.buildComponent(cloneDeep(this.definition));
   },
   watch: {
     definition: {
       deep: true,
-      handler() {
-        this.component = this.buildComponent();
+      handler(definition) {
+        this.component = this.buildComponent(cloneDeep(definition));
       },
     },
   },

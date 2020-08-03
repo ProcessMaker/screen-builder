@@ -4,7 +4,6 @@ export default {
     /**
      * Prepare `data` configuration for the Vue Screen Component
      *
-     * @param screen 
      */
     defaultValues(screen) {
       this.variables.forEach(({name, config}) => {
@@ -32,7 +31,7 @@ export default {
   },
   mounted() {
     this.extensions.push({
-      onbuild(screen) {
+      onbuild({ screen }) {
         this.defaultValues(screen);
       },
     });
