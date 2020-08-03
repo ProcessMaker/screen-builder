@@ -19,7 +19,7 @@ export default {
           this.pageNavigationProperties(params);
         }
       },
-      onbuild(screen) {
+      onbuild({ screen }) {
         this.pageNavigationBuild(screen);
       },
     });

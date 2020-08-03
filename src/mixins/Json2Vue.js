@@ -35,8 +35,8 @@ export default {
     submit() {
       this.$emit('submit', this.value);
     },
-    buildComponent() {
-      const component = this.componentDefinition();
+    buildComponent(definition) {
+      const component = this.componentDefinition(definition);
       const warnHandler = Vue.config.warnHandler;
       const errorHandler = Vue.config.errorHandler;
       const errors = [];
@@ -78,9 +78,9 @@ export default {
         Vue.config.errorHandler = errorHandler;
       }
     },
-    parse(screen) {
+    parse(screen, definition) {
       const owner = this.ownerDocument.createElement('div');
-      this.loadPages(this.definition.config, owner, screen);
+      this.loadPages(definition.config, owner, screen);
       return '<div>' + owner.innerHTML + '</div>';
     },
     loadPages(pages, owner, screen) {
@@ -165,7 +165,7 @@ export default {
       element.config.color ? css.push(element.config.color) : null;
       return css.join(' ');
     },
-    componentDefinition() {
+    componentDefinition(definition) {
       let component;
       this.building.error = '';
       this.building.component = '';
@@ -183,15 +183,15 @@ export default {
           mounted: [],
           validations: {},
         };
-        const template = this.parse(component);
+        const template = this.parse(component, definition);
         // Extensions.onparse
         this.extensions.forEach((ext) => {
-          ext.onparse instanceof Function ? ext.onparse.bind(this)(template) : null;
+          ext.onparse instanceof Function ? ext.onparse.bind(this)({ screen: component, template, definition}) : null;
         });
         component.template = template;
         // Extensions.onbuild
         this.extensions.forEach((ext) => {
-          ext.onbuild instanceof Function ? ext.onbuild.bind(this)(component) : null;
+          ext.onbuild instanceof Function ? ext.onbuild.bind(this)({ screen: component, definition }) : null;
         });
         // Build data
         component.data = new Function('const data = {};' + Object.keys(component.data).map(key => `this.setValue(${JSON.stringify(key)}, ${component.data[key]}, data);`).join('\n') + 'return data;');
