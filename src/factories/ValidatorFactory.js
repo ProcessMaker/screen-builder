@@ -11,6 +11,8 @@ export function ValidatorFactory(config, data) {
     float: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
     currency: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
     array: 'array',
+    percentage: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
+    password: 'string',
   };
 
   validate.validator = null;
