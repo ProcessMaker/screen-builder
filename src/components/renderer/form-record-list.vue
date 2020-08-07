@@ -163,34 +163,40 @@ export default {
         },
       },
       initFormValues: {},
+      parentReference: null,
     };
   },
   computed: {
-    parentObj() {
-      let parent = this.$parent;
-      while ('transientData' in parent.$props) {
-        parent = parent.$parent;
-      }
-      return parent;
-    },
     addItemWithParent: {
       get() {
-        this.addItem._parent = this.$parent.transientData;
-        return this.addItem;
+        let item = _.cloneDeep(this.addItem);
+        if (this.parentReference) {
+          item._parent = _.cloneDeep(this.parentReference.transientData);
+        }
+        return item
       },
       set(val) {
-        this.$set(this.parentObj, 'transientData', val._parent);
-        this.addItem = val;
+        let { _parent, ...item } = val;
+        if (this.parentReference) {
+          this.$set(this.parentReference, 'transientData', _parent);
+        }
+        this.addItem = item;
       }
     },
     editItemWithParent: {
       get() {
-        this.editItem._parent = this.$parent.transientData;
-        return this.editItem;
+        let item = _.cloneDeep(this.editItem);
+        if (this.parentReference) {
+          item._parent = _.cloneDeep(this.parentReference.transientData);
+        }
+        return item;
       },
       set(val) {
-        this.$set(this.parentObj, 'transientData', val._parent);
-        this.editItem = val;
+        let { _parent, ...item } = val;
+        if (this.parentReference) {
+          this.$set(this.parentReference, 'transientData', _parent);
+        }
+        this.editItem = item;
       }
     },
     dataManager() {
@@ -417,6 +423,16 @@ export default {
       this.errors = validate.getErrors();
       return _.size(this.errors) === 0;
     },
+    parentObj() {
+      let parent = this.$parent;
+      while ('transientData' in parent.$props) {
+        parent = parent.$parent;
+      }
+      return parent;
+    },
   },
+  mounted() {
+    this.parentReference = this.parentObj();
+  }
 };
 </script>
