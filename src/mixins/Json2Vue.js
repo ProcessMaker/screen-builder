@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 
@@ -14,6 +13,10 @@ export default {
       },
     },
     showErrors: {
+      type: Boolean,
+      default: false,
+    },
+    testScreenDefinition: {
       type: Boolean,
       default: false,
     },
@@ -37,6 +40,10 @@ export default {
     },
     buildComponent(definition) {
       const component = this.componentDefinition(definition);
+      if (!this.testScreenDefinition) {
+        return component;
+      }
+      const Vue = this.$root.constructor;
       const warnHandler = Vue.config.warnHandler;
       const errorHandler = Vue.config.errorHandler;
       const errors = [];
@@ -44,7 +51,7 @@ export default {
       this.building.component = '';
       this.building.errors = [];
       this.building.show = false;
-      let VueComponent;
+      let ScreenRendered;
       try {
         Vue.config.warnHandler = err => {
           errors.push(err);
@@ -52,8 +59,8 @@ export default {
         Vue.config.errorHandler = err => {
           errors.push(err);
         };
-        VueComponent = Vue.component('ScreenRedered', component);
-        const instance = new VueComponent({
+        ScreenRendered = Vue.component('ScreenRendered', component);
+        const instance = new ScreenRendered({
           propsData: {
             vdata: {},
           },
@@ -64,13 +71,13 @@ export default {
           throw this.$t('Building error');
         }
         this.codigo = component;
-        return VueComponent;
+        return component;
       } catch (error) {
         this.building.error = error;
         this.building.component = component;
         this.building.errors = errors;
         this.building.show = true;
-        return VueComponent || {
+        return component || {
           template: '<div></div>',
         };
       } finally {
@@ -173,6 +180,7 @@ export default {
       this.building.show = false;
       try {
         component = {
+          //extends: ScreenRendered,
           mixins: [ScreenBase],
           components: {},
           props: {},

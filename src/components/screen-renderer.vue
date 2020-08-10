@@ -13,7 +13,7 @@ import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 
 Vue.use(VueFormElements);
 Vue.component('FormButton', FormButton);
@@ -23,6 +23,7 @@ export default {
   mixins: [ Json2Vue ],
   data() {
     return {
+      currentDefinition: null,
       codigo: '',
       self: this,
       building: {
@@ -34,13 +35,17 @@ export default {
     };
   },
   mounted() {
-    this.component = this.buildComponent(cloneDeep(this.definition));
+    this.currentDefinition = cloneDeep(this.definition);
+    this.component = this.buildComponent(this.currentDefinition);
   },
   watch: {
     definition: {
       deep: true,
       handler(definition) {
-        this.component = this.buildComponent(cloneDeep(definition));
+        if (!isEqual(definition, this.currentDefinition)) {
+          this.currentDefinition = cloneDeep(definition);
+          this.component = this.buildComponent(this.currentDefinition);
+        }
       },
     },
   },
