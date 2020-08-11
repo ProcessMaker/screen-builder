@@ -1,7 +1,7 @@
 <template>
   <div :class="containerClass">
     <custom-css>{{ customCssWrapped }}</custom-css>
-    <screen-renderer :value="data" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" />
+    <screen-renderer :value="data" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" />
   </div>
 </template>
 
@@ -31,7 +31,7 @@ Vue.use(DataProvider);
 export default {
   name: 'VueFormRenderer',
   components: { CustomCSS },
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
     event: 'update',
@@ -152,8 +152,8 @@ export default {
       return child.errors();
     },
     isValid() {
-      const items = getItemsFromConfig(this.config);
-      let config = _.cloneDeep(this.config);
+      const items = getItemsFromConfig(this.definition.config);
+      let config = _.cloneDeep(this.definition.config);
 
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);

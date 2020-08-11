@@ -2,9 +2,9 @@ import computedFields from '../computedFields';
 
 export default {
   methods: {
-    computedFields(screen) {
+    computedFields(screen, definition) {
       screen.mixins.push(computedFields);
-      this.definition.computed.forEach(computed => {
+      definition.computed.forEach(computed => {
         screen.computed[computed.property] = {
           get: new Function(`return this.evaluateExpression(${JSON.stringify(computed.formula)}, ${JSON.stringify(computed.type)});`),
           set() {},
@@ -15,9 +15,9 @@ export default {
   },
   mounted() {
     this.extensions.push({
-      onbuild(screen) {
-        if (this.definition.computed) {
-          this.computedFields(screen);
+      onbuild({ screen, definition }) {
+        if (definition.computed) {
+          this.computedFields(screen, definition);
         }
       },
     });
