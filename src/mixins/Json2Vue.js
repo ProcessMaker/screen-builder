@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 
@@ -14,6 +13,10 @@ export default {
       },
     },
     showErrors: {
+      type: Boolean,
+      default: false,
+    },
+    testScreenDefinition: {
       type: Boolean,
       default: false,
     },
@@ -35,8 +38,12 @@ export default {
     submit() {
       this.$emit('submit', this.value);
     },
-    buildComponent() {
-      const component = this.componentDefinition();
+    buildComponent(definition) {
+      const component = this.componentDefinition(definition);
+      if (!this.testScreenDefinition) {
+        return component;
+      }
+      const Vue = this.$root.constructor;
       const warnHandler = Vue.config.warnHandler;
       const errorHandler = Vue.config.errorHandler;
       const errors = [];
@@ -44,7 +51,7 @@ export default {
       this.building.component = '';
       this.building.errors = [];
       this.building.show = false;
-      let VueComponent;
+      let ScreenRendered;
       try {
         Vue.config.warnHandler = err => {
           errors.push(err);
@@ -52,8 +59,8 @@ export default {
         Vue.config.errorHandler = err => {
           errors.push(err);
         };
-        VueComponent = Vue.component('ScreenRedered', component);
-        const instance = new VueComponent({
+        ScreenRendered = Vue.component('ScreenRendered', component);
+        const instance = new ScreenRendered({
           propsData: {
             vdata: {},
           },
@@ -64,13 +71,13 @@ export default {
           throw this.$t('Building error');
         }
         this.codigo = component;
-        return VueComponent;
+        return component;
       } catch (error) {
         this.building.error = error;
         this.building.component = component;
         this.building.errors = errors;
         this.building.show = true;
-        return VueComponent || {
+        return component || {
           template: '<div></div>',
         };
       } finally {
@@ -78,9 +85,9 @@ export default {
         Vue.config.errorHandler = errorHandler;
       }
     },
-    parse(screen) {
+    parse(screen, definition) {
       const owner = this.ownerDocument.createElement('div');
-      this.loadPages(this.definition.config, owner, screen);
+      this.loadPages(definition.config, owner, screen);
       return '<div>' + owner.innerHTML + '</div>';
     },
     loadPages(pages, owner, screen) {
@@ -165,7 +172,7 @@ export default {
       element.config.color ? css.push(element.config.color) : null;
       return css.join(' ');
     },
-    componentDefinition() {
+    componentDefinition(definition) {
       let component;
       this.building.error = '';
       this.building.component = '';
@@ -173,6 +180,7 @@ export default {
       this.building.show = false;
       try {
         component = {
+          //extends: ScreenRendered,
           mixins: [ScreenBase],
           components: {},
           props: {},
@@ -183,15 +191,15 @@ export default {
           mounted: [],
           validations: {},
         };
-        const template = this.parse(component);
+        const template = this.parse(component, definition);
         // Extensions.onparse
         this.extensions.forEach((ext) => {
-          ext.onparse instanceof Function ? ext.onparse.bind(this)(template) : null;
+          ext.onparse instanceof Function ? ext.onparse.bind(this)({ screen: component, template, definition}) : null;
         });
         component.template = template;
         // Extensions.onbuild
         this.extensions.forEach((ext) => {
-          ext.onbuild instanceof Function ? ext.onbuild.bind(this)(component) : null;
+          ext.onbuild instanceof Function ? ext.onbuild.bind(this)({ screen: component, definition }) : null;
         });
         // Build data
         component.data = new Function('const data = {};' + Object.keys(component.data).map(key => `this.setValue(${JSON.stringify(key)}, ${component.data[key]}, data);`).join('\n') + 'return data;');

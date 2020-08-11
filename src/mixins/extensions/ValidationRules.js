@@ -92,8 +92,8 @@ export default {
           properties[':error'] = `validationMessage($v.${element.config.name})`;
         }
       },
-      onbuild(component) {
-        component.mixins.push(validationMixin);
+      onbuild({ screen }) {
+        screen.mixins.push(validationMixin);
       },
     });
   },

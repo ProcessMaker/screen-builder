@@ -1,8 +1,8 @@
 
 export default {
   methods: {
-    dataFields(screen) {
-      this.variables.filter(v => !(this.definition.computed && this.definition.computed.find(c => c.property === v.name)))
+    dataFields(screen, definition) {
+      this.variables.filter(v => !(definition.computed && definition.computed.find(c => c.property === v.name)))
         .forEach(v => {
           this.addData(screen, v.name, `this.getValue(${JSON.stringify(v.name)}, this.vdata) || this.getValue(${JSON.stringify(v.name)}, data) || null`);
           this.addWatch(screen, v.name, `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);`);
@@ -13,8 +13,8 @@ export default {
   },
   mounted() {
     this.extensions.push({
-      onbuild(screen) {
-        this.dataFields(screen);
+      onbuild({ screen, definition }) {
+        this.dataFields(screen, definition);
       },
     });
   },
