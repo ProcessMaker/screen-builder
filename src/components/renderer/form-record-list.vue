@@ -177,7 +177,7 @@ export default {
       },
       set(val) {
         let { _parent, ...item } = val;
-        if (this.parentReference) {
+        if (this.parentReference && _parent) {
           this.$set(this.parentReference, 'transientData', _parent);
         }
         this.addItem = item;
@@ -193,7 +193,7 @@ export default {
       },
       set(val) {
         let { _parent, ...item } = val;
-        if (this.parentReference) {
+        if (this.parentReference && _parent) {
           this.$set(this.parentReference, 'transientData', _parent);
         }
         this.editItem = item;
