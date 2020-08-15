@@ -165,6 +165,7 @@ export default {
       },
       scrollable: null,
       formSubmitErrorClass: '',
+      debounceSetComputedUpdates: null,
     };
   },
   watch: {
@@ -178,6 +179,7 @@ export default {
     transientData: {
       handler() {
         if (this.computed) {
+          const computedUpdates = [];
           this.computed.forEach(prop => {
             let value;
             try {
@@ -191,15 +193,12 @@ export default {
               value = String(e);
             }
 
-            // Computed properties updated in less than 100 milliseconds are not refreshed
-            if (typeof prop.lastUpdate !== 'undefined' && (new Date().getTime()) - prop.lastUpdate < 100) {
-              return;
-            }
-            prop.lastUpdate = new Date().getTime();
-
-            JSON.stringify(this.transientData[prop.property]) !== JSON.stringify(value) ? this.$set(this.transientData, prop.property, value) : null;
-            JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
+            computedUpdates.push(() => {
+              JSON.stringify(this.transientData[prop.property]) !== JSON.stringify(value) ? this.$set(this.transientData, prop.property, value) : null;
+              JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
+            });
           });
+          this.setComputedUpdates(computedUpdates);
         }
 
         if (!typeof this.config == undefined) {
@@ -258,6 +257,19 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
+    setComputedUpdates(computedUpdates) {
+      console.log("----------- debouncing setComputedUpdates");
+      if (!this.debounceSetComputedUpdates) {
+        this.debounceSetComputedUpdates = _.debounce(updates => {
+          if (!Array.isArray(updates)) {
+            return;
+          }
+          console.log("----------- ACTUALLY RUNNING");
+          updates.forEach(up => up());
+        });
+      }
+      this.debounceSetComputedUpdates(computedUpdates);
+    },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {
         Object.keys(this.customFunctions).forEach(key => {
