@@ -258,13 +258,11 @@ export default {
   },
   methods: {
     setComputedUpdates(computedUpdates) {
-      console.log("----------- debouncing setComputedUpdates");
       if (!this.debounceSetComputedUpdates) {
         this.debounceSetComputedUpdates = _.debounce(updates => {
           if (!Array.isArray(updates)) {
             return;
           }
-          console.log("----------- ACTUALLY RUNNING");
           updates.forEach(up => up());
         });
       }
