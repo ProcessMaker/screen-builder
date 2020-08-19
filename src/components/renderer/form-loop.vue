@@ -43,6 +43,7 @@ export default {
       additionalItems: 0,
       transientDataCopy: null,
       parentObjectChanges: [],
+      lastSetMatrix: {},
     };
   },
   computed: {
@@ -132,14 +133,12 @@ export default {
     },
     matrix: {
       handler() {
-        let result = this.matrix.map(row => {
-          let rowCopy = _.clone(row);
-          delete rowCopy._parent;
-          return rowCopy;
-        });
-        this.$set(this.$parent.transientData, this.name, result);
-        
-        this.setChagnedParentVariables();
+        if (_.isEqual(this.lastSetMatrix, this.matrix)) {
+          return;
+        }
+
+        this.lastSetMatrix = _.cloneDeep(this.matrix);
+        this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
       },
       deep: true,
     },
@@ -194,8 +193,10 @@ export default {
       }
     },
     setMatrixValue(i, v) {
+      let { _parent, ...item } = v;
       this.registerParentVariableChanges(v);
-      this.$set(this.matrix, i, v);
+      this.$set(this.matrix, i, item);
+      this.setChagnedParentVariables();
     },
     registerParentVariableChanges(obj) {
       if (obj._parent) {
@@ -213,7 +214,7 @@ export default {
       this.parentObjectChanges = [];
     },
     getMatrixValue(i) {
-      let val = this.matrix[i];
+      let val = _.cloneDeep(this.matrix[i]);
       if (!val) {
         val = {};
       }
