@@ -440,7 +440,8 @@ export default {
     setEndpointList(dataSources) {
       const endpoints = {};
       dataSources.forEach(ds => {
-        endpoints[ds.id] = Object.keys(ds.endpoints).map(name => {
+        const dsEndpoints = ds.endpoints ? ds.endpoints : [];
+        endpoints[ds.id] = Object.keys(dsEndpoints).map(name => {
           return { text: name, value: name };
         });
       });
