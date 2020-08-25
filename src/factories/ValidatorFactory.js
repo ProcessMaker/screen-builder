@@ -104,6 +104,7 @@ export function ValidatorFactory(config, data) {
 
       //If the element has dataformat configurated
       if (
+        itemLoop.component ===  'FormInput' &&
         itemLoop.config &&
         itemLoop.config.name &&
         itemLoop.config.dataFormat
