@@ -37,7 +37,11 @@ export default {
   },
   methods: {
     mustache(text) {
-      return Mustache.render(text, this.vdata);
+      try {
+        return Mustache.render(text, this.vdata);
+      } catch (e) {
+        return e.message;
+      }
     },
     submitForm() {
       this.$emit('submit', this.vdata);
