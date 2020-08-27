@@ -346,9 +346,7 @@ export default {
     changeMode(mode) {
       this.mode = mode;
       this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
-      this.$nextTick(() => {
-        this.rendererKey++;
-      });
+      this.rendererKey++;
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
