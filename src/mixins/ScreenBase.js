@@ -46,7 +46,7 @@ export default {
       return object ? get(object, name) : undefined;
     },
     setValue(name, value, object = this, defaults = object) {
-      if (object) {
+      if (object && value !== undefined) {
         const splittedName = name.split('.');
         splittedName.forEach((attr, index) => {
           this.$set(
