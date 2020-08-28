@@ -25,7 +25,7 @@ export default {
     },
     setupDefaultValue(screen, name, value) {
       const defaultComputedName = `default_${name}__`;
-      this.addData(screen, `${name}_was_filled__`, `!!this.log(this.getValue(${JSON.stringify(name)}, this.vdata), ${JSON.stringify(name)})`);
+      this.addData(screen, `${name}_was_filled__`, `!!this.getValue(${JSON.stringify(name)}, this.vdata)`);
       this.addMounted(screen, `if (!this.${name}) {
         this.${name} = ${value};
       }`);
@@ -44,8 +44,8 @@ export default {
       onloadproperties({ properties, element }) {
         const name = element.config.name;
         if (element.config.defaultValue || element.config.initiallyChecked) {
-          const event = `${name}_was_filled__ = !!$event; !${name}_was_filled__ && (vdata.${name} = default_${name}__)`;
-          properties['@input'] = event;
+          const event = `${name}_was_filled__ = !!value; !${name}_was_filled__ && (vdata.${name} = default_${name}__)`;
+          this.addEvent(properties, 'input', 'value', event);
         }
       },
     });
