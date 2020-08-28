@@ -236,5 +236,8 @@ export default {
     addMounted(screen, code) {
       screen.mounted.push(code);
     },
+    addEvent(properties, event, param, code) {
+      properties[`@${event}`] = `${param}=$event;${code}`;
+    },
   },
 };
