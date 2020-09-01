@@ -96,6 +96,18 @@ export function ValidatorFactory(config, data) {
         itemLoop.config.name &&
         itemLoop.config.validation
       ) {
+        
+        itemLoop.config.validation.forEach(validation => {
+          let newValidationRule;
+          const rule = validation.value.split(':')[0];
+          const fieldName = validation.value.split(':')[1].split(',')[0];
+          const fieldValue = validation.value.split(':')[1].split(',')[1];
+          newValidationRule = rule + ':' + loopName + '.*.' + fieldName + ',' + fieldValue;
+          
+          validation.value = newValidationRule
+        });
+        console.log('validation', itemLoop.config);
+        
         validate.addRule(
           loopName + '.*.' + itemLoop.config.name,
           itemLoop.config.validation
