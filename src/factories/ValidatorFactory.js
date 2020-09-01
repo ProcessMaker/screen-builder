@@ -106,7 +106,6 @@ export function ValidatorFactory(config, data) {
           
           validation.value = newValidationRule
         });
-        console.log('validation', itemLoop.config);
         
         validate.addRule(
           loopName + '.*.' + itemLoop.config.name,
