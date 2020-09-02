@@ -23,6 +23,10 @@ import {
   or,
   and,
 } from 'vuelidate/lib/validators';
+import {
+  after,
+  before_or_equal,
+} from '../ValidationRules';
 
 const validators = {
   required,
@@ -47,6 +51,9 @@ const validators = {
   not,
   or,
   and,
+  after,
+  beforeOrEqual: before_or_equal,
+  max: maxValue,
 };
 function locatorABParam(a, b) {
   return function() {
@@ -74,6 +81,9 @@ export default {
             element.config.validation.forEach((validation) => {
               const rule = this.camelCase(validation.value.split(':')[0]);
               let validationFn = validators[rule];
+              if (!validationFn) {
+                throw `Undefined validation rule ${rule}`;
+              }
               if (validation.configs instanceof Array) {
                 const params = [];
                 validation.configs.forEach(cnf => {
