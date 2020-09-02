@@ -98,15 +98,24 @@ export function ValidatorFactory(config, data) {
       ) {
         
         itemLoop.config.validation.forEach(validation => {
-          let newValidationRule;
+          if (!validation.value.includes(':')) {
+            return;
+          } 
           const rule = validation.value.split(':')[0];
-          const fieldName = validation.value.split(':')[1].split(',')[0];
-          const fieldValue = validation.value.split(':')[1].split(',')[1];
-          newValidationRule = rule + ':' + loopName + '.*.' + fieldName + ',' + fieldValue;
-          
-          validation.value = newValidationRule
+          let fieldName = validation.value.split(':')[1];
+          let newValidationRule;
+          if (rule.includes('required_') || rule.includes('same')) {
+            if (!fieldName.includes(',')) {
+              newValidationRule = rule + ':' + loopName + '.*.' + fieldName;
+            } else {
+              fieldName = fieldName.split(',')[0];
+              const fieldValue = validation.value.split(':')[1].split(',')[1];
+              newValidationRule = rule + ':' + loopName + '.*.' + fieldName + ',' + fieldValue;
+            }
+            validation.value = newValidationRule;  
+          }
         });
-        
+
         validate.addRule(
           loopName + '.*.' + itemLoop.config.name,
           itemLoop.config.validation
