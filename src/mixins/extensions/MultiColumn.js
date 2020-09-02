@@ -39,5 +39,6 @@ export default {
       },
     });
     this.alias['FormMultiColumn'] = 'NewFormMultiColumn';
+    this.alias['MultiColumn'] = 'NewFormMultiColumn';
   },
 };
