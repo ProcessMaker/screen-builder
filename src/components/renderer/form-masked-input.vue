@@ -40,8 +40,7 @@ import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixi
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
-import { getUserDateFormat, getUserDateTimeFormat, getTimezone } from '@processmaker/vue-form-elements/src/dateUtils';
-import moment from 'moment';
+import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -55,33 +54,6 @@ const componentTypesConfigs = {
   date: 'getDateFormat',
   datetime: 'getDatetimeFormat',
   percentage: 'getPercentageFormat',
-};
-
-const defaultMask = {
-  date: ['##/##/####'],
-  dateTime: ['##/##/#### #:## SS', '##/##/#### ##:## SS'],
-};
-
-const masks = {
-  'MM/DD/YYYY': defaultMask,
-  'MM/DD/YYYY h:mm A': defaultMask,
-  'MM/DD/YYYY HH:mm': {
-    date: ['##/##/####'],
-    dateTime: ['##/##/#### ##:##'],
-  },
-  'DD/MM/YYYY': defaultMask,
-  'DD/MM/YYYY HH:mm': {
-    date: ['##/##/####'],
-    dateTime: ['##/##/#### ##:##'],
-  },
-  'YYYY/MM/DD': {
-    date: ['####/##/##'],
-    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
-  },
-  'YYYY/MM/DD HH:mm': {
-    date: ['####/##/##'],
-    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
-  },
 };
 
 export default {
@@ -195,25 +167,6 @@ export default {
     value(value) {
       if (!value) {    
         this.localValue = value;
-      } else {
-        //let date;
-        //switch (this.dataFormat) {
-        //  case 'date': 
-        //    date = moment(value, moment.ISO_8601, true).tz(getTimezone());
-        //    if (date.isValid()) {
-        //      this.localValue = date.format(getUserDateFormat());
-        //    }
-        //    break;
-        //  case 'datetime': 
-        //    date = moment(value, moment.ISO_8601, true).tz(getTimezone());
-        //    if (date.isValid()) {
-        //      this.localValue = date.format(getUserDateTimeFormat());
-        //    }
-        //    break;
-        //  default:
-        //    value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
-        //    break;
-        //}
       }      
     },
     localValue(value) {
