@@ -43,6 +43,7 @@ export default {
       additionalItems: 0,
       transientDataCopy: null,
       parentObjectChanges: [],
+      lastSetMatrix: {}
     };
   },
   computed: {
@@ -132,11 +133,10 @@ export default {
     },
     matrix: {
       handler() {
-        if (_.isEqual(lastSetMatrix, this.matrix)) {
+        if (_.isEqual(this.lastSetMatrix, this.matrix)) {
           return;
         }
-
-        const lastSetMatrix = _.cloneDeep(this.matrix);
+        this.lastSetMatrix = _.cloneDeep(this.matrix);
         this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
       },
       deep: true,
@@ -237,5 +237,8 @@ export default {
       this.$emit('submit');
     },
   },
+  mounted() {
+    this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
+  }
 };
 </script>
