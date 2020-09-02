@@ -114,15 +114,16 @@ export default {
       return value;
     },
     convertFromData(value) {
-      if (this.dataFormat === 'datetime') return moment(value).format(this.getUserDateTimeFormat());
-      if (this.dataFormat === 'date') return moment(value).format(this.getUserDateFormat());
+      //if (this.dataFormat === 'datetime') return moment(value).format(this.getUserDateTimeFormat());
+      //if (this.dataFormat === 'date') return moment(value).format(this.getUserDateFormat());
       return value;
     },
     getMask() {
-      const format = this.dataFormat === 'date' ? this.getUserDateFormat() : this.getUserDateTimeFormat();
-      return typeof masks[format] === 'undefined'
-        ? defaultMask
-        : masks[format];
+      // Mask changed to ISO format for all the users
+      return {
+        date: ['####-##-##'],
+        dateTime: ['####-##-## ##:##', '####-##-## ##:##:##'],
+      };
     },
   },
   computed: {
@@ -195,29 +196,29 @@ export default {
       if (!value) {    
         this.localValue = value;
       } else {
-        let date;
-        switch (this.dataFormat) {
-          case 'date': 
-            date = moment(value, moment.ISO_8601, true).tz(getTimezone());
-            if (date.isValid()) {
-              this.localValue = date.format(getUserDateFormat());
-            }
-            break;
-          case 'datetime': 
-            date = moment(value, moment.ISO_8601, true).tz(getTimezone());
-            if (date.isValid()) {
-              this.localValue = date.format(getUserDateTimeFormat());
-            }
-            break;
-          default:
-            value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
-            break;
-        }
+        //let date;
+        //switch (this.dataFormat) {
+        //  case 'date': 
+        //    date = moment(value, moment.ISO_8601, true).tz(getTimezone());
+        //    if (date.isValid()) {
+        //      this.localValue = date.format(getUserDateFormat());
+        //    }
+        //    break;
+        //  case 'datetime': 
+        //    date = moment(value, moment.ISO_8601, true).tz(getTimezone());
+        //    if (date.isValid()) {
+        //      this.localValue = date.format(getUserDateTimeFormat());
+        //    }
+        //    break;
+        //  default:
+        //    value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
+        //    break;
+        //}
       }      
     },
     localValue(value) {
       if (value == this.value) {
-        this.localValue = this.convertFromData(value);
+        //this.localValue = this.convertFromData(value);
       } else {
         this.$emit('input', this.convertToData(value));
       }

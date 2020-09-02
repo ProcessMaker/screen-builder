@@ -1,27 +1,6 @@
 import { get } from 'lodash';
 import Mustache from 'mustache';
-
-const ValidationMsg = {
-  required: 'Field is required',
-  requiredIf: 'Field is required',
-  requiredUnless: 'Field is required',
-  minLength: 'Must have at least {min}',
-  maxLength: 'Must have at most {max}',
-  minValue: 'Must have a minimum value of {min}',
-  maxValue: 'Must have a maximum value of {max}',
-  between: 'Must have a value between {min} and {max}',
-  alpha: 'Accepts only alphabet characters',
-  alphaNum: 'Accepts only alphanumerics',
-  numeric: 'Accepts only numerics',
-  integer: 'Must be a positive or negative integer',
-  decimal: 'Must be a positive or negative decimal number',
-  email: 'Must be a valid email addresses',
-  ipAddress: 'Must be a valid IPv4 addresses',
-  macAddress: 'Must be a valid MAC addresses',
-  sameAs: 'Must be same as %',
-  same: 'Must be same as %',
-  url: 'Must be a valid URL',
-};
+import { ValidationMsg } from './ValidationRules';
 
 export default {
   props: {
@@ -38,9 +17,9 @@ export default {
   methods: {
     mustache(text) {
       try {
-        return Mustache.render(text, this.vdata);
+        return text && Mustache.render(text, this.vdata);
       } catch (e) {
-        return e.message;
+        return 'MUSTACHE: ' + e.message;
       }
     },
     submitForm() {
