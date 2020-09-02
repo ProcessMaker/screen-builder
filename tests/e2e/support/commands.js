@@ -82,3 +82,35 @@ Cypress.Commands.add('assertComponentValue', (selector, expectedData) => {
     expect(data).to.eql(expectedData);
   });
 });
+
+/**
+ * Uploads a file to an input
+ * @memberOf Cypress.Chainable#
+ * @name uploadFile
+ * @function
+ * @param {String} filename - The screen filename to load
+ */
+Cypress.Commands.add('loadFromJson', (filename, index) => {
+  return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
+    const screen = content.screens[index];
+    cy.setVueComponentProperty('#screen-builder-container', '$refs.builder.config', screen.config);
+  });
+});
+
+/**
+ * Uploads a file to an input
+ * @memberOf Cypress.Chainable#
+ * @name uploadFile
+ * @function
+ * @param {String} filename - The screen filename to load
+ */
+Cypress.Commands.add('mockComponent', (componentName) => {
+  return cy.get('#screen-builder-container').then((div) => {
+    div[0].__vue__.$root.constructor.component(componentName, {
+      template: '<div></div>',
+      data() {
+        return {};
+      },
+    });
+  });
+});
