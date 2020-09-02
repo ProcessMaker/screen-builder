@@ -608,7 +608,7 @@ export default {
 
           return field;
         });
-      const control = this.controls.find(control => control['editor-control'] === this.inspection['editor-control']) || this.inspection;
+      const control = this.controls.find(control => control['editor-control'] === this.inspection['editor-control'] || control.component === this.inspection.component) || {inspector:[]};
       return control.inspector.filter(input => {
         if (accordionFields.includes(input.field)) {
           return true;
