@@ -337,7 +337,6 @@ export default {
       }
       
       if (this.dataSourcesList.length > 0) {
-        console.log("SETTING TO DEFAULT selectedDataSource")
         this.selectedDataSource = this.dataSourcesList[0].value;
       }
     },
