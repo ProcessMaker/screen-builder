@@ -39,8 +39,12 @@ describe('Default values', () => {
   });
   it('Dynamic Basic default value', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
-    cy.get('[data-cy=screen-element-container]').click();
+    // Add an input field
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    // Add a second input field
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+
+    cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=accordion-Advanced]').click();
     cy.get('[data-cy=inspector-defaultValue-basicValue]').clear().type('initial value');
     cy.get('[data-cy=mode-preview]').click();
