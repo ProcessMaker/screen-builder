@@ -11,12 +11,14 @@ import Json2Vue from '../mixins/Json2Vue';
 import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
+import FileUpload from '../components/renderer/file-upload.vue';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
 import { cloneDeep, isEqual } from 'lodash';
 
 Vue.use(VueFormElements);
 Vue.component('FormButton', FormButton);
+Vue.component('FileUpload', FileUpload);
 
 export default {
   components: { WatchersSynchronous, ScreenRendererError },
