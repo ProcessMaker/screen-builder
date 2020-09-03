@@ -337,7 +337,6 @@ export default {
       }
       
       if (this.dataSourcesList.length > 0) {
-        console.log("SETTING TO DEFAULT selectedDataSource")
         this.selectedDataSource = this.dataSourcesList[0].value;
       }
     },
@@ -440,7 +439,8 @@ export default {
     setEndpointList(dataSources) {
       const endpoints = {};
       dataSources.forEach(ds => {
-        endpoints[ds.id] = Object.keys(ds.endpoints).map(name => {
+        const dsEndpoints = ds.endpoints ? ds.endpoints : [];
+        endpoints[ds.id] = Object.keys(dsEndpoints).map(name => {
           return { text: name, value: name };
         });
       });
