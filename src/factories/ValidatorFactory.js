@@ -106,7 +106,10 @@ export function ValidatorFactory(config, data) {
           let fieldName = validation.value.split(':')[1];
           let newValidationRule;
           if (rule.includes('required_') || rule.includes('same')) {
-            if (!fieldName.includes(',')) {
+            if (fieldName.includes('_parent')) {
+              fieldName = fieldName.split('_parent.').pop();
+              newValidationRule = rule + ':' + fieldName;
+            } else if (!fieldName.includes(',')) {
               newValidationRule = rule + ':' + loopName + '.*.' + fieldName;
             } else {
               fieldName = fieldName.split(',')[0];
