@@ -1,3 +1,4 @@
+import customValidationRules from './CustomValidationRules';
 const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {
@@ -96,6 +97,29 @@ export function ValidatorFactory(config, data) {
         itemLoop.config.name &&
         itemLoop.config.validation
       ) {
+        
+        itemLoop.config.validation.forEach(validation => {
+          if (!validation.value.includes(':')) {
+            return;
+          } 
+          const rule = validation.value.split(':')[0];
+          let fieldName = validation.value.split(':')[1];
+          let newValidationRule;
+          if (rule.includes('required_') || rule.includes('same')) {
+            if (fieldName.includes('_parent')) {
+              fieldName = fieldName.split('_parent.').pop();
+              newValidationRule = rule + ':' + fieldName;
+            } else if (!fieldName.includes(',')) {
+              newValidationRule = rule + ':' + loopName + '.*.' + fieldName;
+            } else {
+              fieldName = fieldName.split(',')[0];
+              const fieldValue = validation.value.split(':')[1].split(',')[1];
+              newValidationRule = rule + ':' + loopName + '.*.' + fieldName + ',' + fieldValue;
+            }
+            validation.value = newValidationRule;  
+          }
+        });
+
         validate.addRule(
           loopName + '.*.' + itemLoop.config.name,
           itemLoop.config.validation
