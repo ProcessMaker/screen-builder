@@ -1,137 +1,54 @@
 <template>
   <div :class="containerClass">
-    <div class="page" :class="formSubmitErrorClass">
-      <div
-        v-for="(element, index) in visibleElements"
-        :key="index"
-        :selector="element.config.customCssSelector"
-      >
-        <component
-          v-if="element.container"
-          :class="elementCssClass(element)"
-          ref="container"
-          selected="selected"
-          :transientData="transientData"
-          v-model="element.items"
-          @submit="submit"
-          :config="element.config"
-          :ancestor-screens="ancestorScreens"
-          :name="element.config.name !== undefined ? element.config.name : null"
-          @pageNavigate="pageNavigate"
-          v-bind="element.config"
-          :is="element.component"
-          :formConfig="config"
-          :mode="mode"
-        />
-
-        <div v-else :id="element.config.name ? element.config.name : undefined">
-          <keep-alive>
-            <component
-              :class="elementCssClass(element)"
-              ref="elements"
-              :validationData="transientData"
-              v-model="model[getValidPath(element.config.name)]"
-              @submit="submit"
-              :ancestor-screens="ancestorScreens"
-              @pageNavigate="pageNavigate"
-              :name="element.config.name !== undefined ? element.config.name : null"
-              v-bind="element.config"
-              :is="element.component"
-              :disabled="element.config.interactive || element.config.disabled"
-              :formConfig="config"
-            />
-          </keep-alive>
-        </div>
-      </div>
-      <custom-css-output>{{ customCssWrapped }}</custom-css-output>
-      <watchers-synchronous ref="watchersSynchronous"/>
-    </div><!-- end page -->
-  </div><!-- end custom-css-scope -->
+    <custom-css>{{ customCssWrapped }}</custom-css>
+    <screen-renderer :value="data" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" />
+  </div>
 </template>
 
 <script>
 import Vue from 'vue';
 import _ from 'lodash';
-import { formWatchers, getValidPath, HasColorProperty, shouldElementBeVisible, defaultValues } from '@/mixins';
-import * as renderer from './renderer';
-import * as inspector from './inspector';
-import FormMultiColumn from '@/components/renderer/form-multi-column';
-import FormLoop from '@/components/renderer/form-loop';
-import FormMaskedInput from '@/components/renderer/form-masked-input';
 import CustomCSS from './custom-css';
-import {
-  FormCheckbox,
-  FormDatePicker,
-  FormHtmlEditor,
-  FormHtmlViewer,
-  FormSelectList,
-  FormTextArea,
-} from '@processmaker/vue-form-elements';
-import { Parser } from 'expr-eval';
-import { getDefaultValueForItem, getItemsFromConfig } from '../itemProcessingUtils';
-import WatchersSynchronous from '@/components/watchers-synchronous';
-import { ValidatorFactory } from '../factories/ValidatorFactory';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import Mustache from 'mustache';
 import DataProvider from '../DataProvider';
-import CustomCssOutput from './custom-css-output';
+import { getItemsFromConfig } from '../itemProcessingUtils';
+import { ValidatorFactory } from '../factories/ValidatorFactory';
 
 const csstree = require('css-tree');
-const Scrollparent = require("scrollparent");
+const Scrollparent = require('scrollparent');
 
 Vue.use(DataProvider);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext'],
+  components: { CustomCSS },
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
     event: 'update',
   },
-  mixins: [HasColorProperty, shouldElementBeVisible, getValidPath, formWatchers, defaultValues],
-  components: {
-    FormInput: FormMaskedInput,
-    WatchersSynchronous,
-    FormSelectList,
-    FormCheckbox,
-    FormTextArea,
-    FormDatePicker,
-    FormHtmlEditor,
-    FormHtmlViewer,
-    FormMultiColumn,
-    CustomCSS,
-    FormLoop,
-    CustomCssOutput,
-    ...inspector,
-    ...renderer,
-  },
   computed: {
-    model() {
-      return this.$deepModel(this.transientData);
-    },
-    visibleElements() {
-      if (!this.config[this.currentPage]) {
-        return;
-      }
-
-      return this.config[this.currentPage].items.filter(this.shouldElementBeVisible);
-    },
     containerClass() {
       return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
-    },
-    parentScreen() {
-      // if we are inside a nested screen, get the screen's id
-      const screen = _.get(this, '$parent.screen', null);
-      return typeof screen === 'number' ? screen : null;
     },
   },
   data() {
     return {
-      valid: true,
-      errors: [],
-      currentPage: this.page || 0,
-      transientData: JSON.parse(JSON.stringify(this.data)),
+      definition: {
+        config: this.config,
+        computed: this.computed,
+        customCss: this.customCss,
+        watchers: this.watchers,
+      },
+      formSubmitErrorClass: '',
+      // watcher URLs
+      watchers_config: {
+        api: {
+          execute: null,
+          execution: null,
+        },
+      },
       customCssWrapped: '',
       // Custom Functions for Rich Text Control
       customFunctions: {
@@ -157,86 +74,36 @@ export default {
           };
         },
       },
-      scrollable: null,
-      formSubmitErrorClass: '',
     };
   },
   watch: {
-    mode() {
-      this.currentPage = 0;
-    },
-    data() {
-      this.transientData = JSON.parse(JSON.stringify(this.data));
-      this.setDefaultValues();
-    },
-    transientData: {
-      handler() {
-        if (this.computed) {
-          this.computed.forEach(prop => {
-            let value;
-            try {
-              if (prop.type === 'expression') {
-                value = Parser.evaluate(prop.formula, this.transientData);
-              } else if (prop.type === 'javascript') {
-                const func = new Function(prop.formula);
-                value = func.bind(JSON.parse(JSON.stringify(this.transientData)))();
-              }
-            } catch (e) {
-              value = String(e);
-            }
-
-            // Computed properties updated in less than 100 milliseconds are not refreshed
-            if (typeof prop.lastUpdate !== 'undefined' && (new Date().getTime()) - prop.lastUpdate < 100) {
-              return;
-            }
-            prop.lastUpdate = new Date().getTime();
-
-            JSON.stringify(this.transientData[prop.property]) !== JSON.stringify(value) ? this.$set(this.transientData, prop.property, value) : null;
-            JSON.stringify(this.data[prop.property]) !== JSON.stringify(value) ? this.$set(this.data, prop.property, value) : null;
-          });
-        }
-
-        if (!typeof this.config == undefined) {
-          this.config.forEach(page => {
-            page.items.forEach(item => {
-              if (item.component !== 'FormRecordList') {
-                return;
-              }
-              const associatedRecordListPageId = item.config.form;
-              if (this.config[associatedRecordListPageId] && this.config[associatedRecordListPageId].items ) {
-                this.config[associatedRecordListPageId].items.forEach(field => {
-                  if (field.config.name in this.transientData) {
-                    delete this.transientData[field.config.name];
-                  }
-                });
-              }
-            });
-          });
-        }
-
-        // Only emit the update message if transientData does NOT equal this.data
-        // Instead of deep object property comparison, we'll just compare the JSON representations of both
-
-        if (JSON.stringify(this.transientData) !== JSON.stringify(this.data)) {
-          this.$emit('update', this.transientData);
-
-          //Verify changes in the Data for the watchers call
-          let diff = this.dataChanges(this.transientData, this.data);
-          if (diff.length) {
-            this.watchDataChanges(this.transientData, diff);
-          }
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-    customCss() {
+    customCss(customCss) {
+      this.definition.customCss = customCss;
       this.parseCss();
     },
     config: {
       deep: true,
-      handler() {
+      handler(config) {
+        this.definition.config = config;
         this.$nextTick(() => {this.registerCustomFunctions();});
+      },
+    },
+    data: {
+      deep: true,
+      handler() {
+        this.$emit('update', this.data);
+      },
+    },
+    computed: {
+      deep: true,
+      handler(computed) {
+        this.definition.computed = computed;
+      },
+    },
+    watchers: {
+      deep: true,
+      handler(watchers) {
+        this.definition.watchers = watchers;
       },
     },
   },
@@ -252,39 +119,6 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    registerCustomFunctions(node=this) {
-      if (node.registerCustomFunction instanceof Function) {
-        Object.keys(this.customFunctions).forEach(key => {
-          node.registerCustomFunction(key, this.customFunctions[key]);
-        });
-      }
-      if (node.$children instanceof Array) {
-        node.$children.forEach(child => this.registerCustomFunctions(child));
-      }
-    },
-    /**
-     * Returns the names of the fields that have changed.
-     *
-     * @param {object} newData
-     * @param {object} oldData
-     * @returns {[]}
-     */
-    dataChanges(newData, oldData) {
-      let changes = [];
-      for (const field in newData) {
-        if (oldData[field] !== undefined &&
-          JSON.stringify(newData[field]) !== JSON.stringify(oldData[field])) {
-          changes.push(field);
-        }
-      }
-      return changes;
-    },
-    submit() {
-      if (this.isValid()) {
-        this.setDefaultValues();
-        this.$emit('submit', this.transientData);
-      }
-    },
     checkForRecordList(items, config) {
       items.forEach(item => {
         if (item.items) {
@@ -295,7 +129,6 @@ export default {
           this.removeRecordListForms(item, config);
         }
       });
-
       return config;
     },
     removeRecordListForms(item, config) {
@@ -311,8 +144,8 @@ export default {
       return child.errors();
     },
     isValid() {
-      const items = getItemsFromConfig(this.config);
-      let config = _.cloneDeep(this.config);
+      const items = getItemsFromConfig(this.definition.config);
+      let config = _.cloneDeep(this.definition.config);
 
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
@@ -330,43 +163,20 @@ export default {
       }
       return _.size(this.errors) === 0;
     },
-    pageNavigate(page) {
-      if (this.isLoop) {
-        this.$emit('pageNavigate', page);
-        return;
+    registerCustomFunctions(node=this) {
+      if (node.registerCustomFunction instanceof Function) {
+        Object.keys(this.customFunctions).forEach(key => {
+          node.registerCustomFunction(key, this.customFunctions[key]);
+        });
       }
-
-      if (!this.config[page]) {
-        return;
-      }
-
-      this.currentPage = page;
-      this.scrollToTop();
-    },
-    scrollToTop() {
-      if (this.scrollable) {
-        this.scrollable.scrollTop = 0;
-      }
-      if (typeof window !== 'undefined') {
-        window.top.postMessage({ event: 'scrollToTop' }, '*');
+      if (node.$children instanceof Array) {
+        node.$children.forEach(child => this.registerCustomFunctions(child));
       }
     },
-    setDefaultValues() {
-      const shouldHaveDefaultValue = item => {
-        const shouldHaveDefaultValueSet = item.config.name &&
-            this.model[this.getValidPath(item.config.name)] === undefined &&
-          (item.component !== 'FormButton' || item.config.event === 'script');
-
-        const isNotFormAccordion = item.component !== 'FormAccordion';
-
-        return shouldHaveDefaultValueSet && isNotFormAccordion;
-      };
-      if (!typeof this.config == undefined) {
-        getItemsFromConfig(this.config)
-          .filter(shouldHaveDefaultValue)
-          .forEach(item => this.model[this.getValidPath(item.config.name)] = getDefaultValueForItem(item, this.transientData));
+    submit() {
+      if (this.isValid()) {
+        this.$emit('submit', this.data);
       }
-
     },
     parseCss() {
       const containerSelector = '.' + this.containerClass;

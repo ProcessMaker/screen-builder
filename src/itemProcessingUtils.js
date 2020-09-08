@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import moment from 'moment-timezone';
 
 function processFormItem(item) {
@@ -43,8 +44,8 @@ export function getDefaultValueForItem(item) {
 function generateNewDate(dataFormat) {
   let timezone = moment.tz.guess();
 
-  if (typeof ProcessMaker !== 'undefined' && ProcessMaker.user && ProcessMaker.user.timezone) {
-    timezone = ProcessMaker.user.timezone;
+  if (typeof window.ProcessMaker !== 'undefined' && window.ProcessMaker.user && window.ProcessMaker.user.timezone) {
+    timezone = window.ProcessMaker.user.timezone;
   }
 
   const date = moment.tz(timezone);

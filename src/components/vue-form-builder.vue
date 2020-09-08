@@ -43,7 +43,7 @@
     <!-- Renderer -->
     <b-col id="screen-container" class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
       <b-input-group size="sm" class="bg-white mt-3">
-        <b-form-select v-if="showToolbar" v-model="currentPage" class="form-control">
+        <b-form-select v-if="showToolbar" v-model="currentPage" class="form-control" data-cy="toolbar-page">
           <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
         </b-form-select>
 
@@ -54,6 +54,7 @@
             class="ml-1"
             :title="$t('Edit Page Title')"
             @click="openEditPageModal(currentPage)"
+            data-cy="toolbar-edit"
           >
             <i class="far fa-edit"/>
           </b-button>
@@ -65,18 +66,27 @@
             :title="$t('Delete Page')"
             @click="confirmDelete()"
             :disabled="!displayDelete"
+            data-cy="toolbar-remove"
           >
             <i class="far fa-trash-alt"/>
           </b-button>
 
-          <b-button size="sm" variant="secondary" class="ml-1 mr-1" @click="originalPageName=null" :title="$t('Add New Page')" v-b-modal.addPageModal>
+          <b-button
+            size="sm"
+            variant="secondary"
+            class="ml-1 mr-1"
+            @click="originalPageName=null"
+            :title="$t('Add New Page')"
+            v-b-modal.addPageModal
+            data-cy="toolbar-add"
+          >
             <i class="fas fa-plus"/>
           </b-button>
         </div>
 
         <b-button-group size="sm" class="ml-1 ml-auto">
-          <b-button @click="undo" :disabled="!canUndo">{{ $t('Undo') }}</b-button>
-          <b-button @click="redo" :disabled="!canRedo">{{ $t('Redo') }}</b-button>
+          <b-button @click="undo" :disabled="!canUndo" data-cy="toolbar-undo">{{ $t('Undo') }}</b-button>
+          <b-button @click="redo" :disabled="!canRedo" data-cy="toolbar-redo">{{ $t('Redo') }}</b-button>
         </b-button-group>
 
         <hr class="w-100">
@@ -119,7 +129,7 @@
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
                 >
-                  <i class="fas fa-copy text-light"></i>
+                  <i class="fas fa-copy text-light"/>
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
@@ -157,7 +167,7 @@
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
                 >
-                  <i class="fas fa-copy text-light"></i>
+                  <i class="fas fa-copy text-light"/>
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
@@ -193,6 +203,9 @@
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
               @click="toggleAccordion(accordion)"
+              :data-cy="`accordion-${ accordionName(accordion).replace(' ', '') }`"
+              :accordion-name="`accordion-${ accordionName(accordion).replace(' ', '') }`"
+              :is-open="accordion.open ? '1' : '0'"
             >
               <i class="fas fa-cog mr-2"/>
               {{ $t(accordionName(accordion)) }}
@@ -204,7 +217,9 @@
             <b-collapse :key="`${accordionName(accordion)}-collapse`" :id="accordionName(accordion)" v-model="accordion.open">
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
-                :data-cy="'inspector-' + item.config.name"
+                :data-cy="'inspector-' + (item.field || item.config.name)"
+                :field-name="item.field"
+                :field-accordion="`accordion-${ accordionName(accordion).replace(' ', '') }`"
                 :builder="builder"
                 :formConfig="config"
                 :currentPage="currentPage"
@@ -232,6 +247,7 @@
       ok-variant="btn btn-secondary ml-2"
       :title="$t('Add New Page')"
       header-close-content="&times;"
+      data-cy="add-page-modal"
     >
       <form-input v-model="addPageName"
         :name="$t('Page Name')"
@@ -239,6 +255,7 @@
         :helper="$t('The name of the new page to add')"
         validation="unique-page-name|required"
         ref="addPageInput"
+        data-cy="add-page-name"
       />
     </b-modal>
 
@@ -289,6 +306,9 @@ import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
 import './registerGlobalComponents';
+// Load tinymce icons
+import 'tinymce';
+import 'tinymce/icons/default/index';
 
 Vue.use(BootstrapVue);
 
@@ -307,18 +327,18 @@ if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.
 // Should also probably be converted to a mixin. These changes would then
 // require modifications to to App.vue and PM4 Core implementations
 Validator.register(
-    'columns-adds-to-12',
-    value => {
-        const sum = value.reduce((total, options) => {
-            return total + parseInt(options['content']);
-        }, 0);
+  'columns-adds-to-12',
+  value => {
+    const sum = value.reduce((total, options) => {
+      return total + parseInt(options['content']);
+    }, 0);
 
-        if (sum === 12) {
-            return true;
-        }
-        return false;
-    },
-    "Columns must add to 12"
+    if (sum === 12) {
+      return true;
+    }
+    return false;
+  },
+  'Columns must add to 12'
 );
 
 import {
@@ -333,6 +353,7 @@ import {
 
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import { formTypes } from '@/global-properties';
+import _ from 'lodash';
 
 const defaultConfig = [{
   name: 'Default',
@@ -625,6 +646,14 @@ export default {
       this.currentPage = this.config.indexOf(validation.page);
       this.$nextTick(() => {
         this.inspect(validation.item);
+        this.$nextTick(() => {
+          const field = this.$el.querySelector(`[field-name="${validation.field}"]`);
+          if (field) {
+            const accordion = this.$el.querySelector(`[accordion-name="${field.getAttribute('field-accordion')}"]`);
+            accordion && accordion.getAttribute('is-open') === '0' && accordion.click();
+            field.focus instanceof Function && field.focus();
+          }
+        });
       });
     },
     confirmDelete() {

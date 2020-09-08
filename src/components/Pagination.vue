@@ -1,15 +1,15 @@
 <template>
-  <div class="row my-2 px-2" v-if="tablePagination && tablePagination.last_page > 1">
+  <div class="row my-2 px-2" v-if="tablePagination && (tablePagination.last_page > 1 || perPageSelectEnabled)" data-cy="table-pagination">
     <div class="col-md-6 col-sm-12 pt-1 d-flex">
       <div
         v-if="tablePagination && tablePagination.last_page > 1"
         class="pagination"
-      >{{tablePagination.from + 1}} - {{tablePagination.to}} of {{tablePagination.total}} {{title}}
+      >{{ tablePagination.from + 1 }} - {{ tablePagination.to - 1 }} of {{ tablePagination.total }} {{ title }}
       </div>
       <div
         class="pagination"
-        v-if="tablePagination && tablePagination.last_page < 1"
-      >{{tablePagination.total}} {{title}}
+        v-if="tablePagination && tablePagination.last_page <= 1"
+      >{{ tablePagination.total }} {{ title }}
       </div>
     </div>
     <div class="col-md-6 col-sm-12 d-flex justify-content-end button-pagination">
@@ -18,43 +18,45 @@
           @click="loadPage(1)"
           :class="['pagination-nav-item', css.linkClass, isOnFirstPage ? css.disabledClass : '']"
         >
-          <i class="fas fa-angle-double-left"></i>
+          <i class="fas fa-angle-double-left"/>
         </div>
         <div
           @click="loadPage('prev')"
           :class="['pagination-nav-item', css.linkClass, isOnFirstPage ? css.disabledClass : '']"
         >
-          <i class="fas fa-angle-left"></i>
+          <i class="fas fa-angle-left"/>
         </div>
         <template v-if="notEnoughPages">
-          <template v-for="n in totalPage">
+          <template v-for="(n, index) in totalPage">
             <div
+              :key="`total-page-${index}`"
               @click="loadPage(n)"
               :class="['pagination-nav-item', css.pageClass, isCurrentPage(n) ? css.activeClass : '']"
               v-html="n"
-            ></div>
+            />
           </template>
         </template>
         <template v-else>
-          <template v-for="n in windowSize">
+          <template v-for="(n, index) in windowSize">
             <div
+              :key="`windows-size-${index}`"
               @click="loadPage(windowStart+n-1)"
               :class="['pagination-nav-item', css.pageClass, isCurrentPage(windowStart+n-1) ? css.activeClass : '']"
               v-html="windowStart+n-1"
-            ></div>
+            />
           </template>
         </template>
         <div
           @click="loadPage('next')"
           :class="['pagination-nav-item', css.linkClass, isOnLastPage ? css.disabledClass : '']"
         >
-          <i class="fas fa-angle-right"></i>
+          <i class="fas fa-angle-right"/>
         </div>
         <div
           @click="loadPage(totalPage)"
           :class="['pagination-nav-item', css.linkClass, isOnLastPage ? css.disabledClass : '']"
         >
-          <i class="fas fa-angle-double-right"></i>
+          <i class="fas fa-angle-double-right"/>
         </div>
         <select
           v-if="perPageSelectEnabled"
@@ -71,30 +73,30 @@
 </template>
 
 <script>
-  import PaginationMixin from 'vuetable-2/src/components/VuetablePaginationMixin.vue';
+import PaginationMixin from 'vuetable-2/src/components/VuetablePaginationMixin.vue';
 
-  export default {
-    mixins: [PaginationMixin],
-    props: ['perPageSelectEnabled', 'single', 'plural'],
-    data() {
-      return {
-        perPage: 10,
-      };
+export default {
+  mixins: [PaginationMixin],
+  props: ['perPageSelectEnabled', 'single', 'plural'],
+  data() {
+    return {
+      perPage: this.$parent && this.$parent.perPage || 10,
+    };
+  },
+  computed: {
+    title() {
+      if (this.tablePagination.total == 1) {
+        return this.single;
+      }
+      return this.plural;
     },
-    computed: {
-      title() {
-        if (this.tablePagination.total == 1) {
-          return this.single;
-        }
-        return this.plural;
-      },
+  },
+  watch: {
+    perPage(value) {
+      this.$emit('changePerPage', value);
     },
-    watch: {
-      perPage(value) {
-        this.$emit('changePerPage', value);
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

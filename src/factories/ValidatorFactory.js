@@ -1,14 +1,23 @@
 const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {
-
   const validate = {};
+  const rules = {
+    int: 'integer',
+    boolean: 'boolean',
+    string: 'string',
+    datetime: 'custom-datetime',
+    date: 'custom-date',
+    float: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
+    currency: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
+    array: 'array',
+  };
+
   validate.validator = null;
   validate.config = config;
   validate.data = data;
   validate.elements = {};
   validate.rules = {};
-
 
   /**
    * Search elements and validation rules from the screen configuration
@@ -16,7 +25,7 @@ export function ValidatorFactory(config, data) {
    * @param items from screen configuration.
    */
   validate.getDataAndRules = (items) => {
-    items.forEach(item => {
+    items.forEach((item) => {
       //If the element has containers
       if (Array.isArray(item)) {
         validate.getDataAndRules(item);
@@ -24,21 +33,83 @@ export function ValidatorFactory(config, data) {
 
       //If the element has items
       if (item.items) {
-        validate.getDataAndRules(item.items);
+        if (item.component === 'FormLoop') {
+          validate.ruleFormLoop(item.config.name, item.items);
+        } else {
+          validate.getDataAndRules(item.items);
+        }
       }
 
       //If the element has configuration only
       if (item.config && item.config.name && item.config.validation) {
-        validate.elements[`${item.config.name}`] = validate.data[item.config.name];
-        if (typeof item.config.validation === 'string') {
-          validate.rules[`${item.config.name}`] = item.config.validation;
+        validate.addRule(item.config.name, item.config.validation);
+      }
+
+      //If the element has dataformat configurated
+      if (item.config && item.config.name && item.config.dataFormat) {
+        validate.addRuleFormat(item.config.name, item.config.dataFormat);
+      }
+    });
+  };
+
+  validate.addRule = (name, validation) => {
+    let validationRule = [];
+    if (typeof validation === 'string') {
+      validationRule.push(validation);
+    } else {
+      validation.forEach((rule) => {
+        validationRule.push(rule.value);
+      });
+    }
+    validate.rules[name] = validationRule;
+  };
+
+  validate.addRuleFormat = (name, validation) => {
+    if (!validate.rules[name]) {
+      validate.rules[name] = [];
+    }
+    validate.rules[name].push(rules[validation]);
+  };
+
+  validate.ruleFormLoop = (loopName, items) => {
+    items.forEach((itemLoop) => {
+      if (Array.isArray(itemLoop)) {
+        validate.ruleFormLoop(loopName, itemLoop);
+      }
+
+      if (itemLoop.items) {
+        if (itemLoop.component === 'FormLoop') {
+          validate.ruleFormLoop(
+            loopName + '.*.' + itemLoop.config.name,
+            itemLoop.items
+          );
         } else {
-          let validationRule = [];
-          item.config.validation.forEach(validation => {
-            validationRule.push(validation.value);
-          });
-          validate.rules[`${item.config.name}`] = validationRule;
+          validate.ruleFormLoop(loopName, itemLoop.items);
         }
+      }
+
+      //If the element has validation configurated
+      if (
+        itemLoop.config &&
+        itemLoop.config.name &&
+        itemLoop.config.validation
+      ) {
+        validate.addRule(
+          loopName + '.*.' + itemLoop.config.name,
+          itemLoop.config.validation
+        );
+      }
+
+      //If the element has dataformat configurated
+      if (
+        itemLoop.config &&
+        itemLoop.config.name &&
+        itemLoop.config.dataFormat
+      ) {
+        validate.addRuleFormat(
+          loopName + '.*.' + itemLoop.config.name,
+          itemLoop.config.dataFormat
+        );
       }
     });
   };
@@ -48,7 +119,7 @@ export function ValidatorFactory(config, data) {
    */
   validate.getValidator = () => {
     validate.getDataAndRules(validate.config);
-    validate.validator = new Validator(validate.elements, validate.rules);
+    validate.validator = new Validator(validate.data, validate.rules);
   };
 
   /**
