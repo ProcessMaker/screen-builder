@@ -1,37 +1,11 @@
-import axios from 'axios';
+/* istanbul ignore file */
+
 export default {
-  install(Vue, options) {
+  apiInstance: null,
+  install(Vue) {
     Vue.prototype.$dataProvider = this;
   },
-  apiInstance() {
-    if (_.has(window, 'ProcessMaker.apiClient') && !window.ProcessMaker.isStub) {
-      return window.ProcessMaker.apiClient;
-    }
-    if (this.token()) {
-      axios.defaults.baseURL = this.baseURL();
-      axios.defaults.headers.common = {
-        'Authorization': 'Bearer ' + this.token(),
-      };
-      return axios;
-    }
-    // use a dummy api client
-    return {
-      get(...args) {
-        return Promise.resolve({
-          data: {
-            data: []
-          }
-        });
-      },
-    }
-  },
   get(...args) {
-   return this.apiInstance().get(...args);
+    return window.ProcessMaker.apiClient.get(...args);
   },
-  token() {
-    return localStorage.getItem('token');
-  },
-  baseURL() {
-    return localStorage.getItem('baseURL');
-  },
-}
+};

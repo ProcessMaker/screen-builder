@@ -25,11 +25,11 @@ export default {
       }],
       computed: [],
       customCSS: '',
-    }
+    };
   },
   watch: {
     previewData() {
-    }
-  }
-}
+    },
+  },
+};
 </script>

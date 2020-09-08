@@ -12,12 +12,12 @@
     footer-class="m-0 p-0"
     no-close-on-backdrop
     header-close-content="&times;"
-
+    data-cy="calcs-modal"
   >
 
     <template v-if="displayList">
       <div class="d-flex align-items-end flex-column mb-3">
-        <button type="button" @click.stop="displayFormProperty" class="btn btn-secondary">
+        <button type="button" @click.stop="displayFormProperty" class="btn btn-secondary" data-cy="calcs-add-property">
           <i class="fas fa-plus"/> {{ $t('Property') }}
         </button>
       </div>
@@ -29,6 +29,7 @@
           :data="current"
           data-path="data"
           :noDataTemplate="$t('No Data Available')"
+          data-cy="calcs-table"
         >
           <template slot="actions" slot-scope="row">
             <div class="actions">
@@ -38,6 +39,7 @@
                   @click="editProperty(row)"
                   v-b-tooltip.hover
                   :title="$t('Edit')"
+                  data-cy="calcs-table-edit"
                 >
                   <i class="fas fa-edit fa-lg fa-fw"/>
                 </b-btn>
@@ -46,6 +48,7 @@
                   @click="deleteProperty(row)"
                   v-b-tooltip.hover
                   :title="$t('Delete')"
+                  data-cy="calcs-table-remove"
                 >
                   <i class="fas fa-trash-alt fa-lg fa-fw"/>
                 </b-btn>
@@ -67,6 +70,7 @@
         :name="$t('Property Name')"
         :validation="rulePropName"
         class="mb-3"
+        data-cy="calcs-property-name"
       />
       <form-text-area
         ref="propDescription"
@@ -75,14 +79,15 @@
         :name="$t('Description')"
         :validation="ruleDescription"
         class="mb-3"
+        data-cy="calcs-property-description"
       />
       <div class="form-group mb-3" style='position: relative;'>
         <label v-show="isJS">{{ $t('Formula') + ' *' }}</label>
         <div class="float-right">
-          <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType">
+          <a class='btn btn-sm' :class="expressionTypeClass" @click="switchExpressionType('expression')" data-cy="calcs-switch-formula">
             <i class="fas fa-square-root-alt"/>
           </a>
-          <a class='btn btn-sm' :class="javascriptTypeClass" @click="switchExpressionType">
+          <a class='btn btn-sm' :class="javascriptTypeClass" @click="switchExpressionType('javascript')" data-cy="calcs-switch-javascript">
             <i class="fab fa-js-square"/>
           </a>
         </div>
@@ -95,6 +100,7 @@
           :label="$t('Formula') + ' *'"
           :name="$t('Formula')"
           :validation="ruleFormula"
+          data-cy="calcs-property-formula"
         />
         <div v-show="isJS" class="editor-border" :class="{'is-invalid':editorInvalid}"/>
         <monaco-editor
@@ -103,6 +109,7 @@
           class="editor"
           v-model="add.formula"
           language="javascript"
+          data-cy="calcs-property-javascript"
         />
         <div v-if="isJS && editorInvalid" class="invalid-feedback d-block">
           <div>{{ $t('The property formula field is required.') }}</div>
@@ -110,10 +117,11 @@
       </div>
       <template slot="modal-footer">
         <div class="d-flex align-items-end">
-          <button class="btn btn-outline-secondary" @click="displayTableList">{{ $t('Cancel') }}</button>
+          <button class="btn btn-outline-secondary" @click="displayTableList" data-cy="calcs-button-cancel">{{ $t('Cancel') }}</button>
           <button
             class="btn btn-secondary ml-3"
             @click="validateData"
+            data-cy="calcs-button-save"
           >
             {{ $t('Save') }}
           </button>
@@ -129,10 +137,6 @@ import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 
 let Validator = require('validatorjs');
-
-const globalObject = typeof window === 'undefined'
-  ? global
-  : window;
 
 export default {
   components: {
@@ -240,8 +244,8 @@ export default {
     },
   },
   methods: {
-    switchExpressionType() {
-      this.add.type = this.add.type === 'expression' ? 'javascript' : 'expression';
+    switchExpressionType(type) {
+      this.add.type = type;
     },
     show() {
       this.$refs.modal.show();
@@ -323,11 +327,6 @@ export default {
       });
       this.$emit('input', this.current);
       this.displayTableList();
-    },
-    showAlert(message) {
-      if (globalObject.ProcessMaker && globalObject.ProcessMaker.alert) {
-        globalObject.ProcessMaker.alert(message, 'success');
-      }
     },
   },
   created() {

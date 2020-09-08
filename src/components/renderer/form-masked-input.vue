@@ -98,6 +98,13 @@ export default {
     'dataMask',
   ],
   methods: {
+    formatValueIfValid(value) {
+      if (this.dataFormat === 'percentage') {
+        return value;
+      } else {
+        return DataFormatMixin.methods.formatValueIfValid.bind(this)(value);
+      }
+    },
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
     },
@@ -189,7 +196,7 @@ export default {
         this.localValue = value;
       } else {
         let date;
-        switch(this.dataFormat) {
+        switch (this.dataFormat) {
           case 'date': 
             date = moment(value, moment.ISO_8601, true).tz(getTimezone());
             if (date.isValid()) {

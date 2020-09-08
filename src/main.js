@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import Vue from 'vue';
 import App from './App.vue';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -6,7 +7,8 @@ import VueI18Next from '@panter/vue-i18next';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
-import * as VueDeepSet from "vue-deepset";
+import Vuetable from 'vuetable-2/src/components/Vuetable';
+import axios from 'axios';
 
 Vue.config.productionTip = false;
 
@@ -18,15 +20,23 @@ i18next.init({lng: 'en'});
 Vue.mixin({i18n: new VueI18Next(i18next)});
 Vue.use(Vuex);
 Vue.use(ScreenBuilder);
-Vue.use(VueDeepSet);
+Vue.component('vuetable', Vuetable);
 
 const store = new Vuex.Store({ modules: {} });
 
+window.axios = axios.create({
+  baseURL: '/api/1.0/',
+});
+
 window.ProcessMaker = {
-  isStub: true,
+  isStub: false,//true,
+  user: {
+    id: 1,
+    lang: 'en',
+  },
   apiClient: {
     get(url) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         const exampleScreen = {
           id: 1,
           screen_category_id: 1,
@@ -47,7 +57,7 @@ window.ProcessMaker = {
                     'helper': null,
                     'type': 'text',
                     'dataFormat': 'string',
-                    'customCssSelector': 'first-name'
+                    'customCssSelector': 'first-name',
                   },
                   'inspector': [],
                   'component': 'FormInput',
@@ -66,7 +76,7 @@ window.ProcessMaker = {
                     'helper': null,
                     'type': 'text',
                     'dataFormat': 'string',
-                    'customCssSelector': ''
+                    'customCssSelector': '',
                   },
                   'inspector': [],
                   'component': 'FormInput',
@@ -80,7 +90,7 @@ window.ProcessMaker = {
           ],
           computed: [],
           watchers: [],
-          custom_css: "[selector='first-name'] label { font-style: italic; }",
+          custom_css: '[selector=\'first-name\'] label { font-style: italic; }',
           status: 'ACTIVE',
         };
         if (url === 'screens/1') {
@@ -93,17 +103,86 @@ window.ProcessMaker = {
           resolve({
             data: {
               endpoints: {
-                "list": { }
-              }
-            }
+                'list': { },
+              },
+            },
           });
+        } else if (url === '/data_sources') {
+          resolve({data: {
+            data: [
+              {id: 1, name: 'Persons', endpoints: {
+                'list': { },
+              }},
+            ],
+          }});
+        } else {
+          window.axios.get(url)
+            .then(response => resolve(response))
+            .catch(error => reject(error));
+        }
+      });
+    },
+    post(url, body) {
+      return new Promise((resolve, reject) => {
+        switch (url) {
+          case '/scripts/execute/1':
+            window.Echo.watcherMocks(body, {
+              key: '1',
+            });
+            break;
+          case '/requests/data_sources/1':
+            resolve({data: {
+              response: [
+                {value: 1, content: 'James'},
+                {value: 2, content: 'John'},
+                {value: 3, content: 'Mary'},
+                {value: 4, content: 'Patricia'},
+              ], 
+            }});
+            break;
+          default:
+            window.axios.post(url, body)
+              .then(response => resolve(response))
+              .catch(error => reject(error));
         }
       });
     },
   },
   EventBus: new Vue(),
+  confirmModal(title, message, variant, callback) {
+    if (window.confirm(`${title}: ${message}`)) {
+      callback();
+    }
+  },
+  alert(message, variant) {
+    variant;
+    message;
+  },
 };
-
+window.Echo = {
+  listeners: [],
+  watcherMocks(body, response) {
+    this.listeners.forEach((listener) => {
+      setTimeout(() => {
+        listener.callback({
+          type: 'ProcessMaker\\Notifications\\ScriptResponseNotification',
+          watcher: body.watcher,
+          response,
+        });
+      }, 1000);
+    });
+  },
+  private() {
+    return {
+      notification(callback) {
+        window.Echo.listeners.push({ callback });
+      },
+      stopListening() {
+        window.Echo.listeners.splice(0);
+      },
+    };
+  },
+};
 new Vue({
   store,
   render: h => h(App),

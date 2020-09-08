@@ -24,6 +24,7 @@ export {
 export default {
   install(Vue) {
     // First check to see if we're already installed
+    /* istanbul ignore next */
     if (Vue._processMakerVueFormBuilderInstalled) {
       return;
     }
