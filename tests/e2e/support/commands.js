@@ -94,6 +94,10 @@ Cypress.Commands.add('loadFromJson', (filename, index) => {
   return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
     const screen = content.screens[index];
     cy.setVueComponentProperty('#screen-builder-container', '$refs.builder.config', screen.config);
+    content.screens.forEach(screen => {
+      cy.route(`/api/1.0/screens/${screen.id}`, JSON.stringify(screen));
+    });
+    cy.setVueComponentProperty('#screen-builder-container', '$refs.builder.config', screen.config);
   });
 });
 
@@ -107,7 +111,7 @@ Cypress.Commands.add('loadFromJson', (filename, index) => {
 Cypress.Commands.add('mockComponent', (componentName) => {
   return cy.get('#screen-builder-container').then((div) => {
     div[0].__vue__.$root.constructor.component(componentName, {
-      template: '<div></div>',
+      template: `<div>MOCK(${componentName})</div>`,
       data() {
         return {};
       },

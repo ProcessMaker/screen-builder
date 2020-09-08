@@ -12,6 +12,8 @@ import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
 import FileUpload from '../components/renderer/file-upload.vue';
+import FileDownload from '../components/renderer/file-download.vue';
+import FormRecordList from '../components/renderer/form-record-list.vue';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
 import { cloneDeep, isEqual } from 'lodash';
@@ -19,6 +21,8 @@ import { cloneDeep, isEqual } from 'lodash';
 Vue.use(VueFormElements);
 Vue.component('FormButton', FormButton);
 Vue.component('FileUpload', FileUpload);
+Vue.component('FileDownload', FileDownload);
+Vue.component('FormRecordList', FormRecordList);
 
 export default {
   components: { WatchersSynchronous, ScreenRendererError },
