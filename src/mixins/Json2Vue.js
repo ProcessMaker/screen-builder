@@ -73,6 +73,8 @@ export default {
         this.codigo = component;
         return component;
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
         this.building.error = error;
         this.building.component = component;
         this.building.errors = errors;
@@ -95,9 +97,11 @@ export default {
       // Extensions.onloadproperties
       this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner }));
       pages.forEach((page, index) => {
-        const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
-        this.loadItems(page.items, component, screen);
-        owner.appendChild(component);
+        if (page) {
+          const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
+          this.loadItems(page.items, component, screen);
+          owner.appendChild(component);
+        }
       });
     },
     escapeVuePropertyName(name) {
@@ -214,6 +218,8 @@ export default {
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
         this.building.error = error;
         this.building.component = component;
         this.building.errors = [];

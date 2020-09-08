@@ -35,6 +35,13 @@ window.ProcessMaker = {
     lang: 'en',
   },
   apiClient: {
+    defaults: {
+      headers: {
+        common: {
+          'X-CSRF-TOKEN': 'token',
+        },
+      },
+    },
     get(url) {
       return new Promise((resolve, reject) => {
         const exampleScreen = {
@@ -95,7 +102,7 @@ window.ProcessMaker = {
         };
         if (url === 'screens/1') {
           resolve({data: exampleScreen});
-        } else if (url.substr(0, 7) === 'screens') {
+        } else if (url === 'screens') {
           resolve({ data: {
             data: [exampleScreen],
           }});

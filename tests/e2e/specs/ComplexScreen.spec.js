@@ -1,8 +1,10 @@
 describe('Complex screen', () => {
   beforeEach(() => {
     cy.visit('/');
-    cy.loadFromJson('complex_screen.json', 2);
-    cy.loadFromJson('complex_screen.json', 2);
+    cy.server();
+    cy.mockComponent('SavedSearchChart').then(() => {
+      cy.loadFromJson('complex_screen.json', 1);
+    });
   });
   
   it('Load screen', () => {
@@ -18,11 +20,14 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_input_2]').type('testing');
     cy.get('[data-cy=preview-content] [name=form_input_2]').should('have.value', 'testing');
 
-    cy.get('[data-cy=preview-content] [name=form_input_6]').type('text');
-    cy.get('[data-cy=preview-content] [name=form_input_6]').should('have.value', 'text');
+    //cy.get('[data-cy=preview-content] [name=form_input_6]').type('text');
+    //cy.get('[data-cy=preview-content] [name=form_input_6]').should('have.value', 'text');
 
-    cy.get('[data-cy=preview-content] [name=form_text_area_2]').type('some large text');
-    cy.get('[data-cy=preview-content] [name=form_text_area_2]').should('have.value', 'some large text');
+    //cy.get('[data-cy=preview-content] [name=form_text_area_2]').type('some large text');
+    //cy.get('[data-cy=preview-content] [name=form_text_area_2]').should('have.value', 'some large text');
+
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').click();
+    cy.get('[data-cy=preview-content] span:contains(a)').should('be.visible');
 
     cy.assertPreviewData({
       'form_input_1': '12345678',
