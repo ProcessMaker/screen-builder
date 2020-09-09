@@ -165,14 +165,12 @@ export default {
   },
   watch: {
     value(value) {
-      if (!value) {    
+      if (this.localValue !== value) {
         this.localValue = value;
-      }      
+      }
     },
     localValue(value) {
-      if (value == this.value) {
-        //this.localValue = this.convertFromData(value);
-      } else {
+      if (value != this.value) {
         this.$emit('input', this.convertToData(value));
       }
     },
@@ -187,7 +185,7 @@ export default {
     };
   },
   mounted() {
-    if (this.value) {
+    if (this.value !== undefined) {
       this.localValue = this.value;
     }
   },
