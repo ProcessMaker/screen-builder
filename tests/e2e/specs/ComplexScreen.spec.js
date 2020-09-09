@@ -24,6 +24,16 @@ describe('Complex screen', () => {
 
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .day.today').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="togglePicker"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="showHours"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="selectHour"]:contains(08)').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="showMinutes"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="selectMinute"]:contains(15)').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="togglePeriod"]').then(toggle => {
+      if (toggle.is(':contains(PM)')){
+        cy.get(toggle).click();
+      }
+    });
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="close"]').click();
 
     const today = new Date();
@@ -33,6 +43,8 @@ describe('Complex screen', () => {
     today.setUTCMilliseconds(0);
 
     const now = new Date();
+    now.setUTCHours(8);
+    now.setUTCMinutes(15);
     now.setUTCSeconds(0);
     now.setUTCMilliseconds(0);
 
