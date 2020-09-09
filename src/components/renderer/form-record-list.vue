@@ -5,7 +5,7 @@
         <h4>{{ label }}</h4>
       </div>
       <div class="col text-right">
-        <button class="btn btn-primary" v-if="editable && !selfReferenced" @click="showAddForm">
+        <button class="btn btn-primary" v-if="editable && !selfReferenced" @click="showAddForm" data-cy="add-row">
           {{ $t('Add') }}
         </button>
       </div>
@@ -29,10 +29,10 @@
         <template slot="actions" slot-scope="props">
           <div class="actions">
             <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')">
+              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')" data-cy="edit-row">
                 <i class="fas fa-edit"/>
               </button>
-              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')">
+              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')" data-cy="remove-row">
                 <i class="fas fa-trash-alt"/>
               </button>
             </div>
@@ -66,6 +66,7 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Add')"
       header-close-content="&times;"
+      data-cy="modal-add"
     >
       <vue-form-renderer
         :page="0"
@@ -86,6 +87,7 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Edit Record')"
       header-close-content="&times;"
+      data-cy="modal-edit"
     >
       <vue-form-renderer
         :page="0"
