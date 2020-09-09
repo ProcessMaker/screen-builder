@@ -11,13 +11,20 @@ describe('Complex screen', () => {
   now.setUTCSeconds(0);
   now.setUTCMilliseconds(0);
 
+  const files= {
+    page1: [],
+    page2: [],
+  };
+
   before(() => {
     cy.visit('/');
     cy.server();
     cy.window().then(win => {
-      win.PM4ConfigOverrides = {
-        postFileEndpoint: '/api/1.0/requests/1/files',
-      };
+      // Add request-id header
+      const requestIdMeta = window.document.createElement('meta');
+      requestIdMeta.setAttribute('name', 'request-id');
+      requestIdMeta.setAttribute('content', '1');
+      win.document.head.appendChild(requestIdMeta);
     });
     cy.mockComponent('SavedSearchChart').then(() => {
       cy.loadFromJson('complex_screen.json', 1);
@@ -26,6 +33,9 @@ describe('Complex screen', () => {
 
   beforeEach(() => {
     cy.server();
+    cy.loadFromJson('complex_screen.json');
+    cy.route('GET', '/api/1.0/requests/1/files?name=page1', JSON.stringify({data: files.page1}));
+    cy.route('GET', '/api/1.0/requests/1/files?name=page2', JSON.stringify({data: files.page2}));
   });
 
   it('Fill page 1', () => {
@@ -62,6 +72,10 @@ describe('Complex screen', () => {
       fileUploadId: 1,
     }));
     cy.uploadFile('[data-cy=preview-content] [data-cy="screen-field-page1"] input[type=file]', 'avatar.jpeg', 'image/jpg');
+    // Mock uploaded file
+    files.page1.push({
+      file_name: 'avatar.jpeg',
+    });
 
     cy.assertPreviewData({
       'form_input_1': '12345678',
@@ -149,6 +163,10 @@ describe('Complex screen', () => {
       fileUploadId: 1,
     }));
     cy.uploadFile('[data-cy=preview-content] [data-cy="screen-field-page2"] input[type=file]', 'avatar.jpeg', 'image/jpg');
+    // Mock uploaded file
+    files.page2.push({
+      file_name: 'avatar.jpeg',
+    });
 
     cy.assertPreviewData({
       'form_input_1': '12345678',

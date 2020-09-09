@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-card v-if="mode === 'preview'" class="mb-2">
+    <b-card v-if="inPreviewMode" class="mb-2">
       {{ messageForPreview }}
     </b-card>
     <div v-else>
@@ -70,6 +70,9 @@ export default {
     }
   },
   computed: {
+    inPreviewMode() {
+      return this.mode === 'preview' && !window.exampleScreens;
+    },
     messageForPreview() {
       return this.$t(
         'Download button for {{fileName}} will appear here.',
