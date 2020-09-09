@@ -106,6 +106,7 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Delete Record')"
       header-close-content="&times;"
+      data-cy="modal-remove"
     >
       <p>{{ $t('Are you sure you want to remove this record?') }}</p>
     </b-modal>
@@ -118,6 +119,7 @@
       :title="$t('Information form')"
       header-close-content="&times;"
       ok-only
+      data-cy="modal-not-assigned"
     >
       <p>{{ $t('The form to be displayed is not assigned.') }}</p>
     </b-modal>
