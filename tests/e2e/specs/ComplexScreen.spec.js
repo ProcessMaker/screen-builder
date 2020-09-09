@@ -19,22 +19,9 @@ describe('Complex screen', () => {
 
     cy.get('[data-cy=preview-content] [name=form_checkbox_1]').click();
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .day.today').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').pickToday();
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .day.today').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="togglePicker"]').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="showHours"]').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="selectHour"]:contains(08)').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="showMinutes"]').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="selectMinute"]:contains(15)').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="togglePeriod"]').then(toggle => {
-      if (toggle.is(':contains(PM)')){
-        cy.get(toggle).click();
-      }
-    });
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="close"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').pickTodayWithTime('08', '15', 'AM');
 
     const today = new Date();
     today.setUTCHours(0);
@@ -51,6 +38,49 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_input_2]').eq(0).clear().type('input in loop 1');
     cy.get('[data-cy=preview-content] [name=form_input_2]').eq(1).clear().type('input in loop 2');
     cy.get('[data-cy=preview-content] [name=form_input_2]').eq(2).clear().type('input in loop 3');
+
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=first_name]').clear().type('Thomas');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=last_name]').clear().type('Anderson');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').eq(0).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=first_name]').type(' A.');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Save)').click();
+
+    // Next Page
+    cy.get('[data-cy=preview-content] button:contains(Page Navigation >>)').click();
+
+    cy.get('[data-cy=preview-content] [name=form_input_5]').type('form input 5');
+
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_4"]').selectOption('foo');
+
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_7"]').pickTodayWithTime('08', '15', 'AM');
+
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_3] [data-cy=add-row]').click();
+    cy.get('[data-cy=modal-not-assigned] button.btn-primary').click();
+
+    cy.get('[data-cy=preview-content] [name=form_text_area_4]').type('form text area 4');
+
+    cy.get('[data-cy=preview-content] [name=form_checkbox_4]').click();
+
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_8"]').pickTodayWithTime('08', '15', 'AM');
+
+    cy.get('[data-cy=preview-content] [name=form_input_6]').eq(0).clear().type('input 6 in loop 1');
+    cy.get('[data-cy=preview-content] [name=form_input_6]').eq(1).clear().type('input 6 in loop 2');
+    cy.get('[data-cy=preview-content] [name=form_input_6]').eq(2).clear().type('input 6 in loop 3');
+
+    cy.get('[data-cy=preview-content] [name=form_input_4]').type('form input 4');
+
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_5"]').pickToday();
+
+    cy.get('[data-cy=preview-content] [name=form_text_area_3]').type('form text area 3');
+
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_6"]').pickTodayWithTime('08', '15', 'AM');
+
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_3"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_3"]').should('contain.text', 'No Data Available');
+
+    cy.get('[data-cy=preview-content] [name=form_checkbox_3]').click();
 
     cy.assertPreviewData({
       'form_input_1': '12345678',
