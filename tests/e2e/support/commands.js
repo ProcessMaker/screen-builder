@@ -139,3 +139,9 @@ Cypress.Commands.add('pickTodayWithTime', { prevSubject: true }, (subject, hour,
   });
   cy.get(subject).find('[data-action="close"]').click();
 });
+
+Cypress.Commands.add('selectOption', { prevSubject: true }, (subject, option) => {
+  cy.get(subject).click();
+  cy.get(subject).find('input').clear().type(option);
+  cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
+});
