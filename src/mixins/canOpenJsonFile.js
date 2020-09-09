@@ -24,7 +24,10 @@ export default {
       if (json instanceof Array) {
         screen = { config:json, computed: [], customCSS: null };
       } else if (json && json.screens instanceof Array) {
-        screen = json.screens[2];
+        screen = json.screens[1];
+        if (window.exampleScreens instanceof Array) {
+          window.exampleScreens = json.screens;
+        }
       } else if (json && json.screens && json.screens.config) {
         screen = json.screens;
       }
