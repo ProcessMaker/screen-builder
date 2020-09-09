@@ -1,7 +1,7 @@
 <template>
   <div>
     <label v-uni-for="name">{{ label }}</label>
-    <b-card v-if="mode === 'preview'" class="mb-2">
+    <b-card v-if="inPreviewMode" class="mb-2">
       {{ $t('File uploads are unavailable in preview mode.') }}
     </b-card>
     <uploader
@@ -71,6 +71,9 @@ export default {
     }
   },
   computed: {
+    inPreviewMode() {
+      return this.mode === 'preview' && !window.exampleScreens;
+    },
     displayName() {
       const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
       const fileInfo = requestFiles[this.prefix + this.name];

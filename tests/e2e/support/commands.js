@@ -70,6 +70,7 @@ Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
         const dataTransfer = new win.DataTransfer();
         dataTransfer.items.add(testFile);
         el.files = dataTransfer.files;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
         return subject;
       });
     });
