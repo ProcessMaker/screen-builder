@@ -8,7 +8,7 @@
 <script>
 import Vue from 'vue';
 import _ from 'lodash';
-import CustomCSS from './custom-css';
+import CustomCss from './custom-css';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import DataProvider from '../DataProvider';
@@ -19,10 +19,10 @@ const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
 
 Vue.use(DataProvider);
-
+ 
 export default {
   name: 'VueFormRenderer',
-  components: { CustomCSS },
+  components: { CustomCss },
   props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
