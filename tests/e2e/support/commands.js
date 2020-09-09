@@ -118,3 +118,24 @@ Cypress.Commands.add('mockComponent', (componentName) => {
     });
   });
 });
+
+Cypress.Commands.add('pickToday', { prevSubject: true }, (subject) => {
+  cy.get(subject).find('input').click();
+  cy.get(subject).find('.day.today').click();
+});
+
+Cypress.Commands.add('pickTodayWithTime', { prevSubject: true }, (subject, hour, minute, period='AM') => {
+  cy.get(subject).find('input').click();
+  cy.get(subject).find('.day.today').click();
+  cy.get(subject).find('[data-action="togglePicker"]').click();
+  cy.get(subject).find('[data-action="showHours"]').click();
+  cy.get(subject).find(`[data-action="selectHour"]:contains(${hour})`).click();
+  cy.get(subject).find('[data-action="showMinutes"]').click();
+  cy.get(subject).find(`[data-action="selectMinute"]:contains(${minute})`).click();
+  cy.get(subject).find('[data-action="togglePeriod"]').then(toggle => {
+    if (!toggle.is(`:contains(${period})`)) {
+      cy.get(toggle).click();
+    }
+  });
+  cy.get(subject).find('[data-action="close"]').click();
+});
