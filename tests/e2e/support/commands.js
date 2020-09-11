@@ -14,10 +14,10 @@ Cypress.Commands.add('assertPreviewData', (expectedData) => {
   });
 });
 
-Cypress.Commands.add('setMultiselect', (selector, text) => {
+Cypress.Commands.add('setMultiselect', (selector, text, index = 0) => {
   cy.get(`${selector}`).click();
   cy.get(`${selector} input`).clear().type(text);
-  cy.get(`${selector} span:not(.multiselect__option--disabled) span:contains("${text}"):first`).click();
+  cy.get(`${selector} span:not(.multiselect__option--disabled) span:contains("${text}")`).eq(index).click();
 });
 
 Cypress.Commands.add('setVueComponentValue', (selector, value) => {

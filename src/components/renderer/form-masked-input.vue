@@ -86,15 +86,13 @@ export default {
       return value;
     },
     convertFromData(value) {
-      //if (this.dataFormat === 'datetime') return moment(value).format(this.getUserDateTimeFormat());
-      //if (this.dataFormat === 'date') return moment(value).format(this.getUserDateFormat());
       return value;
     },
     getMask() {
       // Mask changed to ISO format for all the users
       return {
         date: ['####-##-##'],
-        dateTime: ['####-##-## ##:##', '####-##-## ##:##:##'],
+        dateTime: ['####-##-## ##:##'],
       };
     },
   },
