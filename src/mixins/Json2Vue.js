@@ -89,17 +89,18 @@ export default {
     },
     parse(screen, definition) {
       const owner = this.ownerDocument.createElement('div');
-      this.loadPages(definition.config, owner, screen);
+      this.loadPages(definition, owner, screen);
       return '<div>' + owner.innerHTML + '</div>';
     },
-    loadPages(pages, owner, screen) {
+    loadPages(definition, owner, screen) {
+      const pages = definition.config;
       this.variables.splice(0);
-      // Extensions.onloadproperties
-      this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner }));
+      // Extensions.beforeload
+      this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner, definition }));
       pages.forEach((page, index) => {
         if (page) {
           const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
-          this.loadItems(page.items, component, screen);
+          this.loadItems(page.items, component, screen, definition);
           owner.appendChild(component);
         }
       });
@@ -140,20 +141,20 @@ export default {
       this.references__.push(value);
       return reference;
     },
-    loadItems(items, component, screen) {
+    loadItems(items, component, screen, definition) {
       items.forEach(element => {
         const componentName = element[this.nodeNameProperty];
         const nodeName = this.alias[componentName] || componentName;
         const properties = { ...element.config };
         // Extensions.onloadproperties
-        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen }));
+        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen, definition }));
         // Create component
         const node = this.createComponent(nodeName, properties);
         // Create wrapper
         const wrapper = this.ownerDocument.createElement('div');
         wrapper.appendChild(node);
         // Extensions.onloaditems to add items to container
-        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper, screen }));
+        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper, screen, definition }));
         // Append node
         component.appendChild(wrapper);
       });

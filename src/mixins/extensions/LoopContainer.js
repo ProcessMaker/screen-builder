@@ -1,6 +1,9 @@
 import LoopControl from '../../mixins/LoopControl';
 
 export default {
+  props: {
+    configRef: null,
+  },
   data() {
     return {
       loops: [],
@@ -11,7 +14,7 @@ export default {
       this.registerVariable(element.config.settings.varname, {});
       this.loops.push({ variable: element.config.settings.varname, element, properties });
     },
-    loadFormLoopItems({ element, node }) {
+    loadFormLoopItems({ element, node, definition }) {
       const loop = this.createComponent('div', {
         'v-for': `loopRow in ${element.config.settings.varname}`,
       });
@@ -25,6 +28,7 @@ export default {
         }),
         ':value': 'loopRow',
         ':components': this.byRef(this.components),
+        ':config-ref': this.byRef(this.configRef || definition.config),
         '@submit': 'submitForm',
       });
       const addLoopRow = this.createComponent('AddLoopRow', {
