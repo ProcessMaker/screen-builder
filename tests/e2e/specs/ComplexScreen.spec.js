@@ -82,8 +82,8 @@ describe('Complex screen', () => {
       'form_text_area_1': 'Hello!',
       'form_select_list_1': 'a',
       'form_checkbox_1': true,
-      'form_date_picker_1': '2020-09-09T00:00:00.000Z',
-      'form_date_picker_2': '2020-09-09T08:15:00.000Z',
+      'form_date_picker_1': today.toISOString(),
+      'form_date_picker_2': now.toISOString(),
       'loop': [
         {
           'form_input_2': 'input in loop 1',
@@ -173,8 +173,8 @@ describe('Complex screen', () => {
       'form_text_area_1': 'Hello!',
       'form_select_list_1': 'a',
       'form_checkbox_1': true,
-      'form_date_picker_1': '2020-09-09T00:00:00.000Z',
-      'form_date_picker_2': '2020-09-09T08:15:00.000Z',
+      'form_date_picker_1': today.toISOString(),
+      'form_date_picker_2': now.toISOString(),
       'loop': [
         {
           'form_input_2': 'input in loop 1',
@@ -198,20 +198,41 @@ describe('Complex screen', () => {
       'page1': 'avatar.jpeg',
       'form_input_5': 'form input 5',
       'form_select_list_4': 'foo',
-      'form_date_picker_7': '2020-09-09T08:15:00.000Z',
+      'form_date_picker_7': now.toISOString(),
       'form_record_list_3': null,
       'page2': null,
       'form_text_area_4': 'form text area 4',
       'form_checkbox_4': true,
-      'form_date_picker_8': '2020-09-09T08:15:00.000Z',
+      'form_date_picker_8': now.toISOString(),
       'form_input_4': 'form input 4',
-      'form_date_picker_5': '2020-09-09T00:00:00.000Z',
+      'form_date_picker_5': today.toISOString(),
       'form_text_area_3': 'form text area 3',
-      'form_date_picker_6': '2020-09-09T08:15:00.000Z',
+      'form_date_picker_6': now.toISOString(),
       'form_select_list_3': null,
       'form_checkbox_3': true,
       'first_name': null,
       'last_name': null,
     });
+  });
+
+  it('Fill page 3', () => {
+    // Next Page
+    cy.get('[data-cy=preview-content] button:contains(Page Navigation >>)').click();
+
+    cy.get('[data-cy=preview-content] [name=form_input_3]').eq(0).type('info@processmaker.com');
+    cy.get('[data-cy=preview-content] [name=form_text_area_2]').eq(0).type('form text area 2');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]').eq(0).selectOption('2');
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(0).click();
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(0).click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(0).pickToday();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(0).pickTodayWithTime('08', '15', 'AM');
+
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(0).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=first_name]').clear().type('Thomas');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=last_name]').clear().type('Anderson');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] button.btn-primary').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=edit-row]').eq(0).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] [name=first_name]').type(' A.');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] button:contains(Save)').click();
   });
 });
