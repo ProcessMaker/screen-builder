@@ -216,23 +216,199 @@ describe('Complex screen', () => {
   });
 
   it('Fill page 3', () => {
+    let loop;
     // Next Page
     cy.get('[data-cy=preview-content] button:contains(Page Navigation >>)').click();
 
-    cy.get('[data-cy=preview-content] [name=form_input_3]').eq(0).type('info@processmaker.com');
-    cy.get('[data-cy=preview-content] [name=form_text_area_2]').eq(0).type('form text area 2');
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]').eq(0).selectOption('2');
-    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(0).click();
-    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(0).click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(0).pickToday();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(0).pickTodayWithTime('08', '15', 'AM');
+    // FILL LOOP 1
+    loop = 0;
+    cy.get('[data-cy=preview-content] [name=form_input_3]').eq(loop).type('info@processmaker.com');
+    cy.get('[data-cy=preview-content] [name=form_text_area_2]').eq(loop).type('form text area 2');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]').eq(loop).selectOption('2');
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
 
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(0).click();
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=first_name]').clear().type('Thomas');
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=last_name]').clear().type('Anderson');
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] button.btn-primary').click();
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=edit-row]').eq(0).click();
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] [name=first_name]').type(' A.');
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] button:contains(Save)').click();
+    // fill grid
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=first_name]').eq(loop).clear().type('Thomas');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=last_name]').eq(loop).clear().type('Anderson');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] button.btn-primary').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=edit-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] [name=first_name]').eq(loop).type(' A.');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] button:contains(Save)').eq(loop).click();
+
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('1999');
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('2000');
+
+    // FILL LOOP 2
+    loop = 1;
+    cy.get('[data-cy=preview-content] [name=form_input_3]').eq(loop).type('info@processmaker.com');
+    cy.get('[data-cy=preview-content] [name=form_text_area_2]').eq(loop).type('form text area 2');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]').eq(loop).selectOption('2');
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
+
+    // fill grid
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=first_name]').eq(loop).clear().type('Thomas');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=last_name]').eq(loop).clear().type('Anderson');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] button.btn-primary').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=edit-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] [name=first_name]').eq(loop).type(' A.');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] button:contains(Save)').eq(loop).click();
+
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('1999');
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('2000');
+
+    // FILL LOOP 3
+    loop = 2;
+    cy.get('[data-cy=preview-content] [name=form_input_3]').eq(loop).type('info@processmaker.com');
+    cy.get('[data-cy=preview-content] [name=form_text_area_2]').eq(loop).type('form text area 2');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]').eq(loop).selectOption('2');
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
+
+    // fill grid
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=first_name]').eq(loop).clear().type('Thomas');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=last_name]').eq(loop).clear().type('Anderson');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] button.btn-primary').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=edit-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] [name=first_name]').eq(loop).type(' A.');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] button:contains(Save)').eq(loop).click();
+
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('1999');
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('2000');
+
+    // add loop row
+    cy.get('[data-cy=preview-content] [data-cy=loop-loop-add]').click();
+
+    // FILL LOOP 4
+    loop = 3;
+    cy.get('[data-cy=preview-content] [name=form_input_3]').eq(loop).type('info@processmaker.com');
+    cy.get('[data-cy=preview-content] [name=form_text_area_2]').eq(loop).type('form text area 2');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]').eq(loop).selectOption('2');
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
+
+    // fill grid
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=first_name]').eq(loop).clear().type('Thomas');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] [name=last_name]').eq(loop).clear().type('Anderson');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-add] button.btn-primary').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=edit-row]').eq(loop).click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] [name=first_name]').eq(loop).type(' A.');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=modal-edit] button:contains(Save)').eq(loop).click();
+
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('1999');
+    cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('2000');
+
+    cy.assertPreviewData({
+      'form_input_1': '12345678',
+      'form_text_area_1': 'Hello!',
+      'form_select_list_1': 'a',
+      'form_checkbox_1': true,
+      'form_date_picker_1': today.toISOString(),
+      'form_date_picker_2': now.toISOString(),
+      'loop': [
+        {
+          'form_input_2': 'input in loop 1',
+          'form_input_6': 'input 6 in loop 1',
+          'form_input_3': 'info@processmaker.com',
+          'form_text_area_2': 'form text area 2',
+          'form_select_list_2': '2',
+          'form_checkbox_2': false,
+          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
+          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_record_list_2': [
+            {
+              'first_name': 'Thomas A.',
+              'last_name': 'Anderson',
+            },
+          ],
+          'season': 2000,
+        },
+        {
+          'form_input_2': 'input in loop 2',
+          'form_input_6': 'input 6 in loop 2',
+          'form_input_3': 'info@processmaker.com',
+          'form_text_area_2': 'form text area 2',
+          'form_select_list_2': '2',
+          'form_checkbox_2': false,
+          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
+          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_record_list_2': [
+            {
+              'first_name': 'Thomas A.',
+              'last_name': 'Anderson',
+            },
+          ],
+          'season': 2000,
+        },
+        {
+          'form_input_2': 'input in loop 3',
+          'form_input_6': 'input 6 in loop 3',
+          'form_input_3': 'info@processmaker.com',
+          'form_text_area_2': 'form text area 2',
+          'form_select_list_2': '2',
+          'form_checkbox_2': false,
+          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
+          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_record_list_2': [
+            {
+              'first_name': 'Thomas A.',
+              'last_name': 'Anderson',
+            },
+          ],
+          'season': 2000,
+        },
+        {
+          'form_input_3': 'info@processmaker.com',
+          'form_text_area_2': 'form text area 2',
+          'form_select_list_2': '2',
+          'form_checkbox_2': false,
+          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
+          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_record_list_2': [
+            {
+              'first_name': 'Thomas A.',
+              'last_name': 'Anderson',
+            },
+          ],
+          'season': 2000,
+        },
+      ],
+      'form_record_list_1': [
+        {
+          'first_name': 'Thomas A.',
+          'last_name': 'Anderson',
+        },
+      ],
+      'page1': 'avatar.jpeg',
+      'form_input_5': 'form input 5',
+      'form_select_list_4': 'foo',
+      'form_date_picker_7': now.toISOString(),
+      'form_record_list_3': null,
+      'page2': 'avatar.jpeg',
+      'form_text_area_4': 'form text area 4',
+      'form_checkbox_4': true,
+      'form_date_picker_8': now.toISOString(),
+      'form_input_4': 'form input 4',
+      'form_date_picker_5': today.toISOString(),
+      'form_text_area_3': 'form text area 3',
+      'form_date_picker_6': now.toISOString(),
+      'form_select_list_3': null,
+      'form_checkbox_3': true,
+      'first_name': null,
+      'last_name': null,
+    });
   });
 });
