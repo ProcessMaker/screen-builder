@@ -69,11 +69,11 @@
               :key="rendererKey"
               v-model="previewData"
               @submit="previewSubmit"
-              :config="config"
               :mode="mode"
-              :computed="computed"
-              :custom-css="customCSS"
-              :watchers="watchers"
+              :config="preview.config"
+              :computed="preview.computed"
+              :custom-css="preview.customCSS"
+              :watchers="preview.watchers"
               v-on:css-errors="cssErrors = $event"
               :show-errors="true"
             />
@@ -179,6 +179,7 @@ import VueFormRenderer from './components/vue-form-renderer.vue';
 import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
+import { cloneDeep } from 'lodash';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -221,6 +222,18 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      preview: {
+        config: [
+          {
+            name: 'Default',
+            computed: [],
+            items: [],
+          },
+        ],
+        computed: [],
+        customCSS: '',
+        watchers: [],
+      },
       rendererKey: 0,
       screen: {
         id: 1,
@@ -346,7 +359,13 @@ export default {
     changeMode(mode) {
       this.mode = mode;
       this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
-      this.rendererKey++;
+      if (mode == 'preview') {
+        this.rendererKey++;
+        this.preview.config = cloneDeep(this.config);
+        this.preview.computed = cloneDeep(this.computed);
+        this.preview.customCSS = cloneDeep(this.customCSS);
+        this.preview.watchers = cloneDeep(this.watchers);
+      }
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
