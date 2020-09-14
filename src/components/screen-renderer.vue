@@ -81,6 +81,7 @@ export default {
   90% {
     transform: translateX(-0.375rem); }
   100% {
-    transform: translateX(0); }
+    transform: none;
+  }
 }
 </style>
