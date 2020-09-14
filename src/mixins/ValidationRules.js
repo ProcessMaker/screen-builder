@@ -1,5 +1,30 @@
 import { helpers } from 'vuelidate/lib/validators';
 import moment from 'moment';
+import { get } from 'lodash';
+
+import {
+  //required,
+  //requiredIf,
+  //requiredUnless,
+  minLength,
+  maxLength,
+  minValue,
+  maxValue,
+  between,
+  alpha,
+  alphaNum,
+  numeric,
+  integer,
+  decimal,
+  email,
+  ipAddress,
+  macAddress,
+  sameAs,
+  url,
+  not,
+  or,
+  and,
+} from 'vuelidate/lib/validators';
 
 export const ValidationMsg = {
   required: 'Field is required',
@@ -79,48 +104,44 @@ export const before_or_equal = (before_or_equal) => (date, data) => {
   return inputDate <= beforeDate;
 };
 
-/*export const required_if = (params) => (val, req, attribute) => {
-    if (typeof req === 'string') {
-        req = req.split(',');
-    }
-    
-    let inputtedValue = this.validator._objectPath(this.validator.input, req[0]);
+export const required = (value) => {
+  return value instanceof Array ? value.length > 0 : !!value;
+};
 
-    switch (typeof inputtedValue) {
-        case 'boolean':
-        case 'number':
-            if (inputtedValue.toString() == req[1]) {
-                return this.validator.getRule('required').validate(val);
-            }
-            break;
-        default:
-            if (inputtedValue == req[1]) {
-                return this.validator.getRule('required').validate(val);
-            }
-            break;
-    }
-    return true;
-}, 'The :attribute field is required.');*/
+export const requiredIf = (variable, expected) => (value, data) => {
+  if (get(data, variable) != expected) return true;
+  return value instanceof Array ? value.length > 0 : !!value;
+};
 
-/*export const required_unless = (params) => (val, req, attribute) => {
-    if (typeof req === 'string') {
-        req = req.split(',');
-    }
-    
-    let inputtedValue = this.validator._objectPath(this.validator.input, req[0]);
+export const requiredUnless = (variable, expected) => (value, data) => {
+  if (get(data, variable) == expected) return true;
+  return value instanceof Array ? value.length > 0 : !!value;
+};
 
-    switch (typeof inputtedValue) {
-        case 'boolean':
-        case 'number':
-            if (inputtedValue.toString() !== req[1]) {
-                return this.validator.getRule('required').validate(val);
-            }
-            break;
-        default:
-            if (inputtedValue !== req[1]) {
-                return this.validator.getRule('required').validate(val);
-            }
-            break;
-    }
-    return true;
-}, 'The :attribute field is required.');*/
+export const validators = {
+  required,
+  requiredIf,
+  requiredUnless,
+  minLength,
+  maxLength,
+  minValue,
+  maxValue,
+  between,
+  alpha,
+  alphaNum,
+  numeric,
+  integer,
+  decimal,
+  email,
+  ipAddress,
+  macAddress,
+  sameAs,
+  same: sameAs,
+  url,
+  not,
+  or,
+  and,
+  after,
+  beforeOrEqual: before_or_equal,
+  max: maxValue,
+};
