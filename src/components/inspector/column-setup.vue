@@ -245,24 +245,27 @@ export default {
     };
   },
   watch: {
-    options() {
-      this.dataSource = this.options.dataSource;
-      this.jsonData = this.options.jsonData;
-      this.dataName = this.options.dataName;
-      this.key = this.options.key;
-      this.value = this.options.value;
-      this.pmqlQuery = this.options.pmqlQuery;
-      this.defaultOptionKey = this.options.defaultOptionKey;
-      this.selectedOptions = this.options.selectedOptions;
-      this.optionsList = this.options.optionsList;
-      this.showRenderAs = this.options.showRenderAs;
-      this.renderAs = this.options.renderAs;
-      this.allowMultiSelect = this.options.allowMultiSelect;
-      this.showOptionCard = this.options.showOptionCard;
-      this.showRemoveWarning = this.options.showRemoveWarning;
-      this.showJsonEditor = this.options.showJsonEditor;
-      this.editIndex = this.options.editIndex;
-      this.removeIndex = this.options.removeIndex;
+    options: {
+      immediate: true,
+      handler() {
+        this.dataSource = this.options.dataSource;
+        this.jsonData = this.options.jsonData;
+        this.dataName = this.options.dataName;
+        this.key = this.options.key;
+        this.value = this.options.value;
+        this.pmqlQuery = this.options.pmqlQuery;
+        this.defaultOptionKey = this.options.defaultOptionKey;
+        this.selectedOptions = this.options.selectedOptions;
+        this.optionsList = this.options.optionsList;
+        this.showRenderAs = this.options.showRenderAs;
+        this.renderAs = this.options.renderAs;
+        this.allowMultiSelect = this.options.allowMultiSelect;
+        this.showOptionCard = this.options.showOptionCard;
+        this.showRemoveWarning = this.options.showRemoveWarning;
+        this.showJsonEditor = this.options.showJsonEditor;
+        this.editIndex = this.options.editIndex;
+        this.removeIndex = this.options.removeIndex;
+      }
     },
     dataSource() {
       this.jsonData = '';
@@ -316,21 +319,6 @@ export default {
         removeIndex: this.removeIndex,
       };
     },
-  },
-  mounted() {
-    this.dataSource = this.options.dataSource;
-    this.jsonData = this.options.jsonData;
-    this.dataName = this.options.dataName;
-    this.key = this.options.key;
-    this.value = this.options.value;
-    this.pmqlQuery = this.options.pmqlQuery;
-    this.defaultOptionKey= this.options.defaultOptionKey;
-    this.selectedOptions = this.options.selectedOptions;
-    this.optionsList = this.options.optionsList ? this.options.optionsList : [];
-    this.jsonData = JSON.stringify(this.optionsList);
-    this.showRenderAs = this.options.showRenderAs;
-    this.renderAs = this.options.renderAs;
-    this.allowMultiSelect = this.options.allowMultiSelect;
   },
   methods: {
     defaultOptionClick() {
