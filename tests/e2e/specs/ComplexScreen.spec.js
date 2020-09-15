@@ -326,8 +326,8 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
-          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
               'first_name': 'Thomas A.',
@@ -343,8 +343,8 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
-          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
               'first_name': 'Thomas A.',
@@ -360,8 +360,8 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
-          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
               'first_name': 'Thomas A.',
@@ -375,8 +375,8 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': '2020-09-14T00:00:00.000Z',
-          'form_date_picker_4': '2020-09-14T08:15:00.000Z',
+          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
               'first_name': 'Thomas A.',
