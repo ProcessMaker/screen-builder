@@ -9,6 +9,7 @@ import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import axios from 'axios';
+import TestComponents from '../tests/components';
 
 Vue.config.productionTip = false;
 
@@ -196,7 +197,21 @@ window.Echo = {
     };
   },
 };
-new Vue({
-  store,
-  render: h => h(App),
-}).$mount('#app');
+
+const scenario = window.location.search.substr(1).match(/\w+=(\w+)/)[1];
+if (scenario) {
+  if (!TestComponents[scenario]) {
+    // eslint-disable-next-line no-console
+    console.error(`Not found tests/components/${scenario}.vue`);
+  } else {
+    new Vue({
+      store,
+      render: h => h(TestComponents[scenario]),
+    }).$mount('#app');
+  }
+} else {
+  new Vue({
+    store,
+    render: h => h(App),
+  }).$mount('#app');
+}
