@@ -15642,9 +15642,20 @@
                                             "richtext": true,
                                             "validation": [
                                                 {
-                                                    "value": "alpha_num",
-                                                    "helper": "The field under validation must be entirely alpha-numeric characters.",
-                                                    "content": "Alpha-Numeric"
+                                                    "value": "min:10",
+                                                    "field": "min:",
+                                                    "content": "Min Length",
+                                                    "helper": "",
+                                                    "visible": false,
+                                                    "configs": [
+                                                        {
+                                                            "type": "FormInput",
+                                                            "label": "Min Input",
+                                                            "helper": "Validate that an attribute is at least a given length.",
+                                                            "validation": "required|integer",
+                                                            "value": "10"
+                                                        }
+                                                    ]
                                                 }
                                             ],
                                             "placeholder": null
@@ -22011,13 +22022,13 @@
                                                     "validation": [
                                                         {
                                                             "field": "same:",
-                                                            "value": "same:form_input_1",
+                                                            "value": "same:_parent.form_input_1",
                                                             "helper": "The given field must match the field under validation.",
                                                             "configs": [
                                                                 {
                                                                     "type": "FormInput",
                                                                     "label": "Variable Name",
-                                                                    "value": "form_input_1",
+                                                                    "value": "_parent.form_input_1",
                                                                     "helper": null,
                                                                     "validation": "required"
                                                                 }
