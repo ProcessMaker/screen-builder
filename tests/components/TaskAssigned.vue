@@ -3,13 +3,11 @@
     <b-col cols="8">
       <b-tabs>
         <b-tab active title="Form">
-          <vue-form-renderer
-            v-model="data"
-            v-bind:config="task.screen.config"
-            v-bind:computed="task.screen.computed"
-            v-bind:custom-css="task.screen.custom_css"
-            v-bind:watchers="task.screen.watchers"
-            @submit="submit"
+          <task
+            :taskId="task.id"
+            :csrf_token="1234"
+            :screen="{}"
+            :data="data"
           />
         </b-tab>
         <b-tab title="Data">
