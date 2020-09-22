@@ -1,6 +1,8 @@
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 
+let screenRenderer;
+
 export default {
   mixins: extensions,
   props: {
@@ -181,15 +183,9 @@ export default {
       }
     },
     registerNestedVariable(name, prefix, definition) {
-      const instance = new this.constructor({
-        propsData: {
-          value: {},
-          definition,
-        },
-      });
-      instance.$mount();
-      const items = instance.getVariablesTree(definition);
+      const items = screenRenderer.getVariablesTree(definition);
       this.variablesTree.push({ name, prefix, config: {}, items });
+      screenRenderer.getVariablesTree({config:[]});
     },
     getVariablesTree(definition) {
       let component;
@@ -205,7 +201,7 @@ export default {
           mounted: [],
           validations: {},
         };
-        this.variablesTree.splice(0);
+        this.variablesTree = [];
         const template = this.parse(component, definition);
         // Extensions.onparse
         this.extensions.forEach((ext) => {
@@ -293,5 +289,16 @@ export default {
     addEvent(properties, event, param, code) {
       properties[`@${event}`] = `${param}=$event;${code}`;
     },
+  },
+  mounted() {
+    if (!screenRenderer) {
+      screenRenderer = new this.constructor({
+        propsData: {
+          value: {},
+          definition: {config: []},
+        },
+      });
+      screenRenderer.$mount();
+    }
   },
 };

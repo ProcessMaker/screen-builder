@@ -401,6 +401,13 @@ export default {
     if (this.title && config[0].name === 'Default') {
       config[0].name = this.title;
     }
+    const screenRederer = new this.$options.components.ScreenRenderer({
+      propsData: {
+        value: {},
+        definition: {config:[]},
+      },
+    });
+    screenRederer.$mount();
 
     return {
       currentPage: 0,
@@ -426,6 +433,7 @@ export default {
       variables,
       generator,
       variablesTree: [],
+      screenRederer,
     };
   },
   computed: {
@@ -505,14 +513,8 @@ export default {
         customCSS : this.$parent.customCSS,
         watchers : this.$parent.watchers,
       };
-      const instance = new this.$options.components.ScreenRenderer({
-        propsData: {
-          value: {},
-          definition,
-        },
-      });
-      instance.$mount();
-      this.variablesTree = instance.getVariablesTree(definition);
+      this.variablesTree = this.screenRederer.getVariablesTree(definition);
+      this.screenRederer.getVariablesTree({config: []});
     },
     accordionName(accordion) {
       return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
@@ -781,7 +783,7 @@ export default {
     },
   },
   created() {
-    this.loadVariablesTree = _.debounce(this.loadVariablesTree);
+    this.loadVariablesTree = _.debounce(this.loadVariablesTree, 2000);
     Validator.register(
       'unique-page-name',
       value => {
