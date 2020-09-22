@@ -8,6 +8,7 @@ export default {
       type: Object,
       required: true,
     },
+    _parent: null,
   },
   computed: {
     references__() {

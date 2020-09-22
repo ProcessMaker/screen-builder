@@ -425,6 +425,7 @@ export default {
       accordions,
       variables,
       generator,
+      variablesTree: [],
     };
   },
   computed: {
@@ -457,10 +458,22 @@ export default {
   watch: {
     config: {
       handler() {
-        // @todo, remove inspector stuffs
         this.$emit('change', this.config);
+        this.loadVariablesTree();
       },
       deep: true,
+    },
+    '$parent.computed': {
+      deep: true,
+      handler() {
+        this.loadVariablesTree();
+      },
+    },
+    '$parent.watchers': {
+      deep: true,
+      handler() {
+        this.loadVariablesTree();
+      },
     },
     currentPage() {
       this.inspect();
@@ -485,6 +498,22 @@ export default {
     },
   },
   methods: {
+    loadVariablesTree() {
+      const definition = {
+        config : this.$parent.config,
+        computed : this.$parent.computed,
+        customCSS : this.$parent.customCSS,
+        watchers : this.$parent.watchers,
+      };
+      const instance = new this.$options.components.ScreenRenderer({
+        propsData: {
+          value: {},
+          definition,
+        },
+      });
+      instance.$mount();
+      this.variablesTree = instance.getVariablesTree(definition);
+    },
     accordionName(accordion) {
       return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
     },
@@ -752,6 +781,7 @@ export default {
     },
   },
   created() {
+    this.loadVariablesTree = _.debounce(this.loadVariablesTree);
     Validator.register(
       'unique-page-name',
       value => {
@@ -767,6 +797,9 @@ export default {
       this.$store.registerModule(`page-${index}`, undoRedoModule);
       this.$store.dispatch(`page-${index}/pushState`, JSON.stringify(config.items));
     });
+  },
+  mounted() {
+    this.loadVariablesTree();
   },
 };
 </script>

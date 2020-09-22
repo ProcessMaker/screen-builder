@@ -60,6 +60,16 @@
                   <div v-if="config.type === 'FormInput'">
                     <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
                   </div>
+                  <component :is="config.type"
+                    :label="config.label"
+                    :name="config.label"
+                    v-model="config.value"
+                    :validation="config.validation"
+                    :helper="config.helper"
+                    :builder="builder"
+                    :selectedControl="selectedControl"
+                    :formConfig="formConfig"
+                  />
                 </div>
                 <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
               </div>
@@ -80,12 +90,14 @@
 import Multiselect from 'vue-multiselect';
 import { FormInput } from '@processmaker/vue-form-elements';
 import _ from 'lodash';
+import InputVariable from '../inspector/input-variable';
 
 export default {
-  props: ['label', 'value', 'helper', 'name'],
+  props: ['label', 'value', 'helper', 'name', 'builder', 'selectedControl', 'formConfig'],
   components: {
     Multiselect,
     FormInput,
+    InputVariable,
   },
   data() {
     return {
@@ -182,7 +194,7 @@ export default {
           helper: this.$t('The field under validation must be present and not empty if the Variable Name field is equal to any value.'),
           visible: true,
           configs: [
-            { type: 'FormInput', label: this.$t('Variable Name'), helper: '', validation:'required' },
+            { type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation:'required' },
             { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'required' },
           ],
         },
@@ -193,7 +205,7 @@ export default {
           helper: this.$t('The field under validation must be present and not empty unless the Variable Name field is equal to any value.'),
           visible: true,
           configs: [
-            { type: 'FormInput', label: this.$t('Variable Name'), helper: '', validation:'required' },
+            { type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation:'required' },
             { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'required' },
           ],
         },
@@ -204,7 +216,7 @@ export default {
           helper: this.$t('The given field must match the field under validation.'),
           visible: true,
           configs: [
-            {type: 'FormInput', label: this.$t('Variable Name'), helper: '', validation: 'required'},
+            {type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation: 'required'},
           ],
         },
         {

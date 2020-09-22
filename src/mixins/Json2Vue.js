@@ -5,6 +5,7 @@ export default {
   mixins: extensions,
   props: {
     value: Object,
+    _parent: null,
     definition: Object,
     components: {
       type: Object,
@@ -30,8 +31,15 @@ export default {
       extensions: [],
       nodeNameProperty: 'component',
       variables: [],
+      variablesTree: [],
       initialize: [],
       ownerDocument: window.document,
+      building: {
+        show: false,
+        error: '',
+        component: '',
+        errors: [],
+      },
     };
   },
   methods: {
@@ -169,6 +177,45 @@ export default {
       const find = this.variables.find(v => v.name === name);
       if (!find) {
         this.variables.push({ name, config });
+        this.variablesTree.push({ name, config });
+      }
+    },
+    registerNestedVariable(name, prefix, definition) {
+      const instance = new this.constructor({
+        propsData: {
+          value: {},
+          definition,
+        },
+      });
+      instance.$mount();
+      const items = instance.getVariablesTree(definition);
+      this.variablesTree.push({ name, prefix, config: {}, items });
+    },
+    getVariablesTree(definition) {
+      let component;
+      try {
+        component = {
+          mixins: [ScreenBase],
+          components: {},
+          props: {},
+          computed: {},
+          methods: {},
+          data: {},
+          watch: {},
+          mounted: [],
+          validations: {},
+        };
+        this.variablesTree.splice(0);
+        const template = this.parse(component, definition);
+        // Extensions.onparse
+        this.extensions.forEach((ext) => {
+          ext.onparse instanceof Function ? ext.onparse.bind(this)({ screen: component, template, definition}) : null;
+        });
+        return this.variablesTree;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        return this.variablesTree;
       }
     },
     elementCssClass(element) {

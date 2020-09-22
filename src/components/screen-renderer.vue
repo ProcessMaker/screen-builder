@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <component :is="component" :vdata="value" @submit="submit" />
+    <component :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
     <screen-renderer-error v-if="showErrors && building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
@@ -32,12 +32,6 @@ export default {
       currentDefinition: null,
       codigo: '',
       self: this,
-      building: {
-        show: false,
-        error: '',
-        component: '',
-        errors: [],
-      },
     };
   },
   mounted() {
