@@ -451,12 +451,13 @@ describe('Complex screen', () => {
     cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
-    }));
-    cy.uploadFile('[data-cy=preview-content] [data-cy="screen-field-nested file"] input[type=file]', 'avatar.jpeg', 'image/jpg');
+    })).as('uploadFile');
+    cy.uploadFile('[data-cy=preview-content] [data-cy="screen-field-nested_file"] input[type=file]', 'avatar.jpeg', 'image/jpg');
     // Mock uploaded file
     files.page1.push({
       file_name: 'avatar.jpeg',
     });
+    cy.wait('@uploadFile');
     cy.assertPreviewData({
       'form_input_1': 'form input 1',
       'form_text_area_1': 'Hello!',
@@ -467,7 +468,7 @@ describe('Complex screen', () => {
       'loop': [
         {
           'form_input_2': 'input in loop 1',
-          'form_input_6': 'input 6 in loop 1',
+          'form_input_6': null,
           'form_input_3': 'info@processmaker.com',
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
@@ -485,7 +486,7 @@ describe('Complex screen', () => {
         },
         {
           'form_input_2': 'input in loop 2',
-          'form_input_6': 'input 6 in loop 2',
+          'form_input_6': null,
           'form_input_3': 'info@processmaker.com',
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
@@ -503,7 +504,7 @@ describe('Complex screen', () => {
         },
         {
           'form_input_2': 'input in loop 3',
-          'form_input_6': 'input 6 in loop 3',
+          'form_input_6': null,
           'form_input_3': 'info@processmaker.com',
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
@@ -524,8 +525,8 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
-          'form_date_picker_4': now.toISOString(),
+          'form_date_picker_3': '2020-09-22T00:00:00.000Z',
+          'form_date_picker_4': '2020-09-22T08:15:00.000Z',
           'form_record_list_2': [
             {
               'first_name': 'Thomas A.',
@@ -547,32 +548,29 @@ describe('Complex screen', () => {
       'page1': 'avatar.jpeg',
       'form_input_5': '123.45',
       'form_select_list_4': [
-        'f',
-        'o',
-        'o',
         'b',
         'c',
       ],
-      'form_date_picker_7': now.toISOString(),
+      'form_date_picker_7': null,
       'form_record_list_3': null,
-      'page2': 'avatar.jpeg',
-      'form_text_area_4': 'form text area 4',
+      'page2': null,
+      'form_text_area_4': null,
       'form_checkbox_4': true,
-      'form_date_picker_8': now.toISOString(),
-      'form_input_4': 4.21,
-      'form_date_picker_5': today.toISOString(),
-      'form_text_area_3': 'form text area 3',
-      'form_date_picker_6': now.toISOString(),
+      'form_date_picker_8': null,
+      'form_input_4': 19.21,
+      'form_date_picker_5': null,
+      'form_text_area_3': '<h4 style="color:red"><i>HELLO!</i></h4>',
+      'form_date_picker_6': null,
       'form_select_list_3': 'b',
-      'form_checkbox_3': true,
+      'form_checkbox_3': null,
       'first_name': null,
       'last_name': null,
       'form_input_2': 123,
-      'form_input_6': moment(now).format('YYYY-MM-DD HH:mm'),
+      'form_input_6': '2020-09-22 08:15',
       'form_text_area_2': null,
       'form_select_list_2': null,
       'form_input_3': 12345,
-      'form_input_7': moment(now).format('YYYY-MM-DD'),
+      'form_input_7': '2020-09-22',
       'form_input_8': 'password',
       'form_checkbox_5': true,
       'form_checkbox_2': true,
@@ -581,6 +579,7 @@ describe('Complex screen', () => {
       'form_date_picker_3': null,
       'form_checkbox_8': true,
       'form_date_picker_4': null,
+      'nested_file': 'avatar.jpeg',
       'form_checkbox_9': true,
       'form_checkbox_10': true,
       'email': null,
