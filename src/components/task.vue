@@ -187,7 +187,6 @@
                 }
                 this.disabled = true;
                 this.$emit('submit', this.task);
-                console.log('HELLO EMIT');
                 this.$nextTick(() => {
                     this.disabled = false;
                 });
