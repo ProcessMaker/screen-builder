@@ -194,6 +194,10 @@ window.Echo = {
       stopListening() {
         window.Echo.listeners.splice(0);
       },
+      listen(event, callback) {
+        event;
+        callback;
+      },
     };
   },
 };
