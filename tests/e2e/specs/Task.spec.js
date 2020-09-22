@@ -2,7 +2,7 @@ import moment from 'moment';
 import Screens from '../fixtures/webentry.json';
 
 describe('Task component', () => {
-  /*it('In a webentry', () => {
+  it('In a webentry', () => {
     cy.server();
 
     cy.visit('/?scenario=WebEntry', {
@@ -21,7 +21,7 @@ describe('Task component', () => {
       },
     });
     cy.wait(2000);
-  });*/
+  });
 
   it('Task inside a Request', () => {
     cy.server();
@@ -30,6 +30,8 @@ describe('Task component', () => {
       'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
       {
         id: 1,
+        advanceStatus: 'open',
+        component: 'task-screen',
         created_at: moment().toISOString(),
         completed_at: moment().toISOString(),
         due_at: moment().add(1, 'day').toISOString(),
@@ -72,5 +74,7 @@ describe('Task component', () => {
     });
 
     cy.wait(2000);
+    cy.get('[data-cy=screen-field-firstname]').should('be.visible');
+    cy.get('[data-cy=screen-field-lastname]').should('be.visible');
   });
 });
