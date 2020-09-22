@@ -198,7 +198,7 @@ window.Echo = {
   },
 };
 
-const scenario = window.location.search.substr(1).match(/\w+=(\w+)/)[1];
+const scenario = (window.location.search.substr(1).match(/\w+=(\w+)/) || [])[1];
 if (scenario) {
   if (!TestComponents[scenario]) {
     // eslint-disable-next-line no-console

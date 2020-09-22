@@ -3,9 +3,6 @@ import moment from 'moment';
 import { get } from 'lodash';
 
 import {
-  //required,
-  //requiredIf,
-  //requiredUnless,
   minLength,
   maxLength,
   minValue,
@@ -19,7 +16,7 @@ import {
   email,
   ipAddress,
   macAddress,
-  sameAs,
+  //sameAs,
   url,
   not,
   or,
@@ -32,6 +29,8 @@ export const ValidationMsg = {
   requiredUnless: 'Field is required',
   minLength: 'Must have at least {min}',
   maxLength: 'Must have at most {max}',
+  min: 'Must have at least {min}',
+  max: 'Must have at most {max}',
   minValue: 'Must have a minimum value of {min}',
   maxValue: 'Must have a maximum value of {max}',
   between: 'Must have a value between {min} and {max}',
@@ -43,8 +42,8 @@ export const ValidationMsg = {
   email: 'Must be a valid email addresses',
   ipAddress: 'Must be a valid IPv4 addresses',
   macAddress: 'Must be a valid MAC addresses',
-  sameAs: 'Must be same as %',
-  same: 'Must be same as %',
+  sameAs: 'Must be same as {field}',
+  same: 'Must be same as {field}',
   url: 'Must be a valid URL',
   after: 'Must be after {after}',
   after_or_equal: 'Must be equal or after {after_or_equal}',
@@ -56,7 +55,7 @@ export const after = (after) => helpers.withParams({after}, (date, data) => {
   // checks if incoming 'params' is a date or a key reference.
   let checkDate = moment(after);
   if (!checkDate.isValid()) {
-    after = data[after];
+    after = get(data, after);
   }
 
   const inputDate = moment(date).toISOString();
@@ -69,7 +68,7 @@ export const after_or_equal = (after_or_equal) => (date, data) => {
   // checks if incoming 'after_or_equal' is a date or a key reference.
   let checkDate = moment(after_or_equal);
   if (!checkDate.isValid()) {
-    after_or_equal = data[after_or_equal];
+    after_or_equal = get(data, after_or_equal);
   }
 
   const inputDate = moment(date).toISOString();
@@ -82,7 +81,7 @@ export const before = (before) => (date, data) => {
   // checks if incoming 'before' is a date or a key reference.
   let checkDate = moment(before);
   if (!checkDate.isValid()) {
-    before = data[before];
+    before = get(data, before);
   }
 
   const inputDate = moment(date).toISOString();
@@ -95,7 +94,7 @@ export const before_or_equal = (before_or_equal) => (date, data) => {
   // checks if incoming 'before_or_equal' is a date or a key reference.
   let checkDate = moment(before_or_equal);
   if (!checkDate.isValid()) {
-    before_or_equal = data[before_or_equal];
+    before_or_equal = get(data, before_or_equal);
   }
     
   const inputDate = moment(date).toISOString();
@@ -117,6 +116,11 @@ export const requiredUnless = (variable, expected) => (value, data) => {
   if (get(data, variable) == expected) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 };
+  
+export const sameAs = (field) => helpers.withParams({field}, (value, data) => {
+  const valueSameAs = get(data, field);
+  return value == valueSameAs;
+});
 
 export const validators = {
   required,
@@ -124,6 +128,8 @@ export const validators = {
   requiredUnless,
   minLength,
   maxLength,
+  min: minLength,
+  max: maxLength,
   minValue,
   maxValue,
   between,
@@ -143,5 +149,4 @@ export const validators = {
   and,
   after,
   beforeOrEqual: before_or_equal,
-  max: maxValue,
 };

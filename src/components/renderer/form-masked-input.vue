@@ -154,11 +154,13 @@ export default {
       };
     },
     dataType() {
-      if (this.dataFormat === 'password') {
-        return 'password';
+      switch (this.dataFormat) {
+        case 'int': return 'number';
+        case 'float': return 'number';
+        case 'email': return 'email';
+        case 'password': return 'password';
+        default: return 'text';
       }
-
-      return 'text';
     },
   },
   watch: {

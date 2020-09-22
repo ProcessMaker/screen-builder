@@ -134,7 +134,6 @@
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import Pagination from '@/components/Pagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import {ValidatorFactory} from '../../factories/ValidatorFactory';
 import _ from 'lodash';
 
 const jsonOptionsActionsColumn = {
@@ -340,9 +339,7 @@ export default {
       this.$refs.editModal.show();
     },
     edit(event) {
-      const validate = ValidatorFactory(this.formConfig[this.form].items, this.editItem);
-      this.errors = validate.getErrors();
-      if (_.size(this.errors) > 0) {
+      if (!this.$refs.editRenderer.isValid()) {
         event.preventDefault();
         return;
       }
@@ -373,10 +370,7 @@ export default {
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      this.handleSubmit();
-    },
-    handleSubmit() {
-      if (!this.isValid()) {
+      if (!this.$refs.addRenderer.isValid()) {
         return;
       }
 
@@ -441,11 +435,6 @@ export default {
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
-    },
-    isValid() {
-      const validate = ValidatorFactory(this.formConfig[this.form].items, this.$refs.addRenderer.transientData);
-      this.errors = validate.getErrors();
-      return _.size(this.errors) === 0;
     },
   },
 };
