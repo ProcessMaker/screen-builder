@@ -1,67 +1,88 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col-lg-6">
-        <dl class="row mb-0">
-          <div class="col-sm-4 text-sm-right"><dt>Created:</dt> </div>
-          <div class="col-sm-8 text-sm-left"><dd class="mb-1">{{ formatDate(token.created_at) }}</dd></div>
-        </dl>
-        <dl class="row mb-0">
-          <div class="col-sm-4 text-sm-right"><dt>Completed:</dt> </div>
-          <div class="col-sm-8 text-sm-left"><dd class="mb-1">{{ formatDate(token.completed) }}</dd> </div>
-        </dl>
-        <dl class="row mb-0">
-          <div class="col-sm-4 text-sm-right"><dt>Completed by:</dt> </div>
-          <div class="col-sm-8 text-sm-left">
-            <dd class="mb-1">
-              <i v-if="!token.user.avatar" class="fa fa-user rounded-user" />
-              <img v-else v-bind:src="token.user.avatar" class="rounded-user"> {{ token.user.name }}
-            </dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-    <vue-form-renderer
-      v-model="data"
-      v-bind:config="token.screen.config"
-      v-bind:computed="token.screen.computed"
-      v-bind:custom-css="token.screen.custom_css"
-      v-bind:watchers="token.screen.watchers"
-      @update="onUpdate"
-    />
-    <a class="btn btn-primary" :href="statusURL">Back</a>
-  </div>
+  <b-row>
+    <b-col cols="12">
+      <b-tabs>
+        <b-tab active title="WebEntry">
+          <vue-form-renderer
+            v-model="data"
+            v-bind:config="task.screen.config"
+            v-bind:computed="task.screen.computed"
+            v-bind:custom-css="task.screen.custom_css"
+            v-bind:watchers="task.screen.watchers"
+            @submit="submit"
+          />
+        </b-tab>
+      </b-tabs>
+    </b-col>
+  </b-row>
 </template>
 
 <script>
 import moment from 'moment';
+import MonacoEditor from 'vue-monaco';
 import Screens from '../e2e/fixtures/webentry.json';
 
 export default {
+  components: {MonacoEditor},
   data() {
     return {
       data: {},
-      statusURL: '/requests/1/status',
-      token: {
+      task: {
+        id: 1,
         created_at: moment().toISOString(),
         completed_at: moment().toISOString(),
+        due_at: moment().add(1, 'day').toISOString(),
         user: {
           avatar: '',
-          fullname: 'Foo Bar',
+          fullname: 'Assigned User',
         },
         screen: Screens.screens[0],
+        process_request: {
+          id: 1,
+          status: 'ACTIVE',
+          user: {
+            avatar: '',
+            fullname: 'Requester User',
+          },
+        },
+        process: {
+          id: 1,
+          name: 'Process Name',
+        },
       },
     };
   },
   methods: {
-    onUpdate() {},
+    moment(...args) {
+      return moment(...args);
+    },
+    __(text) {
+      return text;
+    },
     formatDate(date) {
       return moment(date).format('YYYY-MM-DD HH:mm');
+    },
+    submit() {
+      if (this.disabled) {
+        return;
+      }
+      this.disabled = true;
+      window.ProcessMaker.apiClient
+        .put('tasks/' + this.task.id, {status:'COMPLETED', data: this.data})
+        .then(() => {
+          window.ProcessMaker.alert(this.__('Task Completed Successfully'), 'success', 5, true);
+        })
+        .finally(() => {
+          this.disabled = false;
+        });
     },
   },
 };
 </script>
 
-<style>
-
+<style scoped>
+.data-editor {
+  border: 1px solid gray;
+  min-height: 400px;
+}
 </style>
