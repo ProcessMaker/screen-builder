@@ -5,6 +5,7 @@ import * as renderer from './renderer';
 import FormMultiColumn from './renderer/form-multi-column';
 import * as inspector from './inspector';
 import FormBuilderControls from '../form-builder-controls';
+import Task from './task';
 
 const rendererComponents = {
   ...renderer,
@@ -18,6 +19,7 @@ export {
   inspector,
   rendererComponents as renderer,
   FormBuilderControls,
+  Task,
 };
 
 // Export our Vue plugin as our default
@@ -35,5 +37,6 @@ export default {
     // Register the builder and renderer
     Vue.component('vue-form-builder', VueFormBuilder);
     Vue.component('vue-form-renderer', VueFormRenderer);
+    Vue.component('task', Task);
   },
 };
