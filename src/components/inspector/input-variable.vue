@@ -24,8 +24,6 @@
 </template>
 
 <script>
-import { debounce } from 'lodash';
-
 export default {
   props: {
     builder: Object,
@@ -59,10 +57,11 @@ export default {
     options() {
       const regexp = new RegExp(
         this.localValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-          .replace(/\d+/g, 'index'),
+          .replace(/\.\d+/g, '.index'),
         'g'
       );
       return this.allOptions.filter(option => option.match(regexp))
+        .splice(0, 5)
         .map(option => ({
           value: option.replace(regexp, this.localValue),
           text: option.replace(regexp, `<b>${this.localValue}</b>`),

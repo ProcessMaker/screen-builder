@@ -60,7 +60,8 @@
                   <div v-if="config.type === 'FormInput'">
                     <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
                   </div>
-                  <component :is="config.type"
+                  <component v-else
+                    :is="config.type"
                     :label="config.label"
                     :name="config.label"
                     v-model="config.value"
@@ -195,7 +196,7 @@ export default {
           visible: true,
           configs: [
             { type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation:'required' },
-            { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'' },
           ],
         },
         {
@@ -206,7 +207,7 @@ export default {
           visible: true,
           configs: [
             { type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation:'required' },
-            { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'required' },
+            { type: 'FormInput', label: this.$t('Variable Value'), helper: '' },
           ],
         },
         {
@@ -400,7 +401,7 @@ export default {
     },
   },
   mounted() {
-    this.rules = this.value;
+    this.rules = this.value || [];
     if (this.cloneRules.length) {
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
     }
