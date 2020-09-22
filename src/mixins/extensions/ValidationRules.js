@@ -14,14 +14,15 @@ export default {
               const rule = this.camelCase(validation.value.split(':')[0]);
               let validationFn = validators[rule];
               if (!validationFn) {
-                throw `Undefined validation rule "${rule}"`;
+                // eslint-disable-next-line no-console
+                console.error(`Undefined validation rule "${rule}"`);
+                return;
               }
               if (validation.configs instanceof Array) {
                 const params = [];
                 validation.configs.forEach(cnf => {
                   params.push(cnf.value);
                 });
-                //validationFn = validationsWithLocator[validationFn] && validationFn(validationsWithLocator[validationFn](...params)) || validationFn(...params);
                 validationFn = validationFn(...params);
               }
               validationRule[rule] = validationFn;

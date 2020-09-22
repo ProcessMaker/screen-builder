@@ -18,15 +18,18 @@ export default {
       const loop = this.createComponent('div', {
         'v-for': `loopRow in ${element.config.settings.varname}`,
       });
+      const nested = {
+        config: [
+          {
+            items: element.items,
+          },
+        ],
+      };
+      // Add nested component inside loop
       const child = this.createComponent('ScreenRenderer', {
-        ':definition': this.byValue({
-          config: [
-            {
-              items: element.items,
-            },
-          ],
-        }),
+        ':definition': this.byValue(nested),
         ':value': 'loopRow',
+        ':_parent': 'vdata',
         ':components': this.byRef(this.components),
         ':config-ref': this.byRef(this.configRef || definition.config),
         '@submit': 'submitForm',
@@ -38,6 +41,12 @@ export default {
       loop.appendChild(child);
       node.appendChild(loop);
       node.appendChild(addLoopRow);
+      // Register nested component as Array
+      this.registerNestedVariable(
+        element.config.settings.varname,
+        element.config.settings.varname + '.index.',
+        nested
+      );
     },
   },
   mounted() {
