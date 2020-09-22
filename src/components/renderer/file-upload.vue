@@ -285,7 +285,7 @@ export default {
     },
     checkIfInRecordList() {
       const parent =  this.$parent.$parent.$parent;
-      if (parent.$options._componentTag == 'FormRecordList') {
+      if (parent && parent.$options._componentTag == 'FormRecordList') {
         const recordList = parent;
         const prefix = recordList.name + '.';
         this.setFileUploadNameForChildren(recordList.$children, prefix);
