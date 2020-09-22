@@ -22571,7 +22571,7 @@
                                         "label": "File Upload",
                                         "config": {
                                             "icon": "fas fa-file-upload",
-                                            "name": "nested file",
+                                            "name": "nested_file",
                                             "label": "New File Upload",
                                             "validation": "required"
                                         },
