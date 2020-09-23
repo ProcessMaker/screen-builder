@@ -256,7 +256,7 @@ export default {
   methods: {
     setUploadDataNamePrefix(index = null) {
       let  rowId = null;
-      if (index && this.editItem) {
+      if (index !== null  && this.editItem) {
         rowId = this.editItem.row_id;
       }
       else {
