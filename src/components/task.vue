@@ -83,14 +83,14 @@ export default {
     },
     screenId() {
       if (this.taskId) {
-        this.loadInterstitialScreen();
+        this.loadScreen();
       } else {
         this.screen = null;
       }
     },
     screenInterstitialId() {
       if (this.screenInterstitialId) {
-        this.loadScreen();
+        this.loadInterstitialScreen();
       } else {
         this.interstitial = null;
       }
@@ -122,7 +122,7 @@ export default {
     },
     loadTask(id) {
       this.unsubscribeSocketListeners();
-      this.$dataProvider.getTask(`/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
+      this.$dataProvider.getTasks(`/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
         .then((response) => {
           this.task = response.data;
           this.prepareTask();
