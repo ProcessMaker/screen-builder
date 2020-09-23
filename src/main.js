@@ -88,7 +88,7 @@ window.exampleScreens = [
   },
 ];
 window.ProcessMaker = {
-  isStub: false,//true,
+  isStub: true,
   user: {
     id: 1,
     lang: 'en',
