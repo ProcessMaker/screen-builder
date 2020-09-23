@@ -1,6 +1,5 @@
 <template>
   <div id="tab-form" role="tabpanel" aria-labelledby="tab-form" class="tab-pane active show h-100">
-    <h2>New Task Component~~~</h2>
     <template v-if="taskIsOpenOrOverdue && screen">
       <div class="card card-body border-top-0 h-100">
         <div v-if="task.component === 'task-screen'">
