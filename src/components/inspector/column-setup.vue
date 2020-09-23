@@ -246,7 +246,6 @@ export default {
   },
   watch: {
     options: {
-      immediate: true,
       handler() {
         this.dataSource = this.options.dataSource;
         this.jsonData = this.options.jsonData;
@@ -320,7 +319,25 @@ export default {
       };
     },
   },
+  mounted() {
+    this.initData();
+  },
   methods: {
+    initData() {
+      this.dataSource = this.options.dataSource;
+      this.jsonData = this.options.jsonData;
+      this.dataName = this.options.dataName;
+      this.key = this.options.key;
+      this.value = this.options.value;
+      this.pmqlQuery = this.options.pmqlQuery;
+      this.defaultOptionKey= this.options.defaultOptionKey;
+      this.selectedOptions = this.options.selectedOptions;
+      this.optionsList = this.options.optionsList ? this.options.optionsList : [];
+      this.jsonData = JSON.stringify(this.optionsList);
+      this.showRenderAs = this.options.showRenderAs;
+      this.renderAs = this.options.renderAs;
+      this.allowMultiSelect = this.options.allowMultiSelect;
+    },
     defaultOptionClick() {
       if (this.defaultOptionKey === event.target.value) {
         this.defaultOptionKey = false;
@@ -386,6 +403,9 @@ export default {
     },
     addOption() {
       const that = this;
+      if (this.optionsList === undefined) {
+        this.initData();
+      }
 
       if (this.optionCardType === 'insert') {
         if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
