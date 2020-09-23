@@ -1,15 +1,16 @@
 <template>
   <div id="tab-form" role="tabpanel" aria-labelledby="tab-form" class="tab-pane active show h-100">
-    <template v-if="taskIsOpenOrOverdue">
+    <h2>New Task Component~~~</h2>
+    <template v-if="taskIsOpenOrOverdue && screen">
       <div class="card card-body border-top-0 h-100">
         <div v-if="task.component === 'task-screen'">
           <vue-form-renderer
             ref="renderer"
-            v-model="task.request_data" 
-            :config="task.screen.config" 
-            :computed="task.screen.computed" 
-            :custom-css="task.screen.customCss" 
-            :watchers="task.screen.watchers" 
+            v-model="requestData" 
+            :config="screen.config" 
+            :computed="screen.computed" 
+            :custom-css="screen.customCss" 
+            :watchers="screen.watchers" 
             @update="onUpdate" 
             @submit="submit" 
           />
@@ -20,12 +21,12 @@
             :process-id="task.process_id"
             :instance-id="task.process_request_id"
             :token-id="task.id"
-            :screen="task.screen.config"
+            :screen="screen.config"
             :csrf-token="csrf_token"
-            :computed="task.screen.computed"
-            :custom-css="task.screen.custom_css"
-            :watchers="task.screen.watchers"
-            :data="task.request_data"
+            :computed="screen.computed"
+            :custom-css="screen.custom_css"
+            :watchers="screen.watchers"
+            :data="requestData"
           />
         </div>
       </div>
@@ -37,12 +38,12 @@
       <div class="card card-body border-top-0 h-100">
         <vue-form-renderer
           ref="renderer"
-          v-if="task.allow_interstitial"
-          v-model="task.request_data" 
-          :config="task.interstitial_screen.config"
-          :computed="task.interstitial_screen.computed" 
-          :custom-css="task.interstitial_screen.customCss" 
-          :watchers="task.interstitial_screen.watchers" 
+          v-if="interstitial"
+          v-model="requestData" 
+          :config="interstitial.config"
+          :computed="interstitial.computed" 
+          :custom-css="interstitial.customCss" 
+          :watchers="interstitial.watchers" 
         />
         <div v-else class="card card-body text-center" v-cloak>
           <h1>{{ $t('Task Completed') }} <i class="fas fa-clipboard-check"/></h1>
@@ -53,22 +54,47 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import DataProvider from '../DataProvider';
+import _ from 'lodash';
+
+Vue.use(DataProvider);
+
 export default {
-  props: ['taskId', 'csrf_token', 'screen', 'data'],
+  // This component can take a taskId OR a screenId (with optional interstitial)
+  // If the taskId is provided, the screen and interstitial are derived from the task
+  props: ['taskId', 'csrf_token', 'screenId', 'screenInterstitialId', 'data'],
   data() {
     return {
       task: null,
-      redirectInProcess: false,
       disabled: false,
       socketListeners: [],
+      screen: null,
+      interstitial: null,
+      requestData: {},
     };
   },
   watch: {
-    task: {
-      handler() {
-        window.ProcessMaker.nestedScreens = _.get(this.task, 'screen.nested', null);
-      },
-      immediate: true,
+    taskId() {
+      if (this.taskId) {
+        this.loadTask(this.taskId);
+      } else {
+        this.task = null;
+      }
+    },
+    screenId() {
+      if (this.taskId) {
+        this.loadInterstitialScreen();
+      } else {
+        this.screen = null;
+      }
+    },
+    screenInterstitialId() {
+      if (this.screenInterstitialId) {
+        this.loadScreen();
+      } else {
+        this.interstitial = null;
+      }
     },
   },
   computed: {
@@ -80,30 +106,42 @@ export default {
       if (!this.task) { return false; }
       return this.task.advanceStatus === 'open' || this.task.advanceStatus === 'overdue';
     },
+    requestId() {
+      if (!this.task) {
+        return null;
+      }
+      return this.task.process_request_id;
+    }
   },
   methods: {
     activityAssigned() {
       this.checkTaskStatus();
-      this.redirectToNextAssignedTask(false);
+      this.loadNextAssignedTask();
     },
     reload() {
       this.loadTask(this.task.id);
     },
     loadTask(id) {
-      if (this.redirectInProcess) {
-        return;
-      }
-      window.ProcessMaker.apiClient.get(`/tasks/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
+      this.unsubscribeSocketListeners();
+      this.$dataProvider.getTask(`/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
         .then((response) => {
-          this.resetScreenState();
           this.task = response.data;
-          // sets breadcrumbs, etc.
-          this.$emit('task-updated', response.data);
-          if (response.data.process_request.status === 'ERROR') {
-            this.hasErrors = true;
-          }
           this.prepareTask();
         });
+    },
+    loadScreen() {
+      this.loadScreenById(this.screenId).then(response => {
+        this.screen = response.data;
+      });
+    },
+    loadInterstitialScreen() {
+      this.loadScreenById(this.screenInterstitialId).then(response => {
+        this.interstitial = response.data;
+      });
+    },
+    loadScreenById(id)
+    {
+      return this.$dataProvider.getScreen(id);
     },
     resetScreenState() {
       if (this.$refs.renderer && this.$refs.renderer.$children[0]) {
@@ -111,47 +149,37 @@ export default {
       }
     },
     redirectWhenProcessCompleted() {
-      this.redirect(`/requests/${this.task.process_request_id}`);
+      this.$emit('completed', this.task.process_request_id);
     },
     refreshWhenProcessUpdated(data) {
       if (data.event === 'ACTIVITY_COMPLETED' || data.event === 'ACTIVITY_ACTIVATED') {
         this.reload();
       }
     },
-    checkTaskStatus(redirect=false) {
+    checkTaskStatus() {
       if (this.task.status == 'COMPLETED' || this.task.status == 'CLOSED' || this.task.status == 'TRIGGERED') {
         this.closeTask();
       }
     },
     closeTask() {
       if (this.hasErrors) {
-        this.redirect(`/requests/${this.task.process_request_id}`);
+        this.$emit('error', this.task.process_request_id);
         return;
       }
-      if (!this.task.allow_interstitial) {
-        this.redirect('/tasks');
+      if (!this.interstitial) {
+        this.$emit('closed', this.task.id);
       } else {
-        this.redirectToNextAssignedTask();
+        this.loadNextAssignedTask();
       }
     },
-    redirectToNextAssignedTask(redirect = false) {
-      if (this.redirectInProcess) {
-        return;
-      }
-
+    loadNextAssignedTask() {
       if (this.task.status == 'COMPLETED' || this.task.status == 'CLOSED' || this.task.status == 'TRIGGERED') {
-        window.ProcessMaker.apiClient.get(`/tasks?user_id=${this.task.user_id}&status=ACTIVE&process_request_id=${this.task.process_request_id}`).then((response) => {
+        this.$dataProvider.getTasks(`?user_id=${this.task.user_id}&status=ACTIVE&process_request_id=${this.task.process_request_id}`).then((response) => {
           if (response.data.data.length > 0) {
             const firstNextAssignedTask = response.data.data[0].id;
-            if (redirect) {
-              this.redirect(`/tasks/${firstNextAssignedTask}/edit`);
-            } else {
-              this.loadTask(firstNextAssignedTask);
-            }
+            this.loadTask(firstNextAssignedTask);
           } else if (this.task.process_request.status === 'COMPLETED') {
-            setTimeout(() => {
-              this.redirect(`/requests/${this.task.process_request_id}`);
-            }, 500);
+            this.$emit('completed', this.task.process_request_id);
           }
         });
       }
@@ -168,16 +196,28 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    prepareTask(redirect = false) {
-      this.statusCard = this.classHeaderCard(this.task.advanceStatus);
-      this.checkTaskStatus(redirect);
-    },
-    redirect(to) {
-      if (this.redirectInProcess) {
-        return;
+    prepareTask() {
+      this.resetScreenState();
+      this.requestData = _.get(this.task, 'request_data', {});
+      this.initSocketListeners();
+      this.screen = this.task.screen;
+
+      if (this.task.allow_interstitial) {
+        this.interstitial = this.task.interstitial_screen;
+      } else {
+        this.interstitial = null;
       }
-      this.redirectInProcess = true;
-      window.location.href = to;
+
+      // sets breadcrumbs, etc.
+      this.$emit('task-updated', this.task);
+      if (this.task.process_request.status === 'ERROR') {
+        this.hasErrors = true;
+      } else {
+        this.hasErrors = false;
+      }
+
+      this.statusCard = this.classHeaderCard(this.task.advanceStatus);
+      this.checkTaskStatus();
     },
     submit() {
       //single click
@@ -194,35 +234,17 @@ export default {
       window.ProcessMaker.EventBus.$emit('form-data-updated', data);
     },
     initSocketListeners() {
-      const request_id = document.head.querySelector('meta[name="request-id"]').content;
-      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${request_id}`, '.ActivityAssigned', (data) => {
-        if (data.payloadUrl) {
-          this.obtainPayload(data.payloadUrl)
-            .then(response => {
-              this.activityAssigned(response);
-            });        
-        }
+
+      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.requestId}`, '.ActivityAssigned', () => {
+        this.activityAssigned();
       });
 
-      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${request_id}`, '.ProcessCompleted', (data) => {
-        if (data.payloadUrl) {
-          this.obtainPayload(data.payloadUrl)
-            .then(response => {
-              this.redirectWhenProcessCompleted(response);
-            });
-        }
+      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.requestId}`, '.ProcessCompleted', () => {
+        this.redirectWhenProcessCompleted();
       });
 
-      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${request_id}`, '.ProcessUpdated', (data) => {
-        if (data.payloadUrl) {
-          this.obtainPayload(data.payloadUrl)
-            .then(response => {
-              if (data.event) {
-                response.event = data.event;
-              }
-              this.refreshWhenProcessUpdated(response);
-            });
-        }
+      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.requestId}`, '.ProcessUpdated', (data) => {
+        this.refreshWhenProcessUpdated(data);
       });
     },
     addSocketListener(channel, event, callback) {
@@ -235,26 +257,31 @@ export default {
         callback
       );
     },
+    unsubscribeSocketListeners() {
+      this.socketListeners.forEach((element) => {
+        window.Echo.private(element.channel).stopListening(element.event);
+      });
+      this.socketListeners = [];
+    },
     obtainPayload(url) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         window.ProcessMaker.apiClient
           .get(url)
           .then(response => {
             resolve(response.data);
-          }).catch(error => {
+          }).catch(() => {
             // User does not have access to the resource. Ignore.
           });
       });
     },
   },
   mounted() {
-    this.initSocketListeners();
-    this.loadTask(this.taskId);
+    if (this.taskId) {
+      this.loadTask(this.taskId);
+    }
   },
   destroyed() {
-    this.socketListeners.forEach((element) => {
-      window.Echo.private(element.channel).stopListening(element.event);
-    });
+    this.unsubscribeSocketListeners();
   },
 };
 </script>
