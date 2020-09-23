@@ -50,18 +50,13 @@ export default {
   
   // Methods below are used in the components
   
-  getTask(params) {
-    const endpoint = _.get(window, 'PM4ConfigOverrides.getTaskEndpoint', '/tasks');
-    return this.get(endpoint + params);
-  },
-
   getTasks(params) {
     const endpoint = _.get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
     return this.get(endpoint + params);
   },
   
   getScreen(id) {
-    const endpoint = _.get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
-    return this.get(endpoint + params);
+    const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
+    return this.get(endpoint + `/${id}`);
   },
 };
