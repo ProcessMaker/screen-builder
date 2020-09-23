@@ -8,6 +8,7 @@
             :csrf_token="1234"
             :screen="{}"
             :data="data"
+            @submit="submit"
           />
         </b-tab>
         <b-tab title="Data">
@@ -83,6 +84,8 @@ export default {
       data: {},
       task: {
         id: 1,
+        advanceStatus: 'open',
+        component: 'task-screen',
         created_at: moment().toISOString(),
         completed_at: moment().toISOString(),
         due_at: moment().add(1, 'day').toISOString(),
@@ -103,6 +106,7 @@ export default {
           id: 1,
           name: 'Process Name',
         },
+        request_data: {},
       },
     };
   },
@@ -116,15 +120,17 @@ export default {
     formatDate(date) {
       return moment(date).format('YYYY-MM-DD HH:mm');
     },
-    submit() {
+    submit(task) {
       if (this.disabled) {
         return;
       }
       this.disabled = true;
+      const taskId = task.id;
+      const formData = task.request_data;
       window.ProcessMaker.apiClient
-        .put('tasks/' + this.task.id, {status:'COMPLETED', data: this.data})
+        .put('/tasks/' + taskId, {status:'COMPLETED', data: formData})
         .then(() => {
-          window.ProcessMaker.alert(this.__('Task Completed Successfully'), 'success', 5, true);
+          alert('Task Completed Successfully');
         })
         .finally(() => {
           this.disabled = false;
