@@ -1,8 +1,8 @@
 <template>
   <div id="tab-form" role="tabpanel" aria-labelledby="tab-form" class="tab-pane active show h-100">
-    <template v-if="taskIsOpenOrOverdue && screen">
+    <template v-if="shouldShowScreen">
       <div class="card card-body border-top-0 h-100">
-        <div v-if="task.component === 'task-screen'">
+        <div v-if="renderComponent === 'task-screen'">
           <vue-form-renderer
             ref="renderer"
             v-model="requestData" 
@@ -16,7 +16,7 @@
         </div>
         <div v-else>
           <component
-            :is="task.component"
+            :is="renderComponent"
             :process-id="task.process_id"
             :instance-id="task.process_request_id"
             :token-id="task.id"
@@ -29,7 +29,7 @@
           />
         </div>
       </div>
-      <div v-if="task.bpmn_tag_name === 'manualTask' || !task.screen" class="card-footer">
+      <div v-if="shouldAddSubmitButton" class="card-footer">
         <button type="button" class="btn btn-primary" @click="submit">{{ $t('Complete Task') }}</button>
       </div>
     </template>
@@ -62,7 +62,7 @@ Vue.use(DataProvider);
 export default {
   // This component can take a taskId OR a screenId (with optional interstitial)
   // If the taskId is provided, the screen and interstitial are derived from the task
-  props: ['taskId', 'csrf_token', 'screenId', 'screenInterstitialId', 'data'],
+  props: ['taskId', 'csrf_token', 'screenId', 'screenInterstitialId', 'data', 'newRequest'],
   data() {
     return {
       task: null,
@@ -71,6 +71,8 @@ export default {
       screen: null,
       interstitial: null,
       requestData: {},
+      renderComponent: 'task-screen',
+      inProgress: false,
     };
   },
   watch: {
@@ -88,6 +90,12 @@ export default {
         this.screen = null;
       }
     },
+    newRequest() {
+      this.initSocketListeners();
+      if (this.newRequest.status === 'ACTIVE') {
+        this.loadNextAssignedTask();
+      }
+    },
     screenInterstitialId() {
       if (this.screenInterstitialId) {
         this.loadInterstitialScreen();
@@ -95,8 +103,29 @@ export default {
         this.interstitial = null;
       }
     },
+    data() {
+      // requestData takes precedence over passed-in data
+      this.requestData = Object.assign({}, this.data, this.requestData);
+    },
   },
   computed: {
+    shouldShowScreen() {
+      if (this.screen && !this.task) {
+        // Start Event
+        return true;
+      }
+
+      if (this.screen && this.taskIsOpenOrOverdue) {
+        // Regular Task
+        return true;
+      }
+      
+      return false;
+    },
+    shouldAddSubmitButton() {
+      if (!this.task) { return false; }
+      return this.task.bpmn_tag_name === 'manualTask' || !this.task.screen;
+    },
     taskIsCompleted() {
       if (!this.task) { return false; }
       return this.task.advanceStatus === 'completed' || this.task.advanceStatus === 'triggered';
@@ -106,27 +135,45 @@ export default {
       return this.task.advanceStatus === 'open' || this.task.advanceStatus === 'overdue';
     },
     requestId() {
-      if (!this.task) {
-        return null;
+      if (this.task) {
+        return this.task.process_request_id;
       }
-      return this.task.process_request_id;
+
+      if (this.newRequest) {
+        return this.newRequest.id;
+      }
+
+      return null;
+    },
+    userId() {
+      if (this.task) {
+        return this.task.user_id;
+      }
+
+      if (this.newRequest) {
+        return this.newRequest.user_id;
+      }
+
+      return null
     }
   },
   methods: {
     activityAssigned() {
-      this.checkTaskStatus();
+      // Only respond to this if we're waiting for it
+      if (!this.inProgress) { return; }
+
       this.loadNextAssignedTask();
     },
     reload() {
+      if (!this.task) { return; }
       this.loadTask(this.task.id);
     },
     loadTask(id) {
-      this.unsubscribeSocketListeners();
       this.$dataProvider.getTasks(`/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
         .then((response) => {
           this.task = response.data;
           this.prepareTask();
-        });
+        }).finally(() => this.inProgress = false);
     },
     loadScreen() {
       this.loadScreenById(this.screenId).then(response => {
@@ -148,9 +195,11 @@ export default {
       }
     },
     redirectWhenProcessCompleted() {
+      if (this.inProgress) { return; }
       this.$emit('completed', this.task.process_request_id);
     },
     refreshWhenProcessUpdated(data) {
+      if (this.inProgress) { return; }
       if (data.event === 'ACTIVITY_COMPLETED' || data.event === 'ACTIVITY_ACTIVATED') {
         this.reload();
       }
@@ -172,16 +221,15 @@ export default {
       }
     },
     loadNextAssignedTask() {
-      if (this.task.status == 'COMPLETED' || this.task.status == 'CLOSED' || this.task.status == 'TRIGGERED') {
-        this.$dataProvider.getTasks(`?user_id=${this.task.user_id}&status=ACTIVE&process_request_id=${this.task.process_request_id}`).then((response) => {
-          if (response.data.data.length > 0) {
-            const firstNextAssignedTask = response.data.data[0].id;
-            this.loadTask(firstNextAssignedTask);
-          } else if (this.task.process_request.status === 'COMPLETED') {
-            this.$emit('completed', this.task.process_request_id);
-          }
-        });
-      }
+      this.$dataProvider.getTasks(`?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`).then((response) => {
+        if (response.data.data.length > 0) {
+          const firstNextAssignedTask = response.data.data[0].id;
+          this.loadTask(firstNextAssignedTask);
+        }
+        // } else if (this.task.process_request.status === 'COMPLETED') {
+        //   this.$emit('completed', this.task.process_request_id);
+        // }
+      }).catch(() => this.inProgress = false);
     },
     classHeaderCard(status) {
       let header = 'bg-success';
@@ -197,9 +245,11 @@ export default {
     },
     prepareTask() {
       this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
+      const data = _.get(this.task, 'request_data', {});
+      this.requestData = Object.assign({}, this.data, data);
       this.initSocketListeners();
       this.screen = this.task.screen;
+      this.renderComponent = this.task.component;
 
       if (this.task.allow_interstitial) {
         this.interstitial = this.task.interstitial_screen;
@@ -224,6 +274,7 @@ export default {
         return;
       }
       this.disabled = true;
+      this.inProgress = true;
       this.$emit('submit', this.task);
       this.$nextTick(() => {
         this.disabled = false;
@@ -233,6 +284,7 @@ export default {
       window.ProcessMaker.EventBus.$emit('form-data-updated', data);
     },
     initSocketListeners() {
+      this.unsubscribeSocketListeners();
 
       this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.requestId}`, '.ActivityAssigned', () => {
         this.activityAssigned();
@@ -275,8 +327,11 @@ export default {
     },
   },
   mounted() {
+    this.requestData = this.data;
     if (this.taskId) {
       this.loadTask(this.taskId);
+    } else if (this.screenId) {
+      this.loadScreen();
     }
   },
   destroyed() {
