@@ -84,7 +84,7 @@ export default {
       }
     },
     screenId() {
-      if (this.taskId) {
+      if (this.screenId) {
         this.loadScreen();
       } else {
         this.screen = null;
