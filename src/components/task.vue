@@ -72,7 +72,7 @@ export default {
       interstitial: null,
       requestData: {},
       renderComponent: 'task-screen',
-      inProgress: false,
+      reloadInProgress: false,
     };
   },
   watch: {
@@ -110,6 +110,10 @@ export default {
   },
   computed: {
     shouldShowScreen() {
+      if (this.taskIsCompleted) {
+        return false;
+      }
+
       if (this.screen && !this.task) {
         // Start Event
         return true;
@@ -127,8 +131,12 @@ export default {
       return this.task.bpmn_tag_name === 'manualTask' || !this.task.screen;
     },
     taskIsCompleted() {
-      if (!this.task) { return false; }
-      return this.task.advanceStatus === 'completed' || this.task.advanceStatus === 'triggered';
+      if (this.task) {
+        return this.task.advanceStatus === 'completed' || this.task.advanceStatus === 'triggered';
+      } else if (this.newRequest) {
+        return true;
+      }
+      return false;
     },
     taskIsOpenOrOverdue() {
       if (!this.task) { return false; }
@@ -159,21 +167,27 @@ export default {
   },
   methods: {
     activityAssigned() {
-      // Only respond to this if we're waiting for it
-      if (!this.inProgress) { return; }
-
-      this.loadNextAssignedTask();
+      // This may no longer be needed
     },
     reload() {
-      if (!this.task) { return; }
-      this.loadTask(this.task.id);
+      if (this.reloadInProgress) { return; }
+      this.reloadInProgress = true;
+      if (!this.task) { 
+        this.loadNextAssignedTask().finally(() => {
+          this.reloadInProgress = false;
+        });
+        return;
+      }
+      this.loadTask(this.task.id).finally(() => {
+        this.reloadInProgress = false;
+      });
     },
     loadTask(id) {
-      this.$dataProvider.getTasks(`/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
+      return this.$dataProvider.getTasks(`/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
         .then((response) => {
           this.task = response.data;
           this.prepareTask();
-        }).finally(() => this.inProgress = false);
+        });
     },
     loadScreen() {
       this.loadScreenById(this.screenId).then(response => {
@@ -195,11 +209,9 @@ export default {
       }
     },
     redirectWhenProcessCompleted() {
-      if (this.inProgress) { return; }
       this.$emit('completed', this.task.process_request_id);
     },
     refreshWhenProcessUpdated(data) {
-      if (this.inProgress) { return; }
       if (data.event === 'ACTIVITY_COMPLETED' || data.event === 'ACTIVITY_ACTIVATED') {
         this.reload();
       }
@@ -221,15 +233,12 @@ export default {
       }
     },
     loadNextAssignedTask() {
-      this.$dataProvider.getTasks(`?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`).then((response) => {
+      return this.$dataProvider.getTasks(`?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`).then((response) => {
         if (response.data.data.length > 0) {
           const firstNextAssignedTask = response.data.data[0].id;
           this.loadTask(firstNextAssignedTask);
         }
-        // } else if (this.task.process_request.status === 'COMPLETED') {
-        //   this.$emit('completed', this.task.process_request_id);
-        // }
-      }).catch(() => this.inProgress = false);
+      });
     },
     classHeaderCard(status) {
       let header = 'bg-success';
@@ -274,7 +283,6 @@ export default {
         return;
       }
       this.disabled = true;
-      this.inProgress = true;
       this.$emit('submit', this.task);
       this.$nextTick(() => {
         this.disabled = false;
@@ -332,6 +340,9 @@ export default {
       this.loadTask(this.taskId);
     } else if (this.screenId) {
       this.loadScreen();
+      if (this.screenInterstitialId) {
+        this.loadInterstitialScreen();
+      }
     }
   },
   destroyed() {
