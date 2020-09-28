@@ -1,5 +1,6 @@
 import moment from 'moment';
 import Screens from '../fixtures/webentry.json';
+import InterstitialScreen from '../fixtures/interstitial_screen.json';
 
 describe('Task component', () => {
   it('In a webentry', () => {
@@ -138,5 +139,42 @@ describe('Task component', () => {
     cy.route('PUT', 'http://localhost:8080/api/1.0/tasks/1').then(function() {
       expect(this.windowAlert).to.be.calledWith('Task Completed Successfully');
     });
+  });
+
+  it('Displays the interstitial screen', () => {
+    cy.server();
+    cy.route(
+      'GET',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+      {
+        id: 1,
+        advanceStatus: 'completed',
+        status: 'CLOSED',
+        allow_interstitial: true,
+        component: 'task-screen',
+        interstitial_screen: InterstitialScreen.screens[0],
+      }
+    );
+
+    cy.visit('/?scenario=TaskAssigned', {
+      onBeforeLoad(win) {
+        // setup request-id=1
+        const requestIdMeta = win.document.createElement('meta');
+        requestIdMeta.setAttribute('name', 'request-id');
+        requestIdMeta.setAttribute('content', '1');
+        win.document.head.appendChild(requestIdMeta);
+        // Call some code to initialize the fake server part using MockSocket
+        cy.stub(win, 'WebSocket').callsFake((url) => ({
+          url,
+          onclose: null,
+          onopen: null,
+          close(){},
+          send(){},
+        }));
+      },
+    });
+
+    cy.wait(2000);
+    cy.get('.form-group > :nth-child(1) > div').should('contain.text', 'Please wait');
   });
 });
