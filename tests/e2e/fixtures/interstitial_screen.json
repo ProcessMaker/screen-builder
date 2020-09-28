@@ -1,0 +1,53 @@
+{
+    "type": "screen_package",
+    "version": "2",
+    "screens": [
+        {
+            "id": 7,
+            "screen_category_id": "1",
+            "title": "Reply 2 3",
+            "description": "Message to show while waiting for a reply",
+            "type": "DISPLAY",
+            "config": [
+                {
+                    "name": "Reply",
+                    "items": [
+                        {
+                            "label": "Rich Text",
+                            "config": { "icon": "fas fa-pencil-ruler", "label": null, "content": "<h3>Please wait</h3>\n<p>An agent is working on your response.", "interactive": true, "renderVarHtml": null },
+                            "component": "FormHtmlViewer",
+                            "inspector": [
+                                { "type": "FormTextArea", "field": "content", "config": { "rows": 5, "label": "Content", "value": null, "helper": "The HTML text to display" } },
+                                { "type": "FormCheckbox", "field": "renderVarHtml", "config": { "label": "Render HTML from a Variable", "value": null, "helper": null } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } }
+                            ],
+                            "editor-control": "FormHtmlEditor",
+                            "editor-component": "FormHtmlEditor"
+                        }
+                    ]
+                }
+            ],
+            "computed": [],
+            "custom_css": null,
+            "created_at": "2020-07-14T20:12:37+00:00",
+            "updated_at": "2020-09-25T16:26:29+00:00",
+            "status": "ACTIVE",
+            "key": null,
+            "watchers": null,
+            "categories": [
+                {
+                    "id": 1,
+                    "name": "Uncategorized",
+                    "status": "ACTIVE",
+                    "is_system": 0,
+                    "created_at": "2020-09-25T16:14:36+00:00",
+                    "updated_at": "2020-09-25T16:14:36+00:00",
+                    "pivot": { "assignable_id": 7, "category_id": 1, "category_type": "ProcessMaker\\Models\\ScreenCategory" }
+                }
+            ]
+        }
+    ],
+    "screen_categories": [],
+    "scripts": []
+}
