@@ -81,6 +81,9 @@ export default {
       // requestData takes precedence over passed-in data
       this.requestData = Object.assign({}, this.data, this.requestData);
     },
+    requestData() {
+      this.$emit('input', this.requestData);
+    }
   },
   computed: {
     shouldAddSubmitButton() {
@@ -194,7 +197,7 @@ export default {
     activityAssigned() {
       // This may no longer be needed
     },
-    redirectWhenProcessCompleted() {
+    processCompleted() {
       this.$emit('completed', this.task.process_request_id);
     },
     processUpdated(data) {
@@ -206,6 +209,10 @@ export default {
       if (this.socketListeners.length > 0) {
         return;
       }
+      
+      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.task.process_request_id}`, '.ProcessCompleted', (data) => {
+        this.processCompleted(data);
+      });
 
       this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.task.process_request_id}`, '.ProcessUpdated', (data) => {
         this.processUpdated(data);
