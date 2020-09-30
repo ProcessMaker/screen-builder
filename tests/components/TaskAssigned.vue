@@ -5,9 +5,7 @@
         <b-tab active title="Form">
           <task
             :taskId="task.id"
-            :csrf_token="1234"
-            :screen="{}"
-            :data="data"
+            v-model="data"
             @submit="submit"
           />
         </b-tab>

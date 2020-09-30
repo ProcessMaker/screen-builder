@@ -52,7 +52,7 @@ export default {
   props: {
     taskId:     { type: Number, default: null },
     csrf_token: { type: String, default: null },
-    data:       { type: Object, default: () => { {} } },
+    value: { type: Object, default: {}},
   },
   data() {
     return {
@@ -66,24 +66,6 @@ export default {
       reloadInProgress: false,
       hasErrors: false,
     };
-  },
-  watch: {
-    taskId(newId, oldId) {
-      if (newId) {
-        if (newId !== oldId) {
-          this.loadTask(newId);
-        }
-      } else {
-        this.task = null;
-      }
-    },
-    data() {
-      // requestData takes precedence over passed-in data
-      this.requestData = Object.assign({}, this.data, this.requestData);
-    },
-    requestData() {
-      this.$emit('input', this.requestData);
-    }
   },
   computed: {
     shouldAddSubmitButton() {
@@ -111,8 +93,7 @@ export default {
     },
     prepareTask() {
       this.resetScreenState();
-      const data = _.get(this.task, 'request_data', {});
-      this.requestData = Object.assign({}, this.data, data);
+      this.requestData = _.get(this.task, 'request_data', {});
       this.initSocketListeners();
 
       // sets breadcrumbs, etc.
@@ -191,6 +172,7 @@ export default {
 
     },
     onUpdate(data) {
+      this.$emit('input', data);
       window.ProcessMaker.EventBus.$emit('form-data-updated', data);
     },
     
@@ -247,7 +229,6 @@ export default {
     },
   },
   mounted() {
-    this.requestData = this.data;
     if (this.taskId) {
       this.loadTask(this.taskId);
     }
