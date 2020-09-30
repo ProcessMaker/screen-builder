@@ -255,7 +255,17 @@ export default {
   },
   methods: {
     setUploadDataNamePrefix(index = null) {
-      this.$root.$emit('set-upload-data-name', this, index);
+      let  rowId = null;
+      if (index !== null  && this.editItem) {
+        rowId = this.editItem.row_id;
+      }
+      else {
+          if (this.addItem) {
+              rowId = this.addItem.row_id;
+          }
+      }
+
+      this.$root.$emit('set-upload-data-name', this, index, rowId);
     },
     getTableFieldsFromDataSource() {
       const {jsonData, key, value, dataName} = this.fields;
@@ -335,12 +345,16 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
+      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      this.$set(this.addItem, 'row_id', uniqueId);
+      this.setUploadDataNamePrefix();
+
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
       }
+
       // Open form
-      this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
 
       let {_parent, ...result} = this.addItem;
