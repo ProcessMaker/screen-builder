@@ -33,7 +33,6 @@
         <button type="button" class="btn btn-primary" @click="submit">{{ $t('Complete Task') }}</button>
       </div>
     </template>
-    <h4 v-else>screen is null</h4>
     <template v-if="showTaskIsCompleted">
       <div class="card card-body text-center" v-cloak>
         <h1>
