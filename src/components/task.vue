@@ -5,13 +5,13 @@
         <div v-if="renderComponent === 'task-screen'">
           <vue-form-renderer
             ref="renderer"
-            v-model="requestData" 
-            :config="screen.config" 
-            :computed="screen.computed" 
-            :custom-css="screen.customCss" 
-            :watchers="screen.watchers" 
-            @update="onUpdate" 
-            @submit="submit" 
+            v-model="requestData"
+            :config="screen.config"
+            :computed="screen.computed"
+            :custom-css="screen.customCss"
+            :watchers="screen.watchers"
+            @update="onUpdate"
+            @submit="submit"
           />
         </div>
         <div v-else>
@@ -33,79 +33,204 @@
         <button type="button" class="btn btn-primary" @click="submit">{{ $t('Complete Task') }}</button>
       </div>
     </template>
+    <h4 v-else>screen is null</h4>
     <template v-if="showTaskIsCompleted">
-        <div class="card card-body text-center" v-cloak>
-          <h1>{{ $t('Task Completed') }} <i class="fas fa-clipboard-check"/></h1>
-        </div>
+      <div class="card card-body text-center" v-cloak>
+        <h1>
+          {{ $t('Task Completed') }}
+          <i class="fas fa-clipboard-check" />
+        </h1>
+      </div>
     </template>
   </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import DataProvider from '../DataProvider';
-import _ from 'lodash';
+import Vue from "vue";
+import DataProvider from "../DataProvider";
+import _ from "lodash";
 
 Vue.use(DataProvider);
 
+const defaultBeforeLoadTask = (id, nodeId) => {
+  new Promise((resolve, reject) => {
+    resolve();
+  });
+};
+
 export default {
   props: {
-    taskId:     { type: Number, default: null },
+    initialTaskId: { type: Number, default: null },
+    initialScreenId: { type: Number, default: null },
+    initialRequestId: { type: Number, default: null },
+    // initialProcessId: { type: Number, default: null },
+    initialNodeId: { type: String, default: null },
+    userId: { type: Number, default: null },
     csrf_token: { type: String, default: null },
-    value: { type: Object, default: {}},
+    value: { type: Object, default: () => {} },
+    beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
   },
   data() {
     return {
       task: null,
+      taskId: null,
       request: null,
+      requestId: null,
       screen: null,
+      screenId: null,
+
+      processId: null,
+      nodeId: null,
+
       disabled: false,
       socketListeners: [],
       requestData: {},
-      renderComponent: 'task-screen',
+      renderComponent: "task-screen",
       reloadInProgress: false,
-      hasErrors: false,
+      hasErrors: false
     };
+  },
+  watch: {
+    initialScreenId: {
+      handler(n, o) {
+        this.screenId = this.initialScreenId;
+      },
+      immediate: true,
+    },
+    
+    initialTaskId: {
+      handler(n, o) {
+        this.taskId = this.initialTaskId;
+      },
+      immediate: true,
+    },
+    
+    initialRequestId: {
+      handler() {
+        this.requestId = this.initialRequestId;
+      },
+      immediate: true,
+    },
+    
+    initialProcessId: {
+      handler() {
+        this.processId = this.initialProcessId;
+      },
+      immediate: true,
+    },
+    
+    initialNodeId: {
+      handler() {
+        this.nodeId = this.initialNodeId;
+      },
+      immediate: true,
+    },
+    
+    screenId: {
+      handler() {
+        this.screen = null;
+        if (this.screenId) {
+          this.loadScreen(this.screenId);
+        }
+      },
+      immediate: true,
+    },
+    
+    taskId: {
+      handler() {
+        if (this.taskId) {
+          this.loadTask();
+        }
+      },
+      immediate: true,
+    },
+    
+    requestId: {
+      handler() {
+        if (this.requestId) {
+          this.initSocketListeners();
+        } else {
+          this.unsubscribeSocketListeners();
+        }
+      },
+      immediate: true,
+    },
+
+    task: {
+      handler() {
+        this.taskId = this.task.id;
+        this.nodeId = this.task.element_id;
+      }
+    }
   },
   computed: {
     shouldAddSubmitButton() {
-      if (!this.task) { return false; }
-      return this.task.bpmn_tag_name === 'manualTask' || !this.task.screen;
+      if (!this.task) {
+        return false;
+      }
+      return this.task.bpmn_tag_name === "manualTask" || !this.task.screen;
     },
     showTaskIsCompleted() {
-      return this.task && this.task.advanceStatus === 'completed' && !this.screen;
-    },
+      return (
+        this.task && this.task.advanceStatus === "completed" && !this.screen
+      );
+    }
   },
   methods: {
-    reload() {
-      if (this.reloadInProgress) { return; }
-      this.reloadInProgress = true;
-      this.loadTask(this.task.id).finally(() => {
-        this.reloadInProgress = false;
+    loadScreen(id) {
+      let query = "";
+      if (this.requestId) {
+        query = "?request_id=" + this.requestId;
+      }
+
+      window.ProcessMaker.apiClient.get(
+        window.PM4ConfigOverrides.getScreenEndpoint + `/${id}${query}`
+      ).then(response => {
+        this.screen = response.data
       });
     },
-    loadTask(id) {
-      return this.$dataProvider.getTasks(`/${id}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`)
-        .then((response) => {
+    reload() {
+
+      if (this.reloadInProgress) {
+        return;
+      }
+
+      this.reloadInProgress = true;
+ 
+      if (this.taskId) {
+        this.loadTask().finally(() => {
+          this.reloadInProgress = false;
+        });
+      } else {
+        this.loadNextAssignedTask().finally(() => {
+          this.reloadInProgress = false;
+        });
+      }
+    },
+    async loadTask() {
+      await this.beforeLoadTask(this.taskId, this.nodeId);
+
+      return this.$dataProvider
+        .getTasks(
+          `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`
+        )
+        .then(response => {
           this.task = response.data;
           this.prepareTask();
+          this.checkTaskStatus();
         });
     },
     prepareTask() {
       this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
-      this.initSocketListeners();
+      this.requestData = _.get(this.task, "request_data", {});
 
-      // sets breadcrumbs, etc.
-      this.$emit('task-updated', this.task);
-      if (this.task.process_request.status === 'ERROR') {
+      this.$emit("task-updated", this.task);
+
+      if (this.task.process_request.status === "ERROR") {
         this.hasErrors = true;
       } else {
         this.hasErrors = false;
       }
-
-      this.statusCard = this.classHeaderCard(this.task.advanceStatus);
-      this.checkTaskStatus();
     },
     resetScreenState() {
       if (this.$refs.renderer && this.$refs.renderer.$children[0]) {
@@ -113,7 +238,11 @@ export default {
       }
     },
     checkTaskStatus() {
-      if (this.task.status == 'COMPLETED' || this.task.status == 'CLOSED' || this.task.status == 'TRIGGERED') {
+      if (
+        this.task.status == "COMPLETED" ||
+        this.task.status == "CLOSED" ||
+        this.task.status == "TRIGGERED"
+      ) {
         this.closeTask();
       } else {
         this.screen = this.task.screen;
@@ -122,36 +251,40 @@ export default {
     },
     closeTask() {
       if (this.hasErrors) {
-        this.$emit('error', this.task.process_request_id);
+        this.$emit("error", this.requestId);
         return;
       }
-      if (!this.task.allow_interstitial) {
-        this.$emit('closed', this.task.id);
-        this.screen = null;
-      } else {
+      if (this.task.allow_interstitial) {
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask();
+      } else {
+        this.$emit("closed", this.task.id);
       }
     },
     loadNextAssignedTask() {
-      return this.$dataProvider.getTasks(`?user_id=${this.task.user_id}&status=ACTIVE&process_request_id=${this.task.process_request_id}`).then((response) => {
-        if (response.data.data.length > 0) {
-          const firstNextAssignedTask = response.data.data[0].id;
-          this.loadTask(firstNextAssignedTask);
-        }
-      });
+      return this.$dataProvider
+        .getTasks(
+          `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`
+        )
+        .then(response => {
+          if (response.data.data.length > 0) {
+            let task = response.data.data[0];
+            this.taskId = task.id;
+            this.nodeId = task.element_id;
+          }
+        });
     },
     classHeaderCard(status) {
-      let header = 'bg-success';
+      let header = "bg-success";
       switch (status) {
-        case 'completed':
-          header = 'bg-secondary';
+        case "completed":
+          header = "bg-secondary";
           break;
-        case 'overdue':
-          header = 'bg-danger';
+        case "overdue":
+          header = "bg-danger";
           break;
       }
-      return 'card-header text-capitalize text-white ' + header;
+      return "card-header text-capitalize text-white " + header;
     },
     submit() {
       //single click
@@ -159,31 +292,33 @@ export default {
         return;
       }
       this.disabled = true;
-      this.$emit('submit', this.task);
+      this.$emit("submit", this.task);
       this.$nextTick(() => {
         this.disabled = false;
       });
-      
-      if (this.task.allow_interstitial) {
+
+      if (this.task && this.task.allow_interstitial) {
         this.screen = this.task.interstitial_screen;
       } else {
-        this.interstitial = null;
+        this.screen = null;
       }
-
     },
     onUpdate(data) {
-      this.$emit('input', data);
-      window.ProcessMaker.EventBus.$emit('form-data-updated', data);
+      this.$emit("input", data);
+      window.ProcessMaker.EventBus.$emit("form-data-updated", data);
     },
-    
+
     activityAssigned() {
       // This may no longer be needed
     },
     processCompleted() {
-      this.$emit('completed', this.task.process_request_id);
+      this.$emit("completed", this.task.process_request_id);
     },
     processUpdated(data) {
-      if (data.event === 'ACTIVITY_COMPLETED' || data.event === 'ACTIVITY_ACTIVATED') {
+      if (
+        data.event === "ACTIVITY_COMPLETED" ||
+        data.event === "ACTIVITY_ACTIVATED"
+      ) {
         this.reload();
       }
     },
@@ -191,50 +326,53 @@ export default {
       if (this.socketListeners.length > 0) {
         return;
       }
-      
-      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.task.process_request_id}`, '.ProcessCompleted', (data) => {
-        this.processCompleted(data);
-      });
 
-      this.addSocketListener(`ProcessMaker.Models.ProcessRequest.${this.task.process_request_id}`, '.ProcessUpdated', (data) => {
-        this.processUpdated(data);
-      });
+      this.addSocketListener(
+        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
+        ".ProcessCompleted",
+        data => {
+          this.processCompleted(data);
+        }
+      );
+
+      this.addSocketListener(
+        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
+        ".ProcessUpdated",
+        data => {
+          this.processUpdated(data);
+        }
+      );
     },
     addSocketListener(channel, event, callback) {
       this.socketListeners.push({
         channel,
-        event,
+        event
       });
-      window.Echo.private(channel).listen(
-        event,
-        callback
-      );
+      window.Echo.private(channel).listen(event, callback);
     },
     unsubscribeSocketListeners() {
-      this.socketListeners.forEach((element) => {
+      this.socketListeners.forEach(element => {
         window.Echo.private(element.channel).stopListening(element.event);
       });
       this.socketListeners = [];
     },
     obtainPayload(url) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         window.ProcessMaker.apiClient
           .get(url)
           .then(response => {
             resolve(response.data);
-          }).catch(() => {
+          })
+          .catch(() => {
             // User does not have access to the resource. Ignore.
           });
       });
-    },
+    }
   },
   mounted() {
-    if (this.taskId) {
-      this.loadTask(this.taskId);
-    }
   },
   destroyed() {
     this.unsubscribeSocketListeners();
-  },
+  }
 };
 </script>
