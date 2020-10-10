@@ -41,6 +41,9 @@ export default {
   get(...args) {
     return this.apiInstance().get(...args);
   },
+  post(...args) {
+    return this.apiInstance().post(...args);
+  },
   token() {
     return localStorage.getItem('token');
   },
@@ -55,8 +58,34 @@ export default {
     return this.get(endpoint + params);
   },
   
-  getScreen(id) {
+  getScreen(id, query = '') {
     const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
-    return this.get(endpoint + `/${id}`);
+    return this.get(endpoint + `/${id}${query}`);
+  },
+  
+  postScript(id, params) {
+    let endpoint = _.get(
+      window,
+      'PM4ConfigOverrides.postScriptEndpoint',
+      '/scripts/execute/{id}'
+    );
+
+    const authParams = _.get(
+      window,
+      'PM4ConfigOverrides.authParams',
+      null
+    );
+
+    let query = '';
+    if (authParams) {
+      query = '?' + (new URLSearchParams(authParams)).toString()
+    }
+
+    console.log('query is', query, 'url is', endpoint.replace('{id}', id) + query);
+
+    return this.post(
+      endpoint.replace('{id}', id) + query,
+      params
+    );
   },
 };

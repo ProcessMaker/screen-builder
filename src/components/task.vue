@@ -8,7 +8,7 @@
             v-model="requestData"
             :config="screen.config"
             :computed="screen.computed"
-            :custom-css="screen.customCss"
+            :custom-css="screen.custom_css"
             :watchers="screen.watchers"
             @update="onUpdate"
             @submit="submit"
@@ -62,7 +62,6 @@ export default {
     initialTaskId: { type: Number, default: null },
     initialScreenId: { type: Number, default: null },
     initialRequestId: { type: Number, default: null },
-    // initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
     userId: { type: Number, default: null },
     csrf_token: { type: String, default: null },
@@ -160,7 +159,14 @@ export default {
         this.taskId = this.task.id;
         this.nodeId = this.task.element_id;
       }
-    }
+    },
+    
+    value: {
+      handler() {
+        this.requestData = this.value;
+      },
+      immediate: true,
+    },
   },
   computed: {
     shouldAddSubmitButton() {
@@ -174,7 +180,7 @@ export default {
         this.task && this.task.advanceStatus === "completed" && !this.screen
       );
     }
-  },
+},
   methods: {
     loadScreen(id) {
       let query = "";
@@ -182,9 +188,7 @@ export default {
         query = "?request_id=" + this.requestId;
       }
 
-      window.ProcessMaker.apiClient.get(
-        window.PM4ConfigOverrides.getScreenEndpoint + `/${id}${query}`
-      ).then(response => {
+      this.$dataProvider.getScreen(id, query).then(response => {
         this.screen = response.data
       });
     },
