@@ -385,10 +385,8 @@ export default {
     loadVariablesFromScreen(id, screens) {
       if (screens.indexOf(id) === -1) {
         screens.push(id);
-        const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', null) || 'screens';
         if (id) {
-          window.ProcessMaker.apiClient
-            .get(endpoint + '/' + id)
+          this.$dataProvider.getScreen(id)
             .then(response => {
               this.findElements(response.data.config);
             });
