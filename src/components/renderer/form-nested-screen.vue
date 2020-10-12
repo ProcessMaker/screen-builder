@@ -17,8 +17,6 @@
 </template>
 
 <script>
-import _ from 'lodash';
-
 const globalObject = typeof window === 'undefined'
   ? global
   : window;

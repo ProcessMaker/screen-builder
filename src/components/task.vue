@@ -45,14 +45,14 @@
 </template>
 
 <script>
-import Vue from "vue";
-import DataProvider from "../DataProvider";
-import _ from "lodash";
+import Vue from 'vue';
+import DataProvider from '../DataProvider';
+import _ from 'lodash';
 
 Vue.use(DataProvider);
 
-const defaultBeforeLoadTask = (id, nodeId) => {
-  new Promise((resolve, reject) => {
+const defaultBeforeLoadTask = () => {
+  new Promise((resolve) => {
     resolve();
   });
 };
@@ -83,21 +83,21 @@ export default {
       disabled: false,
       socketListeners: [],
       requestData: {},
-      renderComponent: "task-screen",
+      renderComponent: 'task-screen',
       reloadInProgress: false,
-      hasErrors: false
+      hasErrors: false,
     };
   },
   watch: {
     initialScreenId: {
-      handler(n, o) {
+      handler() {
         this.screenId = this.initialScreenId;
       },
       immediate: true,
     },
     
     initialTaskId: {
-      handler(n, o) {
+      handler() {
         this.taskId = this.initialTaskId;
       },
       immediate: true,
@@ -158,7 +158,7 @@ export default {
       handler() {
         this.taskId = this.task.id;
         this.nodeId = this.task.element_id;
-      }
+      },
     },
     
     value: {
@@ -173,23 +173,23 @@ export default {
       if (!this.task) {
         return false;
       }
-      return this.task.bpmn_tag_name === "manualTask" || !this.task.screen;
+      return this.task.bpmn_tag_name === 'manualTask' || !this.task.screen;
     },
     showTaskIsCompleted() {
       return (
-        this.task && this.task.advanceStatus === "completed" && !this.screen
+        this.task && this.task.advanceStatus === 'completed' && !this.screen
       );
-    }
-},
+    },
+  },
   methods: {
     loadScreen(id) {
-      let query = "";
+      let query = '';
       if (this.requestId) {
-        query = "?request_id=" + this.requestId;
+        query = '?request_id=' + this.requestId;
       }
 
       this.$dataProvider.getScreen(id, query).then(response => {
-        this.screen = response.data
+        this.screen = response.data;
       });
     },
     reload() {
@@ -225,11 +225,11 @@ export default {
     },
     prepareTask() {
       this.resetScreenState();
-      this.requestData = _.get(this.task, "request_data", {});
+      this.requestData = _.get(this.task, 'request_data', {});
 
-      this.$emit("task-updated", this.task);
+      this.$emit('task-updated', this.task);
 
-      if (this.task.process_request.status === "ERROR") {
+      if (this.task.process_request.status === 'ERROR') {
         this.hasErrors = true;
       } else {
         this.hasErrors = false;
@@ -242,9 +242,9 @@ export default {
     },
     checkTaskStatus() {
       if (
-        this.task.status == "COMPLETED" ||
-        this.task.status == "CLOSED" ||
-        this.task.status == "TRIGGERED"
+        this.task.status == 'COMPLETED' ||
+        this.task.status == 'CLOSED' ||
+        this.task.status == 'TRIGGERED'
       ) {
         this.closeTask();
       } else {
@@ -254,14 +254,14 @@ export default {
     },
     closeTask() {
       if (this.hasErrors) {
-        this.$emit("error", this.requestId);
+        this.$emit('error', this.requestId);
         return;
       }
       if (this.task.allow_interstitial) {
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask();
       } else {
-        this.$emit("closed", this.task.id);
+        this.$emit('closed', this.task.id);
       }
     },
     loadNextAssignedTask() {
@@ -278,16 +278,16 @@ export default {
         });
     },
     classHeaderCard(status) {
-      let header = "bg-success";
+      let header = 'bg-success';
       switch (status) {
-        case "completed":
-          header = "bg-secondary";
+        case 'completed':
+          header = 'bg-secondary';
           break;
-        case "overdue":
-          header = "bg-danger";
+        case 'overdue':
+          header = 'bg-danger';
           break;
       }
-      return "card-header text-capitalize text-white " + header;
+      return 'card-header text-capitalize text-white ' + header;
     },
     submit() {
       //single click
@@ -295,7 +295,7 @@ export default {
         return;
       }
       this.disabled = true;
-      this.$emit("submit", this.task);
+      this.$emit('submit', this.task);
       this.$nextTick(() => {
         this.disabled = false;
       });
@@ -307,20 +307,20 @@ export default {
       }
     },
     onUpdate(data) {
-      this.$emit("input", data);
-      window.ProcessMaker.EventBus.$emit("form-data-updated", data);
+      this.$emit('input', data);
+      window.ProcessMaker.EventBus.$emit('form-data-updated', data);
     },
 
     activityAssigned() {
       // This may no longer be needed
     },
     processCompleted() {
-      this.$emit("completed", this.task.process_request_id);
+      this.$emit('completed', this.task.process_request_id);
     },
     processUpdated(data) {
       if (
-        data.event === "ACTIVITY_COMPLETED" ||
-        data.event === "ACTIVITY_ACTIVATED"
+        data.event === 'ACTIVITY_COMPLETED' ||
+        data.event === 'ACTIVITY_ACTIVATED'
       ) {
         this.reload();
       }
@@ -332,7 +332,7 @@ export default {
 
       this.addSocketListener(
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-        ".ProcessCompleted",
+        '.ProcessCompleted',
         data => {
           this.processCompleted(data);
         }
@@ -340,7 +340,7 @@ export default {
 
       this.addSocketListener(
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-        ".ProcessUpdated",
+        '.ProcessUpdated',
         data => {
           this.processUpdated(data);
         }
@@ -349,7 +349,7 @@ export default {
     addSocketListener(channel, event, callback) {
       this.socketListeners.push({
         channel,
-        event
+        event,
       });
       window.Echo.private(channel).listen(event, callback);
     },
@@ -370,12 +370,12 @@ export default {
             // User does not have access to the resource. Ignore.
           });
       });
-    }
+    },
   },
   mounted() {
   },
   destroyed() {
     this.unsubscribeSocketListeners();
-  }
+  },
 };
 </script>

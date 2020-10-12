@@ -264,7 +264,7 @@ export default {
         this.showJsonEditor = this.options.showJsonEditor;
         this.editIndex = this.options.editIndex;
         this.removeIndex = this.options.removeIndex;
-      }
+      },
     },
     dataSource() {
       this.jsonData = '';
