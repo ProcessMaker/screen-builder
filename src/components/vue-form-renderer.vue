@@ -82,6 +82,7 @@ export default {
           };
         },
       },
+      scrollable: null,
     };
   },
   watch: {

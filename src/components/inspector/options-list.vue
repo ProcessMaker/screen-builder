@@ -46,8 +46,7 @@
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
                 <div class="card mb-3 bg-danger text-white text-right">
-                  <div class="card-body p-2">
-                    {{ currentItemToDelete }}
+                  <div class="card-body p-2" v-html="currentItemToDelete">
                   </div>
                   <div class="card-footer text-right p-2">
                     <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
@@ -181,7 +180,7 @@
     <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
     <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
     <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
-  
+
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <div v-if="valueTypeReturned === 'single'">
         <label for="key">{{ $t('Value') }}</label>
@@ -340,10 +339,8 @@ export default {
       if (this.dataSourcesList.some(ds => ds.value === this.selectedDataSource)) {
         return;
       }
-      
+
       if (this.dataSourcesList.length > 0) {
-        // eslint-disable-next-line no-console
-        console.log('SETTING TO DEFAULT selectedDataSource');
         this.selectedDataSource = this.dataSourcesList[0].value;
       }
     },
@@ -447,7 +444,8 @@ export default {
     setEndpointList(dataSources) {
       const endpoints = {};
       dataSources.forEach(ds => {
-        endpoints[ds.id] = Object.keys(ds.endpoints).map(name => {
+        const dsEndpoints = ds.endpoints ? ds.endpoints : [];
+        endpoints[ds.id] = Object.keys(dsEndpoints).map(name => {
           return { text: name, value: name };
         });
       });

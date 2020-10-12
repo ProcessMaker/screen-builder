@@ -1,3 +1,4 @@
+import customValidationRules from './CustomValidationRules';
 const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {
@@ -11,6 +12,8 @@ export function ValidatorFactory(config, data) {
     float: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
     currency: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
     array: 'array',
+    percentage: 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
+    password: 'string',
   };
 
   validate.validator = null;
@@ -46,7 +49,7 @@ export function ValidatorFactory(config, data) {
       }
 
       //If the element has dataformat configurated
-      if (item.config && item.config.name && item.config.dataFormat) {
+      if (item.component ===  'FormInput' && item.config && item.config.name && item.config.dataFormat ){
         validate.addRuleFormat(item.config.name, item.config.dataFormat);
       }
     });
@@ -94,6 +97,31 @@ export function ValidatorFactory(config, data) {
         itemLoop.config.name &&
         itemLoop.config.validation
       ) {
+        
+        if (Array.isArray(itemLoop.config.validation)) {
+          itemLoop.config.validation.forEach(validation => {
+            if (!validation.value.includes(':')) {
+              return;
+            }
+            const rule = validation.value.split(':')[0];
+            let fieldName = validation.value.split(':')[1];
+            let newValidationRule;
+            if (rule.includes('required_') || rule.includes('same')) {
+              if (fieldName.includes('_parent')) {
+                fieldName = fieldName.split('_parent.').pop();
+                newValidationRule = rule + ':' + fieldName;
+              } else if (!fieldName.includes(',')) {
+                newValidationRule = rule + ':' + loopName + '.*.' + fieldName;
+              } else {
+                fieldName = fieldName.split(',')[0];
+                const fieldValue = validation.value.split(':')[1].split(',')[1];
+                newValidationRule = rule + ':' + loopName + '.*.' + fieldName + ',' + fieldValue;
+              }
+              validation.value = newValidationRule;  
+            }
+          });
+        }
+
         validate.addRule(
           loopName + '.*.' + itemLoop.config.name,
           itemLoop.config.validation
@@ -102,6 +130,7 @@ export function ValidatorFactory(config, data) {
 
       //If the element has dataformat configurated
       if (
+        itemLoop.component ===  'FormInput' &&
         itemLoop.config &&
         itemLoop.config.name &&
         itemLoop.config.dataFormat
