@@ -15,7 +15,6 @@ export default {
     // Allow standalone app to use a real api if token and baseURL are present
     if (this.token()) {
       axios.defaults.baseURL = this.baseURL();
-      console.log("Set axios base url to", this.baseURL());
       axios.defaults.headers.common = {
         'Authorization': 'Bearer ' + this.token(),
       };
@@ -78,10 +77,8 @@ export default {
 
     let query = '';
     if (authParams) {
-      query = '?' + (new URLSearchParams(authParams)).toString()
+      query = '?' + (new URLSearchParams(authParams)).toString();
     }
-
-    console.log('query is', query, 'url is', endpoint.replace('{id}', id) + query);
 
     return this.post(
       endpoint.replace('{id}', id) + query,

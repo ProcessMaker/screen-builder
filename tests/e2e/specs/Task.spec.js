@@ -138,19 +138,19 @@ describe('Task component', () => {
     cy.get('.form-group').find('button').click();
     cy.route('PUT', 'http://localhost:8080/api/1.0/tasks/1').then(function() {
       cy.get('@windowAlert').should('have.been.calledOnce')
-      .and('have.been.calledWith', 'Task Completed Successfully')
-      .then(function() {
-        cy.route(
-          'GET',
-          'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
-          {
-            id: 1,
-            advanceStatus: 'completed',
-            status: 'CLOSED',
-          }
-        );  
-        cy.reload();
-      });
+        .and('have.been.calledWith', 'Task Completed Successfully')
+        .then(function() {
+          cy.route(
+            'GET',
+            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+            {
+              id: 1,
+              advanceStatus: 'completed',
+              status: 'CLOSED',
+            }
+          );  
+          cy.reload();
+        });
     });
     cy.get('#tab-form > .card').should('contain.text', 'Task Completed');
   });
@@ -213,46 +213,46 @@ describe('Task component', () => {
     cy.get('.form-group').find('button').click();
     cy.route('PUT', 'http://localhost:8080/api/1.0/tasks/1').then(function() {
       cy.get('@windowAlert').should('have.been.calledOnce')
-      .and('have.been.calledWith', 'Task Completed Successfully')
-      .then(function() {
-        cy.route(
-          'GET',
-          'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
-          {
-            id: 1,
-            advanceStatus: 'completed',
-            component: 'task-screen',
-            created_at: moment().toISOString(),
-            completed_at: moment().toISOString(),
-            due_at: moment().add(1, 'day').toISOString(),
-            status: 'CLOSED',
-            allow_interstitial: true,
-            interstitial_screen: InterstitialScreen.screens[0],
-            user: {
-              avatar: '',
-              fullname: 'Assigned User',
-            },
-            screen: Screens.screens[0],
-            process_request: {
+        .and('have.been.calledWith', 'Task Completed Successfully')
+        .then(function() {
+          cy.route(
+            'GET',
+            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+            {
               id: 1,
+              advanceStatus: 'completed',
+              component: 'task-screen',
+              created_at: moment().toISOString(),
+              completed_at: moment().toISOString(),
+              due_at: moment().add(1, 'day').toISOString(),
               status: 'CLOSED',
+              allow_interstitial: true,
+              interstitial_screen: InterstitialScreen.screens[0],
               user: {
                 avatar: '',
-                fullname: 'Requester User',
+                fullname: 'Assigned User',
               },
-            },
-            process: {
-              id: 1,
-              name: 'Process Name',
-            },
-            request_data: {
-              firstname: 'John',
-              lastname: 'Doe',
-            },
-          }
-        );  
-        cy.reload();
-      });
+              screen: Screens.screens[0],
+              process_request: {
+                id: 1,
+                status: 'CLOSED',
+                user: {
+                  avatar: '',
+                  fullname: 'Requester User',
+                },
+              },
+              process: {
+                id: 1,
+                name: 'Process Name',
+              },
+              request_data: {
+                firstname: 'John',
+                lastname: 'Doe',
+              },
+            }
+          );  
+          cy.reload();
+        });
       cy.wait(2000);
       cy.get('.form-group > :nth-child(1) > div').should('contain.text', 'Please wait');
     });

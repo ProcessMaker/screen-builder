@@ -183,7 +183,7 @@ export default {
       );
     },
     setMatrixValue(i, v) {
-      let { _parent, ...item } = v;
+      let item = _.omit(v, '_parent');
       this.registerParentVariableChanges(v);
       this.$set(this.matrix, i, item);
       this.setChagnedParentVariables();
@@ -230,6 +230,6 @@ export default {
   },
   mounted() {
     this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
-  }
+  },
 };
 </script>

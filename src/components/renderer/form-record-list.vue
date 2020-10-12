@@ -134,6 +134,7 @@
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import Pagination from '@/components/Pagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
+import {ValidatorFactory} from '../../factories/ValidatorFactory';
 import _ from 'lodash';
 
 const jsonOptionsActionsColumn = {
@@ -188,7 +189,7 @@ export default {
         if (this.parentReference) {
           item._parent = _.cloneDeep(this.parentReference.transientData);
         }
-        return item
+        return item;
       },
       set(val) {
         let { _parent, ...item } = val;
@@ -196,7 +197,7 @@ export default {
           this.$set(this.parentReference, 'transientData', _parent);
         }
         this.addItem = item;
-      }
+      },
     },
     editItemWithParent: {
       get() {
@@ -212,7 +213,7 @@ export default {
           this.$set(this.parentReference, 'transientData', _parent);
         }
         this.editItem = item;
-      }
+      },
     },
     dataManager() {
       if (this.$refs.vuetable) {
@@ -272,13 +273,13 @@ export default {
     formConfig: {
       immediate: true,
       handler(value) {
-        let value2 = null
+        let value2 = null;
         if (this.$parent && this.$parent.$parent) {
           value2 = this.getParentFormConfig(this.$parent.$parent);
         }
         this.formConfigParent = value2 || value;
-      }
-    }
+      },
+    },
   },
   methods: {
     getParentFormConfig(parent) {
@@ -297,9 +298,9 @@ export default {
         rowId = this.editItem.row_id;
       }
       else {
-          if (this.addItem) {
-              rowId = this.addItem.row_id;
-          }
+        if (this.addItem) {
+          rowId = this.addItem.row_id;
+        }
       }
 
       this.$root.$emit('set-upload-data-name', this, index, rowId);
@@ -485,6 +486,6 @@ export default {
   },
   mounted() {
     this.parentReference = this.parentObj();
-  }
+  },
 };
 </script>

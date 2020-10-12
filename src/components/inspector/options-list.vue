@@ -46,8 +46,7 @@
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
                 <div class="card mb-3 bg-danger text-white text-right">
-                  <div class="card-body p-2" v-html="currentItemToDelete">
-                  </div>
+                  <div class="card-body p-2" v-html="currentItemToDelete"/>
                   <div class="card-footer text-right p-2">
                     <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
                       {{ $t('Cancel') }}
