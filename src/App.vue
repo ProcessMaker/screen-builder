@@ -354,6 +354,7 @@ export default {
       const savedConfig = localStorage.getItem('savedConfig');
       const savedWatchers = localStorage.getItem('savedWatchers');
       const customCSS = localStorage.getItem('customCSS');
+      const computed = localStorage.getItem('computed');
 
       if (savedConfig) {
         let config = JSON.parse(savedConfig);
@@ -368,11 +369,16 @@ export default {
       if (customCSS) {
         this.customCSS = customCSS;
       }
+      
+      if (computed) {
+        this.computed = JSON.parse(computed);
+      }
     },
     saveToLocalStorage() {
       localStorage.setItem('savedConfig', JSON.stringify(this.config));
       localStorage.setItem('savedWatchers', JSON.stringify(this.watchers));
       localStorage.setItem('customCSS', this.customCSS);
+      localStorage.setItem('computed', JSON.stringify(this.computed));
     },
     editorDidMount(editor) {
       editor.getAction('editor.action.formatDocument').run();

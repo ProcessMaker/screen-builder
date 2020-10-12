@@ -83,6 +83,8 @@ export default {
         this.debug('R3');
         return;
       }
+
+      this.$delete(this.defaultsFormData, '_parent');
       
       this.lastSetTransientData = _.cloneDeep(this.defaultsFormData);
       this.transientData = _.cloneDeep(this.defaultsFormData);
