@@ -1,4 +1,6 @@
-describe('Dape Picker', () => {
+import moment from 'moment';
+
+describe('Date Picker', () => {
   it('Date type', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
@@ -14,7 +16,7 @@ describe('Dape Picker', () => {
     today.setUTCMilliseconds(0);
 
     cy.assertPreviewData({
-      form_date_picker_1: today.toISOString(),
+      form_date_picker_1: moment(today).format('YYYY-MM-DD'),
     });
   });
   it('DateTime type', () => {
