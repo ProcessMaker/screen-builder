@@ -94,6 +94,7 @@ window.ProcessMaker = {
     lang: 'en',
   },
   apiClient: {
+    create() { return this; },
     defaults: {
       headers: {
         common: {
