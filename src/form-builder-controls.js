@@ -6,6 +6,8 @@ import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
 import FormNestedScreen from './components/renderer/form-nested-screen';
+import FileUpload from './components/renderer/file-upload';
+import FileDownload from './components/renderer/file-download';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -611,6 +613,91 @@ export default [
             label: 'Screen',
             name: 'SelectScreen',
             helper: 'Select a screen',
+          },
+        },
+      ],
+    },
+  },
+  {
+    rendererComponent: FormText,
+    rendererBinding: 'FormText',
+    builderComponent: FileDownload,
+    builderBinding: 'FileDownload',
+    control: {
+      label: 'File Download',
+      component: 'FileDownload',
+      'editor-component': 'FormText',
+      'editor-control': 'FileDownload',
+      config: {
+        label: 'New File Download',
+        icon: 'fas fa-file-download',
+      },
+      inspector: [{
+        type: 'FormInput',
+        field: 'label',
+        config: {
+          label: 'Label',
+          helper: 'The text to display',
+        },
+      },
+      {
+        type: 'FormInput',
+        field: 'name',
+        config: {
+          label: 'Name',
+          helper: 'The name of the Download',
+        },
+      },
+      ],
+    },
+  },
+  {
+    rendererComponent: FileUpload,
+    rendererBinding: 'FileUpload',
+    builderComponent: FileUpload,
+    builderBinding: 'FileUpload',
+    control: {
+      label: 'File Upload',
+      component: 'FileUpload',
+      'editor-component': 'FileUpload',
+      'editor-control': 'FileUpload',
+      config: {
+        label: 'New File Upload',
+        icon: 'fas fa-file-upload',
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The text to display',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'accept',
+          config: {
+            label: 'File Accepted',
+            helper: 'Common file types: application/msword, image/gif, image/jpeg, application/pdf, application/vnd.ms-powerpoint, application/vnd.ms-excel, text/plain',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Name',
+            name: 'Name',
+            helper: 'The name of the upload',
+            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_. \\/a-z])*$/|required',
+          },
+        },
+        {
+          type: 'RequiredCheckbox',
+          field: 'validation',
+          config: {
+            label: 'Required',
+            helper: 'Prevent form from being submitted unless a file is uploaded',
           },
         },
       ],

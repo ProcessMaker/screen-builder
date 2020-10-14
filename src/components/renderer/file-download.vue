@@ -201,9 +201,11 @@ export default {
         requestFiles = window.PM4ConfigOverrides.requestFiles;
       }
 
-      if (requestFiles && requestFiles[this.prefix + this.name]) {
+      if (requestFiles) {
         this.loading = false;
-        this.fileInfo = requestFiles[this.prefix + this.name];
+        if (requestFiles[this.prefix + this.name]) {
+          this.fileInfo = requestFiles[this.prefix + this.name];
+        }
         return;
       }
 
