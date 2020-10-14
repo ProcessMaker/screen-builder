@@ -1,10 +1,13 @@
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 
+let screenRenderer;
+
 export default {
   mixins: extensions,
   props: {
     value: Object,
+    _parent: null,
     definition: Object,
     components: {
       type: Object,
@@ -30,8 +33,15 @@ export default {
       extensions: [],
       nodeNameProperty: 'component',
       variables: [],
+      variablesTree: [],
       initialize: [],
       ownerDocument: window.document,
+      building: {
+        show: false,
+        error: '',
+        component: '',
+        errors: [],
+      },
     };
   },
   methods: {
@@ -73,6 +83,8 @@ export default {
         this.codigo = component;
         return component;
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
         this.building.error = error;
         this.building.component = component;
         this.building.errors = errors;
@@ -87,17 +99,20 @@ export default {
     },
     parse(screen, definition) {
       const owner = this.ownerDocument.createElement('div');
-      this.loadPages(definition.config, owner, screen);
+      this.loadPages(definition, owner, screen);
       return '<div>' + owner.innerHTML + '</div>';
     },
-    loadPages(pages, owner, screen) {
+    loadPages(definition, owner, screen) {
+      const pages = definition.config;
       this.variables.splice(0);
-      // Extensions.onloadproperties
-      this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner }));
+      // Extensions.beforeload
+      this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner, definition }));
       pages.forEach((page, index) => {
-        const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
-        this.loadItems(page.items, component, screen);
-        owner.appendChild(component);
+        if (page) {
+          const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
+          this.loadItems(page.items, component, screen, definition);
+          owner.appendChild(component);
+        }
       });
     },
     escapeVuePropertyName(name) {
@@ -136,20 +151,20 @@ export default {
       this.references__.push(value);
       return reference;
     },
-    loadItems(items, component, screen) {
+    loadItems(items, component, screen, definition) {
       items.forEach(element => {
         const componentName = element[this.nodeNameProperty];
         const nodeName = this.alias[componentName] || componentName;
         const properties = { ...element.config };
         // Extensions.onloadproperties
-        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen }));
+        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen, definition }));
         // Create component
         const node = this.createComponent(nodeName, properties);
         // Create wrapper
         const wrapper = this.ownerDocument.createElement('div');
         wrapper.appendChild(node);
         // Extensions.onloaditems to add items to container
-        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper, screen }));
+        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper, screen, definition }));
         // Append node
         component.appendChild(wrapper);
       });
@@ -164,6 +179,39 @@ export default {
       const find = this.variables.find(v => v.name === name);
       if (!find) {
         this.variables.push({ name, config });
+        this.variablesTree.push({ name, config });
+      }
+    },
+    registerNestedVariable(name, prefix, definition) {
+      const items = screenRenderer.getVariablesTree(definition);
+      this.variablesTree.push({ name, prefix, config: {}, items });
+      screenRenderer.getVariablesTree({config:[]});
+    },
+    getVariablesTree(definition) {
+      let component;
+      try {
+        component = {
+          mixins: [ScreenBase],
+          components: {},
+          props: {},
+          computed: {},
+          methods: {},
+          data: {},
+          watch: {},
+          mounted: [],
+          validations: {},
+        };
+        this.variablesTree = [];
+        const template = this.parse(component, definition);
+        // Extensions.onparse
+        this.extensions.forEach((ext) => {
+          ext.onparse instanceof Function ? ext.onparse.bind(this)({ screen: component, template, definition}) : null;
+        });
+        return this.variablesTree;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        return this.variablesTree;
       }
     },
     elementCssClass(element) {
@@ -214,6 +262,8 @@ export default {
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
         this.building.error = error;
         this.building.component = component;
         this.building.errors = [];
@@ -236,5 +286,19 @@ export default {
     addMounted(screen, code) {
       screen.mounted.push(code);
     },
+    addEvent(properties, event, param, code) {
+      properties[`@${event}`] = `${param}=$event;${code}`;
+    },
+  },
+  mounted() {
+    if (!screenRenderer) {
+      screenRenderer = new this.constructor({
+        propsData: {
+          value: {},
+          definition: {config: []},
+        },
+      });
+      screenRenderer.$mount();
+    }
   },
 };

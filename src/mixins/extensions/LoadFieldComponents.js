@@ -1,6 +1,6 @@
 export default {
   methods: {
-    loadFieldProperties({ properties, element, componentName }) {
+    loadFieldProperties({ properties, element, componentName, definition }) {
       properties.class = this.elementCssClass(element);
       properties[':validation-data'] = 'vdata';
       if (componentName === 'FormImage') {
@@ -23,7 +23,7 @@ export default {
       properties[':ancestor-screens'] = '$parent && $parent.ancestorScreens';
       properties.name = element.config.name !== undefined ? element.config.name : null;
       properties.disabled = element.config.interactive || element.config.disabled;
-      properties[':form-config'] = '$parent && $parent.definition.config';
+      properties[':form-config'] = this.byRef(this.configRef || definition.config);
       // Events
       properties['@submit'] = 'submitForm';
     },

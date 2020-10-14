@@ -265,7 +265,7 @@ describe('Form Select List', () => {
     cy.get('[data-cy=preview-content] span:contains(John):first').click();
     cy.assertPreviewData({
       form_select_list_1: {
-        value: '2',
+        value: 2,
         content: 'John',
       },
     });

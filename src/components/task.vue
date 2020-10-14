@@ -1,0 +1,381 @@
+<template>
+  <div id="tab-form" role="tabpanel" aria-labelledby="tab-form" class="tab-pane active show h-100">
+    <template v-if="screen">
+      <div class="card card-body border-top-0 h-100">
+        <div v-if="renderComponent === 'task-screen'">
+          <vue-form-renderer
+            ref="renderer"
+            v-model="requestData"
+            :config="screen.config"
+            :computed="screen.computed"
+            :custom-css="screen.custom_css"
+            :watchers="screen.watchers"
+            @update="onUpdate"
+            @submit="submit"
+          />
+        </div>
+        <div v-else>
+          <component
+            :is="renderComponent"
+            :process-id="task.process_id"
+            :instance-id="task.process_request_id"
+            :token-id="task.id"
+            :screen="screen.config"
+            :csrf-token="csrf_token"
+            :computed="screen.computed"
+            :custom-css="screen.custom_css"
+            :watchers="screen.watchers"
+            :data="requestData"
+          />
+        </div>
+      </div>
+      <div v-if="shouldAddSubmitButton" class="card-footer">
+        <button type="button" class="btn btn-primary" @click="submit">{{ $t('Complete Task') }}</button>
+      </div>
+    </template>
+    <template v-if="showTaskIsCompleted">
+      <div class="card card-body text-center" v-cloak>
+        <h1>
+          {{ $t('Task Completed') }}
+          <i class="fas fa-clipboard-check" />
+        </h1>
+      </div>
+    </template>
+  </div>
+</template>
+
+<script>
+import Vue from 'vue';
+import DataProvider from '../DataProvider';
+import _ from 'lodash';
+
+Vue.use(DataProvider);
+
+const defaultBeforeLoadTask = () => {
+  new Promise((resolve) => {
+    resolve();
+  });
+};
+
+export default {
+  props: {
+    initialTaskId: { type: Number, default: null },
+    initialScreenId: { type: Number, default: null },
+    initialRequestId: { type: Number, default: null },
+    initialNodeId: { type: String, default: null },
+    userId: { type: Number, default: null },
+    csrf_token: { type: String, default: null },
+    value: { type: Object, default: () => {} },
+    beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
+  },
+  data() {
+    return {
+      task: null,
+      taskId: null,
+      request: null,
+      requestId: null,
+      screen: null,
+      screenId: null,
+
+      processId: null,
+      nodeId: null,
+
+      disabled: false,
+      socketListeners: [],
+      requestData: {},
+      renderComponent: 'task-screen',
+      reloadInProgress: false,
+      hasErrors: false,
+    };
+  },
+  watch: {
+    initialScreenId: {
+      handler() {
+        this.screenId = this.initialScreenId;
+      },
+      immediate: true,
+    },
+    
+    initialTaskId: {
+      handler() {
+        this.taskId = this.initialTaskId;
+      },
+      immediate: true,
+    },
+    
+    initialRequestId: {
+      handler() {
+        this.requestId = this.initialRequestId;
+      },
+      immediate: true,
+    },
+    
+    initialProcessId: {
+      handler() {
+        this.processId = this.initialProcessId;
+      },
+      immediate: true,
+    },
+    
+    initialNodeId: {
+      handler() {
+        this.nodeId = this.initialNodeId;
+      },
+      immediate: true,
+    },
+    
+    screenId: {
+      handler() {
+        this.screen = null;
+        if (this.screenId) {
+          this.loadScreen(this.screenId);
+        }
+      },
+      immediate: true,
+    },
+    
+    taskId: {
+      handler() {
+        if (this.taskId) {
+          this.loadTask();
+        }
+      },
+      immediate: true,
+    },
+    
+    requestId: {
+      handler() {
+        if (this.requestId) {
+          this.initSocketListeners();
+        } else {
+          this.unsubscribeSocketListeners();
+        }
+      },
+      immediate: true,
+    },
+
+    task: {
+      handler() {
+        this.taskId = this.task.id;
+        this.nodeId = this.task.element_id;
+      },
+    },
+    
+    value: {
+      handler() {
+        this.requestData = this.value;
+      },
+      immediate: true,
+    },
+  },
+  computed: {
+    shouldAddSubmitButton() {
+      if (!this.task) {
+        return false;
+      }
+      return this.task.bpmn_tag_name === 'manualTask' || !this.task.screen;
+    },
+    showTaskIsCompleted() {
+      return (
+        this.task && this.task.advanceStatus === 'completed' && !this.screen
+      );
+    },
+  },
+  methods: {
+    loadScreen(id) {
+      let query = '';
+      if (this.requestId) {
+        query = '?request_id=' + this.requestId;
+      }
+
+      this.$dataProvider.getScreen(id, query).then(response => {
+        this.screen = response.data;
+      });
+    },
+    reload() {
+
+      if (this.reloadInProgress) {
+        return;
+      }
+
+      this.reloadInProgress = true;
+ 
+      if (this.taskId) {
+        this.loadTask().finally(() => {
+          this.reloadInProgress = false;
+        });
+      } else {
+        this.loadNextAssignedTask().finally(() => {
+          this.reloadInProgress = false;
+        });
+      }
+    },
+    async loadTask() {
+      await this.beforeLoadTask(this.taskId, this.nodeId);
+
+      return this.$dataProvider
+        .getTasks(
+          `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`
+        )
+        .then(response => {
+          this.task = response.data;
+          this.prepareTask();
+          this.checkTaskStatus();
+        });
+    },
+    prepareTask() {
+      this.resetScreenState();
+      this.requestData = _.get(this.task, 'request_data', {});
+
+      this.$emit('task-updated', this.task);
+
+      if (this.task.process_request.status === 'ERROR') {
+        this.hasErrors = true;
+      } else {
+        this.hasErrors = false;
+      }
+    },
+    resetScreenState() {
+      if (this.$refs.renderer && this.$refs.renderer.$children[0]) {
+        this.$refs.renderer.$children[0].currentPage = 0;
+      }
+    },
+    checkTaskStatus() {
+      if (
+        this.task.status == 'COMPLETED' ||
+        this.task.status == 'CLOSED' ||
+        this.task.status == 'TRIGGERED'
+      ) {
+        this.closeTask();
+      } else {
+        this.screen = this.task.screen;
+        this.renderComponent = this.task.component;
+      }
+    },
+    closeTask() {
+      if (this.hasErrors) {
+        this.$emit('error', this.requestId);
+        return;
+      }
+      if (this.task.allow_interstitial) {
+        this.screen = this.task.interstitial_screen;
+        this.loadNextAssignedTask();
+      } else {
+        this.$emit('closed', this.task.id);
+      }
+    },
+    loadNextAssignedTask() {
+      return this.$dataProvider
+        .getTasks(
+          `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`
+        )
+        .then(response => {
+          if (response.data.data.length > 0) {
+            let task = response.data.data[0];
+            this.taskId = task.id;
+            this.nodeId = task.element_id;
+          }
+        });
+    },
+    classHeaderCard(status) {
+      let header = 'bg-success';
+      switch (status) {
+        case 'completed':
+          header = 'bg-secondary';
+          break;
+        case 'overdue':
+          header = 'bg-danger';
+          break;
+      }
+      return 'card-header text-capitalize text-white ' + header;
+    },
+    submit() {
+      //single click
+      if (this.disabled) {
+        return;
+      }
+      this.disabled = true;
+      this.$emit('submit', this.task);
+      this.$nextTick(() => {
+        this.disabled = false;
+      });
+
+      if (this.task && this.task.allow_interstitial) {
+        this.screen = this.task.interstitial_screen;
+      } else {
+        this.screen = null;
+      }
+    },
+    onUpdate(data) {
+      this.$emit('input', data);
+      window.ProcessMaker.EventBus.$emit('form-data-updated', data);
+    },
+
+    activityAssigned() {
+      // This may no longer be needed
+    },
+    processCompleted() {
+      this.$emit('completed', this.task.process_request_id);
+    },
+    processUpdated(data) {
+      if (
+        data.event === 'ACTIVITY_COMPLETED' ||
+        data.event === 'ACTIVITY_ACTIVATED'
+      ) {
+        this.reload();
+      }
+    },
+    initSocketListeners() {
+      if (this.socketListeners.length > 0) {
+        return;
+      }
+
+      this.addSocketListener(
+        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
+        '.ProcessCompleted',
+        data => {
+          this.processCompleted(data);
+        }
+      );
+
+      this.addSocketListener(
+        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
+        '.ProcessUpdated',
+        data => {
+          this.processUpdated(data);
+        }
+      );
+    },
+    addSocketListener(channel, event, callback) {
+      this.socketListeners.push({
+        channel,
+        event,
+      });
+      window.Echo.private(channel).listen(event, callback);
+    },
+    unsubscribeSocketListeners() {
+      this.socketListeners.forEach(element => {
+        window.Echo.private(element.channel).stopListening(element.event);
+      });
+      this.socketListeners = [];
+    },
+    obtainPayload(url) {
+      return new Promise(resolve => {
+        window.ProcessMaker.apiClient
+          .get(url)
+          .then(response => {
+            resolve(response.data);
+          })
+          .catch(() => {
+            // User does not have access to the resource. Ignore.
+          });
+      });
+    },
+  },
+  mounted() {
+  },
+  destroyed() {
+    this.unsubscribeSocketListeners();
+  },
+};
+</script>

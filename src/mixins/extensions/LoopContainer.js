@@ -1,6 +1,9 @@
 import LoopControl from '../../mixins/LoopControl';
 
 export default {
+  props: {
+    configRef: null,
+  },
   data() {
     return {
       loops: [],
@@ -11,20 +14,24 @@ export default {
       this.registerVariable(element.config.settings.varname, {});
       this.loops.push({ variable: element.config.settings.varname, element, properties });
     },
-    loadFormLoopItems({ element, node }) {
+    loadFormLoopItems({ element, node, definition }) {
       const loop = this.createComponent('div', {
         'v-for': `loopRow in ${element.config.settings.varname}`,
       });
+      const nested = {
+        config: [
+          {
+            items: element.items,
+          },
+        ],
+      };
+      // Add nested component inside loop
       const child = this.createComponent('ScreenRenderer', {
-        ':definition': this.byValue({
-          config: [
-            {
-              items: element.items,
-            },
-          ],
-        }),
+        ':definition': this.byValue(nested),
         ':value': 'loopRow',
+        ':_parent': 'vdata',
         ':components': this.byRef(this.components),
+        ':config-ref': this.byRef(this.configRef || definition.config),
         '@submit': 'submitForm',
       });
       const addLoopRow = this.createComponent('AddLoopRow', {
@@ -34,6 +41,12 @@ export default {
       loop.appendChild(child);
       node.appendChild(loop);
       node.appendChild(addLoopRow);
+      // Register nested component as Array
+      this.registerNestedVariable(
+        element.config.settings.varname,
+        element.config.settings.varname + '.index.',
+        nested
+      );
     },
   },
   mounted() {

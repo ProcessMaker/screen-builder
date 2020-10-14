@@ -23,7 +23,7 @@ export default {
         const config = Mustache.render(watcher.script_configuration, this.vdata);
         this.listenWatcher(watcher).then((response) => complete(response))
           .catch(error => exception(error));
-        window.ProcessMaker.apiClient.post(`/scripts/execute/${watcher.script_id}`, {
+        this.$dataProvider.postScript(watcher.script_id, {
           watcher: watcher.uid,
           data: input,
           config,

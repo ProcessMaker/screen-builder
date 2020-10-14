@@ -40,8 +40,7 @@ import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixi
 import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
-import { getUserDateFormat, getUserDateTimeFormat, getTimezone } from '@processmaker/vue-form-elements/src/dateUtils';
-import moment from 'moment';
+import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -55,33 +54,6 @@ const componentTypesConfigs = {
   date: 'getDateFormat',
   datetime: 'getDatetimeFormat',
   percentage: 'getPercentageFormat',
-};
-
-const defaultMask = {
-  date: ['##/##/####'],
-  dateTime: ['##/##/#### #:## SS', '##/##/#### ##:## SS'],
-};
-
-const masks = {
-  'MM/DD/YYYY': defaultMask,
-  'MM/DD/YYYY h:mm A': defaultMask,
-  'MM/DD/YYYY HH:mm': {
-    date: ['##/##/####'],
-    dateTime: ['##/##/#### ##:##'],
-  },
-  'DD/MM/YYYY': defaultMask,
-  'DD/MM/YYYY HH:mm': {
-    date: ['##/##/####'],
-    dateTime: ['##/##/#### ##:##'],
-  },
-  'YYYY/MM/DD': {
-    date: ['####/##/##'],
-    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
-  },
-  'YYYY/MM/DD HH:mm': {
-    date: ['####/##/##'],
-    dateTime: ['####/##/## ##:##', '####/##/## #:## SS', '####/##/## ##:## SS'],
-  },
 };
 
 export default {
@@ -114,15 +86,14 @@ export default {
       return value;
     },
     convertFromData(value) {
-      if (this.dataFormat === 'datetime') return moment(value).format(this.getUserDateTimeFormat());
-      if (this.dataFormat === 'date') return moment(value).format(this.getUserDateFormat());
       return value;
     },
     getMask() {
-      const format = this.dataFormat === 'date' ? this.getUserDateFormat() : this.getUserDateTimeFormat();
-      return typeof masks[format] === 'undefined'
-        ? defaultMask
-        : masks[format];
+      // Mask changed to ISO format for all the users
+      return {
+        date: ['####-##-##'],
+        dateTime: ['####-##-## ##:##'],
+      };
     },
   },
   computed: {
@@ -183,42 +154,23 @@ export default {
       };
     },
     dataType() {
-      if (this.dataFormat === 'password') {
-        return 'password';
+      switch (this.dataFormat) {
+        case 'int': return 'number';
+        case 'float': return 'number';
+        case 'email': return 'email';
+        case 'password': return 'password';
+        default: return 'text';
       }
-
-      return 'text';
     },
   },
   watch: {
     value(value) {
-      if (!value) {    
+      if (this.localValue !== value) {
         this.localValue = value;
-      } else {
-        let date;
-        switch (this.dataFormat) {
-          case 'date': 
-            date = moment(value, moment.ISO_8601, true).tz(getTimezone());
-            if (date.isValid()) {
-              this.localValue = date.format(getUserDateFormat());
-            }
-            break;
-          case 'datetime': 
-            date = moment(value, moment.ISO_8601, true).tz(getTimezone());
-            if (date.isValid()) {
-              this.localValue = date.format(getUserDateTimeFormat());
-            }
-            break;
-          default:
-            value !== this.localValue ? this.localValue = this.convertFromData(value) : null;
-            break;
-        }
-      }      
+      }
     },
     localValue(value) {
-      if (value == this.value) {
-        this.localValue = this.convertFromData(value);
-      } else {
+      if (value != this.value) {
         this.$emit('input', this.convertToData(value));
       }
     },
@@ -233,7 +185,7 @@ export default {
     };
   },
   mounted() {
-    if (this.value) {
+    if (this.value !== undefined) {
       this.localValue = this.value;
     }
   },
