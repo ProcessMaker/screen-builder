@@ -4,7 +4,7 @@
       <b-tabs>
         <b-tab active title="Form">
           <task
-            :taskId="task.id"
+            :initial-task-id="task.id"
             v-model="data"
             @submit="submit"
           />
