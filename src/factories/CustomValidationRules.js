@@ -1,0 +1,59 @@
+const Validator = require('validatorjs');
+import moment from 'moment-timezone';
+
+Validator.register('custom-same', function(val, req) {
+    let val1;
+    let val2 = val;
+    if (!req.includes('.')) {
+      val1 = this.validator._flattenObject(this.validator.input)[req];
+    } else {
+      val1 = req.split('.').reduce((obj,i)=>obj[i], this.validator.input);
+    }
+    console.log('here', this.validator.input, req, val2);
+  
+    if (val1 === val2) {
+      return true;
+    }
+  
+    return false;
+}, 'The :attribute and :custom-same fields must match.');
+  
+Validator.register('after', function(date, params) {
+    // checks if incoming 'params' is a date or a key reference.
+    let checkDate = moment(params);
+    
+    const inputDate = moment(date).toISOString();
+    const afterDate = moment(params).toISOString();
+
+    return inputDate > afterDate;
+}, 'The :attribute must be after :after.');
+
+Validator.register('after_or_equal', function(date, params) {
+    // checks if incoming 'params' is a date or a key reference.
+    let checkDate = moment(params);
+    
+    const inputDate = moment(date).toISOString();
+    const equalOrAfterDate = moment(params).toISOString();
+    
+    return inputDate >= equalOrAfterDate;
+}, 'The :attribute must be equal or after :after_or_equal.');
+
+Validator.register('before', function(date, params) {
+    // checks if incoming 'params' is a date or a key reference.
+    let checkDate = moment(params);
+    
+    const inputDate = moment(date).toISOString();
+    const beforeDate = moment(params).toISOString();
+    
+    return inputDate < beforeDate;
+}, 'The :attribute must be before :before.');
+
+Validator.register('before_or_equal', function(date, params) {
+    // checks if incoming 'params' is a date or a key reference.
+    let checkDate = moment(params);
+    
+    const inputDate = moment(date).toISOString();
+    const beforeDate = moment(params).toISOString();
+    
+    return inputDate <= beforeDate;
+}, 'The :attribute must be equal or before :before_or_equal.');
