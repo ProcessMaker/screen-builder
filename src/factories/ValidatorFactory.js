@@ -1,4 +1,3 @@
-import customValidationRules from './CustomValidationRules';
 const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {

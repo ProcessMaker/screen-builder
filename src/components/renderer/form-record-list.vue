@@ -5,7 +5,7 @@
         <h4>{{ label }}</h4>
       </div>
       <div class="col text-right">
-        <button class="btn btn-primary" v-if="editable && !selfReferenced" @click="showAddForm">
+        <button class="btn btn-primary" v-if="editable && !selfReferenced" @click="showAddForm" data-cy="add-row">
           {{ $t('Add') }}
         </button>
       </div>
@@ -29,10 +29,10 @@
         <template slot="actions" slot-scope="props">
           <div class="actions">
             <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')">
+              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')" data-cy="edit-row">
                 <i class="fas fa-edit"/>
               </button>
-              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')">
+              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')" data-cy="remove-row">
                 <i class="fas fa-trash-alt"/>
               </button>
             </div>
@@ -66,12 +66,13 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Add')"
       header-close-content="&times;"
+      data-cy="modal-add"
     >
       <vue-form-renderer
         :page="0"
         ref="addRenderer"
         v-model="addItemWithParent"
-        :config="[formConfigParent[form]]"
+        :config="[formConfig[form]]"
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
       />
@@ -86,12 +87,13 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Edit Record')"
       header-close-content="&times;"
+      data-cy="modal-edit"
     >
       <vue-form-renderer
         :page="0"
         ref="editRenderer"
         v-model="editItemWithParent"
-        :config="[formConfigParent[form]]"
+        :config="[formConfig[form]]"
         debug-context="Record List Edit"
       />
     </b-modal>
@@ -104,6 +106,7 @@
       :cancel-title="$t('Cancel')"
       :title="$t('Delete Record')"
       header-close-content="&times;"
+      data-cy="modal-remove"
     >
       <p>{{ $t('Are you sure you want to remove this record?') }}</p>
     </b-modal>
@@ -116,6 +119,7 @@
       :title="$t('Information form')"
       header-close-content="&times;"
       ok-only
+      data-cy="modal-not-assigned"
     >
       <p>{{ $t('The form to be displayed is not assigned.') }}</p>
     </b-modal>
@@ -130,7 +134,6 @@
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import Pagination from '@/components/Pagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import {ValidatorFactory} from '../../factories/ValidatorFactory';
 import _ from 'lodash';
 
 const jsonOptionsActionsColumn = {
@@ -174,42 +177,44 @@ export default {
         },
       },
       initFormValues: {},
-      parentReference: null,
-      formConfigParent: null,
     };
   },
   computed: {
+    debug() {
+      return {
+        perPageSelectEnabled: this.perPageSelectEnabled,
+        tablePagination: this.$refs.pagination &&  this.$refs.pagination.tablePagination,
+        perPageSelectEnabled2: this.$refs.pagination && this.$refs.pagination.perPageSelectEnabled,
+      };
+    },
+    parentObj() {
+      let parent = this.$parent;
+      while ('transientData' in parent.$props) {
+        parent = parent.$parent;
+      }
+      return parent;
+    },
     addItemWithParent: {
       get() {
-        let item = _.cloneDeep(this.addItem);
-        if (this.parentReference) {
-          item._parent = _.cloneDeep(this.parentReference.transientData);
-        }
-        return item
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.addItem._parent = this.$parent.transientData;
+        return this.addItem;
       },
       set(val) {
-        let { _parent, ...item } = val;
-        if (this.parentReference && _parent) {
-          this.$set(this.parentReference, 'transientData', _parent);
-        }
-        this.addItem = item;
-      }
+        //this.$set(this.parentObj, 'transientData', val._parent);
+        this.addItem = val;
+      },
     },
     editItemWithParent: {
       get() {
-        let item = _.cloneDeep(this.editItem);
-        if (this.parentReference) {
-          item._parent = _.cloneDeep(this.parentReference.transientData);
-        }
-        return item;
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.editItem._parent = this.$parent.transientData;
+        return this.editItem;
       },
       set(val) {
-        let { _parent, ...item } = val;
-        if (this.parentReference && _parent) {
-          this.$set(this.parentReference, 'transientData', _parent);
-        }
-        this.editItem = item;
-      }
+        //this.$set(this.parentObj, 'transientData', val._parent);
+        this.editItem = val;
+      },
     },
     dataManager() {
       if (this.$refs.vuetable) {
@@ -266,37 +271,17 @@ export default {
         }
       });
     },
-    formConfig: {
-      immediate: true,
-      handler(value) {
-        let value2 = null
-        if (this.$parent && this.$parent.$parent) {
-          value2 = this.getParentFormConfig(this.$parent.$parent);
-        }
-        this.formConfigParent = value2 || value;
-      }
-    }
   },
   methods: {
-    getParentFormConfig(parent) {
-      if (!parent) {
-        return null;
-      }
-      if (parent.$attrs && parent.$attrs.formConfig) {
-        return parent.$attrs.formConfig;
-      }
-
-      return this.getParentFormConfig(parent.$parent);
-    },
     setUploadDataNamePrefix(index = null) {
       let  rowId = null;
       if (index !== null  && this.editItem) {
         rowId = this.editItem.row_id;
       }
       else {
-          if (this.addItem) {
-              rowId = this.addItem.row_id;
-          }
+        if (this.addItem) {
+          rowId = this.addItem.row_id;
+        }
       }
 
       this.$root.$emit('set-upload-data-name', this, index, rowId);
@@ -364,9 +349,7 @@ export default {
       this.$refs.editModal.show();
     },
     edit(event) {
-      const validate = ValidatorFactory(this.formConfigParent[this.form].items, this.editItem);
-      this.errors = validate.getErrors();
-      if (_.size(this.errors) > 0) {
+      if (!this.$refs.editRenderer.isValid()) {
         event.preventDefault();
         return;
       }
@@ -382,16 +365,12 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
-      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      this.$set(this.addItem, 'row_id', uniqueId);
-      this.setUploadDataNamePrefix();
-
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
       }
-
       // Open form
+      this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
 
       // eslint-disable-next-line no-unused-vars
@@ -401,10 +380,7 @@ export default {
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      this.handleSubmit();
-    },
-    handleSubmit() {
-      if (!this.isValid()) {
+      if (!this.$refs.addRenderer.isValid()) {
         return;
       }
 
@@ -470,21 +446,6 @@ export default {
       // Emit the newly updated data model
       this.$emit('input', data);
     },
-    isValid() {
-      const validate = ValidatorFactory(this.formConfigParent[this.form].items, this.$refs.addRenderer.transientData);
-      this.errors = validate.getErrors();
-      return _.size(this.errors) === 0;
-    },
-    parentObj() {
-      let parent = this.$parent;
-      while ('transientData' in parent.$props) {
-        parent = parent.$parent;
-      }
-      return parent;
-    },
   },
-  mounted() {
-    this.parentReference = this.parentObj();
-  }
 };
 </script>

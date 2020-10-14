@@ -20,10 +20,21 @@ export default {
   methods: {
     loadScreenPackage() {
       const json = JSON.parse(this.uploadedJson);
-      this.$refs.builder.config.splice(0, Infinity, ...json.screens.config);
+      let screen;
+      if (json instanceof Array) {
+        screen = { config:json, computed: [], customCSS: null };
+      } else if (json && json.screens instanceof Array) {
+        screen = json.screens[1];
+        if (window.exampleScreens instanceof Array) {
+          window.exampleScreens = json.screens;
+        }
+      } else if (json && json.screens && json.screens.config) {
+        screen = json.screens;
+      }
+      this.$refs.builder.config.splice(0, Infinity, ...screen.config);
       this.$refs.builder.migrateConfig();
-      this.computed.splice(0, Infinity, ...json.screens.computed);
-      this.customCSS = json.screens.customCSS;
+      this.computed.splice(0, Infinity, ...screen.computed);
+      this.customCSS = screen.customCSS;
     },
     clearUpload() {
       this.uploadedJson = null;

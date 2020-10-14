@@ -3,11 +3,7 @@ describe('Form Image', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormImage]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
-    cy.get('[data-cy=inspector-image] input[type=file]').then((el) => {
-      cy.uploadFile('[data-cy=inspector-image] input[type=file]', 'avatar.jpeg', 'image/jpeg').then(() => {
-        el[0].dispatchEvent(new Event('change', { bubbles: true }));
-      });
-    });
+    cy.uploadFile('[data-cy=inspector-image] input[type=file]', 'avatar.jpeg', 'image/jpeg');
     cy.get('[data-cy=accordion-Design]').click();
     cy.get('[data-cy=inspector-height]').clear().type('80');
     cy.get('[data-cy=inspector-width]').clear().type('100');

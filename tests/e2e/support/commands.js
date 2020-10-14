@@ -14,10 +14,10 @@ Cypress.Commands.add('assertPreviewData', (expectedData) => {
   });
 });
 
-Cypress.Commands.add('setMultiselect', (selector, text) => {
+Cypress.Commands.add('setMultiselect', (selector, text, index = 0) => {
   cy.get(`${selector}`).click();
   cy.get(`${selector} input`).clear().type(text);
-  cy.get(`${selector} span:not(.multiselect__option--disabled) span:contains("${text}"):first`).click();
+  cy.get(`${selector} span:not(.multiselect__option--disabled) span:contains("${text}")`).eq(index).click();
 });
 
 Cypress.Commands.add('setVueComponentValue', (selector, value) => {
@@ -70,6 +70,7 @@ Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
         const dataTransfer = new win.DataTransfer();
         dataTransfer.items.add(testFile);
         el.files = dataTransfer.files;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
         return subject;
       });
     });
@@ -81,4 +82,68 @@ Cypress.Commands.add('assertComponentValue', (selector, expectedData) => {
     const data = div[0].__vue__.value;
     expect(data).to.eql(expectedData);
   });
+});
+
+/**
+ * Uploads a file to an input
+ * @memberOf Cypress.Chainable#
+ * @name uploadFile
+ * @function
+ * @param {String} filename - The screen filename to load
+ */
+Cypress.Commands.add('loadFromJson', (filename, index) => {
+  return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
+    content.screens.forEach(screen => {
+      cy.route(`/api/1.0/screens/${screen.id}`, JSON.stringify(screen));
+    });
+    if (index !== undefined) {
+      const screen = content.screens[index];
+      cy.setVueComponentProperty('#screen-builder-container', '$refs.builder.config', screen.config);
+    }
+  });
+});
+
+/**
+ * Uploads a file to an input
+ * @memberOf Cypress.Chainable#
+ * @name uploadFile
+ * @function
+ * @param {String} filename - The screen filename to load
+ */
+Cypress.Commands.add('mockComponent', (componentName) => {
+  return cy.get('#screen-builder-container').then((div) => {
+    div[0].__vue__.$root.constructor.component(componentName, {
+      template: `<div>MOCK(${componentName})</div>`,
+      data() {
+        return {};
+      },
+    });
+  });
+});
+
+Cypress.Commands.add('pickToday', { prevSubject: true }, (subject) => {
+  cy.get(subject).find('input').click();
+  cy.get(subject).find('.day.today').click();
+});
+
+Cypress.Commands.add('pickTodayWithTime', { prevSubject: true }, (subject, hour, minute, period='AM') => {
+  cy.get(subject).find('input').click();
+  cy.get(subject).find('.day.today').click();
+  cy.get(subject).find('[data-action="togglePicker"]').click();
+  cy.get(subject).find('[data-action="showHours"]').click();
+  cy.get(subject).find(`[data-action="selectHour"]:contains(${hour})`).click();
+  cy.get(subject).find('[data-action="showMinutes"]').click();
+  cy.get(subject).find(`[data-action="selectMinute"]:contains(${minute})`).click();
+  cy.get(subject).find('[data-action="togglePeriod"]').then(toggle => {
+    if (!toggle.is(`:contains(${period})`)) {
+      cy.get(toggle).click();
+    }
+  });
+  cy.get(subject).find('[data-action="close"]').click();
+});
+
+Cypress.Commands.add('selectOption', { prevSubject: true }, (subject, option) => {
+  cy.get(subject).click();
+  cy.get(subject).find('input').clear().type(option);
+  cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
 });

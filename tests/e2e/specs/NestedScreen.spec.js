@@ -1,4 +1,65 @@
 describe('Nested screen', () => {
+
+  beforeEach(() => {
+    cy.server();
+    cy.route('GET', '/api/1.0/screens/1', JSON.stringify({
+      id: 1,
+      screen_category_id: 1,
+      title: 'Sub screen example',
+      description: 'A sub screen example',
+      type: 'FORM',
+      config: [
+        {
+          name: 'Sub screen example',
+          items: [
+            {
+              'config': {
+                'icon': 'far fa-square',
+                'label': 'First name',
+                'name': 'firstname',
+                'placeholder': '',
+                'validation': '',
+                'helper': null,
+                'type': 'text',
+                'dataFormat': 'string',
+                'customCssSelector': 'first-name',
+              },
+              'inspector': [],
+              'component': 'FormInput',
+              'editor-component': 'FormInput',
+              'editor-control': 'FormInput',
+              'label': 'Line Input',
+              'value': '__vue_devtool_undefined__',
+            },
+            {
+              'config': {
+                'icon': 'far fa-square',
+                'label': 'Last name',
+                'name': 'lastname',
+                'placeholder': '',
+                'validation': '',
+                'helper': null,
+                'type': 'text',
+                'dataFormat': 'string',
+                'customCssSelector': '',
+              },
+              'inspector': [],
+              'component': 'FormInput',
+              'editor-component': 'FormInput',
+              'editor-control': 'FormInput',
+              'label': 'Line Input',
+              'value': '__vue_devtool_undefined__',
+            },
+          ],
+        },
+      ],
+      computed: [],
+      watchers: [],
+      custom_css: '[selector=\'first-name\'] label { font-style: italic; }',
+      status: 'ACTIVE',
+    }));
+  });
+
   //it('With a variable defined', () => {
   //  cy.visit('/');
   //  cy.get('[data-cy=controls-FormNestedScreen]').drag('[data-cy=screen-drop-zone]', 'bottom');

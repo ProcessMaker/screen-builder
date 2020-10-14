@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <component :is="component" :vdata="value" @submit="submit" />
+    <component :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
     <screen-renderer-error v-if="showErrors && building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
@@ -11,12 +11,18 @@ import Json2Vue from '../mixins/Json2Vue';
 import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
+import FileUpload from '../components/renderer/file-upload.vue';
+import FileDownload from '../components/renderer/file-download.vue';
+import FormRecordList from '../components/renderer/form-record-list.vue';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
 import { cloneDeep, isEqual } from 'lodash';
 
 Vue.use(VueFormElements);
 Vue.component('FormButton', FormButton);
+Vue.component('FileUpload', FileUpload);
+Vue.component('FileDownload', FileDownload);
+Vue.component('FormRecordList', FormRecordList);
 
 export default {
   components: { WatchersSynchronous, ScreenRendererError },
@@ -26,12 +32,6 @@ export default {
       currentDefinition: null,
       codigo: '',
       self: this,
-      building: {
-        show: false,
-        error: '',
-        component: '',
-        errors: [],
-      },
     };
   },
   mounted() {
@@ -75,6 +75,7 @@ export default {
   90% {
     transform: translateX(-0.375rem); }
   100% {
-    transform: translateX(0); }
+    transform: none;
+  }
 }
 </style>

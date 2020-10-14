@@ -9,6 +9,7 @@ import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import Vuetable from 'vuetable-2/src/components/Vuetable';
 import axios from 'axios';
+import TestComponents from '../tests/components';
 
 Vue.config.productionTip = false;
 
@@ -28,76 +29,90 @@ window.axios = axios.create({
   baseURL: '/api/1.0/',
 });
 
+window.exampleScreens = [
+  {
+    id: 1,
+    screen_category_id: 1,
+    title: 'Sub screen example',
+    description: 'A sub screen example',
+    type: 'FORM',
+    config: [
+      {
+        name: 'Sub screen example',
+        items: [
+          {
+            'config': {
+              'icon': 'far fa-square',
+              'label': 'First name',
+              'name': 'firstname',
+              'placeholder': '',
+              'validation': '',
+              'helper': null,
+              'type': 'text',
+              'dataFormat': 'string',
+              'customCssSelector': 'first-name',
+            },
+            'inspector': [],
+            'component': 'FormInput',
+            'editor-component': 'FormInput',
+            'editor-control': 'FormInput',
+            'label': 'Line Input',
+            'value': '__vue_devtool_undefined__',
+          },
+          {
+            'config': {
+              'icon': 'far fa-square',
+              'label': 'Last name',
+              'name': 'lastname',
+              'placeholder': '',
+              'validation': '',
+              'helper': null,
+              'type': 'text',
+              'dataFormat': 'string',
+              'customCssSelector': '',
+            },
+            'inspector': [],
+            'component': 'FormInput',
+            'editor-component': 'FormInput',
+            'editor-control': 'FormInput',
+            'label': 'Line Input',
+            'value': '__vue_devtool_undefined__',
+          },
+        ],
+      },
+    ],
+    computed: [],
+    watchers: [],
+    custom_css: '[selector=\'first-name\'] label { font-style: italic; }',
+    status: 'ACTIVE',
+  },
+];
 window.ProcessMaker = {
-  isStub: false,//true,
+  isStub: true,
   user: {
     id: 1,
     lang: 'en',
   },
   apiClient: {
+    create() { return this; },
+    defaults: {
+      headers: {
+        common: {
+          'X-CSRF-TOKEN': 'token',
+        },
+      },
+    },
     get(url) {
       return new Promise((resolve, reject) => {
-        const exampleScreen = {
-          id: 1,
-          screen_category_id: 1,
-          title: 'Sub screen example',
-          description: 'A sub screen example',
-          type: 'FORM',
-          config: [
-            {
-              name: 'Sub screen example',
-              items: [
-                {
-                  'config': {
-                    'icon': 'far fa-square',
-                    'label': 'First name',
-                    'name': 'firstname',
-                    'placeholder': '',
-                    'validation': '',
-                    'helper': null,
-                    'type': 'text',
-                    'dataFormat': 'string',
-                    'customCssSelector': 'first-name',
-                  },
-                  'inspector': [],
-                  'component': 'FormInput',
-                  'editor-component': 'FormInput',
-                  'editor-control': 'FormInput',
-                  'label': 'Line Input',
-                  'value': '__vue_devtool_undefined__',
-                },
-                {
-                  'config': {
-                    'icon': 'far fa-square',
-                    'label': 'Last name',
-                    'name': 'lastname',
-                    'placeholder': '',
-                    'validation': '',
-                    'helper': null,
-                    'type': 'text',
-                    'dataFormat': 'string',
-                    'customCssSelector': '',
-                  },
-                  'inspector': [],
-                  'component': 'FormInput',
-                  'editor-component': 'FormInput',
-                  'editor-control': 'FormInput',
-                  'label': 'Line Input',
-                  'value': '__vue_devtool_undefined__',
-                },
-              ],
-            },
-          ],
-          computed: [],
-          watchers: [],
-          custom_css: '[selector=\'first-name\'] label { font-style: italic; }',
-          status: 'ACTIVE',
-        };
-        if (url === 'screens/1') {
-          resolve({data: exampleScreen});
-        } else if (url.substr(0, 7) === 'screens') {
+        let screen;
+        if (url.substr(0, 8) === 'screens/') {
+          screen = window.exampleScreens.find(s => s.id == url.substr(8));
+        }
+        if (url.substr(0, 8) === 'screens/' && screen) {
+          resolve({data: screen});
+        } else if (url === 'screens') {
           resolve({ data: {
-            data: [exampleScreen],
+            data: window.exampleScreens,
           }});
         } else if (url === '/data_sources/1') {
           resolve({
@@ -147,6 +162,13 @@ window.ProcessMaker = {
         }
       });
     },
+    put() {
+      return new Promise((resolve) => {
+        resolve({data: {
+          response: [],
+        }});
+      });
+    },
   },
   EventBus: new Vue(),
   confirmModal(title, message, variant, callback) {
@@ -180,10 +202,28 @@ window.Echo = {
       stopListening() {
         window.Echo.listeners.splice(0);
       },
+      listen(event, callback) {
+        event;
+        callback;
+      },
     };
   },
 };
-new Vue({
-  store,
-  render: h => h(App),
-}).$mount('#app');
+
+const scenario = (window.location.search.substr(1).match(/\w+=(\w+)/) || [])[1];
+if (scenario) {
+  if (!TestComponents[scenario]) {
+    // eslint-disable-next-line no-console
+    console.error(`Not found tests/components/${scenario}.vue`);
+  } else {
+    new Vue({
+      store,
+      render: h => h(TestComponents[scenario]),
+    }).$mount('#app');
+  }
+} else {
+  new Vue({
+    store,
+    render: h => h(App),
+  }).$mount('#app');
+}

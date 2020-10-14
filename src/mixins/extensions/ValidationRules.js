@@ -1,68 +1,7 @@
 import { set, get } from 'lodash';
 import { validationMixin } from 'vuelidate';
-import {
-  required,
-  requiredIf,
-  requiredUnless,
-  minLength,
-  maxLength,
-  minValue,
-  maxValue,
-  between,
-  alpha,
-  alphaNum,
-  numeric,
-  integer,
-  decimal,
-  email,
-  ipAddress,
-  macAddress,
-  sameAs,
-  url,
-  not,
-  or,
-  and,
-} from 'vuelidate/lib/validators';
+import { validators } from '../ValidationRules';
 
-const validators = {
-  required,
-  requiredIf,
-  requiredUnless,
-  minLength,
-  maxLength,
-  minValue,
-  maxValue,
-  between,
-  alpha,
-  alphaNum,
-  numeric,
-  integer,
-  decimal,
-  email,
-  ipAddress,
-  macAddress,
-  sameAs,
-  same: sameAs,
-  url,
-  not,
-  or,
-  and,
-};
-function locatorABParam(a, b) {
-  return function() {
-    return this.getValue(a, this) == b;
-  };
-}
-function locatorAParam(a) {
-  return function() {
-    return this.getValue(a, this);
-  };
-}
-const validationsWithLocator = {
-  requiredIf: locatorABParam,
-  requiredUnless: locatorABParam,
-  sameAs: locatorAParam,
-};
 export default {
   mounted() {
     this.extensions.push({
@@ -74,12 +13,17 @@ export default {
             element.config.validation.forEach((validation) => {
               const rule = this.camelCase(validation.value.split(':')[0]);
               let validationFn = validators[rule];
+              if (!validationFn) {
+                // eslint-disable-next-line no-console
+                console.error(`Undefined validation rule "${rule}"`);
+                return;
+              }
               if (validation.configs instanceof Array) {
                 const params = [];
                 validation.configs.forEach(cnf => {
                   params.push(cnf.value);
                 });
-                validationFn = validationsWithLocator[validationFn] && validationFn(validationsWithLocator[validationFn](...params)) || validationFn(...params);
+                validationFn = validationFn(...params);
               }
               validationRule[rule] = validationFn;
             });

@@ -17,8 +17,6 @@
 </template>
 
 <script>
-import _ from 'lodash';
-
 const globalObject = typeof window === 'undefined'
   ? global
   : window;
@@ -49,10 +47,6 @@ export default {
     };
   },
   computed: {
-    endpoint() {
-      const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', null);
-      return endpoint ? endpoint : 'screens';
-    },
     validatedConfig() {
       return this.config && this.config[0] ? this.config : defaultConfig;
     },
@@ -102,8 +96,7 @@ export default {
       this.screenTitle = null;
 
       if (id) {
-        window.ProcessMaker.apiClient
-          .get(this.endpoint + '/' + id)
+        this.$dataProvider.getScreen(id)
           .then(response => {
             this.config = response.data.config;
             this.hideSubmitButtons(this.config);
