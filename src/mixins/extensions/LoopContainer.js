@@ -52,7 +52,7 @@ export default {
           this.loadFormLoopItems(params);
         }
       },
-      onbuild(screen) {
+      onbuild({ screen }) {
         screen.mixins.push(LoopControl);
         this.loops.forEach(({variable, element}) => {
           this.addMounted(screen, `this.initLoopVariable(${JSON.stringify(variable)}, ${JSON.stringify(element.config)});`);

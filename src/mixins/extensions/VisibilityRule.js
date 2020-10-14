@@ -8,7 +8,7 @@ export default {
           wrapper.setAttribute('v-show', `visibilityRuleIsVisible(${JSON.stringify(element.config.conditionalHide)})`);
         }
       },
-      onbuild(screen) {
+      onbuild({ screen }) {
         screen.mixins.push(VisibilityRule);
       },
     });

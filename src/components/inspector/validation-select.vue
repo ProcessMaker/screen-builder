@@ -199,7 +199,7 @@ export default {
         },
         {
           value: '',
-          field: 'same:',
+          field: 'custom-same:',
           content: this.$t('Same'),
           helper: this.$t('The given field must match the field under validation.'),
           visible: true,

@@ -1,15 +1,14 @@
 <template>
   <div :class="containerClass">
     <custom-css>{{ customCssWrapped }}</custom-css>
-    <screen-renderer :value="data" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" />
+    <screen-renderer :value="data" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" />
   </div>
 </template>
 
 <script>
 import Vue from 'vue';
-import * as VueDeepSet from 'vue-deepset';
 import _ from 'lodash';
-import CustomCSS from './custom-css';
+import CustomCss from './custom-css';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import DataProvider from '../DataProvider';
@@ -19,19 +18,12 @@ import { ValidatorFactory } from '../factories/ValidatorFactory';
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
 
-Vue.component('custom-css', {
-  render(createElement) {
-    return createElement('style', this.$slots.default);
-  },
-});
-
-Vue.use(VueDeepSet);
 Vue.use(DataProvider);
-
+ 
 export default {
   name: 'VueFormRenderer',
-  components: { CustomCSS },
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors'],
+  components: { CustomCss },
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
     event: 'update',
@@ -82,6 +74,7 @@ export default {
           };
         },
       },
+      scrollable: null,
     };
   },
   watch: {
@@ -152,8 +145,8 @@ export default {
       return child.errors();
     },
     isValid() {
-      const items = getItemsFromConfig(this.config);
-      let config = _.cloneDeep(this.config);
+      const items = getItemsFromConfig(this.definition.config);
+      let config = _.cloneDeep(this.definition.config);
 
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
