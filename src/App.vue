@@ -161,7 +161,7 @@
     </b-card>
     <!-- Modals -->
     <computed-properties v-model="computed" ref="computedProperties"/>
-    <custom-CSS v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
+    <custom-css v-model="customCSS" ref="customCSS" :cssErrors="cssErrors"/>
     <watchers-popup v-model="watchers" ref="watchersPopup"/>
     <b-modal id="preview-config" size="xl" title="Screen Config JSON Preview" header-close-content="&times;">
       <monaco-editor @editorDidMount="editorDidMount" style="height: 500px" :options="monacoOptions" v-model="previewConfig" language="json"/>
@@ -173,7 +173,7 @@
 require('bootstrap');
 import ComputedProperties from './components/computed-properties.vue';
 import WatchersPopup from './components/watchers-popup.vue';
-import CustomCSS from './components/custom-css.vue';
+import CustomCss from './components/custom-css.vue';
 import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
 import VueJsonPretty from 'vue-json-pretty';
@@ -273,7 +273,7 @@ export default {
   },
   components: {
     ComputedProperties,
-    CustomCSS,
+    CustomCss,
     VueFormBuilder,
     VueFormRenderer,
     VueJsonPretty,

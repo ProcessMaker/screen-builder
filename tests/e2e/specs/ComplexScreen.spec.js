@@ -6,6 +6,7 @@ describe('Complex screen', () => {
   today.setUTCMinutes(0);
   today.setUTCSeconds(0);
   today.setUTCMilliseconds(0);
+  const today_date = moment(today).format('YYYY-MM-DD');
 
   const now = new Date();
   now.setUTCHours(8);
@@ -84,7 +85,7 @@ describe('Complex screen', () => {
       'form_text_area_1': 'Hello!',
       'form_select_list_1': 'a',
       'form_checkbox_1': true,
-      'form_date_picker_1': today.toISOString(),
+      'form_date_picker_1': today_date,
       'form_date_picker_2': now.toISOString(),
       'loop': [
         {
@@ -175,7 +176,7 @@ describe('Complex screen', () => {
       'form_text_area_1': 'Hello!',
       'form_select_list_1': 'a',
       'form_checkbox_1': true,
-      'form_date_picker_1': today.toISOString(),
+      'form_date_picker_1': today_date,
       'form_date_picker_2': now.toISOString(),
       'loop': [
         {
@@ -207,7 +208,7 @@ describe('Complex screen', () => {
       'form_checkbox_4': true,
       'form_date_picker_8': now.toISOString(),
       'form_input_4': 'form input 4',
-      'form_date_picker_5': today.toISOString(),
+      'form_date_picker_5': today_date,
       'form_text_area_3': 'form text area 3',
       'form_date_picker_6': now.toISOString(),
       'form_select_list_3': null,
@@ -318,7 +319,7 @@ describe('Complex screen', () => {
       'form_text_area_1': 'Hello!',
       'form_select_list_1': 'a',
       'form_checkbox_1': true,
-      'form_date_picker_1': today.toISOString(),
+      'form_date_picker_1': today_date,
       'form_date_picker_2': now.toISOString(),
       'loop': [
         {
@@ -328,7 +329,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -345,7 +346,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -362,7 +363,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -377,7 +378,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -404,7 +405,7 @@ describe('Complex screen', () => {
       'form_checkbox_4': true,
       'form_date_picker_8': now.toISOString(),
       'form_input_4': 'form input 4',
-      'form_date_picker_5': today.toISOString(),
+      'form_date_picker_5': today_date,
       'form_text_area_3': 'form text area 3',
       'form_date_picker_6': now.toISOString(),
       'form_select_list_3': null,
@@ -463,7 +464,7 @@ describe('Complex screen', () => {
       'form_text_area_1': 'Hello!',
       'form_select_list_1': 'b',
       'form_checkbox_1': false,
-      'form_date_picker_1': today.toISOString(),
+      'form_date_picker_1': today_date,
       'form_date_picker_2': now.toISOString(),
       'loop': [
         {
@@ -473,7 +474,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -491,7 +492,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -509,7 +510,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -525,7 +526,7 @@ describe('Complex screen', () => {
           'form_text_area_2': 'form text area 2',
           'form_select_list_2': '2',
           'form_checkbox_2': false,
-          'form_date_picker_3': today.toISOString(),
+          'form_date_picker_3': today_date,
           'form_date_picker_4': now.toISOString(),
           'form_record_list_2': [
             {
@@ -548,10 +549,6 @@ describe('Complex screen', () => {
       'page1': 'avatar.jpeg',
       'form_input_5': '123.45',
       'form_select_list_4': [
-        'f',
-        'o',
-        'o',
-        'b',
         'c',
       ],
       'form_date_picker_7': now.toISOString(),
@@ -561,7 +558,7 @@ describe('Complex screen', () => {
       'form_checkbox_4': true,
       'form_date_picker_8': now.toISOString(),
       'form_input_4': 4.21,
-      'form_date_picker_5': today.toISOString(),
+      'form_date_picker_5': today_date,
       'form_text_area_3': 'form text area 3',
       'form_date_picker_6': now.toISOString(),
       'form_select_list_3': 'b',
