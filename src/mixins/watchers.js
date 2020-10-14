@@ -23,7 +23,8 @@ export default {
         const config = Mustache.render(watcher.script_configuration, this.vdata);
         this.listenWatcher(watcher).then((response) => complete(response))
           .catch(error => exception(error));
-        this.$dataProvider.postScript(watcher.script_id, {
+        const scriptId = watcher.script_key || watcher.script_id;
+        this.$dataProvider.postScript(scriptId, {
           watcher: watcher.uid,
           data: input,
           config,

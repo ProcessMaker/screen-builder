@@ -32,6 +32,7 @@ export default {
       currentDefinition: null,
       codigo: '',
       self: this,
+      component: null,
     };
   },
   mounted() {

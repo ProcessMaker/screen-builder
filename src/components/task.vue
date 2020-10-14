@@ -221,6 +221,8 @@ export default {
           this.task = response.data;
           this.prepareTask();
           this.checkTaskStatus();
+        }).catch(() => {
+          this.hasErrors = true;
         });
     },
     prepareTask() {

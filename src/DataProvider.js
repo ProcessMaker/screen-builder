@@ -63,11 +63,7 @@ export default {
   },
   
   postScript(id, params) {
-    let endpoint = _.get(
-      window,
-      'PM4ConfigOverrides.postScriptEndpoint',
-      '/scripts/execute/{id}'
-    );
+    const endpoint = '/scripts/execute/{id}';
 
     const authParams = _.get(
       window,
