@@ -24,11 +24,29 @@ export default {
         this.listenWatcher(watcher).then((response) => complete(response))
           .catch(error => exception(error));
         const scriptId = watcher.script_key || watcher.script_id;
-        this.$dataProvider.postScript(scriptId, {
-          watcher: watcher.uid,
-          data: input,
-          config,
-        });
+
+        const configObj = JSON.parse(config);
+        if ('dataSource' in configObj) {
+          // This watcher uses a data source
+          const id = configObj.dataSource;
+
+          const postParams = { config: { endpoint: configObj.endpoint } };
+          this.$dataProvider.executeDataSource(id, postParams).then(result => {
+            complete(result.data);
+          }).catch(error => {
+            exception(error);
+          });
+
+        } else {
+          // This watcher uses a script
+          this.$dataProvider.postScript(scriptId, {
+            watcher: watcher.uid,
+            data: input,
+            config,
+          });
+        }
+
+
       }).then((response) => {
         this.setValue(watcher.output_variable, response);
         // hide watcher's popup

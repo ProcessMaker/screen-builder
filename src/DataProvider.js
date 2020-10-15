@@ -61,24 +61,35 @@ export default {
     const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
     return this.get(endpoint + `/${id}${query}`);
   },
-  
-  postScript(id, params) {
-    const endpoint = '/scripts/execute/{id}';
 
+  query(existing = {}) {
     const authParams = _.get(
       window,
       'PM4ConfigOverrides.authParams',
-      null
+      {}
     );
+    
+    let params = Object.assign({}, authParams, existing);
+    let string = (new URLSearchParams(params)).toString();
 
-    let query = '';
-    if (authParams) {
-      query = '?' + (new URLSearchParams(authParams)).toString();
-    }
+    return (string !== '') ? `?${string}` : '';
+  },
+  
+  postScript(id, params) {
+    const endpoint = '/scripts/execute/' + id;
 
     return this.post(
-      endpoint.replace('{id}', id) + query,
+      endpoint + this.query(),
       params
+    );
+  },
+
+  executeDataSource(id, postParams, queryParams = {}) {
+    const endpoint = '/requests/data_sources/' + id;
+    
+    return this.post(
+      endpoint + this.query(queryParams),
+      postParams
     );
   },
 };
