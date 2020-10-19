@@ -64,7 +64,10 @@
 
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
-          <b-col class="overflow-auto h-100" data-cy="preview-content">
+          <b-col class="overflow-auto h-100" data-cy="preview-content" >
+            <!-- SHOW CONVERSTATIONAL FORM -->
+            <div id="cf-context"></div>
+            
             <vue-form-renderer ref="renderer"
               :key="rendererKey"
               v-model="previewData"
@@ -76,7 +79,7 @@
               :watchers="watchers"
               v-on:css-errors="cssErrors = $event"
               :show-errors="true"
-            />
+            /> 
           </b-col>
 
           <b-col class="overflow-hidden h-100 preview-inspector p-0">
@@ -256,6 +259,9 @@ export default {
         lineNumbers: 'off',
         minimap: false,
       },
+      // CONVERSATIONAL FORM CONFIGS
+      cf: null,
+      cfJson: [],
     };
   },
   components: {
@@ -295,9 +301,108 @@ export default {
       },
     },
     displayBuilder() {
+      this.cfJson = [];
       return this.mode === 'editor';
     },
     displayPreview() {
+      if (this.mode === 'preview') {
+        this.getPageItems();
+        // let json = [
+        //   {
+        //     "tag": "input",
+        //     "name": "name",
+        //     "type": "text",
+        //     "cf-questions": "What is your name?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "age",
+        //     "type": "number",
+        //     "cf-questions": "How old are you?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "email",
+        //     "type": "email",
+        //     "cf-questions": "What is your email address?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "favorite-color",
+        //     "cf-label": "red",
+        //     "type": "radio",
+        //     "cf-questions": "What is your favorite color?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "favorite-color",
+        //     "cf-label": "blue",
+        //     "type": "radio",
+        //     "cf-questions": "What is your favorite color?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "favorite-food",
+        //     "cf-label": "burgers",
+        //     "type": "checkbox",
+        //     "cf-questions": "What is your favorite food?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "favorite-food",
+        //     "cf-label": "pizza",
+        //     "type": "checkbox",
+        //     "cf-questions": "What is your favorite food?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "favorite-food",
+        //     "cf-label": "sushi",
+        //     "type": "checkbox",
+        //     "cf-questions": "What is your favorite food?"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "comments",
+        //     "type": "textarea",
+        //     "cf-questions": "Additional Comments"
+        //   },
+        //   {
+        //     "tag": "input",
+        //     "name": "birthday",
+        //     "type": "date",
+        //     "cf-questions": "When is your birthday?"
+        //   },
+        // ];
+        // this.cf = window.conversationalform;
+        // let dispatcher = new this.cf.EventDispatcher();
+        // dispatcher.addEventListener(this.cf.UserInputEvents.SUBMIT, function(event) {
+        //   console.log('SUBMIT', event);
+        //   let dataKey = event.detail.tag.name;
+        //   let value = event.detail.text;
+        //   // this.previewData[dataKey] = value;
+        //   console.log('PREVIEW DATA', this.previewData);
+        //   console.log('previewInput', this.previewInput);
+        //   console.log('previewInputValid', this.previewInputValid);
+        //   console.log('previewConfig', this.previewConfig);
+        // }, false);
+
+        this.cf = window.conversationalform.ConversationalForm.startTheConversation({
+          tags: this.cfJson, 
+          options: {
+            preventAutoFocus: false,
+            submitCallback: this.submitCallback,
+            robotImage: 'https://media-exp1.licdn.com/dms/image/C560BAQEg2fKb8L3N3A/company-logo_200_200/0?e=2159024400&v=beta&t=aDopNffuyU7AuJ81-0EPC1PMdOrZ_PBBfex-h8qTqWk',
+            userImage: 'https://e7.pngegg.com/pngimages/384/158/png-clipart-person-logo-computer-icons-customer-service-favicon-desktop-icon-customers-drawing-miscellaneous-blue.png',
+            // showProgressBar: true,
+            context: document.getElementById('cf-context'),
+            // eventDispatcher: dispatcher
+          },
+          
+        });
+
+        
+      }
       return this.mode === 'preview';
     },
     allErrors() {
@@ -447,6 +552,103 @@ export default {
       // Add it to the form builder
       this.$refs.builder.addControl(control, builderComponent, builderBinding);
     },
+    // CONVERSTATIONAL FORM CALLBACK
+    submitCallback() {
+      const formData = this.cf.getFormData(true);
+      this.previewData  = formData;
+      this.cf.addRobotChatResponse("Thank you! We will get in touch with you shortly!");
+      // this.cf.remove();
+      
+    },
+    getPageItems() {
+      // MAP SCREENBUILDER ELEMENTS
+      this.config.forEach(config => {
+        if (config.items) {
+          config.items.forEach(item => {
+            let json = {};
+            let type = item.type;
+            let tag = null;
+            let itemConfig = item.config;
+            let name = itemConfig.name;
+            
+            // itemConfig.validation.forEach(validation => {
+            //   if (validation.value == 'required') {
+            //     required = true;
+            //   }
+            // });
+            if (item.component == "FormInput" || item.component == "FormSelectList") {
+              tag = 'input';
+            }
+
+            if (itemConfig.type == 'text')
+            {
+              switch (itemConfig.dataFormat) {
+                case 'string': 
+                  type = 'text';
+                  break;
+                case 'int' : 
+                  type = 'number';
+                  break;
+              }
+            } else if (type == undefined ) {
+              type = 'radio';
+            }
+
+            if (itemConfig.options && itemConfig.options.renderAs == 'checkbox')  {
+                let jsonChild = [];
+                itemConfig.options.optionsList.forEach(option => {
+                  const child = {
+                    "tag": "option",
+                    "cf-label": option.content,
+                    "value" : option.value
+                  }
+                  jsonChild.push(child);
+                });
+                json = {
+                  "type" : "radio",
+                  "tag" : "select",
+                  "cf-questions" : itemConfig['cf-questions'],
+                  "isMultiChoice": itemConfig.options.allowMultiSelect,
+                  "children": jsonChild,
+                  "name" : itemConfig.name
+                }
+              // let name = itemConfig.name;
+              // switch (itemConfig.options.allowMultiSelect) {
+              //   case false:
+              //     type = 'radio';
+              //     break;
+              //   case true:
+              //     type = 'checkbox';
+              //     break;
+              // }
+
+              // itemConfig.options.optionsList.forEach(option => {
+              //   json = {
+              //     "tag" : "input",
+              //     "type": type,
+              //     "name" : name,
+              //     "value": option.value,
+              //     "cf-label" : option.content,
+              //     "cf-questions": itemConfig['cf-questions']
+              //   }
+              //   this.cfJson.push(json);
+              // });
+            } else {
+              json = {
+                "type": type,
+                "tag":  tag,
+                "name": itemConfig.name,
+                "cf-questions": itemConfig['cf-questions'],
+              }
+            }
+
+            
+            this.cfJson.push(json);
+          });
+          console.log('cfjson', this.cfJson);
+        }
+      });
+    }
   },
 };
 </script>
@@ -506,5 +708,9 @@ export default {
 
     .modal-backdrop {
       opacity: 0.5;
+    }
+
+    #cf-context {
+      height: 100%;
     }
 </style>

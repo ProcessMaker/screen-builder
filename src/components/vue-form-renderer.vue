@@ -1,4 +1,10 @@
 <template>
+  <!-- <div>
+    <form id="form" cf-form>
+      <input type="text" name="name" cf-questions="what is your name?" />
+    </form>
+    <div id="cf-context" role="cf-context" cf-context></div>
+  </div> -->
   <div :class="containerClass">
     <custom-css>{{ customCssWrapped }}</custom-css>
     <screen-renderer :value="data" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" />
@@ -125,8 +131,35 @@ export default {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
     this.scrollable = Scrollparent(this.$el);
+    // HARDCODED DEMO
+    // let json = [
+    //   {
+    //     "tag": "input",
+    //     "name": "name",
+    //     "type": "text",
+    //     "cf-questions": "What is your name?"
+    //   },
+    //   {
+    //     "tag": "input",
+    //     "name": "age",
+    //     "type": "text",
+    //     "cf-questions": "How old are you?"
+    //   }
+    // ];
+    // this.cf = window.conversationalform.ConversationalForm.startTheConversation({
+    //   tags:json, 
+    //   options: {
+    //     preventAutoFocus: false,
+    //     submitCallback: this.submitCallback
+    //   } 
+    // });
   },
   methods: {
+    submitCallback() {
+      let formDataSerialized = this.cf.getFormData(true);
+      console.log('FormData, obj:', formDataSerialized);
+      this.cf.addRobotChatResponse("You are done.");
+    },
     checkForRecordList(items, config) {
       items.forEach(item => {
         if (item.items) {
@@ -232,3 +265,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  /* #cf-context { 
+    width: 100vw; 
+    height: 100vh; 
+  }  */
+</style>

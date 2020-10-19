@@ -32,6 +32,7 @@ import {
   disabledProperty,
   defaultValueProperty,
   buttonTypeEvent,
+  conversationalFormConfig,
 } from './form-control-common-properties';
 
 export default [
@@ -106,6 +107,7 @@ export default [
         colorProperty,
         bgcolorProperty,
         defaultValueProperty,
+        conversationalFormConfig,
       ],
     },
   },
@@ -212,6 +214,7 @@ export default [
         colorProperty,
         bgcolorProperty,
         defaultValueProperty,
+        conversationalFormConfig,
       ],
     },
   },

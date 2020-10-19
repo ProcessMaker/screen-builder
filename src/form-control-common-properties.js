@@ -242,3 +242,13 @@ export const buttonTypeEvent = {
     ],
   },
 };
+
+
+export const conversationalFormConfig = {
+  type: 'FormInput',
+  field: 'cf-questions',
+  config: {
+    label: 'Question to ask',
+    helper: '',
+  },
+};
