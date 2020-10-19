@@ -17,9 +17,9 @@
         <div v-else>
           <component
             :is="renderComponent"
-            :process-id="task.process_id"
-            :instance-id="task.process_request_id"
-            :token-id="task.id"
+            :process-id="processId"
+            :instance-id="requestId"
+            :token-id="taskId"
             :screen="screen.config"
             :csrf-token="csrf_token"
             :computed="screen.computed"
@@ -62,7 +62,9 @@ export default {
     initialTaskId: { type: Number, default: null },
     initialScreenId: { type: Number, default: null },
     initialRequestId: { type: Number, default: null },
+    initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
+    initialRenderComponent: { type: String, default: 'task-screen' },
     userId: { type: Number, default: null },
     csrf_token: { type: String, default: null },
     value: { type: Object, default: () => {} },
@@ -83,7 +85,7 @@ export default {
       disabled: false,
       socketListeners: [],
       requestData: {},
-      renderComponent: 'task-screen',
+      renderComponent: null,
       reloadInProgress: false,
       hasErrors: false,
     };
@@ -120,6 +122,13 @@ export default {
     initialNodeId: {
       handler() {
         this.nodeId = this.initialNodeId;
+      },
+      immediate: true,
+    },
+    
+    initialRenderComponent: {
+      handler() {
+        this.renderComponent = this.initialRenderComponent;
       },
       immediate: true,
     },

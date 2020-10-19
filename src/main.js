@@ -78,6 +78,25 @@ window.exampleScreens = [
             'label': 'Line Input',
             'value': '__vue_devtool_undefined__',
           },
+          {
+            'config': {
+              'icon': 'far fa-square',
+              'label': 'Age',
+              'name': 'age',
+              'placeholder': '',
+              'validation': '',
+              'helper': null,
+              'type': 'text',
+              'dataFormat': 'string',
+              'customCssSelector': '',
+            },
+            'inspector': [],
+            'component': 'FormInput',
+            'editor-component': 'FormInput',
+            'editor-control': 'FormInput',
+            'label': 'Line Input',
+            'value': '__vue_devtool_undefined__',
+          },
         ],
       },
     ],
@@ -104,12 +123,14 @@ window.ProcessMaker = {
     },
     get(url) {
       return new Promise((resolve, reject) => {
-        let screen;
-        if (url.substr(0, 8) === 'screens/') {
-          screen = window.exampleScreens.find(s => s.id == url.substr(8));
-        }
-        if (url.substr(0, 8) === 'screens/' && screen) {
-          resolve({data: screen});
+        const screenMatch = url.match(/\/?screens\/(\d+)/);
+        if (screenMatch) {
+          const screen = window.exampleScreens.find(s => s.id == screenMatch[1]);
+          if (screen) {
+            resolve({data: screen});
+          } else {
+            reject('not found');
+          }
         } else if (url === 'screens') {
           resolve({ data: {
             data: window.exampleScreens,
