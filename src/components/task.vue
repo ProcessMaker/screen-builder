@@ -14,7 +14,7 @@
             @submit="submit"
           />
         </div>
-        <div v-else>
+        <div v-else-if="renderComponent">
           <component
             :is="renderComponent"
             :process-id="processId"
@@ -64,7 +64,6 @@ export default {
     initialRequestId: { type: Number, default: null },
     initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
-    initialRenderComponent: { type: String, default: 'task-screen' },
     userId: { type: Number, default: null },
     csrf_token: { type: String, default: null },
     value: { type: Object, default: () => {} },
@@ -85,7 +84,6 @@ export default {
       disabled: false,
       socketListeners: [],
       requestData: {},
-      renderComponent: null,
       reloadInProgress: false,
       hasErrors: false,
     };
@@ -122,13 +120,6 @@ export default {
     initialNodeId: {
       handler() {
         this.nodeId = this.initialNodeId;
-      },
-      immediate: true,
-    },
-    
-    initialRenderComponent: {
-      handler() {
-        this.renderComponent = this.initialRenderComponent;
       },
       immediate: true,
     },
@@ -178,6 +169,19 @@ export default {
     },
   },
   computed: {
+    renderComponent() {
+      if (!this.screen) {
+        return null;
+      }
+
+      if (this.screen.renderComponent) {
+        return screen.renderComponent;
+      }
+
+      if (this.screen.type === 'CONVERSATIONAL') {
+        return 'ConversationalForm';
+      }
+    },
     shouldAddSubmitButton() {
       if (!this.task) {
         return false;
@@ -260,7 +264,6 @@ export default {
         this.closeTask();
       } else {
         this.screen = this.task.screen;
-        this.renderComponent = this.task.component;
       }
     },
     closeTask() {
