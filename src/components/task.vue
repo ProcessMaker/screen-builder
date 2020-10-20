@@ -26,6 +26,7 @@
             :custom-css="screen.custom_css"
             :watchers="screen.watchers"
             :data="requestData"
+            @submit="submit"
           />
         </div>
       </div>
@@ -77,6 +78,7 @@ export default {
       requestId: null,
       screen: null,
       screenId: null,
+      renderComponent: 'task-screen',
 
       processId: null,
       nodeId: null,
@@ -126,7 +128,7 @@ export default {
     
     screenId: {
       handler() {
-        this.screen = null;
+        // Note: removed setting screen to null here
         if (this.screenId) {
           this.loadScreen(this.screenId);
         }
@@ -167,21 +169,29 @@ export default {
       },
       immediate: true,
     },
+    
+    screen: {
+      handler() {
+        if (!this.screen) {
+          return;
+        }
+
+        if (this.screen.renderComponent) {
+          this.renderComponet = screen.renderComponent;
+        }
+
+        if (this.screen.type === 'CONVERSATIONAL') {
+          this.renderComponent = 'ConversationalForm';
+        }
+
+        // Otherwise, keep using the previous renderComponent
+        // This means a conversational form could render a
+        // display screen, for example.
+      },
+    },
+
   },
   computed: {
-    renderComponent() {
-      if (!this.screen) {
-        return null;
-      }
-
-      if (this.screen.renderComponent) {
-        return screen.renderComponent;
-      }
-
-      if (this.screen.type === 'CONVERSATIONAL') {
-        return 'ConversationalForm';
-      }
-    },
     shouldAddSubmitButton() {
       if (!this.task) {
         return false;
@@ -303,12 +313,21 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    submit() {
+    submit(formData = null) {
       //single click
       if (this.disabled) {
         return;
       }
       this.disabled = true;
+
+      if (formData) {
+        // custom render components like conversational forms
+        // can send data with the submit event
+        this.onUpdate(
+          Object.assign({}, this.requestData, formData)
+        );
+      }
+
       this.$emit('submit', this.task);
       this.$nextTick(() => {
         this.disabled = false;
@@ -317,7 +336,7 @@ export default {
       if (this.task && this.task.allow_interstitial) {
         this.screen = this.task.interstitial_screen;
       } else {
-        this.screen = null;
+        // Note: removed setting screen to null here
       }
     },
     onUpdate(data) {

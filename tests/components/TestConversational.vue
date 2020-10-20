@@ -1,9 +1,7 @@
 <template>
   <div class="container">
     <h3>Conversational Form</h3>
-    <div id="cf-context"></div>
-    
-    <h3>Screen</h3>
+    <div id="cf-context" />
     <task
       ref="task"
       v-model="formData"
@@ -23,11 +21,16 @@ export default {
   data() {
     return {
       screenId: 1,
-      formData: { name: null },
+      formData: {},
     };
   },
   methods: {
     submit() {
+      alert('SUBMIT ' + JSON.stringify(this.formData));
+
+      setTimeout(() => {
+        this.screenId = 2;
+      }, 2000);
 
     },
   },
