@@ -537,7 +537,7 @@ export default {
       items.forEach(item => {
         if (item.inspector) {
           item.inspector.forEach((inspector) => {
-            if (inspector.field === 'name' && 'validation' in inspector.config && inspector.config.name !== 'DataVariable') {
+            if (inspector.field === 'name' && 'validation' in inspector.config && inspector.config.name !== 'DataVariable' && item.component !== 'FileUpload') {
               inspector.config.validation = keyNameProperty.config.validation;
             }
           });
