@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import Mustache from 'mustache';
 import { ValidationMsg } from './ValidationRules';
 
@@ -33,10 +33,14 @@ export default {
       if (object && value !== undefined) {
         const splittedName = name.split('.');
         splittedName.forEach((attr, index) => {
+          const setValue = index < splittedName.length - 1 ? get(object, attr) || get(defaults, attr) || {} : value;
+          if (isEqual(setValue, get(object, attr))) {
+            return;
+          } 
           this.$set(
             object,
             attr,
-            index < splittedName.length - 1 ? get(object, attr) || get(defaults, attr) || {} : value
+            setValue
           );
           object = get(object, attr);
         });
