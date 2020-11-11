@@ -33,10 +33,37 @@ export default {
       if (object && value !== undefined) {
         const splittedName = name.split('.');
         splittedName.forEach((attr, index) => {
-          const setValue = index < splittedName.length - 1 ? get(object, attr) || get(defaults, attr) || {} : value;
-          if (isEqual(setValue, get(object, attr))) {
+
+          let isLastElement, setValue;
+          const originalValue = get(object, attr);
+
+          if (index === splittedName.length - 1) {
+            isLastElement = true;
+          } else {
+            isLastElement = false;
+          }
+
+          if (isLastElement) {
+            setValue = value;
+
+          } else {
+            setValue = originalValue;
+
+            if (!setValue) {
+              // Check defaults
+              setValue = get(defaults, attr);
+            }
+            
+            if (!setValue) {
+              // Still no value? Set empty object
+              setValue = {};
+            }
+          }
+
+          if (isLastElement && isEqual(setValue, originalValue)) {
             return;
-          } 
+          }
+
           this.$set(
             object,
             attr,
