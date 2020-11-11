@@ -26,6 +26,7 @@
             :custom-css="screen.custom_css"
             :watchers="screen.watchers"
             :data="requestData"
+            :type="screen.type"
             @submit="submit"
           />
         </div>
