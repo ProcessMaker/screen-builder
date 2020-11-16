@@ -27,6 +27,7 @@
             :watchers="screen.watchers"
             :data="requestData"
             :type="screen.type"
+            @submit="submit"
           />
         </div>
       </div>
