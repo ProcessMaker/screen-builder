@@ -14,8 +14,8 @@
 <script>
 
 import Vue from 'vue';
-import ConversationalForm from 'package-conversational-forms/resources/js/components/ConversationalForm';
-Vue.component('ConversationalForm', ConversationalForm);
+// import ConversationalForm from 'package-conversational-forms/resources/js/components/ConversationalForm';
+// Vue.component('ConversationalForm', ConversationalForm);
 
 export default {
   data() {

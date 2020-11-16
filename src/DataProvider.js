@@ -53,11 +53,13 @@ export default {
   // Methods below are used in the components
   
   getTasks(params) {
+    console.log('DATA PROVIDER GET TASK', params);
     const endpoint = _.get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
     return this.get(endpoint + params);
   },
   
   getScreen(id, query = '') {
+    console.log('DATA PROVIDER GET SCREEN', id, query);
     const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
     return this.get(endpoint + `/${id}${query}`);
   },

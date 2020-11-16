@@ -242,9 +242,7 @@ export default {
           `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`
         )
         .then(response => {
-          this.task = response.data;
-          this.prepareTask();
-          this.checkTaskStatus();
+          this.checkTaskStatus(response.data);
         }).catch(() => {
           this.hasErrors = true;
         });
@@ -266,16 +264,18 @@ export default {
         this.$refs.renderer.$children[0].currentPage = 0;
       }
     },
-    checkTaskStatus() {
+    checkTaskStatus(task) {
       if (
-        this.task.status == 'COMPLETED' ||
-        this.task.status == 'CLOSED' ||
-        this.task.status == 'TRIGGERED'
+        task.status == 'COMPLETED' ||
+        task.status == 'CLOSED' ||
+        task.status == 'TRIGGERED'
       ) {
         this.closeTask();
       } else {
-        this.screen = this.task.screen;
+        this.task = task;
+        this.screen = task.screen;
       }
+      this.prepareTask();
     },
     closeTask() {
       if (this.hasErrors) {
@@ -296,9 +296,9 @@ export default {
         )
         .then(response => {
           if (response.data.data.length > 0) {
-            let task = response.data.data[0];
-            this.taskId = task.id;
-            this.nodeId = task.element_id;
+            this.task = response.data.data[0];
+            this.taskId = this.task.id;
+            this.nodeId = this.task.element_id;
           }
         });
     },
