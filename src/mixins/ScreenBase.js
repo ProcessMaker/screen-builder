@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import Mustache from 'mustache';
 import { ValidationMsg } from './ValidationRules';
 
@@ -33,10 +33,41 @@ export default {
       if (object && value !== undefined) {
         const splittedName = name.split('.');
         splittedName.forEach((attr, index) => {
+
+          let isLastElement, setValue;
+          const originalValue = get(object, attr);
+
+          if (index === splittedName.length - 1) {
+            isLastElement = true;
+          } else {
+            isLastElement = false;
+          }
+
+          if (isLastElement) {
+            setValue = value;
+
+          } else {
+            setValue = originalValue;
+
+            if (!setValue) {
+              // Check defaults
+              setValue = get(defaults, attr);
+            }
+            
+            if (!setValue) {
+              // Still no value? Set empty object
+              setValue = {};
+            }
+          }
+
+          if (isLastElement && isEqual(setValue, originalValue)) {
+            return;
+          }
+
           this.$set(
             object,
             attr,
-            index < splittedName.length - 1 ? get(object, attr) || get(defaults, attr) || {} : value
+            setValue
           );
           object = get(object, attr);
         });
