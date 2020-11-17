@@ -220,7 +220,8 @@ export default {
           `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`
         )
         .then(response => {
-          this.checkTaskStatus(response.data);
+          this.task = response.data;
+          this.checkTaskStatus();
         });
     },
     prepareTask() {
@@ -240,15 +241,14 @@ export default {
         this.$refs.renderer.$children[0].currentPage = 0;
       }
     },
-    checkTaskStatus(task) {
+    checkTaskStatus() {
       if (
-        task.status == 'COMPLETED' ||
-        task.status == 'CLOSED' ||
-        task.status == 'TRIGGERED'
+        this.task.status == 'COMPLETED' ||
+        this.task.status == 'CLOSED' ||
+        this.task.status == 'TRIGGERED'
       ) {
         this.closeTask();
       } else {
-        this.task = task;
         this.screen = this.task.screen;
         this.renderComponent = this.task.component;
         this.prepareTask();
