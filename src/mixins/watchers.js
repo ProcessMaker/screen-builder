@@ -31,7 +31,9 @@ export default {
       }).then((response) => {
         this.setValue(watcher.output_variable, response);
         // hide watcher's popup
-        this.$parent.$refs.watchersSynchronous.hide(watcher.name);
+        if (this.$parent.$refs.watchersSynchronous) {
+          this.$parent.$refs.watchersSynchronous.hide(watcher.name);
+        }
         return response;
       }).catch(error => {
         if (watcher.synchronous) {

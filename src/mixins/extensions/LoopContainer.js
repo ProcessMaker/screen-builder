@@ -3,6 +3,7 @@ import LoopControl from '../../mixins/LoopControl';
 export default {
   props: {
     configRef: null,
+    loopContext: null,
   },
   data() {
     return {
@@ -16,7 +17,7 @@ export default {
     },
     loadFormLoopItems({ element, node, definition }) {
       const loop = this.createComponent('div', {
-        'v-for': `loopRow in ${element.config.settings.varname}`,
+        'v-for': `(loopRow, index) in ${element.config.settings.varname}`,
       });
       const nested = {
         config: [
@@ -25,10 +26,18 @@ export default {
           },
         ],
       };
+
+      let loopContext = '';
+      if (this.loopContext) {
+        loopContext = this.loopContext + '.';
+      }
+      loopContext += element.config.settings.varname;
+
       // Add nested component inside loop
       const child = this.createComponent('ScreenRenderer', {
         ':definition': this.byValue(nested),
         ':value': 'loopRow',
+        ':loop-context': `'${loopContext}.' + index`,
         ':_parent': 'vdata',
         ':components': this.byRef(this.components),
         ':config-ref': this.byRef(this.configRef || definition.config),
