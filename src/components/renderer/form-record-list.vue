@@ -24,6 +24,7 @@
         :css="css"
         :empty-text="$t('No Data Available')"
         :current-page="currentPage"
+        data-cy="table"
       >
         <template #cell(__actions)="{index}">
           <div class="actions">
@@ -45,6 +46,8 @@
         </template>
       </b-table>
       <b-pagination
+        v-if="tableData.total > perPage"
+        data-cy="table-pagination"
         v-model="currentPage"
         :total-rows="tableData.total"
         :per-page="perPage"
