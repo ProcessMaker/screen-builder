@@ -26,7 +26,7 @@
             <div class="popout">
               <b-btn
                 variant="link"
-                @click="editProperty(item.rowData)"
+                @click="editProperty(item)"
                 v-b-tooltip.hover
                 :title="$t('Edit')"
                 data-cy="watchers-table-edit"
@@ -35,7 +35,7 @@
               </b-btn>
               <b-btn
                 variant="link"
-                @click="deleteProperty(item.rowData)"
+                @click="deleteProperty(item)"
                 v-b-tooltip.hover
                 :title="$t('Delete')"
                 data-cy="watchers-table-remove"
