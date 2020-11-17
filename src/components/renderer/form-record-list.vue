@@ -14,44 +14,41 @@
       {{ $t('This record list is empty or contains no data.') }}
     </div>
     <template v-else>
-      <vuetable
+      <b-table
         :per-page="perPage"
         ref="vuetable"
         :data-manager="dataManager"
         :fields="tableFields"
-        :data="tableData"
+        :items="tableData.data"
+        sort-icon-left
         :css="css"
-        :api-mode="false"
-        pagination-path=""
-        :noDataTemplate="$t('No Data Available')"
-        @vuetable:pagination-data="onPaginationData"
+        :empty-text="$t('No Data Available')"
+        :current-page="currentPage"
       >
-        <template slot="actions" slot-scope="props">
+        <template #cell(__actions)="{index}">
           <div class="actions">
             <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-              <button @click="showEditForm(props.rowIndex)" class="btn btn-primary" :title="$t('Edit')" data-cy="edit-row">
+              <button @click="showEditForm(index)" class="btn btn-primary" :title="$t('Edit')" data-cy="edit-row">
                 <i class="fas fa-edit"/>
               </button>
-              <button @click="showDeleteConfirmation(props.rowIndex)" class="btn btn-danger" :title="$t('Delete')" data-cy="remove-row">
+              <button @click="showDeleteConfirmation(index)" class="btn btn-danger" :title="$t('Delete')" data-cy="remove-row">
                 <i class="fas fa-trash-alt"/>
               </button>
             </div>
           </div>
         </template>
-        <template slot="mustache" slot-scope="{rowData, rowField}">
-          {{ mustache(rowField, rowData) }}
+        <template #cell(__mustache)="{item, field}">
+          {{ mustache(field.key, item) }}
         </template>
-        <template slot="filedownload" slot-scope="{rowData, rowField, rowIndex}">
-          <span @click="downloadFile(rowData, rowField, rowIndex)" href="#">{{ mustache(rowField, rowData) }}</span>
+        <template #cell(__filedownload)="{item, field, index}">
+          <span @click="downloadFile(item, field.key, index)" href="#">{{ mustache(field.key, item) }}</span>
         </template>
-      </vuetable>
-      <pagination
-        ref="pagination"
-        :per-page-select-enabled="perPageSelectEnabled"
-        :single="single"
-        :plural="plural"
-        @vuetable-pagination:change-page="onChangePage"
-        @changePerPage="onChangePerPage"
+      </b-table>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="tableData.total"
+        :per-page="perPage"
+        aria-controls="vuetable"
       />
     </template>
 
@@ -131,23 +128,17 @@
 
 
 <script>
-import Vuetable from 'vuetable-2/src/components/Vuetable';
-import Pagination from '@/components/Pagination';
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
 
 const jsonOptionsActionsColumn = {
-  name: '__slot:actions',
+  key: '__actions',
   title: 'Actions',
-  titleClass: 'text-right',
-  dataClass: 'text-right',
+  thClass: 'text-right',
+  tdClass: 'text-right',
 };
 
 export default {
-  components: {
-    Vuetable,
-    Pagination,
-  },
   mixins: [mustacheEvaluation],
   props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig'],
   data() {
@@ -157,10 +148,10 @@ export default {
       addItem: {},
       editItem: {},
       editIndex: null,
-      currentPage: 0,
+      currentPage: 1,
       paginatorPage: 1,
       perPageSelectEnabled: false,
-      perPage: 50,
+      perPage: 5,
       lastPage: 1,
       css: {
         tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
@@ -183,7 +174,6 @@ export default {
     debug() {
       return {
         perPageSelectEnabled: this.perPageSelectEnabled,
-        tablePagination: this.$refs.pagination &&  this.$refs.pagination.tablePagination,
         perPageSelectEnabled2: this.$refs.pagination && this.$refs.pagination.perPageSelectEnabled,
       };
     },
@@ -244,7 +234,7 @@ export default {
         prev_page_url: null,
         from,
         to: value.length,
-        data: value.slice(from * this.perPage, (from * this.perPage) + this.perPage),
+        data: value,
       };
       return data;
     },
@@ -261,15 +251,6 @@ export default {
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
     selfReferenced() {
       return this.form && this.form === this.$parent.currentPage;
-    },
-  },
-  watch: {
-    tableFields() {
-      this.$nextTick(() => {
-        if (this.$refs.vuetable) {
-          this.$refs.vuetable.normalizeFields();
-        }
-      });
     },
   },
   methods: {
@@ -290,10 +271,10 @@ export default {
       const {jsonData, key, value, dataName} = this.fields;
 
       const convertToVuetableFormat = (option) => {
-        let slot = '__slot:filedownload';
+        //let slot = '__filedownload';
         return {
-          name: slot,
-          sortField: option[key || 'value'],
+          key: option[key || 'value'],
+          sortable: true,
           title: option[value || 'content'],
         };
       };

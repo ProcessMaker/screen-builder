@@ -19,6 +19,7 @@
         :fields="fields"
         :empty-text="$t('No Data Available')"
         data-cy="watchers-table"
+        sort-icon-left
       >
         <template #cell(actions)="{item}">
           <div class="actions">
