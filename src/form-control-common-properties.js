@@ -86,13 +86,16 @@ export const colorProperty = {
   },
 };
 
+// Ref https://mathiasbynens.be/notes/javascript-identifiers
+const javascriptReservedKeywords = 'break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super';
+
 export const keyNameProperty = {
   type: 'FormInput',
   field: 'name',
   config: {
     label: 'Variable Name',
     name: 'Variable Name',
-    validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required',
+    validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required|not_in:' + javascriptReservedKeywords,
     helper: 'A variable name is a symbolic name to reference information.',
   },
 };
