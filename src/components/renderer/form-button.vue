@@ -21,22 +21,22 @@ export default {
   },
   data() {
     return {
-      countExecutionScript: 0,
     };
   },
   methods: {
     setValue(parent, name, value) {
-      if (parent.items) {
-        this.setValue(parent.$parent, name, value);
-      } else {
-        this.$vueSet(parent.data, this.getValidPath(name), value);
+      if (parent) {
+        if (parent.items) {
+          this.setValue(parent.$parent, name, value);
+        } else {
+          this.setValue(parent.data, this.getValidPath(name), value);
+        }
       }
     },
     click() {
       if (this.event === 'script') {
-        this.countExecutionScript++;
-        this.$emit('input', this.countExecutionScript);
-        this.setValue(this.$parent, this.name, this.countExecutionScript);
+        this.$emit('input', this.fieldValue);
+        this.setValue(this.$parent, this.name, this.fieldValue);
       }
       if (this.event !== 'pageNavigate' && this.name) {
         this.setValue(this.$parent, this.name, this.fieldValue);
