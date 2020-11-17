@@ -88,31 +88,7 @@ describe('Pagination', () => {
 
   it('Should Display Data When Navigating Pages', () => {
     cy.setPreviewDataInput(data);
-    cy.get('[data-cy=table-pagination] .ui > :nth-child(4)').click();
-    cy.get('.vuetable tbody').find('tr').should('have.length', '1');
-  });
-
-  it('Update Per Page', () => {
-    cy.setPreviewDataInput(data);
-    cy.wait(500);
-    cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'perPageSelectEnabled', true);
-    cy.get('.pagination-nav-drop').select('25');
-    cy.get('.vuetable tbody').find('tr').should('have.length', '25');
-  });
-
-  it('Displays Single Title', () => {
-    cy.setPreviewDataInput({form_record_list_1: [{'form_input_1': 'John'}]});
-    cy.wait(500);
-    cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'single', 'Test');
-    cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'perPageSelectEnabled', true);
-    cy.get('[data-cy=table-pagination]').should('contain.text', 'Test');
-  });
-
-  it('Displays Plural Title', () => {
-    cy.setPreviewDataInput(data);
-    cy.wait(500);
-    cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'plural', 'Tests');
-    cy.setVueComponentProperty('[data-cy=screen-field-form_record_list_1]', 'perPageSelectEnabled', true);
-    cy.get('[data-cy=table-pagination]').should('contain.text', 'Tests');
+    cy.get('[data-cy=table-pagination] button[aria-label="Go to last page"]').click();
+    cy.get('[data-cy="table"] tbody').find('tr').should('have.length', '1');
   });
 });
