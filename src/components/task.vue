@@ -241,6 +241,7 @@ export default {
       }
     },
     checkTaskStatus(task) {
+      this.task = task;
       if (
         task.status == 'COMPLETED' ||
         task.status == 'CLOSED' ||
@@ -248,7 +249,6 @@ export default {
       ) {
         this.closeTask();
       } else {
-        this.task = task;
         this.screen = this.task.screen;
         this.renderComponent = this.task.component;
         this.prepareTask();
