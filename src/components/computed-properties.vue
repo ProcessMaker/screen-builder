@@ -22,21 +22,19 @@
         </button>
       </div>
       <div class="card card-body table-card">
-        <vuetable
-          :api-mode="false"
+        <b-table
           :css="css"
           :fields="fields"
-          :data="current"
-          data-path="data"
-          :noDataTemplate="$t('No Data Available')"
+          :items="current"
+          :empty-text="$t('No Data Available')"
           data-cy="calcs-table"
         >
-          <template slot="actions" slot-scope="row">
+          <template #cell(__actions)="{item}">
             <div class="actions">
               <div class="popout">
                 <b-btn
                   variant="link"
-                  @click="editProperty(row)"
+                  @click="editProperty(item)"
                   v-b-tooltip.hover
                   :title="$t('Edit')"
                   data-cy="calcs-table-edit"
@@ -45,7 +43,7 @@
                 </b-btn>
                 <b-btn
                   variant="link"
-                  @click="deleteProperty(row)"
+                  @click="deleteProperty(item)"
                   v-b-tooltip.hover
                   :title="$t('Delete')"
                   data-cy="calcs-table-remove"
@@ -55,7 +53,7 @@
               </div>
             </div>
           </template>
-        </vuetable>
+        </b-table>
       </div>
       <template slot="modal-footer">
         <span/>
@@ -176,16 +174,17 @@ export default {
       },
       fields: [
         {
-          title: () => this.$t('Property Name'),
-          name: 'property',
+          label: this.$t('Property Name'),
+          key: 'property',
         },
         {
-          title: () => this.$t('Description'),
-          name: 'name',
+          label: this.$t('Description'),
+          key: 'name',
         },
         {
-          name: '__slot:actions',
-          title: '',
+          key: '__actions',
+          label: '',
+          class: 'text-right',
         },
       ],
       monacoOptions: {
@@ -312,7 +311,6 @@ export default {
       this.displayTableList();
     },
     editProperty(item) {
-      item = item.rowData;
       this.add.id = item.id;
       this.add.name = item.name;
       this.add.property = item.property;
@@ -321,7 +319,6 @@ export default {
       this.displayList = false;
     },
     deleteProperty(item) {
-      item = item.rowData;
       this.current = this.current.filter(val => {
         return val.id !== item.id;
       });
