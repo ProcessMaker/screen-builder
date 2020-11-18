@@ -44,8 +44,8 @@ export default {
       onloadproperties({ properties, element }) {
         const name = element.config.name;
         if (element.config.defaultValue || element.config.initiallyChecked) {
-          const event = `${name}_was_filled__ = !!value; !${name}_was_filled__ && (vdata.${name} = default_${name}__)`;
-          this.addEvent(properties, 'input', 'value', event);
+          const event = `${name}_was_filled__ |= !!$event; !${name}_was_filled__ && (vdata.${name} = default_${name}__)`;
+          this.addEvent(properties, 'input', event);
         }
       },
     });
