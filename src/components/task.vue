@@ -106,7 +106,6 @@ export default {
     
     initialRequestId: {
       handler() {
-        console.log('INITIAL REQUEST ID', this.initialRequestId);
         this.requestId = this.initialRequestId;
       },
       immediate: true,
@@ -137,7 +136,6 @@ export default {
     
     taskId: {
       handler() {
-        console.log('TASK ID CHANGED', this.taskId);
         if (this.taskId) {
           this.loadTask();
         }
@@ -147,7 +145,6 @@ export default {
     
     requestId: {
       handler() {
-        console.log('REQUEST ID CHANGED', this.requestId);
         if (this.requestId) {
           this.initSocketListeners();
         } else {
@@ -197,7 +194,6 @@ export default {
   methods: {
     loadScreen(id) {
       let query = '';
-      console.log('load screen request id', this.requestId);
       if (this.requestId) {
         query = '?request_id=' + this.requestId;
       }
@@ -207,7 +203,6 @@ export default {
       });
     },
     reload() {
-      console.log('RELOAD');
       if (this.reloadInProgress) {
         return;
       }
@@ -234,6 +229,8 @@ export default {
         .then(response => {
           this.task = response.data;
           this.checkTaskStatus();
+        }).catch(() => {
+          this.hasErrors = true;
         });
     },
     prepareTask() {
@@ -262,11 +259,10 @@ export default {
         this.closeTask();
       } else {
         this.screen = this.task.screen;
-        this.prepareTask();
       }
+      this.prepareTask();
     },
     closeTask() {
-      console.log('CLOSE TASK REQUEST ID', this.requestId);
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
         return;
@@ -279,7 +275,6 @@ export default {
       }
     },
     loadNextAssignedTask() {
-      console.log('LOAD NEXT ASSIGNED TASK', this.requestId);
       return this.$dataProvider
         .getTasks(
           `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`
@@ -337,7 +332,6 @@ export default {
       this.$emit('completed', this.task.process_request_id);
     },
     processUpdated(data) {
-      console.log('PROCESS UPDATED', data);
       if (
         data.event === 'ACTIVITY_COMPLETED' ||
         data.event === 'ACTIVITY_ACTIVATED'
@@ -362,7 +356,6 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessUpdated',
         data => {
-          console.log('add socket listener');
           this.processUpdated(data);
         }
       );
