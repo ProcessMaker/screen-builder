@@ -175,8 +175,8 @@ export default {
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         }
-      }
-    }
+      },
+    },
   },
   computed: {
     shouldAddSubmitButton() {
