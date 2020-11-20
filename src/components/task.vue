@@ -17,9 +17,9 @@
         <div v-else>
           <component
             :is="renderComponent"
-            :process-id="task.process_id"
-            :instance-id="task.process_request_id"
-            :token-id="task.id"
+            :process-id="processId"
+            :instance-id="requestId"
+            :token-id="taskId"
             :screen="screen.config"
             :csrf-token="csrf_token"
             :computed="screen.computed"
@@ -64,6 +64,7 @@ export default {
     initialTaskId: { type: Number, default: null },
     initialScreenId: { type: Number, default: null },
     initialRequestId: { type: Number, default: null },
+    initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
     userId: { type: Number, default: null },
     csrf_token: { type: String, default: null },
@@ -78,14 +79,12 @@ export default {
       requestId: null,
       screen: null,
       screenId: null,
-
+      renderComponent: 'task-screen',
       processId: null,
       nodeId: null,
-
       disabled: false,
       socketListeners: [],
       requestData: {},
-      renderComponent: 'task-screen',
       reloadInProgress: false,
       hasErrors: false,
     };
@@ -107,6 +106,7 @@ export default {
     
     initialRequestId: {
       handler() {
+        console.log('INITIAL REQUEST ID', this.initialRequestId);
         this.requestId = this.initialRequestId;
       },
       immediate: true,
@@ -128,7 +128,6 @@ export default {
     
     screenId: {
       handler() {
-        this.screen = null;
         if (this.screenId) {
           this.loadScreen(this.screenId);
         }
@@ -138,6 +137,7 @@ export default {
     
     taskId: {
       handler() {
+        console.log('TASK ID CHANGED', this.taskId);
         if (this.taskId) {
           this.loadTask();
         }
@@ -147,6 +147,7 @@ export default {
     
     requestId: {
       handler() {
+        console.log('REQUEST ID CHANGED', this.requestId);
         if (this.requestId) {
           this.initSocketListeners();
         } else {
@@ -169,6 +170,16 @@ export default {
       },
       immediate: true,
     },
+    screen: {
+      handler() {
+        if (!this.screen) {
+          return;
+        }
+        if (this.screen.type === 'CONVERSATIONAL') {
+          this.renderComponent = 'ConversationalForm';
+        }
+      }
+    }
   },
   computed: {
     shouldAddSubmitButton() {
@@ -186,6 +197,7 @@ export default {
   methods: {
     loadScreen(id) {
       let query = '';
+      console.log('load screen request id', this.requestId);
       if (this.requestId) {
         query = '?request_id=' + this.requestId;
       }
@@ -195,7 +207,7 @@ export default {
       });
     },
     reload() {
-
+      console.log('RELOAD');
       if (this.reloadInProgress) {
         return;
       }
@@ -250,11 +262,11 @@ export default {
         this.closeTask();
       } else {
         this.screen = this.task.screen;
-        this.renderComponent = this.task.component;
         this.prepareTask();
       }
     },
     closeTask() {
+      console.log('CLOSE TASK REQUEST ID', this.requestId);
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
         return;
@@ -267,6 +279,7 @@ export default {
       }
     },
     loadNextAssignedTask() {
+      console.log('LOAD NEXT ASSIGNED TASK', this.requestId);
       return this.$dataProvider
         .getTasks(
           `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`
@@ -291,12 +304,18 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    submit() {
+    submit(formData = null) {
       //single click
       if (this.disabled) {
         return;
       }
       this.disabled = true;
+      
+      if (formData) {
+        this.onUpdate(
+          Object.assign({}, this.requestData, formData)
+        );
+      }
       this.$emit('submit', this.task);
       this.$nextTick(() => {
         this.disabled = false;
@@ -304,8 +323,6 @@ export default {
 
       if (this.task && this.task.allow_interstitial) {
         this.screen = this.task.interstitial_screen;
-      } else {
-        this.screen = null;
       }
     },
     onUpdate(data) {
@@ -320,6 +337,7 @@ export default {
       this.$emit('completed', this.task.process_request_id);
     },
     processUpdated(data) {
+      console.log('PROCESS UPDATED', data);
       if (
         data.event === 'ACTIVITY_COMPLETED' ||
         data.event === 'ACTIVITY_ACTIVATED'
@@ -344,6 +362,7 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessUpdated',
         data => {
+          console.log('add socket listener');
           this.processUpdated(data);
         }
       );
