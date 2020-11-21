@@ -1,6 +1,6 @@
 <template>
   <div :class="containerClass">
-    <custom-css>{{ customCssWrapped }}</custom-css>
+    <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
   </div>
 </template>
@@ -8,7 +8,7 @@
 <script>
 import Vue from 'vue';
 import _ from 'lodash';
-import CustomCss from './custom-css';
+import CustomCssOutput from './custom-css-output';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
 import DataProvider from '../DataProvider';
@@ -22,7 +22,7 @@ Vue.use(DataProvider);
  
 export default {
   name: 'VueFormRenderer',
-  components: { CustomCss },
+  components: { CustomCssOutput },
   props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
