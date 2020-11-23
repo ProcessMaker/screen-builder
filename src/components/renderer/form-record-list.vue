@@ -71,10 +71,11 @@
       <vue-form-renderer
         :page="0"
         ref="addRenderer"
-        v-model="addItemWithParent"
+        v-model="addItem"
         :config="[formConfig[form]]"
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
+        :_parent="validationData"
       />
     </b-modal>
     <b-modal
@@ -92,9 +93,10 @@
       <vue-form-renderer
         :page="0"
         ref="editRenderer"
-        v-model="editItemWithParent"
+        v-model="editItem"
         :config="[formConfig[form]]"
         debug-context="Record List Edit"
+        :_parent="validationData"
       />
     </b-modal>
     <b-modal
@@ -133,6 +135,7 @@
 <script>
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
+//import ScreenRenderer from '../screen-renderer.vue';
 
 const jsonOptionsActionsColumn = {
   key: '__actions',
@@ -186,28 +189,6 @@ export default {
         parent = parent.$parent;
       }
       return parent;
-    },
-    addItemWithParent: {
-      get() {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.addItem._parent = this.$parent.transientData;
-        return this.addItem;
-      },
-      set(val) {
-        //this.$set(this.parentObj, 'transientData', val._parent);
-        this.addItem = val;
-      },
-    },
-    editItemWithParent: {
-      get() {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.editItem._parent = this.$parent.transientData;
-        return this.editItem;
-      },
-      set(val) {
-        //this.$set(this.parentObj, 'transientData', val._parent);
-        this.editItem = val;
-      },
     },
     dataManager() {
       if (this.$refs.vuetable) {

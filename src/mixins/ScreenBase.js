@@ -1,4 +1,4 @@
-import { get, isEqual } from 'lodash';
+import { get, isEqual, set } from 'lodash';
 import Mustache from 'mustache';
 import { ValidationMsg } from './ValidationRules';
 
@@ -16,9 +16,19 @@ export default {
     },
   },
   methods: {
+    tryFormField(variableName, callback, defaultValue = null) {
+      try {
+        return callback();
+      } catch (e) {
+        set(this.$v, `${variableName}.$invalid`, true);
+        set(this.$v, `${variableName}.invalid_default_value`, false);
+        return defaultValue;
+      }
+    },
     mustache(text) {
       try {
-        return text && Mustache.render(text, this.vdata);
+        const data = Object.assign({_parent: this._parent}, this.vdata);
+        return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
       }
