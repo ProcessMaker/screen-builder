@@ -79,7 +79,7 @@
     "vue-upload-component": "^2.8.14",
     "vuedraggable": "^2.16.0",
     "vuetable-2": "^1.7.5",
-    "vuex": "^3.1.0"
+    "vuex": "^3.1.1"
   },
   "peerDependencies": {
     "@panter/vue-i18next": "^0.15.0",
@@ -88,7 +88,7 @@
     "bootstrap-vue": "^2.19.0",
     "i18next": "^15.0.8",
     "vue": "^2.5.16",
-    "vuex": "^3.1.0"
+    "vuex": "^3.1.1"
   },
   "postcss": {
     "plugins": {
