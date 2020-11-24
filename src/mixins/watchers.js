@@ -23,7 +23,12 @@ export default {
         const config = Mustache.render(watcher.script_configuration, this.vdata);
         this.listenWatcher(watcher).then((response) => complete(response))
           .catch(error => exception(error));
-        this.$dataProvider.postScript(watcher.script_id, {
+        
+        let scriptId = watcher.script_id;
+        if (watcher.script_key) {
+          scriptId = watcher.script_key;
+        }
+        this.$dataProvider.postScript(scriptId, {
           watcher: watcher.uid,
           data: input,
           config,
@@ -31,7 +36,9 @@ export default {
       }).then((response) => {
         this.setValue(watcher.output_variable, response);
         // hide watcher's popup
-        this.$parent.$refs.watchersSynchronous.hide(watcher.name);
+        if (this.$parent.$refs.watchersSynchronous) {
+          this.$parent.$refs.watchersSynchronous.hide(watcher.name);
+        }
         return response;
       }).catch(error => {
         if (watcher.synchronous) {

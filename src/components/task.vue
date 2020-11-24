@@ -17,15 +17,17 @@
         <div v-else>
           <component
             :is="renderComponent"
-            :process-id="task.process_id"
-            :instance-id="task.process_request_id"
-            :token-id="task.id"
+            :process-id="processId"
+            :instance-id="requestId"
+            :token-id="taskId"
             :screen="screen.config"
             :csrf-token="csrf_token"
             :computed="screen.computed"
             :custom-css="screen.custom_css"
             :watchers="screen.watchers"
             :data="requestData"
+            :type="screen.type"
+            @submit="submit"
           />
         </div>
       </div>
@@ -62,6 +64,7 @@ export default {
     initialTaskId: { type: Number, default: null },
     initialScreenId: { type: Number, default: null },
     initialRequestId: { type: Number, default: null },
+    initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
     userId: { type: Number, default: null },
     csrf_token: { type: String, default: null },
@@ -76,14 +79,12 @@ export default {
       requestId: null,
       screen: null,
       screenId: null,
-
+      renderComponent: 'task-screen',
       processId: null,
       nodeId: null,
-
       disabled: false,
       socketListeners: [],
       requestData: {},
-      renderComponent: 'task-screen',
       reloadInProgress: false,
       hasErrors: false,
     };
@@ -126,7 +127,6 @@ export default {
     
     screenId: {
       handler() {
-        this.screen = null;
         if (this.screenId) {
           this.loadScreen(this.screenId);
         }
@@ -167,6 +167,16 @@ export default {
       },
       immediate: true,
     },
+    screen: {
+      handler() {
+        if (!this.screen) {
+          return;
+        }
+        if (this.screen.type === 'CONVERSATIONAL') {
+          this.renderComponent = 'ConversationalForm';
+        }
+      },
+    },
   },
   computed: {
     shouldAddSubmitButton() {
@@ -193,7 +203,6 @@ export default {
       });
     },
     reload() {
-
       if (this.reloadInProgress) {
         return;
       }
@@ -219,8 +228,9 @@ export default {
         )
         .then(response => {
           this.task = response.data;
-          this.prepareTask();
           this.checkTaskStatus();
+        }).catch(() => {
+          this.hasErrors = true;
         });
     },
     prepareTask() {
@@ -249,8 +259,8 @@ export default {
         this.closeTask();
       } else {
         this.screen = this.task.screen;
-        this.renderComponent = this.task.component;
       }
+      this.prepareTask();
     },
     closeTask() {
       if (this.hasErrors) {
@@ -289,12 +299,18 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    submit() {
+    submit(formData = null) {
       //single click
       if (this.disabled) {
         return;
       }
       this.disabled = true;
+      
+      if (formData) {
+        this.onUpdate(
+          Object.assign({}, this.requestData, formData)
+        );
+      }
       this.$emit('submit', this.task);
       this.$nextTick(() => {
         this.disabled = false;
@@ -302,8 +318,6 @@ export default {
 
       if (this.task && this.task.allow_interstitial) {
         this.screen = this.task.interstitial_screen;
-      } else {
-        this.screen = null;
       }
     },
     onUpdate(data) {
