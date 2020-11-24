@@ -38,6 +38,7 @@ export default {
   },
   methods: {
     editSave(fileObject) {
+      if (!fileObject) return;
       let reader = new FileReader();
       reader.readAsDataURL(fileObject.file);
       reader.addEventListener('load', () => {
