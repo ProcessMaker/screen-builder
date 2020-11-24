@@ -620,87 +620,87 @@ export default [
   },
   {
     rendererComponent: FileUpload,
-    rendererBinding: "FileUpload",
+    rendererBinding: 'FileUpload',
     builderComponent: FileUpload,
-    builderBinding: "FileUpload",
+    builderBinding: 'FileUpload',
     control: {
-      label: "File Upload",
-      component: "FileUpload",
-      "editor-component": "FileUpload",
-      "editor-control": "FileUpload",
+      label: 'File Upload',
+      component: 'FileUpload',
+      'editor-component': 'FileUpload',
+      'editor-control': 'FileUpload',
       config: {
-        label: "New File Upload",
-        icon: "fas fa-file-upload"
+        label: 'New File Upload',
+        icon: 'fas fa-file-upload',
       },
       inspector: [
         {
-          type: "FormInput",
-          field: "name",
+          type: 'FormInput',
+          field: 'name',
           config: {
-            label: "Variable Name",
+            label: 'Variable Name',
             name: 'Name',
-            helper: "A variable name is a symbolic name to reference information.",
-            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_. \/a-z])*$/|required'
-          }
+            helper: 'A variable name is a symbolic name to reference information.',
+            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_. /a-z])*$/|required',
+          },
         },
         {
-          type: "FormInput",
-          field: "label",
+          type: 'FormInput',
+          field: 'label',
           config: {
-            label: "Label",
-            helper: "The label describes the field's name"
-          }
+            label: 'Label',
+            helper: 'The label describes the field\'s name',
+          },
         },
         {
-          type: "FormInput",
-          field: "accept",
+          type: 'FormInput',
+          field: 'accept',
           config: {
-            label: "File Accepted",
-            helper: "Common file types: application/msword, image/gif, image/jpeg, application/pdf, application/vnd.ms-powerpoint, application/vnd.ms-excel, text/plain"
-          }
+            label: 'File Accepted',
+            helper: 'Common file types: application/msword, image/gif, image/jpeg, application/pdf, application/vnd.ms-powerpoint, application/vnd.ms-excel, text/plain',
+          },
         },
         {
           type: 'RequiredCheckbox',
           field: 'validation',
           config: {
             label: 'Required',
-            helper: 'Prevent form from being submitted unless a file is uploaded'
-          }
-        }
-      ]
-    }
+            helper: 'Prevent form from being submitted unless a file is uploaded',
+          },
+        },
+      ],
+    },
   },
   {
     rendererComponent: FormText,
-    rendererBinding: "FormText",
+    rendererBinding: 'FormText',
     builderComponent: FileDownload,
-    builderBinding: "FileDownload",
+    builderBinding: 'FileDownload',
     control: {
-        label: "File Download",
-        component: "FileDownload",
-        "editor-component": "FormText",
-        "editor-control": "FileDownload",
+      label: 'File Download',
+      component: 'FileDownload',
+      'editor-component': 'FormText',
+      'editor-control': 'FileDownload',
+      config: {
+        label: 'New File Download',
+        icon: 'fas fa-file-download',
+      },
+      inspector: [{
+        type: 'FormInput',
+        field: 'label',
         config: {
-            label: "New File Download",
-            icon: "fas fa-file-download"
+          label: 'Label',
+          helper: 'The text to display',
         },
-        inspector: [{
-            type: "FormInput",
-            field: "label",
-            config: {
-                label: "Label",
-                helper: "The text to display"
-            }
+      },
+      {
+        type: 'FormInput',
+        field: 'name',
+        config: {
+          label: 'Name',
+          helper: 'The name of the Download',
         },
-        {
-            type: "FormInput",
-            field: "name",
-            config: {
-                label: "Name",
-                helper: "The name of the Download"
-            }
-        }
-        ]
-    }
-  }
+      },
+      ],
+    },
+  },
 ];
