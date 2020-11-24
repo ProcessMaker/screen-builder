@@ -73,6 +73,7 @@
         ref="addRenderer"
         v-model="addItem"
         :config="[formConfig[form]]"
+        :computed="formComputed"
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
@@ -95,6 +96,7 @@
         ref="editRenderer"
         v-model="editItem"
         :config="[formConfig[form]]"
+        :computed="formComputed"
         debug-context="Record List Edit"
         :_parent="validationData"
       />
@@ -146,7 +148,7 @@ const jsonOptionsActionsColumn = {
 
 export default {
   mixins: [mustacheEvaluation],
-  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig'],
+  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed'],
   data() {
     return {
       single: '',
