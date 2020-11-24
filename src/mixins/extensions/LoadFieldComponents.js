@@ -24,6 +24,7 @@ export default {
       properties.name = element.config.name !== undefined ? element.config.name : null;
       properties.disabled = element.config.interactive || element.config.disabled;
       properties[':form-config'] = this.byRef(this.configRef || definition.config);
+      properties[':form-computed'] = JSON.stringify(definition.computed);
       // Events
       properties['@submit'] = 'submitForm';
     },
