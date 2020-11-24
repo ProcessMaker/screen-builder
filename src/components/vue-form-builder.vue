@@ -306,9 +306,6 @@ import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
 import './registerGlobalComponents';
-// Load tinymce icons
-import 'tinymce';
-import 'tinymce/icons/default/index';
 
 Vue.use(BootstrapVue);
 
