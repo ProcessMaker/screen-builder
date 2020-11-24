@@ -14,21 +14,19 @@
     </b-row>
 
     <div class="card card-body table-card">
-      <vuetable
-        :api-mode="false"
-        :css="css"
+      <b-table
+        :items="filtered"
         :fields="fields"
-        :data="filtered"
-        data-path="data"
-        :noDataTemplate="$t('No Data Available')"
+        :empty-text="$t('No Data Available')"
         data-cy="watchers-table"
+        sort-icon-left
       >
-        <template slot="actions" slot-scope="row">
+        <template #cell(actions)="{item}">
           <div class="actions">
             <div class="popout">
               <b-btn
                 variant="link"
-                @click="editProperty(row.rowData)"
+                @click="editProperty(item)"
                 v-b-tooltip.hover
                 :title="$t('Edit')"
                 data-cy="watchers-table-edit"
@@ -37,7 +35,7 @@
               </b-btn>
               <b-btn
                 variant="link"
-                @click="deleteProperty(row.rowData)"
+                @click="deleteProperty(item)"
                 v-b-tooltip.hover
                 :title="$t('Delete')"
                 data-cy="watchers-table-remove"
@@ -47,7 +45,7 @@
             </div>
           </div>
         </template>
-      </vuetable>
+      </b-table>
     </div>
     <template slot="modal-footer">
       <span />
@@ -58,14 +56,12 @@
 <script>
 import BasicSearch from './basic-search';
 import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
-import Vuetable from 'vuetable-2/src/components/Vuetable';
 
 export default {
   components: {
     BasicSearch,
     FormInput,
     FormTextArea,
-    Vuetable,
   },
   props: {
     value: {
@@ -92,24 +88,24 @@ export default {
       },
       fields: [
         {
-          title: () => this.$t('Name'),
-          name: 'name',
+          label: this.$t('Name'),
+          key: 'name',
         },
         {
-          title: () => this.$t('Watching Variable'),
-          name: 'watching',
+          label: this.$t('Watching Variable'),
+          key: 'watching',
         },
         {
-          title: () => this.$t('Output Variable'),
-          name: 'output_variable',
+          label: this.$t('Output Variable'),
+          key: 'output_variable',
         },
         {
-          title: () => this.$t('Source'),
-          name: 'script.title',
+          label: this.$t('Source'),
+          key: 'script.title',
         },
         {
-          name: '__slot:actions',
-          title: '',
+          key: 'actions',
+          label: '',
         },
       ],
     };

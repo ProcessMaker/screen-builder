@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isEqual, set } from 'lodash';
 import Mustache from 'mustache';
 import { ValidationMsg } from './ValidationRules';
 
@@ -16,9 +16,19 @@ export default {
     },
   },
   methods: {
+    tryFormField(variableName, callback, defaultValue = null) {
+      try {
+        return callback();
+      } catch (e) {
+        set(this.$v, `${variableName}.$invalid`, true);
+        set(this.$v, `${variableName}.invalid_default_value`, false);
+        return defaultValue;
+      }
+    },
     mustache(text) {
       try {
-        return text && Mustache.render(text, this.vdata);
+        const data = Object.assign({_parent: this._parent}, this.vdata);
+        return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
       }
@@ -33,10 +43,41 @@ export default {
       if (object && value !== undefined) {
         const splittedName = name.split('.');
         splittedName.forEach((attr, index) => {
+
+          let isLastElement, setValue;
+          const originalValue = get(object, attr);
+
+          if (index === splittedName.length - 1) {
+            isLastElement = true;
+          } else {
+            isLastElement = false;
+          }
+
+          if (isLastElement) {
+            setValue = value;
+
+          } else {
+            setValue = originalValue;
+
+            if (!setValue) {
+              // Check defaults
+              setValue = get(defaults, attr);
+            }
+            
+            if (!setValue) {
+              // Still no value? Set empty object
+              setValue = {};
+            }
+          }
+
+          if (isLastElement && isEqual(setValue, originalValue)) {
+            return;
+          }
+
           this.$set(
             object,
             attr,
-            index < splittedName.length - 1 ? get(object, attr) || get(defaults, attr) || {} : value
+            setValue
           );
           object = get(object, attr);
         });
