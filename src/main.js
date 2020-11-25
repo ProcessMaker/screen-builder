@@ -9,7 +9,9 @@ import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import axios from 'axios';
 import TestComponents from '../tests/components';
+import BootstrapVue from 'bootstrap-vue';
 
+Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 
 // Allow strings to be wrapped in $t(...) for translating
