@@ -28,7 +28,6 @@ export default {
               validationRule[rule] = validationFn;
             });
           }
-          properties[':class'] = `{ 'form-group--error': $v.${element.config.name}.$invalid }`;
           // Remove the validation from inside the control
           delete properties[':validation'];
           delete properties['validation'];
