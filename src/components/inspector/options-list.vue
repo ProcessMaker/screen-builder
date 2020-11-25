@@ -357,9 +357,14 @@ export default {
     },
     dataSourceTypes() {
       if (typeof this.options.allowMultiSelect === 'undefined') {
-        return [this.dataSources[0], this.dataSources[1]];
+        return [this.dataSources[0], this.$t(this.dataSources[1])];
       }
-      return this.dataSources;
+      return this.dataSources.map((item) => {
+        return {
+          value: item.value,
+          text: this.$t(item.text),
+        };
+      });
     },
     optionKeyClass() {
       return this.optionError ? 'is-invalid' : '';
