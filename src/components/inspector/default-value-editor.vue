@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label>Default Value</label>
+    <label>{{ $t('Default Value') }} </label>
     <div class="float-right buttons">
       <b-button variant="light" size="sm" :class="{ active: mode === 'basic'}" @click="mode = 'basic'" data-cy="inspector-defaultValue-basic"><i class="fas fa-i-cursor"/></b-button>
       <b-button variant="light" size="sm" :class="{ active: mode === 'js'}" @click="mode = 'js'" data-cy="inspector-defaultValue-js"><i class="fab fa-js-square"/></b-button>
