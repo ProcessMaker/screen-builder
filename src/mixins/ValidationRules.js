@@ -49,6 +49,7 @@ export const ValidationMsg = {
   after_or_equal: 'Must be equal or after {after_or_equal}',
   before: 'Must be before {before}',
   before_or_equal: 'Must be equal or before {before_or_equal}',
+  invalid_default_value: 'Invalid default value',
 };
   
 export const after = (after) => helpers.withParams({after}, (date, data) => {

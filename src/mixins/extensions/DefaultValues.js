@@ -27,10 +27,10 @@ export default {
       const defaultComputedName = `default_${name}__`;
       this.addData(screen, `${name}_was_filled__`, `!!this.getValue(${JSON.stringify(name)}, this.vdata)`);
       this.addMounted(screen, `if (!this.${name}) {
-        this.${name} = ${value};
+        this.tryFormField(${JSON.stringify(name)}, () => {this.${name} = ${value};});
       }`);
       screen.computed[defaultComputedName] = {
-        get: new Function(`return ${value};`),
+        get: new Function(`return this.tryFormField(${JSON.stringify(name)}, () => ${value});`),
         set() {},
       };
       this.addWatch(screen, defaultComputedName, `!this.${name}_was_filled__ && this.setValue(${JSON.stringify(name)}, this.${defaultComputedName}, this.vdata, this);`);
@@ -44,8 +44,8 @@ export default {
       onloadproperties({ properties, element }) {
         const name = element.config.name;
         if (element.config.defaultValue || element.config.initiallyChecked) {
-          const event = `${name}_was_filled__ = !!value; !${name}_was_filled__ && (vdata.${name} = default_${name}__)`;
-          this.addEvent(properties, 'input', 'value', event);
+          const event = `${name}_was_filled__ |= !!$event; !${name}_was_filled__ && (vdata.${name} = default_${name}__)`;
+          this.addEvent(properties, 'input', event);
         }
       },
     });
