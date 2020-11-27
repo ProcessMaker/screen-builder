@@ -539,14 +539,14 @@ export default [
   },
   {
     editorComponent: FormButton,
-    editorBinding: 'FormButton',
+    editorBinding: 'FormSubmit',
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
       label: 'Submit Button',
       component: 'FormButton',
       'editor-component': 'FormButton',
-      'editor-control': 'FormButton',
+      'editor-control': 'FormSubmit',
       config: {
         icon: 'fas fa-share-square',
         label: 'New Submit',
