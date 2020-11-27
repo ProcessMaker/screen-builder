@@ -376,6 +376,7 @@ export default {
       if (savedConfig) {
         let config = JSON.parse(savedConfig);
         this.$refs.builder.config = config;
+        this.$refs.builder.migrateConfig();
       }
 
       if (savedWatchers) {
