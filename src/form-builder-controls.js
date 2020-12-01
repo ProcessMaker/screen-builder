@@ -188,6 +188,7 @@ export default [
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
           jsonData: '',
+          pmqlQuery: '',
           dataName: 'response',
           renderAs: 'dropdown',
           allowMultiSelect: false,
