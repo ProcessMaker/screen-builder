@@ -13,7 +13,7 @@ export default {
       if (definition.watchers) {
         screen.mixins.push(watchersMixin);
         definition.watchers.forEach((watcher) => {
-          this.addWatch(screen, watcher.watching, `this.queueWatcher(${JSON.stringify(watcher)});`);
+          this.addMounted(screen, 'var that = this; this.$watch("' + watcher.watching + '", function() { that.queueWatcher(' + JSON.stringify(watcher) + '); });');
         });
       }
     },
