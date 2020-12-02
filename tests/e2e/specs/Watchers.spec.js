@@ -322,12 +322,12 @@ describe('Watchers', () => {
       JSON.stringify({
         output: [
           {
-            key: 'Jobs',
-            name: 'Steve Jobs',
+            value: 'Jobs',
+            content: 'Steve Jobs',
           },
           {
-            key: 'Musk',
-            name: 'Elon Musk',
+            value: 'Musk',
+            content: 'Elon Musk',
           },
         ],
       })
@@ -376,12 +376,12 @@ describe('Watchers', () => {
       form_select_list_1: null,
       listValues: [
         {
-          key: 'Jobs',
-          name: 'Steve Jobs',
+          value: 'Jobs',
+          content: 'Steve Jobs',
         },
         {
-          key: 'Musk',
-          name: 'Elon Musk',
+          value: 'Musk',
+          content: 'Elon Musk',
         },
       ],
     });
@@ -391,5 +391,20 @@ describe('Watchers', () => {
       'Musk'
     );
 
+    // Assertion: Check listValues was loaded
+    cy.assertPreviewData({
+      form_input_1: 'first',
+      form_select_list_1: 'Musk',
+      listValues: [
+        {
+          value: 'Jobs',
+          content: 'Steve Jobs',
+        },
+        {
+          value: 'Musk',
+          content: 'Elon Musk',
+        },
+      ],
+    });
   });
 });
