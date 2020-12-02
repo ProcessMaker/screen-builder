@@ -575,7 +575,7 @@ describe('Complex screen', () => {
       'form_checkbox_5': true,
       'form_checkbox_2': true,
       'form_checkbox_6': true,
-      'form_checkbox_7': null,
+      'form_checkbox_7': false,
       'form_date_picker_3': null,
       'form_checkbox_8': true,
       'form_date_picker_4': null,
