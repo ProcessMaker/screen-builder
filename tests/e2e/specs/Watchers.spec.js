@@ -311,4 +311,85 @@ describe('Watchers', () => {
     cy.get('[data-cy="watchers-show-error-message"]').click();
     cy.get('#watchers-synchronous').should('contain.text', 'Test exception response');
   });
+
+  it('Test watcher with select list', () => {
+    cy.visit('/');
+    // Mock script response
+    cy.server();
+    cy.loadFromJson('watcher_select_list.json', 0);
+    cy.route(
+      '/api/1.0/scripts/execution/1',
+      JSON.stringify({
+        output: [
+          {
+            key: 'Jobs',
+            name: 'Steve Jobs',
+          },
+          {
+            key: 'Musk',
+            name: 'Elon Musk',
+          },
+        ],
+      })
+    );
+
+    // Configure a watcher
+    cy.get('[data-cy="topbar-watchers"]').click();
+    cy.get('[data-cy="watchers-add-watcher"]').click();
+    cy.get('[data-cy="watchers-watcher-name"]')
+      .clear()
+      .type('Watcher test');
+    cy.get('[data-cy="watchers-watcher-variable"]').selectOption(
+      'form_input_1'
+    );
+    cy.get(
+      '.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label'
+    ).click();
+    cy.get('[data-cy="watchers-accordion-source"]').click();
+    cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
+    cy.setVueComponentValue(
+      '[data-cy="watchers-watcher-input_data"]',
+      '{"form_input_1":"{{form_input_1}}"}'
+    );
+    cy.get('[data-cy="watchers-accordion-output"]').click();
+    cy.get('[data-cy="watchers-watcher-output_variable"]')
+      .clear()
+      .type('listValues');
+    cy.get('[data-cy="watchers-button-save"]').click();
+    cy.get('[data-cy="watchers-table"]').should('contain.text', 'Watcher test');
+    cy.get('[data-cy="watchers-modal"] .close').click();
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]')
+      .clear()
+      .type('first');
+    // Assertion: Watcher popup is displayed
+    cy.get('#watchers-synchronous').should('be.visible');
+    // wait for watcher execution
+    cy.wait(2000);
+    cy.get('#watchers-synchronous').should('not.be.visible');
+    cy.wait(2000);
+
+    // Assertion: Check listValues was loaded
+    cy.assertPreviewData({
+      form_input_1: 'first',
+      form_select_list_1: null,
+      listValues: [
+        {
+          key: 'Jobs',
+          name: 'Steve Jobs',
+        },
+        {
+          key: 'Musk',
+          name: 'Elon Musk',
+        },
+      ],
+    });
+
+    // Select option
+    cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption(
+      'Musk'
+    );
+
+  });
 });
