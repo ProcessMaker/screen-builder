@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <component :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
+    <component ref="component" :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
     <screen-renderer-error v-if="showErrors && building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
@@ -47,6 +47,14 @@ export default {
           this.component = this.buildComponent(this.currentDefinition);
         }
       },
+    },
+  },
+  methods: {
+    getCurrentPage() {
+      return this.$refs.component.getCurrentPage();
+    },
+    setCurrentPage(page) {
+      this.$refs.component.setCurrentPage(page);
     },
   },
 };

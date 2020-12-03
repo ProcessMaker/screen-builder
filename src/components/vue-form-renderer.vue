@@ -222,6 +222,12 @@ export default {
         this.$emit('css-errors', error);
       }
     },
+    getCurrentPage() {
+      return this.$refs.renderer.getCurrentPage();
+    },
+    setCurrentPage(page) {
+      this.$refs.renderer.setCurrentPage(page);
+    },
   },
 };
 </script>

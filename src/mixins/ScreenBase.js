@@ -92,5 +92,11 @@ export default {
       });
       return message.join('.\n');
     },
+    getCurrentPage() {
+      return this.currentPage__;
+    },
+    setCurrentPage(page) {
+      this.currentPage__ = page;
+    },
   },
 };
