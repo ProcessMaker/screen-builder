@@ -52,11 +52,10 @@ export default {
   },
   methods: {
     getCurrentPage() {
-      return this.getCurrentPageBase();
+      return this.$refs.component.getCurrentPage();
     },
     setCurrentPage(page) {
-        console.log('renderer: ' + page);
-      this.$refs.component.setCurrentPageBase(page);
+      this.$refs.component.setCurrentPage(page);
     },
   }
 };

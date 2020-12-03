@@ -92,11 +92,10 @@ export default {
       });
       return message.join('.\n');
     },
-    getCurrentPageBase() {
-        return this.currentPage__;
+    getCurrentPage() {
+        return this._data['currentPage__'];
     },
-    setCurrentPageBase(page) {
-        console.log('base: ' + page);
+    setCurrentPage(page) {
         this._data['currentPage__'] = page;
     },
   },

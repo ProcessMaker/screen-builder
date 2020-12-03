@@ -226,7 +226,6 @@ export default {
       return this.$refs.renderer.getCurrentPage();
     },
     setCurrentPage(page) {
-        console.log('form: ' + page);
       this.$refs.renderer.setCurrentPage(page);
     },
   },
