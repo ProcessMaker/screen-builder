@@ -21,7 +21,7 @@
             :instance-id="requestId"
             :token-id="taskId"
             :screen="screen.config"
-            :csrf-token="csrf_token"
+            :csrf-token="csrfToken"
             :computed="screen.computed"
             :custom-css="screen.custom_css"
             :watchers="screen.watchers"
@@ -67,7 +67,7 @@ export default {
     initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
     userId: { type: Number, default: null },
-    csrf_token: { type: String, default: null },
+    csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
   },
@@ -96,35 +96,35 @@ export default {
       },
       immediate: true,
     },
-    
+
     initialTaskId: {
       handler() {
         this.taskId = this.initialTaskId;
       },
       immediate: true,
     },
-    
+
     initialRequestId: {
       handler() {
         this.requestId = this.initialRequestId;
       },
       immediate: true,
     },
-    
+
     initialProcessId: {
       handler() {
         this.processId = this.initialProcessId;
       },
       immediate: true,
     },
-    
+
     initialNodeId: {
       handler() {
         this.nodeId = this.initialNodeId;
       },
       immediate: true,
     },
-    
+
     screenId: {
       handler() {
         if (this.screenId) {
@@ -133,7 +133,7 @@ export default {
       },
       immediate: true,
     },
-    
+
     taskId: {
       handler() {
         if (this.taskId) {
@@ -142,7 +142,7 @@ export default {
       },
       immediate: true,
     },
-    
+
     requestId: {
       handler() {
         if (this.requestId) {
@@ -160,7 +160,7 @@ export default {
         this.nodeId = this.task.element_id;
       },
     },
-    
+
     value: {
       handler() {
         this.requestData = this.value;
@@ -174,6 +174,8 @@ export default {
         }
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
+        } else {
+          this.renderComponent = this.task.component;
         }
       },
     },
@@ -208,7 +210,7 @@ export default {
       }
 
       this.reloadInProgress = true;
- 
+
       if (this.taskId) {
         this.loadTask().finally(() => {
           this.reloadInProgress = false;
@@ -305,7 +307,7 @@ export default {
         return;
       }
       this.disabled = true;
-      
+
       if (formData) {
         this.onUpdate(
           Object.assign({}, this.requestData, formData)
