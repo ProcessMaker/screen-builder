@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <component :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
+    <component ref="component" :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
     <screen-renderer-error v-if="showErrors && building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
@@ -8,6 +8,7 @@
 
 <script>
 import Json2Vue from '../mixins/Json2Vue';
+import ScreenBase from '../mixins/ScreenBase';
 import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
@@ -26,7 +27,7 @@ Vue.component('FormRecordList', FormRecordList);
 
 export default {
   components: { WatchersSynchronous, ScreenRendererError },
-  mixins: [ Json2Vue ],
+  mixins: [ Json2Vue, ScreenBase ],
   data() {
     return {
       currentDefinition: null,
@@ -49,6 +50,15 @@ export default {
       },
     },
   },
+  methods: {
+    getCurrentPage() {
+      return this.getCurrentPageBase();
+    },
+    setCurrentPage(page) {
+        console.log('renderer: ' + page);
+      this.$refs.component.setCurrentPageBase(page);
+    },
+  }
 };
 </script>
 

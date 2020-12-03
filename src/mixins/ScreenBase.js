@@ -92,5 +92,12 @@ export default {
       });
       return message.join('.\n');
     },
+    getCurrentPageBase() {
+        return this.currentPage__;
+    },
+    setCurrentPageBase(page) {
+        console.log('base: ' + page);
+        this._data['currentPage__'] = page;
+    },
   },
 };
