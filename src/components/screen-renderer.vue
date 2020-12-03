@@ -57,7 +57,7 @@ export default {
     setCurrentPage(page) {
       this.$refs.component.setCurrentPage(page);
     },
-  }
+  },
 };
 </script>
 
