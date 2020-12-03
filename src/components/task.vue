@@ -389,7 +389,6 @@ export default {
     },
   },
   mounted() {
-    console.log('screen builder token en task', this.csrfToken);
   },
   destroyed() {
     this.unsubscribeSocketListeners();
