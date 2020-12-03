@@ -93,10 +93,10 @@ export default {
       return message.join('.\n');
     },
     getCurrentPage() {
-        return this._data['currentPage__'];
+      return this._data['currentPage__'];
     },
     setCurrentPage(page) {
-        this._data['currentPage__'] = page;
+      this._data['currentPage__'] = page;
     },
   },
 };
