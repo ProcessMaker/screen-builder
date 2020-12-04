@@ -141,7 +141,7 @@ import _ from 'lodash';
 
 const jsonOptionsActionsColumn = {
   key: '__actions',
-  title: 'Actions',
+  label: 'Actions',
   thClass: 'text-right',
   tdClass: 'text-right',
 };
@@ -261,7 +261,7 @@ export default {
         return {
           key: option[key || 'value'],
           sortable: true,
-          title: option[value || 'content'],
+          label: option[value || 'content'],
         };
       };
 
