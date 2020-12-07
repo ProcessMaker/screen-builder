@@ -38,17 +38,15 @@ describe('Record list', () => {
       'fullname': ' ',
       'date': new Date().toISOString().substr(0,10),
     });
-
     cy.assertPreviewData({
-        'firstname': 'Patricia',
-        'lastname': 'Smith',
-        'form_record_list_1': [
-          {
-            'fullname': 'Miss Patricia Smith',
-            'date': new Date().toISOString().substr(0,10),
-          },
-        ],
-      });
+      'firstname': 'Patricia',
+      'lastname': 'Smith',
+      'form_record_list_1': [
+        {
+          'fullname': 'Miss Patricia Smith',
+          'date': new Date().toISOString().substr(0,10),
+        },
+      ],
     });
   });
 });
