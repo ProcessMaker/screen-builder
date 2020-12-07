@@ -28,6 +28,7 @@ export function ValidatorFactory(config, data) {
    */
   validate.getDataAndRules = (items) => {
     items.forEach((item) => {
+      if (!item) return;
       //If the element has containers
       if (Array.isArray(item)) {
         validate.getDataAndRules(item);
