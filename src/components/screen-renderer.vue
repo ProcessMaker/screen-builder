@@ -8,6 +8,7 @@
 
 <script>
 import Json2Vue from '../mixins/Json2Vue';
+import CurrentPageProperty from '../mixins/CurrentPageProperty';
 import Vue from 'vue';
 import VueFormElements from '@processmaker/vue-form-elements';
 import FormButton from '../components/renderer/form-button';
@@ -26,7 +27,7 @@ Vue.component('FormRecordList', FormRecordList);
 
 export default {
   components: { WatchersSynchronous, ScreenRendererError },
-  mixins: [ Json2Vue ],
+  mixins: [ Json2Vue, CurrentPageProperty ],
   data() {
     return {
       currentDefinition: null,
