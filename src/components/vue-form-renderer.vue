@@ -1,7 +1,7 @@
 <template>
   <div :class="containerClass">
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
-    <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
+    <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" :current-page="currentPage" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
   </div>
 </template>
 
@@ -14,6 +14,7 @@ import Inputmask from 'inputmask';
 import DataProvider from '../DataProvider';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
+import CurrentPageProperty from '../mixins/CurrentPageProperty';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -23,6 +24,7 @@ Vue.use(DataProvider);
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
+  mixins: [CurrentPageProperty],
   props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
