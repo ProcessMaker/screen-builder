@@ -1,6 +1,25 @@
 export default {
+  data() {
+    return {
+      popups: [],
+    };
+  },
   methods: {
-    loadFieldProperties({ properties, element, componentName, definition }) {
+    loadFormPopups({ definition }) {
+      this.popups = [];
+      definition.config.forEach(items => {
+        items.items.forEach(item => {
+          if (item.component === 'FormRecordList') {
+            this.popups.push(parseInt(item.config.form));
+          }
+        });
+      });
+    },
+    loadFieldProperties({ properties, element, componentName, definition , formIndex}) {
+      //verify if component is defined in popup
+      if (this.popups.includes(formIndex)) {
+        return;
+      }
       properties.class = this.elementCssClass(element);
       properties[':validation-data'] = 'vdata';
       if (componentName === 'FormImage') {
@@ -33,6 +52,7 @@ export default {
     this.extensions.push({
       onloadproperties(params) {
         if (!params.element.container) {
+          this.loadFormPopups(params);
           this.loadFieldProperties(params);
         }
         params.properties[':config'] = this.byValue(params.element.config);
