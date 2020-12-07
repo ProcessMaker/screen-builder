@@ -110,7 +110,7 @@ export default {
       pages.forEach((page, index) => {
         if (page) {
           const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
-          this.loadItems(page.items, component, screen, definition);
+          this.loadItems(page.items, component, screen, definition, index);
           owner.appendChild(component);
         }
       });
@@ -151,13 +151,13 @@ export default {
       this.references__.push(value);
       return reference;
     },
-    loadItems(items, component, screen, definition) {
+    loadItems(items, component, screen, definition, formIndex) {
       items.forEach(element => {
         const componentName = element[this.nodeNameProperty];
         const nodeName = this.alias[componentName] || componentName;
         const properties = { ...element.config };
         // Extensions.onloadproperties
-        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen, definition }));
+        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen, definition , formIndex}));
         // Create component
         const node = this.createComponent(nodeName, properties);
         // Create wrapper
