@@ -14,13 +14,6 @@ Cypress.Commands.add('assertPreviewData', (expectedData) => {
   });
 });
 
-Cypress.Commands.add('assertNotEqualPreviewData', (expectedData) => {
-  cy.get('#screen-builder-container').then((div) => {
-    const data = div[0].__vue__.previewData;
-    expect(data).to.not.eql(expectedData);
-  });
-});
-
 Cypress.Commands.add('setMultiselect', (selector, text, index = 0) => {
   cy.get(`${selector}`).click();
   cy.get(`${selector} input`).clear().type(text);
