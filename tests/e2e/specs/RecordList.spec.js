@@ -35,8 +35,6 @@ describe('Record list', () => {
           'date': new Date().toISOString().substr(0,10),
         },
       ],
-      'fullname': ' ',
-      'date': new Date().toISOString().substr(0,10),
     });
   });
 });
