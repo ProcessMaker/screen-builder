@@ -72,7 +72,8 @@
         :page="0"
         ref="addRenderer"
         v-model="addItem"
-        :config="[formConfig[form]]"
+        :config="popupConfig"
+        :current-page="form"
         :computed="formComputed"
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
@@ -95,7 +96,8 @@
         :page="0"
         ref="editRenderer"
         v-model="editItem"
-        :config="[formConfig[form]]"
+        :config="popupConfig"
+        :current-page="form"
         :computed="formComputed"
         debug-context="Record List Edit"
         :_parent="validationData"
@@ -179,6 +181,11 @@ export default {
     };
   },
   computed: {
+    popupConfig() {
+      const config = [];
+      config[this.form] = this.formConfig[this.form];
+      return config;
+    },
     debug() {
       return {
         perPageSelectEnabled: this.perPageSelectEnabled,

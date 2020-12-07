@@ -8,6 +8,10 @@ export default {
     pageNavigationBuild(screen) {
       this.addData(screen, 'currentPage__', '0');
       screen.methods.pageNavigate = function(page) {
+        // Skip navigate button if page is not defined
+        if (!this.$parent.definition.config[page]) {
+          return;
+        }
         this.currentPage__ = page;
       };
     },
