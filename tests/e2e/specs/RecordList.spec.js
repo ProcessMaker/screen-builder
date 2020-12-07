@@ -26,7 +26,7 @@ describe('Record list', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=fullname]').type('{home}Miss ');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
-    cy.assertPreviewData({
+    cy.assertNotEqualPreviewData({
       'firstname': 'Patricia',
       'lastname': 'Smith',
       'form_record_list_1': [
@@ -35,6 +35,20 @@ describe('Record list', () => {
           'date': new Date().toISOString().substr(0,10),
         },
       ],
+      'fullname': ' ',
+      'date': new Date().toISOString().substr(0,10),
+    });
+
+    cy.assertPreviewData({
+        'firstname': 'Patricia',
+        'lastname': 'Smith',
+        'form_record_list_1': [
+          {
+            'fullname': 'Miss Patricia Smith',
+            'date': new Date().toISOString().substr(0,10),
+          },
+        ],
+      });
     });
   });
 });
