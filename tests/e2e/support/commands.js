@@ -99,6 +99,9 @@ Cypress.Commands.add('loadFromJson', (filename, index) => {
     if (index !== undefined) {
       const screen = content.screens[index];
       cy.setVueComponentProperty('#screen-builder-container', '$refs.builder.config', screen.config);
+      cy.setVueComponentProperty('#screen-builder-container', 'computed', screen.computed);
+      cy.setVueComponentProperty('#screen-builder-container', 'watchers', screen.watchers);
+      cy.setVueComponentProperty('#screen-builder-container', 'customCSS', screen.custom_css);
     }
   });
 });
