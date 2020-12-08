@@ -5,8 +5,9 @@ export default {
      * Prepare `data` configuration for the Vue Screen Component
      *
      */
-    defaultValues(screen) {
+    defaultValues(screen, definition) {
       this.variables.forEach(({name, config}) => {
+        if (this.isComputedVariable(name, definition)) return;
         if (config.defaultValue) {
           if (config.defaultValue.mode === 'basic') {
             this.setupDefaultValue(screen, name, `this.mustache(${JSON.stringify(config.defaultValue.value)})`);
@@ -38,11 +39,12 @@ export default {
   },
   mounted() {
     this.extensions.push({
-      onbuild({ screen }) {
-        this.defaultValues(screen);
+      onbuild({ screen, definition }) {
+        this.defaultValues(screen, definition);
       },
-      onloadproperties({ properties, element }) {
+      onloadproperties({ properties, element, definition }) {
         const name = element.config.name;
+        if (this.isComputedVariable(name, definition)) return;
         if (element.config.defaultValue || element.config.initiallyChecked) {
           const event = `${name}_was_filled__ |= !!$event; !${name}_was_filled__ && (vdata.${name} = default_${name}__)`;
           this.addEvent(properties, 'input', event);

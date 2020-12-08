@@ -172,6 +172,9 @@ export default {
     validVariableName(name) {
       return name && typeof name === 'string' && name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/);
     },
+    isComputedVariable(name, definition) {
+      return definition.computed && definition.computed.find(c => c.property === name);
+    },
     registerVariable(name, config = {}) {
       if (!this.validVariableName(name)) {
         return;
