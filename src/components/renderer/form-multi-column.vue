@@ -20,6 +20,7 @@
             :config="element.config"
             :is="element.component"
             :name="element.config.name !== undefined ? element.config.name : null"
+            :form-config="formConfig"
           />
 
           <div v-else :id="element.config.name ? element.config.name : undefined" :key="index" class="w-100" :selector="element.config.customCssSelector">
@@ -33,7 +34,7 @@
               v-bind="element.config"
               :is="element.component"
               :disabled="element.config.interactive || element.config.disabled"
-              :formConfig="formConfig"
+              :form-config="formConfig"
             />
           </div>
         </template>
