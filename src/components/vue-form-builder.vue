@@ -449,6 +449,8 @@ export default {
         return control.label
           .toLowerCase()
           .includes(this.filterQuery.toLowerCase());
+      }).sort((a, b) => {
+        return this.collator.compare(a.label, b.label);
       });
     },
     isCurrentPageEmpty() {
