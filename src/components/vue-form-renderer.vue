@@ -20,7 +20,7 @@
           @pageNavigate="pageNavigate"
           v-bind="element.config"
           :is="element.component"
-          :formConfig="config"
+          :form-config="formConfig || config"
           :mode="mode"
         />
 
@@ -38,7 +38,7 @@
               v-bind="element.config"
               :is="element.component"
               :disabled="element.config.interactive || element.config.disabled"
-              :formConfig="config"
+              :form-config="formConfig || config"
             />
           </keep-alive>
         </div>
@@ -91,7 +91,7 @@ Vue.use(DataProvider);
 
 export default {
   name: 'VueFormRenderer',
-  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext'],
+  props: ['config', 'data', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'formConfig'],
   model: {
     prop: 'data',
     event: 'update',

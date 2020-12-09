@@ -64,7 +64,7 @@
         :page="0"
         ref="addRenderer"
         v-model="addItemWithParent"
-        :config="[formConfigParent[form]]"
+        :config="[formConfig[form]]"
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
       />
@@ -84,7 +84,7 @@
         :page="0"
         ref="editRenderer"
         v-model="editItemWithParent"
-        :config="[formConfigParent[form]]"
+        :config="[formConfig[form]]"
         debug-context="Record List Edit"
       />
     </b-modal>
@@ -164,7 +164,6 @@ export default {
       },
       initFormValues: {},
       parentReference: null,
-      formConfigParent: null,
     };
   },
   computed: {
@@ -253,28 +252,8 @@ export default {
         }
       });
     },
-    formConfig: {
-      immediate: true,
-      handler(value) {
-        let value2 = null
-        if (this.$parent && this.$parent.$parent) {
-          value2 = this.getParentFormConfig(this.$parent.$parent);
-        }
-        this.formConfigParent = value2 || value;
-      }
-    }
   },
   methods: {
-    getParentFormConfig(parent) {
-      if (!parent) {
-        return null;
-      }
-      if (parent.$attrs && parent.$attrs.formConfig) {
-        return parent.$attrs.formConfig;
-      }
-
-      return this.getParentFormConfig(parent.$parent);
-    },
     setUploadDataNamePrefix(index = null) {
       let  rowId = null;
       if (index !== null  && this.editItem) {
@@ -348,7 +327,7 @@ export default {
       this.$refs.editModal.show();
     },
     edit(event) {
-      const validate = ValidatorFactory(this.formConfigParent[this.form].items, this.editItem);
+      const validate = ValidatorFactory(this.formConfig[this.form].items, this.editItem);
       this.errors = validate.getErrors();
       if (_.size(this.errors) > 0) {
         event.preventDefault();
@@ -454,7 +433,7 @@ export default {
       this.$emit('input', data);
     },
     isValid() {
-      const validate = ValidatorFactory(this.formConfigParent[this.form].items, this.$refs.addRenderer.transientData);
+      const validate = ValidatorFactory(this.formConfig[this.form].items, this.$refs.addRenderer.transientData);
       this.errors = validate.getErrors();
       return _.size(this.errors) === 0;
     },
