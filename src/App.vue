@@ -531,4 +531,8 @@ export default {
     .modal-backdrop {
       opacity: 0.5;
     }
+    
+    .form-group--error {
+      animation: none;
+    }
 </style>
