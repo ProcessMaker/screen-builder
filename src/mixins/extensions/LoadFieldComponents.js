@@ -16,19 +16,18 @@ export default {
       });
     },
     loadFieldProperties({ properties, element, componentName, definition , formIndex}) {
-      //verify if component is defined in popup
-      if (this.popups.includes(formIndex)) {
-        return;
-      }
       properties.class = this.elementCssClass(element);
       properties[':validation-data'] = 'vdata';
-      if (componentName === 'FormImage') {
-        this.registerVariable(element.config.variableName, element.config);
-        delete properties.image;
-        properties[':image'] = this.byRef(element.config.image);
-      } else if (this.validVariableName(element.config.name)) {
-        this.registerVariable(element.config.name, element.config);
-        properties['v-model'] = `${element.config.name}`;
+      //verify if component is defined in popup
+      if (!this.popups.includes(formIndex)) {
+        if (componentName === 'FormImage') {
+          this.registerVariable(element.config.variableName, element.config);
+          delete properties.image;
+          properties[':image'] = this.byRef(element.config.image);
+        } else if (this.validVariableName(element.config.name)) {
+          this.registerVariable(element.config.name, element.config);
+          properties['v-model'] = `${element.config.name}`;
+        }
       }
       // Do not replace mustache in RichText control, it is replaced by the control
       if (componentName === 'FormHtmlViewer') {
