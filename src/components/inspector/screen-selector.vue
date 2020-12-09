@@ -28,6 +28,7 @@
 <script>
 import Multiselect from 'vue-multiselect';
 import { multiselectApi } from '@/mixins';
+import { formTypes } from '@/global-properties'
 
 export default {
   mixins: [multiselectApi],
@@ -41,9 +42,16 @@ export default {
       type: Object,
       required: true,
     },
+    screenType: {
+      type: String,
+      default: formTypes.form
+    }
   },
   mounted() {
     let pmql = '(type = "FORM" or type = "DISPLAY")';
+    if (this.screenType === formTypes.display) {
+      pmql = '(type = "DISPLAY")';
+    }
     if (this.builder.screen) {
       pmql += ' and id != ' + this.builder.screen.id;
     }
