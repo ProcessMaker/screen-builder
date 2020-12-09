@@ -14,6 +14,7 @@
         @update="setMatrixValue(loopIndex, $event)"
         :mode="mode"
         :loop-context="getLoopContext(loopIndex)"
+        :form-config="formConfig"
       />
     </form>
     <b-row class="justify-content-md-center" v-if="config.settings.add">
@@ -35,7 +36,7 @@ import Mustache from 'mustache';
 export default {
   name: 'FormLoop',
   mixins: [],
-  props: ['value', 'config', 'transientData', 'name', 'mode'],
+  props: ['value', 'config', 'transientData', 'name', 'mode', 'formConfig'],
   data() {
     return {
       matrix: [],
