@@ -222,6 +222,7 @@
                 :field-accordion="`accordion-${ accordionName(accordion).replace(' ', '') }`"
                 :builder="builder"
                 :formConfig="config"
+                :screenType="screenType"
                 :currentPage="currentPage"
                 :key="index"
                 :is="item.type"
