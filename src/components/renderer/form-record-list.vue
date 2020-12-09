@@ -64,7 +64,7 @@
         :page="0"
         ref="addRenderer"
         v-model="addItemWithParent"
-        :config="[formConfigParent[form]]"
+        :config="[formConfig[form]]"
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
       />
@@ -84,7 +84,7 @@
         :page="0"
         ref="editRenderer"
         v-model="editItemWithParent"
-        :config="[formConfigParent[form]]"
+        :config="[formConfig[form]]"
         debug-context="Record List Edit"
       />
     </b-modal>
