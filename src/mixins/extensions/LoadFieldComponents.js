@@ -7,12 +7,14 @@ export default {
   methods: {
     loadFormPopups({ definition }) {
       this.popups = [];
-      definition.config.forEach(items => {
-        items.items.forEach(item => {
-          if (item.component === 'FormRecordList') {
-            this.popups.push(parseInt(item.config.form));
-          }
-        });
+      definition.config.forEach(page => {
+        if (page && page.items) {
+          page.items.forEach(item => {
+            if (item.component === 'FormRecordList') {
+              this.popups.push(parseInt(item.config.form));
+            }
+          });
+        }
       });
     },
     loadFieldProperties({ properties, element, componentName, definition , formIndex}) {
