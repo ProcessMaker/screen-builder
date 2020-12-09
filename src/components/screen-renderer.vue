@@ -63,10 +63,7 @@ export default {
 
 <style>
 .form-group--error {
-  animation-name: shakeError;
-  animation-fill-mode: forwards;
-  animation-duration: .6s;
-  animation-timing-function: ease-in-out;
+  animation: none;
 }
 @keyframes shakeError {
   0% {
