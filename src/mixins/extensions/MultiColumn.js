@@ -15,12 +15,12 @@ export default {
       properties[':form-config'] = '$parent && $parent.definition.config';
       //:mode="mode"
     },
-    loadMultiColumnItems({ element, node, screen, definition }) {
+    loadMultiColumnItems({ element, node, screen, definition, formIndex }) {
       element.items.forEach((col, index) => {
         const column = this.createComponent('div', {
           class: `col-sm-${element.config.options[index].content}`,
         });
-        this.loadItems(col, column, screen, definition);
+        this.loadItems(col, column, screen, definition, formIndex);
         node.appendChild(column);
       });
     },

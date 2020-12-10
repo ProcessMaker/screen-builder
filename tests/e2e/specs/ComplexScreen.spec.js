@@ -119,8 +119,6 @@ describe('Complex screen', () => {
       'form_date_picker_6': null,
       'form_select_list_3': null,
       'form_checkbox_3': null,
-      'first_name': null,
-      'last_name': null,
     });
   });
 
@@ -213,8 +211,6 @@ describe('Complex screen', () => {
       'form_date_picker_6': now.toISOString(),
       'form_select_list_3': null,
       'form_checkbox_3': true,
-      'first_name': null,
-      'last_name': null,
     });
   });
 
@@ -410,8 +406,6 @@ describe('Complex screen', () => {
       'form_date_picker_6': now.toISOString(),
       'form_select_list_3': null,
       'form_checkbox_3': true,
-      'first_name': null,
-      'last_name': null,
     });
   });
 
@@ -563,8 +557,6 @@ describe('Complex screen', () => {
       'form_date_picker_6': now.toISOString(),
       'form_select_list_3': 'b',
       'form_checkbox_3': true,
-      'first_name': null,
-      'last_name': null,
       'form_input_2': 123,
       'form_input_6': moment(now).format('YYYY-MM-DD HH:mm'),
       'form_text_area_2': null,
@@ -582,8 +574,6 @@ describe('Complex screen', () => {
       'nested_file': 'avatar.jpeg',
       'form_checkbox_9': true,
       'form_checkbox_10': true,
-      'email': null,
-      'url': null,
     });
   });
 });

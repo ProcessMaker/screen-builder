@@ -164,7 +164,7 @@ export default {
         const wrapper = this.ownerDocument.createElement('div');
         wrapper.appendChild(node);
         // Extensions.onloaditems to add items to container
-        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper, screen, definition }));
+        this.extensions.forEach((ext) => ext.onloaditems instanceof Function && ext.onloaditems.bind(this)({ properties, element, component, items, nodeName, componentName, node, wrapper, screen, definition, formIndex}));
         // Append node
         component.appendChild(wrapper);
       });
