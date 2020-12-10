@@ -5,15 +5,24 @@ export default {
     };
   },
   methods: {
+    searchForRecordList(items) {
+      items.forEach(item => {
+        if (item instanceof Array) {
+          this.searchForRecordList(item);
+        }
+        if (item.items) {
+          this.searchForRecordList(item.items);
+        }
+        if (item.component === 'FormRecordList') {
+          this.popups.push(parseInt(item.config.form));
+        }
+      });
+    },
     loadFormPopups({ definition }) {
       this.popups = [];
       definition.config.forEach(page => {
         if (page && page.items) {
-          page.items.forEach(item => {
-            if (item.component === 'FormRecordList') {
-              this.popups.push(parseInt(item.config.form));
-            }
-          });
+          this.searchForRecordList(page.items);
         }
       });
     },
