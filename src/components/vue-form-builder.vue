@@ -427,6 +427,8 @@ export default {
       generator,
       variablesTree: [],
       screenRederer,
+      language: 'en',
+      collator: null,
     };
   },
   computed: {
@@ -447,6 +449,8 @@ export default {
         return control.label
           .toLowerCase()
           .includes(this.filterQuery.toLowerCase());
+      }).sort((a, b) => {
+        return this.collator.compare(a.label, b.label);
       });
     },
     isCurrentPageEmpty() {
@@ -779,6 +783,12 @@ export default {
 
       return copy;
     },
+    initiateLanguageSupport() {
+      if (document.documentElement.lang) {
+        this.language = document.documentElement.lang;
+      }
+      this.collator = Intl.Collator(this.language);
+    },
   },
   created() {
     this.loadVariablesTree = _.debounce(this.loadVariablesTree, 2000);
@@ -797,6 +807,7 @@ export default {
       this.$store.registerModule(`page-${index}`, undoRedoModule);
       this.$store.dispatch(`page-${index}/pushState`, JSON.stringify(config.items));
     });
+    this.initiateLanguageSupport();
   },
   mounted() {
     this.loadVariablesTree();
