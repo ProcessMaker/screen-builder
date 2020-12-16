@@ -120,7 +120,11 @@ export default {
         this.$delete(this.transientDataCopy, this.name);
 
         const data = _.get(this, 'transientData.' + this.name, null);
-        this.matrix = data ? data : [];
+        if (data && Array.isArray(data)) {
+          this.matrix = data;
+        } else {
+          this.matrix = [];
+        }
         this.setupMatrix();
       },
       immediate: true,
