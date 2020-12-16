@@ -175,7 +175,7 @@ export default {
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         } else {
-          this.renderComponent = this.task.component;
+          this.renderComponent = _.get(this, 'task.component', 'task-screen');
         }
       },
     },
@@ -361,6 +361,12 @@ export default {
           this.processUpdated(data);
         }
       );
+            
+      // We might have missed an event before initSocketListeners
+      // was called so reload to check if there's a task waiting
+      if (!this.taskId) {
+        this.reload();
+      }
     },
     addSocketListener(channel, event, callback) {
       this.socketListeners.push({
