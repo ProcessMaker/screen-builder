@@ -26,6 +26,17 @@
         :current-page="currentPage"
         data-cy="table"
       >
+        <template #cell()="{index,field,item}">
+          <template v-if="isFiledownload(field, item)">
+            <span @click="downloadFile(item, field.key, index)" href="#">{{ mustache(field.key, item) }}</span>
+          </template>
+          <template v-else-if="isImage(field, item)">
+            <img :src="mustache(field.key, item)" style="record-list-image">
+          </template>
+          <template v-else>
+            {{ mustache(field.key, item) }}
+          </template>
+        </template>
         <template #cell(__actions)="{index}">
           <div class="actions">
             <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
@@ -37,12 +48,6 @@
               </button>
             </div>
           </div>
-        </template>
-        <template #cell(__mustache)="{item, field}">
-          {{ mustache(field.key, item) }}
-        </template>
-        <template #cell(__filedownload)="{item, field, index}">
-          <span @click="downloadFile(item, field.key, index)" href="#">{{ mustache(field.key, item) }}</span>
         </template>
       </b-table>
       <b-pagination
@@ -247,6 +252,13 @@ export default {
     },
   },
   methods: {
+    isImage(field, item) {
+      const content = _.get(item, field.key);
+      return typeof content === 'string' && content.substr(0,11) === 'data:image/';
+    },
+    isFiledownload(field) {
+      return field.key === '__filedownload';
+    },
     setUploadDataNamePrefix(index = null) {
       let  rowId = null;
       if (index !== null  && this.editItem) {
