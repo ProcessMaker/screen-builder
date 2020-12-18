@@ -129,7 +129,7 @@ export default {
       return name.replace(/_\w/g, m => m.substr(1,1).toUpperCase());
     },
     updateComponentConfig(nodeName, properties) {
-      this.updatedConfigs.push({name: nodeName, properties: properties});
+      this.updatedConfigs.push({name: nodeName, properties});
     },
     mergeUpdatedConfig(nodeName, properties) {
       let updatedConfig = this.updatedConfigs.find(config => config.name === nodeName);
