@@ -22,7 +22,6 @@ i18next.init({lng: 'en'});
 Vue.mixin({i18n: new VueI18Next(i18next)});
 Vue.use(Vuex);
 Vue.use(ScreenBuilder);
-//Vue.component('vuetable', Vuetable);
 
 const store = new Vuex.Store({ modules: {} });
 

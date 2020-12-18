@@ -291,6 +291,8 @@
       <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
 
+    <!-- Auxilar instance to get the Tree of variables -->
+    <screen-renderer ref="treeOfVariables" :value="{}" :definition="{config:[]}" v-show="false" />
   </b-row>
 </template>
 
@@ -304,7 +306,6 @@ import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
-import './registerGlobalComponents';
 
 let Validator = require('validatorjs');
 // To include another language in the Validator with variable processmaker
@@ -395,13 +396,6 @@ export default {
     if (this.title && config[0].name === 'Default') {
       config[0].name = this.title;
     }
-    const screenRederer = new this.$options.components.ScreenRenderer({
-      propsData: {
-        value: {},
-        definition: {config:[]},
-      },
-    });
-    screenRederer.$mount();
 
     return {
       currentPage: 0,
@@ -427,7 +421,6 @@ export default {
       variables,
       generator,
       variablesTree: [],
-      screenRederer,
       language: 'en',
       collator: null,
     };
@@ -511,8 +504,8 @@ export default {
         customCSS : this.$parent.customCSS,
         watchers : this.$parent.watchers,
       };
-      this.variablesTree = this.screenRederer.getVariablesTree(definition);
-      this.screenRederer.getVariablesTree({config: []});
+      this.variablesTree = this.$refs.treeOfVariables.getVariablesTree(definition);
+      this.$refs.treeOfVariables.getVariablesTree({config: []});
     },
     accordionName(accordion) {
       return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
