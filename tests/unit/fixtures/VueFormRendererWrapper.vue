@@ -10,10 +10,6 @@
 </template>
 
 <script>
-import VueFormRenderer from '../../../src/components/vue-form-renderer';
-import Vue from 'vue';
-Vue.component('vue-form-renderer', VueFormRenderer);
-
 export default {
   props: [],
   data() {

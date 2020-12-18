@@ -6,20 +6,16 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import _ from 'lodash';
 import CustomCssOutput from './custom-css-output';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import DataProvider from '../DataProvider';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
-
-Vue.use(DataProvider);
  
 export default {
   name: 'VueFormRenderer',
