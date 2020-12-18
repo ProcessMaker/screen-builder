@@ -47,11 +47,7 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import DataProvider from '../DataProvider';
 import _ from 'lodash';
-
-Vue.use(DataProvider);
 
 const defaultBeforeLoadTask = () => {
   new Promise((resolve) => {
