@@ -36,6 +36,7 @@ export default {
       variablesTree: [],
       initialize: [],
       ownerDocument: window.document,
+      updatedConfigs: [],
       building: {
         show: false,
         error: '',
@@ -49,6 +50,9 @@ export default {
       this.$emit('submit', this.value);
     },
     buildComponent(definition) {
+      if (window.ProcessMaker && window.ProcessMaker.EventBus) {
+        window.ProcessMaker.EventBus.$emit('screen-renderer-build-component', this);
+      }
       const component = this.componentDefinition(definition);
       if (!this.testScreenDefinition) {
         return component;
@@ -124,7 +128,23 @@ export default {
     camelCase(name) {
       return name.replace(/_\w/g, m => m.substr(1,1).toUpperCase());
     },
+    updateComponentConfig(nodeName, properties) {
+      this.updatedConfigs.push({name: nodeName, properties});
+    },
+    mergeUpdatedConfig(nodeName, properties) {
+      let updatedConfig = this.updatedConfigs.find(config => config.name === nodeName);
+      if (updatedConfig) {
+        let newProperties = updatedConfig.properties;
+        for (let property in newProperties) {
+          if (properties[property] === undefined) {
+            properties[property] = newProperties[property];
+          }
+        }
+      }
+      return properties;
+    },
     createComponent(nodeName, properties) {
+      properties = this.mergeUpdatedConfig(nodeName, properties);
       nodeName = this.snakeCase(nodeName);
       const node = this.ownerDocument.createElement(nodeName);
       for (let property in properties) {
@@ -132,7 +152,7 @@ export default {
         if (value !== false && value !== null && value !== undefined) {
           if (property.substr(0,1) === ':' || (typeof value === 'string' && value.indexOf('{{') === -1)) {
             node.setAttribute(this.escapeVuePropertyName(property), value);
-          } else if (typeof value === 'string' && value.indexOf('{{') !== -1) {
+          } else if (typeof value === 'string' && value.indexOf('{{') !== -1 && !properties.ignoreMustache) {
             node.setAttribute(':' + this.escapeVuePropertyName(property), 'mustache('+this.byValue(value)+')');
           } else if (value !== undefined) {
             node.setAttribute(':' + this.escapeVuePropertyName(property), this.byValue(value));
