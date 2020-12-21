@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group form-image">
+  <div class="form-group" style="overflow-x: hidden" >
     <img v-if="renderImage" :src="imageUrl" :width="width" :height="height" :name="variableName">
     <img v-else-if="!renderImage && image" :src="image" :width="width" :height="height" :id="id">
     <i v-else-if="mode == 'editor'" class="empty-image far fa-image" />
