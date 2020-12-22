@@ -280,7 +280,7 @@ export default {
             {type: 'FormInput', label: this.$t('Regex Pattern'), helper: '', validation: 'required'},
           ],
         },
-      ],
+      ].sort((a, b) => (a.content > b.content) ? 1 : -1),
     };
   },
   computed: {
