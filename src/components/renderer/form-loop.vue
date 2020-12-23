@@ -14,6 +14,7 @@
         @update="setMatrixValue(loopIndex, $event)"
         :mode="mode"
         :loop-context="getLoopContext(loopIndex)"
+        :form-config="formConfig"
       />
     </form>
     <b-row class="justify-content-md-center" v-if="config.settings.add">
@@ -36,7 +37,7 @@ import _ from 'lodash';
 export default {
   name: 'FormLoop',
   mixins: [],
-  props: ['value', 'config', 'transientData', 'name', 'mode'],
+  props: ['value', 'config', 'transientData', 'name', 'mode', 'formConfig'],
   data() {
     return {
       matrix: [],
@@ -120,7 +121,11 @@ export default {
         this.$delete(this.transientDataCopy, this.name);
 
         const data = _.get(this, 'transientData.' + this.name, null);
-        this.matrix = data ? data : [];
+        if (data && Array.isArray(data)) {
+          this.matrix = data;
+        } else {
+          this.matrix = [];
+        }
         this.setupMatrix();
       },
       immediate: true,
