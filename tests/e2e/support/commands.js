@@ -102,6 +102,9 @@ Cypress.Commands.add('loadFromJson', (filename, index) => {
       cy.setVueComponentProperty('#screen-builder-container', 'computed', screen.computed);
       cy.setVueComponentProperty('#screen-builder-container', 'watchers', screen.watchers);
       cy.setVueComponentProperty('#screen-builder-container', 'customCSS', screen.custom_css);
+      cy.get('#screen-builder-container').then(div => {
+        div[0].__vue__.$refs.builder.migrateConfig(screen.config);
+      });
     }
   });
 });
