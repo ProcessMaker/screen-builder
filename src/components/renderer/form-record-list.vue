@@ -251,15 +251,6 @@ export default {
       return this.form && this.form === this.$parent.currentPage;
     },
   },
-  watch: {
-    tableFields() {
-      this.$nextTick(() => {
-        if (this.$refs.vuetable) {
-          this.$refs.vuetable.normalizeFields();
-        }
-      });
-    },
-  },
   methods: {
     isImage(field, item) {
       const content = _.get(item, field.key);
