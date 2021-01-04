@@ -602,8 +602,7 @@ export default [
         label: 'Nested Screen',
         icon: 'fas fa-file-invoice',
         variant: 'primary',
-        event: 'submit',
-        name: null,
+        name: 'Nested Screen',
         value: null,
       },
       inspector: [
