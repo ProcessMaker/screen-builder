@@ -13,7 +13,7 @@
       </b-col>
     </b-row>
 
-    <div class="card card-body table-card">
+    <div class="card card-body table-card watchers-list">
       <b-table
         :items="filtered"
         :fields="fields"
@@ -90,6 +90,7 @@ export default {
         {
           label: this.$t('Name'),
           key: 'name',
+          tdClass: 'break-word',
         },
         {
           label: this.$t('Watching Variable'),
@@ -98,6 +99,7 @@ export default {
         {
           label: this.$t('Output Variable'),
           key: 'output_variable',
+          tdClass: 'break-word',
         },
         {
           label: this.$t('Source'),
@@ -140,3 +142,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.watchers-list .break-word {
+  word-break: break-word;
+}
+</style>
