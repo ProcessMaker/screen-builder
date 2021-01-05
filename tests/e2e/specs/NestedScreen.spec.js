@@ -89,5 +89,13 @@ describe('Nested screen', () => {
       const person = JSON.parse(a.text().split('{...}').join(''));
       expect(person).to.eql({ firstname: 'Alan', lastname: 'Turing' });
     });
+    cy.get('[data-cy=mode-editor]').click();
+  });
+
+  it('With nested screen config.event set to submit', () => {
+    cy.visit('/');
+    cy.loadFromJson('nested_screen_with_event_submit.json', 1);
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.get('[data-cy=inspector-screen]').should('contain.text', 'Screen');
   });
 });
