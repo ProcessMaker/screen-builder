@@ -573,7 +573,15 @@ export default {
         item['editor-control'] = item['editor-component'];
 
         if (item.config.event === 'submit') {
-          item['editor-control'] = 'FormSubmit';
+          if (item['editor-component'] === 'FormNestedScreen') {
+            // Old nested screens erroneously had an event key. Remove it here
+            // and set the editor-control back to FormNestedScreen.
+            delete item.config.event;
+            item['editor-control'] = 'FormNestedScreen';
+            item.config.name = 'Nested Screen';
+          } else {
+            item['editor-control'] = 'FormSubmit';
+          }
         }
         if (item.config.event === 'pageNavigate') {
           item['editor-control'] = 'PageNavigation';
