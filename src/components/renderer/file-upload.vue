@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-uni-for="name">{{ label }} {{validation}}</label>
+    <label v-uni-for="name">{{ label }} {{ validation }}</label>
     <b-card v-if="inPreviewMode" class="mb-2">
       {{ $t('File uploads are unavailable in preview mode.') }}
     </b-card>
