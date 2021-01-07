@@ -334,13 +334,6 @@ export default {
       this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
 
-      this.$children.forEach(child => {
-        const childErrors = this.checkForNestedScreenErrors(child);
-        if (!childErrors) {
-          return;
-        }
-        this.errors = Object.assign(this.errors, childErrors);
-      });
       if (this.errors) {
         this.formSubmitErrorClass = 'invalid-form-submission';
       }

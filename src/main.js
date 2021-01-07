@@ -41,7 +41,13 @@ window.ProcessMaker = {
                     'label': 'First name',
                     'name': 'firstname',
                     'placeholder': '',
-                    'validation': '',
+                    "validation": [
+                      {
+                        "value": "required",
+                        "helper": "Checks if the length of the String representation of the value is >",
+                        "content": "Required"
+                      }
+                    ],
                     'helper': null,
                     'type': 'text',
                     'dataFormat': 'string',

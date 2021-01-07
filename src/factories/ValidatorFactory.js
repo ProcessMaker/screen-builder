@@ -1,4 +1,5 @@
 import customValidationRules from './CustomValidationRules';
+import _ from 'lodash';
 const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {
@@ -40,6 +41,13 @@ export function ValidatorFactory(config, data) {
           validate.ruleFormLoop(item.config.name, item.items);
         } else {
           validate.getDataAndRules(item.items);
+        }
+      }
+
+      if (item.component === 'FormNestedScreen') {
+        const nestedScreen = _.get(window, 'nestedScreens.id_' + item.config.screen);
+        if (nestedScreen) {
+          validate.getDataAndRules(nestedScreen);
         }
       }
 
