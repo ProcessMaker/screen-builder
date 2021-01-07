@@ -112,6 +112,11 @@ export default {
 
             if (this.ancestorScreens.includes(this.screenTitle)) {
               globalObject.ProcessMaker.alert(`Rendering of nested "${this.screenTitle}" screen was disallowed to prevent loop.`, 'warning');
+            } else {
+              if (!globalObject['nestedScreens']) {
+                globalObject['nestedScreens'] = {};
+              }
+              globalObject.nestedScreens["id_" + id] = this.config;
             }
           });
       }
