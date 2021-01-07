@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-uni-for="name">{{ label }}</label>
+    <label v-uni-for="name">{{ label }} {{validation}}</label>
     <b-card v-if="inPreviewMode" class="mb-2">
       {{ $t('File uploads are unavailable in preview mode.') }}
     </b-card>
@@ -14,6 +14,7 @@
       @file-removed="removed"
       @file-success="fileUploaded"
       @file-added="addFile"
+      :class="{'was-validated': required}"
     >
       <uploader-unsupport/>
 
@@ -22,12 +23,13 @@
         <uploader-btn id="submitFile" class="btn btn-secondary text-white">{{ $t('select file') }}</uploader-btn>
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
-
       <uploader-list>
         <template slot-scope="{ fileList }">
           <ul>
             <li v-if="fileList.length === 0 && value">
-              <i class="fas fa-paperclip"/> {{ displayName }}
+              <div class="border-bottom py-2">
+                <i class="fas fa-paperclip"/> {{ displayName }}
+              </div>
             </li>
             <li v-for="file in fileList" :key="file.id">
               <uploader-file :file="file" :list="true"/>
@@ -35,6 +37,9 @@
           </ul>
         </template>
       </uploader-list>
+      <div class="invalid-feedback" :class="{'d-block': required && !value}">
+        {{ $t('Field is required') }}
+      </div>
     </uploader>
 
     <div class="invalid-feedback" v-if="error">{{ error }}</div>
@@ -53,7 +58,7 @@ const uniqIdsMixin = createUniqIdsMixin();
 export default {
   components: uploader,
   mixins: [uniqIdsMixin],
-  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent'],
+  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config'],
   beforeMount() {
     this.getFileType();
   },
@@ -71,6 +76,9 @@ export default {
     }
   },
   computed: {
+    required() {
+      return this.config.validation === 'required';
+    },
     inPreviewMode() {
       return this.mode === 'preview' && !window.exampleScreens;
     },
