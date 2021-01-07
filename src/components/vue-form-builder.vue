@@ -33,7 +33,7 @@
             </b-list-group-item>
 
             <li v-if="!filteredControls.length" class="list-group-item">
-              <span class="text-danger">{{ $t('Control Not Found') }}</span>
+              <slot/>
             </li>
           </draggable>
         </b-card-body>

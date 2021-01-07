@@ -20,6 +20,7 @@ import FormButton from './renderer/form-button';
 import FileUpload from './renderer/file-upload.vue';
 import FileDownload from './renderer/file-download.vue';
 import FormMaskedInput from './renderer/form-masked-input';
+import DefaultLoadingSpinner from './utils/default-loading-spinner';
 import DataProvider from '../DataProvider';
 
 const rendererComponents = {
@@ -63,7 +64,7 @@ export default {
     Vue.component('task', Task);
     Vue.component('vue-form-builder', VueFormBuilder);
     Vue.component('vue-form-renderer', VueFormRenderer);
-
+    Vue.component('default-loading-spinner', DefaultLoadingSpinner);
     Vue.use(VueFormElements);
     Vue.component('FormButton', FormButton);
     Vue.component('FileUpload', FileUpload);
