@@ -580,7 +580,9 @@ export default {
             item['editor-control'] = 'FormNestedScreen';
             item.config.name = 'Nested Screen';
           } else {
-            item['editor-control'] = 'FormSubmit';
+            if (item['editor-control'] !== 'FormImage') {
+              item['editor-control'] = 'FormSubmit';
+            }
           }
         }
         if (item.config.event === 'pageNavigate') {
