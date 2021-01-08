@@ -145,6 +145,7 @@
                   <div>{{ endpointError }}</div>
                 </div>
               </div>
+              <outbound-config v-model="config.script_configuration" />
               <div class="form-group">
                 <label>{{ $t('Input Data') }}</label>
                 <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
@@ -165,7 +166,6 @@
                 </div>
               </div>
 
-              <outbound-config v-model="config.script_configuration" />
 
             </div>
           </div>

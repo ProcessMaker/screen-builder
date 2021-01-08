@@ -57,7 +57,7 @@
               name="value"
               :placeholder="$t('New Value')"
               type="text"
-              class="form-control form-control-sm"
+              class="form-control"
             >
           </td>
           <td class="align-middle text-right p-1">
