@@ -6,7 +6,7 @@
           <div class="mb-0">
             <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig" data-cy="watchers-accordion-configuration">
               <div><i class="fas fa-fw fa-cog"/> Configuration</div>
-              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>
             </button>
           </div>
         </div>
@@ -39,7 +39,7 @@
             <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
               <div>{{ $t('The Variable to Watch field is required') }}</div>
             </div>
-                  
+
             <form-checkbox
               :name="$t('Run Synchronously')"
               :label="$t('Run Synchronously')"
@@ -56,7 +56,7 @@
           <div class="mb-0">
             <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherSource" data-cy="watchers-accordion-source">
               <div><i class="fas fa-fw fa-file-upload"/> Source</div>
-              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>
             </button>
           </div>
         </div>
@@ -104,7 +104,6 @@
                   <div>{{ $t('This must be valid JSON') }}</div>
                 </div>
               </div>
-
               <div class="form-group">
                 <label>{{ $t('Script Configuration') }}</label>
                 <div class="form-border" :class="{'is-invalid': !jsonIsValid('script_configuration')}">
@@ -166,6 +165,7 @@
                 </div>
               </div>
 
+              <outbound-config v-model="config.script_configuration" />
 
             </div>
           </div>
@@ -176,7 +176,7 @@
           <div class="mb-0">
             <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherOutput" data-cy="watchers-accordion-output">
               <div><i class="fas fa-fw fa-file-download"/> Output</div>
-              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>
             </button>
           </div>
         </div>
@@ -192,9 +192,9 @@
               data-cy="watchers-watcher-output_variable"
             />
             <data-mapping v-if="isDatasource" v-model="config.script_configuration" />
-          </div>                
+          </div>
         </div>
-      </div>        
+      </div>
     </div>
 
     <div class="d-flex justify-content-end mt-3">
@@ -221,6 +221,8 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 import DataMapping from './inspector/data-mapping';
+import OutboundConfig from './inspector/outbound-config';
+
 import _ from 'lodash';
 
 const globalObject = typeof window === 'undefined'
@@ -235,6 +237,7 @@ export default {
     FormCheckbox,
     MonacoEditor,
     DataMapping,
+    OutboundConfig,
   },
   props: {
     config: {

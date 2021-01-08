@@ -20,13 +20,24 @@
       <tbody>
         <tr v-for="(row,i) in dataMapping" :key="i">
           <td class="p-1">
-            <input
+            <multiselect
               v-model="row.key"
-              name="key"
-              :placeholder="$t('New Key')"
-              type="text"
-              class="form-control form-control-sm"
+              :placeholder="$t('Select an Option')"
+              :options="keys"
+              :multiple="false"
+              :show-labels="false"
+              :searchable="true"
+              :internal-search="false"
+              @search-change="loadOptions"
+              @open="loadOptions"
             >
+              <template slot="noResult">
+                <slot name="noResult">{{ $t('Not found') }}</slot>
+              </template>
+              <template slot="noOptions">
+                <slot name="noOptions">{{ $t('Not available') }}</slot>
+              </template>
+            </multiselect>
           </td>
           <td class="p-1">
             <input
@@ -56,7 +67,9 @@
 
 <script>
 
+import Multiselect from 'vue-multiselect';
 export default {
+  components: { Multiselect },
   mixins: [],
   props: {
     value: String,
@@ -65,9 +78,26 @@ export default {
     return {
       field: '',
       dataMapping: [],
+      keys: [],
     };
   },
   methods: {
+    loadOptions() {
+      const config = this.getConfig();
+      let endpoint = config.endpoint;
+      let that = this;
+      ProcessMaker.apiClient.get(`/data_sources/${config.dataSource}`)
+        .then(response => {
+          let endpointData =_.get(response, `data.endpoints.${endpoint}`, null);
+          that.dsEndpoint = endpointData;
+          if (endpointData === null) {
+            return;
+          }
+
+          let mappings = _.get(endpointData, 'dataMapping', []);
+          that.keys = mappings.map(item => item['key']);
+        });
+    },
     getConfig() {
       try {
         return JSON.parse(this.value);
