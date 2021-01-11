@@ -4,6 +4,13 @@ describe('Record list', () => {
   beforeEach(() => {
     cy.server();
     cy.visit('/');
+    cy.window().then(win => {
+      // Add request-id header
+      const requestIdMeta = window.document.createElement('meta');
+      requestIdMeta.setAttribute('name', 'request-id');
+      requestIdMeta.setAttribute('content', '1');
+      win.document.head.appendChild(requestIdMeta);
+    });
   });
 
   it('Invalid default values', () => {
@@ -33,6 +40,78 @@ describe('Record list', () => {
         {
           'fullname': 'Miss Patricia Smith',
           'date': new Date().toISOString().substr(0,10),
+        },
+      ],
+    });
+  });
+
+  it('FileUpload in record lists', () => {
+    cy.loadFromJson('record_list_fileupload.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+
+    // Upload file
+    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+      message: 'The file was uploaded.',
+      fileUploadId: 1,
+    }));
+    cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file1"] input[type=file]', 'avatar.jpeg', 'image/jpg');
+    cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file2"] input[type=file]', 'record_list_fileupload.json', 'application/json');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button:contains(Ok)').click();
+
+    // Check the file is rendered in the record list
+    cy.get('[data-cy=preview-content] table tbody tr td').should('contain.text', 'avatar.jpeg');
+    cy.get('[data-cy=preview-content] table tbody tr td').should('contain.text', 'record_list_fileupload.json');
+
+    // Edit record and check the uploaded files are displayed
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]').should('contain.text', 'avatar.jpeg');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', 'record_list_fileupload.json');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Cancel)').click();
+
+    // Verify the data structure
+    cy.assertPreviewData({
+      'form_record_list_1': [
+        {
+          'file1': 'avatar.jpeg',
+          'file2': 'record_list_fileupload.json',
+        },
+      ],
+    });
+  });
+
+  it('Required FileUpload in record lists', () => {
+    cy.loadFromJson('record_list_fileupload_required.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+
+    // Upload file
+    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+      message: 'The file was uploaded.',
+      fileUploadId: 1,
+    }));
+    cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file1"] input[type=file]', 'avatar.jpeg', 'image/jpg');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button:contains(Ok)').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', 'required');
+    cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file2"] input[type=file]', 'record_list_fileupload_required.json', 'application/json');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button:contains(Ok)').click();
+
+    // Check the file is rendered in the record list
+    cy.get('[data-cy=preview-content] table tbody tr td').should('contain.text', 'avatar.jpeg');
+    cy.get('[data-cy=preview-content] table tbody tr td').should('contain.text', 'record_list_fileupload_required.json');
+
+    // Edit record and check the uploaded files are displayed
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]').should('contain.text', 'avatar.jpeg');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', 'record_list_fileupload_required.json');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Cancel)').click();
+
+    // Verify the data structure
+    cy.assertPreviewData({
+      'form_record_list_1': [
+        {
+          'file1': 'avatar.jpeg',
+          'file2': 'record_list_fileupload_required.json',
         },
       ],
     });
