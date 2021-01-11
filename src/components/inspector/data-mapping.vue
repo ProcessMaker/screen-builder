@@ -85,17 +85,16 @@ export default {
     loadOptions() {
       const config = this.getConfig();
       let endpoint = config.endpoint;
-      let that = this;
-      ProcessMaker.apiClient.get(`/data_sources/${config.dataSource}`)
+      window.ProcessMaker.apiClient.get(`/data_sources/${config.dataSource}`)
         .then(response => {
-          let endpointData =_.get(response, `data.endpoints.${endpoint}`, null);
-          that.dsEndpoint = endpointData;
+          let endpointData =window._.get(response, `data.endpoints.${endpoint}`, null);
+          this.dsEndpoint = endpointData;
           if (endpointData === null) {
             return;
           }
 
           let mappings = _.get(endpointData, 'dataMapping', []);
-          that.keys = mappings.map(item => item['key']);
+          this.keys = mappings.map(item => item['key']);
         });
     },
     getConfig() {

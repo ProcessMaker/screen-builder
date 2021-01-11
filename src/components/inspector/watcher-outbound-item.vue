@@ -1,15 +1,14 @@
 <template>
-  <div class="card mb-2" v-if="showOptionCard">
+  <div class="card mb-2" v-show="visible">
 
-    <div class="card-header"> {{ $t('Add Option') }} </div>
+    <div class="card-header"> {{ title }}</div>
 
     <div class="card-body p-2">
-      <label for="option-param">{{ $t('Type') }}</label>
+      <label>{{ $t('Type') }}</label>
       <multiselect
-        data-cy="inspector-connector-property-type"
         v-model="type"
         :placeholder="$t('Select a parameter type')"
-        :options="typeOptions"
+        :options="types"
         :multiple="false"
         :show-labels="false"
         :searchable="true"
@@ -23,12 +22,11 @@
         </template>
       </multiselect>
 
-      <label for="option-property">{{ $t('Property') }}</label>
+      <label>{{ $t('Property') }}</label>
       <multiselect
-        data-cy="inspector-connector-property"
-        v-model="connectorProperty"
+        v-model="key"
         :placeholder="$t('Select a connector property')"
-        :options="connectorProperties"
+        :options="apiProperties"
         :multiple="false"
         :show-labels="false"
         :searchable="true"
@@ -47,8 +45,8 @@
         <div>{{ optionError }}</div>
       </div>
 
-      <label class="mt-3" for="option-value">{{ $t('Request Variable') }}</label>
-      <b-form-input id="option-value" v-model="requestVariable" data-cy="inspector-request-variable" />
+      <label class="mt-3">{{ $t('Request Variable') }}</label>
+      <b-form-input id="option-value" v-model="requestVariable" data-cy="inspector-request-variable"/>
       <div v-if="optionError" class="invalid-feedback d-block text-right">
         <div>{{ optionError }}</div>
       </div>
@@ -56,10 +54,10 @@
     </div>
 
     <div class="card-footer text-right p-2">
-      <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="showOptionCard=false" data-cy="inspector-option-cancel">
+      <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="hideCard()" data-cy="option-cancel">
         {{ $t('Cancel') }}
       </button>
-      <button type="button" class="btn btn-sm btn-secondary" @click="addOption()" data-cy="inspector-option-save">
+      <button type="button" class="btn btn-sm btn-secondary" @click="updateOption()" data-cy="option-save">
         {{ $t('Save') }}
       </button>
     </div>
@@ -68,60 +66,108 @@
 
 
 <script>
+import Multiselect from 'vue-multiselect';
 
 export default {
+  components: {Multiselect},
   mixins: [],
-  props: {
-    value: String,
-  },
+  props: ['value', 'title', 'visible', 'action'],
   data() {
     return {
-      field: '',
+      requestVariable: null,
+      optionError: null,
       outboundConfig: [],
+      types: [],
+      type: null,
+      key: null,
+      apiProperties: [],
+      visibleLoc: this.visible || false,
     };
   },
   methods: {
-    getConfig() {
-      try {
-        return JSON.parse(this.value);
-      } catch (e) {
-        return {};
+    loadOptions() {
+      return;
+      this.connectorProperties = [];
+      if (_.isNil(this.config.dataSource) || _.isNil(this.config.endpoint)) {
+        return;
       }
-    },
-    setConfig(name, value) {
-      const config = this.getConfig();
-      if (JSON.stringify(config[name]) !== JSON.stringify(value)) {
-        config[name] = value;
-        this.$emit('input', JSON.stringify(config));
+
+      // Strip GET, POST, etc from endpoint name
+      let endpoint = this.config.endpoint;
+      const parts = this.config.endpoint.split(':');
+      if (parts.length > 1) {
+        parts.shift();
+        endpoint = parts.join('').trim();
       }
+
+      ProcessMaker.apiClient.get(`data_sources/${this.config.dataSource}`)
+        .then(response => {
+          console.log('xxx response:', response);
+          let endpointData = _.get(response, `data.endpoints.${endpoint}`, null);
+          if (endpointData === null) {
+            return;
+          }
+
+          this.connectorProperties = [];
+
+          if (this.connectorPropertyType === 'HEADER') {
+            let headerProps = _.get(endpointData, 'headers', []);
+
+            this.connectorProperties = headerProps.reduce((acc, header) => {
+              if (_.findIndex(this.connectorProperties, {'key': header.key}) < 0) {
+                acc.push(header.key);
+              }
+              return acc;
+            },
+            []);
+          }
+
+          if (this.connectorPropertyType === 'PARAM') {
+            let paramProps = _.get(endpointData, 'params', []);
+            this.connectorProperties = paramProps.reduce((acc, param) => {
+              if (_.findIndex(this.connectorProperties, {'key': param.key}) < 0) {
+                acc.push(param.key);
+              }
+              return acc;
+            },
+            []);
+
+            //add url parameters:
+            const matchedParams = endpointData.url.matchAll(/\{\{(.+?)\}\}/gm);
+            for (const match of matchedParams) {
+              const urlParam = match[1];
+              // Add url param if it is not defined withing the connector's param list
+              if (this.connectorProperties.every(item => item !== urlParam)) {
+                this.connectorProperties.push(urlParam);
+              }
+            }
+          }
+
+          if (this.connectorPropertyType === 'BODY') {
+            const matchedParams = endpointData.body.matchAll(/\{\{(.+?)\}\}/gm);
+            for (const match of matchedParams) {
+              const urlParam = match[1];
+              // Add url param if it is not defined withing the connector's param list
+              if (this.connectorProperties.every(item => item !== urlParam)) {
+                this.connectorProperties.push(urlParam);
+              }
+            }
+          }
+
+        })
+        .catch(error => {
+          // Ingornre error
+        });
     },
-    removeRowIndex(index) {
-      this.outboundConfig.splice(index, 1);
+
+    hideCard() {
+      this.$emit('hide-card-item', false);
     },
-    addMapping() {
-      this.outboundConfig.push({key: '', value: ''});
+    updateOption() {
+      this.$emit(`${this.action}-item`, {param: this.type, property: this.key, value: this.requestVariable});
     },
   },
   watch: {
-    outboundConfig: {
-      deep: true,
-      immediate: true,
-      handler(outboundConfig) {
-        this.setConfig('outboundConfig', outboundConfig);
-      },
-    },
-    value: {
-      immediate: true,
-      handler() {
-        const outboundConfig = this.getConfig().outboundConfig;
-        if (outboundConfig) {
-          this.outboundConfig.splice(0);
-          outboundConfig.forEach(element => {
-            this.outboundConfig.push(element);
-          });
-        }
-      },
-    },
   },
 };
 </script>

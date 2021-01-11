@@ -51,7 +51,7 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" style="overflow:visible">
         <div class="card-header p-0">
           <div class="mb-0">
             <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherSource" data-cy="watchers-accordion-source">
@@ -145,8 +145,8 @@
                   <div>{{ endpointError }}</div>
                 </div>
               </div>
-              <outbound-config v-model="config.script_configuration" />
-              <div class="form-group">
+              <outbound-config v-model="config.script_configuration" v-if="!showInputDataForSelectedConnector"/>
+              <div class="form-group" v-if="showInputDataForSelectedConnector">
                 <label>{{ $t('Input Data') }}</label>
                 <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
                   <monaco-editor
@@ -322,6 +322,10 @@ export default {
     },
     isScript() {
       return !this.config.script || this.config.script.id.substr(0, 6) === 'script';
+    },
+    showInputDataForSelectedConnector(){
+      const config = JSON.parse(this.config.script_configuration);
+      return config.outboundConfig ? false : true;
     },
   },
   methods: {
