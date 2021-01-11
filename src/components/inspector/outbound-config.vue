@@ -142,7 +142,7 @@ export default {
           this.apiProperties = [];
 
           if (rowType === 'HEADER') {
-            let headerProps = window_.get(endpointData, 'headers', []);
+            let headerProps = window._.get(endpointData, 'headers', []);
 
             this.apiProperties = headerProps.reduce((acc, header) => {
               if (window._.findIndex(this.apiProperties, {'key': header.key}) < 0) {
@@ -185,9 +185,6 @@ export default {
             }
           }
 
-        })
-        .catch(error => {
-          // Ignore error
         });
     },
 
