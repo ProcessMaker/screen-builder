@@ -118,7 +118,7 @@ export default {
     loadOptions(index) {
       const config = this.getConfig();
       this.apiProperties = [];
-      if (_.isNil(config.dataSource) || _.isNil(config.endpoint)) {
+      if (window._.isNil(config.dataSource) || window._.isNil(config.endpoint)) {
         return;
       }
 
@@ -130,23 +130,22 @@ export default {
         endpoint = parts.join('').trim();
       }
 
-      let that = this;
 
-      ProcessMaker.apiClient.get(`/data_sources/${config.dataSource}`)
-        .then(function(response)  {
-          const rowType = that.outboundConfig[index].type;
-          let endpointData = _.get(response, `data.endpoints.${endpoint}`, null);
+      window.ProcessMaker.apiClient.get(`/data_sources/${config.dataSource}`)
+        .then(response  =>  {
+          const rowType = this.outboundConfig[index].type;
+          let endpointData = window._.get(response, `data.endpoints.${endpoint}`, null);
           if (endpointData === null) {
             return;
           }
 
-          that.apiProperties = [];
+          this.apiProperties = [];
 
           if (rowType === 'HEADER') {
-            let headerProps = _.get(endpointData, 'headers', []);
+            let headerProps = window_.get(endpointData, 'headers', []);
 
-            that.apiProperties = headerProps.reduce((acc, header) => {
-              if (_.findIndex(that.apiProperties, {'key': header.key}) < 0) {
+            this.apiProperties = headerProps.reduce((acc, header) => {
+              if (window._.findIndex(this.apiProperties, {'key': header.key}) < 0) {
                 acc.push(header.key);
               }
               return acc;
@@ -155,9 +154,9 @@ export default {
           }
 
           if (rowType === 'PARAM') {
-            let paramProps = _.get(endpointData, 'params', []);
-            that.apiProperties = paramProps.reduce((acc, param) => {
-              if (_.findIndex(that.apiProperties, {'key': param.key}) < 0) {
+            let paramProps = window._.get(endpointData, 'params', []);
+            this.apiProperties = paramProps.reduce((acc, param) => {
+              if (window._.findIndex(this.apiProperties, {'key': param.key}) < 0) {
                 acc.push(param.key);
               }
               return acc;
@@ -169,8 +168,8 @@ export default {
             for (const match of matchedParams) {
               const urlParam = match[1];
               // Add url param if it is not defined withing the connector's param list
-              if (that.apiProperties.every(item => item !== urlParam)) {
-                that.apiProperties.push(urlParam);
+              if (this.apiProperties.every(item => item !== urlParam)) {
+                this.apiProperties.push(urlParam);
               }
             }
           }
@@ -180,8 +179,8 @@ export default {
             for (const match of matchedParams) {
               const urlParam = match[1];
               // Add url param if it is not defined withing the connector's param list
-              if (that.apiProperties.every(item => item !== urlParam)) {
-                that.apiProperties.push(urlParam);
+              if (this.apiProperties.every(item => item !== urlParam)) {
+                this.apiProperties.push(urlParam);
               }
             }
           }
