@@ -93,7 +93,7 @@ export default {
             return;
           }
 
-          let mappings = _.get(endpointData, 'dataMapping', []);
+          let mappings = window._.get(endpointData, 'dataMapping', []);
           this.keys = mappings.map(item => item['key']);
         });
     },
