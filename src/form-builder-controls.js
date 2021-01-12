@@ -610,10 +610,10 @@ export default [
           type: 'ScreenSelector',
           field: 'screen',
           config: {
-            label: 'Screen test',
+            label: 'Screen',
             name: 'SelectScreen',
             'validate-nested': true,
-            helper: 'Select a screen marco',
+            helper: 'Select a screen',
           },
         },
       ],
