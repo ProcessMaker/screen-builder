@@ -26,9 +26,14 @@
 </template>
 
 <script>
+import { get } from 'lodash';
 import Multiselect from 'vue-multiselect';
 import { multiselectApi } from '@/mixins';
 import { formTypes } from '@/global-properties';
+
+const globalObject = typeof window === 'undefined'
+  ? global
+  : window;
 
 export default {
   mixins: [multiselectApi],
@@ -82,7 +87,7 @@ export default {
         this.nav = false;
         this.containsNavbutton(value.config);
         if (this.nav) {
-          window.ProcessMaker.alert(this.$t('The nested form contains navigation buttons'), 'warning');
+          globalObject.ProcessMaker.alert(this.$t('The nested form contains navigation buttons'), 'warning');
           return false;
         }
       }
