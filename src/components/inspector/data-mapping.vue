@@ -87,6 +87,7 @@ export default {
     loadOptions() {
       const config = this.getConfig();
       let endpoint = config.endpoint;
+      this.options=[];
       window.ProcessMaker.apiClient.get(`/data_sources/${config.dataSource}`)
         .then(response => {
           let endpointData =window._.get(response, `data.endpoints.${endpoint}`, null);
