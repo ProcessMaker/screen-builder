@@ -12,8 +12,8 @@
     <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('Key') }}</th>
-          <th scope="col">{{ $t('Value') }}</th>
+          <th scope="col">{{ $t('Source') }}</th>
+          <th scope="col">{{ $t('Form Variable') }}</th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -21,9 +21,9 @@
         <tr v-for="(row,i) in dataMapping" :key="i">
           <td class="p-1">
             <multiselect
-              v-model="row.key"
+              v-model="row.value"
               :placeholder="$t('Select an Option')"
-              :options="keys"
+              :options="options"
               :multiple="false"
               :show-labels="false"
               :searchable="true"
@@ -39,15 +39,17 @@
               </template>
             </multiselect>
           </td>
+
           <td class="p-1">
             <input
-              v-model="row.value"
-              name="value"
+              v-model="row.key"
+              name="key"
               :placeholder="$t('New Value')"
               type="text"
               class="form-control"
             >
           </td>
+
           <td class="align-middle text-right p-1">
             <a href="javascript:void(0)" class="btn btn-sm btn-danger" @click="removeRowIndex(i)">
               <i class="fa fa-trash-alt" />
@@ -78,7 +80,7 @@ export default {
     return {
       field: '',
       dataMapping: [],
-      keys: [],
+      options: [],
     };
   },
   methods: {
@@ -94,7 +96,7 @@ export default {
           }
 
           let mappings = window._.get(endpointData, 'dataMapping', []);
-          this.keys = mappings.map(item => item['key']);
+          this.options = mappings.map(item => item['value']);
         });
     },
     getConfig() {

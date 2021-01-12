@@ -147,25 +147,32 @@
               </div>
               <outbound-config v-model="config.script_configuration" v-if="!showInputDataForSelectedConnector"/>
               <div class="form-group" v-if="showInputDataForSelectedConnector">
-                <label>{{ $t('Input Data') }}</label>
-                <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
-                  <monaco-editor
-                    :options="monacoOptions"
-                    class="editor"
-                    v-model="config.input_data"
-                    language="json"
-                    data-cy="watchers-watcher-input_data"
-                  />
+                <div class="row pl-3">
+                  <span class="text-danger">
+                    * Deprecation Warning: Recreate the watcher to use the new format.
+                    Version 4.2 will not support Input Data as a JSON object.
+                  </span>
                 </div>
-                <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
-                <div v-if="inputDataInvalid" class="invalid-feedback d-block">
-                  <div>{{ $t('The Input Data field is required') }}</div>
-                </div>
-                <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
-                  <div>{{ $t('This must be valid JSON') }}</div>
+                <div class="row pl-3 mt-1">
+                  <label>{{ $t('Input Data') }}</label>
+                  <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
+                    <monaco-editor
+                      :options="monacoOptions"
+                      class="editor"
+                      v-model="config.input_data"
+                      language="json"
+                      data-cy="watchers-watcher-input_data"
+                    />
+                  </div>
+                  <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
+                  <div v-if="inputDataInvalid" class="invalid-feedback d-block">
+                    <div>{{ $t('The Input Data field is required') }}</div>
+                  </div>
+                  <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+                    <div>{{ $t('This must be valid JSON') }}</div>
+                  </div>
                 </div>
               </div>
-
 
             </div>
           </div>
