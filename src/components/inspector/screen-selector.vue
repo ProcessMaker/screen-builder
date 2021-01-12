@@ -92,7 +92,7 @@ export default {
         }
       }
       this.$emit('input', this.storeId ? get(value, this.trackBy) : value);
-    }
+    },
   },
   mounted() {
     let pmql = '(type = "FORM" or type = "DISPLAY")';
