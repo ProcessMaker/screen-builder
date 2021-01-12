@@ -46,6 +46,48 @@ export default {
       type: String,
       default: formTypes.form,
     },
+    validateNested: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    isNavButton(item) {
+      return item.config && item.component === 'FormButton' && item.config.event === 'pageNavigate';
+    },
+    containsNavbutton(config) {
+      config.forEach(item => {
+
+        //If the element has containers
+        if (Array.isArray(item)) {
+          this.containsNavbutton(item);
+        }
+
+        //If the element has items
+        if (item.items) {
+          this.containsNavbutton(item.items);
+        }
+
+        //hidden buttons
+        if (this.isNavButton(item)) {
+          this.nav = true;
+        }
+
+      });
+    },
+
+    change(value) {
+      if (value && this.validateNested) {
+        // validate if the nested form has navigation buttons
+        this.nav = false;
+        this.containsNavbutton(value.config);
+        if (this.nav) {
+          window.ProcessMaker.alert(this.$t('The nested form contains navigation buttons'), 'warning');
+          return false;
+        }
+      }
+      this.$emit('input', this.storeId ? get(value, this.trackBy) : value);
+    }
   },
   mounted() {
     let pmql = '(type = "FORM" or type = "DISPLAY")';
