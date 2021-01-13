@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div class="form-group"  style="overflow-x: hidden">
     <button @click="click" :class="classList" :name="name">{{ label }}</button>
   </div>
 </template>
