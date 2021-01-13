@@ -1,7 +1,7 @@
 <template>
   <div id="tab-form" role="tabpanel" aria-labelledby="tab-form" class="tab-pane active show h-100">
     <template v-if="screen">
-      <div class="card card-body border-top-0 h-100">
+      <div class="card card-body border-top-0 h-100" :class="screenTypeClass"> 
         <div v-if="renderComponent === 'task-screen'">
           <vue-form-renderer
             ref="renderer"
@@ -188,6 +188,13 @@ export default {
         this.task && this.task.advanceStatus === 'completed' && !this.screen
       );
     },
+    screenTypeClass() {
+      if (!this.screen) {
+        return;
+      }
+      const screenType = this.screen.type;
+      return screenType.toLowerCase() + '-screen';
+    }
   },
   methods: {
     loadScreen(id) {
