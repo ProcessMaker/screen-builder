@@ -194,7 +194,7 @@ export default {
       }
       const screenType = this.screen.type;
       return screenType.toLowerCase() + '-screen';
-    }
+    },
   },
   methods: {
     loadScreen(id) {
