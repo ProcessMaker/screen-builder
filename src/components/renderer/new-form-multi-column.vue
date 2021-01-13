@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" style="overflow-x: hidden">
     <slot />
   </div>
 </template>
