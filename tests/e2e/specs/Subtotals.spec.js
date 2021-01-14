@@ -5,7 +5,7 @@ describe('Subtotals implementations', () => {
     cy.visit('/');
     cy.server();
   });
-/*
+
   it('Simple using calculated properties and defualt values', () => {
     cy.loadFromJson('subtotals_with_loops.json', 0);
     cy.get('[data-cy=mode-preview]').click();
@@ -158,8 +158,8 @@ describe('Subtotals implementations', () => {
         'total': 431,
       });
   });
-*/
-  it('Using calculated fields', () => {
+
+it('Using calculated fields', () => {
     cy.loadFromJson('subtotasl_calc_props.json', 0);
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=amount]').type('123');
@@ -180,6 +180,41 @@ describe('Subtotals implementations', () => {
         'amount_1': 4,
         'total_line_1': 12,
         'total_total': 381,
+      });
+  });
+
+  it('Using calculated fields 2', () => {
+    cy.loadFromJson('subtotasl_calc_props_currency.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    cy.get('[data-cy=preview-content] [name=count_1]').type('4');
+    cy.get('[data-cy=preview-content] [name=cost_1]').type('3');
+    cy.get('[data-cy=preview-content] [name=subtotal_1]').should('have.value', '$ 12.00 USD');
+
+    cy.get('[data-cy=preview-content] [name=count_2]').type('123');
+    cy.get('[data-cy=preview-content] [name=cost_2]').type('3');
+    cy.get('[data-cy=preview-content] [name=subtotal_2]').should('have.value', '$ 369.00 USD');
+
+    cy.get('[data-cy=preview-content] [name=count_3]').type('12');
+    cy.get('[data-cy=preview-content] [name=cost_3]').type('2');
+    cy.get('[data-cy=preview-content] [name=subtotal_3]').should('have.value', '$ 24.00 USD');
+
+    // Check final result
+    cy.assertPreviewData(
+      {
+        'input_1': null,
+        'input_2': null,
+        'input_3': null,
+        'cost_1': 3,
+        'count_1': 4,
+        'subtotal_1': 12,
+        'cost_2': 3,
+        'count_2': 123,
+        'subtotal_2': 369,
+        'cost_3': 2,
+        'count_3': 12,
+        'subtotal_3': 24,
+        'total': 405,
       });
   });
 });
