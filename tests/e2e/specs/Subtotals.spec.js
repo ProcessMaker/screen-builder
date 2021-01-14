@@ -5,7 +5,7 @@ describe('Subtotals implementations', () => {
     cy.visit('/');
     cy.server();
   });
-
+/*
   it('Simple using calculated properties and defualt values', () => {
     cy.loadFromJson('subtotals_with_loops.json', 0);
     cy.get('[data-cy=mode-preview]').click();
@@ -156,6 +156,30 @@ describe('Subtotals implementations', () => {
           },
         ],
         'total': 431,
+      });
+  });
+*/
+  it('Using calculated fields', () => {
+    cy.loadFromJson('subtotasl_calc_props.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=amount]').type('123');
+    cy.get('[data-cy=preview-content] [name=quantity]').type('3');
+    cy.get('[data-cy=preview-content] [name=total_line]').should('have.value', '$ 369.00 USD');
+
+    cy.get('[data-cy=preview-content] [name=amount_1]').type('4');
+    cy.get('[data-cy=preview-content] [name=quantity_1]').type('3');
+    cy.get('[data-cy=preview-content] [name=total_line_1]').should('have.value', '$ 12.00 USD');
+
+    // Check final result
+    cy.assertPreviewData(
+      {
+        'quantity': 3,
+        'amount': 123,
+        'total_line': 369,
+        'quantity_1': 3,
+        'amount_1': 4,
+        'total_line_1': 12,
+        'total_total': 381,
       });
   });
 });
