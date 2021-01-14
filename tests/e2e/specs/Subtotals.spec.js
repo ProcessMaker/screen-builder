@@ -159,7 +159,7 @@ describe('Subtotals implementations', () => {
       });
   });
 
-it('Using calculated fields', () => {
+  it('Using calculated fields', () => {
     cy.loadFromJson('subtotasl_calc_props.json', 0);
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=amount]').type('123');
