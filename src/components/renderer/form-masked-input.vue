@@ -36,11 +36,10 @@
 
 <script>
 import { createUniqIdsMixin } from 'vue-uniq-ids';
-import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
-import DataFormatMixin from '@processmaker/vue-form-elements/src/components/mixins/DataFormat';
 import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
 import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
+import moment from 'moment';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -59,7 +58,7 @@ const componentTypesConfigs = {
 export default {
   inheritAttrs: false,
   components: { TheMask, Inputmasked },
-  mixins: [uniqIdsMixin, ValidationMixin, DataFormatMixin],
+  mixins: [ uniqIdsMixin ],
   props: [
     'value',
     'label',
@@ -68,22 +67,47 @@ export default {
     'name',
     'controlClass',
     'dataMask',
+    'config',
   ],
   methods: {
-    formatValueIfValid(value) {
-      if (this.dataFormat === 'percentage') {
-        return value;
-      } else {
-        return DataFormatMixin.methods.formatValueIfValid.bind(this)(value);
-      }
-    },
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
     },
     getUserDateFormat,
     getUserDateTimeFormat,
-    convertToData(value) {
-      return value;
+    convertToData(newValue) {
+      switch (this.dataFormat) {
+        case 'string':
+          newValue = newValue.toString();
+          break;
+        case 'boolean':
+          newValue = Boolean(newValue);
+          break;
+        case 'currency':
+        case 'percentage':
+        case 'float':
+          newValue = parseFloat(newValue);
+          break;
+        case 'int':
+          newValue = parseInt(newValue);
+          break;
+        case 'date':
+          if (this.componentName === 'FormDatePicker') {
+            newValue = moment.utc(newValue, [getUserDateFormat(), moment.ISO_8601], true).toISOString().split(RegExp('T[0-9]'))[0];
+          }
+          break;
+        case 'datetime':
+          if (this.componentName === 'FormDatePicker') {
+            newValue = moment(newValue, [getUserDateTimeFormat(), moment.ISO_8601], true).toISOString();
+          }
+          break;
+        case 'array':
+          break;
+        default:
+          newValue = newValue.toString();
+          break;
+      }
+      return newValue;
     },
     convertFromData(value) {
       return value;
@@ -97,6 +121,9 @@ export default {
     },
   },
   computed: {
+    dataFormat() {
+      return this.config.dataFormat;
+    },
     maxlength() {
       if (this.dataFormat === 'int' || this.dataFormat === 'float') {
         return 15;

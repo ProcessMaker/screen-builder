@@ -541,7 +541,7 @@ describe('Complex screen', () => {
         },
       ],
       'page1': 'avatar.jpeg',
-      'form_input_5': '123.45',
+      'form_input_5': 123.45,
       'form_select_list_4': [
         'c',
       ],

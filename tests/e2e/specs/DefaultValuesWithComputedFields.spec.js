@@ -12,9 +12,9 @@ describe('Computed field and default values', () => {
     //   - varA = 1
     //   - res = ok
     // Control with default value is correct:
-    //   - uno = {{varA}} = 1
+    //   - uno = {{varA}} = "1"
     cy.assertPreviewData({
-      'uno': 1,
+      'uno': '1',
       'varA': 1,
       'res': 'ok',
     });
