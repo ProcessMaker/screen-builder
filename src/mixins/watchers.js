@@ -35,6 +35,21 @@ export default {
         });
       }).then((response) => {
         this.setValue(watcher.output_variable, response);
+
+        //update mapped values
+        let watcherConf = JSON.parse (watcher.script_configuration);
+        watcherConf.dataMapping.forEach(map => {
+          if (typeof this.getValue(`${map.key}_was_filled__`) !== 'undefined') {
+            // If the variable already exist it must be set as filled and updated
+            this.setValue(`${map.key}_was_filled__`, true);
+            this.setValue(map.key, response[map.key]);
+          }
+          else {
+            // If it is a new variable, the value  is set directly
+            this.vdata[map.key] = response[map.key];
+          }
+        }, this);
+
         // hide watcher's popup
         if (this.$parent.$refs.watchersSynchronous) {
           this.$parent.$refs.watchersSynchronous.hide(watcher.name);
