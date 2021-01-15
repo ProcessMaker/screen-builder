@@ -71,10 +71,6 @@ describe('Watchers', () => {
     cy.get('.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label').click();
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
-    // Put an invalid config
-    cy.setVueComponentValue('[data-cy="watchers-watcher-script_configuration"]', '{"invalid"}');
-    cy.get('[data-cy="watchers-accordion-output"]').click();
-    cy.get('[data-cy="watchers-button-save"]').click();
     // Fix invalid config
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setVueComponentValue('[data-cy="watchers-watcher-script_configuration"]', '{"form_input_1":"{{form_input_1}}"}');
