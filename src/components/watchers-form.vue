@@ -6,7 +6,7 @@
           <div class="mb-0">
             <button class="p-3 btn btn-link d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherConfig" data-cy="watchers-accordion-configuration">
               <div><i class="fas fa-fw fa-cog"/> Configuration</div>
-              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>
             </button>
           </div>
         </div>
@@ -39,7 +39,7 @@
             <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
               <div>{{ $t('The Variable to Watch field is required') }}</div>
             </div>
-                  
+
             <form-checkbox
               :name="$t('Run Synchronously')"
               :label="$t('Run Synchronously')"
@@ -51,12 +51,12 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" style="overflow:visible">
         <div class="card-header p-0">
           <div class="mb-0">
             <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherSource" data-cy="watchers-accordion-source">
               <div><i class="fas fa-fw fa-file-upload"/> Source</div>
-              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>
             </button>
           </div>
         </div>
@@ -104,7 +104,6 @@
                   <div>{{ $t('This must be valid JSON') }}</div>
                 </div>
               </div>
-
               <div class="form-group">
                 <label>{{ $t('Script Configuration') }}</label>
                 <div class="form-border" :class="{'is-invalid': !jsonIsValid('script_configuration')}">
@@ -146,37 +145,45 @@
                   <div>{{ endpointError }}</div>
                 </div>
               </div>
-              <div class="form-group">
-                <label>{{ $t('Input Data') }}</label>
-                <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
-                  <monaco-editor
-                    :options="monacoOptions"
-                    class="editor"
-                    v-model="config.input_data"
-                    language="json"
-                    data-cy="watchers-watcher-input_data"
-                  />
+              <outbound-config v-model="config.script_configuration" v-if="!hasInputData"/>
+              <div class="form-group" v-if="hasInputData">
+                <div class="row pl-3">
+                  <span class="text-danger">
+                    * Deprecation Warning: Recreate the watcher to use the new format.
+                    Version 4.2 will not support Input Data as a JSON object.
+                  </span>
                 </div>
-                <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
-                <div v-if="inputDataInvalid" class="invalid-feedback d-block">
-                  <div>{{ $t('The Input Data field is required') }}</div>
-                </div>
-                <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
-                  <div>{{ $t('This must be valid JSON') }}</div>
+                <div class="row pl-3 mt-1">
+                  <label>{{ $t('Input Data') }}</label>
+                  <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
+                    <monaco-editor
+                      :options="monacoOptions"
+                      class="editor"
+                      v-model="config.input_data"
+                      language="json"
+                      data-cy="watchers-watcher-input_data"
+                    />
+                  </div>
+                  <small class="form-text text-muted">{{ $t('Data to pass to the Data Connector (valid JSON object, variables supported)') }}</small>
+                  <div v-if="inputDataInvalid" class="invalid-feedback d-block">
+                    <div>{{ $t('The Input Data field is required') }}</div>
+                  </div>
+                  <div v-if="!jsonIsValid('input_data')" class="invalid-feedback d-block">
+                    <div>{{ $t('This must be valid JSON') }}</div>
+                  </div>
                 </div>
               </div>
-
 
             </div>
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" style="overflow:visible">
         <div class="card-header p-0">
           <div class="mb-0">
             <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherOutput" data-cy="watchers-accordion-output">
               <div><i class="fas fa-fw fa-file-download"/> Output</div>
-              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>  
+              <div><i class="fas fa-angle-down arrow-open mr-2"/> <i class="fas fa-angle-right arrow-closed mr-2"/></div>
             </button>
           </div>
         </div>
@@ -184,6 +191,7 @@
           <div class="card-body pt-3 px-3 pb-0">
             <form-input
               ref="propOutputVariableName"
+              v-if="hasInputData || isScript"
               v-model="config.output_variable"
               :label="$t('Output Variable') + ' *'"
               :name="$t('Output Variable')"
@@ -192,9 +200,9 @@
               data-cy="watchers-watcher-output_variable"
             />
             <data-mapping v-if="isDatasource" v-model="config.script_configuration" />
-          </div>                
+          </div>
         </div>
-      </div>        
+      </div>
     </div>
 
     <div class="d-flex justify-content-end mt-3">
@@ -221,6 +229,8 @@ import {
 } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 import DataMapping from './inspector/data-mapping';
+import OutboundConfig from './inspector/outbound-config';
+
 import _ from 'lodash';
 
 const globalObject = typeof window === 'undefined'
@@ -235,6 +245,7 @@ export default {
     FormCheckbox,
     MonacoEditor,
     DataMapping,
+    OutboundConfig,
   },
   props: {
     config: {
@@ -320,13 +331,23 @@ export default {
     isScript() {
       return !this.config.script || this.config.script.id.substr(0, 6) === 'script';
     },
+    hasInputData(){
+      // just old versions of watchers have input data
+      const config = JSON.parse(this.config.script_configuration);
+      if (typeof config.input_data === 'undefined' || config.input_data == null) {
+        return false;
+      }
+      return Object.keys(config.input_data).length === 0 && config.input_data.constructor === Object;
+    },
   },
   methods: {
     setValidations() {
       this.ruleWatcherName = 'required';
       this.ruleWatcherVariable = 'required';
       this.ruleWatcherScript = 'required';
-      this.ruleWatcherOutputVariable = 'required';
+      if (this.hasInputData) {
+        this.ruleWatcherOutputVariable = 'required';
+      }
     },
     getConfig() {
       try {
@@ -420,7 +441,7 @@ export default {
       }
 
       for (let item in this.$refs) {
-        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
+        if (this.$refs[item] && this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
           return false;
         }
       }
