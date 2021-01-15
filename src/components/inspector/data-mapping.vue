@@ -12,8 +12,8 @@
     <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('Key') }}</th>
-          <th scope="col">{{ $t('Value') }}</th>
+          <th scope="col">{{ $t('Source') }}</th>
+          <th scope="col">{{ $t('Form Variable') }}</th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -21,22 +21,36 @@
         <tr v-for="(row,i) in dataMapping" :key="i">
           <td class="p-1">
             <input
-              v-model="row.key"
-              name="key"
-              :placeholder="$t('New Key')"
-              type="text"
-              class="form-control form-control-sm"
-            >
-          </td>
-          <td class="p-1">
-            <input
               v-model="row.value"
-              name="value"
+              name="key"
               :placeholder="$t('New Value')"
               type="text"
-              class="form-control form-control-sm"
+              class="form-control"
             >
           </td>
+
+          <td class="p-1">
+            <multiselect
+              v-model="row.key"
+              :placeholder="$t('Select an Option')"
+              :options="options"
+              :multiple="false"
+              :show-labels="false"
+              :searchable="true"
+              :internal-search="false"
+              @search-change="loadOptions"
+              @open="loadOptions"
+            >
+              <template slot="noResult">
+                <slot name="noResult">{{ $t('Not found') }}</slot>
+              </template>
+              <template slot="noOptions">
+                <slot name="noOptions">{{ $t('Not available') }}</slot>
+              </template>
+            </multiselect>
+
+          </td>
+
           <td class="align-middle text-right p-1">
             <a href="javascript:void(0)" class="btn btn-sm btn-danger" @click="removeRowIndex(i)">
               <i class="fa fa-trash-alt" />
@@ -56,7 +70,9 @@
 
 <script>
 
+import Multiselect from 'vue-multiselect';
 export default {
+  components: { Multiselect },
   mixins: [],
   props: {
     value: String,
@@ -65,9 +81,26 @@ export default {
     return {
       field: '',
       dataMapping: [],
+      options: [],
     };
   },
   methods: {
+    loadOptions() {
+      const config = this.getConfig();
+      let endpoint = config.endpoint;
+      this.options=[];
+      window.ProcessMaker.apiClient.get(`/data_sources/${config.dataSource}`)
+        .then(response => {
+          let endpointData =window._.get(response, `data.endpoints.${endpoint}`, null);
+          this.dsEndpoint = endpointData;
+          if (endpointData === null) {
+            return;
+          }
+
+          let mappings = window._.get(endpointData, 'dataMapping', []);
+          this.options = mappings.map(item => item['key']);
+        });
+    },
     getConfig() {
       try {
         return JSON.parse(this.value);
