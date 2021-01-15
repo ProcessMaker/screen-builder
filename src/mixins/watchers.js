@@ -34,7 +34,9 @@ export default {
           config,
         });
       }).then((response) => {
-        this.setValue(watcher.output_variable, response);
+        if (watcher.output_variable) {
+          this.setValue(watcher.output_variable, response);
+        }
 
         //update mapped values
         let watcherConf = JSON.parse (watcher.script_configuration);
