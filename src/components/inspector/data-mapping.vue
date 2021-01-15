@@ -20,8 +20,18 @@
       <tbody>
         <tr v-for="(row,i) in dataMapping" :key="i">
           <td class="p-1">
-            <multiselect
+            <input
               v-model="row.value"
+              name="key"
+              :placeholder="$t('New Value')"
+              type="text"
+              class="form-control"
+            >
+          </td>
+
+          <td class="p-1">
+            <multiselect
+              v-model="row.key"
               :placeholder="$t('Select an Option')"
               :options="options"
               :multiple="false"
@@ -38,16 +48,7 @@
                 <slot name="noOptions">{{ $t('Not available') }}</slot>
               </template>
             </multiselect>
-          </td>
 
-          <td class="p-1">
-            <input
-              v-model="row.key"
-              name="key"
-              :placeholder="$t('New Value')"
-              type="text"
-              class="form-control"
-            >
           </td>
 
           <td class="align-middle text-right p-1">
@@ -97,7 +98,7 @@ export default {
           }
 
           let mappings = window._.get(endpointData, 'dataMapping', []);
-          this.options = mappings.map(item => item['value']);
+          this.options = mappings.map(item => item['key']);
         });
     },
     getConfig() {

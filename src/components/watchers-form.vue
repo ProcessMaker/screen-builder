@@ -145,8 +145,8 @@
                   <div>{{ endpointError }}</div>
                 </div>
               </div>
-              <outbound-config v-model="config.script_configuration" v-if="!showInputDataForSelectedConnector"/>
-              <div class="form-group" v-if="showInputDataForSelectedConnector">
+              <outbound-config v-model="config.script_configuration" v-if="!hasInputData"/>
+              <div class="form-group" v-if="hasInputData">
                 <div class="row pl-3">
                   <span class="text-danger">
                     * Deprecation Warning: Recreate the watcher to use the new format.
@@ -178,7 +178,7 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" style="overflow:visible">
         <div class="card-header p-0">
           <div class="mb-0">
             <button class="p-3 btn btn-link collapsed d-flex w-100 text-capitalize text-reset justify-content-between" type="button" data-toggle="collapse" data-target="#watcherOutput" data-cy="watchers-accordion-output">
@@ -191,6 +191,7 @@
           <div class="card-body pt-3 px-3 pb-0">
             <form-input
               ref="propOutputVariableName"
+              v-if="hasInputData || isScript"
               v-model="config.output_variable"
               :label="$t('Output Variable') + ' *'"
               :name="$t('Output Variable')"
@@ -330,7 +331,8 @@ export default {
     isScript() {
       return !this.config.script || this.config.script.id.substr(0, 6) === 'script';
     },
-    showInputDataForSelectedConnector(){
+    hasInputData(){
+      // just old versions of watchers have input data
       const config = JSON.parse(this.config.script_configuration);
       if (typeof config.input_data === 'undefined' || config.input_data == null) {
         return false;
@@ -343,7 +345,9 @@ export default {
       this.ruleWatcherName = 'required';
       this.ruleWatcherVariable = 'required';
       this.ruleWatcherScript = 'required';
-      this.ruleWatcherOutputVariable = 'required';
+      if (this.hasInputData) {
+        this.ruleWatcherOutputVariable = 'required';
+      }
     },
     getConfig() {
       try {
@@ -437,7 +441,7 @@ export default {
       }
 
       for (let item in this.$refs) {
-        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
+        if (this.$refs[item] && this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
           return false;
         }
       }
