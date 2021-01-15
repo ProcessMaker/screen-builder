@@ -38,7 +38,9 @@ export default {
 
         //update mapped values
         let watcherConf = JSON.parse (watcher.script_configuration);
-        watcherConf.dataMapping.forEach(map => {
+        let mapping = watcherConf.dataMapping || [];
+
+        mapping.forEach(map => {
           if (typeof this.getValue(`${map.key}_was_filled__`) !== 'undefined') {
             // If the variable already exist it must be set as filled and updated
             this.setValue(`${map.key}_was_filled__`, true);
