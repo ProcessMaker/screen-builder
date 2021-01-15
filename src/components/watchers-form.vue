@@ -332,7 +332,10 @@ export default {
     },
     showInputDataForSelectedConnector(){
       const config = JSON.parse(this.config.script_configuration);
-      return config.outboundConfig ? false : true;
+      if (typeof config.input_data === 'undefined' || config.input_data == null) {
+        return false;
+      }
+      return Object.keys(config.input_data).length === 0 && config.input_data.constructor === Object;
     },
   },
   methods: {
