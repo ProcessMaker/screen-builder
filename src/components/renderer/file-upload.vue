@@ -232,7 +232,12 @@ export default {
     },
     fileUploaded(rootFile, file, message) {
       if (this.fileType == 'request') {
-        this.$emit('input', file.name);
+        let id = '';
+        if (message) {
+          let msg = JSON.parse(message);
+          id = msg.fileUploadId;
+        }
+        this.$emit("input", id);
       }
 
       if (this.fileType == 'collection') {
