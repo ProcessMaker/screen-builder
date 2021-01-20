@@ -237,7 +237,7 @@ export default {
           let msg = JSON.parse(message);
           id = msg.fileUploadId;
         }
-        this.$emit("input", id);
+        this.$emit('input', id);
       }
 
       if (this.fileType == 'collection') {
