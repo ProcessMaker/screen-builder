@@ -34,7 +34,7 @@ export default {
       }
     },
     click() {
-      if (this.event === 'script') {
+      if (this.event === 'script' || this.event === 'submit') {
         this.$emit('input', this.fieldValue);
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
