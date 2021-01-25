@@ -147,4 +147,8 @@ export default {
 .watchers-list .break-word {
   word-break: break-word;
 }
+
+.watchers-list .table {
+  margin-bottom: 0;
+}
 </style>
