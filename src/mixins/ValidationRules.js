@@ -55,8 +55,8 @@ export const ValidationMsg = {
 
 export const custom_date = (date) => {
   let format = 'MM/DD/YYYY';
-  if (typeof ProcessMaker !== 'undefined' && ProcessMaker.user && ProcessMaker.user.datetime_format) {
-    format = ProcessMaker.user.datetime_format.replace(/[\sHh:msaAzZ]/g, '');
+  if (typeof window.ProcessMaker !== 'undefined' && window.ProcessMaker.user && window.ProcessMaker.user.datetime_format) {
+    format = window.ProcessMaker.user.datetime_format.replace(/[\sHh:msaAzZ]/g, '');
   }
 
   let checkDate = moment(date, [format, moment.ISO_8601], true);
