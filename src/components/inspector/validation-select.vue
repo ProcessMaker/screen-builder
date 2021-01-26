@@ -212,7 +212,7 @@ export default {
         },
         {
           value: '',
-          field: 'custom-same:',
+          field: 'same:',
           content: this.$t('Same'),
           helper: this.$t('The given field must match the field under validation.'),
           visible: true,
@@ -226,7 +226,7 @@ export default {
           helper: this.$t('Validate that an attribute has a valid URL format.'),
         },
         {
-          value: 'custom-date',
+          value: 'custom_date',
           content: 'Date',
           helper: this.$t('The field under validation must be a valid date format which is acceptable by Javascript\'s Date object.'),
         },
