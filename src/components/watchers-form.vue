@@ -306,15 +306,24 @@ export default {
       },
     },
     'config.script': {
-      handler(value) {
+      handler(value, oldValue) {
         if (!value) {
           this.config.script_id = '';
           this.config.script_key = '';
           this.config.datasource_script_id = '';
         } else if (typeof value === 'object') {
           let id = value.id.split('-');
+          let oldSourceType = (oldValue && oldValue.id && oldValue.id.split('-').length > 0)
+            ? oldValue.id.split('-')[0]
+            : '';
           this.config.script_id = id[1];
           this.config.script_key = value.key;
+
+          // If the type of the data source has changed (from script to data source or the other way around)
+          if (oldSourceType !== id[0]) {
+            this.config.script_configuration = '{}';
+          }
+
           if (id[0] === 'data_source') {
             this.setConfig('dataSource', this.config.script_id);
           }
@@ -455,7 +464,7 @@ export default {
     validateDataAndSave() {
       this.setValidations();
       this.$nextTick(() => { // allow validations to do their thing
-        
+
         if (!this.isFormValid()) {
           globalObject.ProcessMaker.alert(this.$t('An error occurred. Check the form for errors in red text.'), 'danger');
           return;
@@ -480,7 +489,7 @@ export default {
     .card-overflow {
       overflow: visible;
     }
-    
+
     .card-body label {
       display: block;
     }

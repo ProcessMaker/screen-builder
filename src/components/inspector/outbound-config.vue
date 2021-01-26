@@ -164,7 +164,7 @@ export default {
             []);
 
             //add url parameters:
-            const matchedParams = endpointData.url.matchAll(/\{\{(.+?)\}\}/gm);
+            const matchedParams = (endpointData.url || '').matchAll(/\{\{(.+?)\}\}/gm);
             for (const match of matchedParams) {
               const urlParam = match[1];
               // Add url param if it is not defined withing the connector's param list
@@ -175,7 +175,7 @@ export default {
           }
 
           if (rowType === 'BODY') {
-            const matchedParams = endpointData.body.matchAll(/\{\{(.+?)\}\}/gm);
+            const matchedParams = (endpointData.body || '').matchAll(/\{\{(.+?)\}\}/gm);
             for (const match of matchedParams) {
               const urlParam = match[1];
               // Add url param if it is not defined withing the connector's param list
