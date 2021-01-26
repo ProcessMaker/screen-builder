@@ -12,6 +12,9 @@ export default {
           if (element.config.validation instanceof Array) {
             element.config.validation.forEach((validation) => {
               const rule = this.camelCase(validation.value.split(':')[0]);
+              if (!rule) {
+                return;
+              }
               let validationFn = validators[rule];
               if (!validationFn) {
                 // eslint-disable-next-line no-console
