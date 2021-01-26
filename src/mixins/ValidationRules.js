@@ -50,6 +50,12 @@ export const ValidationMsg = {
   before: 'Must be before {before}',
   before_or_equal: 'Must be equal or before {before_or_equal}',
   invalid_default_value: 'Invalid default value',
+  customDate: 'Must be a valid Date',
+};
+
+export const custom_date = (date) => {
+  let checkDate = moment(date, true);
+  return checkDate.isValid();
 };
   
 export const after = (after) => helpers.withParams({after}, (date, data) => {
@@ -148,6 +154,7 @@ export const validators = {
   not,
   or,
   and,
+  customDate: custom_date,
   after,
   beforeOrEqual: before_or_equal,
 };
