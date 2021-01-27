@@ -351,7 +351,10 @@ export default {
     confirmDelete(index) {
       this.removeIndex = index;
       this.showDeleteConfirmCard = true;
-      this.confirmMessage = this.$t('Are you sure you want to delete the "{{item}}" rule?', {item: this.rules[index].content});
+      this.confirmMessage = _.unescape(this.$t(
+        'Are you sure you want to delete the "{{item}}" rule?',
+        {item: this.rules[index].content}
+      ));
     },
     hideDeleteConfirmCard() {
       this.removeIndex = null;
