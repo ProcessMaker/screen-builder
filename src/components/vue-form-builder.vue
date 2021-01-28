@@ -346,6 +346,8 @@ import {
   FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
 
+import RequiredCheckbox from './utils/required-checkbox';
+
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import { formTypes } from '@/global-properties';
 import _ from 'lodash';
@@ -384,6 +386,7 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
+    RequiredCheckbox,
     ...inspector,
     ...renderer,
   },
