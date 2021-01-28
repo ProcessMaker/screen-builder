@@ -612,7 +612,7 @@ export default [
           config: {
             label: 'Screen',
             name: 'SelectScreen',
-            'validate-nested': true,
+            'validate-nested': false,
             helper: 'Select a screen',
           },
         },

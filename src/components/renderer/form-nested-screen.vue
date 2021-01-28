@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     isSubmitButton(item) {
-      return item.config && item.component === 'FormButton';
+      return item.config && item.component === 'FormButton' && item.config.event === 'submit';
     },
     hideSubmitButtons(config) {
       config.forEach(item => {
