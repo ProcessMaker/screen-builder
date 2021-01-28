@@ -34,13 +34,14 @@ export default {
       fileType: null,
       loading: true,
       fileInfo: null,
+      fileName: null,
       requestId: null,
       collectionId: null,
       recordId: null,
       prefix: '',
     };
   },
-  props: ['name', 'endpoint', 'requestFiles'],
+  props: ['name', 'value', 'endpoint', 'requestFiles'],
   beforeMount() {
     this.getFileType();
 
@@ -68,6 +69,12 @@ export default {
     if (this.fileType == 'collection') {
       this.getCollectionFiles();
     }
+  },
+  watch: {
+    value(value) {
+      this.fileName = value;
+      this.getRequestFiles();
+    },
   },
   computed: {
     inPreviewMode() {
@@ -203,7 +210,15 @@ export default {
 
       if (requestFiles && requestFiles[this.prefix + this.name]) {
         this.loading = false;
-        this.fileInfo = requestFiles[this.prefix + this.name];
+        if (Array.isArray(requestFiles[this.prefix + this.name])) {
+          this.fileInfo = requestFiles[this.prefix + this.name].find(
+            item =>
+              item.file_name === this.fileName
+              || item.id === this.fileName
+          );
+        } else {
+          this.fileInfo = requestFiles[this.prefix + this.name];
+        }
         return;
       }
 
