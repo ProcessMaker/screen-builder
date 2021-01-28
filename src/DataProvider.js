@@ -3,6 +3,8 @@ import axios from 'axios';
 import _ from 'lodash';
 
 export default {
+  screensCache: [],
+
   install(Vue) {
     Vue.prototype.$dataProvider = this;
   },
@@ -59,7 +61,27 @@ export default {
   
   getScreen(id, query = '') {
     const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
-    return this.get(endpoint + `/${id}${query}`);
+    const request = this.get(endpoint + `/${id}${query}`);
+    return new Promise((resolve, reject) => {
+      const cache = this.screensCache.find(screen => screen.id == id);
+      if (cache) {
+        resolve({data: cache});
+      } else {
+        request.then(response => {
+          if (response.data.nested) {
+            response.data.nested.forEach(screen => {
+              const index = this.screensCache.findIndex(s => s.id == screen.id);
+              if (index > -1) {
+                this.screensCache.splice(index, 1, screen);
+              } else {
+                this.screensCache.push(screen);
+              }
+            });
+          }
+          resolve(response);
+        }).catch(response => reject(response));
+      }
+    });
   },
   
   postScript(id, params) {
