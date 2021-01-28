@@ -77,10 +77,14 @@ export default {
   },
   computed: {
     required() {
-      return this.config.validation === 'required';
+      if (this.config && this.config.validation) {
+        return this.config.validation === 'required';
+      } else {
+        return false;
+      }
     },
     inPreviewMode() {
-      return this.mode === 'preview' && !window.exampleScreens;
+      return ((this.mode === 'preview' && !window.exampleScreens) || this.mode === 'editor');
     },
     displayName() {
       const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
