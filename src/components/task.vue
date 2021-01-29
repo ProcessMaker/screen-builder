@@ -198,7 +198,7 @@ export default {
     loadScreen(id) {
       let query = '?include=nested';
       if (this.requestId) {
-        query = '&request_id=' + this.requestId;
+        query += '&request_id=' + this.requestId;
       }
 
       this.$dataProvider.getScreen(id, query).then((response) => {
