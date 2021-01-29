@@ -54,6 +54,7 @@ export const ValidationMsg = {
   before_or_equal: 'Must be equal or before {before_or_equal}',
   invalid_default_value: 'Invalid default value',
   customDate: 'Must be a valid Date',
+  regex: 'Invalid value',
 };
 
 export const custom_date = (date) => {
@@ -134,6 +135,11 @@ export const notIn = (list) => helpers.withParams({list}, (value) => {
   return list.findIndex(item => item == value) === -1;
 });
 
+export const regex = (expression) => helpers.withParams({expression}, (value) => {
+  const regexp = new RegExp(expression);
+  return !!String(value).match(regexp);
+});
+
 export const required = (value) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
@@ -185,4 +191,5 @@ export const validators = {
   accepted,
   in: in_list,
   notIn,
+  regex,
 };
