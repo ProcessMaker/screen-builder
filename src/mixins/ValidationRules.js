@@ -24,6 +24,7 @@ import {
 } from 'vuelidate/lib/validators';
 
 export const ValidationMsg = {
+  in: 'Invalid value',
   accepted: 'Field must be accepted',
   required: 'Field is required',
   requiredIf: 'Field is required',
@@ -120,6 +121,12 @@ export const accepted = (value) => {
   return value === 'yes' || value === 'on' || value === true || value === 1 || value === '1';
 };
 
+// The field under validation must be included in the given list of values.
+export const in_list = (list) => helpers.withParams({list}, (value) => {
+  list = list instanceof Array ? list : list.split(',');
+  return list.findIndex(item => item == value) > -1;
+});
+
 export const required = (value) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
@@ -169,4 +176,5 @@ export const validators = {
   after,
   beforeOrEqual: before_or_equal,
   accepted,
+  in: in_list,
 };
