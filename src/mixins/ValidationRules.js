@@ -89,7 +89,7 @@ export const after_or_equal = (after_or_equal) => (date, data) => {
   return inputDate >= equalOrAfterDate;
 };
 
-export const before = (before) => (date, data) => {
+export const before = (before) => helpers.withParams({before}, (date, data) => {
   // checks if incoming 'before' is a date or a key reference.
   let checkDate = moment(before);
   if (!checkDate.isValid()) {
@@ -98,9 +98,8 @@ export const before = (before) => (date, data) => {
 
   const inputDate = moment(date).toISOString();
   const beforeDate = moment(before).toISOString();
-    
   return inputDate < beforeDate;
-};
+});
 
 export const before_or_equal = (before_or_equal) => (date, data) => {
   // checks if incoming 'before_or_equal' is a date or a key reference.
@@ -160,6 +159,7 @@ export const validators = {
   or,
   and,
   customDate: custom_date,
+  before,
   after,
   beforeOrEqual: before_or_equal,
 };

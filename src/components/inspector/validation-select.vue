@@ -48,7 +48,9 @@
             <div class="p-1 d-flex justify-content-between align-items-center">
               {{ rule.content }}
               <div class="actions">
-                <b-button variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" v-b-toggle="rule.content"><i class="fas fa-cog fa-fw text-secondary"/></b-button>
+                <b-button variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" @click="toggleRuleEdit(rule, index)" v-b-toggle="rule.content">
+                  <i class="fas fa-cog fa-fw text-secondary"/>
+                </b-button>
                 <b-button variant="link" class="p-0" @click="confirmDelete(index)"><i class="fas fa-trash-alt fa-fw text-secondary"/></b-button>
               </div>
             </div>
@@ -389,6 +391,9 @@ export default {
       this.$root.$emit('bv::toggle::collapse', rule.content);
       this.$set(this.rules[index], 'visible', false);
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    },
+    toggleRuleEdit(rule, index) {
+      this.$set(this.rules[index], 'visible', !this.rules[index].visible);
     },
     onCancel(rule, index) {
       if (this.cloneRules && this.cloneRules[index]) {
