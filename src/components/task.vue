@@ -1,7 +1,12 @@
 <template>
-  <div id="tab-form" role="tabpanel" aria-labelledby="tab-form" class="tab-pane active show h-100">
+  <div
+    id="tab-form"
+    role="tabpanel"
+    aria-labelledby="tab-form"
+    class="tab-pane active show h-100"
+  >
     <template v-if="screen">
-      <div class="card card-body border-top-0 h-100" :class="screenTypeClass"> 
+      <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
         <div v-if="renderComponent === 'task-screen'">
           <vue-form-renderer
             ref="renderer"
@@ -32,7 +37,9 @@
         </div>
       </div>
       <div v-if="shouldAddSubmitButton" class="card-footer">
-        <button type="button" class="btn btn-primary" @click="submit">{{ $t('Complete Task') }}</button>
+        <button type="button" class="btn btn-primary" @click="submit">
+          {{ $t('Complete Task') }}
+        </button>
       </div>
     </template>
     <template v-if="showTaskIsCompleted">
@@ -90,35 +97,30 @@ export default {
       handler() {
         this.screenId = this.initialScreenId;
       },
-      immediate: true,
     },
 
     initialTaskId: {
       handler() {
         this.taskId = this.initialTaskId;
       },
-      immediate: true,
     },
 
     initialRequestId: {
       handler() {
         this.requestId = this.initialRequestId;
       },
-      immediate: true,
     },
 
     initialProcessId: {
       handler() {
         this.processId = this.initialProcessId;
       },
-      immediate: true,
     },
 
     initialNodeId: {
       handler() {
         this.nodeId = this.initialNodeId;
       },
-      immediate: true,
     },
 
     screenId: {
@@ -127,7 +129,6 @@ export default {
           this.loadScreen(this.screenId);
         }
       },
-      immediate: true,
     },
 
     taskId: {
@@ -136,7 +137,6 @@ export default {
           this.loadTask();
         }
       },
-      immediate: true,
     },
 
     requestId: {
@@ -147,7 +147,6 @@ export default {
           this.unsubscribeSocketListeners();
         }
       },
-      immediate: true,
     },
 
     task: {
@@ -161,7 +160,6 @@ export default {
       handler() {
         this.requestData = this.value;
       },
-      immediate: true,
     },
     screen: {
       handler() {
@@ -203,7 +201,7 @@ export default {
         query = '?request_id=' + this.requestId;
       }
 
-      this.$dataProvider.getScreen(id, query).then(response => {
+      this.$dataProvider.getScreen(id, query).then((response) => {
         this.screen = response.data;
       });
     },
@@ -231,10 +229,11 @@ export default {
         .getTasks(
           `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`
         )
-        .then(response => {
+        .then((response) => {
           this.task = response.data;
           this.checkTaskStatus();
-        }).catch(() => {
+        })
+        .catch(() => {
           this.hasErrors = true;
         });
     },
@@ -284,7 +283,7 @@ export default {
         .getTasks(
           `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`
         )
-        .then(response => {
+        .then((response) => {
           if (response.data.data.length > 0) {
             let task = response.data.data[0];
             this.taskId = task.id;
@@ -312,9 +311,7 @@ export default {
       this.disabled = true;
 
       if (formData) {
-        this.onUpdate(
-          Object.assign({}, this.requestData, formData)
-        );
+        this.onUpdate(Object.assign({}, this.requestData, formData));
       }
       this.$emit('submit', this.task);
       this.$nextTick(() => {
@@ -352,7 +349,7 @@ export default {
       this.addSocketListener(
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessCompleted',
-        data => {
+        (data) => {
           this.processCompleted(data);
         }
       );
@@ -360,11 +357,11 @@ export default {
       this.addSocketListener(
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessUpdated',
-        data => {
+        (data) => {
           this.processUpdated(data);
         }
       );
-            
+
       // We might have missed an event before initSocketListeners
       // was called so reload to check if there's a task waiting
       if (!this.taskId) {
@@ -379,16 +376,16 @@ export default {
       window.Echo.private(channel).listen(event, callback);
     },
     unsubscribeSocketListeners() {
-      this.socketListeners.forEach(element => {
+      this.socketListeners.forEach((element) => {
         window.Echo.private(element.channel).stopListening(element.event);
       });
       this.socketListeners = [];
     },
     obtainPayload(url) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         window.ProcessMaker.apiClient
           .get(url)
-          .then(response => {
+          .then((response) => {
             resolve(response.data);
           })
           .catch(() => {
@@ -398,6 +395,23 @@ export default {
     },
   },
   mounted() {
+    this.screenId = this.initialScreenId;
+    this.taskId = this.initialTaskId;
+    this.requestId = this.initialRequestId;
+    this.processId = this.initialProcessId;
+    this.nodeId = this.initialNodeId;
+    if (this.screenId) {
+      this.loadScreen(this.screenId);
+    }
+    if (this.taskId) {
+      this.loadTask();
+    }
+    if (this.requestId) {
+      this.initSocketListeners();
+    } else {
+      this.unsubscribeSocketListeners();
+    }
+    this.requestData = this.value;
   },
   destroyed() {
     this.unsubscribeSocketListeners();
