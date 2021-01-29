@@ -28,7 +28,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
       {
         id: 1,
         advanceStatus: 'open',
@@ -83,7 +83,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
       {
         id: 1,
         advanceStatus: 'open',
@@ -142,7 +142,7 @@ describe('Task component', () => {
         .then(function() {
           cy.route(
             'GET',
-            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
             {
               id: 1,
               advanceStatus: 'completed',
@@ -159,7 +159,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
       {
         id: 1,
         advanceStatus: 'open',
@@ -217,7 +217,7 @@ describe('Task component', () => {
         .then(function() {
           cy.route(
             'GET',
-            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition',
+            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
             {
               id: 1,
               advanceStatus: 'completed',

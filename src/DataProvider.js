@@ -3,6 +3,8 @@ import axios from 'axios';
 import _ from 'lodash';
 
 export default {
+  screensCache: [],
+
   install(Vue) {
     Vue.prototype.$dataProvider = this;
   },
@@ -54,12 +56,39 @@ export default {
   
   getTasks(params) {
     const endpoint = _.get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
-    return this.get(endpoint + params);
+    return this.get(endpoint + params).then(response => {
+      if (response.data.screen && response.data.screen.nested) {
+        this.addNestedScreenCache(response.data.screen.nested);
+      }
+      return response;
+    });
   },
-  
+  addNestedScreenCache(nested) {
+    nested.forEach(screen => {
+      const index = this.screensCache.findIndex(s => s.id == screen.id);
+      if (index > -1) {
+        this.screensCache.splice(index, 1, screen);
+      } else {
+        this.screensCache.push(screen);
+      }
+    });
+  },
   getScreen(id, query = '') {
     const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
-    return this.get(endpoint + `/${id}${query}`);
+    return new Promise((resolve, reject) => {
+      const cache = this.screensCache.find(screen => screen.id == id);
+      if (cache) {
+        resolve({data: cache});
+      } else {
+        const request = this.get(endpoint + `/${id}${query}`);
+        request.then(response => {
+          if (response.data.nested) {
+            this.addNestedScreenCache(response.data.nested);
+          }
+          resolve(response);
+        }).catch(response => reject(response));
+      }
+    });
   },
   
   postScript(id, params) {
