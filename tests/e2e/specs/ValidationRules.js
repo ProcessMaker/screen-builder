@@ -31,5 +31,12 @@ describe('Record list', () => {
     cy.get('[data-cy=preview-content] [name=form_input_3]').type('4');
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_3"]').parent().should('not.contain.text', 'Invalid value');
 
+    // REGEX
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_4"]').parent().should('contain.text', 'Invalid value');
+    cy.get('[data-cy=preview-content] [name=form_input_4]').type('Aaa1');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_4"]').parent().should('contain.text', 'Invalid value');
+    cy.get('[data-cy=preview-content] [name=form_input_4]').clear().type('Abc1');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_4"]').parent().should('not.contain.text', 'Invalid value');
+
   });
 });
