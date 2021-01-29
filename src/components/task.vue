@@ -198,9 +198,9 @@ export default {
   },
   methods: {
     loadScreen(id) {
-      let query = '';
+      let query = '?include=nested';
       if (this.requestId) {
-        query = '?request_id=' + this.requestId;
+        query = '&request_id=' + this.requestId;
       }
 
       this.$dataProvider.getScreen(id, query).then(response => {
@@ -229,7 +229,7 @@ export default {
 
       return this.$dataProvider
         .getTasks(
-          `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition`
+          `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`
         )
         .then(response => {
           this.task = response.data;
