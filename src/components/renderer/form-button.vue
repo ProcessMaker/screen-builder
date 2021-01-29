@@ -34,12 +34,19 @@ export default {
       }
     },
     click() {
-      if (this.event === 'script' || this.event === 'submit') {
+      if (this.event === 'script') {
         this.$emit('input', this.fieldValue);
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
       if (this.event !== 'pageNavigate' && this.name) {
         this.setValue(this.$parent, this.name, this.fieldValue);
+      }
+      if (this.event === 'submit') {
+        this.$emit('input', this.fieldValue);
+        this.$nextTick(()=>{
+          this.$emit('submit', this.eventData);
+        });
+        return;
       }
       this.$emit(this.event, this.eventData);
       if (this.event === 'pageNavigate') {
