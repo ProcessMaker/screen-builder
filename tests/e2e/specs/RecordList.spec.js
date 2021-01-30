@@ -28,6 +28,7 @@ describe('Record list', () => {
   it('Add row with default values', () => {
     cy.loadFromJson('record_list.json', 0);
     cy.get('[data-cy=mode-preview]').click();
+    const today = new Date().toISOString().substr(0,10);
     cy.get('[data-cy=preview-content] [name=firstname]').type('Patricia');
     cy.get('[data-cy=preview-content] [name=lastname]').type('Smith');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
@@ -39,7 +40,7 @@ describe('Record list', () => {
       'form_record_list_1': [
         {
           'fullname': 'Miss Patricia Smith',
-          'date': new Date().toISOString().substr(0,10),
+          'date': today,
         },
       ],
     });
