@@ -24,6 +24,9 @@ import {
 } from 'vuelidate/lib/validators';
 
 export const ValidationMsg = {
+  in: 'Invalid value',
+  notIn: 'Invalid value',
+  accepted: 'Field must be accepted',
   required: 'Field is required',
   requiredIf: 'Field is required',
   requiredUnless: 'Field is required',
@@ -51,6 +54,7 @@ export const ValidationMsg = {
   before_or_equal: 'Must be equal or before {before_or_equal}',
   invalid_default_value: 'Invalid default value',
   customDate: 'Must be a valid Date',
+  regex: 'Invalid value',
 };
 
 export const custom_date = (date) => {
@@ -114,6 +118,28 @@ export const before_or_equal = (before_or_equal) => (date, data) => {
   return inputDate <= beforeDate;
 };
 
+// The field under validation must be yes, on, or 1. This is useful for validating "Terms of Service" acceptance.
+export const accepted = (value) => {
+  return value === 'yes' || value === 'on' || value === true || value === 1 || value === '1';
+};
+
+// The field under validation must be included in the given list of values.
+export const in_list = (list) => helpers.withParams({list}, (value) => {
+  list = list instanceof Array ? list : list.split(',');
+  return list.findIndex(item => item == value) > -1;
+});
+
+// The field under validation must not be included in the given list of values.
+export const notIn = (list) => helpers.withParams({list}, (value) => {
+  list = list instanceof Array ? list : list.split(',');
+  return list.findIndex(item => item == value) === -1;
+});
+
+export const regex = (expression) => helpers.withParams({expression}, (value) => {
+  const regexp = new RegExp(expression);
+  return !!String(value).match(regexp);
+});
+
 export const required = (value) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
@@ -162,4 +188,8 @@ export const validators = {
   before,
   after,
   beforeOrEqual: before_or_equal,
+  accepted,
+  in: in_list,
+  notIn,
+  regex,
 };
