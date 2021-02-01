@@ -49,7 +49,7 @@ export default [
   },
   {
     name: 'Advanced',
-    fields: ['conditionalHide', 'customCssSelector', 'defaultValue'],
+    fields: ['conditionalHide', 'customCssSelector', 'defaultValue', {name: 'customFormatter', showFor: 'FormInput'}],
     open: false,
   },
 ];

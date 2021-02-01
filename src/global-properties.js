@@ -16,6 +16,15 @@ export default [
       },
       {
         type: 'FormInput',
+        field: 'customFormatter',
+        config: {
+          label: 'Custom Format String',
+          helper: 'Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####',
+          validation: '',
+        },
+      },
+      {
+        type: 'FormInput',
         field: 'customCssSelector',
         config: {
           label: 'CSS Selector Name',
