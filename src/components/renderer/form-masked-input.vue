@@ -80,7 +80,6 @@ export default {
     convertToData(newValue) {
       if (this.customFormatter) {
         newValue = newValue.replace(/[^\w]/g, '');
-        return newValue;
       } else {
         switch (this.dataFormat) {
           case 'string':
@@ -113,9 +112,8 @@ export default {
             newValue = newValue.toString();
             break;
         }
-        return newValue;
       }
-      
+      return newValue;
     },
     convertFromData(value) {
       return value;
