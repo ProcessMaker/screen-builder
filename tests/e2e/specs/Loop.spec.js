@@ -5,7 +5,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('rows');
-    cy.get('[data-cy=inspector-times]').clear().type('2');
+    cy.get('[data-cy=inspector-source]').select('existing');
     cy.get('[data-cy=inspector-add]').click();
 
     // Add input to loop
@@ -13,6 +13,19 @@ describe('Loop control', () => {
 
     // Preview
     cy.get('[data-cy=mode-preview]').click();
+    
+    cy.assertPreviewData({
+      rows: null,
+    });
+
+    // Change source to new array
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=inspector-source]').select('new');
+    cy.get('[data-cy=inspector-times]').clear().type('2');
+    
+    // Preview
+    cy.get('[data-cy=mode-preview]').click();
+
     cy.get('[data-cy=preview-content] [name=form_input_1]').should('have.length', 2);
     cy.get('[data-cy=preview-content] [name=form_input_1]').eq(0).clear().type('one');
     cy.get('[data-cy=preview-content] [name=form_input_1]').eq(1).clear().type('two');
