@@ -19,7 +19,7 @@ export default [
         field: 'customFormatter',
         config: {
           label: 'Custom Format String',
-          helper: 'Use the Mask Pattern format <br> Date: ##/##/#### <br> SSN: ###-##-#### <br> Phone: (###) ###-####',
+          helper: 'Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####',
           validation: '',
         },
       },
