@@ -79,7 +79,7 @@ export default {
     getUserDateTimeFormat,
     convertToData(newValue) {
       if (this.customFormatter) {
-        newValue = newValue.replace(/[^\w\s]/gi, "");
+        newValue = newValue.replace(/[^\w]/g, "");
         return newValue;
       } else {
         switch (this.dataFormat) {
