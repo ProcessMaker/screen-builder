@@ -47,14 +47,14 @@ const componentTypes = {
   date: 'the-mask',
   datetime: 'the-mask',
   percentage: 'inputmasked',
-  custom: 'the-mask'
+  custom: 'the-mask',
 };
 const componentTypesConfigs = {
   currency: 'getCurrencyFormat',
   date: 'getDateFormat',
   datetime: 'getDatetimeFormat',
   percentage: 'getPercentageFormat',
-  custom: 'getCustomFormatter'
+  custom: 'getCustomFormatter',
 };
 
 export default {
@@ -79,7 +79,7 @@ export default {
     getUserDateTimeFormat,
     convertToData(newValue) {
       if (this.customFormatter) {
-        newValue = newValue.replace(/[^\w]/g, "");
+        newValue = newValue.replace(/[^\w]/g, '');
         return newValue;
       } else {
         switch (this.dataFormat) {
@@ -212,9 +212,9 @@ export default {
     getCustomFormatter() {
       return {
         masked: true,
-        mask: this.customFormatter
-      }
-    }
+        mask: this.customFormatter,
+      };
+    },
   },
   watch: {
     value(value) {
