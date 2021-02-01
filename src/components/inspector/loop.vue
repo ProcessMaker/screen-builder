@@ -2,7 +2,7 @@
   <div>
     <div class="form-group border-bottom pb-3">
       <label for="type">{{ $t('Data Source') }}</label>
-      <b-form-select id="type" v-model="settings.type" :options="options"/>
+      <b-form-select id="type" v-model="settings.type" :options="options" data-cy="inspector-source"/>
     </div>
     
     <div class="form-group border-bottom">
