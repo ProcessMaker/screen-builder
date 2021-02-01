@@ -1,5 +1,6 @@
 <template>
   <div>
+    <label v-if="label && label !== ''">{{ label }}</label>
     <b-card v-if="inPreviewMode" class="mb-2">
       {{ messageForPreview }}
     </b-card>
@@ -41,7 +42,7 @@ export default {
       prefix: '',
     };
   },
-  props: ['name', 'value', 'endpoint', 'requestFiles'],
+  props: ['name', 'value', 'endpoint', 'requestFiles', 'label'],
   beforeMount() {
     this.getFileType();
 
