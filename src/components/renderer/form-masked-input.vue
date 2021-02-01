@@ -47,12 +47,14 @@ const componentTypes = {
   date: 'the-mask',
   datetime: 'the-mask',
   percentage: 'inputmasked',
+  custom: 'the-mask'
 };
 const componentTypesConfigs = {
   currency: 'getCurrencyFormat',
   date: 'getDateFormat',
   datetime: 'getDatetimeFormat',
   percentage: 'getPercentageFormat',
+  custom: 'getCustomFormatter'
 };
 
 export default {
@@ -76,38 +78,44 @@ export default {
     getUserDateFormat,
     getUserDateTimeFormat,
     convertToData(newValue) {
-      switch (this.dataFormat) {
-        case 'string':
-          newValue = newValue.toString();
-          break;
-        case 'boolean':
-          newValue = Boolean(newValue);
-          break;
-        case 'currency':
-        case 'percentage':
-        case 'float':
-          newValue = parseFloat(newValue);
-          break;
-        case 'int':
-          newValue = parseInt(newValue);
-          break;
-        case 'date':
-          if (this.componentName === 'FormDatePicker') {
-            newValue = moment.utc(newValue, [getUserDateFormat(), moment.ISO_8601], true).toISOString().split(RegExp('T[0-9]'))[0];
-          }
-          break;
-        case 'datetime':
-          if (this.componentName === 'FormDatePicker') {
-            newValue = moment(newValue, [getUserDateTimeFormat(), moment.ISO_8601], true).toISOString();
-          }
-          break;
-        case 'array':
-          break;
-        default:
-          newValue = newValue.toString();
-          break;
+      if (this.customFormatter) {
+        newValue = newValue.replace(/[^\w\s]/gi, "");
+        return newValue;
+      } else {
+        switch (this.dataFormat) {
+          case 'string':
+            newValue = newValue.toString();
+            break;
+          case 'boolean':
+            newValue = Boolean(newValue);
+            break;
+          case 'currency':
+          case 'percentage':
+          case 'float':
+            newValue = parseFloat(newValue);
+            break;
+          case 'int':
+            newValue = parseInt(newValue);
+            break;
+          case 'date':
+            if (this.componentName === 'FormDatePicker') {
+              newValue = moment.utc(newValue, [getUserDateFormat(), moment.ISO_8601], true).toISOString().split(RegExp('T[0-9]'))[0];
+            }
+            break;
+          case 'datetime':
+            if (this.componentName === 'FormDatePicker') {
+              newValue = moment(newValue, [getUserDateTimeFormat(), moment.ISO_8601], true).toISOString();
+            }
+            break;
+          case 'array':
+            break;
+          default:
+            newValue = newValue.toString();
+            break;
+        }
+        return newValue;
       }
-      return newValue;
+      
     },
     convertFromData(value) {
       return value;
@@ -124,6 +132,9 @@ export default {
     dataFormat() {
       return this.config.dataFormat;
     },
+    customFormatter() {
+      return this.config.customFormatter;
+    },
     maxlength() {
       if (this.dataFormat === 'int' || this.dataFormat === 'float') {
         return 15;
@@ -131,7 +142,12 @@ export default {
       return null;
     },
     componentConfig() {
-      const config = componentTypesConfigs[this.dataFormat];
+      let config;
+      if (this.customFormatter) {
+        config = componentTypesConfigs['custom'];
+      } else  {
+        config = componentTypesConfigs[this.dataFormat];
+      }
       return Object.assign({}, (config ? this[config] : {}) , this.$attrs);
     },
     getCurrencyFormat() {
@@ -172,7 +188,11 @@ export default {
       };
     },
     componentType() {
-      return componentTypes[this.dataFormat] || 'input';
+      if (this.customFormatter) {
+        return componentTypes['custom'];
+      } else {
+        return componentTypes[this.dataFormat] || 'input';
+      }
     },
     classList() {
       return {
@@ -189,6 +209,12 @@ export default {
         default: return 'text';
       }
     },
+    getCustomFormatter() {
+      return {
+        masked: true,
+        mask: this.customFormatter
+      }
+    }
   },
   watch: {
     value(value) {
