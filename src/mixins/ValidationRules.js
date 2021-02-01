@@ -49,9 +49,9 @@ export const ValidationMsg = {
   same: 'Must be same as {field}',
   url: 'Must be a valid URL',
   after: 'Must be after {after}',
-  after_or_equal: 'Must be equal or after {after_or_equal}',
+  afterOrEqual: 'Must be equal or after {after_or_equal}',
   before: 'Must be before {before}',
-  before_or_equal: 'Must be equal or before {before_or_equal}',
+  beforeOrEqual: 'Must be equal or before {before_or_equal}',
   invalid_default_value: 'Invalid default value',
   customDate: 'Must be a valid Date',
   regex: 'Invalid value',
@@ -80,7 +80,7 @@ export const after = (after) => helpers.withParams({after}, (date, data) => {
   return inputDate > afterDate;
 });
 
-export const after_or_equal = (after_or_equal) => (date, data) => {
+export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_equal}, (date, data) => {
   // checks if incoming 'after_or_equal' is a date or a key reference.
   let checkDate = moment(after_or_equal);
   if (!checkDate.isValid()) {
@@ -91,7 +91,7 @@ export const after_or_equal = (after_or_equal) => (date, data) => {
   const equalOrAfterDate = moment(after_or_equal).toISOString();
     
   return inputDate >= equalOrAfterDate;
-};
+});
 
 export const before = (before) => helpers.withParams({before}, (date, data) => {
   // checks if incoming 'before' is a date or a key reference.
@@ -105,7 +105,7 @@ export const before = (before) => helpers.withParams({before}, (date, data) => {
   return inputDate < beforeDate;
 });
 
-export const before_or_equal = (before_or_equal) => (date, data) => {
+export const before_or_equal = (before_or_equal) => helpers.withParams({before_or_equal}, (date, data) => {
   // checks if incoming 'before_or_equal' is a date or a key reference.
   let checkDate = moment(before_or_equal);
   if (!checkDate.isValid()) {
@@ -116,7 +116,7 @@ export const before_or_equal = (before_or_equal) => (date, data) => {
   const beforeDate = moment(before_or_equal).toISOString();
     
   return inputDate <= beforeDate;
-};
+});
 
 // The field under validation must be yes, on, or 1. This is useful for validating "Terms of Service" acceptance.
 export const accepted = (value) => {
@@ -192,4 +192,5 @@ export const validators = {
   in: in_list,
   notIn,
   regex,
+  afterOrEqual: after_or_equal,
 };
