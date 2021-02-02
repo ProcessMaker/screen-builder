@@ -111,7 +111,7 @@ export default {
               if (!globalObject['nestedScreens']) {
                 globalObject['nestedScreens'] = {};
               }
-              globalObject.nestedScreens["id_" + id] = this.config;
+              globalObject.nestedScreens['id_' + id] = this.config;
             }
           });
       }
