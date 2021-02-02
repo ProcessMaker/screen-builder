@@ -145,7 +145,7 @@
                   <div>{{ endpointError }}</div>
                 </div>
               </div>
-              <outbound-config v-model="config.script_configuration" v-if="!hasInputData"/>
+              <outbound-config v-model="scriptConfig"  v-if="!hasInputData"/>
               <div class="form-group" v-if="hasInputData">
                 <div class="row pl-3">
                   <span class="text-danger">
@@ -199,7 +199,7 @@
               :validation="ruleWatcherOutputVariable"
               data-cy="watchers-watcher-output_variable"
             />
-            <data-mapping v-if="isDatasource" v-model="config.script_configuration" />
+            <data-mapping v-if="isDatasource" v-model="scriptConfig"/>
           </div>
         </div>
       </div>
@@ -268,6 +268,7 @@ export default {
   },
   data() {
     return {
+      scriptConfig: '',
       endpoint: null,
       endpoints: [],
       ruleWatcherName: '',
@@ -289,6 +290,11 @@ export default {
     };
   },
   watch: {
+    scriptConfig(value) {
+      const currentConf = JSON.parse(this.config.script_configuration);
+      const newConf = JSON.parse(value);
+      this.config.script_configuration = JSON.stringify({...currentConf, ...newConf});
+    },
     endpoint(endpoint) {
       this.setConfig('endpoint', endpoint);
     },
@@ -301,6 +307,9 @@ export default {
         }
         if (!value.script_configuration) {
           value.script_configuration = '{}';
+        }
+        else {
+          this.scriptConfig = this.config.script_configuration;
         }
         this.endpoint = this.getConfig().endpoint;
       },
@@ -370,6 +379,7 @@ export default {
       if (JSON.stringify(config[name]) !== JSON.stringify(value)) {
         config[name] = value;
         this.config.script_configuration = JSON.stringify(config);
+        this.scriptConfig = this.config.script_configuration;
       }
     },
     loadEndpoints() {
