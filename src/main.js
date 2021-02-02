@@ -46,7 +46,13 @@ window.exampleScreens = [
               'label': 'First name',
               'name': 'firstname',
               'placeholder': '',
-              'validation': '',
+              "validation": [
+                {
+                  "value": "required",
+                  "helper": "Checks if the length of the String representation of the value is >",
+                  "content": "Required"
+                }
+              ],
               'helper': null,
               'type': 'text',
               'dataFormat': 'string',
@@ -105,10 +111,11 @@ window.ProcessMaker = {
     get(url) {
       return new Promise((resolve, reject) => {
         let screen;
-        if (url.substr(0, 8) === 'screens/') {
-          screen = window.exampleScreens.find(s => s.id == url.substr(8));
+        let match = url.match(/screens\/(\d)+/);
+        if (match) {
+          screen = window.exampleScreens.find(s => s.id == parseInt(match[1]));
         }
-        if (url.substr(0, 8) === 'screens/' && screen) {
+        if (match && screen) {
           resolve({data: screen});
         } else if (url === 'screens') {
           resolve({ data: {
