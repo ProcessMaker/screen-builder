@@ -406,7 +406,7 @@ export default {
     },
     formatRuleContentAsId(content) {
       return content.toLowerCase().replaceAll(' ', '-');
-    }
+    },
   },
   mounted() {
     this.rules = this.value || [];
