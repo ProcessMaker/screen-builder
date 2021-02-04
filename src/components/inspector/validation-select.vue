@@ -48,14 +48,14 @@
             <div class="p-1 d-flex justify-content-between align-items-center">
               {{ rule.content }}
               <div class="actions">
-                <b-button variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" @click="toggleRuleEdit(rule, index)" v-b-toggle="rule.content">
+                <b-button variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" v-b-toggle="formatRuleContentAsId(rule.content)">
                   <i class="fas fa-cog fa-fw text-secondary"/>
                 </b-button>
                 <b-button variant="link" class="p-0" @click="confirmDelete(index)"><i class="fas fa-trash-alt fa-fw text-secondary"/></b-button>
               </div>
             </div>
           </b-card-header>
-          <b-collapse :id="rule.content" :accordion="rule.content" :visible="rule.visible" role="tabpanel">
+          <b-collapse :id="formatRuleContentAsId(rule.content)" :accordion="formatRuleContentAsId(rule.content)" :visible="rule.visible" role="tabpanel">
             <b-card-body> 
               <div class="p-2"> 
                 <div v-for="config in rule.configs" :key="config.label" class="mb-2">
@@ -392,9 +392,6 @@ export default {
       this.$set(this.rules[index], 'visible', false);
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
     },
-    toggleRuleEdit(rule, index) {
-      this.$set(this.rules[index], 'visible', !this.rules[index].visible);
-    },
     onCancel(rule, index) {
       if (this.cloneRules && this.cloneRules[index]) {
         Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
@@ -407,6 +404,9 @@ export default {
         this.rules[index].configs = rule.configs;
       }
     },
+    formatRuleContentAsId(content) {
+      return content.toLowerCase().replaceAll(' ', '-');
+    }
   },
   mounted() {
     this.rules = this.value || [];
