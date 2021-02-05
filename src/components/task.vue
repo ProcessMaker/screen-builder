@@ -239,7 +239,8 @@ export default {
     },
     prepareTask() {
       this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
+      const requestData = _.get(this.task, 'request_data', {});
+      this.requestData = _.merge(this.requestData, requestData);
 
       this.$emit('task-updated', this.task);
 
