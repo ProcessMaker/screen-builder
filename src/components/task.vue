@@ -15,6 +15,7 @@
             :computed="screen.computed"
             :custom-css="screen.custom_css"
             :watchers="screen.watchers"
+            :key="refreshScreen"
             @update="onUpdate"
             @submit="submit"
           />
@@ -90,6 +91,7 @@ export default {
       requestData: {},
       reloadInProgress: false,
       hasErrors: false,
+      refreshScreen: 0,
     };
   },
   watch: {
@@ -239,8 +241,8 @@ export default {
     },
     prepareTask() {
       this.resetScreenState();
-      const requestData = _.get(this.task, 'request_data', {});
-      this.requestData = _.merge(this.requestData, requestData);
+      this.requestData = _.get(this.task, 'request_data', {});
+      this.refreshScreen++;
 
       this.$emit('task-updated', this.task);
 
