@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container fluid>
     <component ref="component" :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
     <screen-renderer-error v-if="showErrors && building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
