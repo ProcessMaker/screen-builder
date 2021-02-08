@@ -332,7 +332,7 @@ export default {
       // This may no longer be needed
     },
     processCompleted() {
-      this.$emit('completed', this.task.process_request_id);
+      this.$emit('completed', this.requestId);
     },
     processUpdated(data) {
       if (
