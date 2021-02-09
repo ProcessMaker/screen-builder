@@ -171,7 +171,11 @@ export default {
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         } else {
-          this.renderComponent = _.get(this, 'task.component', 'task-screen');
+          let component = _.get(this, 'task.component', 'task-screen');
+          if (component === null) {
+            component = 'task-screen';
+          }
+          this.renderComponent = component;
         }
       },
     },
@@ -181,7 +185,7 @@ export default {
       if (!this.task) {
         return false;
       }
-      return this.task.bpmn_tag_name === 'manualTask' || !this.task.screen;
+      return this.task.bpmn_tag_name === 'manualTask' || (!this.task.screen && this.task.element_type !== 'startEvent');
     },
     showTaskIsCompleted() {
       return (
