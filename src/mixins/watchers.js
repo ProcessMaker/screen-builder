@@ -50,7 +50,7 @@ export default {
           }
           else {
             // If it is a new variable, the value  is set directly
-            this.vdata[map.key] = response[map.key];
+            Vue.set(this.vdata, map.key, response[map.key]);
           }
         }, this);
 
