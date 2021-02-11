@@ -12,14 +12,14 @@ export default {
         const data = new Proxy(Object.assign({}, this), {
           get(data, name) {
             if (data[name] === undefined) {
-              return self.vdata[name]
+              return self.vdata[name];
             } else {
               return data[name];
             }
           },
-          set(data, name, value) {
-            throw "You are not allowed to set properties from inside an expression";
-          }
+          set() {
+            throw 'You are not allowed to set properties from inside an expression';
+          },
         });
 
         if (type === 'expression') {
