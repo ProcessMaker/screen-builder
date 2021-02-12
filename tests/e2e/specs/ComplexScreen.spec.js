@@ -82,7 +82,7 @@ describe('Complex screen', () => {
 
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
-      const row_id = data.form_record_list_1[0].row_id;
+      const record_row_id = data.form_record_list_1[0].row_id;
       cy.assertPreviewData({
         'form_input_1': '12345678',
         'form_text_area_1': 'Hello!',
@@ -105,7 +105,7 @@ describe('Complex screen', () => {
           {
             'first_name': 'Thomas A.',
             'last_name': 'Anderson',
-            'row_id': row_id,
+            'row_id': record_row_id,
           },
         ],
         'page1': null,
@@ -177,7 +177,7 @@ describe('Complex screen', () => {
     });
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
-      const row_id = data.form_record_list_1[0].row_id;
+      const record_row_id = data.form_record_list_1[0].row_id;
       cy.assertPreviewData({
         'form_input_1': '12345678',
         'form_text_area_1': 'Hello!',
@@ -203,7 +203,7 @@ describe('Complex screen', () => {
           {
             'first_name': 'Thomas A.',
             'last_name': 'Anderson',
-            'row_id': row_id,
+            'row_id': record_row_id,
           },
         ],
         'page1': 1,
@@ -327,7 +327,7 @@ describe('Complex screen', () => {
       const row_id1 = data.loop[1].form_record_list_2[0].row_id;
       const row_id2 = data.loop[2].form_record_list_2[0].row_id;
       const row_id3 = data.loop[3].form_record_list_2[0].row_id;
-      const row_id = data.form_record_list_2[0].row_id;
+      const record_row_id = data.form_record_list_1[0].row_id;
 
       cy.assertPreviewData({
         'form_input_1': '12345678',
@@ -412,7 +412,7 @@ describe('Complex screen', () => {
           {
             'first_name': 'Thomas A.',
             'last_name': 'Anderson',
-            'row_id': row_id,
+            'row_id': record_row_id,
           },
         ],
         'page1': 1,
@@ -484,7 +484,7 @@ describe('Complex screen', () => {
       const row_id1 = data.loop[1].form_record_list_2[0].row_id;
       const row_id2 = data.loop[2].form_record_list_2[0].row_id;
       const row_id3 = data.loop[3].form_record_list_2[0].row_id;
-      const row_id = data.form_record_list_1[0].row_id;
+      const record_row_id = data.form_record_list_1[0].row_id;
 
       cy.assertPreviewData({
         'form_input_1': 'form input 1',
@@ -575,7 +575,7 @@ describe('Complex screen', () => {
             'last_name': 'Anderson',
             'email': 'thomas@processmaker.com',
             'url': ' https://thomas.processmaker.com',
-            'row_id': row_id,
+            'row_id': record_row_id,
           },
         ],
         'page1': 1,
