@@ -83,7 +83,7 @@ describe('Complex screen', () => {
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
       const record_row_id = data.form_record_list_1[0].row_id;
-      cy.assertPreviewData({
+      expect(data).to.eql({
         'form_input_1': '12345678',
         'form_text_area_1': 'Hello!',
         'form_select_list_1': 'a',
@@ -178,7 +178,7 @@ describe('Complex screen', () => {
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
       const record_row_id = data.form_record_list_1[0].row_id;
-      cy.assertPreviewData({
+      expect(data).to.eql({
         'form_input_1': '12345678',
         'form_text_area_1': 'Hello!',
         'form_select_list_1': 'a',
@@ -206,7 +206,7 @@ describe('Complex screen', () => {
             'row_id': record_row_id,
           },
         ],
-        'page1': 1,
+        'page1': null,
         'form_input_5': 'form input 5',
         'form_select_list_4': 'foo',
         'form_date_picker_7': now.toISOString(),
@@ -329,7 +329,7 @@ describe('Complex screen', () => {
       const row_id3 = data.loop[3].form_record_list_2[0].row_id;
       const record_row_id = data.form_record_list_1[0].row_id;
 
-      cy.assertPreviewData({
+      expect(data).to.eql({
         'form_input_1': '12345678',
         'form_text_area_1': 'Hello!',
         'form_select_list_1': 'a',
@@ -415,12 +415,12 @@ describe('Complex screen', () => {
             'row_id': record_row_id,
           },
         ],
-        'page1': 1,
+        'page1': null,
         'form_input_5': 'form input 5',
         'form_select_list_4': 'foo',
         'form_date_picker_7': now.toISOString(),
         'form_record_list_3': null,
-        'page2': 1,
+        'page2': null,
         'form_text_area_4': 'form text area 4',
         'form_checkbox_4': true,
         'form_date_picker_8': now.toISOString(),
@@ -486,7 +486,7 @@ describe('Complex screen', () => {
       const row_id3 = data.loop[3].form_record_list_2[0].row_id;
       const record_row_id = data.form_record_list_1[0].row_id;
 
-      cy.assertPreviewData({
+      expect(data).to.eql({
         'form_input_1': 'form input 1',
         'form_text_area_1': 'Hello!',
         'form_select_list_1': 'b',
@@ -578,14 +578,14 @@ describe('Complex screen', () => {
             'row_id': record_row_id,
           },
         ],
-        'page1': 1,
+        'page1': null,
         'form_input_5': 123.45,
         'form_select_list_4': [
           'c',
         ],
         'form_date_picker_7': now.toISOString(),
         'form_record_list_3': null,
-        'page2': 1,
+        'page2': null,
         'form_text_area_4': 'form text area 4',
         'form_checkbox_4': true,
         'form_date_picker_8': now.toISOString(),
@@ -609,7 +609,7 @@ describe('Complex screen', () => {
         'form_date_picker_3': null,
         'form_checkbox_8': true,
         'form_date_picker_4': null,
-        'nested_file': 1,
+        'nested_file': null,
         'form_checkbox_9': true,
         'form_checkbox_10': true,
       });
