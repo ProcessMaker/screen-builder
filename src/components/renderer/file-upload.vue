@@ -122,7 +122,6 @@ export default {
       return accept;
     },
     fileDataName() {
-      console.log('fileDataName: ' + this.prefix + this.name + (this.row_id ? '.' + this.row_id : ''));
       return this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
     },
   },
@@ -188,17 +187,7 @@ export default {
   },
   methods: {
     listenRecordList(recordList, index, id) {
-      console.log('------- INICIO -----', {id, recordList});
-      //console.log('listen to record list', this.$parent, this.$parent.$parent, this.$parent.$parent.$parent);
-      //console.log('------- FIN -----');
-
-      const parent =  this.$parent.$parent.$parent;
-      //if (parent === recordList) {
-        this.row_id = id;
-      //}
-      // else {
-      //   this.row_id = null;
-      // }
+      this.row_id = id;
       this.$forceUpdate();
     },
     setPrefix() {
@@ -295,9 +284,9 @@ export default {
       this.validator.errorCount = 0;
       window.onbeforeunload = function() {};
     },
-    isInsideARecordList(node){
-      if (node.$parent) {
-        if (this.$parent._componentTag ===  'form-record-list') {
+    isInsideARecordList(node) {
+      if (node.$parent && node.$parent.$options) {
+        if (node.$parent.$options._componentTag ===  'form-record-list') {
           return true;
         }
         return this.isInsideARecordList(node.$parent);
@@ -305,15 +294,9 @@ export default {
       return false;
     },
     start() {
-      // console.log('start');
-      // if (this.isInsideARecordList(this)) {
-      //   console.log('DENTRO');
-      // }
-      // else {
-      //   console.log('FUERA');
-      //   this.row_id = null;
-      // }
-      // console.log('FIN start');
+      if (!this.isInsideARecordList(this)) {
+        this.row_id = null;
+      }
 
       // Block submit until files are loaded
       this.validator.errorCount = 1;
