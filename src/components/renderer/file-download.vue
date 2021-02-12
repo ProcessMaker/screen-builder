@@ -226,7 +226,6 @@ export default {
         requestFiles = window.PM4ConfigOverrides.requestFiles;
       }
 
-      console.log('get request files');
       if (requestFiles && requestFiles[this.prefix + this.name]) {
         this.loading = false;
         if (Array.isArray(requestFiles[this.prefix + this.name])) {
@@ -257,7 +256,7 @@ export default {
           const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
           return endpoint + query;
         }
-        ProcessMaker.apiClient
+        window.ProcessMaker.apiClient
           .get(endpoint)
           .then(response => {
             this.fileInfo = _.get(response, 'data.data.0', null);
