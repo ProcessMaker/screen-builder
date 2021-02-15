@@ -314,6 +314,8 @@ export default {
     },
     value() {
       this.rules = this.value;
+      this.cloneSetRules();
+      
     },
     selectedOption: {
       deep: true,
@@ -395,7 +397,9 @@ export default {
     },
     onCancel(rule, index) {
       if (this.cloneRules && this.cloneRules[index]) {
-        Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
+        if (!_.isEqual(rule, this.cloneRules[index])) {
+          Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
+        }
       } else {
         rule.configs.forEach(config => {
           if (config.value) {
@@ -408,12 +412,13 @@ export default {
     formatRuleContentAsId(content) {
       return content.toLowerCase().replaceAll(' ', '-');
     },
+    cloneSetRules() {
+      this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    }
   },
   mounted() {
     this.rules = this.value || [];
-    if (this.cloneRules.length) {
-      this.cloneRules = JSON.parse(JSON.stringify(this.rules));
-    }
+    this.cloneSetRules();
   },
 };
 </script>
