@@ -388,7 +388,8 @@ export default {
       });
     },
     onUpdate(rule, index) {
-      this.$root.$emit('bv::toggle::collapse', rule.content);
+      const content = this.formatRuleContentAsId(rule.content);
+      this.$root.$emit('bv::toggle::collapse', content);
       this.$set(this.rules[index], 'visible', false);
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
     },
