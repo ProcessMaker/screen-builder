@@ -416,7 +416,7 @@ export default {
     },
     cloneSetRules() {
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
-    }
+    },
   },
   mounted() {
     this.rules = this.value || [];
