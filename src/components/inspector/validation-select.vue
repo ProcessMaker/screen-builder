@@ -396,6 +396,7 @@ export default {
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
     },
     onCancel(rule, index) {
+      const content = this.formatRuleContentAsId(rule.content);
       if (this.cloneRules && this.cloneRules[index]) {
         if (!_.isEqual(rule, this.cloneRules[index])) {
           Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
@@ -408,6 +409,7 @@ export default {
         });
         this.rules[index].configs = rule.configs;
       }
+      this.$root.$emit('bv::toggle::collapse', content);
     },
     formatRuleContentAsId(content) {
       return content.toLowerCase().replaceAll(' ', '-');
