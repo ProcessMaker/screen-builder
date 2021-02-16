@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import customValidationRules from './CustomValidationRules';
+import './CustomValidationRules';
 
 const Validator = require('validatorjs');
 
