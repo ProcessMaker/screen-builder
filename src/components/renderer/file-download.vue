@@ -55,6 +55,9 @@ export default {
     }
   },
   mounted() {
+    this.$root.$on('set-upload-data-name',
+      (recordList, index, id) => this.listenRecordList(recordList, index, id));
+
     if (!this.fileType) {
       // Not somewhere we can download anything (like web entry start event)
       this.loading = false;
@@ -95,6 +98,24 @@ export default {
     },
   },
   methods: {
+    parentRecordList(node) {
+      if (node.$parent && node.$parent.$options) {
+        if (node.$parent.$options._componentTag ===  'form-record-list') {
+          return node.$parent;
+        }
+        return this.parentRecordList(node.$parent);
+      }
+      return null;
+    },
+    listenRecordList(recordList, index, id) {
+      const parent = this.parentRecordList(this);
+      if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
+        const prefix = (this.parentRecordList(this) === null) ? '' : recordList.name + '.';
+        const fileDataName = prefix + this.name + (id ? '.' + id : '');
+        this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
+        this.loading  = false;
+      }
+    },
     onClick() {
       if (this.fileType == 'request') {
         this.downloadRequestFile();
@@ -227,12 +248,25 @@ export default {
         this.loading = false;
         return;
       }
-      window.ProcessMaker.apiClient
-        .get('requests/' + this.requestId + '/files?name=' + this.prefix + this.name)
-        .then(response => {
-          this.fileInfo = _.get(response, 'data.data.0', null);
-          this.loading = false;
-        });
+
+      //do not preload files if the control is inside a record list because
+      // we don't know the row to which the control is associated
+      if (this.parentRecordList(this) === null) {
+        let endpoint = 'requests/' + this.requestId + '/files?name=' + this.prefix + this.name;
+        if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+          endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+        }
+        if (endpoint && this.fileInfo && this.fileInfo.token) {
+          const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
+          return endpoint + query;
+        }
+        window.ProcessMaker.apiClient
+          .get(endpoint)
+          .then(response => {
+            this.fileInfo = _.get(response, 'data.data.0', null);
+            this.loading = false;
+          });
+      }
     },
     setFileInfoFromCache() {
       const info = _.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null);
