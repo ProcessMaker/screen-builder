@@ -278,9 +278,14 @@ export default {
         this.$emit('error', this.requestId);
         return;
       }
-      if (this.task.allow_interstitial) {
+
+      if (this.task.process_request.status === 'COMPLETED') {
+        this.processCompleted();
+
+      } else if (this.task.allow_interstitial) {
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask();
+
       } else {
         this.$emit('closed', this.task.id);
       }
