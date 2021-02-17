@@ -48,3 +48,13 @@ Validator.register('before_or_equal', function(date, params) {
     
   return inputDate <= beforeDate;
 }, 'The :attribute must be equal or before :before_or_equal.');
+
+Validator.register('custom_date', function(date) {
+  let format = 'MM/DD/YYYY';
+  if (typeof window.ProcessMaker !== 'undefined' && window.ProcessMaker.user && window.ProcessMaker.user.datetime_format) {
+    format = window.ProcessMaker.user.datetime_format.replace(/[\sHh:msaAzZ]/g, '');
+  }
+
+  let checkDate = moment(date, [format, moment.ISO_8601], true);
+  return checkDate.isValid();
+}, 'The :attribute must be a valid date.');
