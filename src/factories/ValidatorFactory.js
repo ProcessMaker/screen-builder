@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import './CustomValidationRules';
+
 const Validator = require('validatorjs');
 
 export function ValidatorFactory(config, data) {
