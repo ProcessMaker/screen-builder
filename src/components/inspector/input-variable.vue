@@ -55,6 +55,9 @@ export default {
       }
     },
     options() {
+      if (!this.localValue) {
+        return;
+      }
       const regexp = new RegExp(
         this.localValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
           .replace(/\.\d+/g, '.index'),
