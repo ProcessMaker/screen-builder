@@ -4,6 +4,10 @@ export default {
       if (config.settings.type === 'existing') {
         // Do not initialize any variables if the loop is
         // configured to use existing data.
+        // Unless it's null, then set it to an empty array
+        if (this.getValue(variable) === null) {
+          this.setValue(variable, []);
+        }
         return;
       }
 
