@@ -314,6 +314,8 @@ export default {
     },
     value() {
       this.rules = this.value;
+      this.cloneSetRules();
+      
     },
     selectedOption: {
       deep: true,
@@ -388,13 +390,17 @@ export default {
       });
     },
     onUpdate(rule, index) {
-      this.$root.$emit('bv::toggle::collapse', rule.content);
+      const content = this.formatRuleContentAsId(rule.content);
+      this.$root.$emit('bv::toggle::collapse', content);
       this.$set(this.rules[index], 'visible', false);
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
     },
     onCancel(rule, index) {
+      const content = this.formatRuleContentAsId(rule.content);
       if (this.cloneRules && this.cloneRules[index]) {
-        Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
+        if (!_.isEqual(rule, this.cloneRules[index])) {
+          Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
+        }
       } else {
         rule.configs.forEach(config => {
           if (config.value) {
@@ -403,16 +409,18 @@ export default {
         });
         this.rules[index].configs = rule.configs;
       }
+      this.$root.$emit('bv::toggle::collapse', content);
     },
     formatRuleContentAsId(content) {
       return content.toLowerCase().replaceAll(' ', '-');
     },
+    cloneSetRules() {
+      this.cloneRules = JSON.parse(JSON.stringify(this.rules));
+    },
   },
   mounted() {
     this.rules = this.value || [];
-    if (this.cloneRules.length) {
-      this.cloneRules = JSON.parse(JSON.stringify(this.rules));
-    }
+    this.cloneSetRules();
   },
 };
 </script>
