@@ -88,8 +88,6 @@ describe('Complex screen', () => {
         'form_text_area_1': 'Hello!',
         'form_select_list_1': 'a',
         'form_checkbox_1': true,
-        'form_date_picker_1': today_date,
-        'form_date_picker_2': now.toISOString(),
         'loop': [
           {
             'form_input_2': 'input in loop 1',
