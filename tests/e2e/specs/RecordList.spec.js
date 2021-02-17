@@ -34,15 +34,20 @@ describe('Record list', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=fullname]').type('{home}Miss ');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
-    cy.assertPreviewData({
-      'firstname': 'Patricia',
-      'lastname': 'Smith',
-      'form_record_list_1': [
-        {
-          'fullname': 'Miss Patricia Smith',
-          'date': today,
-        },
-      ],
+    cy.get('#screen-builder-container').then((div) => {
+      const data = div[0].__vue__.previewData;
+      const record_row_id = data.form_record_list_1[0].row_id;
+      expect(data).to.eql({
+        'firstname': 'Patricia',
+        'lastname': 'Smith',
+        'form_record_list_1': [
+          {
+            'fullname': 'Miss Patricia Smith',
+            'date': today,
+            'row_id': record_row_id,
+          },
+        ],
+      });
     });
   });
 
@@ -72,18 +77,23 @@ describe('Record list', () => {
 
     // Edit record and check the uploaded files are displayed
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').click();
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]').should('contain.text', '1');
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', '2');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]').should('contain.text', 'avatar.jpeg');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', 'record_list_fileupload.json');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Cancel)').click();
 
     // Verify the data structure
-    cy.assertPreviewData({
-      'form_record_list_1': [
-        {
-          'file1': 1,
-          'file2': 2,
-        },
-      ],
+    cy.get('#screen-builder-container').then((div) => {
+      const data = div[0].__vue__.previewData;
+      const record_row_id = data.form_record_list_1[0].row_id;
+      expect(data).to.eql({
+        'form_record_list_1': [
+          {
+            'file1': 1,
+            'file2': 2,
+            'row_id': record_row_id,
+          },
+        ],
+      });
     });
   });
 
@@ -100,7 +110,7 @@ describe('Record list', () => {
     cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file1"] input[type=file]', 'avatar.jpeg', 'image/jpg');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button:contains(Ok)').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', 'required');
-    
+
     // Upload second file
     cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
@@ -115,18 +125,23 @@ describe('Record list', () => {
 
     // Edit record and check the uploaded files are displayed
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').click();
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]').should('contain.text', '1');
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', '2');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]').should('contain.text', 'avatar.jpeg');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]').should('contain.text', 'record_list_fileupload_required.json');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Cancel)').click();
 
     // Verify the data structure
-    cy.assertPreviewData({
-      'form_record_list_1': [
-        {
-          'file1': 1,
-          'file2': 2,
-        },
-      ],
+    cy.get('#screen-builder-container').then((div) => {
+      const data = div[0].__vue__.previewData;
+      const record_row_id = data.form_record_list_1[0].row_id;
+      expect(data).to.eql({
+        'form_record_list_1': [
+          {
+            'file1': 1,
+            'file2': 2,
+            'row_id': record_row_id,
+          },
+        ],
+      });
     });
   });
 });

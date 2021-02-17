@@ -66,6 +66,9 @@ export default {
     this.removeDefaultClasses();
   },
   mounted() {
+    this.$root.$on('set-upload-data-name',
+      (recordList, index, id) => this.listenRecordList(recordList, index, id));
+
     this.removeDefaultClasses();
     
     this.checkIfInRecordList();
@@ -88,8 +91,9 @@ export default {
     },
     displayName() {
       const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
-      const fileInfo = requestFiles[this.prefix + this.name];
-      if (fileInfo) {
+      const fileInfo = requestFiles[this.fileDataName];
+      let id = this.uploaderId;
+      if (fileInfo && id >= 0) {
         return fileInfo.file_name;
       }
       return this.value.name ? this.value.name : this.value;
@@ -118,11 +122,14 @@ export default {
       });
       return accept;
     },
+    fileDataName() {
+      return this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
+    },
   },
   watch: {
     name: {
       handler() {
-        this.options.query.data_name = this.prefix + this.name;
+        this.options.query.data_name = this.fileDataName;
       },
       immediate: true,
     },
@@ -134,13 +141,21 @@ export default {
     },
     prefix: {
       handler() {
-        this.options.query.data_name = this.prefix + this.name;
+        this.options.query.data_name = this.fileDataName;
+      },
+      immediate: true,
+    },
+    row_id: {
+      handler() {
+        this.options.query.row_id = this.row_id;
+        this.options.query.data_name = this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
       },
       immediate: true,
     },
   },
   data() {
     return {
+      uploaderId: 1,
       content: '',
       fileType: null,
       validator: {
@@ -148,6 +163,7 @@ export default {
         errors: [],
       },
       prefix: '',
+      row_id: null,
       options: {
         target: this.getTargetUrl,
         // We cannot increase this until laravel chunk uploader handles this gracefully
@@ -156,7 +172,7 @@ export default {
           chunk: true,
           data_name: this.name,
           parent: null,
-          marco: 'test',
+          row_id: null,
         },
         testChunks: false,
         // Setup our headers to deal with API calls
@@ -172,6 +188,22 @@ export default {
     };
   },
   methods: {
+    listenRecordList(recordList, index, id) {
+      const parent = this.parentRecordList(this);
+      if (parent !== recordList) {
+        return;
+      }
+      this.row_id = (parent !== null) ? id : null;
+      //update id to refresh computed values
+      this.uploaderId =new Date().getTime();
+      if (this.$refs.uploader) {
+        this.$refs.uploader.files = [];
+        this.$refs.uploader.fileList = [];
+        this.$refs.uploader.uploader.files = [];
+        this.$refs.uploader.uploader.fileList = [];
+      }
+      this.$forceUpdate();
+    },
     setPrefix() {
       let parent = this.$parent;
       let i = 0;
@@ -238,7 +270,14 @@ export default {
       if (this.fileType == 'request') {
         let id = '';
         if (message) {
-          let msg = JSON.parse(message);
+          const msg = JSON.parse(message);
+          if (!_.has(window, 'PM4ConfigOverrides')) {
+            window.PM4ConfigOverrides = {};
+          }
+          if (!_.has(window, 'PM4ConfigOverrides.requestFiles')) {
+            window.PM4ConfigOverrides.requestFiles = {};
+          }
+          window.PM4ConfigOverrides.requestFiles[this.fileDataName] = { id:msg.fileUploadId, file_name:file.name };
           id = msg.fileUploadId;
         }
         this.$emit('input', id);
@@ -262,7 +301,20 @@ export default {
       this.validator.errorCount = 0;
       window.onbeforeunload = function() {};
     },
+    parentRecordList(node) {
+      if (node.$parent && node.$parent.$options) {
+        if (node.$parent.$options._componentTag ===  'form-record-list') {
+          return node.$parent;
+        }
+        return this.parentRecordList(node.$parent);
+      }
+      return null;
+    },
     start() {
+      if (this.parentRecordList(this) === null) {
+        this.row_id = null;
+      }
+
       // Block submit until files are loaded
       this.validator.errorCount = 1;
       window.onbeforeunload = function() {
@@ -301,8 +353,8 @@ export default {
       }
     },
     checkIfInRecordList() {
-      const parent =  this.$parent.$parent.$parent;
-      if (parent && parent.$options._componentTag == 'FormRecordList') {
+      const parent = this.parentRecordList(this);
+      if (parent !== null) {
         const recordList = parent;
         const prefix = recordList.name + '.';
         this.setFileUploadNameForChildren(recordList.$children, prefix);
