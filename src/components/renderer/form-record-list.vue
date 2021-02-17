@@ -359,7 +359,6 @@ export default {
         return;
       }
       // Open form
-      //this.setUploadDataNamePrefix();
       this.$refs.addModal.show();
 
       // eslint-disable-next-line no-unused-vars

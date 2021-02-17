@@ -92,7 +92,8 @@ export default {
     displayName() {
       const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
       const fileInfo = requestFiles[this.fileDataName];
-      if (fileInfo) {
+      let id = this.uploaderId;
+      if (fileInfo && id >= 0) {
         return fileInfo.file_name;
       }
       return this.value.name ? this.value.name : this.value;
@@ -154,6 +155,7 @@ export default {
   },
   data() {
     return {
+      uploaderId: 1,
       content: '',
       fileType: null,
       validator: {
@@ -187,7 +189,19 @@ export default {
   },
   methods: {
     listenRecordList(recordList, index, id) {
-      this.row_id = id;
+      const parent = this.parentRecordList(this);
+      if (parent !== recordList) {
+        return;
+      }
+      this.row_id = (parent !== null) ? id : null;
+      //update id to refresh computed values
+      this.uploaderId =new Date().getTime();
+      if (this.$refs.uploader) {
+        this.$refs.uploader.files = [];
+        this.$refs.uploader.fileList = [];
+        this.$refs.uploader.uploader.files = [];
+        this.$refs.uploader.uploader.fileList = [];
+      }
       this.$forceUpdate();
     },
     setPrefix() {
@@ -257,6 +271,9 @@ export default {
         let id = '';
         if (message) {
           const msg = JSON.parse(message);
+          if (!_.has(window, 'PM4ConfigOverrides')) {
+            window.PM4ConfigOverrides = {};
+          }
           if (!_.has(window, 'PM4ConfigOverrides.requestFiles')) {
             window.PM4ConfigOverrides.requestFiles = {};
           }
@@ -284,17 +301,17 @@ export default {
       this.validator.errorCount = 0;
       window.onbeforeunload = function() {};
     },
-    isInsideARecordList(node) {
+    parentRecordList(node) {
       if (node.$parent && node.$parent.$options) {
         if (node.$parent.$options._componentTag ===  'form-record-list') {
-          return true;
+          return node.$parent;
         }
-        return this.isInsideARecordList(node.$parent);
+        return this.parentRecordList(node.$parent);
       }
-      return false;
+      return null;
     },
     start() {
-      if (!this.isInsideARecordList(this)) {
+      if (this.parentRecordList(this) === null) {
         this.row_id = null;
       }
 
@@ -336,8 +353,8 @@ export default {
       }
     },
     checkIfInRecordList() {
-      const parent =  this.$parent.$parent.$parent;
-      if (parent && parent.$options._componentTag == 'FormRecordList') {
+      const parent = this.parentRecordList(this);
+      if (parent !== null) {
         const recordList = parent;
         const prefix = recordList.name + '.';
         this.setFileUploadNameForChildren(recordList.$children, prefix);

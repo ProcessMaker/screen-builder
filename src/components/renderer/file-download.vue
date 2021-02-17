@@ -98,18 +98,22 @@ export default {
     },
   },
   methods: {
-    isInRecordList() {
-      const parent =  this.$parent.$parent.$parent;
-      return (parent.$options._componentTag == 'FormRecordList');
+    parentRecordList(node) {
+      if (node.$parent && node.$parent.$options) {
+        if (node.$parent.$options._componentTag ===  'form-record-list') {
+          return node.$parent;
+        }
+        return this.parentRecordList(node.$parent);
+      }
+      return null;
     },
     listenRecordList(recordList, index, id) {
-      const parent =  this.$parent.$parent.$parent;
-      if (parent === recordList) {
-        if (_.has(window, 'PM4ConfigOverrides.requestFiles')) {
-          const fileDataName = parent.name + '.' + this.name + (id ? '.' + id : '');
-          this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
-          this.loading  = false;
-        }
+      const parent = this.parentRecordList(this);
+      if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
+        const prefix = (this.parentRecordList(this) === null) ? '' : recordList.name + '.';
+        const fileDataName = prefix + this.name + (id ? '.' + id : '');
+        this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
+        this.loading  = false;
       }
     },
     onClick() {
@@ -247,7 +251,7 @@ export default {
 
       //do not preload files if the control is inside a record list because
       // we don't know the row to which the control is associated
-      if (!this.isInRecordList()) {
+      if (this.parentRecordList(this) === null) {
         let endpoint = 'requests/' + this.requestId + '/files?name=' + this.prefix + this.name;
         if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
