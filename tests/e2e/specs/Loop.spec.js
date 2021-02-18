@@ -15,7 +15,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=mode-preview]').click();
     
     cy.assertPreviewData({
-      rows: null,
+      rows: [],
     });
 
     // Change source to new array
