@@ -39,6 +39,7 @@ import { createUniqIdsMixin } from 'vue-uniq-ids';
 import Inputmasked from './form-input-masked';
 import { TheMask } from 'vue-the-mask';
 import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
+import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import moment from 'moment';
 
 const uniqIdsMixin = createUniqIdsMixin();
@@ -60,7 +61,7 @@ const componentTypesConfigs = {
 export default {
   inheritAttrs: false,
   components: { TheMask, Inputmasked },
-  mixins: [ uniqIdsMixin ],
+  mixins: [ uniqIdsMixin, ValidationMixin ],
   props: [
     'value',
     'label',
