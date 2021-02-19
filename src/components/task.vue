@@ -168,6 +168,9 @@ export default {
         if (!this.screen) {
           return;
         }
+        if (this.renderComponent === 'ConversationalForm') {
+          return;
+        }
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         } else {
