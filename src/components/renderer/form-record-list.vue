@@ -1,6 +1,6 @@
 <template>
-  <div class="data-table">
-    <div class="row mb-2">
+  <div class="data-table overflow-auto">
+    <div class="row mb-2 ml-0 mr-0">
       <div class="col">
         <h4>{{ label }}</h4>
       </div>
