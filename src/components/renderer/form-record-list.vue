@@ -1,5 +1,5 @@
 <template>
-  <div class="data-table">
+  <div class="data-table" style="overflow-x:scroll">
     <div class="row mb-2">
       <div class="col">
         <h4>{{ label }}</h4>
