@@ -13,6 +13,14 @@ describe('Form Select List', () => {
     cy.assertPreviewData({
       form_select_list_1: null,
     });
+    
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-allow-multi-select]').check();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.assertPreviewData({
+      form_select_list_1: [],
+    });
   });
 
   it('Set data source values', () => {
