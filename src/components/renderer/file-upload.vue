@@ -69,6 +69,9 @@ export default {
     this.$root.$on('set-upload-data-name',
       (recordList, index, id) => this.listenRecordList(recordList, index, id));
 
+    this.$root.$on('removed-record',
+      (recordList, index, record) => this.listenRemovedRecord(recordList, index, record));
+
     this.removeDefaultClasses();
     
     this.checkIfInRecordList();
@@ -188,6 +191,20 @@ export default {
     };
   },
   methods: {
+    listenRemovedRecord(recordList, record, requestId) {
+      const parent = this.parentRecordList(this);
+      if (parent !== recordList) {
+        return;
+      }
+      const fileId = record[this.name];
+      if (fileId) {
+        window.ProcessMaker.apiClient
+          .delete(`files/${fileId}`)
+          .catch(ex => {
+            /** ignore exception **/
+          });
+      }
+    },
     listenRecordList(recordList, index, id) {
       const parent = this.parentRecordList(this);
       if (parent !== recordList) {

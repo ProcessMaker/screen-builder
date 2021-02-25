@@ -429,10 +429,14 @@ export default {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      let recordData = data[this.deleteIndex];
       // Remove item from data array
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
+
+      let requestId = this.$root.task.request_data._request.id;
+      this.$root.$emit('removed-record', this, recordData, requestId);
     },
   },
 };
