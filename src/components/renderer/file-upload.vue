@@ -191,7 +191,7 @@ export default {
     };
   },
   methods: {
-    listenRemovedRecord(recordList, record, requestId) {
+    listenRemovedRecord(recordList, record) {
       const parent = this.parentRecordList(this);
       if (parent !== recordList) {
         return;
@@ -200,7 +200,7 @@ export default {
       if (fileId) {
         window.ProcessMaker.apiClient
           .delete(`files/${fileId}`)
-          .catch(ex => {
+          .catch(() => {
             /** ignore exception **/
           });
       }
