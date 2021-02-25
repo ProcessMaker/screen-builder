@@ -434,9 +434,7 @@ export default {
       data.splice(this.deleteIndex, 1);
       // Emit the newly updated data model
       this.$emit('input', data);
-
-      let requestId = this.$root.task.request_data._request.id;
-      this.$root.$emit('removed-record', this, recordData, requestId);
+      this.$root.$emit('removed-record', this, recordData);
     },
   },
 };
