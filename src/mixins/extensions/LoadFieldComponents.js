@@ -28,7 +28,7 @@ export default {
     },
     loadFieldProperties({ properties, element, componentName, definition , formIndex}) {
       properties.class = this.elementCssClass(element);
-      properties[':validation-data'] = 'vdata';
+      properties[':validation-data'] = '{...vdata, _parent}';
       //verify if component is defined in popup
       if (!this.popups.includes(formIndex)) {
         if (componentName === 'FormImage') {
