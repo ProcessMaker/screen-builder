@@ -34,6 +34,7 @@
             :data="requestData"
             :type="screen.type"
             @submit="submit"
+            :interstitialEnabled="interstitialEnabled"
           />
         </div>
       </div>
@@ -74,6 +75,7 @@ export default {
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
+    webEntryInterstitialEnabled: {type: Boolean, default: false}
   },
   data() {
     return {
@@ -202,6 +204,12 @@ export default {
       const screenType = this.screen.type;
       return screenType.toLowerCase() + '-screen';
     },
+    interstitialEnabled() {
+      if (this.task && this.task.allow_interstitial || this.webEntryInterstitialEnabled) {
+        return true;
+      } 
+      return false;
+    }
   },
   methods: {
     loadScreen(id) {
