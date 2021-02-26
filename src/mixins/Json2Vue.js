@@ -196,6 +196,10 @@ export default {
       return definition.computed && definition.computed.find(c => c.property === name);
     },
     registerVariable(name, config = {}) {
+      if (name.substr(0, 7) === '_parent') {
+        return;
+      }
+      
       if (!this.validVariableName(name)) {
         return;
       }
