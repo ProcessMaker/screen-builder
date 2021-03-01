@@ -33,14 +33,6 @@ Validator.register('after_or_equal', function(date, params) {
   return inputDate >= equalOrAfterDate;
 }, 'The :attribute must be equal or after :after_or_equal.');
 
-Validator.register('before', function(date, params) {
-  // checks if incoming 'params' is a date or a key reference.
-  const inputDate = moment(date).toISOString();
-  const beforeDate = moment(params).toISOString();
-    
-  return inputDate < beforeDate;
-}, 'The :attribute must be before :before.');
-
 Validator.register('before_or_equal', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
   const inputDate = moment(date).toISOString();
