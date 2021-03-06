@@ -281,6 +281,7 @@ export default {
           key: option[key || 'value'],
           sortable: true,
           label: option[value || 'content'],
+          tdClass: 'table-column',
         };
       };
 
@@ -439,3 +440,9 @@ export default {
   },
 };
 </script>
+
+<style>
+  .table td.table-column {
+    max-width: 300px;
+  }
+</style>
