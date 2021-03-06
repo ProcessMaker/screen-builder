@@ -144,6 +144,7 @@ export default {
     requestId: {
       handler() {
         if (this.requestId) {
+          this.setMetaValue();
           this.initSocketListeners();
         } else {
           this.unsubscribeSocketListeners();
@@ -408,6 +409,12 @@ export default {
           });
       });
     },
+    setMetaValue() {
+      const requestIdNode = document.head.querySelector('meta[name="request-id"]');
+      if (requestIdNode) {
+        requestIdNode.setAttribute('content', this.requestId);
+      }
+    }
   },
   mounted() {
     this.screenId = this.initialScreenId;
@@ -422,6 +429,7 @@ export default {
       this.loadTask();
     }
     if (this.requestId) {
+      this.setMetaValue();
       this.initSocketListeners();
     } else {
       this.unsubscribeSocketListeners();
