@@ -34,9 +34,8 @@ export default {
       }
     },
     submitForm() {
-      console.log('submit form');
+      //if the form is not valid the data is not emitted
       if (this.$v.$invalid) {
-        console.log('The form has errors...');
         return;
       }
       this.$emit('submit', this.vdata);
