@@ -58,7 +58,7 @@ describe('Record list', () => {
     //submit form valid
     cy.get(':nth-child(9) > .form-group > .btn').click()
     cy.on('window:alert', (str) => {
-        expect(str).to.equal('Preview Form was Submitted')
+        expect(str).to.equal('Preview Form was Submitted');
     })
     cy.on('window:confirm', () => true);
   });

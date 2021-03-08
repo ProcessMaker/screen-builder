@@ -367,7 +367,6 @@ export default {
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
-      console.log('save form record list');
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.$invalid) {
         return;
       }
