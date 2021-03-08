@@ -51,9 +51,9 @@ describe('Record list', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_6"]').parent().should('not.contain.text', 'Must be same as form_input_5');
 
     // same
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_date_picker_1] > .form-control').parent().should('contain.text', 'Must be before today.');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_date_picker_1] > .form-control').parent().should('contain.text', 'New Date PickerMust be before today');
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').pickToday();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] > .form-control').parent().should('not.contain.text', 'Must be before today.');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] > .form-control').parent().should('not.contain.text', 'New Date PickerMust be before today');
 
     //submit form valid
     cy.get(':nth-child(9) > .form-group > .btn').click();
