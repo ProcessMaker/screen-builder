@@ -573,7 +573,9 @@ export default {
     },
     migrateFormSubmit(items) {
       items.forEach(item => {
-        item['editor-control'] = item['editor-component'];
+        if (item['editor-control'] !== 'FormSubmit') {
+          item['editor-control'] = item['editor-component'];
+        }
 
         if (item.config.event === 'submit') {
           if (item['editor-component'] === 'FormNestedScreen') {
