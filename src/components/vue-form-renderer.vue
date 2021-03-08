@@ -142,10 +142,12 @@ export default {
 
       return child.errors();
     },
+    /**
+     * Check if a form is valid for submitting
+     *
+     * @deprecated Since version 2.4.4
+     */
     isValid() {
-      /**
-       * @deprecated Since version 2.4.4
-       */
       const items = getItemsFromConfig(this.definition.config);
       let config = _.cloneDeep(this.definition.config);
 
