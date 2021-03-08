@@ -34,6 +34,11 @@ export default {
       }
     },
     submitForm() {
+      console.log('submit form');
+      if (this.$v.$invalid) {
+        console.log('The form has errors...');
+        return;
+      }
       this.$emit('submit', this.vdata);
     },
     getValue(name, object = this) {
