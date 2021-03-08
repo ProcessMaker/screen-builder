@@ -414,7 +414,7 @@ export default {
       if (requestIdNode) {
         requestIdNode.setAttribute('content', this.requestId);
       }
-    }
+    },
   },
   mounted() {
     this.screenId = this.initialScreenId;
