@@ -34,8 +34,23 @@ export default {
       }
     },
     submitForm() {
-      //if the form is not valid the data is not emitted
+      let nestedScreenInvalid = false;
+      this.$children.forEach(item => {
+        if (item.$refs.nestedScreen) {
+          if (item.$refs.nestedScreen.$refs.renderer.$refs.component.$v.$invalid) {
+            nestedScreenInvalid = true;
+            return;
+          }
+        }
+      });
+
+      if (nestedScreenInvalid) {
+        //if the nested form is not valid the data is not emitted
+        return;
+      }
+
       if (this.$v.$invalid) {
+        //if the form is not valid the data is not emitted
         return;
       }
       this.$emit('submit', this.vdata);
