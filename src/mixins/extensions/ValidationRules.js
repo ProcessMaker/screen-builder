@@ -26,6 +26,14 @@ export default {
           }
           validationRule[rule] = validationFn;
         });
+      } else if (typeof config === 'string') {
+        let validationFn = validators[config];
+        if (!validationFn) {
+          // eslint-disable-next-line no-console
+          console.error(`Undefined validation rule "${config}"`);
+          return;
+        }
+        validationRule[config] = validationFn;
       }
     },
   },
