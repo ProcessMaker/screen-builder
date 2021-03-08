@@ -27,7 +27,7 @@ export default {
           validationRule[rule] = validationFn;
         });
       }
-    }
+    },
   },
   mounted() {
     this.extensions.push({
