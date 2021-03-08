@@ -56,10 +56,10 @@ describe('Record list', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] > .form-control').parent().should('not.contain.text', 'Must be before today.');
 
     //submit form valid
-    cy.get(':nth-child(9) > .form-group > .btn').click()
+    cy.get(':nth-child(9) > .form-group > .btn').click();
     cy.on('window:alert', (str) => {
-        expect(str).to.equal('Preview Form was Submitted');
-    })
+      expect(str).to.equal('Preview Form was Submitted');
+    });
     cy.on('window:confirm', () => true);
   });
 });
