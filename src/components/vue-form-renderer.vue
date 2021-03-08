@@ -143,6 +143,7 @@ export default {
       return child.errors();
     },
     isValid() {
+      //deprecated
       const items = getItemsFromConfig(this.definition.config);
       let config = _.cloneDeep(this.definition.config);
 
@@ -166,9 +167,7 @@ export default {
       }
     },
     submit() {
-      if (this.isValid()) {
-        this.$emit('submit', this.data);
-      }
+      this.$emit('submit', this.data);
     },
     parseCss() {
       const containerSelector = '.' + this.containerClass;
