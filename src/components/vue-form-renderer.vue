@@ -143,7 +143,9 @@ export default {
       return child.errors();
     },
     isValid() {
-      //deprecated
+      /**
+       * @deprecated Since version 2.4.4
+       */
       const items = getItemsFromConfig(this.definition.config);
       let config = _.cloneDeep(this.definition.config);
 
