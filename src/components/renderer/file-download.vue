@@ -192,7 +192,8 @@ export default {
       });
     },
     getFileType() {
-      if (document.head.querySelector('meta[name="request-id"]')) {
+      const requestIdNode = document.head.querySelector('meta[name="request-id"]');
+      if (requestIdNode && requestIdNode.content) {
         this.fileType = 'request';
       }
 
@@ -230,7 +231,7 @@ export default {
         requestFiles = window.PM4ConfigOverrides.requestFiles;
       }
 
-      if (requestFiles && requestFiles[this.prefix + this.name]) {
+      if (this.fileType && requestFiles && requestFiles[this.prefix + this.name]) {
         this.loading = false;
         if (Array.isArray(requestFiles[this.prefix + this.name])) {
           this.fileInfo = requestFiles[this.prefix + this.name].find(
