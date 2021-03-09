@@ -40,13 +40,14 @@ export default {
     },
     nestedScreenIsInavalid(items) {
       items.forEach(item => {
-        if (item.$refs.nestedScreen && !this.nestedScreenInvalid) {
+        if (item.$children) {
+          this.nestedScreenIsInavalid(item.$children);
+        }
+
+        if (item.$refs.nestedScreen) {
           if (item.$refs.nestedScreen.$refs.renderer.$refs.component.$v.$invalid) {
             this.nestedScreenInvalid = true;
-            return;
           }
-        } else if (item.$children  && !this.nestedScreenInvalid) {
-          this.nestedScreenIsInavalid(item.$children);
         }
       });
     },
