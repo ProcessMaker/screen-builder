@@ -336,7 +336,7 @@ export default {
       this.$refs.editModal.show();
     },
     edit(event) {
-      if (!this.$refs.editRenderer.isValid()) {
+      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.$invalid) {
         event.preventDefault();
         return;
       }
@@ -369,7 +369,7 @@ export default {
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      if (!this.$refs.addRenderer.isValid()) {
+      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.$invalid) {
         return;
       }
 
