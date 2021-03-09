@@ -3,6 +3,40 @@ import { validationMixin } from 'vuelidate';
 import { validators } from '../ValidationRules';
 
 export default {
+  methods: {
+    addRules(config, validationRule) {
+      if (config instanceof Array) {
+        config.forEach((validation) => {
+          const rule = this.camelCase(validation.value.split(':')[0]);
+          if (!rule) {
+            return;
+          }
+          let validationFn = validators[rule];
+          if (!validationFn) {
+            // eslint-disable-next-line no-console
+            console.error(`Undefined validation rule "${rule}"`);
+            return;
+          }
+          if (validation.configs instanceof Array) {
+            const params = [];
+            validation.configs.forEach((cnf) => {
+              params.push(cnf.value);
+            });
+            validationFn = validationFn(...params);
+          }
+          validationRule[rule] = validationFn;
+        });
+      } else if (typeof config === 'string') {
+        let validationFn = validators[config];
+        if (!validationFn) {
+          // eslint-disable-next-line no-console
+          console.error(`Undefined validation rule "${config}"`);
+          return;
+        }
+        validationRule[config] = validationFn;
+      }
+    },
+  },
   mounted() {
     this.extensions.push({
       onloadproperties({ element, screen, properties }) {
