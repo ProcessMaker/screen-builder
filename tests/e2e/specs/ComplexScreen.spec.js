@@ -456,7 +456,7 @@ describe('Complex screen', () => {
     // record list - complete new fields
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=email]').clear().type('thomas@processmaker.com');
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=url]').clear().type(' https://thomas.processmaker.com');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=url]').clear().type('https://thomas.processmaker.com');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Save)').click();
     // checkboxes
     cy.get('[data-cy=preview-content] [name=form_checkbox_9]').click();
@@ -574,7 +574,7 @@ describe('Complex screen', () => {
             'first_name': 'Thomas A.',
             'last_name': 'Anderson',
             'email': 'thomas@processmaker.com',
-            'url': ' https://thomas.processmaker.com',
+            'url': 'https://thomas.processmaker.com',
             'row_id': record_row_id,
           },
         ],
