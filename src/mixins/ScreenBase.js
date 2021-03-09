@@ -3,6 +3,11 @@ import Mustache from 'mustache';
 import { ValidationMsg } from './ValidationRules';
 
 export default {
+  data() {
+    return {
+      nestedScreenInvalid : false,
+    };
+  },
   props: {
     vdata: {
       type: Object,
@@ -33,7 +38,31 @@ export default {
         return 'MUSTACHE: ' + e.message;
       }
     },
+    nestedScreenIsInavalid(items) {
+      items.forEach(item => {
+        if (item.$children) {
+          this.nestedScreenIsInavalid(item.$children);
+        }
+
+        if (item.$refs.nestedScreen) {
+          if (item.$refs.nestedScreen.$refs.renderer.$refs.component.$v.$invalid) {
+            this.nestedScreenInvalid = true;
+          }
+        }
+      });
+    },
     submitForm() {
+      this.nestedScreenInvalid = false;
+      this.nestedScreenIsInavalid(this.$children);
+      if (this.nestedScreenInvalid) {
+        //if the nested form is not valid the data is not emitted
+        return;
+      }
+
+      if (this.$v.$invalid) {
+        //if the form is not valid the data is not emitted
+        return;
+      }
       this.$emit('submit', this.vdata);
     },
     getValue(name, object = this) {
