@@ -15,10 +15,7 @@ class Validations {
    * }
    */
   async addValidations(validations) {
-    // @todo remove test async validators
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    // @todo remove sample validation
-    Object.assign(validations, { form_input_1: {required: validators['required']} });
+    throw 'Abstract method addValidations not implemented', validations;
   }
 }
 
@@ -27,7 +24,7 @@ class Validations {
  */
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
-    for (let i=0, l= this.element.length; i < l; i++) {
+    for (let i = 0, l = this.element.length; i < l; i++) {
       const item = this.element[i];
       await ValidationsFactory(item).addValidations(validations);
     }
@@ -42,8 +39,8 @@ class ScreenValidations extends Validations {
     // add validations for page 1
     if (this.element.config[0]) {
       const screenValidations = ValidationsFactory(this.element.config[0].items);
-      screenValidations.setScreen(this.element);
-      await validations.addValidations(validations);
+      //screenValidations.setScreen(this.element);
+      await screenValidations.addValidations(validations);
     }
   }
 }
@@ -56,21 +53,21 @@ class FormNestedScreenValidations extends Validations {
     const definition = await loadScreen();
     await ValidationsFactory(definition).addValidations(validations);
   }
-  
+
 }
 
 /**
  * Add validations for a loop
  */
 class FormLoopValidations extends Validations {
-  
+
 }
 
 /**
  * Add validations for a record list
  */
 class FormRecordListValidations extends Validations {
-  
+
 }
 
 /**
@@ -86,7 +83,44 @@ class PageNavigateValidations extends Validations {
  * Add validations for a form element
  */
 class FormElementValidations extends Validations {
-  
+  async addValidations(validations) {
+    const validationConfig = this.element.config.validation;
+    const fieldName = this.element.config.name;
+    validations[fieldName] = validations[fieldName] || {};
+    if (validationConfig instanceof Array) {
+      validationConfig.forEach((validation) => {
+        const rule = this.camelCase(validation.value.split(':')[0]);
+        if (!rule) {
+          return;
+        }
+        let validationFn = validators[rule];
+        if (!validationFn) {
+          // eslint-disable-next-line no-console
+          console.error(`Undefined validation rule "${rule}"`);
+          return;
+        }
+        if (validation.configs instanceof Array) {
+          const params = [];
+          validation.configs.forEach((cnf) => {
+            params.push(cnf.value);
+          });
+          validationFn = validationFn(...params);
+        }
+        validations[fieldName][rule] = validationFn;
+      });
+    } else if (typeof validationConfig === 'string' && validationConfig) {
+      let validationFn = validators[validationConfig];
+      if (!validationFn) {
+        // eslint-disable-next-line no-console
+        console.error(`Undefined validation rule "${validationConfig}"`);
+        return;
+      }
+      validations[fieldName][validationConfig] = validationFn;
+    }
+  }
+  camelCase(name) {
+    return name.replace(/_\w/g, m => m.substr(1,1).toUpperCase());
+  }
 }
 
 function ValidationsFactory(element) {
