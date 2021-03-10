@@ -70,7 +70,10 @@ export default {
       (recordList, index, id) => this.listenRecordList(recordList, index, id));
 
     this.$root.$on('removed-record',
-      (recordList, index, record) => this.listenRemovedRecord(recordList, index, record));
+      (recordList, record) => this.listenRemovedRecord(recordList, record));
+
+    this.$root.$on('removed-loop',
+      (loop, removed) => this.listenRemovedLoop(loop, removed));
 
     this.removeDefaultClasses();
     
@@ -191,6 +194,16 @@ export default {
     };
   },
   methods: {
+    listenRemovedLoop(loop, removed) {
+      const fileId = removed[this.name];
+      if (fileId) {
+        window.ProcessMaker.apiClient
+          .delete(`files/${fileId}`)
+          .catch(() => {
+            /** ignore exception **/
+          });
+      }
+    },
     listenRemovedRecord(recordList, record) {
       const parent = this.parentRecordList(this);
       if (parent !== recordList) {
