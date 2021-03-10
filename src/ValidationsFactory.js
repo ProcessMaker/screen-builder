@@ -1,5 +1,8 @@
 import { validators } from './mixins/ValidationRules';
 
+let globalObject = typeof window === 'undefined'
+  ? global
+  : window;
 class Validations {
   constructor(element) {
     this.element = element;
@@ -53,8 +56,28 @@ class ScreenValidations extends Validations {
  */
 class FormNestedScreenValidations extends Validations {
   async addValidations(validations) {
-    const definition = await loadScreen();
+    let id = this.element.config.screen;
+    // eslint-disable-next-line no-console
+    console.log(id);
+    const definition = await this.loadScreen(id);
     await ValidationsFactory(definition).addValidations(validations);
+  }
+
+  async loadScreen(id) {
+    if (!globalObject['nestedScreens']) {
+      globalObject['nestedScreens'] = {};
+    }
+    if (globalObject.nestedScreens['id_' + id]) {
+      return globalObject.nestedScreens['id_' + id];
+    }
+    this.$dataProvider.getScreen(id)
+      .then(response => {
+        // eslint-disable-next-line no-console
+        console.log('........load nested.. ' + id);
+
+        globalObject.nestedScreens['id_' + id] = response.data.config;
+        return response.data.config;
+      });
   }
   
 }
