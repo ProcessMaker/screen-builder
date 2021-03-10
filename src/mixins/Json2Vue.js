@@ -222,7 +222,9 @@ export default {
           data: {},
           watch: {},
           mounted: [],
-          validations: {},
+          validations: {
+            vdata: {}
+          },
         };
         this.variablesTree = [];
         const template = this.parse(component, definition);
@@ -260,7 +262,9 @@ export default {
           data: {},
           watch: {},
           mounted: [],
-          validations: {},
+          validations: {
+            vdata: {}
+          },
         };
         const template = this.parse(component, definition);
         // Extensions.onparse

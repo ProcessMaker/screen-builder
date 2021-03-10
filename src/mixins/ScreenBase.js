@@ -40,6 +40,7 @@ export default {
     },
     nestedScreenIsInavalid(items) {
       items.forEach(item => {
+        console.log(item);
         if (item.$children) {
           this.nestedScreenIsInavalid(item.$children);
         }
@@ -52,6 +53,7 @@ export default {
       });
     },
     submitForm() {
+      console.log('submit form');
       this.nestedScreenInvalid = false;
       this.nestedScreenIsInavalid(this.$children);
       if (this.nestedScreenInvalid) {
