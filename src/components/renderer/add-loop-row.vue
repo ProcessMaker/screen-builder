@@ -22,7 +22,8 @@ export default {
       this.value.push({});
     },
     remove() {
-      this.value.pop();
+      const removed = this.value.pop();
+      this.$root.$emit('removed-loop', this, removed);
     },
     removeConfirm() {
       const message = this.$t('Are you sure you want to delete this?');
