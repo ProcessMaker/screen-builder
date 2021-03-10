@@ -41,7 +41,9 @@ class ScreenValidations extends Validations {
   async addValidations(validations) {
     // add validations for page 1
     if (this.element.config[0]) {
-      await ValidationsFactory(this.element.config[0].items).addValidations(validations);
+      const screenValidations = ValidationsFactory(this.element.config[0].items);
+      screenValidations.setScreen(this.element);
+      await validations.addValidations(validations);
     }
   }
 }
@@ -50,6 +52,10 @@ class ScreenValidations extends Validations {
  * Add validations for a nested screen
  */
 class FormNestedScreenValidations extends Validations {
+  async addValidations(validations) {
+    const definition = await loadScreen();
+    await ValidationsFactory(definition).addValidations(validations);
+  }
   
 }
 
@@ -71,7 +77,9 @@ class FormRecordListValidations extends Validations {
  * Add validations of a page accessed by a navigation button
  */
 class PageNavigateValidations extends Validations {
-  
+  async addValidations(validations) {
+    await ValidationsFactory(this.definition.config[this.element.config.page].items).addValidations(validations);
+  }
 }
 
 /**
