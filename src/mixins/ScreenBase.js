@@ -6,6 +6,7 @@ export default {
   data() {
     return {
       nestedScreenInvalid : false,
+      ValidationRules__: {},
     };
   },
   props: {
@@ -129,5 +130,9 @@ export default {
     setCurrentPage(page) {
       this.currentPage__ = page;
     },
+  },
+  validations() {
+    console.log(this.ValidationRules__);
+    return { vdata: this.ValidationRules__ };
   },
 };
