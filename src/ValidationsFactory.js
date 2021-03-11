@@ -4,8 +4,9 @@ let globalObject = typeof window === 'undefined'
   ? global
   : window;
 class Validations {
-  constructor(element) {
+  constructor(element, screen) {
     this.element = element;
+    this.screen = screen;
   }
   /**
    * Add a Vuelidate rule for the element.
@@ -29,7 +30,7 @@ class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (let i = 0, l = this.element.length; i < l; i++) {
       const item = this.element[i];
-      await ValidationsFactory(item).addValidations(validations);
+      await ValidationsFactory(item, this.screen).addValidations(validations);
     }
   }
 }
@@ -41,9 +42,10 @@ class ScreenValidations extends Validations {
   async addValidations(validations) {
     // add validations for page 1
     if (this.element.config[0]) {
-      const screenValidations = ValidationsFactory(this.element.config[0].items);
-      //screenValidations.setScreen(this.element);
+      this.element.pagesValidated = [0];
+      const screenValidations = ValidationsFactory(this.element.config[0].items, this.element);
       await screenValidations.addValidations(validations);
+      delete this.element.pagesValidated;
     }
   }
 }
@@ -57,7 +59,7 @@ class FormNestedScreenValidations extends Validations {
     // eslint-disable-next-line no-console
     console.log(id);
     const definition = await this.loadScreen(id);
-    await ValidationsFactory(definition).addValidations(validations);
+    await ValidationsFactory(definition, definition).addValidations(validations);
   }
 
   async loadScreen(id) {
@@ -76,7 +78,7 @@ class FormNestedScreenValidations extends Validations {
         return response.data.config;
       });
   }
-  
+
 }
 
 /**
@@ -98,7 +100,10 @@ class FormRecordListValidations extends Validations {
  */
 class PageNavigateValidations extends Validations {
   async addValidations(validations) {
-    await ValidationsFactory(this.definition.config[this.element.config.page].items).addValidations(validations);
+    if (!this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
+      this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
+      await ValidationsFactory(this.screen.config[this.element.config.eventData].items, this.screen).addValidations(validations);
+    }
   }
 }
 
@@ -142,30 +147,30 @@ class FormElementValidations extends Validations {
     }
   }
   camelCase(name) {
-    return name.replace(/_\w/g, m => m.substr(1,1).toUpperCase());
+    return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
   }
 }
 
-function ValidationsFactory(element) {
+function ValidationsFactory(element, screen) {
   if (element instanceof Array) {
-    return new ArrayOfFieldsValidations(element);
+    return new ArrayOfFieldsValidations(element, screen);
   }
   if (element.config instanceof Array) {
-    return new ScreenValidations(element);
+    return new ScreenValidations(element, screen);
   }
   if (element.component === 'FormNestedScreen' && element.config.screen) {
-    return new FormNestedScreenValidations(element);
+    return new FormNestedScreenValidations(element, screen);
   }
   if (element.component === 'FormLoop') {
-    return new FormLoopValidations(element);
+    return new FormLoopValidations(element, screen);
   }
   if (element.component === 'FormRecordList') {
-    return new FormRecordListValidations(element);
+    return new FormRecordListValidations(element, screen);
   }
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
-    return new PageNavigateValidations(element);
+    return new PageNavigateValidations(element, screen);
   }
-  return new FormElementValidations(element);
+  return new FormElementValidations(element, screen);
 }
 
 export default ValidationsFactory;
