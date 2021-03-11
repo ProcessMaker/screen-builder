@@ -314,10 +314,11 @@ export default {
       properties[`@${event}`] = code;
     },
     addValidationRulesLoader(component, definition) {
+      const firstPage = parseInt(this.currentPage) || 0;
       component.methods.loadValidationRules = function() {
         // Asynchronous loading of validations
         const validations = {};
-        ValidationsFactory(definition, definition).addValidations(validations).then(() => {
+        ValidationsFactory(definition, { screen: definition, firstPage }).addValidations(validations).then(() => {
           this.ValidationRules__ = validations;
         });
       };

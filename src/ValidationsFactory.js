@@ -4,9 +4,11 @@ let globalObject = typeof window === 'undefined'
   ? global
   : window;
 class Validations {
-  constructor(element, screen) {
+  screen = null;
+  firstPage = 0;
+  constructor(element, options) {
     this.element = element;
-    this.screen = screen;
+    Object.assign(this, options);
   }
   /**
    * Add a Vuelidate rule for the element.
@@ -30,7 +32,7 @@ class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (let i = 0, l = this.element.length; i < l; i++) {
       const item = this.element[i];
-      await ValidationsFactory(item, this.screen).addValidations(validations);
+      await ValidationsFactory(item, { screen: this.screen }).addValidations(validations);
     }
   }
 }
@@ -41,9 +43,9 @@ class ArrayOfFieldsValidations extends Validations {
 class ScreenValidations extends Validations {
   async addValidations(validations) {
     // add validations for page 1
-    if (this.element.config[0]) {
-      this.element.pagesValidated = [0];
-      const screenValidations = ValidationsFactory(this.element.config[0].items, this.element);
+    if (this.element.config[this.firstPage]) {
+      this.element.pagesValidated = [this.firstPage];
+      const screenValidations = ValidationsFactory(this.element.config[this.firstPage].items, { screen: this.element });
       await screenValidations.addValidations(validations);
       delete this.element.pagesValidated;
     }
@@ -59,7 +61,7 @@ class FormNestedScreenValidations extends Validations {
     // eslint-disable-next-line no-console
     console.log(id);
     const definition = await this.loadScreen(id);
-    await ValidationsFactory(definition, definition).addValidations(validations);
+    await ValidationsFactory(definition, { screen: definition }).addValidations(validations);
   }
 
   async loadScreen(id) {
@@ -89,20 +91,13 @@ class FormLoopValidations extends Validations {
 }
 
 /**
- * Add validations for a record list
- */
-class FormRecordListValidations extends Validations {
-
-}
-
-/**
  * Add validations of a page accessed by a navigation button
  */
 class PageNavigateValidations extends Validations {
   async addValidations(validations) {
     if (!this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
-      await ValidationsFactory(this.screen.config[this.element.config.eventData].items, this.screen).addValidations(validations);
+      await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen }).addValidations(validations);
     }
   }
 }
@@ -146,7 +141,7 @@ class FormElementValidations extends Validations {
       validations[fieldName][validationConfig] = validationFn;
     }
     if (this.element.items) {
-      ValidationsFactory(this.element.items, this.screen).addValidations(validations);
+      ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations);
     }
   }
   camelCase(name) {
@@ -154,26 +149,26 @@ class FormElementValidations extends Validations {
   }
 }
 
-function ValidationsFactory(element, screen) {
+function ValidationsFactory(element, options) {
   if (element instanceof Array) {
-    return new ArrayOfFieldsValidations(element, screen);
+    return new ArrayOfFieldsValidations(element, options);
   }
   if (element.config instanceof Array) {
-    return new ScreenValidations(element, screen);
+    return new ScreenValidations(element, options);
   }
   if (element.component === 'FormNestedScreen' && element.config.screen) {
-    return new FormNestedScreenValidations(element, screen);
+    return new FormNestedScreenValidations(element, options);
   }
   if (element.component === 'FormLoop') {
-    return new FormLoopValidations(element, screen);
+    return new FormLoopValidations(element, options);
   }
   if (element.component === 'FormRecordList') {
-    return new FormRecordListValidations(element, screen);
+    //return new FormRecordListValidations(element, screen);
   }
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
-    return new PageNavigateValidations(element, screen);
+    return new PageNavigateValidations(element, options);
   }
-  return new FormElementValidations(element, screen);
+  return new FormElementValidations(element, options);
 }
 
 export default ValidationsFactory;
