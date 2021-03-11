@@ -145,6 +145,9 @@ class FormElementValidations extends Validations {
       }
       validations[fieldName][validationConfig] = validationFn;
     }
+    if (this.element.items) {
+      ValidationsFactory(this.element.items, this.screen).addValidations(validations);
+    }
   }
   camelCase(name) {
     return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
