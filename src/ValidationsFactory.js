@@ -87,7 +87,11 @@ class FormNestedScreenValidations extends Validations {
  * Add validations for a loop
  */
 class FormLoopValidations extends Validations {
-
+  async addValidations(validations) {
+    validations[this.element.config.name] = {};
+    validations[this.element.config.name]['$each'] = {};
+    await ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations);
+  }
 }
 
 /**
