@@ -98,7 +98,6 @@ export default {
       if (id) {
         this.$dataProvider.getScreen(id)
           .then(response => {
-            console.log('load nested.. ' + id);
             this.config = response.data.config;
             this.hideSubmitButtons(this.config);
             this.computed = response.data.computed;

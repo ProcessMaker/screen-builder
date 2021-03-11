@@ -1,4 +1,5 @@
 import { validators } from './mixins/ValidationRules';
+import  DataProvider from './DataProvider';
 
 let globalObject = typeof window === 'undefined'
   ? global
@@ -42,6 +43,7 @@ class ArrayOfFieldsValidations extends Validations {
  */
 class ScreenValidations extends Validations {
   async addValidations(validations) {
+    console.log('class ScreenValidations....');
     // add validations for page 1
     if (this.element.config[this.firstPage]) {
       this.element.pagesValidated = [this.firstPage];
@@ -57,6 +59,7 @@ class ScreenValidations extends Validations {
  */
 class FormNestedScreenValidations extends Validations {
   async addValidations(validations) {
+    console.log('function add validations nested........');
     let id = this.element.config.screen;
     // eslint-disable-next-line no-console
     console.log(id);
@@ -65,13 +68,14 @@ class FormNestedScreenValidations extends Validations {
   }
 
   async loadScreen(id) {
+    console.log('function load screen........' + id);
     if (!globalObject['nestedScreens']) {
       globalObject['nestedScreens'] = {};
     }
     if (globalObject.nestedScreens['id_' + id]) {
       return globalObject.nestedScreens['id_' + id];
     }
-    this.$dataProvider.getScreen(id)
+    DataProvider.getScreen(id)
       .then(response => {
         // eslint-disable-next-line no-console
         console.log('........load nested.. ' + id);
@@ -88,8 +92,19 @@ class FormNestedScreenValidations extends Validations {
  */
 class FormLoopValidations extends Validations {
   async addValidations(validations) {
+    console.log('----------------------------');
+    console.log(this.element);
     validations[this.element.config.name] = {};
     validations[this.element.config.name]['$each'] = {};
+    await ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations);
+  }
+}
+
+/**
+ * Add validations for a multicolumn
+ */
+class FormMultiColumnValidations extends Validations {
+  async addValidations(validations) {
     await ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations);
   }
 }
@@ -99,6 +114,7 @@ class FormLoopValidations extends Validations {
  */
 class PageNavigateValidations extends Validations {
   async addValidations(validations) {
+    console.log('PageNavigateValidations......');
     if (!this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
       await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen }).addValidations(validations);
@@ -111,8 +127,14 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
-    const validationConfig = this.element.config.validation;
     const fieldName = this.element.config.name;
+    if (!(fieldName && typeof fieldName === 'string' && fieldName.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
+      // eslint-disable-next-line no-console
+      console.log('name not valid: ' + fieldName);
+      return;
+    }
+    const validationConfig = this.element.config.validation;
+    console.log('name: ' + this.element.config.name);
     validations[fieldName] = validations[fieldName] || {};
     if (validationConfig instanceof Array) {
       validationConfig.forEach((validation) => {
@@ -154,14 +176,20 @@ class FormElementValidations extends Validations {
 }
 
 function ValidationsFactory(element, options) {
+  console.log(element.component);
+  console.log(element);
   if (element instanceof Array) {
     return new ArrayOfFieldsValidations(element, options);
   }
   if (element.config instanceof Array) {
     return new ScreenValidations(element, options);
   }
-  if (element.component === 'FormNestedScreen' && element.config.screen) {
+  if (element.component === 'FormNestedScreen') {
+    console.log('call FormNestedScreenValidations...');
     return new FormNestedScreenValidations(element, options);
+  }
+  if (element.component === 'FormMultiColumn') {
+    return new FormMultiColumnValidations(element, options);
   }
   if (element.component === 'FormLoop') {
     return new FormLoopValidations(element, options);
@@ -170,6 +198,7 @@ function ValidationsFactory(element, options) {
     //return new FormRecordListValidations(element, screen);
   }
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
+    console.log('call PageNavigateValidations');
     return new PageNavigateValidations(element, options);
   }
   return new FormElementValidations(element, options);
