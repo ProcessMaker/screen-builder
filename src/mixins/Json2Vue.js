@@ -1,6 +1,6 @@
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
-import ValidationsFactyory from '../ValidationsFactory';
+import ValidationsFactory from '../ValidationsFactory';
 
 let screenRenderer;
 
@@ -317,7 +317,7 @@ export default {
       component.methods.loadValidationRules = function() {
         // Asynchronous loading of validations
         const validations = {};
-        ValidationsFactyory(definition).addValidations(validations).then(() => {
+        ValidationsFactory(definition, definition).addValidations(validations).then(() => {
           this.ValidationRules__ = validations;
         });
       };
