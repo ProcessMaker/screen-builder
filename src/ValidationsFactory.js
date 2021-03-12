@@ -33,7 +33,11 @@ class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (let i = 0, l = this.element.length; i < l; i++) {
       const item = this.element[i];
-      await ValidationsFactory(item, { screen: this.screen }).addValidations(validations);
+      let fields = item;
+      if (item.items) {
+        fields = item.items;
+      }
+      await ValidationsFactory(fields, { screen: this.screen }).addValidations(validations);
     }
   }
 }
@@ -43,7 +47,6 @@ class ArrayOfFieldsValidations extends Validations {
  */
 class ScreenValidations extends Validations {
   async addValidations(validations) {
-    console.log('class ScreenValidations....');
     // add validations for page 1
     if (this.element.config[this.firstPage]) {
       this.element.pagesValidated = [this.firstPage];
@@ -59,16 +62,16 @@ class ScreenValidations extends Validations {
  */
 class FormNestedScreenValidations extends Validations {
   async addValidations(validations) {
-    console.log('function add validations nested........');
     let id = this.element.config.screen;
-    // eslint-disable-next-line no-console
-    console.log(id);
     const definition = await this.loadScreen(id);
+    if (!definition) {
+      //the screen does not load
+      return;
+    }
     await ValidationsFactory(definition, { screen: definition }).addValidations(validations);
   }
 
   async loadScreen(id) {
-    console.log('function load screen........' + id);
     if (!globalObject['nestedScreens']) {
       globalObject['nestedScreens'] = {};
     }
@@ -78,9 +81,12 @@ class FormNestedScreenValidations extends Validations {
     DataProvider.getScreen(id)
       .then(response => {
         // eslint-disable-next-line no-console
-        console.log('........load nested.. ' + id);
+        console.log('response........load nested.. ' + id);
+        // eslint-disable-next-line no-console
+        console.log(response.data.config);
 
         globalObject.nestedScreens['id_' + id] = response.data.config;
+        
         return response.data.config;
       });
   }
@@ -92,11 +98,9 @@ class FormNestedScreenValidations extends Validations {
  */
 class FormLoopValidations extends Validations {
   async addValidations(validations) {
-    console.log('----------------------------');
-    console.log(this.element);
     validations[this.element.config.name] = {};
     validations[this.element.config.name]['$each'] = {};
-    await ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations);
+    await ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations[this.element.config.name]['$each']);
   }
 }
 
@@ -114,7 +118,6 @@ class FormMultiColumnValidations extends Validations {
  */
 class PageNavigateValidations extends Validations {
   async addValidations(validations) {
-    console.log('PageNavigateValidations......');
     if (!this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
       await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen }).addValidations(validations);
@@ -127,14 +130,13 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
-    const fieldName = this.element.config.name;
-    if (!(fieldName && typeof fieldName === 'string' && fieldName.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
-      // eslint-disable-next-line no-console
-      console.log('name not valid: ' + fieldName);
+    
+    if (!(this.element.config && this.element.config.name && typeof this.element.config.name === 'string' && this.element.config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
+      //element invalid
       return;
     }
+    const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
-    console.log('name: ' + this.element.config.name);
     validations[fieldName] = validations[fieldName] || {};
     if (validationConfig instanceof Array) {
       validationConfig.forEach((validation) => {
@@ -176,8 +178,6 @@ class FormElementValidations extends Validations {
 }
 
 function ValidationsFactory(element, options) {
-  console.log(element.component);
-  console.log(element);
   if (element instanceof Array) {
     return new ArrayOfFieldsValidations(element, options);
   }
@@ -185,7 +185,6 @@ function ValidationsFactory(element, options) {
     return new ScreenValidations(element, options);
   }
   if (element.component === 'FormNestedScreen') {
-    console.log('call FormNestedScreenValidations...');
     return new FormNestedScreenValidations(element, options);
   }
   if (element.component === 'FormMultiColumn') {
@@ -195,10 +194,10 @@ function ValidationsFactory(element, options) {
     return new FormLoopValidations(element, options);
   }
   if (element.component === 'FormRecordList') {
+    //not required
     //return new FormRecordListValidations(element, screen);
   }
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
-    console.log('call PageNavigateValidations');
     return new PageNavigateValidations(element, options);
   }
   return new FormElementValidations(element, options);
