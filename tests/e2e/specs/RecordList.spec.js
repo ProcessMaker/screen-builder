@@ -22,7 +22,7 @@ describe('Record list', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=fullname]').type('{home}Miss ');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=fullname]').should('have.value', 'Miss Patricia Smith');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=date]').parent()
-      .should('contain.text', 'Invalid default value');
+      .should('contain.text', 'Must be a valid Date');
   });
 
   it('Add row with default values', () => {

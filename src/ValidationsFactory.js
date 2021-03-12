@@ -33,11 +33,11 @@ class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (let i = 0, l = this.element.length; i < l; i++) {
       const item = this.element[i];
-      let fields = item;
       if (item.items) {
-        fields = item.items;
+        await ValidationsFactory(item.items, { screen: this.screen }).addValidations(validations);
+      } else {
+        await ValidationsFactory(item, { screen: this.screen }).addValidations(validations);
       }
-      await ValidationsFactory(fields, { screen: this.screen }).addValidations(validations);
     }
   }
 }
@@ -86,7 +86,6 @@ class FormNestedScreenValidations extends Validations {
         console.log(response.data.config);
 
         globalObject.nestedScreens['id_' + id] = response.data.config;
-        
         return response.data.config;
       });
   }
