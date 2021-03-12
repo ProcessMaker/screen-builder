@@ -5,7 +5,6 @@ import { ValidationMsg } from './ValidationRules';
 export default {
   data() {
     return {
-      nestedScreenInvalid : false,
       ValidationRules__: {},
     };
   },
@@ -39,29 +38,7 @@ export default {
         return 'MUSTACHE: ' + e.message;
       }
     },
-    nestedScreenIsInavalid(items) {
-      items.forEach(item => {
-        console.log(item);
-        if (item.$children) {
-          this.nestedScreenIsInavalid(item.$children);
-        }
-
-        if (item.$refs.nestedScreen) {
-          if (item.$refs.nestedScreen.$refs.renderer.$refs.component.$v.$invalid) {
-            this.nestedScreenInvalid = true;
-          }
-        }
-      });
-    },
     submitForm() {
-      console.log('submit form');
-      this.nestedScreenInvalid = false;
-      this.nestedScreenIsInavalid(this.$children);
-      if (this.nestedScreenInvalid) {
-        //if the nested form is not valid the data is not emitted
-        return;
-      }
-
       if (this.$v.$invalid) {
         //if the form is not valid the data is not emitted
         return;
@@ -132,6 +109,7 @@ export default {
     },
   },
   validations() {
+    // eslint-disable-next-line no-console
     console.log(this.ValidationRules__);
     return { vdata: this.ValidationRules__ };
   },
