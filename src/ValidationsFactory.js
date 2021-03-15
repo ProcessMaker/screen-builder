@@ -1,5 +1,6 @@
 import { validators } from './mixins/ValidationRules';
-import  DataProvider from './DataProvider';
+import DataProvider from './DataProvider';
+import { get, set } from 'lodash';
 
 let globalObject = typeof window === 'undefined'
   ? global
@@ -31,13 +32,8 @@ class Validations {
  */
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
-    for (let i = 0, l = this.element.length; i < l; i++) {
-      const item = this.element[i];
-      if (item.items) {
-        await ValidationsFactory(item.items, { screen: this.screen }).addValidations(validations);
-      } else {
-        await ValidationsFactory(item, { screen: this.screen }).addValidations(validations);
-      }
+    for (const item of this.element) {
+      await ValidationsFactory(item, { screen: this.screen }).addValidations(validations);
     }
   }
 }
@@ -62,13 +58,16 @@ class ScreenValidations extends Validations {
  */
 class FormNestedScreenValidations extends Validations {
   async addValidations(validations) {
-    let id = this.element.config.screen;
-    const definition = await this.loadScreen(id);
+    const definition = await this.loadScreen(this.element.config.screen);
     if (!definition) {
       //the screen does not load
       return;
     }
-    await ValidationsFactory(definition, { screen: definition }).addValidations(validations);
+    for (const item of definition) {
+      if (item.items) {
+        await ValidationsFactory(item.items, { screen: this.screen }).addValidations(validations);
+      }
+    }
   }
 
   async loadScreen(id) {
@@ -78,16 +77,9 @@ class FormNestedScreenValidations extends Validations {
     if (globalObject.nestedScreens['id_' + id]) {
       return globalObject.nestedScreens['id_' + id];
     }
-    DataProvider.getScreen(id)
-      .then(response => {
-        // eslint-disable-next-line no-console
-        console.log('response........load nested.. ' + id);
-        // eslint-disable-next-line no-console
-        console.log(response.data.config);
-
-        globalObject.nestedScreens['id_' + id] = response.data.config;
-        return response.data.config;
-      });
+    const response = await DataProvider.getScreen(id);
+    globalObject.nestedScreens['id_' + id] = response.data.config;
+    return response.data.config;
   }
 
 }
@@ -97,9 +89,10 @@ class FormNestedScreenValidations extends Validations {
  */
 class FormLoopValidations extends Validations {
   async addValidations(validations) {
-    validations[this.element.config.name] = {};
-    validations[this.element.config.name]['$each'] = {};
-    await ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations[this.element.config.name]['$each']);
+    set(validations, this.element.config.name, {});
+    const loopField = get(validations, this.element.config.name);
+    loopField['$each'] = [];
+    await ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(loopField['$each']);
   }
 }
 
@@ -129,14 +122,15 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
-    
     if (!(this.element.config && this.element.config.name && typeof this.element.config.name === 'string' && this.element.config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
       //element invalid
       return;
     }
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
-    validations[fieldName] = validations[fieldName] || {};
+
+    set(validations, fieldName, get(validations, fieldName, {}));
+    const fieldValidation = get(validations, fieldName);
     if (validationConfig instanceof Array) {
       validationConfig.forEach((validation) => {
         const rule = this.camelCase(validation.value.split(':')[0]);
@@ -156,7 +150,7 @@ class FormElementValidations extends Validations {
           });
           validationFn = validationFn(...params);
         }
-        validations[fieldName][rule] = validationFn;
+        fieldValidation[rule] = validationFn;
       });
     } else if (typeof validationConfig === 'string' && validationConfig) {
       let validationFn = validators[validationConfig];
@@ -165,7 +159,7 @@ class FormElementValidations extends Validations {
         console.error(`Undefined validation rule "${validationConfig}"`);
         return;
       }
-      validations[fieldName][validationConfig] = validationFn;
+      fieldValidation[validationConfig] = validationFn;
     }
     if (this.element.items) {
       ValidationsFactory(this.element.items, { screen: this.screen }).addValidations(validations);
