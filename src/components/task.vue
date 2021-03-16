@@ -58,7 +58,7 @@
 import _ from 'lodash';
 
 const defaultBeforeLoadTask = () => {
-  new Promise((resolve) => {
+  return new Promise((resolve) => {
     resolve();
   });
 };
@@ -89,9 +89,10 @@ export default {
       disabled: false,
       socketListeners: [],
       requestData: {},
-      reloadInProgress: false,
       hasErrors: false,
       refreshScreen: 0,
+      queue: [],
+      queueRunning: false, 
     };
   },
   watch: {
@@ -134,7 +135,7 @@ export default {
     },
 
     taskId: {
-      handler() {
+      handler(_, old) {
         if (this.taskId) {
           this.loadTask();
         }
@@ -216,36 +217,45 @@ export default {
       });
     },
     reload() {
-      if (this.reloadInProgress) {
-        return;
-      }
-
-      this.reloadInProgress = true;
-
       if (this.taskId) {
-        this.loadTask().finally(() => {
-          this.reloadInProgress = false;
-        });
+        this.loadTask();
       } else {
-        this.loadNextAssignedTask().finally(() => {
-          this.reloadInProgress = false;
-        });
+        this.loadNextAssignedTask();
       }
     },
-    async loadTask() {
-      await this.beforeLoadTask(this.taskId, this.nodeId);
+    enqueue(fn) {
+      this.queue.push(fn);
 
-      return this.$dataProvider
-        .getTasks(
-          `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`
-        )
-        .then((response) => {
-          this.task = response.data;
-          this.checkTaskStatus();
-        })
-        .catch(() => {
-          this.hasErrors = true;
+      if (!this.queueRunning) {
+        this.runQueue();
+      }
+    },
+    runQueue() {
+      this.queueRunning = true;
+      const fn = this.queue.shift();
+      fn().then(() => {
+        if (this.queue.length > 0) {
+          this.runQueue();
+        } else {
+          this.queueRunning = false;
+        }
+      });
+    },
+    loadTask() {
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
+      this.enqueue(() => {
+        return this.beforeLoadTask(this.taskId, this.nodeId).then(() => {
+          this.$dataProvider
+            .getTasks(url)
+            .then((response) => {
+              this.task = response.data;
+              this.checkTaskStatus();
+            })
+            .catch(() => {
+              this.hasErrors = true;
+            });
         });
+      });
     },
     prepareTask() {
       this.resetScreenState();
@@ -295,17 +305,17 @@ export default {
       }
     },
     loadNextAssignedTask() {
-      return this.$dataProvider
-        .getTasks(
-          `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`
-        )
-        .then((response) => {
-          if (response.data.data.length > 0) {
-            let task = response.data.data[0];
-            this.taskId = task.id;
-            this.nodeId = task.element_id;
-          }
-        });
+      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`;
+      this.enqueue(() => {
+        return this.$dataProvider
+          .getTasks(url).then((response) => {
+            if (response.data.data.length > 0) {
+              let task = response.data.data[0];
+              this.taskId = task.id;
+              this.nodeId = task.element_id;
+            }
+          });
+      });
     },
     classHeaderCard(status) {
       let header = 'bg-success';
@@ -422,18 +432,6 @@ export default {
     this.requestId = this.initialRequestId;
     this.processId = this.initialProcessId;
     this.nodeId = this.initialNodeId;
-    if (this.screenId) {
-      this.loadScreen(this.screenId);
-    }
-    if (this.taskId) {
-      this.loadTask();
-    }
-    if (this.requestId) {
-      this.setMetaValue();
-      this.initSocketListeners();
-    } else {
-      this.unsubscribeSocketListeners();
-    }
     this.requestData = this.value;
   },
   destroyed() {
