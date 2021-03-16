@@ -135,7 +135,7 @@ export default {
     },
 
     taskId: {
-      handler(_, old) {
+      handler() {
         if (this.taskId) {
           this.loadTask();
         }
