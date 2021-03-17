@@ -112,7 +112,9 @@ class PageNavigateValidations extends Validations {
   async addValidations(validations) {
     if (!this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
-      await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen }).addValidations(validations);
+      if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
+        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen }).addValidations(validations);
+      }
     }
   }
 }
