@@ -59,11 +59,6 @@ class ScreenValidations extends Validations {
 class FormNestedScreenValidations extends Validations {
   async addValidations(validations) {
     const definition = await this.loadScreen(this.element.config.screen);
-    if (!definition) {
-      //the screen does not load
-      return;
-    }
-
     if (definition && definition[0] && definition[0].items) {
       await ValidationsFactory(definition[0].items, { screen: this.screen }).addValidations(validations);
     }
