@@ -1693,10 +1693,16 @@
                                 "label": "Date",
                                 "name": "date",
                                 "placeholder": "",
-                                "validation": [],
+                                "validation": [
+                                    {
+                                        "value": "custom_date",
+                                        "content": "Date",
+                                        "helper": "The field under validation must be a valid date format which is acceptable by Javascript's Date object."
+                                    }
+                                ],
                                 "helper": null,
                                 "type": "text",
-                                "dataFormat": "string",
+                                "dataFormat": "date",
                                 "readonly": false,
                                 "defaultValue": {
                                     "mode": "js",
