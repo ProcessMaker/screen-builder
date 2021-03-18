@@ -573,6 +573,7 @@ export default [
             label: 'Variable Name',
             name: 'Variable Name',
             helper: 'A variable name is a symbolic name to reference information.',
+            validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/',
           },
         },
         buttonTypeEvent,
@@ -641,7 +642,7 @@ export default [
             label: 'Variable Name',
             name: 'Name',
             helper: 'A variable name is a symbolic name to reference information.',
-            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_. /a-z])*$/|required',
+            validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|required',
           },
         },
         {
