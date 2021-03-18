@@ -63,10 +63,9 @@ class FormNestedScreenValidations extends Validations {
       //the screen does not load
       return;
     }
-    for (const item of definition) {
-      if (item.items) {
-        await ValidationsFactory(item.items, { screen: this.screen }).addValidations(validations);
-      }
+
+    if (definition && definition[0] && definition[0].items) {
+      await ValidationsFactory(definition[0].items, { screen: this.screen }).addValidations(validations);
     }
   }
 

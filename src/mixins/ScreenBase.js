@@ -109,8 +109,6 @@ export default {
     },
   },
   validations() {
-    // eslint-disable-next-line no-console
-    console.log(this.ValidationRules__);
     return { vdata: this.ValidationRules__ };
   },
 };
