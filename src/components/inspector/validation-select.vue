@@ -313,7 +313,7 @@ export default {
       },
     },
     value() {
-      this.rules = this.value;
+      this.rules = this.value || [];
       this.cloneSetRules();
       
     },
