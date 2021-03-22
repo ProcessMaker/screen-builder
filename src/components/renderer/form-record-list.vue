@@ -80,6 +80,7 @@
         :config="popupConfig"
         :current-page="form"
         :computed="formComputed"
+        :watchers="formWatchers"
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
@@ -104,6 +105,7 @@
         :config="popupConfig"
         :current-page="form"
         :computed="formComputed"
+        :watchers="formWatchers"
         debug-context="Record List Edit"
         :_parent="validationData"
       />
@@ -155,7 +157,7 @@ const jsonOptionsActionsColumn = {
 
 export default {
   mixins: [mustacheEvaluation],
-  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed'],
+  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers'],
   data() {
     return {
       single: '',
