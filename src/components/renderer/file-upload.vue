@@ -215,7 +215,6 @@ export default {
           }
         }
       }
-      return null;
     },
     deleteFile(fileId) {
       if (fileId) {
