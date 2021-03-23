@@ -195,21 +195,28 @@ export default {
   },
   methods: {
     listenRemovedLoop(loop, removed) {
-      const fileId = removed[this.name];
-      if (fileId) {
-        window.ProcessMaker.apiClient
-          .delete(`files/${fileId}`)
-          .catch(() => {
-            /** ignore exception **/
-          });
-      }
+      this.deleteAssociatedFiles(removed);
     },
     listenRemovedRecord(recordList, record) {
       const parent = this.parentRecordList(this);
       if (parent !== recordList) {
         return;
       }
-      const fileId = record[this.name];
+      this.deleteAssociatedFiles(record);
+    },
+    deleteAssociatedFiles(object) {
+      for (const prop in object) {
+        if (prop === this.name) {
+          this.deleteFile(object[prop]);
+        }
+        if (Array.isArray(object[prop])) {
+          for (const item of object[prop]) {
+            this.deleteAssociatedFiles(item);
+          }
+        }
+      }
+    },
+    deleteFile(fileId) {
       if (fileId) {
         window.ProcessMaker.apiClient
           .delete(`files/${fileId}`)
