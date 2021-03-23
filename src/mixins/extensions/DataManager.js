@@ -6,7 +6,7 @@ export default {
         .forEach(v => {
           this.addData(screen, v.name, `this.getValue(${JSON.stringify(v.name)}, this.vdata) || this.getValue(${JSON.stringify(v.name)}, data) || null`);
           this.addWatch(screen, v.name, `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);`);
-          this.addWatch(screen, `vdata.${v.name}`, `this.${v.name} = this.vdata.${v.name};`);
+          this.addWatch(screen, `vdata.${v.name}`, `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);`);
         });
       screen.props.vdata = null;
     },
