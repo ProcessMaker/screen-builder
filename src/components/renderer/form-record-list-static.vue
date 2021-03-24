@@ -41,6 +41,6 @@ export default {
     formatIfDate(string) {
       return dateUtils.formatIfDate(string);
     },
-  }
+  },
 };
 </script>
