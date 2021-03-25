@@ -1,5 +1,9 @@
 <template>
   <div class="form-group"  style="overflow-x: hidden">
+    <div class="alert alert-danger" v-if="!valid">
+      <i class="fas fa-exclamation-circle"/>
+      {{ message }}
+    </div>
     <button @click="click" :class="classList" :name="name">{{ label }}</button>
   </div>
 </template>
@@ -16,14 +20,54 @@ export default {
       return {
         btn: true,
         ['btn-' + variant]: true,
+        disabled: !this.valid,
       };
+    },
+    valid() {
+      if (this.$attrs.validate) {
+        return !this.$attrs.validate.$invalid;
+      }
+      return true;
+    },
+    message() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.errors = 0;
+      if (this.$attrs.validate && this.$attrs.validate.$invalid) {
+        this.countErrors(this.$attrs.validate);
+        let message = 'There are {{items}} validation errors in your form.';
+        if (this.errors === 1) {
+          message = 'There are {{items}} validation error in your form.';
+        }
+        return this.$t(message, {items: this.errors});
+      }
+      return '';
     },
   },
   data() {
     return {
+      errors: 0,
     };
   },
   methods: {
+    countErrors(obj) {
+      if (typeof obj !== 'object') {
+        return;
+      }
+      Object.entries(obj).forEach(([key, value]) => {
+        if (value) {
+          if (typeof value === 'object' && '$each' in value) {
+            this.countErrors(value.$each);
+            return;
+          }
+          if (typeof value === 'object' && '$invalid' in value && value.$invalid && isNaN(key)) {
+            this.errors++;
+          }
+          if (key !== '$iter' && value) {
+            this.countErrors(value);
+          }
+        }
+      });
+    },
     setValue(parent, name, value) {
       if (parent) {
         if (parent.items) {
