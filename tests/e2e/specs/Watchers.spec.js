@@ -380,7 +380,7 @@ describe('Watchers', () => {
 
     // Select option
     cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption(
-      'Musk'
+      's'
     );
 
     // Assertion: Check listValues was loaded
