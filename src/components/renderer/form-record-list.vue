@@ -34,7 +34,7 @@
             <img :src="mustache(field.key, item)" style="record-list-image">
           </template>
           <template v-else>
-            {{ mustache(field.key, item) }}
+            {{ formatIfDate(mustache(field.key, item)) }}
           </template>
         </template>
         <template #cell(__actions)="{index}">
@@ -146,6 +146,7 @@
 <script>
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
+import { dateUtils } from '@processmaker/vue-form-elements';
 //import ScreenRenderer from '../screen-renderer.vue';
 
 const jsonOptionsActionsColumn = {
@@ -254,6 +255,9 @@ export default {
     },
   },
   methods: {
+    formatIfDate(string) {
+      return dateUtils.formatIfDate(string);
+    },
     isImage(field, item) {
       const content = _.get(item, field.key);
       return typeof content === 'string' && content.substr(0,11) === 'data:image/';
