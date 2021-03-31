@@ -136,7 +136,10 @@ export const notIn = (list) => helpers.withParams({list}, (value) => {
 });
 
 export const regex = (expression) => helpers.withParams({expression}, (value) => {
-  const regexp = new RegExp(expression);
+  const matches = expression.match(/(\/?)(.+)\1([a-z]*)/i);
+  const searchPattern = matches[2];
+  const flags = matches[3];
+  const regexp = new RegExp(searchPattern, flags);
   return !!String(value).match(regexp);
 });
 
