@@ -65,6 +65,10 @@ export default {
       }
       this.$emit('submit', this.vdata);
     },
+    getValidationData() {
+      const data = Object.assign({_parent: this._parent}, this.vdata);
+      return data;
+    },
     getValue(name, object = this) {
       return object ? get(object, name) : undefined;
     },
