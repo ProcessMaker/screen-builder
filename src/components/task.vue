@@ -305,7 +305,7 @@ export default {
       }
     },
     loadNextAssignedTask() {
-      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}`;
+      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}&include_sub_tasks=1`;
       this.enqueue(() => {
         return this.$dataProvider
           .getTasks(url).then((response) => {
