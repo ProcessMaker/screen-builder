@@ -12,7 +12,7 @@
       <tbody>
         <tr v-for="(val, index) in value" :key="index">
           <td v-for="(field, index) in fields" :key="index">
-            {{ mustache(field.value, val) }}
+            {{ formatIfDate(mustache(field.value, val)) }}
           </td>
         </tr>
       </tbody>
@@ -23,6 +23,7 @@
 
 <script>
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
+import { dateUtils } from '@processmaker/vue-form-elements';
 
 export default {
   name: 'FormRecordListStatic',
@@ -35,6 +36,11 @@ export default {
   data() {
     return {
     };
+  },
+  methods: {
+    formatIfDate(string) {
+      return dateUtils.formatIfDate(string);
+    },
   },
 };
 </script>
