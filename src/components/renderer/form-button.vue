@@ -36,7 +36,7 @@ export default {
         this.countErrors(this.$attrs.validate);
         let message = 'There are {{items}} validation errors in your form.';
         if (this.errors === 1) {
-          message = 'There are {{items}} validation error in your form.';
+          message = 'There is a validation error in your form.';
         }
         return this.$t(message, {items: this.errors});
       }
