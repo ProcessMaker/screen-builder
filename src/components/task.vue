@@ -232,7 +232,7 @@ export default {
             this.task = response.data;
             this.checkTaskStatus();
           })
-          .catch((e) => {
+          .catch(() => {
             this.hasErrors = true;
           });
       });
