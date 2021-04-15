@@ -91,8 +91,6 @@ export default {
       requestData: {},
       hasErrors: false,
       refreshScreen: 0,
-      queue: [],
-      queueRunning: false, 
     };
   },
   watch: {
@@ -137,7 +135,9 @@ export default {
     taskId: {
       handler() {
         if (this.taskId) {
-          this.loadTask();
+          if (!this.task || this.task.id !== this.taskId) {
+            this.loadTask();
+          }
         }
       },
     },
@@ -223,38 +223,18 @@ export default {
         this.loadNextAssignedTask();
       }
     },
-    enqueue(fn) {
-      this.queue.push(fn);
-
-      if (!this.queueRunning) {
-        this.runQueue();
-      }
-    },
-    runQueue() {
-      this.queueRunning = true;
-      const fn = this.queue.shift();
-      fn().then(() => {
-        if (this.queue.length > 0) {
-          this.runQueue();
-        } else {
-          this.queueRunning = false;
-        }
-      });
-    },
     loadTask() {
       const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
-      this.enqueue(() => {
-        return this.beforeLoadTask(this.taskId, this.nodeId).then(() => {
-          this.$dataProvider
-            .getTasks(url)
-            .then((response) => {
-              this.task = response.data;
-              this.checkTaskStatus();
-            })
-            .catch(() => {
-              this.hasErrors = true;
-            });
-        });
+      return this.beforeLoadTask(this.taskId, this.nodeId).then(() => {
+        this.$dataProvider
+          .getTasks(url)
+          .then((response) => {
+            this.task = response.data;
+            this.checkTaskStatus();
+          })
+          .catch((e) => {
+            this.hasErrors = true;
+          });
       });
     },
     prepareTask() {
@@ -306,16 +286,14 @@ export default {
     },
     loadNextAssignedTask() {
       const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}&include_sub_tasks=1`;
-      this.enqueue(() => {
-        return this.$dataProvider
-          .getTasks(url).then((response) => {
-            if (response.data.data.length > 0) {
-              let task = response.data.data[0];
-              this.taskId = task.id;
-              this.nodeId = task.element_id;
-            }
-          });
-      });
+      return this.$dataProvider
+        .getTasks(url).then((response) => {
+          if (response.data.data.length > 0) {
+            let task = response.data.data[0];
+            this.taskId = task.id;
+            this.nodeId = task.element_id;
+          }
+        });
     },
     classHeaderCard(status) {
       let header = 'bg-success';
