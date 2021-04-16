@@ -136,7 +136,9 @@ export default {
     taskId: {
       handler() {
         if (this.taskId) {
-          this.loadTask();
+          if (!this.task || this.task.id !== this.taskId) {
+            this.loadTask();
+          }
         }
       },
     },
