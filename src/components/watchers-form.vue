@@ -127,18 +127,18 @@
             <div v-if="isDatasource">
               <div class="form-group">
                 <form-multi-select
-                  :name="$t('Endpoint')"
-                  :label="$t('Endpoint')"
+                  :name="$t('Resource')"
+                  :label="$t('Resource')"
                   :options="endpoints"
                   v-model="endpoint"
-                  :placeholder="$t('Select an endpoint')"
+                  :placeholder="$t('Select a resource')"
                   :multiple="false"
                   :show-labels="false"
                   :searchable="true"
                   :internal-search="false"
                   @search-change="loadEndpoints"
                   @open="loadEndpoints"
-                  :helper="$t('The Data Connector endpoint to access when this Watcher runs')"
+                  :helper="$t('The Data Connector resource to access when this Watcher runs')"
                   data-cy="watchers-watcher-endpoint"
                 />
                 <div v-if="endpointError" class="invalid-feedback d-block">
