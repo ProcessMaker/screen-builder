@@ -177,8 +177,9 @@ export default {
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         } else {
+          const isInterstitial = _.get(this.screen, '_interstitial', false);
           let component = _.get(this, 'task.component', 'task-screen');
-          if (component === null) {
+          if (component === null || isInterstitial) {
             component = 'task-screen';
           }
           this.renderComponent = component;
@@ -289,6 +290,7 @@ export default {
         this.processCompleted();
 
       } else if (this.task.allow_interstitial) {
+        this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask();
 
@@ -337,6 +339,7 @@ export default {
       });
 
       if (this.task && this.task.allow_interstitial) {
+        this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
     },
