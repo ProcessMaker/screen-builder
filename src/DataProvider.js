@@ -91,7 +91,7 @@ export default {
     });
   },
   
-  postScript(id, params) {
+  postScript(id, params, options = {}) {
     let endpoint = _.get(
       window,
       'PM4ConfigOverrides.postScriptEndpoint',
@@ -111,7 +111,8 @@ export default {
 
     return this.post(
       endpoint.replace('{id}', id) + query,
-      params
+      params,
+      options
     );
   },
 };
