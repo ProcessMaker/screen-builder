@@ -13,6 +13,7 @@
     :watchers="watchers"
     debug-context="Nested Screen"
     @css-errors="cssErrors = $event"
+    :_parent="getParent()"
   />
 </template>
 
@@ -65,6 +66,9 @@ export default {
     },
   },
   methods: {
+    getParent() {
+      return (this.validationData && this.validationData._parent) || {};
+    },
     isSubmitButton(item) {
       return item.config && item.component === 'FormButton' && item.config.event === 'submit';
     },
