@@ -12,8 +12,8 @@
     <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('Source') }}</th>
-          <th scope="col">{{ $t('Form Variable') }}</th>
+          <th scope="col">{{ $t('Source') }} <span class="badge badge-secondary">{ M }</span></th>
+          <th scope="col">{{ $t('Form Variable') }} <span class="badge badge-secondary">{ M }</span></th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -22,32 +22,39 @@
           <td class="p-1">
             <input
               v-model="row.value"
-              name="key"
-              :placeholder="$t('New Value')"
+              name="value"
+              :placeholder="$t('The source is the response data')"
               type="text"
               class="form-control"
             >
           </td>
 
           <td class="p-1">
-            <multiselect
+            <input
               v-model="row.key"
-              :placeholder="$t('Select an Option')"
-              :options="options"
-              :multiple="false"
-              :show-labels="false"
-              :searchable="true"
-              :internal-search="false"
-              @search-change="loadOptions"
-              @open="loadOptions"
+              name="key"
+              :placeholder="$t('The Request variable is a new/existing variable')"
+              type="text"
+              class="form-control"
             >
-              <template slot="noResult">
-                <slot name="noResult">{{ $t('Not found') }}</slot>
-              </template>
-              <template slot="noOptions">
-                <slot name="noOptions">{{ $t('Not available') }}</slot>
-              </template>
-            </multiselect>
+<!--            <multiselect-->
+<!--              v-model="row.key"-->
+<!--              :placeholder="$t('Select an Option')"-->
+<!--              :options="options"-->
+<!--              :multiple="false"-->
+<!--              :show-labels="false"-->
+<!--              :searchable="true"-->
+<!--              :internal-search="false"-->
+<!--              @search-change="loadOptions"-->
+<!--              @open="loadOptions"-->
+<!--            >-->
+<!--              <template slot="noResult">-->
+<!--                <slot name="noResult">{{ $t('Not found') }}</slot>-->
+<!--              </template>-->
+<!--              <template slot="noOptions">-->
+<!--                <slot name="noOptions">{{ $t('Not available') }}</slot>-->
+<!--              </template>-->
+<!--            </multiselect>-->
 
           </td>
 
