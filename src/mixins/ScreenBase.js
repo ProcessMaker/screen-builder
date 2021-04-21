@@ -45,6 +45,15 @@ export default {
       }
       this.$emit('submit', this.vdata);
     },
+    getValidationData() {
+      const screen = this;
+      return new Proxy(this.vdata || {}, {
+        get(target, name) {
+          if (name in target) return target[name];
+          if (name === '_parent') return screen._parent;
+        },
+      });
+    },
     getValue(name, object = this) {
       return object ? get(object, name) : undefined;
     },
