@@ -70,10 +70,11 @@ export default {
         }
         return response;
       }).catch(error => {
+        const message = _.get(error, 'response.data.message', error.message);
         if (watcher.synchronous) {
-          this.$parent.$refs.watchersSynchronous.error(error);
+          this.$parent.$refs.watchersSynchronous.error(message);
         } else {
-          window.ProcessMaker.alert(error, 'danger');
+          window.ProcessMaker.alert(message, 'danger');
         }
       });
     },
