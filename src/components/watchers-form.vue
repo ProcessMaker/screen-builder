@@ -23,6 +23,7 @@
             />
 
             <form-input
+              v-show="config.run_onload"
               v-model="config.watching"
               :label="$t('Variable to Watch')"
               :name="$t('Variable to Watch') + ' *'"
@@ -31,20 +32,21 @@
               data-cy="watchers-watcher-variable"
             />
 
-<!--            <form-multi-select-->
-<!--              :name="$t('Variable to Watch') + ' *'"-->
-<!--              :label="$t('Variable to Watch')"-->
-<!--              :options="variables"-->
-<!--              v-model="config.watching"-->
-<!--              :placeholder="$t('None')"-->
-<!--              :multiple="false"-->
-<!--              :show-labels="false"-->
-<!--              :internal-search="true"-->
-<!--              :validation="ruleWatcherVariable"-->
-<!--              :helper="$t('The variable to watch on this screen')"-->
-<!--              @open="loadVariables"-->
-<!--              data-cy="watchers-watcher-variable"-->
-<!--            />-->
+            <form-multi-select
+              v-show="!config.run_onload"
+              :name="$t('Variable to Watch') + ' *'"
+              :label="$t('Variable to Watch')"
+              :options="variables"
+              v-model="config.watching"
+              :placeholder="$t('None')"
+              :multiple="false"
+              :show-labels="false"
+              :internal-search="true"
+              :validation="ruleWatcherVariable"
+              :helper="$t('The variable to watch on this screen')"
+              @open="loadVariables"
+              data-cy="watchers-watcher-variable"
+            />
             <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
               <div>{{ $t('The Variable to Watch field is required') }}</div>
             </div>
@@ -59,9 +61,10 @@
             />
 
             <form-checkbox
-              :name="$t('Run watcher on screen load')"
-              :label="$t('Run watcher on screen load')"
+              :name="$t('Run watcher on Screen Load')"
+              :label="$t('Run watcher on Screen Load')"
               v-model="config.run_onload"
+              @change="config.watching=''"
               :toggle="true"
               data-cy="watchers-watcher-synchronous"
             />
