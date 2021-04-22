@@ -26,7 +26,11 @@ export default {
       return new Promise((complete, exception) => {
         const input = Mustache.render(watcher.input_data, this.vdata);
         const config = Mustache.render(watcher.script_configuration, this.vdata);
-        this.listenWatcher(watcher).then((response) => complete(response))
+        this.listenWatcher(watcher)
+          .then((response) => {
+            this.$emit('asyncWatcherCompleted');
+            complete(response);
+          })
           .catch(error => exception(error));
         
         let scriptId = watcher.script_id;
@@ -62,11 +66,6 @@ export default {
         // hide watcher's popup
         if (this.$parent.$refs.watchersSynchronous) {
           this.$parent.$refs.watchersSynchronous.hide(watcher.name);
-        }
-        else {
-          if (watcher.show_async_loading) {
-            this.$emit('asyncWatcherCompleted');
-          }
         }
         return response;
       }).catch(error => {

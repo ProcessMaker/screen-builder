@@ -12,8 +12,8 @@
     <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('Source') }} <span class="badge badge-secondary">{ M }</span></th>
-          <th scope="col">{{ $t('Form Variable') }} <span class="badge badge-secondary">{ M }</span></th>
+          <th scope="col">{{ $t('Source') }}</th>
+          <th scope="col">{{ $t('Form Variable') }}</th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -37,25 +37,6 @@
               type="text"
               class="form-control"
             >
-<!--            <multiselect-->
-<!--              v-model="row.key"-->
-<!--              :placeholder="$t('Select an Option')"-->
-<!--              :options="options"-->
-<!--              :multiple="false"-->
-<!--              :show-labels="false"-->
-<!--              :searchable="true"-->
-<!--              :internal-search="false"-->
-<!--              @search-change="loadOptions"-->
-<!--              @open="loadOptions"-->
-<!--            >-->
-<!--              <template slot="noResult">-->
-<!--                <slot name="noResult">{{ $t('Not found') }}</slot>-->
-<!--              </template>-->
-<!--              <template slot="noOptions">-->
-<!--                <slot name="noOptions">{{ $t('Not available') }}</slot>-->
-<!--              </template>-->
-<!--            </multiselect>-->
-
           </td>
 
           <td class="align-middle text-right p-1">
