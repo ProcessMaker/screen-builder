@@ -335,6 +335,24 @@ export default {
     },
     endpoint(endpoint) {
       this.setConfig('endpoint', endpoint);
+
+      //load mappings
+      let config = this.scriptConfig ? JSON.parse(this.scriptConfig) : {};
+      let currentMappings = config.dataMapping || [];
+      const dsList = this.scripts.find(list => list.items
+          && list.items.length > 0
+          && list.items[0].id
+          && list.items[0].id.substr(0, 11) === 'data_source' );
+
+      if (dsList && currentMappings.length === 0) {
+        const ds = dsList.items.find(conn => 'data_source-' + config.dataSource === conn.id);
+        const dsMappings = (ds.endpoints && ds.endpoints[endpoint]) ? ds.endpoints[endpoint].dataMapping : [] || [];
+        config.dataMapping = [];
+        dsMappings.forEach(mapping => {
+          config.dataMapping.push({key: mapping.key, value: mapping.value});
+        });
+        this.scriptConfig = JSON.stringify(config);
+      }
     },
     config: {
       deep: true,
