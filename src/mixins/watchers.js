@@ -19,7 +19,9 @@ export default {
         }
       }
       else {
-        this.$emit('asyncWatcherTriggered');
+        if (watcher.show_async_loading) {
+          this.$emit('asyncWatcherTriggered');
+        }
       }
       return new Promise((complete, exception) => {
         const input = Mustache.render(watcher.input_data, this.vdata);
@@ -62,7 +64,9 @@ export default {
           this.$parent.$refs.watchersSynchronous.hide(watcher.name);
         }
         else {
-          this.$emit('asyncWatcherCompleted');
+          if (watcher.show_async_loading) {
+            this.$emit('asyncWatcherCompleted');
+          }
         }
         return response;
       }).catch(error => {
