@@ -18,6 +18,9 @@ export default {
           this.$parent.$refs.watchersSynchronous.show(watcher.name);
         }
       }
+      else {
+        this.$emit('asyncWatcherTriggered');
+      }
       return new Promise((complete, exception) => {
         const input = Mustache.render(watcher.input_data, this.vdata);
         const config = Mustache.render(watcher.script_configuration, this.vdata);
@@ -57,6 +60,9 @@ export default {
         // hide watcher's popup
         if (this.$parent.$refs.watchersSynchronous) {
           this.$parent.$refs.watchersSynchronous.hide(watcher.name);
+        }
+        else {
+          this.$emit('asyncWatcherCompleted');
         }
         return response;
       }).catch(error => {

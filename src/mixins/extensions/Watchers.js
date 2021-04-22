@@ -15,11 +15,19 @@ export default {
         definition.watchers.forEach((watcher) => {
           this.addMounted(screen, `
             this.$watch('${watcher.watching}', (newValue) => {
+                console.log('watcher 1');
               if (typeof newValue !== 'undefined') {
                 this.queueWatcher(${JSON.stringify(watcher)});
               }
             });
           `);
+
+          if (watcher.run_onload) {
+            this.addMounted(screen, `
+                console.log('watcher 2');
+                this.queueWatcher(${JSON.stringify(watcher)});
+          `);
+          }
         });
       }
     },
