@@ -29,7 +29,7 @@
               :name="$t('Variable to Watch') + ' *'"
               :validation="ruleWatcherVariable"
               :helper="$t('The variable to watch on this screen')"
-              data-cy="watchers-watcher-variable"
+              data-cy="watchers-watcher-variable-input"
             />
 
             <form-multi-select
@@ -66,7 +66,7 @@
               :label="$t('Show message while loading remote data')"
               v-model="config.show_async_loading"
               :toggle="true"
-              data-cy="watchers-watcher-synchronous"
+              data-cy="watchers-watcher-show-loading"
             />
 
             <form-checkbox
@@ -75,7 +75,7 @@
               v-model="config.run_onload"
               @change="config.watching = ''"
               :toggle="true"
-              data-cy="watchers-watcher-synchronous"
+              data-cy="watchers-watcher-run-onload"
             />
           </div>
         </div>
