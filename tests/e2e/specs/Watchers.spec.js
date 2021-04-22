@@ -264,7 +264,7 @@ describe('Watchers', () => {
       },
     });
   });
-  it.only('Test error in synchronous watcher', () => {
+  it('Test error in synchronous watcher', () => {
     // Mock script response
     cy.server();
     cy.route({
