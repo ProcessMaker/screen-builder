@@ -1,5 +1,5 @@
 import Mustache from 'mustache';
-import { debounce } from 'lodash';
+import _ from 'lodash';
 
 export default {
   data() {
@@ -79,6 +79,6 @@ export default {
     },
   },
   mounted() {
-    this.queueWatcher = debounce(this.queueWatcherSync, window.ProcessMaker.watchersDebounce || 1000);
+    this.queueWatcher = _.debounce(this.queueWatcherSync, window.ProcessMaker.watchersDebounce || 1000);
   },
 };
