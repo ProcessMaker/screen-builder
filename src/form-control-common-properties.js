@@ -87,7 +87,7 @@ export const colorProperty = {
 };
 
 // Ref https://mathiasbynens.be/notes/javascript-identifiers
-const javascriptReservedKeywords = 'null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super';
+export const javascriptReservedKeywords = 'null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super,true,false';
 
 export const keyNameProperty = {
   type: 'FormInput',
