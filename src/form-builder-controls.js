@@ -23,6 +23,7 @@ import {
   bgcolorProperty,
   colorProperty,
   keyNameProperty,
+  javascriptReservedKeywords,
   labelProperty,
   buttonLabelProperty,
   placeholderProperty,
@@ -573,7 +574,8 @@ export default [
             label: 'Variable Name',
             name: 'Variable Name',
             helper: 'A variable name is a symbolic name to reference information.',
-            validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/',
+            validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|not_in:' + javascriptReservedKeywords,
+
           },
         },
         buttonTypeEvent,

@@ -38,7 +38,7 @@ export default {
         ':definition': this.byValue(nested),
         ':value': 'loopRow',
         ':loop-context': `'${loopContext}.' + index`,
-        ':_parent': 'vdata',
+        ':_parent': 'getValidationData()',
         ':components': this.byRef(this.components),
         ':config-ref': this.byRef(this.configRef || definition.config),
         '@submit': 'submitForm',
