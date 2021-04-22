@@ -61,10 +61,19 @@
             />
 
             <form-checkbox
-              :name="$t('Run watcher on Screen Load')"
+              v-show="!config.synchronous"
+              :name="$t('Show message while loading remote data')"
+              :label="$t('Show message while loading remote data')"
+              v-model="config.show_async_loading"
+              :toggle="true"
+              data-cy="watchers-watcher-synchronous"
+            />
+
+            <form-checkbox
+              :name="$t('Run Watcher on Screen Load')"
               :label="$t('Run watcher on Screen Load')"
               v-model="config.run_onload"
-              @change="config.watching=''"
+              @change="config.watching = ''"
               :toggle="true"
               data-cy="watchers-watcher-synchronous"
             />
@@ -290,6 +299,7 @@ export default {
           output_variable:'',
           synchronous:false,
           run_onload:false,
+          show_async_loading:false,
         };
       },
     },

@@ -41,7 +41,6 @@ export default {
     };
   },
   mounted() {
-    console.log('current def', this.currentDefinition);
     this.currentDefinition = cloneDeep(this.definition);
     this.component = this.buildComponent(this.currentDefinition);
   },
