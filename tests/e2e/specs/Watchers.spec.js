@@ -198,7 +198,7 @@ describe('Watchers', () => {
     cy.get('[data-cy="watchers-add-watcher"]').click();
     cy.get('[data-cy="watchers-watcher-name"]').clear().type('Watcher test');
     cy.setMultiselect('[data-cy="watchers-watcher-variable"]', 'form_input_2');
-    cy.get('.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label').click();
+    cy.get('.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label').click({force:true});
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
     cy.setVueComponentValue('[data-cy="watchers-watcher-input_data"]', '{"form_input_2":"{{form_input_2}}"}');
@@ -283,7 +283,7 @@ describe('Watchers', () => {
     cy.get('[data-cy="watchers-add-watcher"]').click();
     cy.get('[data-cy="watchers-watcher-name"]').clear().type('Watcher test');
     cy.setMultiselect('[data-cy="watchers-watcher-variable"]', 'form_input_2');
-    cy.get('.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label').click();
+    cy.get('.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label').click({force:true});
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
     cy.setVueComponentValue('[data-cy="watchers-watcher-input_data"]', '{"exception":"error"}');
@@ -336,7 +336,7 @@ describe('Watchers', () => {
     );
     cy.get(
       '.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label'
-    ).click();
+    ).click({force:true});
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
     cy.setVueComponentValue(
