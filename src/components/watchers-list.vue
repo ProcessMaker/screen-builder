@@ -114,11 +114,13 @@ export default {
   },
   computed: {
     filtered() {
+      const list = this.getValuesWithOutputVarsNames(this.value);
+
       if (!this.filter) {
-        return this.value;
+        return list;
       }
       const filtered = [];
-      this.value.forEach(item => {
+      list.forEach(item => {
         if (Object.keys(item).find(key => typeof item[key] === 'string' ? item[key].indexOf(this.filter)>=0 : false)) {
           filtered.push(item);
         }
@@ -138,6 +140,26 @@ export default {
     },
     deleteProperty(item) {
       this.$emit('delete-form', item);
+    },
+    getValuesWithOutputVarsNames(values) {
+      let list = values.map(watcher => {
+        let newItem = Object.assign({}, watcher);
+        // If watcher is a data source, extract the output vars
+        if (newItem.script && newItem.script.id && newItem.script.id.substr(0, 11) === 'data_source') {
+          let scriptConfig = JSON.parse(newItem.script_configuration);
+          let vars = (scriptConfig && scriptConfig.dataMapping)
+            ? scriptConfig.dataMapping.map(mapping => mapping.key).join(', ')
+            : '';
+
+          // var names string won't have more than 50 characters to avoid distorting the UI
+          const maxLen = 50;
+          newItem.output_variable = vars.length > maxLen
+            ? vars.substr(0, maxLen) + '...'
+            : vars;
+        }
+        return newItem;
+      });
+      return list;
     },
   },
 };
