@@ -1,8 +1,6 @@
 import Mustache from 'mustache';
 import { debounce } from 'lodash';
 
-const broadcastEvent = '.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated';
-
 export default {
   data() {
     return {
@@ -22,18 +20,29 @@ export default {
         
         let scriptId = watcher.script_id;
         if (watcher.script_key) {
-          scriptId = watcher.script_key;
+          // Data Source
+          const requestId = _.get(this.vdata, '_request.id', null);
+          const params = { config: JSON.parse(config), data: this.vdata };
+          
+          this.$dataProvider.postDataSource(scriptId, requestId, params).then(response => {
+            complete(response.data);
+          }).catch(err => {
+            exception(err);
+          });
+
+        } else {
+          // Script
+          this.$dataProvider.postScript(scriptId, {
+            watcher: watcher.uid,
+            data: input,
+            config,
+            sync: true,
+          }, { timeout: 0 }).then(response => {
+            complete(response.data.output);
+          }).catch(err => {
+            exception(err);
+          });
         }
-        this.$dataProvider.postScript(scriptId, {
-          watcher: watcher.uid,
-          data: input,
-          config,
-          sync: true,
-        }, { timeout: 0 }).then(response => {
-          complete(response.data.output);
-        }).catch(err => {
-          exception(err);
-        });
       }).then((response) => {
         if (watcher.output_variable) {
           this.setValue(watcher.output_variable, response);
