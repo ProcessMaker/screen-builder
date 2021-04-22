@@ -23,7 +23,7 @@
             <input
               v-model="row.value"
               name="value"
-              :placeholder="$t('The source is the response data')"
+              :placeholder="$t('Leave blank to map all response data')"
               type="text"
               class="form-control"
             >
