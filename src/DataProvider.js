@@ -91,13 +91,33 @@ export default {
     });
   },
   
-  postScript(id, params) {
+  postScript(id, params, options = {}) {
     let endpoint = _.get(
       window,
       'PM4ConfigOverrides.postScriptEndpoint',
       '/scripts/execute/{id}'
     );
 
+    return this.post(
+      endpoint.replace('{id}', id) + this.authQueryString(),
+      params,
+      options
+    );
+  },
+
+  postDataSource(scriptId, requestId, params) {
+    let url;
+    if (requestId) {
+      url = `/requests/${requestId}/data_sources/${scriptId}`;
+    } else {
+      url = `/requests/data_sources/${scriptId}`;
+    }
+    url += this.authQueryString();
+
+    return this.post(url, params, { timeout: 0});
+  },
+
+  authQueryString() {
     const authParams = _.get(
       window,
       'PM4ConfigOverrides.authParams',
@@ -109,9 +129,6 @@ export default {
       query = '?' + (new URLSearchParams(authParams)).toString();
     }
 
-    return this.post(
-      endpoint.replace('{id}', id) + query,
-      params
-    );
+    return query;
   },
 };
