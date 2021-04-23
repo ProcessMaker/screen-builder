@@ -6,7 +6,7 @@ export default {
       properties['@page-navigate'] = 'pageNavigate';
     },
     pageNavigationBuild(screen) {
-      this.addData(screen, 'currentPage__', '0');
+      this.addData(screen, 'currentPage__', 'this._initialPage');
       screen.methods.pageNavigate = function(page) {
         // Skip navigate button if page is not defined
         if (!this.$parent.definition.config[page]) {
