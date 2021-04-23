@@ -14,17 +14,23 @@ export default {
           this.$parent.$refs.watchersSynchronous.show(watcher.name);
         }
       }
+      else {
+        if (watcher.show_async_loading) {
+          this.$emit('asyncWatcherTriggered');
+        }
+      }
       return new Promise((complete, exception) => {
         const input = Mustache.render(watcher.input_data, this.vdata);
         const config = Mustache.render(watcher.script_configuration, this.vdata);
-        
         let scriptId = watcher.script_id;
+
         if (watcher.script_key) {
           // Data Source
           const requestId = _.get(this.vdata, '_request.id', null);
           const params = { config: JSON.parse(config), data: this.vdata };
           
           this.$dataProvider.postDataSource(scriptId, requestId, params).then(response => {
+            this.$emit('asyncWatcherCompleted');
             complete(response.data);
           }).catch(err => {
             exception(err);

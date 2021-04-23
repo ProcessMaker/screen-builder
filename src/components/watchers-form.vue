@@ -22,7 +22,18 @@
               data-cy="watchers-watcher-name"
             />
 
+            <form-input
+              v-show="config.run_onload"
+              v-model="config.watching"
+              :label="$t('Variable to Watch')"
+              :name="$t('Variable to Watch') + ' *'"
+              :validation="ruleWatcherVariable"
+              :helper="$t('The variable to watch on this screen')"
+              data-cy="watchers-watcher-variable-input"
+            />
+
             <form-multi-select
+              v-show="!config.run_onload"
               :name="$t('Variable to Watch') + ' *'"
               :label="$t('Variable to Watch')"
               :options="variables"
@@ -47,6 +58,24 @@
               :toggle="true"
               :helper="$t('Wait for the Watcher to run before accepting more input')"
               data-cy="watchers-watcher-synchronous"
+            />
+
+            <form-checkbox
+              v-show="!config.synchronous"
+              :name="$t('Show message while loading remote data')"
+              :label="$t('Show message while loading remote data')"
+              v-model="config.show_async_loading"
+              :toggle="true"
+              data-cy="watchers-watcher-show-loading"
+            />
+
+            <form-checkbox
+              :name="$t('Run Watcher on Screen Load')"
+              :label="$t('Run watcher on Screen Load')"
+              v-model="config.run_onload"
+              @change="config.watching = ''"
+              :toggle="true"
+              data-cy="watchers-watcher-run-onload"
             />
           </div>
         </div>
@@ -144,6 +173,13 @@
                 <div v-if="endpointError" class="invalid-feedback d-block">
                   <div>{{ endpointError }}</div>
                 </div>
+
+                <div v-if="dataSourceConfigWarning.length > 0" class="invalid-feedback d-block">
+                  <div> {{ dataSourceConfigWarning }}</div>
+                </div>
+
+                <a :href="dataSourceLink" v-show="dataSourceLink.length > 0" class="link-primary" target="_blank">
+                  {{ $t('Open Data Connector') }} <i class="ml-1 fas fa-external-link-alt"/></a>
               </div>
               <outbound-config v-model="scriptConfig"  v-if="!hasInputData"/>
               <div class="form-group" v-if="hasInputData">
@@ -262,6 +298,8 @@ export default {
           script_configuration:'{}',
           output_variable:'',
           synchronous:false,
+          run_onload:false,
+          show_async_loading:false,
         };
       },
     },
@@ -297,6 +335,24 @@ export default {
     },
     endpoint(endpoint) {
       this.setConfig('endpoint', endpoint);
+
+      //load mappings
+      let config = this.scriptConfig ? JSON.parse(this.scriptConfig) : {};
+      let currentMappings = config.dataMapping || [];
+      const dsList = this.scripts.find(list => list.items
+          && list.items.length > 0
+          && list.items[0].id
+          && list.items[0].id.substr(0, 11) === 'data_source' );
+
+      if (dsList && currentMappings.length === 0) {
+        const ds = dsList.items.find(conn => 'data_source-' + config.dataSource === conn.id);
+        const dsMappings = (ds.endpoints && ds.endpoints[endpoint]) ? ds.endpoints[endpoint].dataMapping : [] || [];
+        config.dataMapping = [];
+        dsMappings.forEach(mapping => {
+          config.dataMapping.push({key: mapping.key, value: mapping.value});
+        });
+        this.scriptConfig = JSON.stringify(config);
+      }
     },
     config: {
       deep: true,
@@ -343,6 +399,30 @@ export default {
     },
   },
   computed: {
+    dataSourceLink() {
+      const dataSourceId = this.selectedDataSourceId();
+      const endPointId = this.endpoint;
+      if (dataSourceId && endPointId) {
+        return `/designer/data-sources/${dataSourceId}/resources/${endPointId}`;
+      }
+      return '';
+    },
+    dataSourceConfigWarning() {
+      const dataSourceId = this.selectedDataSourceId();
+      const connectors = this.scripts.find(connGroup => connGroup.type === 'Data Connectors');
+      if (typeof connectors === 'undefined' || connectors === null) {
+        return '';
+      }
+      const selectedDataSource = connectors.items.find(connector => connector.id === 'data_source-' + dataSourceId);
+      if (typeof selectedDataSource === 'undefined' || connectors === null) {
+        return '';
+      }
+
+      if (selectedDataSource.validationStatus.length > 0) {
+        return selectedDataSource.validationStatus;
+      }
+      return '';
+    },
     isDatasource() {
       return this.config.script && this.config.script.id.substr(0, 11) === 'data_source';
     },
@@ -359,6 +439,15 @@ export default {
     },
   },
   methods: {
+    selectedDataSourceId() {
+      let dataSourceId = null;
+      try {
+        dataSourceId = JSON.parse(this.scriptConfig).dataSource;
+      } catch (e) {
+        dataSourceId = null;
+      }
+      return dataSourceId;
+    },
     setValidations() {
       this.ruleWatcherName = 'required';
       this.ruleWatcherVariable = 'required';

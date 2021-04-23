@@ -214,6 +214,14 @@ const exampleScriptsForWatchers = [
       items: [{
         id: 'data_source-1',
         title: 'Test Data Source',
+        endpoints: {
+          list: {
+            dataMapping: [
+              {key:'requestVar1', type: 'BODY', value: 'responseProp1'},
+              {key:'requestVar2', type: 'BODY', value: 'responseProp2'},
+            ],
+          },
+        },
       }],
     });
     items.push({
