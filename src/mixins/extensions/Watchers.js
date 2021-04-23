@@ -20,6 +20,12 @@ export default {
               }
             });
           `);
+
+          if (watcher.run_onload) {
+            this.addMounted(screen, `
+                this.queueWatcher(${JSON.stringify(watcher)});
+          `);
+          }
         });
       }
     },
