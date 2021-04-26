@@ -35,7 +35,8 @@ export default {
     },
     click() {
       if (this.event === 'script') {
-        const value = (this.value === this.fieldValue) ? null : this.fieldValue;
+        const trueValue = this.fieldValue || '1';
+        const value = (this.value == trueValue) ? null : trueValue;
         this.$emit('input', value);
       }
       if (this.event !== 'pageNavigate' && this.name) {
