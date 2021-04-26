@@ -73,7 +73,6 @@
               :name="$t('Run Watcher on Screen Load')"
               :label="$t('Run watcher on Screen Load')"
               v-model="config.run_onload"
-              @change="config.watching = ''"
               :toggle="true"
               data-cy="watchers-watcher-run-onload"
             />
@@ -346,7 +345,7 @@ export default {
 
       if (dsList && currentMappings.length === 0) {
         const ds = dsList.items.find(conn => 'data_source-' + config.dataSource === conn.id);
-        const dsMappings = (ds.endpoints && ds.endpoints[endpoint]) ? ds.endpoints[endpoint].dataMapping : [] || [];
+        const dsMappings = (ds.endpoints && ds.endpoints[endpoint] ? ds.endpoints[endpoint].dataMapping : []) || [];
         config.dataMapping = [];
         dsMappings.forEach(mapping => {
           config.dataMapping.push({key: mapping.key, value: mapping.value});
