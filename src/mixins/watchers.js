@@ -44,13 +44,15 @@ export default {
             config,
             sync: true,
           }, { timeout: 0 }).then(response => {
+            this.$emit('asyncWatcherCompleted');
             complete(response.data.output);
           }).catch(err => {
             exception(err);
           });
         }
       }).then((response) => {
-        if (watcher.output_variable) {
+        // If watcher has an output variable and is a script
+        if (watcher.output_variable && (watcher.script_key || '').length === 0) {
           this.setValue(watcher.output_variable, response);
         }
 
