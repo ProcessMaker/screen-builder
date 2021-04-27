@@ -439,7 +439,10 @@ export default {
         .then(response => {
           let jsonData = response.data.data;
           // Map the data sources response to value/text items list
-          this.dataSourcesList = jsonData.map(this.convertToSelectOptions);
+          this.dataSourcesList = [{
+            value: null,
+            text: this.$t('Select...'),
+          }].concat(jsonData.map(this.convertToSelectOptions));
           this.setEndpointList(jsonData);
         });
     },
@@ -447,9 +450,12 @@ export default {
       const endpoints = {};
       dataSources.forEach(ds => {
         const dsEndpoints = ds.endpoints ? ds.endpoints : [];
-        endpoints[ds.id] = Object.keys(dsEndpoints).map(name => {
+        endpoints[ds.id] = [{
+          value: null,
+          text: this.$t('Select...'),
+        }].concat(Object.keys(dsEndpoints).map(name => {
           return { text: name, value: name };
-        });
+        }));
       });
       this.endpoints = endpoints;
     },
