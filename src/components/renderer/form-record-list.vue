@@ -57,6 +57,7 @@
         :total-rows="tableData.total"
         :per-page="perPage"
         aria-controls="vuetable"
+        @change="onChangePage"
       />
     </template>
 
@@ -331,7 +332,6 @@ export default {
       if (this.paginatorPage > this.lastPage) {
         this.paginatorPage = this.lastPage;
       }
-      this.$refs.vuetable.changePage(page);
     },
     showEditForm(index) {
       let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
