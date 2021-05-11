@@ -12,8 +12,8 @@
     <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('Source') }}</th>
-          <th scope="col">{{ $t('Form Variable') }}</th>
+          <th scope="col">{{ $t('Source') }} <span class="badge badge-info" v-pre>{{ M }}</span> </th>
+          <th scope="col">{{ $t('Form Variable') }} <span class="badge badge-info" v-pre>{{ M }}</span> </th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -51,6 +51,8 @@
       {{ $t('Properties to map from the Data Connector into the output variable') }}
       <br>
       {{ $t('(If empty, all data returned will be mapped to the output variable)') }}
+      <br>
+      {{ $t('The value or source can be a string or a mustache expression.') }}
     </small>
   </div>
 </template>

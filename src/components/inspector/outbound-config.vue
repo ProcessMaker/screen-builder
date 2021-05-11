@@ -14,7 +14,7 @@
         <tr>
           <th scope="col">{{ $t('Type') }}</th>
           <th scope="col">{{ $t('Key') }}</th>
-          <th scope="col">{{ $t('Value') }}</th>
+          <th scope="col">{{ $t('Value') }} <span class="badge badge-info" v-pre>{{ M }}</span> </th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -70,6 +70,8 @@
     </table>
     <small class="form-text text-muted mb-3">
       {{ $t('Properties to map from a request variable to a Data Connector property') }}
+      <br>
+      {{ $t('The value can be a string or a mustache expression.') }} {{ $t('For example') }} <span v-pre> {{ var1 }} </span> {{ $t('will use the value stored in variable var1') }}
     </small>
   </div>
 </template>
