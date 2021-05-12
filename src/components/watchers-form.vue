@@ -22,29 +22,21 @@
               data-cy="watchers-watcher-name"
             />
 
-            <form-input
-              v-show="config.run_onload"
-              v-model="config.watching"
-              :label="$t('Variable to Watch')"
-              :name="$t('Variable to Watch') + ' *'"
-              :validation="ruleWatcherVariable"
-              :helper="$t('The variable to watch on this screen')"
-              data-cy="watchers-watcher-variable-input"
-            />
-
             <form-multi-select
-              v-show="!config.run_onload"
               :name="$t('Variable to Watch') + ' *'"
               :label="$t('Variable to Watch')"
               :options="variables"
+              :taggable="true"
               v-model="config.watching"
               :placeholder="$t('None')"
               :multiple="false"
               :show-labels="false"
               :internal-search="true"
               :validation="ruleWatcherVariable"
-              :helper="$t('The variable to watch on this screen')"
+              :helper="$t('Select the variable to watch on this screen or type any request variable name')"
               @open="loadVariables"
+              @tag="addTag"
+              :tag-placeholder="$t('Press enter to use this variable')"
               data-cy="watchers-watcher-variable"
             />
             <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
@@ -316,6 +308,7 @@ export default {
       inputDataInvalid: false,
       scriptConfigurationInvalid: false,
       variables:[],
+      newTags:[],
       scripts:[],
       script: null,
       monacoOptions: {
@@ -482,10 +475,19 @@ export default {
         });
       }
     },
+    addTag(tag) {
+      this.newTags.push(tag);
+      this.config.watching = tag;
+      this.variables = this.newTags.concat(this.variables);
+    },
     loadVariables() {
       this.variables = [];
       //Search in all config screen
       this.findElements(this.$root.$children[0].config);
+      this.variables = this.newTags.concat(this.variables);
+      if (this.config.watching && !this.variables.includes(this.config.watching)) {
+        this.variables.unshift(this.config.watching);
+      }
     },
     findElements(items, screens=[]) {
       items.forEach(item => {
