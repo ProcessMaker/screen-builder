@@ -10,3 +10,4 @@ export { default as ScreenSelector } from './screen-selector';
 export { default as LoopInspector } from './loop';
 export { default as ImageVariable } from './image-variable.vue';
 export { default as InputVariable } from './input-variable.vue';
+export { default as Tooltip } from './tooltip';
