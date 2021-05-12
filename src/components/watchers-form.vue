@@ -36,6 +36,7 @@
               :helper="$t('Select the variable to watch on this screen or type any request variable name')"
               @open="loadVariables"
               @tag="addTag"
+              :tag-placeholder="$t('Press enter to use this variable')"
               data-cy="watchers-watcher-variable"
             />
             <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
