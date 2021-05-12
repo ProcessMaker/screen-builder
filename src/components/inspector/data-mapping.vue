@@ -12,8 +12,8 @@
     <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('Source') }}</th>
-          <th scope="col">{{ $t('Form Variable') }}</th>
+          <th scope="col"><div class="float-left">{{ $t('Source') }}</div> <mustache-helper class="float-left ml-2"/>  </th>
+          <th scope="col"><div class="float-left">{{ $t('Form Variable') }}</div> <mustache-helper class="float-left ml-2"/>  </th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -59,8 +59,10 @@
 <script>
 
 import Multiselect from 'vue-multiselect';
+import MustacheHelper from './mustache-helper';
+
 export default {
-  components: { Multiselect },
+  components: { Multiselect, MustacheHelper },
   mixins: [],
   props: {
     value: String,
