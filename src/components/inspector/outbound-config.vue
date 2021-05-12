@@ -14,7 +14,7 @@
         <tr>
           <th scope="col">{{ $t('Type') }}</th>
           <th scope="col">{{ $t('Key') }}</th>
-          <th scope="col">{{ $t('Value') }} <span class="badge badge-info" v-pre>{{ M }}</span> </th>
+          <th scope="col"><div class="float-left">{{ $t('Value') }}</div> <mustache-helper class="float-left ml-2"/>  </th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -80,8 +80,9 @@
 <script>
 
 import Multiselect from 'vue-multiselect';
+import MustacheHelper from './mustache-helper';
 export default {
-  components: { Multiselect },
+  components: { Multiselect, MustacheHelper },
   mixins: [],
   props: {
     value: String,

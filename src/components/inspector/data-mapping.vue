@@ -12,8 +12,8 @@
     <table class="table table-striped table-sm border mb-1">
       <thead>
         <tr>
-          <th scope="col">{{ $t('Source') }} <span class="badge badge-info" v-pre>{{ M }}</span> </th>
-          <th scope="col">{{ $t('Form Variable') }} <span class="badge badge-info" v-pre>{{ M }}</span> </th>
+          <th scope="col"><div class="float-left">{{ $t('Source') }}</div> <mustache-helper class="float-left ml-2"/>  </th>
+          <th scope="col"><div class="float-left">{{ $t('Form Variable') }}</div> <mustache-helper class="float-left ml-2"/>  </th>
           <th scope="col">&nbsp;</th>
         </tr>
       </thead>
@@ -51,8 +51,6 @@
       {{ $t('Properties to map from the Data Connector into the output variable') }}
       <br>
       {{ $t('(If empty, all data returned will be mapped to the output variable)') }}
-      <br>
-      {{ $t('The value or source can be a string or a mustache expression.') }}
     </small>
   </div>
 </template>
@@ -61,8 +59,10 @@
 <script>
 
 import Multiselect from 'vue-multiselect';
+import MustacheHelper from './mustache-helper';
+
 export default {
-  components: { Multiselect },
+  components: { Multiselect, MustacheHelper },
   mixins: [],
   props: {
     value: String,
