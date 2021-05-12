@@ -1,4 +1,5 @@
 import defaultValueEditor from './components/inspector/default-value-editor';
+import Tooltip from './components/inspector/tooltip';
 
 export const bgcolorProperty = {
   type: 'ColorSelect',
@@ -243,5 +244,13 @@ export const buttonTypeEvent = {
         content: 'Regular Button',
       },
     ],
+  },
+};
+
+export const tooltipProperty = {
+  type: Tooltip,
+  field: 'tooltip',
+  config: {
+    label: 'Tooltip ',
   },
 };

@@ -4,16 +4,19 @@
       <i class="fas fa-exclamation-circle"/>
       {{ message }}
     </div>
-    <button @click="click" :class="classList" :name="name">{{ label }}</button>
+    <button v-b-tooltip="options" @click="click" :class="classList" :name="name">
+      {{ label }}
+    </button>
   </div>
 </template>
 
 <script>
+import Mustache from 'mustache';
 import { getValidPath } from '@/mixins';
 
 export default {
   mixins: [getValidPath],
-  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value'],
+  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
   computed: {
     classList() {
       let variant = this.variant || 'primary';
@@ -21,6 +24,24 @@ export default {
         btn: true,
         ['btn-' + variant]: true,
         disabled: !this.valid,
+      };
+    },
+    options() {
+      if (!this.tooltip || this.event === 'submit') {
+        return {};
+      }
+
+      let content = '';
+      try {
+        content = Mustache.render(this.tooltip.content || '', this.transientData);
+      } catch (error) { error; }
+
+      return {
+        title: content,
+        html: true,
+        placement: this.tooltip.position || '',
+        trigger: 'hover',
+        variant: '',
       };
     },
     valid() {
