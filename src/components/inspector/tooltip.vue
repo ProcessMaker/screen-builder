@@ -18,9 +18,19 @@
       class="mb-3"
       data-cy="content-tooltip"
     />
-    <small class="form-text text-muted">{{
-      $t("HTML, Mustache support")
-    }}</small>
+    <small class="form-text text-muted">
+      {{ $t("HTML, Mustache support") }}
+    </small>
+
+    <label class="typo__label">{{ $t("Variant") }}</label>
+    <multiselect
+      v-model="variant"
+      :placeholder="$t('Select...')"
+      :show-labels="false"
+      class="mb-3"
+      :options="optionsVariant.map((option) => option.value)"
+      :custom-label="getLabelFromValueVariant"
+    />
   </div>
 </template>
 
@@ -85,8 +95,43 @@ export default {
           content: this.$t('Left Bottom'),
         },
       ],
+      optionsVariant: [
+        {
+          value: 'primary',
+          content: this.$t('Primary'),
+        },
+        {
+          value: 'secondary',
+          content: this.$t('Secondary'),
+        },
+        {
+          value: 'success',
+          content: this.$t('Success'),
+        },
+        {
+          value: 'danger',
+          content: this.$t('Danger'),
+        },
+        {
+          value: 'warning',
+          content: this.$t('Warning'),
+        },
+        {
+          value: 'info',
+          content: this.$t('Info'),
+        },
+        {
+          value: 'light',
+          content: this.$t('Light'),
+        },
+        {
+          value: 'dark',
+          content: this.$t('Dark'),
+        },
+      ],
       position: 'top',
       content: '',
+      variant: '',
     };
   },
   watch: {
@@ -95,10 +140,12 @@ export default {
         if (this.value) {
           this.position = this.value.position || '';
           this.content = this.value.content || '';
+          this.variant = this.value.variant || '';
         } else {
           this.value = {
             position: '',
             content: '',
+            variant: '',
           };
         }
       },
@@ -110,10 +157,19 @@ export default {
     content() {
       this.value.content = this.content;
     },
+    variant() {
+      this.value.variant = this.variant;
+    },
   },
   methods: {
     getLabelFromValuePosition(value) {
       const selectedOption = this.options.find(
+        (option) => option.value == value
+      );
+      return selectedOption ? selectedOption.content : null;
+    },
+    getLabelFromValueVariant(value) {
+      const selectedOption = this.optionsVariant.find(
         (option) => option.value == value
       );
       return selectedOption ? selectedOption.content : null;

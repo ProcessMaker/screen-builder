@@ -41,7 +41,8 @@ export default {
         html: true,
         placement: this.tooltip.position || '',
         trigger: 'hover',
-        variant: '',
+        variant: this.tooltip.variant || '',
+        boundary: 'window',
       };
     },
     valid() {
@@ -123,5 +124,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.tooltip {
+    z-index: 1000; 
+    //position:relative !important;
+}
 </style>
