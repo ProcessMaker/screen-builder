@@ -125,8 +125,4 @@ export default {
 </script>
 
 <style lang="scss">
-.tooltip {
-    z-index: 1000; 
-    //position:relative !important;
-}
 </style>

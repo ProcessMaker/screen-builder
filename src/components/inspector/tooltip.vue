@@ -11,6 +11,15 @@
       :options="options.map((option) => option.value)"
       :custom-label="getLabelFromValuePosition"
     />
+    <label class="typo__label">{{ $t("Variant") }}</label>
+    <multiselect
+      v-model="variant"
+      :placeholder="$t('Select...')"
+      :show-labels="false"
+      class="mb-3"
+      :options="optionsVariant.map((option) => option.value)"
+      :custom-label="getLabelFromValueVariant"
+    />
 
     <form-text-area
       v-model="content"
@@ -21,16 +30,6 @@
     <small class="form-text text-muted">
       {{ $t("HTML, Mustache support") }}
     </small>
-
-    <label class="typo__label">{{ $t("Variant") }}</label>
-    <multiselect
-      v-model="variant"
-      :placeholder="$t('Select...')"
-      :show-labels="false"
-      class="mb-3"
-      :options="optionsVariant.map((option) => option.value)"
-      :custom-label="getLabelFromValueVariant"
-    />
   </div>
 </template>
 
