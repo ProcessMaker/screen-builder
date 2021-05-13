@@ -21,6 +21,7 @@ export default [
       { name: 'name', showFor: 'FormImage' },
       'image',
       'eventData',
+      'tooltip',
       'type',
       'placeholder',
       'content',

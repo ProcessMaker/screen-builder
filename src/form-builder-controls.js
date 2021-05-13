@@ -35,6 +35,7 @@ import {
   disabledProperty,
   defaultValueProperty,
   buttonTypeEvent,
+  tooltipProperty,
 } from './form-control-common-properties';
 
 export default [
@@ -557,6 +558,7 @@ export default [
         defaultSubmit: true,
         name: null,
         fieldValue: null,
+        tooltip: {},
       },
       inspector: [
         {
@@ -579,6 +581,7 @@ export default [
           },
         },
         buttonTypeEvent,
+        tooltipProperty,
         {
           type: 'FormInput',
           field: 'fieldValue',
