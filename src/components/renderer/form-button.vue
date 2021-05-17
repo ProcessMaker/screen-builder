@@ -9,7 +9,7 @@ import { getValidPath } from '@/mixins';
 
 export default {
   mixins: [getValidPath],
-  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue'],
+  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value'],
   computed: {
     classList() {
       let variant = this.variant || 'primary';
@@ -35,8 +35,9 @@ export default {
     },
     click() {
       if (this.event === 'script') {
-        this.$emit('input', this.fieldValue);
-        this.setValue(this.$parent, this.name, this.fieldValue);
+        const trueValue = this.fieldValue || '1';
+        const value = (this.value == trueValue) ? null : trueValue;
+        this.$emit('input', value);
       }
       if (this.event !== 'pageNavigate' && this.name) {
         this.setValue(this.$parent, this.name, this.fieldValue);
