@@ -1,71 +1,32 @@
-import { set, get } from 'lodash';
 import { validationMixin } from 'vuelidate';
-import { validators } from '../ValidationRules';
 
 export default {
-  methods: {
-    addRules(config, validationRule) {
-      if (config instanceof Array) {
-        config.forEach((validation) => {
-          const rule = this.camelCase(validation.value.split(':')[0]);
-          if (!rule) {
-            return;
-          }
-          let validationFn = validators[rule];
-          if (!validationFn) {
-            // eslint-disable-next-line no-console
-            console.error(`Undefined validation rule "${rule}"`);
-            return;
-          }
-          if (validation.configs instanceof Array) {
-            const params = [];
-            validation.configs.forEach((cnf) => {
-              params.push(cnf.value);
-            });
-            validationFn = validationFn(...params);
-          }
-          validationRule[rule] = validationFn;
-        });
-      } else if (typeof config === 'string') {
-        let validationFn = validators[config];
-        if (!validationFn) {
-          // eslint-disable-next-line no-console
-          console.error(`Undefined validation rule "${config}"`);
-          return;
-        }
-        validationRule[config] = validationFn;
-      }
-    },
-  },
   mounted() {
     this.extensions.push({
-      onloadproperties({ element, screen, properties }) {
+      onloadproperties({ element, properties }) {
         if (this.validVariableName(element.config.name)) {
-          set(screen.validations, element.config.name, {});
-          const validationRule = get(screen.validations, element.config.name);
-          this.addRules(element.config.validation, validationRule);
-
-          if (element.component === 'FormLoop') {
-            //Collections validation
-            validationRule['$each'] = [];
-
-            element.items.forEach((item) => {
-              set(validationRule['$each'], item.config.name, {});
-              const validationLoopRule = get(validationRule['$each'], item.config.name);
-              this.addRules(item.config.validation, validationLoopRule);
-            });
-          }
-
           // Remove the validation from inside the control
           delete properties[':validation'];
           delete properties['validation'];
-          properties[':class'] = `{ 'form-group--error': $v.${element.config.name}.$invalid }`;
-          properties[':error'] = `validationMessage($v.${element.config.name})`;
+          // Add validation class and error message
+          console.log(element.config.name);
+          properties[':class'] = `{ 'form-group--error': ${this.checkVariableExists('$v.vdata.' + element.config.name)} && $v.vdata.${element.config.name}.$invalid }`;
+          properties[':error'] = `${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name})`;
         }
       },
       onbuild({ screen }) {
         screen.mixins.push(validationMixin);
       },
     });
+  },
+  methods: {
+    checkVariableExists(name) {
+      const check =name.split('.').reduce((check, el) => {
+        check.variable = check.variable ? `${check.variable}.${el}` : el;
+        check.str = check.str ? `${check.str} && ${check.variable}`: el;
+        return check;
+      }, {str: '', variable: ''});
+      return check.str;
+    },
   },
 };
