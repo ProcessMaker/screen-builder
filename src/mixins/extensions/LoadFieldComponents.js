@@ -55,6 +55,7 @@ export default {
       properties.disabled = element.config.interactive || element.config.disabled;
       properties[':form-config'] = this.byRef(this.configRef || definition.config);
       properties[':form-computed'] = JSON.stringify(definition.computed);
+      properties[':form-watchers'] = JSON.stringify(definition.watchers);
       // Events
       properties['@submit'] = 'submitForm';
     },
