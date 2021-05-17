@@ -9,7 +9,6 @@ export default {
           delete properties[':validation'];
           delete properties['validation'];
           // Add validation class and error message
-          console.log(element.config.name);
           properties[':class'] = `{ 'form-group--error': ${this.checkVariableExists('$v.vdata.' + element.config.name)} && $v.vdata.${element.config.name}.$invalid }`;
           properties[':error'] = `${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name})`;
         }
