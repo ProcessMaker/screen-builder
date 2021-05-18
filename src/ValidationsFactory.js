@@ -182,10 +182,6 @@ function ValidationsFactory(element, options) {
   if (element.component === 'FormLoop') {
     return new FormLoopValidations(element, options);
   }
-  if (element.component === 'FormRecordList') {
-    //not required
-    //return new FormRecordListValidations(element, screen);
-  }
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
     return new PageNavigateValidations(element, options);
   }
