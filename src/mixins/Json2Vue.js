@@ -1,5 +1,6 @@
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
+import ValidationsFactory from '../ValidationsFactory';
 
 let screenRenderer;
 
@@ -222,7 +223,6 @@ export default {
           data: {},
           watch: {},
           mounted: [],
-          validations: {},
         };
         this.variablesTree = [];
         const template = this.parse(component, definition);
@@ -260,7 +260,6 @@ export default {
           data: {},
           watch: {},
           mounted: [],
-          validations: {},
         };
         const template = this.parse(component, definition);
         // Extensions.onparse
@@ -281,6 +280,8 @@ export default {
           watch.handler = new Function('value', component.watch[key].map(w => w.code).join('\n'));
           component.watch[key] = watch;
         });
+        // Add validation rules
+        this.addValidationRulesLoader(component, definition);
         // Build mounted
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
@@ -311,6 +312,17 @@ export default {
     },
     addEvent(properties, event, code) {
       properties[`@${event}`] = code;
+    },
+    addValidationRulesLoader(component, definition) {
+      const firstPage = parseInt(this.currentPage) || 0;
+      component.methods.loadValidationRules = function() {
+        // Asynchronous loading of validations
+        const validations = {};
+        ValidationsFactory(definition, { screen: definition, firstPage }).addValidations(validations).then(() => {
+          this.ValidationRules__ = validations;
+        });
+      };
+      component.mounted.push('this.loadValidationRules()');
     },
   },
   mounted() {
