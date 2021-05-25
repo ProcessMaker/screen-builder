@@ -109,6 +109,7 @@
         :watchers="formWatchers"
         debug-context="Record List Edit"
         :_parent="validationData"
+        :key="editFormVersion"
       />
     </b-modal>
     <b-modal
@@ -162,6 +163,7 @@ export default {
   props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers'],
   data() {
     return {
+      editFormVersion: 0,
       single: '',
       plural: '',
       addItem: {},
@@ -338,8 +340,12 @@ export default {
       // Reset edit to be a copy of our data model item
       this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
       this.editIndex = pageIndex;
-      this.setUploadDataNamePrefix(pageIndex);
-      this.$refs.editModal.show();
+      // rebuild the edit screen to avoid 
+      this.editFormVersion++;
+      this.$nextTick(() => {
+        this.setUploadDataNamePrefix(pageIndex);
+        this.$refs.editModal.show();
+      });
     },
     edit(event) {
       if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.$invalid) {
