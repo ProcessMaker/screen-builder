@@ -14,6 +14,9 @@ export default {
       required: true,
     },
     _parent: null,
+    _initialPage: {
+      default: 0,
+    },
   },
   computed: {
     references__() {

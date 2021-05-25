@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <component ref="component" :is="component" :vdata="value" :_parent="_parent" @submit="submit" />
+    <component ref="component" :is="component" :vdata="value" :_parent="_parent" @submit="submit" :_initial-page="currentPage" />
     <screen-renderer-error v-if="showErrors && building.error" v-model="building" />
     <watchers-synchronous ref="watchersSynchronous"/>
   </b-container>
