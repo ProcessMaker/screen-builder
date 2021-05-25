@@ -336,9 +336,12 @@ export default {
       // Reset edit to be a copy of our data model item
       this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
       this.editIndex = pageIndex;
-      this.setUploadDataNamePrefix(pageIndex);
+      // rebuild the edit screen to avoid 
       this.editFormVersion++;
-      this.$refs.editModal.show();
+      this.$nextTick(() => {
+        this.setUploadDataNamePrefix(pageIndex);
+        this.$refs.editModal.show();
+      });
     },
     edit(event) {
       if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.$invalid) {
