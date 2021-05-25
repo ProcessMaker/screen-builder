@@ -116,7 +116,7 @@
       size="lg"
       v-if="editable && !selfReferenced"
       ref="deleteModal"
-      :ok-title="$t('Save')"
+      :ok-title="$t('Delete')"
       :cancel-title="$t('Cancel')"
       :title="$t('Delete Record')"
       header-close-content="&times;"
