@@ -73,8 +73,5 @@ describe('Watcher on Loops', () => {
     // Watcher should be displayed and executed
     cy.get('#watchers-synchronous').should('exist');
     cy.wait('@executeScript');
-
-    //Close edit popup
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
   });
 });
