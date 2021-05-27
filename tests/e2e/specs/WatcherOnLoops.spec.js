@@ -74,4 +74,47 @@ describe('Watcher on Loops', () => {
     cy.get('#watchers-synchronous').should('exist');
     cy.wait('@executeScript');
   });
+
+  it('Watcher on a Loop of New Array of Objects inside Recordlist should not be triggered when popup is opened several times', () => {
+    // Load screen
+    cy.loadFromJson('watcher_on_loop_inside_recordlist.json', 0);
+    // Mock script call
+    cy.route(
+      'POST',
+      '/api/1.0/scripts/execute/4',
+      JSON.stringify({
+        output: [],
+      })
+    ).as('executeScript');
+
+    cy.get('[data-cy=mode-preview]').click();
+
+    // Add a recordlist row
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+    // Watcher should not be triggered on open popup AddItem
+    cy.wait(2000);
+    cy.get('#watchers-synchronous').should('not.exist');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+
+    // Add a recordlist row
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+    // Watcher should not be triggered on open popup AddItem
+    cy.wait(2000);
+    cy.get('#watchers-synchronous').should('not.exist');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+
+    // Add a recordlist row
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+    // Watcher should not be triggered on open popup AddItem
+    cy.wait(2000);
+    cy.get('#watchers-synchronous').should('not.exist');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+
+    // Add a recordlist row
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+    // Watcher should not be triggered on open popup AddItem
+    cy.wait(2000);
+    cy.get('#watchers-synchronous').should('not.exist');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+  });
 });
