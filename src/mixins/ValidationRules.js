@@ -157,8 +157,8 @@ export const requiredUnless = (variable, expected) => (value, data) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
   
-export const sameAs = (field) => helpers.withParams({field}, (value, data) => {
-  const valueSameAs = get(data, field);
+export const sameAs = (field) => helpers.withParams({field}, function(value) {
+  const valueSameAs = get(this.vdata, field);
   return value == valueSameAs;
 });
 
