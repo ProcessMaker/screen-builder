@@ -202,13 +202,15 @@
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="data-sources-list">{{ $t('Data Connector') }}</label>
-      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" data-cy="inspector-data-connector" />
+      <b-form-select id="data-sources-list" v-model="selectedDataSource" :options="dataSourcesList" data-cy="inspector-data-connector" :class="!selectedDataSource ? 'is-invalid' : ''"/>
+      <div v-if="!selectedDataSource" class="invalid-feedback">{{ $t('An Data Connector must be selected') }}</div>
       <small class="form-text text-muted mb-3">{{ $t('Data Connector to use') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <label for="endpoint-list">{{ $t('End Point') }}</label>
-      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" data-cy="inspector-endpoint" />
+      <b-form-select id="endpoint-list" v-model="selectedEndPoint" :options="endPointList" data-cy="inspector-endpoint" :class="selectedDataSource && !selectedEndPoint ? 'is-invalid' : ''"/>
+      <div v-if="selectedDataSource && !selectedEndPoint" class="invalid-feedback">{{ $t('An Endpoint must be selected') }}</div>
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
