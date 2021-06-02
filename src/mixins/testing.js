@@ -43,6 +43,7 @@ export default {
         items.push(clone);
       }
       this.updateState();
+      this.inspect(clone);
     },
     testingDeleteItem(index) {
       this.config[this.currentPage].items.splice(index, 1);
