@@ -93,9 +93,15 @@ export default {
           case 'percentage':
           case 'float':
             newValue = parseFloat(newValue);
+            if (isNaN(newValue)) {
+              newValue = null;
+            }
             break;
           case 'int':
             newValue = parseInt(newValue);
+            if (isNaN(newValue)) {
+              newValue = null;
+            }
             break;
           case 'date':
             if (this.componentName === 'FormDatePicker') {
