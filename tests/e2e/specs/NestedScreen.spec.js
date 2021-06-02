@@ -82,6 +82,9 @@ describe('Nested screen', () => {
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-screen] div.multiselect').click();
     cy.get('[data-cy=inspector-screen] span:contains("Sub screen example"):first').click();
+    cy.get('[data-cy=inspector-screen] .screen-link a')
+      .should('have.attr', 'href')
+      .and('include', '/designer/screen-builder/1/edit');
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview] input[name="firstname"]').type('Alan');
     cy.get('[data-cy=preview] input[name="lastname"]').type('Turing');
