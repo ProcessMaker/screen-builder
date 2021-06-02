@@ -306,6 +306,7 @@ import undoRedoModule from '../undoRedoModule';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
+import testing from '@/mixins/testing';
 
 let Validator = require('validatorjs');
 // To include another language in the Validator with variable processmaker
@@ -376,7 +377,7 @@ export default {
       type: Object,
     },
   },
-  mixins: [HasColorProperty],
+  mixins: [HasColorProperty, testing],
   components: {
     draggable,
     FormInput,
