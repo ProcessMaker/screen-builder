@@ -4,7 +4,7 @@ import { get } from 'lodash';
 let mounted;
 window.testing = {
   builder: null,
-  ready: new Promise(resolve => mounted = resolve),
+  onready: new Promise(resolve => mounted = resolve),
   addControlByType(type, target = null) {
     const control = this.builder.controls.find(control => control.component === type);
     this.builder.testingAddControl(control, target);
