@@ -147,8 +147,8 @@ export const required = (value) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
 
-export const requiredIf = (variable, expected) => (value, data) => {
-  if (get(data, variable) != expected) return true;
+export const requiredIf = (variable, expected) => function(value) {
+  if (get(this.vdata, variable) != expected) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 };
 
