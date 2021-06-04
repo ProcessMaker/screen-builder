@@ -22,6 +22,12 @@
         <slot name="noOptions">{{ $t('No Data Available') }}</slot>
       </template>
     </multiselect>
+    <div class="screen-link mt-2" v-if="value">
+      <a :href="`/designer/screen-builder/${value}/edit`" target="_blank">
+        {{ $t('Open Screen') }}
+        <i class="ml-1 fas fa-external-link-alt"/>
+      </a>
+    </div>
   </div>
 </template>
 
