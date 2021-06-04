@@ -152,8 +152,8 @@ export const requiredIf = (variable, expected) => (value, data) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
 
-export const requiredUnless = (variable, expected) => (value, data) => {
-  if (get(data, variable) == expected) return true;
+export const requiredUnless = (variable, expected) => function(value) {
+  if (get(this.vdata, variable) == expected) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 };
   
