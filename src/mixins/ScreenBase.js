@@ -50,7 +50,8 @@ export default {
     },
     getValidationData() {
       const screen = this;
-      return new Proxy(this.vdata || {}, {
+      const data = Object.assign({_parent: this._parent}, this.vdata);
+      return new Proxy(data || {}, {
         get(target, name) {
           if (name in target) return target[name];
           if (name === '_parent') return screen._parent;
