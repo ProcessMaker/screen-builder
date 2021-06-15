@@ -30,12 +30,14 @@
                       <button
                         class="btn btn-sm btn-secondary mr-2"
                         @click="duplicateItem(index, row)"
+                        :aria-label="$t('Duplicate')"
                       >
                         <i class="fas fa-copy text-light"/>
                       </button>
                       <button
                         class="btn btn-sm btn-danger"
                         @click="deleteItem(index, row)"
+                        :aria-label="$t('Delete')"
                       >
                         <i class="far fa-trash-alt text-light"/>
                       </button>
@@ -74,6 +76,7 @@
                       <button
                         class="btn btn-sm btn-danger"
                         @click="deleteItem(index, row)"
+                        :aria-label="$t('Delete')"
                       >
                         <i class="far fa-trash-alt text-light"/>
                       </button>

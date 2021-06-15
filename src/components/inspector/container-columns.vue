@@ -48,7 +48,7 @@
             <td>{{ option.value }}</td>
             <td>{{ option.content }}</td>
             <td>
-              <button @click="removeOption(index)" class="btn btn-danger btn-sm" v-if="deleteIf" data-cy="inspector-columns-remove">x
+              <button @click="removeOption(index)" class="btn btn-danger btn-sm" v-if="deleteIf" data-cy="inspector-columns-remove" :aria-label="$t('Delete')">x
               </button>
             </td>
           </tr>

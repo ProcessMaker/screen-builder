@@ -48,10 +48,10 @@
             <div class="p-1 d-flex justify-content-between align-items-center">
               {{ rule.content }}
               <div class="actions">
-                <b-button variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" v-b-toggle="formatRuleContentAsId(rule.content)">
+                <b-button :aria-label="$t('Toggle Configuration')" variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" v-b-toggle="formatRuleContentAsId(rule.content)">
                   <i class="fas fa-cog fa-fw text-secondary"/>
                 </b-button>
-                <b-button variant="link" class="p-0" @click="confirmDelete(index)"><i class="fas fa-trash-alt fa-fw text-secondary"/></b-button>
+                <b-button :aria-label="$t('Delete')" variant="link" class="p-0" @click="confirmDelete(index)"><i class="fas fa-trash-alt fa-fw text-secondary"/></b-button>
               </div>
             </div>
           </b-card-header>
