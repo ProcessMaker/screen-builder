@@ -31,6 +31,7 @@
                 <button
                   class="btn btn-sm btn-danger"
                   @click="deleteItem(index)"
+                  :aria-label="$t('Delete')"
                 >
                   <i class="far fa-trash-alt text-light"/>
                 </button>
@@ -70,6 +71,7 @@
                 <button
                   class="btn btn-sm btn-danger"
                   @click="deleteItem(index)"
+                  :aria-label="$t('Delete')"
                 >
                   <i class="far fa-trash-alt text-light"/>
                 </button>
