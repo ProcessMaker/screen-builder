@@ -131,7 +131,7 @@
       <div v-if="dataSource === dataSourceValues.provideData">
         <div class="mb-2">
           <label for="json-data">{{ $t('JSON Data') }}</label>
-          <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+          <button type="button" @click="expandEditor" class="btn-sm float-right" :aria-label="$t('Expand Editor')"><i class="fas fa-expand"/></button>
         </div>
         <div class="small-editor-container">
           <MonacoEditor :options="monacoOptions" class="editor" v-model="jsonData" language="json" @change="jsonDataChange"/>

@@ -10,6 +10,7 @@
             :key="option.value"
             class="btn btn-sm mr-1 pr-1 pl-1 pt-0 pb-0 btn-outline-none"
             :class="['bg-' + parsedColor(option.value)]"
+            :title="option.content"
           >
             <i class="fas fa-check"
               :class="[option.value === value ? 'text-light' : 'text-' + parsedColor(option.value)]"
