@@ -73,6 +73,7 @@
       :title="$t('Add')"
       header-close-content="&times;"
       data-cy="modal-add"
+      :key="addFormVersion"
     >
       <vue-form-renderer
         :page="0"
@@ -162,6 +163,7 @@ export default {
   props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers'],
   data() {
     return {
+      addFormVersion: 0,
       editFormVersion: 0,
       single: '',
       plural: '',
@@ -367,12 +369,15 @@ export default {
         this.$refs.infoModal.show();
         return;
       }
-      // Open form
-      this.$refs.addModal.show();
 
-      // eslint-disable-next-line no-unused-vars
-      let {_parent, ...result} = this.addItem;
-      this.initFormValues = _.cloneDeep(result);
+      this.addFormVersion++;
+      this.$nextTick(() => {
+        // eslint-disable-next-line no-unused-vars
+        let {_parent, ...result} = this.addItem;
+        this.initFormValues = _.cloneDeep(result);
+        // Open form
+        this.$refs.addModal.show();
+      });
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
