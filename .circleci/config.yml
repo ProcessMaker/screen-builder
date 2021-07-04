@@ -15,6 +15,8 @@ workflows:
           browser: chrome
           start: npm run serve
           command: 'npm run lint && npm run run-cypress'
+          parallel: true
+          parallelism: 2
           post-steps:
             - store_artifacts:
                 path: coverage
