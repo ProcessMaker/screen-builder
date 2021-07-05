@@ -55,9 +55,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      # - run:
-      #     name: tests unit
-      #     command: npm test
+      - run:
+          name: tests unit
+          command: npm test
       - run: mkdir coverage-test
       - restore_cache:
           keys:
