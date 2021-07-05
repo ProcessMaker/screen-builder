@@ -56,9 +56,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run:
-          name: tests unit
-          command: JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit
+      # - run:
+      #     name: tests unit
+      #     command: npm run test
       - run: mkdir coverage
       - restore_cache:
           keys:
@@ -76,14 +76,13 @@ jobs:
           keys:
             - pm-4-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
       
-      - run: ls -la coverage && cp jest-coverage/coverage-final.json coverage/from-jest.json
       - run: npx nyc merge coverage && mkdir .nyc_output
       - run: mv coverage.json .nyc_output/out.json
       - run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
       - store_artifacts:
           path: combined-coverage
-      - store_test_results:
-          path: test_summary_reports 
+      # - store_test_results:
+      #     path: test_summary_reports 
       
 workflows:
   build:
