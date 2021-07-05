@@ -19,7 +19,6 @@ workflows:
           start: npm run serve
           wait-on: 'http://localhost:8080'
           #command: 'npm run lint && npm run run-cypress'
-          command: npm run run-cypress
           parallel: true
           parallelism: 2
           post-steps:
