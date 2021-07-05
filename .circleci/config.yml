@@ -58,9 +58,10 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - run: ls -la coverage
       - run:
           name: tests unit
-          command: npm run test
+          command: JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit
       - run: mkdir coverage
       - restore_cache:
           keys:
