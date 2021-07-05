@@ -27,7 +27,6 @@ jobs:
         - project
         - .cache/Cypress
   cypress/e2e-tests:
-    resource_class: xlarge
     docker:
     - image: cypress/browsers:node14.16.0-chrome89-ff86
     parallelism: 5
@@ -83,7 +82,7 @@ jobs:
           path: combined-coverage
       # - store_test_results:
       #     path: test_summary_reports 
-      
+       
 workflows:
   build:
     jobs:
