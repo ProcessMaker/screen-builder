@@ -13,8 +13,9 @@ workflows:
       - cypress/run:
           executor: with-chrome
           browser: chrome
-          start: npm run serve
-          command: 'npm run lint && npm run run-cypress'
+          start: npm start
+          wait-on: 'http://localhost:8080'
+          #command: 'npm run lint && npm run run-cypress'
           parallel: true
           parallelism: 2
           post-steps:
