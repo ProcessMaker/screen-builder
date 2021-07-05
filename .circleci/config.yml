@@ -10,7 +10,10 @@ workflows:
   build:
     jobs:
       # runs tests using Chrome browser in custom executor (Cypress docker image)
+      - cypress/install
       - cypress/run:
+          requires:
+            - cypress/install
           executor: with-chrome
           browser: chrome
           start: npm start
