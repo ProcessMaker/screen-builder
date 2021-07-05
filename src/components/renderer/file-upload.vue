@@ -20,7 +20,7 @@
 
       <uploader-drop id="uploaderMain" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
-        <uploader-btn id="submitFile" class="btn btn-secondary text-white">{{ $t('select file') }}</uploader-btn>
+        <uploader-btn id="submitFile" :aria-label="$attrs['aria-label']" class="btn btn-secondary text-white">{{ $t('select file') }}</uploader-btn>
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
       <uploader-list>

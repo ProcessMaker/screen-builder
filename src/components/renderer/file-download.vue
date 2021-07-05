@@ -11,7 +11,7 @@
       </div>
       <div v-else>
         <template v-if="!loading && fileInfo">
-          <b-btn v-show="!isReadOnly" class="mb-2 d-print-none" variant="primary" @click="onClick(fileInfo)">
+          <b-btn v-show="!isReadOnly" class="mb-2 d-print-none" variant="primary" @click="onClick(fileInfo)" :aria-label="$attrs['aria-label']">
             <i class="fas fa-file-download"/> {{ $t('Download') }}
           </b-btn>
           {{ fileInfo.file_name }}
