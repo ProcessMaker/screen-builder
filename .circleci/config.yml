@@ -42,12 +42,12 @@ jobs:
         command:  TZ=UTC npx vue-cli-service test:e2e --mode test --headless --browser chrome --spec $(cat circleci.tests | tr "\n" ",")
     - run: 
         name: preparate coverage
-        command: mv .nyc_output/out.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
+        command: mkdir coverage-test && mv .nyc_output/out.json coverage-test/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
     - save_cache:
         paths:
-          - coverage/
+          - coverage-test/
         key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
-    - run: ls -la coverage
+    - run: ls -la coverage-test
     - store_artifacts:
         path: tests/e2e/screenshots
   cypress/report:
@@ -59,7 +59,7 @@ jobs:
       # - run:
       #     name: tests unit
       #     command: npm run test
-      - run: mkdir coverage
+      - run: mkdir coverage-test
       - restore_cache:
           keys:
             - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
@@ -76,7 +76,7 @@ jobs:
           keys:
             - pm-4-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
       
-      - run: npx nyc merge coverage && mkdir .nyc_output
+      - run: npx nyc merge coverage-test && mkdir .nyc_output
       - run: mv coverage.json .nyc_output/out.json
       - run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
       - store_artifacts:
