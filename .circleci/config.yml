@@ -60,7 +60,7 @@ jobs:
           at: ~/
       - run:
           name: tests unit
-          command: npm run test-unit
+          command: npm run test
       - run: mkdir coverage
       - restore_cache:
           keys:
