@@ -4,7 +4,7 @@
       <i class="fas fa-exclamation-circle"/>
       {{ message }}
     </div>
-    <button v-b-tooltip="options" @click="click" :class="classList" :name="name">
+    <button v-b-tooltip="options" @click="click" :class="classList" :name="name" :aria-label="$attrs['aria-label']" :tabindex="$attrs['tabindex']">
       {{ label }}
     </button>
   </div>

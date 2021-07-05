@@ -145,7 +145,7 @@ export default {
       return properties;
     },
     createComponent(nodeName, properties) {
-      properties = this.mergeUpdatedConfig(nodeName, properties);
+      properties = this.mergeUpdatedConfig(nodeName, this.setDefaultPropertyValues(properties));
       nodeName = this.snakeCase(nodeName);
       const node = this.ownerDocument.createElement(nodeName);
       for (let property in properties) {
@@ -189,6 +189,20 @@ export default {
         // Append node
         component.appendChild(wrapper);
       });
+    },
+    setDefaultPropertyValues(props) {
+      let result = {...props};
+      if (typeof result.ariaLabel === 'undefined' || result.ariaLabel === null || result.ariaLabel === '') {
+        if (result.label) {
+          result.ariaLabel = result.label;
+        }
+      }
+
+      if (result.tabindex) {
+        result.tabindex = parseInt(result.tabindex);
+      }
+
+      return result;
     },
     validVariableName(name) {
       return name && typeof name === 'string' && name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/);
