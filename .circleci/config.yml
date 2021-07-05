@@ -26,7 +26,6 @@ jobs:
         paths:
         - project
         - .cache/Cypress
-    - run: ls -la
   cypress/e2e-tests:
     resource_class: xlarge
     docker:
@@ -35,7 +34,6 @@ jobs:
     steps:
     - attach_workspace:
         at: ~/
-    - run: ls -la
     - run:
         name: before tests
         command: circleci tests glob "tests/e2e/*/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests && cat circleci.tests    
@@ -58,7 +56,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: ls -la coverage
       - run:
           name: tests unit
           command: JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit
@@ -100,31 +97,3 @@ workflows:
           - cypress/e2e-tests
 
   version: 2
-# version: 2.1
-# orbs:
-#   # use Cypress orb from CircleCI registry
-#   cypress: cypress-io/cypress@1.14.0
-# executors:
-#   with-chrome:
-#     docker:
-#       - image: 'cypress/browsers:node14.16.0-chrome89-ff86'
-# workflows:
-#   build:
-#     jobs:
-#       # runs tests using Chrome browser in custom executor (Cypress docker image)
-#       - cypress/install
-#       - cypress/run:
-#           requires:
-#             - cypress/install
-#           executor: with-chrome
-#           browser: chrome
-#           start: npm run serve
-#           wait-on: 'http://localhost:8080'
-#           #command: 'npm run lint && npm run run-cypress'
-#           parallel: true
-#           parallelism: 2
-#           post-steps:
-#             - store_artifacts:
-#                 path: coverage
-#             - store_artifacts:
-#                 path: tests/e2e/screenshots
