@@ -157,7 +157,7 @@
                   :searchable="true"
                   :internal-search="false"
                   @search-change="loadEndpoints"
-                  @open="loadEndpoints"
+                  @open="loadEndpoints()"
                   :helper="$t('The Data Connector resource to access when this Watcher runs')"
                   data-cy="watchers-watcher-endpoint"
                 />
