@@ -34,13 +34,9 @@
 </template>
 
 <script>
-import Multiselect from 'vue-multiselect';
 
 export default {
   inheritAttrs: false,
-  components: {
-    Multiselect,
-  },
   props: ['label', 'value', 'helper'],
   data() {
     return {

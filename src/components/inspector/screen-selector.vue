@@ -33,7 +33,6 @@
 
 <script>
 import { get } from 'lodash';
-import Multiselect from 'vue-multiselect';
 import { multiselectApi } from '@/mixins';
 import { formTypes } from '@/global-properties';
 
@@ -43,7 +42,6 @@ const globalObject = typeof window === 'undefined'
 
 export default {
   mixins: [multiselectApi],
-  components: { Multiselect },
   props: {
     api: {
       type: String,

@@ -21,12 +21,7 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-    @import "~vue-multiselect/dist/vue-multiselect.min.css";
-</style>
-
 <script>
-import Multiselect from 'vue-multiselect';
 
 export default {
   inheritAttrs: false,
@@ -36,9 +31,6 @@ export default {
       const selectedOption = this.options.find(option => option.value == value);
       return selectedOption ? selectedOption.content : null;
     },
-  },
-  components: {
-    Multiselect,
   },
   computed: {
     options() {
