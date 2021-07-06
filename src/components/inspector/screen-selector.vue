@@ -13,7 +13,7 @@
       :internal-search="false"
       label="title"
       @search-change="loadOptions"
-      @open="loadOptions"
+      @open="loadOptions()"
     >
       <template slot="noResult">
         <slot name="noResult">{{ $t('Not found') }}</slot>
