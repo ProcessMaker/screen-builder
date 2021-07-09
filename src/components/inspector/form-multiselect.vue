@@ -28,14 +28,10 @@
 </template>
 
 <script>
-import Multiselect from 'vue-multiselect';
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 
 export default {
   inheritAttrs: false,
-  components: {
-    Multiselect,
-  },
   mixins: [ValidationMixin],
   props: [
     'label',
@@ -63,7 +59,6 @@ export default {
 </script>
 
 <style lang="scss">
-  @import "~vue-multiselect/dist/vue-multiselect.min.css";
   .is-invalid .multiselect__tags {
     border-color: red !important;
   }

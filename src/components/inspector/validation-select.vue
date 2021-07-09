@@ -90,7 +90,6 @@
 </template>
 
 <script>
-import Multiselect from 'vue-multiselect';
 import { FormInput } from '@processmaker/vue-form-elements';
 import _ from 'lodash';
 import InputVariable from '../inspector/input-variable';
@@ -98,7 +97,6 @@ import InputVariable from '../inspector/input-variable';
 export default {
   props: ['label', 'value', 'helper', 'name', 'builder', 'selectedControl', 'formConfig'],
   components: {
-    Multiselect,
     FormInput,
     InputVariable,
   },
