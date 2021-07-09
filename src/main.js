@@ -10,6 +10,7 @@ import ScreenBuilder from '@/components';
 import axios from 'axios';
 import TestComponents from '../tests/components';
 import BootstrapVue from 'bootstrap-vue';
+import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
@@ -22,6 +23,7 @@ i18next.init({lng: 'en'});
 Vue.mixin({i18n: new VueI18Next(i18next)});
 Vue.use(Vuex);
 Vue.use(ScreenBuilder);
+Vue.component('Multiselect', Multiselect);
 
 const store = new Vuex.Store({ modules: {} });
 

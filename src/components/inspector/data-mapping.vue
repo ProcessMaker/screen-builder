@@ -58,11 +58,10 @@
 
 <script>
 
-import Multiselect from 'vue-multiselect';
 import MustacheHelper from './mustache-helper';
 
 export default {
-  components: { Multiselect, MustacheHelper },
+  components: { MustacheHelper },
   mixins: [],
   props: {
     value: String,
