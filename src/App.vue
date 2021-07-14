@@ -135,14 +135,17 @@
           <button type="button" class="btn btn-light btn-sm" data-cy="open-console">
             <i class="fas fa-angle-double-up"/>
             {{ $t('Open Console') }}
-            <span v-if="allErrors === 0" class="badge badge-success">
+            <span v-if="allErrors === 0 && allWarnings === 0" class="badge badge-success">
               <i class="fas fa-check-circle "/>
-              {{ $t(allErrors) }}
             </span>
 
-            <span v-else class="badge badge-danger">
+            <span v-if="allErrors > 0" class="badge badge-danger">
               <i class="fas fa-times-circle "/>
               {{ $t(allErrors) }}
+            </span>
+            <span v-if="allWarnings > 0" class="badge badge-warning">
+              <i class="fas fa-exclamation-triangle "/>
+              {{ $t(allWarnings) }}
             </span>
           </button>
         </div>
@@ -152,6 +155,18 @@
             <i class="fas fa-times-circle text-danger mr-3"/>
             {{ $t('Invalid JSON Data Object') }}
           </div>
+          <b-button variant="link" class="validation__message d-flex align-items-center p-3"
+            v-for="(validation,index) in warnings"
+            :key="index"
+            @click="focusInspector(validation)"
+            data-cy="focus-inspector"
+          >
+            <i class="fas fa-exclamation-triangle text-warning d-block mr-3"/>
+            <span class="ml-2 text-dark font-weight-bold text-left">
+              {{ validation.reference }}
+              <span class="d-block font-weight-normal">{{ validation.message }}</span>
+            </span>
+          </b-button>
           <b-button variant="link" class="validation__message d-flex align-items-center p-3"
             v-for="(validation,index) in validationErrors"
             :key="index"
@@ -164,7 +179,7 @@
               <span class="d-block font-weight-normal">{{ validation.message }}</span>
             </span>
           </b-button>
-          <span v-if="!allErrors" class="d-flex justify-content-center align-items-center h-100">{{ $t('No Errors') }}</span>
+          <span v-if="!allErrors && !allWarnings" class="d-flex justify-content-center align-items-center h-100">{{ $t('No Errors') }}</span>
         </div>
       </b-card-footer>
     </b-card>
@@ -231,6 +246,10 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      validationIcons: {
+        error: 'fas fa-times-circle text-danger d-block mr-3',
+        warning: 'fas fa-exclamation-triangle text-warning d-block mr-3',
+      },
       preview: {
         config: [
           {
@@ -331,6 +350,9 @@ export default {
 
       return this.validationErrors.length + errorCount;
     },
+    allWarnings() {
+      return this.warnings.length;
+    },
     validationErrors() {
       if (!this.toggleValidation) {
         return [];
@@ -343,6 +365,17 @@ export default {
       });
 
       return validationErrors;
+    },
+    warnings() {
+      const warnings = [];
+      const watchersWithScripts = this.watchers
+        .filter(watcher => watcher.script.id.substr(0, 7) === 'script-').length;
+      if (watchersWithScripts > 0) {
+        warnings.push({
+          message: this.$t('Using watchers with Scripts can slow the performance of your screen.'),
+        });
+      }
+      return warnings;
     },
   },
   mounted() {
@@ -498,7 +531,7 @@ export default {
     $validation-panel-bottom: 3.5rem;
     $validation-panel-right: 0;
     $validation-panel-height: 10rem;
-    $validation-panel-width: 21.35rem;
+    $validation-panel-width: 41rem;
     $primary-white: #f7f7f7;
 
     $preview-inspector-width: 265px;
