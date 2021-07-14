@@ -203,7 +203,7 @@ import VueFormRenderer from './components/vue-form-renderer.vue';
 import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, debounce } from 'lodash';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -254,10 +254,7 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
-      validationIcons: {
-        error: 'fas fa-times-circle text-danger d-block mr-3',
-        warning: 'fas fa-exclamation-triangle text-warning d-block mr-3',
-      },
+      numberOfElements: 0,
       preview: {
         config: [
           {
@@ -376,6 +373,7 @@ export default {
     },
     warnings() {
       const warnings = [];
+      // Check if screen has watchers that use scripts
       const watchersWithScripts = this.watchers
         .filter(watcher => watcher.script.id.substr(0, 7) === 'script-').length;
       if (watchersWithScripts > 0) {
@@ -383,10 +381,17 @@ export default {
           message: this.$t('Using watchers with Scripts can slow the performance of your screen.'),
         });
       }
+      // Count form elements
+      if (this.numberOfElements >= 25) {
+        warnings.push({
+          message: this.$t('We recommend using fewer than 25 form elements in your screen for optimal performance.'),
+        });
+      }
       return warnings;
     },
   },
   mounted() {
+    this.countElements = debounce(this.countElements, 4000);
     if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
       Validator.useLang(globalObject.ProcessMaker.user.lang);
     }
@@ -406,6 +411,11 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
+    countElements() {
+      this.$refs.renderer.countElements(this.config).then(allElements => {
+        this.numberOfElements = allElements.length;
+      });
+    },
     changeMode(mode) {
       this.mode = mode;
       this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
@@ -511,6 +521,8 @@ export default {
     },
     updateConfig(newConfig) {
       this.config = newConfig;
+      // Recount number of elements
+      this.countElements();
     },
     previewSubmit() {
       alert('Preview Form was Submitted');
