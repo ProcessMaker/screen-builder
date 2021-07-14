@@ -391,7 +391,7 @@ export default {
     },
   },
   mounted() {
-    this.countElements = debounce(this.countElements, 4000);
+    this.countElements = debounce(this.countElements, 2000);
     if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
       Validator.useLang(globalObject.ProcessMaker.user.lang);
     }
