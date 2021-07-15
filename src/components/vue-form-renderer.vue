@@ -118,6 +118,10 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
+    countElements(config) {
+      const definition = { config };
+      return this.$refs.renderer.countElements(definition);
+    },
     checkForRecordList(items, config) {
       items.forEach(item => {
         if (item.items) {
