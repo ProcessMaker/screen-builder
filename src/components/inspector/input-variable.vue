@@ -1,6 +1,6 @@
 <template>
   <b-input-group>
-    <b-form-input v-model="localValue" @focus="focus" @input="input" @blur="blur" @change="change" />
+    <b-form-input v-bind="$attrs" v-model="localValue" @focus="focus" @input="input" @blur="blur" @change="change"/>
     <template v-slot:append>
       <b-dropdown
         ref="dropdown"
