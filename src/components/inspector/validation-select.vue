@@ -2,7 +2,7 @@
   <div class="form-group">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <label class="m-0">{{ label }}</label>
-      <b-button class="" variant="secondary" size="sm" @click="showAddCard">{{ $t('Add Rule') }}</b-button>
+      <b-button class="" variant="secondary" size="sm" @click="showAddCard" data-cy="add-rule">{{ $t('Add Rule') }}</b-button>
     </div>
     <div v-if="showCard" class="card mb-2">
       <div class="card-body p-2">
@@ -14,6 +14,7 @@
           :show-labels="false"
           :options="options"
           :class="fieldClass"
+          data-cy="select-rule"
         >
           <template slot="noResult">{{ $t('No elements found. Consider changing the search query.') }}</template>
           <template slot="noOptions">{{ $t('No Data Available') }}</template>
@@ -23,8 +24,8 @@
         </div>
       </div>
       <div class="card-footer text-right p-2">
-        <b-button @click="hideCard" variant="outline-secondary" size="sm" class="mr-2">{{ $t('Cancel') }}</b-button>
-        <b-button @click="saveRule" :disabled="disableBtn" variant="secondary" size="sm">{{ $t('Save') }}</b-button>
+        <b-button @click="hideCard" variant="outline-secondary" size="sm" class="mr-2" data-cy="cancel-rule">{{ $t('Cancel') }}</b-button>
+        <b-button @click="saveRule" :disabled="disableBtn" variant="secondary" size="sm" data-cy="save-rule">{{ $t('Save') }}</b-button>
       </div>
     </div>
     <p v-if="!hasRules && !showCard">{{ $t('No validation rule(s)') }}</p>
@@ -36,10 +37,10 @@
               {{ confirmMessage }}
             </div>
             <div class="card-footer text-right p-2">
-              <button type="button" class="btn btn-sm btn-light mr-2" @click="hideDeleteConfirmCard">
+              <button type="button" class="btn btn-sm btn-light mr-2" @click="hideDeleteConfirmCard" data-cy="cancel-confirm-delete-rule">
                 {{ $t('Cancel') }}
               </button>
-              <button type="button" class="btn btn-sm btn-danger" @click="deleteRule(index)">
+              <button type="button" class="btn btn-sm btn-danger" @click="deleteRule(index)" data-cy="confirm-delete-rule">
                 {{ $t('Delete') }}
               </button>
             </div>
@@ -48,10 +49,10 @@
             <div class="p-1 d-flex justify-content-between align-items-center">
               {{ rule.content }}
               <div class="actions">
-                <b-button :aria-label="$t('Toggle Configuration')" variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" v-b-toggle="formatRuleContentAsId(rule.content)">
+                <b-button :aria-label="$t('Toggle Configuration')" variant="link" class="p-0 mr-1 secondary" v-if="rule.configs" v-b-toggle="formatRuleContentAsId(rule.content)" data-cy="edit-rule">
                   <i class="fas fa-cog fa-fw text-secondary"/>
                 </b-button>
-                <b-button :aria-label="$t('Delete')" variant="link" class="p-0" @click="confirmDelete(index)"><i class="fas fa-trash-alt fa-fw text-secondary"/></b-button>
+                <b-button :aria-label="$t('Delete')" variant="link" class="p-0" @click="confirmDelete(index)" data-cy="remove-rule"><i class="fas fa-trash-alt fa-fw text-secondary"/></b-button>
               </div>
             </div>
           </b-card-header>
@@ -60,12 +61,12 @@
               <div class="p-2"> 
                 <div v-for="config in rule.configs" :key="config.label" class="mb-2">
                   <div v-if="config.type === 'FormInput'">
-                    <form-input :label="config.label" :name="config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
+                    <form-input :label="config.label" :name="config.name || config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
                   </div>
                   <component v-else
                     :is="config.type"
                     :label="config.label"
-                    :name="config.label"
+                    :name="config.name || config.label"
                     v-model="config.value"
                     :validation="config.validation"
                     :helper="config.helper"
@@ -77,8 +78,8 @@
                 <div><small class="form-text text-muted">{{ rule.helper }}</small></div>
               </div>
               <b-card-footer class="text-right">
-                <b-button @click="onCancel(rule,index)" variant="outline-secondary" size="sm" class="mr-2">{{ $t('Cancel') }}</b-button>
-                <b-button @click="onUpdate(rule, index)" variant="secondary" size="sm">{{ $t('Update') }}</b-button>
+                <b-button @click="onCancel(rule,index)" variant="outline-secondary" size="sm" class="mr-2" data-cy="cancel-rule">{{ $t('Cancel') }}</b-button>
+                <b-button @click="onUpdate(rule, index)" variant="secondary" size="sm" data-cy="update-rule">{{ $t('Update') }}</b-button>
               </b-card-footer>
             </b-card-body>
           </b-collapse>
@@ -195,8 +196,8 @@ export default {
           helper: this.$t('The field under validation must be present and not empty if the Variable Name field is equal to any value.'),
           visible: true,
           configs: [
-            { type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation:'required' },
-            { type: 'FormInput', label: this.$t('Variable Value'), helper: '', validation:'' },
+            { type: 'InputVariable', name: 'variable-name', label: this.$t('Variable Name'), helper: '', validation:'required' },
+            { type: 'FormInput', name: 'variable-value', label: this.$t('Variable Value'), helper: '', validation:'' },
           ],
         },
         {
@@ -206,8 +207,8 @@ export default {
           helper: this.$t('The field under validation must be present and not empty unless the Variable Name field is equal to any value.'),
           visible: true,
           configs: [
-            { type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation:'required' },
-            { type: 'FormInput', label: this.$t('Variable Value'), helper: '' },
+            { type: 'InputVariable', name: 'variable-name', label: this.$t('Variable Name'), helper: '', validation:'required' },
+            { type: 'FormInput', name: 'variable-value', label: this.$t('Variable Value'), helper: '' },
           ],
         },
         {
@@ -217,7 +218,7 @@ export default {
           helper: this.$t('The given field must match the field under validation.'),
           visible: true,
           configs: [
-            {type: 'InputVariable', label: this.$t('Variable Name'), helper: '', validation: 'required'},
+            {type: 'InputVariable', name: 'variable-name', label: this.$t('Variable Name'), helper: '', validation: 'required'},
           ],
         },
         {
