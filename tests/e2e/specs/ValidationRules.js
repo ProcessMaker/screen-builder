@@ -1,4 +1,6 @@
-describe('Record list', () => {
+import moment from 'moment';
+
+describe('Validation Rules', () => {
   beforeEach(() => {
     cy.server();
     cy.visit('/');
@@ -149,5 +151,131 @@ describe('Record list', () => {
     cy.get('[data-cy=preview-content] [name="submit_button"]')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
+  });
+
+  it('RequireIf validation must be able to access the _parent\'s variables', () => {
+    cy.loadFromJson('test_parent_in_validations.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').selectOption('YES');
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
+  });
+
+  it('Date Validations must be able to access the _parent\'s variables', () => {
+    cy.loadFromJson('test_parent_in_validations.json', 0);
+
+    const date = moment(new Date()).format('YYYY-MM-DD');
+    const dateBefore = moment(new Date()).subtract(1, 'days').format('YYYY-MM-DD');
+    const dateAfter = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
+
+    // Change validation rule to After Date
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=screen-element-container]').eq(2).click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="select-rule"]').selectOption('After Date');
+    cy.get('[data-cy="inspector-validation"] [data-cy="save-rule"]:visible').click();
+    cy.get('[data-cy="inspector-validation"] [name="Date"]').type('_parent.form_input_1');
+    cy.get('[data-cy="inspector-validation"] [data-cy="update-rule"]:visible').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateBefore);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').type(date);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+
+    // Change validation rule to After or Equal to Date
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=screen-element-container]').eq(2).click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="select-rule"]').selectOption('After or Equal to Date');
+    cy.get('[data-cy="inspector-validation"] [data-cy="save-rule"]:visible').click();
+    cy.get('[data-cy="inspector-validation"] [name="Date"]').type('_parent.form_input_1');
+    cy.get('[data-cy="inspector-validation"] [data-cy="update-rule"]:visible').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateBefore);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').type(dateBefore);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').clear().type(date);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+
+    // Change validation rule to Before date
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=screen-element-container]').eq(2).click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="select-rule"]').selectOption('Before Date');
+    cy.get('[data-cy="inspector-validation"] [data-cy="save-rule"]:visible').click();
+    cy.get('[data-cy="inspector-validation"] [name="Date"]').type('_parent.form_input_1');
+    cy.get('[data-cy="inspector-validation"] [data-cy="update-rule"]:visible').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateAfter);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').type(date);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+
+    // Change validation rule to Before or Equal to Date
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=screen-element-container]').eq(2).click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="select-rule"]').selectOption('Before or Equal to Date');
+    cy.get('[data-cy="inspector-validation"] [data-cy="save-rule"]:visible').click();
+    cy.get('[data-cy="inspector-validation"] [name="Date"]').type('_parent.form_input_1');
+    cy.get('[data-cy="inspector-validation"] [data-cy="update-rule"]:visible').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateAfter);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').type(dateAfter);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').clear().type(date);
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+  });
+
+  it('RequireUnless must be able to access the _parent\'s variables', () => {
+    cy.loadFromJson('test_parent_in_validations.json', 0);
+
+    // Change validation rule to Required Unless
+    cy.get('[data-cy=screen-element-container]').eq(2).click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="select-rule"]').selectOption('Required Unless');
+    cy.get('[data-cy="inspector-validation"] [data-cy="save-rule"]:visible').click();
+    cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').type('_parent.form_input_1');
+    cy.get('[data-cy="inspector-validation"] input[name="variable-value"]').type('abc');
+    cy.get('[data-cy="inspector-validation"] [data-cy="update-rule"]:visible').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').type('abc');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').type('abc');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+  });
+
+  it('SameAs must be able to access the _parent\'s variables', () => {
+    cy.loadFromJson('test_parent_in_validations.json', 0);
+
+    // Change validation rule to Same
+    cy.get('[data-cy=screen-element-container]').eq(2).click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
+    cy.get('[data-cy="inspector-validation"] [data-cy="select-rule"]').selectOption('Same');
+    cy.get('[data-cy="inspector-validation"] [data-cy="save-rule"]:visible').click();
+    cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').type('_parent.form_input_1');
+    cy.get('[data-cy="inspector-validation"] [data-cy="update-rule"]:visible').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').type('abc');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').type('abc');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
   });
 });
