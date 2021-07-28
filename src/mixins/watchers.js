@@ -12,6 +12,9 @@ export default {
   },
   methods: {
     queueWatcherSync(watcher) {
+      //add a random sufix to uniquely identify this watcher call
+      watcher.uid = watcher.uid + (Math.random().toString(36)+'00000000000000000').slice(2, 16) + Date.now();
+
       if (watcher.synchronous) {
         // lock screen with watcher's popup
         if (this.$el.offsetParent) {
