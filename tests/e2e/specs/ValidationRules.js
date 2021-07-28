@@ -89,7 +89,7 @@ describe('Record list', () => {
       '[data-cy=preview-content] [data-cy=screen-field-form_date_picker_1] > .form-control'
     )
       .parent()
-      .should('contain.text', 'New Date PickerMust be before today');
+      .should('contain.text', 'Must be equal or before today');
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
     ).pickToday();
@@ -97,7 +97,7 @@ describe('Record list', () => {
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] > .form-control'
     )
       .parent()
-      .should('not.contain.text', 'New Date PickerMust be before today');
+      .should('not.contain.text', 'Must be equal or before today');
 
     //submit form valid
     cy.get(':nth-child(9) > .form-group > .btn').click();
