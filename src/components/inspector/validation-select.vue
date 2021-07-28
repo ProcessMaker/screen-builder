@@ -413,7 +413,7 @@ export default {
       this.$root.$emit('bv::toggle::collapse', content);
     },
     formatRuleContentAsId(content) {
-      return content.toLowerCase().replaceAll(' ', '-');
+      return content.toLowerCase().split(' ').join('-');
     },
     cloneSetRules() {
       this.cloneRules = JSON.parse(JSON.stringify(this.rules));
