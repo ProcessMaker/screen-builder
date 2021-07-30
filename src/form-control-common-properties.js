@@ -223,7 +223,7 @@ export const defaultValueProperty = {
   field: 'defaultValue',
   config: {
     label: 'Default Value',
-    helper: 'Takes precedence over value set in data.',
+    helper: 'The default value is pre populated using the existing request data. This feature will allow you to modify the value displayed on screen load if needed.',
   },
 };
 

@@ -85,6 +85,10 @@
             </div>
 
             <div v-if="isScript">
+              <b-alert v-if="config.script" show variant="warning">
+                <i class="fas fa-exclamation-triangle" />
+                {{ $t('Using watchers with Scripts can slow the performance of your screen.') }}
+              </b-alert>
               <div class="form-group">
                 <label>{{ $t('Input Data') }}</label>
                 <div class="form-border" :class="{'is-invalid': !jsonIsValid('input_data')}">
