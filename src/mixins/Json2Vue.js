@@ -1,5 +1,6 @@
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
+import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
 
 let screenRenderer;
@@ -323,6 +324,14 @@ export default {
         });
       };
       component.mounted.push('this.loadValidationRules()');
+    },
+    countElements(definition) {
+      return new Promise(( resolve ) => {
+        const allElements = [];
+        CountElements(definition, { screen: definition }).countItems(allElements).then(() => {
+          resolve(allElements);
+        });
+      });
     },
   },
   mounted() {
