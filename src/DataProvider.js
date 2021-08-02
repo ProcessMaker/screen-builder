@@ -65,6 +65,10 @@ export default {
   },
   addNestedScreenCache(nested) {
     nested.forEach(screen => {
+      if (screen.screen_id) {
+        // It's from a screen version, so reference it by it's parent id
+        screen.id = screen.screen_id;
+      }
       const index = this.screensCache.findIndex(s => s.id == screen.id);
       if (index > -1) {
         this.screensCache.splice(index, 1, screen);
