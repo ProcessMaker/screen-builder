@@ -17,10 +17,9 @@ describe('Computed fields', () => {
     cy.get('[data-cy="calcs-modal"] .close').click();
     cy.get('[data-cy=mode-preview]').click();
 
-    cy.get('[data-cy=preview-content] [name=form_input_1]').clear().type('two');
-
     // Assertion: Check the form_input_1 is always 1
-    cy.get('[data-cy=preview-content] [name=form_input_1]').should('have.value', 'one');
+    cy.get('[data-cy=preview-content] [name=form_input_1]').should('have.attr', 'readonly');
+
     cy.assertPreviewData({
       form_input_1: 'one',
     });
