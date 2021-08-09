@@ -1,16 +1,27 @@
 import Mustache from 'mustache';
-import { debounce } from 'lodash';
 
 const broadcastEvent = '.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated';
+
+const debounce_time = 1000;
 
 export default {
   data() {
     return {
       listeners: [],
       echoListeners: [],
+      debounce: {},
     };
   },
   methods: {
+    queueWatcher(watcher) {
+      if (this.debounce[watcher.uid]) {
+        clearTimeout(this.debounce[watcher.uid]);
+      }
+      this.debounce[watcher.uid] = setTimeout(() => {
+        this.debounce[watcher.uid] = null;
+        this.queueWatcherSync(watcher);
+      }, debounce_time);
+    },
     queueWatcherSync(watcher) {
       //add a random sufix to uniquely identify this watcher call
       watcher.uid = watcher.uid + (Math.random().toString(36)+'00000000000000000').slice(2, 16) + Date.now();
@@ -104,16 +115,16 @@ export default {
     },
   },
   mounted() {
-    this.queueWatcher = debounce(this.queueWatcherSync, window.ProcessMaker.watchersDebounce || 1000);
     if (window.ProcessMaker && window.ProcessMaker.user) {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker.user.id}`;
-      const event = 'ProcessMaker\\Notifications\\ScriptResponseNotification';
+      const event = '.ProcessMaker\\Events\\ScriptResponseEvent';
       this.echoListeners.push({
         event,
         channel,
         broadcastEvent,
       });
-      window.Echo.private(channel).notification(
+      window.Echo.private(channel).listen(
+        event,
         (data) => {
           if (data.type === event) {
             this.loadWatcherResponse(data.watcher, data.response);
