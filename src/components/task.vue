@@ -38,7 +38,7 @@
         </div>
       </div>
       <div v-if="shouldAddSubmitButton" class="card-footer">
-        <button type="button" class="btn btn-primary" @click="submit">
+        <button type="button" class="btn btn-primary" @click="submit(null)">
           {{ $t('Complete Task') }}
         </button>
       </div>
