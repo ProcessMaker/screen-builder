@@ -30,25 +30,13 @@
           </td>
 
           <td class="p-1">
-            <multiselect
+            <input
               v-model="row.key"
-              :placeholder="$t('Select an Option')"
-              :options="options"
-              :multiple="false"
-              :show-labels="false"
-              :searchable="true"
-              :internal-search="false"
-              @search-change="loadOptions"
-              @open="loadOptions"
+              name="key"
+              :placeholder="$t('The Request variable is a new/existing variable')"
+              type="text"
+              class="form-control"
             >
-              <template slot="noResult">
-                <slot name="noResult">{{ $t('Not found') }}</slot>
-              </template>
-              <template slot="noOptions">
-                <slot name="noOptions">{{ $t('Not available') }}</slot>
-              </template>
-            </multiselect>
-
           </td>
 
           <td class="align-middle text-right p-1">
@@ -63,6 +51,12 @@
       {{ $t('Properties to map from the Data Connector into the output variable') }}
       <br>
       {{ $t('(If empty, all data returned will be mapped to the output variable)') }}
+      <br>
+      <b>{{ $t('examples') }}:</b>
+      <br>
+      data.0.data
+      <br>
+      data.{{ '{{' }}request_variable {{ '}' + '}' }}.data
     </small>
   </div>
 </template>
