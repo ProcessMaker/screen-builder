@@ -54,7 +54,6 @@
       <br>
       <b>{{ $t('examples') }}:</b>
       <br>
-      data.0.data
       <br>
     </small>
   </div>
