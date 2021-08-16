@@ -51,12 +51,6 @@
       {{ $t('Properties to map from the Data Connector into the output variable') }}
       <br>
       {{ $t('(If empty, all data returned will be mapped to the output variable)') }}
-      <br>
-      <b>{{ $t('examples') }}:</b>
-      <br>
-      data.0.data
-      <br>
-      data.{{ '{{' }}request_variable {{ '}' + '}' }}.data
     </small>
   </div>
 </template>
