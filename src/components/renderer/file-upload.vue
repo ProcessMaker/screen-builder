@@ -18,9 +18,9 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop class="form-control-file">
+      <uploader-drop id="uploaderMain" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
-        <uploader-btn class="btn btn-secondary text-white">{{ $t('select file') }}</uploader-btn>
+        <uploader-btn id="submitFile" class="btn btn-secondary text-white">{{ $t('select file') }}</uploader-btn>
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
       <uploader-list>
@@ -283,9 +283,11 @@ export default {
     },
     removeDefaultClasses() {
       // we need to be able to remove the classes from the npm package
-      this.$el.querySelectorAll('.uploader-btn, .uploader-drop').forEach(el => {
-        el.classList.remove('uploader-btn', 'uploader-drop');
-      });
+      document
+        .querySelectorAll('[id=\'submitFile\'],[id=\'uploaderMain\']')
+        .forEach(element => {
+          element.classList.remove('uploader-btn', 'uploader-drop');
+        });
     },
     getFileType() {
       if (document.head.querySelector('meta[name="collection-id"]')) {
