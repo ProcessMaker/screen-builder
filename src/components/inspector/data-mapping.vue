@@ -52,7 +52,7 @@
       <br>
       {{ $t('(If empty, all data returned will be mapped to the output variable)') }}
       <br>
-      <b>examples:</b>
+      <b>{{ $t('examples') }}:</b>
     </small>
   </div>
 </template>
