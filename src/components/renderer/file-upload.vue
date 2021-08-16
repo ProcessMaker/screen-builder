@@ -55,6 +55,15 @@ import _ from 'lodash';
 // Create the mixin
 const uniqIdsMixin = createUniqIdsMixin();
 
+// vue-simple-uploader tries to call these after the component has
+// been destroyed since it does it in nextTick(). It has no effect
+// on functionality because a new copy is created. TODO: Why is this
+// component being recreated when used in a loop?
+const ignoreErrors = [
+  'Cannot read property \'assignBrowse\' of null',
+  'Cannot read property \'assignDrop\' of null',
+];
+
 export default {
   components: uploader,
   mixins: [uniqIdsMixin],
@@ -82,6 +91,11 @@ export default {
     this.setPrefix();
     if (this.$refs['uploader']) {
       this.$refs['uploader'].$forceUpdate();
+    }
+  },
+  errorCaptured(err) {
+    if (ignoreErrors.includes(err.message)) {
+      return false;
     }
   },
   computed: {
