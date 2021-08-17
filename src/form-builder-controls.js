@@ -518,7 +518,6 @@ export default [
           helper: null,
         },
       },
-      helperTextProperty,
       {
         type: 'FormInput',
         field: 'height',
