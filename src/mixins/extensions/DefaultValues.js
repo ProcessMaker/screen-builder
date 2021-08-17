@@ -1,6 +1,4 @@
 
-const stringFormats = ['string', 'datetime', 'date', 'password'];
-
 export default {
   methods: {
     /**
@@ -8,9 +6,8 @@ export default {
      *
      */
     defaultValues(screen, definition) {
-      this.variables.forEach(({name, config, element}) => {
+      this.variables.forEach(({name, config}) => {
         if (this.isComputedVariable(name, definition)) return;
-        this.setupInitialValues(screen, name, element);
         if (config.defaultValue) {
           if (config.defaultValue.mode === 'basic') {
             this.setupDefaultValue(screen, name, `this.mustache(${JSON.stringify(config.defaultValue.value)})`);
@@ -26,19 +23,6 @@ export default {
           this.setValue(${JSON.stringify(name)}, this.${name}, this.vdata, this);
         `);
       });
-    },
-    setupInitialValues(screen, name, element) {
-      let fnValue = 'null';
-      if (element.component === 'FormInput') {
-        if (stringFormats.includes(element.config.dataFormat)) {
-          fnValue = '""'; // empty string
-        } else if (element.config.dataFormat === 'currency') {
-          fnValue = '0';
-        }
-      } else if (element.component === 'FormTextArea') {
-        fnValue = '""'; // empty string
-      }
-      this.addData(screen, name, fnValue);
     },
     setupDefaultValue(screen, name, value) {
       const defaultComputedName = `default_${name}__`;
