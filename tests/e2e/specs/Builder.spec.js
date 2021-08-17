@@ -22,7 +22,7 @@ describe('Screen Builder', () => {
     cy.get('[data-cy=mode-editor]').click();
     cy.get('[data-cy=mode-preview]').click();
     cy.assertPreviewData({
-      form_input_1: null,
+      form_input_1: '', 
     });
   });
 
@@ -33,7 +33,7 @@ describe('Screen Builder', () => {
     cy.assertComponentValue('[data-cy=preview-data-input]', 'INVALID');
     // Assertion: Screen is still rendered with only default data
     cy.assertComponentValue('[data-cy=screen-renderer]', {
-      form_input_1: null,
+      form_input_1: '',
     });
   });
 });
