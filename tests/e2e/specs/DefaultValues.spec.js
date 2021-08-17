@@ -49,7 +49,7 @@ describe('Default values', () => {
     cy.get('[data-cy=inspector-defaultValue-basicValue]').clear().type('initial value - {{form_input_2}}', {parseSpecialCharSequences: false});
     cy.get('[data-cy=mode-preview]').click();
     cy.assertPreviewData({
-      form_input_2: null,
+      form_input_2: '',
       form_input_1: 'initial value - ',
     });
     cy.get('[data-cy=preview-content] [name=form_input_2]').clear().type('next value');
@@ -71,7 +71,7 @@ describe('Default values', () => {
     cy.setVueComponentValue('[data-cy=inspector-defaultValue-jsValue]', 'return `initial value - ${this.form_input_2 || ""}`;');
     cy.get('[data-cy=mode-preview]').click();
     cy.assertPreviewData({
-      form_input_2: null,
+      form_input_2: '',
       form_input_1: 'initial value - ',
     });
     cy.get('[data-cy=preview-content] [name=form_input_2]').clear().type('next value');
