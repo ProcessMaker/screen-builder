@@ -634,16 +634,7 @@ export default [
         icon: 'fas fa-file-upload',
       },
       inspector: [
-        {
-          type: 'FormInput',
-          field: 'name',
-          config: {
-            label: 'Variable Name',
-            name: 'Name',
-            helper: 'A variable name is a symbolic name to reference information.',
-            validation: 'regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_. /a-z])*$/|required',
-          },
-        },
+        keyNameProperty,
         {
           type: 'FormInput',
           field: 'label',
