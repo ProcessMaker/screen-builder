@@ -2,6 +2,7 @@ import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
+import _ from 'lodash';
 
 let screenRenderer;
 
@@ -197,14 +198,15 @@ export default {
     isComputedVariable(name, definition) {
       return definition.computed && definition.computed.find(c => c.property === name);
     },
-    registerVariable(name, config = {}) {
+    registerVariable(name, element = {}) {
       if (!this.validVariableName(name)) {
         return;
       }
+      const config = _.get(element, 'config', {});
       const find = this.variables.find(v => v.name === name);
       if (!find) {
-        this.variables.push({ name, config });
-        this.variablesTree.push({ name, config });
+        this.variables.push({ name, config, element });
+        this.variablesTree.push({ name, config, element });
       }
     },
     registerNestedVariable(name, prefix, definition) {
