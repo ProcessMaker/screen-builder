@@ -150,9 +150,14 @@
         <button type="button" @click="expandEditor" class="btn-sm float-right" data-cy="inspector-monaco-json-expand"><i class="fas fa-expand"/></button>
       </div>
       <div class="small-editor-container">
-        <monaco-editor :options="monacoOptions" class="editor" v-model="jsonData" language="json"
+        <monaco-editor
+          :options="monacoOptions"
+          class="editor"
+          v-model="jsonData"
+          language="json"
           @change="jsonDataChange"
           data-cy="inspector-monaco-json"
+          @editorDidMount="monacoMounted"
         />
       </div>
 
@@ -282,6 +287,9 @@ export default {
       monacoOptions: {
         automaticLayout: true,
         fontSize: 8,
+        language: 'json',
+        formatOnPaste: true,
+        formatOnType: true,
       },
       monacoLargeOptions: {
         automaticLayout: true,
@@ -433,6 +441,12 @@ export default {
     this.valueTypeReturned = this.options.valueTypeReturned;
   },
   methods: {
+    monacoMounted(editor) {
+      editor.updateOptions({ readOnly:  false });
+      editor.getAction('editor.action.formatDocument').run().then(() => {
+        editor.updateOptions({ readOnly: true });
+      });
+    },
     getDataSourceList() {
       this.$dataProvider
         .get('/data_sources')
