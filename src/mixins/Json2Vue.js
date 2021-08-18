@@ -2,6 +2,7 @@ import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
+import _ from 'lodash';
 
 let screenRenderer;
 
