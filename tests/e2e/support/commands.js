@@ -85,6 +85,16 @@ Cypress.Commands.add('assertComponentValue', (selector, expectedData) => {
 });
 
 /**
+ * Compares the content of a control (the content must be a json string) with a provided json object
+ */
+Cypress.Commands.add('assertComponentValueAsJson', (selector, expectedData) => {
+  cy.get(selector).then((div) => {
+    const data = JSON.parse(div[0].__vue__.value);
+    expect(data).to.eql(expectedData);
+  });
+});
+
+/**
  * Uploads a file to an input
  * @memberOf Cypress.Chainable#
  * @name uploadFile
