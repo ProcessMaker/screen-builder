@@ -279,9 +279,9 @@ describe('Form Select List', () => {
     cy.get('[data-cy=inspector-option-content]').type('one');
     cy.get('[data-cy=inspector-option-save]').click();
     cy.get('[data-cy=inspector-edit-json]').click();
-    cy.assertComponentValue('[data-cy="inspector-monaco-json"]', JSON.stringify([
-      {content:'one', value: 'one'},
-    ]));
+
+    cy.assertComponentValueAsJson('[data-cy="inspector-monaco-json"]', [ {content:'one', value: 'one'}]);
+
     cy.setVueComponentValue('[data-cy="inspector-monaco-json"]', JSON.stringify([
       {content:'one', value: 'one'},
       {content:'two', value: 'two'},
