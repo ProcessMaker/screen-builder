@@ -31,15 +31,15 @@
     <div v-if="hasRules">
       <div role="tablist">
         <b-card v-for="(rule, index) in rules" class="mb-2" :key="index">
-          <div v-if="showDeleteConfirmCard && removeIndex == index" class="card mb-3 bg-danger text-white text-right">
-            <div class="card-body p-2">
+          <div v-if="showDeleteConfirmCard && removeIndex == index" class="card mb-3 bg-danger text-white text-right"  style="border-radius: 0.25em">
+            <div class="card-body p-3 text-left">
               {{ confirmMessage }}
             </div>
             <div class="card-footer text-right p-2">
-              <button type="button" class="btn btn-sm btn-light mr-2" @click="hideDeleteConfirmCard">
+              <button type="button" class="btn btn-sm btn-light mr-2 text-capitalize" @click="hideDeleteConfirmCard">
                 {{ $t('Cancel') }}
               </button>
-              <button type="button" class="btn btn-sm btn-danger" @click="deleteRule(index)">
+              <button type="button" class="btn btn-sm btn-danger text-capitalize" @click="deleteRule(index)">
                 {{ $t('Delete') }}
               </button>
             </div>
