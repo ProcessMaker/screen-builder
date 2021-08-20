@@ -118,6 +118,14 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
+    if (this.element.config && this.element.config.readonly) {
+      //readonly elements do not need validation
+      return;
+    }
+    if (this.element.config && this.element.config.disabled) {
+      //disabled elements do not need validation
+      return;
+    }
     if (!(this.element.config && this.element.config.name && typeof this.element.config.name === 'string' && this.element.config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
       //element invalid
       return;
