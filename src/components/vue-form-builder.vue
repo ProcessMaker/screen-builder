@@ -98,6 +98,7 @@
       </div>
 
       <draggable
+        data-cy="editor-content"
         class="h-100 custom-css-scope"
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
