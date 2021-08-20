@@ -45,13 +45,13 @@
           <draggable @update="updateSort" :element="'div'" v-model="optionsList" group="options" @start="drag=true" @end="drag=false" >
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
-                <div class="card mb-3 bg-danger text-white text-right">
-                  <div class="card-body p-2" v-html="currentItemToDelete"/>
+                <div class="card mb-3 bg-danger text-white text-left" style="border-radius: 0.25em">
+                  <div class="card-body p-3" v-html="currentItemToDelete"/>
                   <div class="card-footer text-right p-2">
-                    <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
+                    <button type="button" class="btn btn-sm btn-light mr-2 text-capitalize" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
                       {{ $t('Cancel') }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()" data-cy="inspector-options-remove-confirm">
+                    <button type="button" class="btn btn-sm btn-danger text-capitalize" @click="deleteOption()" data-cy="inspector-options-remove-confirm">
                       {{ $t('Delete') }}
                     </button>
                   </div>
@@ -389,7 +389,7 @@ export default {
           && this.optionsList[this.removeIndex] !==
           undefined) {
         let itemName =  this.optionsList[this.removeIndex][this.valueField];
-        return this.$t('Are you sure you want to delete "{{item}}"?', {item:itemName});
+        return this.$t('Are you sure you want to delete "{{item}}" option?', {item:itemName});
       }
       return '';
     },
