@@ -45,13 +45,13 @@
           <draggable @update="updateSort" :element="'div'" v-model="optionsList" group="options" @start="drag=true" @end="drag=false" >
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
-                <div class="card mb-3 bg-danger text-white text-left" style="border-radius: 0.25em">
-                  <div class="card-body p-3" v-html="currentItemToDelete"/>
+                <div class="card mb-3 bg-danger text-white text-left mt-2">
+                  <div class="card-body p-2" v-html="currentItemToDelete"/>
                   <div class="card-footer text-right p-2">
-                    <button type="button" class="btn btn-sm btn-light mr-2 text-capitalize" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
+                    <button type="button" class="btn btn-sm btn-light mr-2" @click="removeIndex=null" data-cy="inspector-options-remove-cancel">
                       {{ $t('Cancel') }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-danger text-capitalize" @click="deleteOption()" data-cy="inspector-options-remove-confirm">
+                    <button type="button" class="btn btn-sm btn-danger" @click="deleteOption()" data-cy="inspector-options-remove-confirm">
                       {{ $t('Delete') }}
                     </button>
                   </div>
