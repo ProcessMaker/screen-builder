@@ -272,4 +272,48 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input_2"]').clear().type('from_parent_request');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
   });
+  
+  it('Validations should be skipped for readonly fields', () => {
+    // Setup
+    let alert = false;
+    cy.on('window:alert', msg => alert = msg);
+    cy.loadFromJson('screen_with_readonly_fields.json', 0);
+
+    // In editor: ensure standard required field displays error while readonly required field does not
+    cy.get('[data-cy=editor-content] [name="form_input"]')
+      .parent()
+      .find('.invalid-feedback')
+      .should('be.visible');
+      
+    cy.get('[data-cy=editor-content] [name="form_input_readonly"]')
+      .parent()
+      .find('.invalid-feedback')
+      .should('be.not.visible');
+
+    // In preview: ensure standard required field displays error while readonly required field does not    
+    cy.get('[data-cy=mode-preview]').click();
+    
+    cy.get('[data-cy=preview-content] [name="form_input"]')
+      .parent()
+      .find('.invalid-feedback')
+      .should('be.visible');
+      
+    cy.get('[data-cy=preview-content] [name="form_input_readonly"]')
+      .parent()
+      .find('.invalid-feedback')
+      .should('be.not.visible');
+    
+    // Ensure the form cannot yet be submitted
+    cy.get('[data-cy=preview-content] [name="submit_button"]')
+      .click()
+      .then(() => expect(alert).to.equal(false));
+    
+    // Fill out the required missing field; ensure the form *can* be submitted
+    cy.get('[data-cy=preview-content] [name="form_input"]')
+      .type('text');
+    
+    cy.get('[data-cy=preview-content] [name="submit_button"]')
+      .click()
+      .then(() => expect(alert).to.equal('Preview Form was Submitted'));
+  });
 });
