@@ -102,6 +102,16 @@ export default {
         }
       });
     },
+    /**
+     * Clean the registered echo listeners
+     */
+    cleanEchoListeners() {
+      this.echoListeners.forEach(element => {
+        window.Echo.private(
+          element.channel
+        ).stopListening(element.event);
+      });
+    },
   },
   mounted() {
     if (window.ProcessMaker && window.ProcessMaker.user) {
