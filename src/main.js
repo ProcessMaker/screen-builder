@@ -184,7 +184,7 @@ window.Echo = {
     this.listeners.forEach((listener) => {
       setTimeout(() => {
         listener.callback({
-          type: 'ProcessMaker\\Notifications\\ScriptResponseNotification',
+          type: '.ProcessMaker\\Events\\ScriptResponseEvent',
           watcher: body.watcher,
           response,
         });
@@ -200,8 +200,7 @@ window.Echo = {
         window.Echo.listeners.splice(0);
       },
       listen(event, callback) {
-        event;
-        callback;
+        window.Echo.listeners.push({ event, callback });
       },
     };
   },
