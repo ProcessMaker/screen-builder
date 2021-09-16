@@ -2,6 +2,8 @@ import { get, isEqual, set } from 'lodash';
 import Mustache from 'mustache';
 import { ValidationMsg } from './ValidationRules';
 
+const stringFormats = ['string', 'datetime', 'date', 'password'];
+
 export default {
   data() {
     return {
@@ -56,6 +58,19 @@ export default {
           if (name === '_parent') return screen._parent === undefined ? this._parent : screen._parent;
         },
       });
+    },
+    initialValue(component, dataFormat) {
+      let value = null;
+      if (component === 'FormInput') {
+        if (stringFormats.includes(dataFormat)) {
+          value = '';
+        } else if (dataFormat === 'currency') {
+          value = 0;
+        }
+      } else if (component === 'FormTextArea') {
+        value = '';
+      }
+      return value;
     },
     getValue(name, object = this) {
       return object ? get(object, name) : undefined;

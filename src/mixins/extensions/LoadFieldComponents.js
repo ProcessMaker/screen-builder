@@ -33,11 +33,11 @@ export default {
       //verify if component is defined in popup
       if (!this.popups.includes(formIndex)) {
         if (componentName === 'FormImage') {
-          this.registerVariable(element.config.variableName, element.config);
+          this.registerVariable(element.config.variableName, element);
           delete properties.image;
           properties[':image'] = this.byRef(element.config.image);
         } else if (this.validVariableName(element.config.name)) {
-          this.registerVariable(element.config.name, element.config);
+          this.registerVariable(element.config.name, element);
           properties['v-model'] = `${element.config.name}`;
         }
       }
