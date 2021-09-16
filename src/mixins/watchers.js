@@ -1,12 +1,28 @@
 import Mustache from 'mustache';
 import _ from 'lodash';
 
+const broadcastEvent = '.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated';
+
+const debounce_time = 1000;
+
 export default {
   data() {
     return {
+      listeners: [],
+      echoListeners: [],
+      debounce: {},
     };
   },
   methods: {
+    queueWatcher(watcher) {
+      if (this.debounce[watcher.uid]) {
+        clearTimeout(this.debounce[watcher.uid]);
+      }
+      this.debounce[watcher.uid] = setTimeout(() => {
+        this.debounce[watcher.uid] = null;
+        this.queueWatcherSync(watcher);
+      }, debounce_time);
+    },
     queueWatcherSync(watcher) {
       if (watcher.synchronous) {
         // lock screen with watcher's popup
@@ -86,8 +102,37 @@ export default {
         }
       });
     },
+    /**
+     * Clean the registered echo listeners
+     */
+    cleanEchoListeners() {
+      this.echoListeners.forEach(element => {
+        window.Echo.private(
+          element.channel
+        ).stopListening(element.event);
+      });
+    },
   },
   mounted() {
-    this.queueWatcher = _.debounce(this.queueWatcherSync, window.ProcessMaker.watchersDebounce || 1000);
+    if (window.ProcessMaker && window.ProcessMaker.user) {
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker.user.id}`;
+      const event = '.ProcessMaker\\Events\\ScriptResponseEvent';
+      this.echoListeners.push({
+        event,
+        channel,
+        broadcastEvent,
+      });
+      window.Echo.private(channel).listen(
+        event,
+        (data) => {
+          if (data.type === event) {
+            this.loadWatcherResponse(data.watcher, data.response);
+          }
+        },
+      );
+    }
+  },
+  destroyed() {
+    this.cleanEchoListeners();
   },
 };
