@@ -1,5 +1,6 @@
 import { validators } from './mixins/ValidationRules';
 import DataProvider from './DataProvider';
+import { Parser } from 'expr-eval';
 import { get, set } from 'lodash';
 
 let globalObject = typeof window === 'undefined'
@@ -118,6 +119,11 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
+    if (this.element.config && !isElementVisible(this.element)) {
+      // hidden elements do not need validation
+      return;
+    }
+
     if (this.element.config && this.element.config.readonly) {
       //readonly elements do not need validation
       return;
@@ -198,6 +204,20 @@ function ValidationsFactory(element, options) {
     return new PageNavigateValidations(element, options);
   }
   return new FormElementValidations(element, options);
+}
+
+function isElementVisible(element) {
+  const { conditionalHide } = element.config;
+
+  if (!conditionalHide) {
+    return true;
+  }
+
+  try {
+    return !!Parser.evaluate(conditionalHide, this.transientData);
+  } catch (error) {
+    return false;
+  }
 }
 
 export default ValidationsFactory;
