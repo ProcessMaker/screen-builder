@@ -20,7 +20,16 @@
 
       <uploader-drop class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
-        <uploader-btn tabindex="0" v-on:keyup.native="browse" :aria-label="$attrs['aria-label']" class="btn btn-secondary text-white">{{ $t('select file') }}</uploader-btn>
+        <uploader-btn
+          :attrs="nativeButtonAttrs"
+          :class="{disabled: disabled}"
+          tabindex="0"
+          v-on:keyup.native="browse"
+          :aria-label="$attrs['aria-label']"
+          class="btn btn-secondary text-white"
+        >
+          {{ $t('select file') }}
+        </uploader-btn>
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
       <uploader-list>
@@ -92,6 +101,8 @@ export default {
     if (this.$refs['uploader']) {
       this.$refs['uploader'].$forceUpdate();
     }
+
+    this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
@@ -99,6 +110,13 @@ export default {
     }
   },
   computed: {
+    nativeButtonAttrs() {
+      const attrs = { 'data-cy':'file-upload-button' };
+      if (this.disabled) {
+        attrs.disabled = true;
+      }
+      return attrs;
+    },
     required() {
       if (this.config && this.config.validation) {
         return this.config.validation === 'required';
@@ -205,6 +223,7 @@ export default {
       attrs: {
         accept: this.accept,
       },
+      disabled: false,
     };
   },
   methods: {
@@ -286,6 +305,11 @@ export default {
       });
     },
     addFile(file) {
+      if (this.disabled) {
+        file.ignored = true;
+        return false;
+      }
+
       if (this.filesAccept) {
         file.ignored = true;
         if (this.filesAccept.indexOf(file.fileType) !== -1) {
