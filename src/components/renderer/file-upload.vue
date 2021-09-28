@@ -346,7 +346,7 @@ export default {
     },
     fileUploaded(rootFile, file, message) {
       if (this.fileType == 'request') {
-        let id = '';
+        let id = file.name;
         if (message) {
           const msg = JSON.parse(message);
           if (!_.has(window, 'PM4ConfigOverrides')) {
