@@ -166,6 +166,13 @@ window.ProcessMaker = {
         }});
       });
     },
+    delete(url) {
+      return new Promise((resolve) => {
+        resolve({data: {
+          response: [],
+        }});
+      });
+    },
   },
   EventBus: new Vue(),
   confirmModal(title, message, variant, callback) {

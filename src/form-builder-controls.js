@@ -649,6 +649,13 @@ export default [
           },
         },
         {
+          type: 'MultipleUploadsCheckbox',
+          field: 'multipleUpload',
+          config: {
+            label: 'Upload multiple files',
+          },
+        },
+        {
           type: 'FormInput',
           field: 'accept',
           config: {
