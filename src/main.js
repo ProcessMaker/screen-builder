@@ -166,7 +166,7 @@ window.ProcessMaker = {
         }});
       });
     },
-    delete(url) {
+    delete() {
       return new Promise((resolve) => {
         resolve({data: {
           response: [],
