@@ -36,19 +36,19 @@
         <template slot-scope="{ fileList }">
           <ul v-if="multipleUpload">
             <li v-for="fileId in (value ? value : [])" :key="fileId">
-              <div class="container" v-if="configOverrideFile(fileId) && configOverrideFile(fileId).new && fileList.find(x=>x.name === configOverrideFile(fileId).file_name)">
+              <div class="container-fluid pl-3 pr-3" v-if="configOverrideFile(fileId) && configOverrideFile(fileId).new && fileList.find(x=>x.name === configOverrideFile(fileId).file_name)">
                 <div class="row" style="background:rgb(226 238 255)">
                   <div class="col-11 pr-0 pl-0">
                     <uploader-file :file="fileList.find(x=>x.name === configOverrideFile(fileId).file_name)" :list="true" />
                   </div>
-                  <div class="col-1 my-auto">
+                  <div class="col-1 my-auto uploader-file">
                     <b-btn variant="outline" @click="removeFile(fileId)" v-b-tooltip.hover :title="$t('Delete')">
                       <i class="fas fa-trash-alt"/>
                     </b-btn>
                   </div>
                 </div>
               </div>
-              <div v-else class="container border-bottom py-2">
+              <div v-else class="container-fluid border-bottom pl-3 pr-3">
                 <div class="row">
                   <div class="col-11 pr-0 pl-0 my-auto">
                     <i class="fas fa-paperclip"/> {{ displayNameFor(fileId) }}
@@ -218,6 +218,13 @@ export default {
       },
       immediate: true,
     },
+    multipleUpload: {
+      handler() {
+        // Add the multiple parameter for the endpoint call that will be executed by vue-simple-uploader
+        this.options.query.multiple = this.multipleUpload;
+      },
+      immediate: true,
+    },
   },
   data() {
     return {
@@ -259,7 +266,8 @@ export default {
       // If there is just one file associated to the file_upload PM4ConfigOverrides returns it as an object,
       // otherwise an array is returned. So, if the control is configured as multiple upload and
       // has just one file, we must return the object, in other case a search by id is done.
-      const files = window.PM4ConfigOverrides.requestFiles[this.fileDataName];
+      const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
+      const files = requestFiles[this.fileDataName];
       if (files) {
         return Array.isArray(files)
           ? files.find(x => x.id === id)
@@ -267,9 +275,15 @@ export default {
       }
       return null;
     },
-    displayNameFor(id) {
-      let file = this.configOverrideFile(id);
-      return file ? file.file_name : id;
+    displayNameFor(fileData) {
+      if (this.fileType == 'request') {
+        let file = this.configOverrideFile(fileData);
+        return file ? file.file_name: fileData;
+      }
+      if (this.fileType == 'collection') {
+        let file = this.value.find(item => item.id == fileData.id);
+        return file ? file.name : fileData.id;
+      }
     },
     listenRemovedLoop(loop, removed) {
       this.deleteAssociatedFiles(removed);
@@ -293,13 +307,20 @@ export default {
         }
       }
     },
-    removeFile(fileId) {
-      this.deleteFile(fileId);
-      let files = window.PM4ConfigOverrides.requestFiles[this.fileDataName];
-      let filtered = files.filter(item => item.id !== fileId);
-      window.PM4ConfigOverrides.requestFiles[this.fileDataName] = filtered;
-      const ids = window.PM4ConfigOverrides.requestFiles[this.fileDataName].map(item => item.id);
-      this.$emit('input', ids);
+    removeFile(fileData) {
+      if (this.fileType == 'request') {
+        this.deleteFile(fileData);
+        let files = window.PM4ConfigOverrides.requestFiles[this.fileDataName];
+        let filtered = files.filter(item => item.id !== fileData);
+        window.PM4ConfigOverrides.requestFiles[this.fileDataName] = filtered;
+        const ids = window.PM4ConfigOverrides.requestFiles[this.fileDataName].map(item => item.id);
+        this.$emit('input', ids);
+      }
+      if (this.fileType == 'collection') {
+        this.deleteFile(fileData.id);
+        let filtered = this.value.filter(item => item.id !== fileData.id);
+        this.$emit('input', filtered);
+      }
     },
     deleteFile(fileId) {
       if (fileId) {
@@ -425,10 +446,19 @@ export default {
 
       if (this.fileType == 'collection') {
         message = JSON.parse(message);
-        this.$emit('input', {
+        const uploadedObject = {
           id: message.id,
           name: message.file_name,
-        });
+        };
+
+        if (this.multipleUpload) {
+          let currentVal = this.value ? this.value : [];
+          currentVal.push(uploadedObject);
+          this.$emit('input', currentVal);
+        }
+        else {
+          this.$emit('input', uploadedObject);
+        }
       }
     },
     removed() {
@@ -474,8 +504,8 @@ export default {
         const requestIDNode = document.head.querySelector('meta[name="request-id"]');
 
         return requestIDNode
-          ? `/api/1.0/requests/${requestIDNode.content}/files` + (this.multipleUpload ? '?multiple=true' : '')
-          : 'http://192.168.0.8/api/1.0/requests/1/files?multiple=true';
+          ? `/api/1.0/requests/${requestIDNode.content}/files`
+          : null;
       }
 
       if (this.fileType == 'collection') {
