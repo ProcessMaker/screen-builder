@@ -137,8 +137,9 @@ export default {
     },
   },
   validations() {
-    const defaultValidations = cloneDeepWith(this.ValidationRules__);
+    let defaultValidations = this.ValidationRules__;
     if (this.hiddenFields__.length) {
+      defaultValidations = cloneDeepWith(this.ValidationRules__);
       this.hiddenFields__.forEach((field) => {
         set(defaultValidations, field, {});
       });
