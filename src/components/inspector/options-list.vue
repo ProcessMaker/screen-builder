@@ -444,10 +444,7 @@ export default {
   },
   methods: {
     monacoMounted(editor) {
-      editor.updateOptions({ readOnly:  false });
-      editor.getAction('editor.action.formatDocument').run().then(() => {
-        editor.updateOptions({ readOnly: true });
-      });
+      editor.getAction('editor.action.formatDocument').run();
     },
     getDataSourceList() {
       this.$dataProvider
