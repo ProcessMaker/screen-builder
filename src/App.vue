@@ -204,6 +204,7 @@ import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
 import { cloneDeep, debounce } from 'lodash';
+import 'vue-json-pretty/lib/styles.css';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
