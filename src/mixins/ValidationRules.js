@@ -67,9 +67,9 @@ export const custom_date = (date) => {
   return checkDate.isValid();
 };
   
-export const after = (after) => helpers.withParams({after}, function(date, data) {
+export const after = (after) => helpers.withParams({after}, function(date) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...this.vdata};
   const checkDate = moment(get(dataWithParent, after, after));
   if (!checkDate.isValid()) {
     return false;
@@ -81,9 +81,9 @@ export const after = (after) => helpers.withParams({after}, function(date, data)
   return inputDate > afterDate;
 });
 
-export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_equal}, function(date, data) {
+export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_equal}, function(date) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...this.vdata};
   const checkDate = moment(get(dataWithParent, after_or_equal, after_or_equal));
   if (!checkDate.isValid()) {
     return false;
@@ -94,9 +94,9 @@ export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_e
   return inputDate >= equalOrAfterDate;
 });
 
-export const before = (before) => helpers.withParams({before}, function(date, data) {
+export const before = (before) => helpers.withParams({before}, function(date) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...this.vdata};
   const checkDate = moment(get(dataWithParent, before, before));
   if (!checkDate.isValid()) {
     return false;
@@ -107,9 +107,9 @@ export const before = (before) => helpers.withParams({before}, function(date, da
   return inputDate < beforeDate;
 });
 
-export const before_or_equal = (before_or_equal) => helpers.withParams({before_or_equal}, function(date, data) {
+export const before_or_equal = (before_or_equal) => helpers.withParams({before_or_equal}, function(date) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...this.vdata};
   const checkDate = moment(get(dataWithParent, before_or_equal, before_or_equal));
   if (!checkDate.isValid()) {
     return false;
@@ -150,8 +150,8 @@ export const required = (value) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
 
-export const requiredIf = (variable, expected) => helpers.withParams({variable, expected}, function(value, data) {
-  const dataWithParent = {_parent: this._parent, ...data};
+export const requiredIf = (variable, expected) => helpers.withParams({variable, expected}, function(value) {
+  const dataWithParent = {_parent: this._parent, ...this.vdata};
   const variableValue = get(dataWithParent, variable);
   const isBoolean = (variableValue === true || variableValue === false);
   let expectedValue = expected;
@@ -162,8 +162,8 @@ export const requiredIf = (variable, expected) => helpers.withParams({variable, 
   return value instanceof Array ? value.length > 0 : !!value;
 });
 
-export const requiredUnless = (variable, expected) => helpers.withParams({variable, expected}, function(value, data) {
-  const dataWithParent = {_parent: this._parent, ...data};
+export const requiredUnless = (variable, expected) => helpers.withParams({variable, expected}, function(value) {
+  const dataWithParent = {_parent: this._parent, ...this.vdata};
   const variableValue = get(dataWithParent, variable);
   const isBoolean = (variableValue === true || variableValue === false);
   let expectedValue = expected;
@@ -174,8 +174,8 @@ export const requiredUnless = (variable, expected) => helpers.withParams({variab
   return value instanceof Array ? value.length > 0 : !!value;
 });
   
-export const sameAs = (field) => helpers.withParams({field}, function(value, data) {
-  const dataWithParent = {_parent: this._parent, ...data};
+export const sameAs = (field) => helpers.withParams({field}, function(value) {
+  const dataWithParent = {_parent: this._parent, ...this.vdata};
   const valueSameAs = get(dataWithParent, field);
   return value == valueSameAs;
 });
