@@ -13,8 +13,21 @@ const undoRedoModule = {
     canRedo(state) {
       return state.position < state.stack.length - 1;
     },
-    currentState(state) {
-      return state.stack[state.position];
+    currentState(state, getters) {
+      let currentState = state.stack[state.position];
+
+      if (getters.nextState && getters.nextState.deletedPage) {
+        currentState.currentPage = getters.nextState.currentPage;
+      }
+
+      return currentState;
+    },
+    nextState(state, getters) {
+      if (getters.canRedo) {
+        return state.stack[state.position + 1];
+      }
+
+      return false;
     },
   },
   mutations: {
@@ -22,13 +35,12 @@ const undoRedoModule = {
       state.position = position;
     },
     setState(state, newState) {
-      state.stack = state.stack.slice(0, state.position + 1);
       state.stack.push(newState);
     },
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
-      if (newState === getters.currentState) {
+      if (newState.config === getters.currentState) {
         return;
       }
 
