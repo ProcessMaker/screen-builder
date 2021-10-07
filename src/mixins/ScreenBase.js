@@ -117,6 +117,7 @@ export default {
             setValue
           );
           object = get(object, attr);
+          defaults = get(defaults, attr);
         });
       }
     },
