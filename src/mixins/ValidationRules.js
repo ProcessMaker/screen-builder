@@ -152,13 +152,25 @@ export const required = (value) => {
 
 export const requiredIf = (variable, expected) => helpers.withParams({variable, expected}, function(value, data) {
   const dataWithParent = {_parent: this._parent, ...data};
-  if (get(dataWithParent, variable) != expected) return true;
+  const variableValue = get(dataWithParent, variable);
+  const isBoolean = (variableValue === true || variableValue === false);
+  let expectedValue = expected;
+  if (isBoolean) {
+    expectedValue = expected === 'true' || expected === '1';
+  }
+  if (variableValue != expectedValue) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 });
 
 export const requiredUnless = (variable, expected) => helpers.withParams({variable, expected}, function(value, data) {
   const dataWithParent = {_parent: this._parent, ...data};
-  if (get(dataWithParent, variable) == expected) return true;
+  const variableValue = get(dataWithParent, variable);
+  const isBoolean = (variableValue === true || variableValue === false);
+  let expectedValue = expected;
+  if (isBoolean) {
+    expectedValue = expected === 'true' || expected === '1';
+  }
+  if (variableValue == expectedValue) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 });
   
