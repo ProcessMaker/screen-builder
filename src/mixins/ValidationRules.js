@@ -161,17 +161,29 @@ export const required = (value) => {
 export const requiredIf = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-  if (get(dataWithParent, variable) != expected) return true;
+  const variableValue = get(dataWithParent, variable);
+  const isBoolean = (variableValue === true || variableValue === false);
+  let expectedValue = expected;
+  if (isBoolean) {
+    expectedValue = expected === 'true' || expected === '1';
+  }
+  if (variableValue != expectedValue) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 });
 
 export const requiredUnless = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-  if (get(dataWithParent, variable) == expected) return true;
+  const variableValue = get(dataWithParent, variable);
+  const isBoolean = (variableValue === true || variableValue === false);
+  let expectedValue = expected;
+  if (isBoolean) {
+    expectedValue = expected === 'true' || expected === '1';
+  }
+  if (variableValue == expectedValue) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 });
-  
+
 export const sameAs = (field, fieldName) => helpers.withParams({field}, function(value, data) {
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
