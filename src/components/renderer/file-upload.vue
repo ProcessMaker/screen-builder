@@ -431,8 +431,11 @@ export default {
           if (typeof (window.PM4ConfigOverrides.requestFiles[this.fileDataName]) == 'undefined') {
             window.PM4ConfigOverrides.requestFiles[this.fileDataName] = this.multipleUpload ? [] : {};
           }
+          console.log('multiple upload...');
           if (this.multipleUpload) {
-            window.PM4ConfigOverrides.requestFiles[this.fileDataName].push({id: msg.fileUploadId, file_name: file.name, new:true});
+            const filesData = this.asArray(JSON.parse(JSON.stringify(window.PM4ConfigOverrides.requestFiles[this.fileDataName])));
+            filesData.push({id: msg.fileUploadId, file_name: file.name, new:true});
+            window.PM4ConfigOverrides.requestFiles[this.fileDataName] = filesData;
           } else {
             window.PM4ConfigOverrides.requestFiles[this.fileDataName] = {id: msg.fileUploadId, file_name: file.name, new:true};
           }
@@ -460,6 +463,12 @@ export default {
           this.$emit('input', uploadedObject);
         }
       }
+    },
+    asArray(value) {
+      if (value === null || value === undefined) {
+        return [];
+      }
+      return Array.isArray(value) ? value : [value];
     },
     removed() {
       if (!this.inProgress) {
