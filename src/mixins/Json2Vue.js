@@ -321,7 +321,7 @@ export default {
       component.methods.loadValidationRules = function() {
         // Asynchronous loading of validations
         const validations = {};
-        ValidationsFactory(definition, { screen: definition, firstPage, data: this.vdata }).addValidations(validations).then(() => {
+        ValidationsFactory(definition, { screen: definition, firstPage, data: {_parent: this._parent, ...this.vdata} }).addValidations(validations).then(() => {
           this.ValidationRules__ = validations;
           this.$nextTick(() => {
             this.$v.$touch();
