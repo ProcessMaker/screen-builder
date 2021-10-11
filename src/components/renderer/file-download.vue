@@ -10,11 +10,16 @@
         {{ $t('Loading...') }}
       </div>
       <div v-else>
-        <template v-if="!loading && fileInfo">
-          <b-btn v-show="!isReadOnly" class="mb-2 d-print-none" variant="primary" @click="onClick(fileInfo)" :aria-label="$attrs['aria-label']">
-            <i class="fas fa-file-download"/> {{ $t('Download') }}
-          </b-btn>
-          {{ fileInfo.file_name }}
+        <template v-if="!loading && filesInfo">
+          <div  v-for="file in filesInfo" :key="file.id">
+            <b-btn v-show="!isReadOnly"
+              class="mb-2 d-print-none" variant="primary" :aria-label="$attrs['aria-label']"
+              @click="downloadFile(file)"
+            >
+              <i class="fas fa-file-download"/> {{ $t('Download') }}
+            </b-btn>
+            {{ file.file_name }}
+          </div>
         </template>
         <div v-else>
           {{ $t('No files available for download') }}
@@ -34,23 +39,25 @@ export default {
     return {
       fileType: null,
       loading: true,
-      fileInfo: null,
+      filesInfo: null,
       fileName: null,
       requestId: null,
       collectionId: null,
       recordId: null,
       prefix: '',
+      recordListVarName: null,
     };
   },
   props: ['name', 'value', 'endpoint', 'requestFiles', 'label'],
   beforeMount() {
-    this.getFileType();
+    this.fileType = this.getFileType();
 
     if (this.fileType == 'request') {
-      this.getRequestId();
+      this.requestId = this.getRequestId();
     }
 
     if (this.fileType == 'collection') {
+      // Fill this.recordId and collectionId
       this.getCollectionInfo();
     }
   },
@@ -67,7 +74,7 @@ export default {
     this.setPrefix();
 
     if (this.fileType == 'request') {
-      this.getRequestFiles();
+      this.getFilesInfo();
     }
 
     if (this.fileType == 'collection') {
@@ -77,7 +84,12 @@ export default {
   watch: {
     value(value) {
       this.fileName = value;
-      this.getRequestFiles();
+      if (this.parentRecordList((this)) === null) {
+        this.getFilesInfo();
+      }
+      else {
+        this.getFilesInfo(this.recordListVarName);
+      }
     },
   },
   computed: {
@@ -109,14 +121,13 @@ export default {
     },
     listenRecordList(recordList, index, id) {
       const parent = this.parentRecordList(this);
-      if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
+      if (parent === recordList) {
         const prefix = (this.parentRecordList(this) === null) ? '' : recordList.name + '.';
-        const fileDataName = prefix + this.name + (id ? '.' + id : '');
-        this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
-        this.loading  = false;
+        this.recordListVarName = prefix + this.name + (id ? '.' + id : '');
+        this.getFilesInfo(this.recordListVarName);
       }
     },
-    onClick() {
+    downloadFile() {
       if (this.fileType == 'request') {
         this.downloadRequestFile();
       }
@@ -132,12 +143,12 @@ export default {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
       }
 
-      if (endpoint && this.fileInfo) {
-        const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
+      if (endpoint && this.filesInfo) {
+        const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.filesInfo.token;
         return endpoint + query;
       }
 
-      return '/request/' + this.requestId + '/files/' + this.fileInfo.id;
+      return '/request/' + this.requestId + '/files/' + this.filesInfo.id;
     },
     setPrefix() {
       let parent = this.$parent;
@@ -171,14 +182,14 @@ export default {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', this.fileInfo.file_name);
+        link.setAttribute('download', this.filesInfo.file_name);
         document.body.appendChild(link);
         link.click();
       });
     },
     downloadCollectionFile() {
       window.ProcessMaker.apiClient({
-        url: '/files/' + this.fileInfo.id + '/contents',
+        url: '/files/' + this.filesInfo.id + '/contents',
         method: 'GET',
         responseType: 'blob', // important
       }).then(response => {
@@ -186,20 +197,22 @@ export default {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', this.fileInfo.file_name);
+        link.setAttribute('download', this.filesInfo.file_name);
         document.body.appendChild(link);
         link.click();
       });
     },
     getFileType() {
+      let result = null;
       const requestIdNode = document.head.querySelector('meta[name="request-id"]');
       if (requestIdNode && requestIdNode.content) {
-        this.fileType = 'request';
+        result = 'request';
       }
 
       if (document.head.querySelector('meta[name="collection-id"]')) {
-        this.fileType = 'collection';
+        result = 'collection';
       }
+      return result;
     },
     getRequestId() {
       let node = document.head.querySelector('meta[name="request-id"]');
@@ -207,9 +220,10 @@ export default {
         this.loading = false;
         return;
       }
-      this.requestId = node.content;
+      return node.content;
     },
     getCollectionInfo() {
+      let collectionId, recordId = null;
       let collectionNode = document.head.querySelector('meta[name="collection-id"]');
       if (collectionNode === null) {
         this.loading = false;
@@ -223,56 +237,97 @@ export default {
         return;
       }
       this.recordId = recordNode.content;
+      return {collectionId, recordId};
     },
-    getRequestFiles() {
+    getFilesInfo(variableName = null) {
+      if (this.getFileType() === 'collection') {
+        this.filesInfo = this.value;
+        return;
+      }
+
+      if (this.value === null) {
+        this.loading=false;
+        return;
+      }
+      const name = variableName ? variableName : this.prefix + this.name;
+      const fileIds = this.asArray(this.value);
+      let requestFilesForVarExist = _.has(window, ['PM4ConfigOverrides', 'requestFiles', name]);
+
       let requestFiles = this.requestFiles;
+      const allFilesInValueHaveData =
+        requestFilesForVarExist &&
+        fileIds.every(fileId => {
+          let fieldIsFoundinRequestData = false;
+          for (const variable in window.PM4ConfigOverrides.requestFiles) {
+            const varData = this.asArray(window.PM4ConfigOverrides.requestFiles[variable]);
+            fieldIsFoundinRequestData = fieldIsFoundinRequestData || varData.some(requestFile => requestFile.id === fileId);
+          }
+          return fieldIsFoundinRequestData;
+        });
 
-      if (_.has(window, 'PM4ConfigOverrides.requestFiles')) {
-        requestFiles = window.PM4ConfigOverrides.requestFiles;
+      if (allFilesInValueHaveData) {
+        this.setFileInfo(name);
       }
-
-      if (this.fileType && requestFiles && requestFiles[this.prefix + this.name]) {
-        this.loading = false;
-        if (Array.isArray(requestFiles[this.prefix + this.name])) {
-          this.fileInfo = requestFiles[this.prefix + this.name].find(
-            item =>
-              item.file_name === this.fileName
-              || item.id === this.fileName
-          );
-        } else {
-          this.fileInfo = requestFiles[this.prefix + this.name];
-        }
-        return;
-      }
-
-      if (this.requestId === null) {
-        this.loading = false;
-        return;
-      }
-
-      //do not preload files if the control is inside a record list because
-      // we don't know the row to which the control is associated
-      if (this.parentRecordList(this) === null) {
-        let endpoint = 'requests/' + this.requestId + '/files?name=' + this.prefix + this.name;
-        if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
-          endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-        }
-        if (endpoint && this.fileInfo && this.fileInfo.token) {
-          const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
-          return endpoint + query;
-        }
+      else {
         window.ProcessMaker.apiClient
-          .get(endpoint)
+          .get(`requests/${this.requestId}/files`)
           .then(response => {
-            this.fileInfo = _.get(response, 'data.data.0', null);
+            const data = response.data.data;
+            let filesData = {};
+            data.forEach(fileData => {
+              const varName = _.get(fileData, 'custom_properties.data_name', null);
+              if (varName) {
+                const item = {
+                  id: fileData.id,
+                  file_name: fileData.file_name,
+                };
+                if (filesData[varName]) {
+                  if (!Array.isArray(filesData[varName])) {
+                    filesData[varName] = [filesData[varName]];
+                  }
+                  filesData[varName].push(item);
+                }
+                else {
+                  filesData[varName] = item;
+                }
+              }
+              _.set(window, 'PM4ConfigOverrides.requestFiles', filesData);
+              this.setFileInfo(name);
+            });
             this.loading = false;
           });
       }
     },
+    setFileInfo(name) {
+      let requestFiles = this.requestFiles;
+      if (_.has(window, 'PM4ConfigOverrides.requestFiles')) {
+        requestFiles = window.PM4ConfigOverrides.requestFiles;
+      }
+
+      if (requestFiles[name]) {
+        this.loading = false;
+        //return always an array
+        const filesData = Array.isArray(requestFiles[name]) ? requestFiles[name] :  [requestFiles[name]];
+        const valueIds = Array.isArray(this.value) ? this.value : [this.value];
+        let result = [];
+        valueIds.forEach(valueId => {
+          const fileData = filesData.find(item => item.id === valueId);
+          if (fileData) {
+            result.push(fileData);
+          }
+        });
+        this.filesInfo = result;
+      }
+    },
+    asArray(value) {
+      return Array.isArray(value) ? value : [value];
+    },
     setFileInfoFromCache() {
       const info = _.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null);
       if (info) {
-        this.fileInfo = { ...info, file_name: info.name };
+        this.filesInfo = info.map(item => {
+          return {...item, file_name: item.name};
+        });
       }
     },
     getCollectionFiles() {
@@ -292,9 +347,11 @@ export default {
           .get('collections/' + this.collectionId + '/records/' + this.recordId)
           .then(response => {
             window.ProcessMaker.CollectionData = response.data.data;
+            this.filesInfo = this.value;
             window.ProcessMaker.EventBus.$emit('got-collection-data');
           });
       }
+      this.filesInfo = this.value;
     },
   },
 };
