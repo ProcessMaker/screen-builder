@@ -253,7 +253,6 @@ export default {
       const fileIds = this.asArray(this.value);
       let requestFilesForVarExist = _.has(window, ['PM4ConfigOverrides', 'requestFiles', name]);
 
-      let requestFiles = this.requestFiles;
       const allFilesInValueHaveData =
         requestFilesForVarExist &&
         fileIds.every(fileId => {
