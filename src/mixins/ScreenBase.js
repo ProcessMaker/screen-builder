@@ -1,4 +1,4 @@
-import { get, isEqual, set, cloneDeepWith } from 'lodash';
+import { get, isEqual, set } from 'lodash';
 import Mustache from 'mustache';
 import { ValidationMsg } from './ValidationRules';
 
@@ -138,12 +138,6 @@ export default {
     },
   },
   validations() {
-    const defaultValidations = cloneDeepWith(this.ValidationRules__);
-    if (this.hiddenFields__.length) {
-      this.hiddenFields__.forEach((field) => {
-        set(defaultValidations, field, {});
-      });
-    }
-    return { vdata: defaultValidations };
+    return { vdata: this.ValidationRules__ };
   },
 };
