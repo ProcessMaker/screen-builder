@@ -35,7 +35,7 @@
       <uploader-list>
         <template slot-scope="{ fileList }">
           <ul v-if="multipleUpload">
-            <li v-for="fileId in (value ? value : [])" :key="fileId">
+            <li v-for="fileId in (value ? value : [])" :key="getFileId(fileId)">
               <div class="container-fluid pl-3 pr-3" v-if="configOverrideFile(fileId) && configOverrideFile(fileId).new && fileList.find(x=>x.name === configOverrideFile(fileId).file_name)">
                 <div class="row" style="background:rgb(226 238 255)">
                   <div class="col-11 pr-0 pl-0">
@@ -431,7 +431,6 @@ export default {
           if (typeof (window.PM4ConfigOverrides.requestFiles[this.fileDataName]) == 'undefined') {
             window.PM4ConfigOverrides.requestFiles[this.fileDataName] = this.multipleUpload ? [] : {};
           }
-          console.log('multiple upload...');
           if (this.multipleUpload) {
             const filesData = this.asArray(JSON.parse(JSON.stringify(window.PM4ConfigOverrides.requestFiles[this.fileDataName])));
             filesData.push({id: msg.fileUploadId, file_name: file.name, new:true});
@@ -442,7 +441,7 @@ export default {
           id = msg.fileUploadId;
         }
         const valueToSend = this.multipleUpload
-          ?  window.PM4ConfigOverrides.requestFiles[this.fileDataName].map(item => item.id)
+          ? this.asArray(this.value).concat(id)
           : id;
         this.$emit('input', valueToSend);
       }
@@ -469,6 +468,11 @@ export default {
         return [];
       }
       return Array.isArray(value) ? value : [value];
+    },
+    getFileId(value) {
+      return (typeof value === 'object' && value.id)
+        ? value.id
+        : value;
     },
     removed() {
       if (!this.inProgress) {
