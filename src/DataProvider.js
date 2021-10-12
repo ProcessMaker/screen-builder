@@ -51,9 +51,9 @@ export default {
   baseURL() {
     return localStorage.getItem('baseURL');
   },
-
+  
   // Methods below are used in the components
-
+  
   getTasks(params) {
     const endpoint = _.get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
     return this.get(endpoint + params).then(response => {
@@ -83,8 +83,7 @@ export default {
       const cache = this.screensCache.find(screen => screen.id == id);
       if (cache) {
         resolve({data: cache});
-      }
-      if (!cache && id != undefined) {
+      } else {
         const request = this.get(endpoint + `/${id}${query}`);
         request.then(response => {
           if (response.data.nested) {
@@ -95,7 +94,7 @@ export default {
       }
     });
   },
-
+  
   postScript(id, params) {
     let endpoint = _.get(
       window,
