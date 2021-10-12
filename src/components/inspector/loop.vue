@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="form-group border-bottom pb-3">
+    <div v-if="screenType == 'form'" class="form-group border-bottom pb-3">
       <label for="type">{{ $t('Data Source') }}</label>
       <b-form-select id="type" v-model="settings.type" :options="options" data-cy="inspector-source"/>
     </div>
@@ -17,7 +17,7 @@
     </div>
 
 
-    <div v-if="settings.type === 'new'" class="form-group border-bottom">
+    <div v-if="screenType == 'form' && settings.type === 'new'" class="form-group border-bottom">
       <FormInput
         v-model="settings.times"
         :label="$t('Default Loop Count')"
@@ -28,7 +28,7 @@
       />
     </div>
 
-    <form-checkbox name="add"
+    <form-checkbox v-if="screenType == 'form'" name="add"
       :label="$t('Allow additional loops')"
       v-model="settings.add"
       :helper="$t('Check this box to allow task assignee to add additional loops')"
@@ -41,7 +41,7 @@
 import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
 
 export default {
-  props: ['value'],
+  props: ['value', 'screenType'],
   inheritAttrs: false,
   components: { FormInput, FormCheckbox },
   data() {
