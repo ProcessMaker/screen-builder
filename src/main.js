@@ -140,11 +140,6 @@ window.ProcessMaker = {
     post(url, body) {
       return new Promise((resolve, reject) => {
         switch (url) {
-          case '/scripts/execute/1':
-            window.Echo.watcherMocks(body, {
-              key: '1',
-            });
-            break;
           case '/requests/data_sources/1':
             resolve({data: {
               response: [
