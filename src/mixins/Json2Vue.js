@@ -324,7 +324,9 @@ export default {
         ValidationsFactory(definition, { screen: definition, firstPage, data: {_parent: this._parent, ...this.vdata} }).addValidations(validations).then(() => {
           this.ValidationRules__ = validations;
           this.$nextTick(() => {
-            this.$v.$touch();
+            if (this.$v) {
+              this.$v.$touch();
+            }
           });
         });
       };
