@@ -37,7 +37,7 @@
 
 export default {
   inheritAttrs: false,
-  props: ['label', 'value', 'helper','config'],
+  props: ['label', 'value', 'helper'],
   data() {
     return {
       options: [
