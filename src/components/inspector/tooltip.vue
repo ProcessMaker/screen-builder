@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="buttonType !== 'submit'">
     <label class="typo__label">{{ label }}</label>
     <br >
     <label class="typo__label">{{ $t("Position") }}</label>
@@ -37,7 +37,7 @@
 
 export default {
   inheritAttrs: false,
-  props: ['label', 'value', 'helper'],
+  props: ['label', 'value', 'helper','config'],
   data() {
     return {
       options: [
@@ -128,6 +128,11 @@ export default {
       content: '',
       variant: '',
     };
+  },
+  computed: {
+    buttonType() {
+      return this.$attrs.selectedControl.config.event;
+    }
   },
   watch: {
     value: {
