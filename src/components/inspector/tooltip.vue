@@ -132,7 +132,7 @@ export default {
   computed: {
     buttonType() {
       return this.$attrs.selectedControl.config.event;
-    }
+    },
   },
   watch: {
     value: {
