@@ -116,7 +116,8 @@ export default {
 
     return this.post(
       endpoint.replace('{id}', id) + query,
-      params
+      params,
+      { timeout: 60000 }
     );
   },
 };

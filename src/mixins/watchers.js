@@ -1,7 +1,5 @@
 import Mustache from 'mustache';
 
-const broadcastEvent = '.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated';
-
 const debounce_time = 1000;
 
 export default {
@@ -43,9 +41,14 @@ export default {
           scriptId = watcher.script_key;
         }
         this.$dataProvider.postScript(scriptId, {
+          sync: true,
           watcher: watcher.uid,
           data: input,
           config,
+        }).then(response => {
+          this.loadWatcherResponse(watcher.uid, response.data);
+        }).catch(error => {
+          this.loadWatcherResponse(watcher.uid, null, error);
         });
       }).then((response) => {
         if (watcher.output_variable) {
@@ -97,41 +100,21 @@ export default {
       });
       this.echoListeners.splice(0);
     },
-    loadWatcherResponse(watcherUid, response) {
-      window.ProcessMaker.apiClient.get(`/scripts/execution/${response.key}`).then((result) => {
-        const response = result.data;
-        this.listeners.forEach(({watcher, resolve, exception}) => {
-          if (watcher.uid === watcherUid) {
-            if (response.exception) {
-              exception(response.message);
-            } else {
-              resolve(response.output);
-            }
-          }
-        });
-      }).catch((error) => {
+    loadWatcherResponse(watcherUid, response, error = null) {
+      if (error) {
         this.$parent.$refs.watchersSynchronous.error(error);
+        return;
+      }
+      this.listeners.forEach(({watcher, resolve, exception}) => {
+        if (watcher.uid === watcherUid) {
+          if (response.exception) {
+            exception(response.message);
+          } else {
+            resolve(response.output);
+          }
+        }
       });
     },
-  },
-  mounted() {
-    if (window.ProcessMaker && window.ProcessMaker.user) {
-      const channel = `ProcessMaker.Models.User.${window.ProcessMaker.user.id}`;
-      const event = '.ProcessMaker\\Events\\ScriptResponseEvent';
-      this.echoListeners.push({
-        event,
-        channel,
-        broadcastEvent,
-      });
-      window.Echo.private(channel).listen(
-        event,
-        (data) => {
-          if (data.type === event) {
-            this.loadWatcherResponse(data.watcher, data.response);
-          }
-        },
-      );
-    }
   },
   destroyed() {
     this.cleanEchoListeners();
