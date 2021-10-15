@@ -92,13 +92,22 @@ export default {
         }
 
         globalObject.window.ProcessMaker.apiClient.post(this.watchers_config.api.execute.replace(/script_id\/script_key/, scriptId), {
+          sync: true,
           watcher: watcher.uid,
           data: input,
           config,
+        }).then(response => {
+          this.loadWatcherResponse(watcher.uid, response.data);
+        }).catch(error => {
+          this.loadWatcherResponse(watcher.uid, null, error);
         });
       }
     },
-    loadWatcherResponse(watcherUid, response) {
+    loadWatcherResponse(watcherUid, response, error) {
+      if (error) {
+        this.$parent.$refs.watchersSynchronous.error(error);
+        return;
+      }
       if (!this.watchers)  {
         return;
       }
@@ -161,17 +170,6 @@ export default {
     },
   },
   mounted() {
-    if (globalObject.window.ProcessMaker && globalObject.window.ProcessMaker.user) {
-      const channel = `ProcessMaker.Models.User.${globalObject.window.ProcessMaker.user.id}`;
-      const event = 'ProcessMaker\\Notifications\\ScriptResponseNotification';
-      globalObject.window.Echo.private(channel).notification(
-        (data) => {
-          if (data.type === event) {
-            this.loadWatcherResponse(data.watcher, data.response);
-          }
-        },
-      );
-    }
     this.processWatchersQueue = debounce(this.processWatchersQueue, 1000);
   },
   destroyed() {

@@ -181,7 +181,7 @@ describe('Watchers', () => {
   it('Test synchronous watcher', () => {
     // Mock script response
     cy.server();
-    cy.route('/api/1.0/scripts/execution/1', JSON.stringify({
+    cy.route('POST', '/api/1.0/scripts/execute/1', JSON.stringify({
       output: {
         name: 'Steve',
       },
@@ -225,7 +225,7 @@ describe('Watchers', () => {
   it('Test asynchronous watcher', () => {
     // Mock script response
     cy.server();
-    cy.route('/api/1.0/scripts/execution/1', JSON.stringify({
+    cy.route('POST', '/api/1.0/scripts/execute/1', JSON.stringify({
       output: {
         name: 'Steve',
       },
@@ -267,7 +267,7 @@ describe('Watchers', () => {
   it('Test error in synchronous watcher', () => {
     // Mock script response
     cy.server();
-    cy.route('/api/1.0/scripts/execution/1', JSON.stringify({
+    cy.route('POST', '/api/1.0/scripts/execute/1', JSON.stringify({
       exception: 'Exception',
       message: 'Test exception response',
     }));
@@ -310,7 +310,8 @@ describe('Watchers', () => {
     cy.server();
     cy.loadFromJson('watcher_select_list.json', 0);
     cy.route(
-      '/api/1.0/scripts/execution/1',
+      'POST',
+      '/api/1.0/scripts/execute/1',
       JSON.stringify({
         output: [
           {
