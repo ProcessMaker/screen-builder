@@ -27,6 +27,12 @@ export default {
     },
   },
   methods: {
+    getDataAccordingToFieldLevel(dataWithParent, level) {
+      if (level === 0 || !dataWithParent) {
+        return dataWithParent;
+      }
+      return this.getDataAccordingToFieldLevel(dataWithParent._parent, level - 1);
+    },
     addReferenceToParents(data) {
       if (!data) {
         return;
@@ -50,7 +56,7 @@ export default {
             }
           }
         } else if (data[key] instanceof Object) {
-          const found = this.findParent(child, data[key], key);
+          const found = this.findParent(child, data[key], data);
           if (found) {
             return found;
           }
