@@ -54,6 +54,11 @@ describe('Validation Rules (Advanced test)', () => {
 
     shouldNotHaveValidationErrors();
 
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]').selectOption('two');
+    shouldHaveValidationErrors();
+    fillInputText('screen-field-form_input_12', 0, 'ok');
+    shouldNotHaveValidationErrors();
+
     submitForm();
   });
 });
