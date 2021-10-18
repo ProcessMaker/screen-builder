@@ -67,9 +67,10 @@ export const custom_date = (date) => {
   return checkDate.isValid();
 };
   
-export const after = (after) => helpers.withParams({after}, function(date, data) {
+export const after = (after, fieldName) => helpers.withParams({after}, function(date, data) {
   // Get check date
-  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  const level = fieldName.split('.').length - 1;
+  const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, after, after));
   if (!checkDate.isValid()) {
@@ -82,9 +83,10 @@ export const after = (after) => helpers.withParams({after}, function(date, data)
   return inputDate > afterDate;
 });
 
-export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_equal}, function(date, data) {
+export const after_or_equal = (after_or_equal, fieldName) => helpers.withParams({after_or_equal}, function(date, data) {
   // Get check date
-  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  const level = fieldName.split('.').length - 1;
+  const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, after_or_equal, after_or_equal));
   if (!checkDate.isValid()) {
@@ -96,9 +98,10 @@ export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_e
   return inputDate >= equalOrAfterDate;
 });
 
-export const before = (before) => helpers.withParams({before}, function(date, data) {
+export const before = (before, fieldName) => helpers.withParams({before}, function(date, data) {
   // Get check date
-  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  const level = fieldName.split('.').length - 1;
+  const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, before, before));
   if (!checkDate.isValid()) {
@@ -110,9 +113,10 @@ export const before = (before) => helpers.withParams({before}, function(date, da
   return inputDate < beforeDate;
 });
 
-export const before_or_equal = (before_or_equal) => helpers.withParams({before_or_equal}, function(date, data) {
+export const before_or_equal = (before_or_equal, fieldName) => helpers.withParams({before_or_equal}, function(date, data) {
   // Get check date
-  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  const level = fieldName.split('.').length - 1;
+  const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, before_or_equal, before_or_equal));
   if (!checkDate.isValid()) {
@@ -154,20 +158,23 @@ export const required = (value) => {
   return value instanceof Array ? value.length > 0 : !!value;
 };
 
-export const requiredIf = (variable, expected) => helpers.withParams({variable, expected}, function(value, data) {
-  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+export const requiredIf = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
+  const level = fieldName.split('.').length - 1;
+  const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   if (get(dataWithParent, variable) != expected) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 });
 
-export const requiredUnless = (variable, expected) => helpers.withParams({variable, expected}, function(value, data) {
-  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+export const requiredUnless = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
+  const level = fieldName.split('.').length - 1;
+  const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   if (get(dataWithParent, variable) == expected) return true;
   return value instanceof Array ? value.length > 0 : !!value;
 });
   
-export const sameAs = (field) => helpers.withParams({field}, function(value, data) {
-  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+export const sameAs = (field, fieldName) => helpers.withParams({field}, function(value, data) {
+  const level = fieldName.split('.').length - 1;
+  const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   const valueSameAs = get(dataWithParent, field);
   return value == valueSameAs;
 });

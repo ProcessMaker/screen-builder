@@ -168,6 +168,7 @@ class FormElementValidations extends Validations {
           validation.configs.forEach((cnf) => {
             params.push(cnf.value);
           });
+          params.push(fieldName);
           validationFn = validationFn(...params);
         }
         fieldValidation[rule] = validationFn;
