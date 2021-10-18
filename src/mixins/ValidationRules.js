@@ -69,7 +69,8 @@ export const custom_date = (date) => {
   
 export const after = (after) => helpers.withParams({after}, function(date, data) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, after, after));
   if (!checkDate.isValid()) {
     return false;
@@ -83,7 +84,8 @@ export const after = (after) => helpers.withParams({after}, function(date, data)
 
 export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_equal}, function(date, data) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, after_or_equal, after_or_equal));
   if (!checkDate.isValid()) {
     return false;
@@ -96,7 +98,8 @@ export const after_or_equal = (after_or_equal) => helpers.withParams({after_or_e
 
 export const before = (before) => helpers.withParams({before}, function(date, data) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, before, before));
   if (!checkDate.isValid()) {
     return false;
@@ -109,7 +112,8 @@ export const before = (before) => helpers.withParams({before}, function(date, da
 
 export const before_or_equal = (before_or_equal) => helpers.withParams({before_or_equal}, function(date, data) {
   // Get check date
-  const dataWithParent = {today: moment().format('YYYY-MM-DD'), _parent: this._parent, ...data};
+  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
+  dataWithParent.today = moment().format('YYYY-MM-DD');
   const checkDate = moment(get(dataWithParent, before_or_equal, before_or_equal));
   if (!checkDate.isValid()) {
     return false;
@@ -151,7 +155,7 @@ export const required = (value) => {
 };
 
 export const requiredIf = (variable, expected) => helpers.withParams({variable, expected}, function(value) {
-  const dataWithParent = {_parent: this._parent, ...this.vdata};
+  const dataWithParent = this.getRootScreen().addReferenceToParents(this.vdata);
   const variableValue = get(dataWithParent, variable);
   const isBoolean = (variableValue === true || variableValue === false);
   let expectedValue = expected;
@@ -163,7 +167,7 @@ export const requiredIf = (variable, expected) => helpers.withParams({variable, 
 });
 
 export const requiredUnless = (variable, expected) => helpers.withParams({variable, expected}, function(value) {
-  const dataWithParent = {_parent: this._parent, ...this.vdata};
+  const dataWithParent = this.getRootScreen().addReferenceToParents(this.vdata);
   const variableValue = get(dataWithParent, variable);
   const isBoolean = (variableValue === true || variableValue === false);
   let expectedValue = expected;
@@ -175,7 +179,7 @@ export const requiredUnless = (variable, expected) => helpers.withParams({variab
 });
   
 export const sameAs = (field) => helpers.withParams({field}, function(value, data) {
-  const dataWithParent = {_parent: this._parent, ...data};
+  const dataWithParent = this.getRootScreen().addReferenceToParents(data);
   const valueSameAs = get(dataWithParent, field);
   return value == valueSameAs;
 });

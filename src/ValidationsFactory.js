@@ -88,7 +88,7 @@ class FormLoopValidations extends Validations {
     set(validations, this.element.config.name, {});
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
-    const firstRow = get(this.data, this.element.config.name, [{}])[0];
+    const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
     await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow } }).addValidations(loopField['$each']);
   }
 }
