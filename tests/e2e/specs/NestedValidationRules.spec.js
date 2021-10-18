@@ -81,7 +81,7 @@ describe('Validation Rules (Hidden fields and Nested Screens)', () => {
     submitForm();
   });
 
-  it('Verify validation rules with hidden fields in nested screen before submit', () => {
+  it('Verify validation rules with hidden fields and use of _parent in the conditional validation rules', () => {
     cy.loadFromJson('loops_validations_with_parent_rules.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
