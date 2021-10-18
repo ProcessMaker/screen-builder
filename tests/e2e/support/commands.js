@@ -142,6 +142,16 @@ Cypress.Commands.add('pickToday', { prevSubject: true }, (subject) => {
   cy.get(subject).find('.day.today').click();
 });
 
+Cypress.Commands.add('pickYesterday', { prevSubject: true }, (subject) => {
+  cy.get(subject).find('input').click();
+  cy.get(subject).find('.day.today').prev().click();
+});
+
+Cypress.Commands.add('pickTomorrow', { prevSubject: true }, (subject) => {
+  cy.get(subject).find('input').click();
+  cy.get(subject).find('.day.today').next().click();
+});
+
 Cypress.Commands.add('pickTodayWithTime', { prevSubject: true }, (subject, hour, minute, period='AM') => {
   cy.get(subject).find('input').click();
   cy.get(subject).find('.day.today').click();
