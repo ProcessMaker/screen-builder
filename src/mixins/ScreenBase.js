@@ -27,6 +27,50 @@ export default {
     },
   },
   methods: {
+    getDataAccordingToFieldLevel(dataWithParent, level) {
+      if (level === 0 || !dataWithParent) {
+        return dataWithParent;
+      }
+      return this.getDataAccordingToFieldLevel(dataWithParent._parent, level - 1);
+    },
+    addReferenceToParents(data) {
+      if (!data) {
+        return;
+      }
+      const parent = this.addReferenceToParents(this.findParent(data));
+      return {
+        _parent: parent,
+        ...data,
+      };
+    },
+    findParent(child, data = this.vdata, parent = this._parent) {
+      if (child === data) {
+        return parent;
+      }
+      for (const key in data) {
+        if (data[key] instanceof Array) {
+          for (const item of data[key]) {
+            const result = this.findParent(child, item, data);
+            if (result) {
+              return result;
+            }
+          }
+        } else if (data[key] instanceof Object) {
+          const found = this.findParent(child, data[key], data);
+          if (found) {
+            return found;
+          }
+        } else {
+          if (child === data[key]) {
+            return parent;
+          }
+        }
+      }
+    },
+    getRootScreen(screen = this) {
+      const parentScreen = screen.$parent.$parent;
+      return parentScreen && parentScreen.getRootScreen instanceof Function ? parentScreen.getRootScreen(parentScreen) : screen;
+    },
     tryFormField(variableName, callback, defaultValue = null) {
       try {
         return callback();
