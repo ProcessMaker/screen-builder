@@ -27,6 +27,22 @@ class Validations {
   async addValidations(validations) {
     throw 'Abstract method addValidations not implemented', validations;
   }
+
+  /**
+   * Check if element/container is visible.
+   */
+  isVisible() {
+    // Disable validations if field is hidden
+    let visible = true;
+    if (this.element.config.conditionalHide) {
+      try {
+        visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
+      } catch (error) {
+        visible = false;
+      }
+    }
+    return visible;
+  }    
 }
 
 /**
@@ -60,6 +76,10 @@ class ScreenValidations extends Validations {
  */
 class FormNestedScreenValidations extends Validations {
   async addValidations(validations) {
+    // Disable validations if field is hidden
+    if (!this.isVisible()) {
+      return;
+    }
     const definition = await this.loadScreen(this.element.config.screen);
     if (definition && definition[0] && definition[0].items) {
       await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data }).addValidations(validations);
@@ -85,6 +105,10 @@ class FormNestedScreenValidations extends Validations {
  */
 class FormLoopValidations extends Validations {
   async addValidations(validations) {
+    // Disable validations if field is hidden
+    if (!this.isVisible()) {
+      return;
+    }
     set(validations, this.element.config.name, {});
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
@@ -98,6 +122,10 @@ class FormLoopValidations extends Validations {
  */
 class FormMultiColumnValidations extends Validations {
   async addValidations(validations) {
+    // Disable validations if field is hidden
+    if (!this.isVisible()) {
+      return;
+    }
     await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
   }
 }
@@ -107,6 +135,10 @@ class FormMultiColumnValidations extends Validations {
  */
 class PageNavigateValidations extends Validations {
   async addValidations(validations) {
+    // Disable validations if field is hidden
+    if (!this.isVisible()) {
+      return;
+    }
     if (!this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
       if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
