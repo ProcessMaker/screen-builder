@@ -322,6 +322,9 @@ export default {
         // Asynchronous loading of validations
         const validations = {};
         ValidationsFactory(definition, { screen: definition, firstPage, data: {_parent: this._parent, ...this.vdata} }).addValidations(validations).then(() => {
+          if (_.isEqual(this.ValidationRules__, validations)) {
+            return;
+          }
           this.ValidationRules__ = validations;
           this.$nextTick(() => {
             this.$v.$touch();
