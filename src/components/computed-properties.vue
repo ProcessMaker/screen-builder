@@ -61,6 +61,7 @@
     </template>
 
     <template v-else>
+      <required />
       <form-input
         ref="property"
         v-model="add.property"

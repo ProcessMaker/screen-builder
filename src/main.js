@@ -25,6 +25,9 @@ Vue.use(Vuex);
 Vue.use(ScreenBuilder);
 Vue.component('Multiselect', Multiselect);
 
+// Stub for standalone. Real one is in core.
+Vue.component('required', { template: '<div class="text-right"><small>* = Required</small></div>'});
+
 const store = new Vuex.Store({ modules: {} });
 
 window.axios = axios.create({

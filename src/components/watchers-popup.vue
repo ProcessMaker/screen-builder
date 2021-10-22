@@ -14,6 +14,7 @@
       <watchers-list v-model="current" @display-form="displayForm" @edit-form="edit" @delete-form="confirmRemoval"/>
     </template>
     <template v-else>
+      <required />
       <watchers-form refs="form" :config="add" @display-list="displayList" @save-form="save"/>
     </template>
   </b-modal>
