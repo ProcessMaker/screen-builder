@@ -21,7 +21,7 @@ export default {
         const focusConfig = this.errorsToFocus[0];
         const accordionName = focusConfig.accordion;
         const elementName = focusConfig.element;
-        const accordionRef = accordionName ? this.$refs[accordionName] : null
+        const accordionRef = accordionName ? this.$refs[accordionName] : null;
         const elementRef = this.$refs[elementName];
 
         if (accordionRef && accordionRef.classList.contains('collapsed')) {

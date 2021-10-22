@@ -271,7 +271,6 @@ import OutboundConfig from './inspector/outbound-config';
 import FocusErrors from '../mixins/focusErrors';
 
 import _ from 'lodash';
-import containerColumnsVue from './inspector/container-columns.vue';
 
 const globalObject = typeof window === 'undefined'
   ? global
@@ -612,7 +611,7 @@ export default {
     },
     scriptConfigEditorMounted(editor) {
       this.scriptConfigEditor = editor;
-    }
+    },
   },
 };
 </script>
