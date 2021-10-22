@@ -62,20 +62,20 @@
 
     <template v-else>
       <form-input
-        ref="propName"
+        ref="property"
         v-model="add.property"
         :label="$t('Property Name') + ' *'"
-        :name="$t('Property Name')"
-        :validation="rulePropName"
+        name="property"
+        :error="errors.property"
         class="mb-3"
         data-cy="calcs-property-name"
       />
       <form-text-area
-        ref="propDescription"
+        ref="name"
         v-model="add.name"
         :label="$t('Description') + ' *'"
-        :name="$t('Description')"
-        :validation="ruleDescription"
+        name="name"
+        :error="errors.name"
         class="mb-3"
         data-cy="calcs-property-description"
       />
@@ -91,16 +91,16 @@
         </div>
 
         <form-text-area
-          ref="propFormula"
+          ref="formula"
           v-show="!isJS"
           rows="5"
           v-model="add.formula"
           :label="$t('Formula') + ' *'"
-          :name="$t('Formula')"
-          :validation="ruleFormula"
+          name="formula"
+          :error="errors.formula"
           data-cy="calcs-property-formula"
         />
-        <div v-show="isJS" class="editor-border" :class="{'is-invalid':editorInvalid}"/>
+        <div v-show="isJS" class="editor-border" :class="{'is-invalid':!!errors.formula}"/>
         <monaco-editor
           v-show="isJS"
           :options="monacoOptions"
@@ -108,9 +108,10 @@
           v-model="add.formula"
           language="javascript"
           data-cy="calcs-property-javascript"
+          @editorDidMount="editorMounted"
         />
-        <div v-if="isJS && editorInvalid" class="invalid-feedback d-block">
-          <div>{{ $t('The property formula field is required.') }}</div>
+        <div v-if="isJS && errors.formula" class="invalid-feedback d-block">
+          <div>{{ errors.formula }}</div>
         </div>
       </div>
       <template slot="modal-footer">
@@ -133,10 +134,12 @@
 <script>
 import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
+import FocusErrors from '../mixins/focusErrors';
 
 let Validator = require('validatorjs');
 
 export default {
+  mixins: [FocusErrors],
   components: {
     FormInput,
     FormTextArea,
@@ -192,6 +195,8 @@ export default {
         lineNumbers: 'off',
         minimap: false,
       },
+      monacoEditor: null,
+      errors: {},
     };
   },
   watch: {
@@ -201,22 +206,6 @@ export default {
         item.id = this.numberItem;
       });
       this.current = this.value;
-    },
-    'add.property': {
-      handler() {
-        this.rulePropName = 'required|exists-property';
-      },
-    },
-    'add.name': {
-      handler() {
-        this.ruleDescription = 'required';
-      },
-    },
-    'add.formula': {
-      handler() {
-        this.ruleFormula = 'required';
-        this.editorInvalid = this.add.formula.trim() === '';
-      },
     },
   },
   computed: {
@@ -270,20 +259,33 @@ export default {
       this.displayList = false;
     },
     validateData() {
-      this.ruleDescription = 'required';
-      this.ruleFormula = 'required';
-      this.rulePropName = 'required|exists-property';
-      this.editorInvalid = this.add.formula.trim() === '';
+      this.errors = [];
+      
+      const rules = {
+        property: 'required|exists-property',
+        name: 'required',
+        formula: 'required',
+      };
+      const data = {
+        property: this.add.property,
+        name: this.add.name,
+        formula: this.add.formula,
+      };
 
-      let valid = true;
-      for (let item in this.$refs) {
-        if (this.$refs[item].name && this.$refs[item].validator && this.$refs[item].validator.errorCount !== 0) {
-          valid = false;
-        }
-      }
+      const validation = new Validator(data, rules);
+      const valid = validation.passes();
 
-      if (valid && !this.editorInvalid) {
+      this.errors = Object.fromEntries(
+        Object.keys(
+          validation.errors.all())
+          .map(prop => [prop, validation.errors.first(prop)]
+          )
+      );
+
+      if (valid) {
         this.saveProperty();
+      } else {
+        this.focusFirstCalculatedPropertiesError();
       }
     },
     saveProperty() {
@@ -324,6 +326,9 @@ export default {
       });
       this.$emit('input', this.current);
       this.displayTableList();
+    },
+    editorMounted(editor) {
+      this.monacoEditor = editor;
     },
   },
   created() {
