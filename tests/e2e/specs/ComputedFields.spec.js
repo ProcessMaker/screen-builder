@@ -114,4 +114,21 @@ describe('Computed fields', () => {
       form_input_2: 4,
     });
   });
+
+  it('Focuses the first field that has an error', () => {
+    cy.visit('/');
+    cy.get('[data-cy="topbar-calcs"]').click();
+    cy.get('[data-cy="calcs-add-property"]').click();
+    cy.get('[data-cy="calcs-property-name"]').clear().type('form_input_1');
+    cy.get('[data-cy="calcs-button-save"]').click();
+
+    cy.focused().should('have.attr', 'data-cy', 'calcs-property-description');
+
+    cy.get('[data-cy="calcs-property-description"]').clear().type('something');
+    cy.get('[data-cy="calcs-button-save"]').click();
+    cy.get('[data-cy="calcs-switch-javascript"]').click();
+    cy.get('[data-cy="calcs-button-save"]').click();
+
+    cy.focused().should('have.attr', 'class', 'inputarea'); // Monaco should be focused
+  });
 });
