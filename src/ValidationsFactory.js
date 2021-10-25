@@ -107,7 +107,8 @@ class FormMultiColumnValidations extends Validations {
  */
 class PageNavigateValidations extends Validations {
   async addValidations(validations) {
-    if (this.screen.pagesValidated && !this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
+    const page = parseInt(this.element.config.eventData);
+    if (!isNaN(page) && !this.screen.pagesValidated.includes(page)) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
       if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
         await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
