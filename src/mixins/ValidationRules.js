@@ -184,7 +184,7 @@ export const sameAs = (field) => helpers.withParams({field}, function(value) {
 
 export const digitsBetween = (min, max) => helpers.withParams({min,max}, function(value) {
   const number = Number(value);
-  if (number > min && number < max) {
+  if (number >= min && number <= max) {
     return true;
   }
   return false;
@@ -192,7 +192,7 @@ export const digitsBetween = (min, max) => helpers.withParams({min,max}, functio
 
 export const betweenLength = (min, max) => helpers.withParams({min,max}, function(value) {
   const length = value.length;
-  if (length > min && length < max) {
+  if (length >= min && length <= max) {
     return true;
   }
   return false;
