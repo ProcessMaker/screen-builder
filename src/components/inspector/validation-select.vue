@@ -130,9 +130,20 @@ export default {
         },
         {
           value: '',
-          field: 'between:',
-          content: this.$t('Between Min & Max'),
+          field: 'between_length:',
+          content: this.$t('Between Min & Max Characters'),
           helper: this.$t('The field under validation must have a size between the given min and max.'),
+          visible: true,
+          configs: [
+            { type: 'FormInput', label: this.$t('Min'), helper: '', validation:'required|integer' },
+            { type: 'FormInput', label: this.$t('Max'), helper: '', validation:'required|integer' },
+          ],
+        },
+        {
+          value: '',
+          field: 'digits_between:',
+          content: this.$t('Between Min & Max Number'),
+          helper: this.$t('Checks if a number is in specified bounds. Min and max are both inclusive.'),
           visible: true,
           configs: [
             { type: 'FormInput', label: this.$t('Min'), helper: '', validation:'required|integer' },

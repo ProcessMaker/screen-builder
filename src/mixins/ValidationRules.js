@@ -7,7 +7,7 @@ import {
   maxLength,
   minValue,
   maxValue,
-  between,
+  // between,
   alpha,
   alphaNum,
   numeric,
@@ -36,7 +36,8 @@ export const ValidationMsg = {
   max: 'Must have at most {max}',
   minValue: 'Must have a minimum value of {min}',
   maxValue: 'Must have a maximum value of {max}',
-  between: 'Must have a value between {min} and {max}',
+  betweenLength: 'Must have character length between {min} and {max}',
+  digitsBetween: 'Must have a value between {min} and {max}',
   alpha: 'Accepts only alphabet characters',
   alphaNum: 'Accepts only alphanumerics',
   numeric: 'Accepts only numerics',
@@ -180,6 +181,22 @@ export const sameAs = (field) => helpers.withParams({field}, function(value) {
   return value == valueSameAs;
 });
 
+export const digitsBetween = (min, max) => helpers.withParams({min,max}, function(value) {
+  const number = Number(value);
+  if (number > min && number < max) {
+    return true;
+  }
+  return false;
+});
+
+export const betweenLength = (min, max) => helpers.withParams({min,max}, function(value) {
+  const length = value.length;
+  if (length > min && length < max) {
+    return true;
+  }
+  return false;
+});
+
 export const validators = {
   required,
   requiredIf,
@@ -190,7 +207,10 @@ export const validators = {
   max: maxLength,
   minValue,
   maxValue,
-  between,
+  // between,
+  betweenLength,
+  digitsBetween,
+  between: digitsBetween,
   alpha,
   alphaNum,
   numeric,
