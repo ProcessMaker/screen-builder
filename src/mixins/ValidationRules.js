@@ -36,6 +36,7 @@ export const ValidationMsg = {
   max: 'Must have at most {max}',
   minValue: 'Must have a minimum value of {min}',
   maxValue: 'Must have a maximum value of {max}',
+  between: 'Must have a value between {min} and {max}',
   betweenLength: 'Must have character length between {min} and {max}',
   digitsBetween: 'Must have a value between {min} and {max}',
   alpha: 'Accepts only alphabet characters',
