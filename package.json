@@ -69,7 +69,7 @@
     "nyc": "^15.1.0",
     "sass-loader": "^10.2.0",
     "v-calendar": "^0.9.7",
-    "validatorjs": "^3.14.2",
+    "validatorjs": "^3.22.1",
     "vue": "^2.6.12",
     "vue-deepset": "^0.6.3",
     "vue-json-pretty": "^1.4.0",
