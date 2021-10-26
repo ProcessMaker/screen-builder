@@ -62,7 +62,7 @@ describe('Validation Rules', () => {
       .parent()
       .should('not.contain.text', 'Invalid value');
 
-    // between
+    // between digits
     cy.get('[data-cy=preview-content] [name=form_input_5]').type(10);
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_5"]')
       .parent()
@@ -73,6 +73,18 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_5"]')
       .parent()
       .should('not.contain.text', 'Must have a value between 1 and 5');
+
+    // between character length
+    cy.get('[data-cy=preview-content] [name=form_input_7]').type('F');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_7"]')
+      .parent()
+      .should('contain.text', 'Must have a character length between 2 and 10');
+    cy.get('[data-cy=preview-content] [name=form_input_7]')
+      .clear()
+      .type('Foobar');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_7"]')
+      .parent()
+      .should('not.contain.text', 'Must have a character length between 2 and 10');
 
     // same
     cy.get('[data-cy=preview-content] [name=form_input_6]').type(10);
@@ -101,7 +113,7 @@ describe('Validation Rules', () => {
       .parent()
       .should('not.contain.text', 'Must be equal or before today');
 
-    //submit form valid
+    // submit form valid
     cy.get(':nth-child(9) > .form-group > .btn').click();
     cy.on('window:alert', (str) => {
       expect(str).to.equal('Preview Form was Submitted');
