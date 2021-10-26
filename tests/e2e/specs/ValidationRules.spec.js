@@ -114,7 +114,7 @@ describe('Validation Rules', () => {
       .should('not.contain.text', 'Must be equal or before today');
 
     // submit form valid
-    cy.get(':nth-child(9) > .form-group > .btn').click();
+    cy.get(':nth-child(10) > .form-group > .btn').click();
     cy.on('window:alert', (str) => {
       expect(str).to.equal('Preview Form was Submitted');
     });
