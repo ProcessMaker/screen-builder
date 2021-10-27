@@ -188,8 +188,8 @@ export const digitsBetween = (min, max) => helpers.withParams({min,max}, functio
   }
   const number = Number(value);
   
-  return new Promise((resolve, reject) => {
-    resolve(number >= min && number <= max) 
+  return new Promise((resolve) => {
+    resolve(number >= min && number <= max);
   });
 });
 
@@ -198,8 +198,8 @@ export const betweenLength = (min, max) => helpers.withParams({min,max}, functio
     return true;
   }
   const length = value.length;
-  return new Promise((resolve, reject) => {
-    resolve(typeof value === 'string' && length >= min && length <= max)
+  return new Promise((resolve) => {
+    resolve(typeof value === 'string' && length >= min && length <= max);
   });
 });
 
