@@ -42,9 +42,6 @@
               data-cy="watchers-watcher-variable"
               ref="watching"
             />
-            <div v-if="ruleWatcherVariable && !config.watching" class="mt-n2 mb-3 invalid-feedback d-block">
-              <div>{{ $t('The Variable to Watch field is required') }}</div>
-            </div>
 
             <form-checkbox
               :name="$t('Run Synchronously')"
@@ -104,9 +101,6 @@
               data-cy="watchers-watcher-source"
               ref="script"
             />
-            <div v-if="ruleWatcherScript && !config.script" class="invalid-feedback d-block mt-n2 mb-3">
-              <div>{{ $t('The Source field is required') }}</div>
-            </div>
 
             <div v-if="isScript">
               <b-alert v-if="config.script" show variant="warning">
