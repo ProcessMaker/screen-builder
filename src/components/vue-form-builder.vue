@@ -253,7 +253,7 @@
     >
       <form-input v-model="addPageName"
         :name="$t('Page Name')"
-        :label="$t('Page Name')"
+        :label="$t('Page Name') + ' *'"
         :helper="$t('The name of the new page to add')"
         validation="unique-page-name|required"
         ref="addPageInput"
@@ -273,7 +273,7 @@
       header-close-content="&times;"
     >
       <form-input v-model="editPageName"
-        :label="$t('Page Name')"
+        :label="$t('Page Name') + ' *'"
         :helper="$t('The new name of the page')"
         validation="unique-page-name|required"
         ref="editPageInput"
