@@ -258,6 +258,8 @@
         validation="unique-page-name|required"
         ref="addPageInput"
         data-cy="add-page-name"
+        required
+        aria-required="true"
       />
     </b-modal>
 
@@ -275,6 +277,8 @@
         :helper="$t('The new name of the page')"
         validation="unique-page-name|required"
         ref="editPageInput"
+        required
+        aria-required="true"
       />
     </b-modal>
 
