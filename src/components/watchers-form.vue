@@ -20,6 +20,8 @@
               :validation="ruleWatcherName"
               :helper="$t('A name to describe this Watcher')"
               data-cy="watchers-watcher-name"
+              required
+              aria-required="true"
             />
 
             <form-multi-select
@@ -236,6 +238,8 @@
               :helper="$t('The variable that will store the output of the Watcher')"
               :validation="ruleWatcherOutputVariable"
               data-cy="watchers-watcher-output_variable"
+              required
+              aria-required="true"
             />
             <data-mapping v-if="isDatasource" v-model="scriptConfig"/>
           </div>
