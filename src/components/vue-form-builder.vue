@@ -251,6 +251,7 @@
       header-close-content="&times;"
       data-cy="add-page-modal"
     >
+      <required />
       <form-input v-model="addPageName"
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
@@ -272,6 +273,7 @@
       ok-variant="btn btn-secondary ml-2"
       header-close-content="&times;"
     >
+      <required />
       <form-input v-model="editPageName"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The new name of the page')"
