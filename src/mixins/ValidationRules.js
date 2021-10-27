@@ -183,19 +183,24 @@ export const sameAs = (field) => helpers.withParams({field}, function(value) {
 });
 
 export const digitsBetween = (min, max) => helpers.withParams({min,max}, function(value) {
-  const number = Number(value);
-  if (number >= min && number <= max) {
+  if (value === '') {
     return true;
   }
-  return false;
+  const number = Number(value);
+  
+  return new Promise((resolve, reject) => {
+    resolve(number >= min && number <= max) 
+  });
 });
 
 export const betweenLength = (min, max) => helpers.withParams({min,max}, function(value) {
-  const length = value.length;
-  if (length >= min && length <= max) {
+  if (value === '') {
     return true;
   }
-  return false;
+  const length = value.length;
+  return new Promise((resolve, reject) => {
+    resolve(typeof value === 'string' && length >= min && length <= max)
+  });
 });
 
 export const validators = {
