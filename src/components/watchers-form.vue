@@ -25,8 +25,8 @@
             />
 
             <form-multi-select
-              :name="$t('Variable to Watch') + ' *'"
-              :label="$t('Variable to Watch')"
+              :name="$t('Variable to Watch')"
+              :label="$t('Variable to Watch') + ' *'"
               :options="variables"
               :taggable="true"
               v-model="config.watching"
