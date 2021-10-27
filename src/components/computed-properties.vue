@@ -70,6 +70,8 @@
         :error="errors.property"
         class="mb-3"
         data-cy="calcs-property-name"
+        required
+        aria-required="true"
       />
       <form-text-area
         ref="name"
@@ -79,6 +81,8 @@
         :error="errors.name"
         class="mb-3"
         data-cy="calcs-property-description"
+        required
+        aria-required="true"
       />
       <div class="form-group mb-3" style='position: relative;'>
         <label v-show="isJS">{{ $t('Formula') + ' *' }}</label>
@@ -100,6 +104,8 @@
           name="formula"
           :error="errors.formula"
           data-cy="calcs-property-formula"
+          required
+          aria-required="true"
         />
         <div v-show="isJS" class="editor-border" :class="{'is-invalid':!!errors.formula}"/>
         <monaco-editor
@@ -110,6 +116,8 @@
           language="javascript"
           data-cy="calcs-property-javascript"
           @editorDidMount="editorMounted"
+          required
+          aria-required="true"
         />
         <div v-if="isJS && errors.formula" class="invalid-feedback d-block">
           <div>{{ errors.formula }}</div>
