@@ -227,13 +227,13 @@
               ref="propOutputVariableName"
               v-if="hasInputData || isScript"
               v-model="config.output_variable"
-              :label="$t('Output Variable') + ' *'"
+              :label="outputVarLabel"
               :name="$t('Output Variable')"
               :helper="$t('The variable that will store the output of the Watcher')"
               :validation="ruleWatcherOutputVariable"
               data-cy="watchers-watcher-output_variable"
-              required
-              aria-required="true"
+              :required="ruleWatcherOutputVariable == 'required' ? true : false"
+              :aria-required="ruleWatcherOutputVariable == 'required' ? true : false"
             />
             <data-mapping v-if="isDatasource" v-model="scriptConfig"/>
           </div>
@@ -452,6 +452,10 @@ export default {
       }
       return Object.keys(config.input_data).length === 0 && config.input_data.constructor === Object;
     },
+    outputVarLabel() {
+      const required = this.ruleWatcherOutputVariable == 'required' ? ' *' : '';
+      return this.$t('Output Variable') + required;
+    }
   },
   methods: {
     selectedDataSourceId() {
