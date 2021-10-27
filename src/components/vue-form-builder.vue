@@ -275,6 +275,7 @@
     >
       <required />
       <form-input v-model="editPageName"
+        :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The new name of the page')"
         validation="unique-page-name|required"
