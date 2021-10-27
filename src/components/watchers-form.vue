@@ -455,7 +455,7 @@ export default {
     outputVarLabel() {
       const required = this.ruleWatcherOutputVariable == 'required' ? ' *' : '';
       return this.$t('Output Variable') + required;
-    }
+    },
   },
   methods: {
     selectedDataSourceId() {
