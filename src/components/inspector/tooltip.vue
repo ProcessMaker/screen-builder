@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="buttonType !== 'submit'">
     <label class="typo__label">{{ label }}</label>
     <br >
     <label class="typo__label">{{ $t("Position") }}</label>
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import _ from 'lodash';
 
 export default {
   inheritAttrs: false,
@@ -128,6 +129,11 @@ export default {
       content: '',
       variant: '',
     };
+  },
+  computed: {
+    buttonType() {
+      return _.get(this.$attrs, 'selectedControl.config.event');
+    },
   },
   watch: {
     value: {
