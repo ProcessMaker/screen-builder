@@ -11,14 +11,14 @@
       </div>
       <div v-else>
         <template v-if="!loading && filesInfo">
-          <div  v-for="file in filesInfo" :key="file.id">
+          <div  v-for="file in asArray(filesInfo)" :key="file.id" :nada="JSON.stringify(file)" :data-cy="file.id + '-' + (file.name ? file.name : file.file_name).replace(/[^0-9a-zA-Z\-]/g, '-')">
             <b-btn v-show="!isReadOnly"
               class="mb-2 d-print-none" variant="primary" :aria-label="$attrs['aria-label']"
               @click="downloadFile(file)"
             >
               <i class="fas fa-file-download"/> {{ $t('Download') }}
             </b-btn>
-            {{ file.file_name }}
+            {{ file.name }}
           </div>
         </template>
         <div v-else>
@@ -84,6 +84,7 @@ export default {
   watch: {
     value(value) {
       this.fileName = value;
+      console.log('file changed');
       if (this.parentRecordList((this)) === null) {
         this.getFilesInfo();
       }
@@ -127,13 +128,13 @@ export default {
         this.getFilesInfo(this.recordListVarName);
       }
     },
-    downloadFile() {
+    downloadFile(file) {
       if (this.fileType == 'request') {
-        this.downloadRequestFile();
+        this.downloadRequestFile(file);
       }
 
       if (this.fileType == 'collection') {
-        this.downloadCollectionFile();
+        this.downloadCollectionFile(file);
       }
     },
     requestEndpoint() {
@@ -187,9 +188,9 @@ export default {
         link.click();
       });
     },
-    downloadCollectionFile() {
+    downloadCollectionFile(file) {
       window.ProcessMaker.apiClient({
-        url: '/files/' + this.filesInfo.id + '/contents',
+        url: '/files/' + file.id + '/contents',
         method: 'GET',
         responseType: 'blob', // important
       }).then(response => {
@@ -197,7 +198,7 @@ export default {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', this.filesInfo.file_name);
+        link.setAttribute('download', file.name);
         document.body.appendChild(link);
         link.click();
       });
@@ -319,10 +320,14 @@ export default {
       }
     },
     asArray(value) {
+      if(value === null || value === undefined) {
+        return null;
+      }
       return Array.isArray(value) ? value : [value];
     },
     setFileInfoFromCache() {
-      const info = _.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null);
+      const info = this.asArray(_.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null));
+      console.log('info', info);
       if (info) {
         this.filesInfo = info.map(item => {
           return {...item, file_name: item.name};

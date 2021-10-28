@@ -35,7 +35,7 @@
       <uploader-list>
         <template slot-scope="{ fileList }">
           <ul v-if="multipleUpload">
-            <li v-for="fileId in (value ? value : [])" :key="getFileId(fileId)">
+            <li v-for="fileId in (value ? value : [])" :key="getFileId(fileId)" :data-cy="fileId">
               <div class="container-fluid pl-3 pr-3" v-if="configOverrideFile(fileId) && configOverrideFile(fileId).new && fileList.find(x=>x.name === configOverrideFile(fileId).file_name)">
                 <div class="row" style="background:rgb(226 238 255)">
                   <div class="col-11 pr-0 pl-0">
@@ -68,7 +68,7 @@
                 <i class="fas fa-paperclip"/> {{ displayName }}
               </div>
             </li>
-            <li v-for="file in fileList" :key="file.id">
+            <li v-for="file in fileList" :key="file.id" :data-cy="file.name.replace(/[^0-9a-zA-Z\-]/g, '-')" :nada="JSON.stringify(file)" >
               <uploader-file :file="file" :list="true"/>
             </li>
           </ul>
