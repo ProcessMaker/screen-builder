@@ -356,6 +356,7 @@ import {
 } from '@processmaker/vue-form-elements';
 
 import RequiredCheckbox from './utils/required-checkbox';
+import MultipleUploadsCheckbox from './utils/multiple-uploads-checkbox';
 
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import { formTypes } from '@/global-properties';
@@ -396,6 +397,7 @@ export default {
     FormHtmlEditor,
     FormHtmlViewer,
     RequiredCheckbox,
+    MultipleUploadsCheckbox,
     ...inspector,
     ...renderer,
   },
