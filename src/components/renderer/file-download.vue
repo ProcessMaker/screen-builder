@@ -84,7 +84,6 @@ export default {
   watch: {
     value(value) {
       this.fileName = value;
-      console.log('file changed');
       if (this.parentRecordList((this)) === null) {
         this.getFilesInfo();
       }
@@ -320,14 +319,13 @@ export default {
       }
     },
     asArray(value) {
-      if(value === null || value === undefined) {
+      if (value === null || value === undefined) {
         return null;
       }
       return Array.isArray(value) ? value : [value];
     },
     setFileInfoFromCache() {
       const info = this.asArray(_.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null));
-      console.log('info', info);
       if (info) {
         this.filesInfo = info.map(item => {
           return {...item, file_name: item.name};
