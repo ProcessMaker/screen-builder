@@ -94,11 +94,13 @@ const uniqIdsMixin = createUniqIdsMixin();
 
 // vue-simple-uploader tries to call these after the component has
 // been destroyed since it does it in nextTick(). It has no effect
-// on functionality because a new copy is created. TODO: Why is this
-// component being recreated when used in a loop?
+// on functionality because a new copy is created.
+// TODO: Why is this component being recreated when used in a loop?
 const ignoreErrors = [
   'Cannot read property \'assignBrowse\' of null',
   'Cannot read property \'assignDrop\' of null',
+  'Cannot read properties of null (reading \'assignBrowse\')',
+  'Cannot read properties of null (reading \'assignDrop\')',
 ];
 
 export default {
@@ -122,7 +124,7 @@ export default {
       (loop, removed) => this.listenRemovedLoop(loop, removed));
 
     this.removeDefaultClasses();
-    
+
     this.checkIfInRecordList();
 
     this.setPrefix();
@@ -508,7 +510,7 @@ export default {
       if (_.has(window, 'PM4ConfigOverrides.postFileEndpoint')) {
         return window.PM4ConfigOverrides.postFileEndpoint;
       }
-      
+
       if (this.endpoint) {
         return this.endpoint;
       }
