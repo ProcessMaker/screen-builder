@@ -80,18 +80,46 @@ describe('Validation Rules (Hidden fields and Nested Screens)', () => {
 
     submitForm();
   });
+
+  it('Verify validation rules with hidden fields and use of _parent in the conditional validation rules', () => {
+    cy.loadFromJson('loops_validations_with_parent_rules.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    fillInputText('screen-field-form_input_1', 0, '13');
+    shouldHaveValidationErrors();
+
+    fillInputText('screen-field-form_input_3', 0, 'ok');
+    shouldHaveValidationErrors();
+    fillInputText('screen-field-form_input_3', 1, 'ok');
+    shouldHaveValidationErrors();
+    fillInputText('screen-field-form_input_3', 2, 'ok');
+    shouldNotHaveValidationErrors();
+
+    fillInputText('screen-field-form_input_1', 1, '12');
+    shouldHaveValidationErrors();
+    fillInputText('screen-field-form_input_2', 0, 'ok');
+    shouldNotHaveValidationErrors();
+
+    fillInputText('screen-field-form_input_2', 0, '10');
+    shouldHaveValidationErrors();
+
+    fillInputText('screen-field-form_input_4', 0, 'ok');
+    shouldNotHaveValidationErrors();
+
+    submitForm();
+  });
 });
 
-function fillInputText(dataCy, index = null)
+function fillInputText(dataCy, index = null, value = 'test')
 {
   if (index === null) {
     cy.get(`[data-cy=preview-content] [data-cy="${dataCy}"]`)
       .clear()
-      .type('test');
+      .type(value);
   } else {
     cy.get(`[data-cy=preview-content] [data-cy="${dataCy}"]`).eq(index)
       .clear()
-      .type('test');
+      .type(value);
   }
 }
 
@@ -99,6 +127,12 @@ function shouldHaveValidationErrors()
 {
   cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
     .should('contain.html', 'alert alert-danger');
+}
+
+function shouldNotHaveValidationErrors()
+{
+  cy.get('#preview .form-group.form-group--error:visible')
+    .should('have.length', 0);
 }
 
 function submitForm()
