@@ -18,7 +18,7 @@
             >
               <i class="fas fa-file-download"/> {{ $t('Download') }}
             </b-btn>
-            {{ file.name }}
+            {{ file.name ? file.name : file.file_name }}
           </div>
         </template>
         <div v-else>
@@ -137,7 +137,7 @@ export default {
         this.downloadCollectionFile(file);
       }
     },
-    requestEndpoint() {
+    requestEndpoint(file) {
       let endpoint = this.endpoint;
 
       if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
@@ -149,7 +149,7 @@ export default {
         return endpoint + query;
       }
 
-      return '/request/' + this.requestId + '/files/' + this.filesInfo.id;
+      return '/request/' + this.requestId + '/files/' + file.id;
     },
     setPrefix() {
       let parent = this.$parent;
@@ -172,10 +172,10 @@ export default {
         this.prefix = parent.loopContext + '.';
       }
     },
-    downloadRequestFile() {
+    downloadRequestFile(file) {
       window.ProcessMaker.apiClient({
         baseURL: '/',
-        url: this.requestEndpoint(),
+        url: this.requestEndpoint(file),
         method: 'GET',
         responseType: 'blob', // important
       }).then(response => {
@@ -183,7 +183,7 @@ export default {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', this.filesInfo.file_name);
+        link.setAttribute('download', (file.name ? file.name : file.file_name));
         document.body.appendChild(link);
         link.click();
       });
