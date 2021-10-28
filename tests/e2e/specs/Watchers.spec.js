@@ -405,4 +405,24 @@ describe('Watchers', () => {
       ],
     });
   });
+  it.only('Focuses the first field that has an error', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy="topbar-watchers"]').click();
+    cy.get('[data-cy="watchers-add-watcher"]').click();
+    cy.get('[data-cy="watchers-watcher-name"]').clear().type('Watcher test');
+    cy.setMultiselect('[data-cy="watchers-watcher-variable"]', 'form_input_1');
+    cy.get('[data-cy="watchers-button-save"]').click();
+
+    cy.get('[data-cy="watchers-watcher-source"] .multiselect__content-wrapper').should('be.visible');
+
+    cy.get('#option-1-3').click(); // Select "script" source
+    cy.get('[data-cy="watchers-watcher-input_data"] .monaco-editor').click().focused().type('abc');
+    cy.get('[data-cy="watchers-accordion-output"]').click();
+    cy.get('[data-cy="watchers-watcher-output_variable"]').clear().type('output');
+    cy.get('[data-cy="watchers-button-save"]').click();
+    
+    cy.focused().should('be.visible'); // Source accordion opens automatically
+    cy.focused().should('have.attr', 'class', 'inputarea'); // Monaco should be focused
+  });
 });
