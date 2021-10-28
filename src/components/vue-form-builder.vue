@@ -437,10 +437,10 @@ export default {
       return this;
     },
     canUndo() {
-      return this.$store.getters[`page-${this.currentPage}/canUndo`];
+      return this.$store.getters['undoRedoModule/canUndo'];
     },
     canRedo() {
-      return this.$store.getters[`page-${this.currentPage}/canRedo`];
+      return this.$store.getters['undoRedoModule/canRedo'];
     },
     displayDelete() {
       return this.config.length > 1;
@@ -664,18 +664,19 @@ export default {
       });
     },
     updateState() {
-      const items = this.config[this.currentPage].items;
-      this.$store.dispatch(`page-${this.currentPage}/pushState`, JSON.stringify(items));
+      this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage});
     },
     undo() {
       this.inspect();
-      this.$store.dispatch(`page-${this.currentPage}/undo`);
-      this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+      this.$store.dispatch('undoRedoModule/undo');
+      this.config = JSON.parse(this.$store.getters['undoRedoModule/currentState'].config);
+      this.currentPage = JSON.parse(this.$store.getters['undoRedoModule/currentState'].currentPage);
     },
     redo() {
       this.inspect();
-      this.$store.dispatch(`page-${this.currentPage}/redo`);
-      this.config[this.currentPage].items = JSON.parse(this.$store.getters[`page-${this.currentPage}/currentState`]);
+      this.$store.dispatch('undoRedoModule/redo');
+      this.config = JSON.parse(this.$store.getters['undoRedoModule/currentState'].config);
+      this.currentPage = JSON.parse(this.$store.getters['undoRedoModule/currentState'].currentPage);
     },
     updateConfig(items) {
       this.config[this.currentPage].items = items;
@@ -740,12 +741,12 @@ export default {
       this.config.push({ name: this.addPageName, items: [] });
       this.currentPage = this.config.length - 1;
       this.addPageName = '';
-      this.$store.registerModule(`page-${this.currentPage}`, undoRedoModule);
       this.updateState();
     },
     deletePage() {
-      this.currentPage = 0;
       this.config.splice(this.pageDelete, 1);
+      this.currentPage = (this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0);
+      this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage, 'deletedPage': true});
     },
     inspect(element = {}) {
       this.inspection = element;
@@ -815,11 +816,8 @@ export default {
       },
       this.$t('Must be unique')
     );
-
-    this.config.forEach((config, index) => {
-      this.$store.registerModule(`page-${index}`, undoRedoModule);
-      this.$store.dispatch(`page-${index}/pushState`, JSON.stringify(config.items));
-    });
+    this.$store.registerModule('undoRedoModule', undoRedoModule);
+    this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage});
     this.initiateLanguageSupport();
   },
   mounted() {

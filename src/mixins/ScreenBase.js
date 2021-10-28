@@ -8,6 +8,7 @@ export default {
   data() {
     return {
       ValidationRules__: {},
+      hiddenFields__: [],
     };
   },
   props: {
@@ -116,6 +117,7 @@ export default {
             setValue
           );
           object = get(object, attr);
+          defaults = get(defaults, attr);
         });
       }
     },
