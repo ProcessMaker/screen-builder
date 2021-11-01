@@ -181,6 +181,11 @@ export default {
         if (validation[key]!==undefined && !validation[key]) {
           message.push(this.$t(ValidationMsg[key]).replace(/\{(.+?)\}/g,(match,p1)=>{return validation.$params[key][p1];}));
         }
+        // JSON Schema use to start with 'schema'
+        const keyForSchema = 'schema' + key.charAt(0).toUpperCase() + key.slice(1);
+        if (validation[keyForSchema]!==undefined && !validation[keyForSchema]) {
+          message.push(this.$t(ValidationMsg[key]).replace(/\{(.+?)\}/g,(match,p1)=>{return validation.$params[keyForSchema][p1];}));
+        }
       });
       return message.join('.\n');
     },
