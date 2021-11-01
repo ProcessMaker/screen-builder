@@ -226,6 +226,11 @@ export default {
     },
     loadTask() {
       const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
+      // For Vocabularies
+      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.indexof('package-vocabularies')) {
+        window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
+      }
+
       return this.beforeLoadTask(this.taskId, this.nodeId).then(() => {
         this.$dataProvider
           .getTasks(url)
