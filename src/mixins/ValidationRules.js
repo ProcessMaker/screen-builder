@@ -55,6 +55,9 @@ export const ValidationMsg = {
   invalid_default_value: 'Invalid default value',
   customDate: 'Must be a valid Date',
   regex: 'Invalid value',
+
+  // Messages for schema validations
+  schemaBetween: 'Must have a value between {min} and {max}',
 };
 
 export const custom_date = (date) => {
