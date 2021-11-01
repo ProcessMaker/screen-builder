@@ -7,7 +7,7 @@ const stringFormats = ['string', 'datetime', 'date', 'password'];
 export default {
   schema: [
     function() {
-      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.indexof('package-vocabularies')) {
+      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.indexOf('package-vocabularies')) {
         if (window.ProcessMaker.VocabulariesSchemaUrl) {
           return window.ProcessMaker.apiClient.get(window.ProcessMaker.VocabulariesSchemaUrl);
         }
