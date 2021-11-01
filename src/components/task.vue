@@ -235,20 +235,24 @@ export default {
         });
       }
     },
-    async loadTask() {
-      await this.beforeLoadTask(this.taskId, this.nodeId);
+    loadTask() {
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
+      // For Vocabularies
+      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.indexof('package-vocabularies')) {
+        window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
+      }
 
-      return this.$dataProvider
-        .getTasks(
-          `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`
-        )
-        .then((response) => {
-          this.task = response.data;
-          this.checkTaskStatus();
-        })
-        .catch(() => {
-          this.hasErrors = true;
-        });
+      return this.beforeLoadTask(this.taskId, this.nodeId).then(() => {
+        this.$dataProvider
+          .getTasks(url)
+          .then((response) => {
+            this.task = response.data;
+            this.checkTaskStatus();
+          })
+          .catch(() => {
+            this.hasErrors = true;
+          });
+      });
     },
     prepareTask() {
       this.resetScreenState();
