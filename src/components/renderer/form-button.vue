@@ -54,8 +54,9 @@ export default {
     message() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.errors = 0;
-      if (this.$attrs.validate && this.$attrs.validate.$invalid) {
-        this.countErrors(this.$attrs.validate);
+      if (!this.valid) {
+        this.countErrors(this.$attrs.validate.vdata);
+        this.countErrors(this.$attrs.validate.schema);
         let message = 'There are {{items}} validation errors in your form.';
         if (this.errors === 1) {
           message = 'There is a validation error in your form.';

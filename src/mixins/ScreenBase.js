@@ -5,6 +5,22 @@ import { ValidationMsg } from './ValidationRules';
 const stringFormats = ['string', 'datetime', 'date', 'password'];
 
 export default {
+  schema: [
+    function() {
+      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.indexOf('package-vocabularies')) {
+        if (window.ProcessMaker.VocabulariesSchemaUrl) {
+          let response = window.ProcessMaker.apiClient.get(window.ProcessMaker.VocabulariesSchemaUrl);
+          return response.then(response => {
+            return response.data;
+          });
+        }
+        if (window.ProcessMaker.VocabulariesPreview) {
+          return window.ProcessMaker.VocabulariesPreview;
+        }
+      }
+      return {};
+    },
+  ],
   data() {
     return {
       ValidationRules__: {},
@@ -170,6 +186,11 @@ export default {
       Object.keys(ValidationMsg).forEach(key => {
         if (validation[key]!==undefined && !validation[key]) {
           message.push(this.$t(ValidationMsg[key]).replace(/\{(.+?)\}/g,(match,p1)=>{return validation.$params[key][p1];}));
+        }
+        // JSON Schema use to start with 'schema'
+        const keyForSchema = 'schema' + key.charAt(0).toUpperCase() + key.slice(1);
+        if (validation[keyForSchema]!==undefined && !validation[keyForSchema]) {
+          message.push(this.$t(ValidationMsg[key]).replace(/\{(.+?)\}/g,(match,p1)=>{return validation.$params[keyForSchema][p1];}));
         }
       });
       return message.join('.\n');
