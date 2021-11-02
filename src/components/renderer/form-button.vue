@@ -39,7 +39,7 @@ export default {
     },
     valid() {
       if (this.$attrs.validate) {
-        return !this.$attrs.validate.vdata.$invalid && !this.$attrs.validate.schema.$invalid;
+        return !this.$attrs.validate.$invalid;
       }
       return true;
     },
