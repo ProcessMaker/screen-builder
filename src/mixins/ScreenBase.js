@@ -14,6 +14,9 @@ export default {
             return response.data;
           });
         }
+        if (window.ProcessMaker.VocabulariesPreview) {
+          return window.ProcessMaker.VocabulariesPreview;
+        }
       }
       return {};
     },
