@@ -327,7 +327,9 @@ export default {
           }
           this.ValidationRules__ = validations;
           this.$nextTick(() => {
-            this.$v.$touch();
+            if (this.$v) {
+              this.$v.$touch();
+            }
           });
         });
       };
