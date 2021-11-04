@@ -49,6 +49,10 @@ export default {
     };
   },
   methods: {
+    // Convert foo.0.bar to foo[0].bar
+    dot2bracket(str) {
+      return str.replace(/\.\d/g, match => `[${match.substr(1)}]`);
+    },
     submit() {
       this.$emit('submit', this.value);
     },
