@@ -2,17 +2,24 @@ import watchersMixin from '../../mixins/watchers';
 
 export default {
   methods: {
+    filterWatchers(watcher) {
+      const inContext = !watcher.watching || this.variables.find(({name}) => name === watcher.watching);
+      return inContext;
+    },
     addWatcherVariables(definition) {
       if (definition.watchers) {
-        definition.watchers.forEach((watcher) => {
-          this.registerVariable(watcher.output_variable, {});
+        definition.watchers.filter(this.filterWatchers).forEach((watcher) => {
+          const inContext = !watcher.watching || this.variables.find(({name}) => name === watcher.watching);
+          if (inContext) {
+            this.registerVariable(watcher.output_variable, {});
+          }
         });
       }
     },
     watchers(screen, definition) {
       if (definition.watchers) {
         screen.mixins.push(watchersMixin);
-        definition.watchers.forEach((watcher) => {
+        definition.watchers.filter(this.filterWatchers).forEach((watcher) => {
           this.addMounted(screen, `
             this.$nextTick(() => this.$watch('${watcher.watching}', (newValue) => {
               if (typeof newValue !== 'undefined') {
