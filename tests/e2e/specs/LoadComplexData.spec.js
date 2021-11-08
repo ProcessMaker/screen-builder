@@ -8,7 +8,7 @@ describe('Validation Rules (Advanced test)', () => {
     cy.loadFromJson('FPP_PFP_CHAIRS_SCREEN.json', 0);
     cy.get('[data-cy=mode-preview]').click();
     // Open Tab 2
-    cy.get('[aria-label="Part Time"]:visible:first').click();
+    cy.get('button:contains("Part Time"):visible:first').click();
     // Tab 2 contains the title '2. PART TIME PAGE'
     cy.get('#preview').should('contain.html', '2. PART TIME PAGE');
 
