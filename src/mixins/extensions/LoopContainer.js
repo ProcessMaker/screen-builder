@@ -25,6 +25,7 @@ export default {
             items: element.items,
           },
         ],
+        watchers: definition.watchers,
       };
 
       let loopContext = '';
