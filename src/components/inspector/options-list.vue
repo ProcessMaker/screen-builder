@@ -186,7 +186,7 @@
     <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
-      <div v-if="valueTypeReturned === 'single'">
+      <div>
         <label for="key">{{ $t('Value') }}</label>
         <mustache-helper/>
         <b-form-input id="key" v-model="key" @change="keyChanged" data-cy="inspector-datasource-value"/>
@@ -196,7 +196,7 @@
       <label for="value">{{ $t('Content') }}</label>
       <mustache-helper/>
       <b-form-input id="value" v-model="value" @change="valueChanged" data-cy="inspector-datasource-content"/>
-      <small class="form-text text-muted mb-3">{{ $t('Key name in the selected object to display to the user in the select list. Leave blank to show the entire selected value.') }}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Content to display to the user in the select list.') }}</small>
     </div>
 
     <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
