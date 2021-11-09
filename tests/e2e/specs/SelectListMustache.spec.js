@@ -66,7 +66,7 @@ describe('select list mustache', () => {
             'current_page': 1,
             'from': 1,
             'last_page': 1,
-            'path': 'http:\/\/192.168.0.103:8089\/api\/1.0\/collections\/1\/records',
+            'path': '/api/1.0/collections/1/records',
             'per_page': 9223372036854775807,
             'to': 2,
             'total': 2,
