@@ -15,8 +15,8 @@ export default {
             this.setupDefaultValue(screen, name, `(function() {${config.defaultValue.value}}).bind(this.vdata)()`);
           }
         }
-        if (config.initiallyChecked) {
-          this.setupDefaultValue(screen, name, 'true');
+        if ('initiallyChecked' in config) {
+          this.setupDefaultValue(screen, name, config.initiallyChecked ? 'true' : 'false');
         }
         // Update vdata
         this.addMounted(screen, `
