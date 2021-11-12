@@ -1,16 +1,16 @@
 /* istanbul ignore file */
 import Mustache from 'mustache';
-import _ from 'lodash';
+import {clone, cloneDeep, get, isEqual, truncate} from 'lodash';
 
 export default {
   props: {
     showDebug: {
       type: Boolean,
-      default: false, 
+      default: false,
     },
     debugContext: {
       type: String,
-      default: 'Root', 
+      default: 'Root',
     },
   },
   data() {
@@ -39,9 +39,9 @@ export default {
         if (this.isEqual(this.lastConfig, this.config)) {
           return;
         }
-        this.lastConfig = _.clone(this.config);
+        this.lastConfig = clone(this.config);
 
-        this.debug('---> config', _.truncate(JSON.stringify(this.config)));
+        this.debug('---> config', truncate(JSON.stringify(this.config)));
         this.initializeDefaultValues();
         this.update(this.data);
       },
@@ -69,7 +69,7 @@ export default {
         return;
       }
 
-      this.defaultsFormData = _.cloneDeep(data);
+      this.defaultsFormData = cloneDeep(data);
       this.updateDefaultValues();
       // Run this again so previous set defaults get later updates
       this.updateDefaultValues();
@@ -85,9 +85,9 @@ export default {
       }
 
       this.$delete(this.defaultsFormData, '_parent');
-      
-      this.lastSetTransientData = _.cloneDeep(this.defaultsFormData);
-      this.transientData = _.cloneDeep(this.defaultsFormData);
+
+      this.lastSetTransientData = cloneDeep(this.defaultsFormData);
+      this.transientData = cloneDeep(this.defaultsFormData);
       this.debug('SET transient data to', JSON.stringify(this.transientData));
     },
     initializeDefaultValues() {
@@ -151,7 +151,7 @@ export default {
           return;
         }
 
-        const current = _.get(this.defaultsFormData, path, null);
+        const current = get(this.defaultsFormData, path, null);
 
         if (current !== null && setValue === null) {
           // This is a value already set in the data object. Make inactive.
@@ -159,7 +159,7 @@ export default {
           changes[path] = 'Inactive';
           return;
         }
-        
+
         // Check if any fields were modified from their original default values
         // If so, we no longer want to apply any defaults.
         if (current === null || setValue === null || this.isEqual(current, setValue)) {
@@ -179,7 +179,7 @@ export default {
 
     isEqual(a, b) {
       if (typeof a === 'object') {
-        return _.isEqual(a, b);
+        return isEqual(a, b);
       }
       return String(a) === String(b);
     },
@@ -213,7 +213,7 @@ export default {
     },
     setJsDefaultValue(path, value) {
       const func = new Function(value);
-      const result = func.bind(_.clone(this.defaultsFormData))();
+      const result = func.bind(clone(this.defaultsFormData))();
       this.defaultsFormData[path] = result;
     },
 

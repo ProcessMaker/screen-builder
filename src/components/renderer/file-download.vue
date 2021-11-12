@@ -31,7 +31,7 @@
 
 
 <script>
-import _ from  'lodash';
+import {has, get, set} from 'lodash';
 
 export default {
   inheritAttrs: false,
@@ -139,7 +139,7 @@ export default {
     requestEndpoint(file) {
       let endpoint = this.endpoint;
 
-      if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+      if (has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
       }
 
@@ -251,7 +251,7 @@ export default {
       }
       const name = variableName ? variableName : this.prefix + this.name;
       const fileIds = this.asArray(this.value);
-      let requestFilesForVarExist = _.has(window, ['PM4ConfigOverrides', 'requestFiles', name]);
+      let requestFilesForVarExist = has(window, ['PM4ConfigOverrides', 'requestFiles', name]);
 
       const allFilesInValueHaveData =
         requestFilesForVarExist &&
@@ -274,7 +274,7 @@ export default {
             const data = response.data.data;
             let filesData = {};
             data.forEach(fileData => {
-              const varName = _.get(fileData, 'custom_properties.data_name', null);
+              const varName = get(fileData, 'custom_properties.data_name', null);
               if (varName) {
                 const item = {
                   id: fileData.id,
@@ -290,7 +290,7 @@ export default {
                   filesData[varName] = item;
                 }
               }
-              _.set(window, 'PM4ConfigOverrides.requestFiles', filesData);
+              set(window, 'PM4ConfigOverrides.requestFiles', filesData);
               this.setFileInfo(name);
             });
             this.loading = false;
@@ -299,7 +299,7 @@ export default {
     },
     setFileInfo(name) {
       let requestFiles = this.requestFiles;
-      if (_.has(window, 'PM4ConfigOverrides.requestFiles')) {
+      if (has(window, 'PM4ConfigOverrides.requestFiles')) {
         requestFiles = window.PM4ConfigOverrides.requestFiles;
       }
 
@@ -325,7 +325,7 @@ export default {
       return Array.isArray(value) ? value : [value];
     },
     setFileInfoFromCache() {
-      const info = this.asArray(_.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null));
+      const info = this.asArray(get(window.ProcessMaker.CollectionData, this.prefix + this.name, null));
       if (info) {
         this.filesInfo = info.map(item => {
           return {...item, file_name: item.name};

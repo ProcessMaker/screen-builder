@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import {get} from 'lodash';
 
 const defaultBeforeLoadTask = () => {
   return new Promise((resolve) => {
@@ -176,8 +176,8 @@ export default {
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         } else {
-          const isInterstitial = _.get(this.screen, '_interstitial', false);
-          let component = _.get(this, 'task.component', 'task-screen');
+          const isInterstitial = get(this.screen, '_interstitial', false);
+          let component = get(this, 'task.component', 'task-screen');
           if (component === null || isInterstitial) {
             component = 'task-screen';
           }
@@ -245,7 +245,7 @@ export default {
     },
     prepareTask() {
       this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
+      this.requestData = get(this.task, 'request_data', {});
       this.refreshScreen++;
 
       this.$emit('task-updated', this.task);

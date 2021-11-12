@@ -2,7 +2,7 @@ import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
-import _ from 'lodash';
+import {get, isEqual} from 'lodash';
 
 let screenRenderer;
 
@@ -220,7 +220,7 @@ export default {
       if (!this.validVariableName(name)) {
         return;
       }
-      const config = _.get(element, 'config', {});
+      const config = get(element, 'config', {});
       const find = this.variables.find(v => v.name === name);
       if (!find) {
         this.variables.push({ name, config, element });
@@ -340,7 +340,7 @@ export default {
         // Asynchronous loading of validations
         const validations = {};
         ValidationsFactory(definition, { screen: definition, firstPage, data: {_parent: this._parent, ...this.vdata} }).addValidations(validations).then(() => {
-          if (_.isEqual(this.ValidationRules__, validations)) {
+          if (isEqual(this.ValidationRules__, validations)) {
             return;
           }
           this.ValidationRules__ = validations;

@@ -87,7 +87,7 @@
 <script>
 import { createUniqIdsMixin } from 'vue-uniq-ids';
 import uploader from 'vue-simple-uploader';
-import _ from 'lodash';
+import {get, has} from 'lodash';
 
 // Create the mixin
 const uniqIdsMixin = createUniqIdsMixin();
@@ -132,7 +132,7 @@ export default {
       this.$refs['uploader'].$forceUpdate();
     }
 
-    this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
+    this.disabled = get(window, 'ProcessMaker.isSelfService', false);
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
@@ -158,7 +158,7 @@ export default {
       return ((this.mode === 'preview' && !window.exampleScreens) || this.mode === 'editor');
     },
     displayName() {
-      const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
+      const requestFiles = get(window, 'PM4ConfigOverrides.requestFiles', {});
       const fileInfo = requestFiles[this.fileDataName];
       let id = this.uploaderId;
       if (fileInfo && id >= 0) {
@@ -268,7 +268,7 @@ export default {
       // If there is just one file associated to the file_upload PM4ConfigOverrides returns it as an object,
       // otherwise an array is returned. So, if the control is configured as multiple upload and
       // has just one file, we must return the object, in other case a search by id is done.
-      const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
+      const requestFiles = get(window, 'PM4ConfigOverrides.requestFiles', {});
       const files = requestFiles[this.fileDataName];
       if (files) {
         return Array.isArray(files)
@@ -372,9 +372,9 @@ export default {
     },
     setFileUploadNameForChildren(children, prefix) {
       children.forEach(child => {
-        if (_.get(child, '$options.name') === 'FileUpload') {
+        if (get(child, '$options.name') === 'FileUpload') {
           child.prefix = prefix;
-        } else if (_.get(child, '$children', []).length > 0) {
+        } else if (get(child, '$children', []).length > 0) {
           this.setFileUploadNameForChildren(child.$children, prefix);
         }
       });
@@ -424,10 +424,10 @@ export default {
         let id = file.name;
         if (message) {
           const msg = JSON.parse(message);
-          if (!_.has(window, 'PM4ConfigOverrides')) {
+          if (!has(window, 'PM4ConfigOverrides')) {
             window.PM4ConfigOverrides = {};
           }
-          if (!_.has(window, 'PM4ConfigOverrides.requestFiles')) {
+          if (!has(window, 'PM4ConfigOverrides.requestFiles')) {
             window.PM4ConfigOverrides.requestFiles = {};
           }
           if (typeof (window.PM4ConfigOverrides.requestFiles[this.fileDataName]) == 'undefined') {
@@ -507,7 +507,7 @@ export default {
       };
     },
     getTargetUrl() {
-      if (_.has(window, 'PM4ConfigOverrides.postFileEndpoint')) {
+      if (has(window, 'PM4ConfigOverrides.postFileEndpoint')) {
         return window.PM4ConfigOverrides.postFileEndpoint;
       }
 

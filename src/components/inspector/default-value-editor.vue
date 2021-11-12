@@ -24,13 +24,13 @@
 
 <script>
 import MonacoEditor from 'vue-monaco';
-import _ from 'lodash';
+import {isEqual} from 'lodash';
 
 export default {
   props: ['value', 'helper'],
   components: {
     MonacoEditor,
-  },    
+  },
   data() {
     return {
       mode: 'basic',
@@ -51,14 +51,14 @@ export default {
   watch: {
     value: {
       handler() {
-        if (_.isEqual(this.configValue, this.value)) {
+        if (isEqual(this.configValue, this.value)) {
           return;
         }
-                
+
         this.mode = 'basic';
         this.basicValue = '';
         this.jsValue    = '';
-                
+
         if (!this.value) {
           return;
         }

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {get} from 'lodash';
 import './CustomValidationRules';
 
 const Validator = require('validatorjs');
@@ -47,7 +47,7 @@ export function ValidatorFactory(config, data) {
       }
 
       if (item.component === 'FormNestedScreen') {
-        const nestedScreen = _.get(window, 'nestedScreens.id_' + item.config.screen);
+        const nestedScreen = get(window, 'nestedScreens.id_' + item.config.screen);
         if (nestedScreen) {
           validate.getDataAndRules(nestedScreen);
         }
@@ -107,7 +107,7 @@ export function ValidatorFactory(config, data) {
         itemLoop.config.name &&
         itemLoop.config.validation
       ) {
-        
+
         if (Array.isArray(itemLoop.config.validation)) {
           itemLoop.config.validation.forEach(validation => {
             if (!validation.value.includes(':')) {
@@ -127,7 +127,7 @@ export function ValidatorFactory(config, data) {
                 const fieldValue = validation.value.split(':')[1].split(',')[1];
                 newValidationRule = rule + ':' + loopName + '.*.' + fieldName + ',' + fieldValue;
               }
-              validation.value = newValidationRule;  
+              validation.value = newValidationRule;
             }
           });
         }

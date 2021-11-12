@@ -106,7 +106,7 @@
 import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
-import _ from 'lodash';
+import {cloneDeep} from 'lodash';
 
 import {
   FormInput,
@@ -188,7 +188,7 @@ export default {
       this.$emit('update-state');
     },
     duplicateItem(col,index) {
-      const duplicate = _.cloneDeep(this.items[col][index]);
+      const duplicate = cloneDeep(this.items[col][index]);
       this.items[col].push(duplicate);
       this.$emit('update-state');
     },

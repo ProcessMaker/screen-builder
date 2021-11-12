@@ -6,20 +6,20 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import {cloneDeep, debounce, get, size} from 'lodash';
 import CustomCssOutput from './custom-css-output';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import { getItemsFromConfig } from '../itemProcessingUtils';
-import { ValidatorFactory } from '../factories/ValidatorFactory';
+import {getItemsFromConfig} from '../itemProcessingUtils';
+import {ValidatorFactory} from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
- 
+
 export default {
   name: 'VueFormRenderer',
-  components: { CustomCssOutput },
+  components: {CustomCssOutput},
   mixins: [CurrentPageProperty],
   props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
@@ -68,7 +68,7 @@ export default {
           };
           return function(text) {
             const params = JSON.parse(`[${text}]`);
-            return format(_.get(this, params[0]), params[1]);
+            return format(get(this, params[0]), params[1]);
           };
         },
       },
@@ -107,7 +107,7 @@ export default {
     },
   },
   created() {
-    this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+    this.parseCss = debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
     this.parseCss();
@@ -153,7 +153,7 @@ export default {
      */
     isValid() {
       const items = getItemsFromConfig(this.definition.config);
-      let config = _.cloneDeep(this.definition.config);
+      let config = cloneDeep(this.definition.config);
 
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
@@ -162,7 +162,7 @@ export default {
       if (this.errors) {
         this.formSubmitErrorClass = 'invalid-form-submission';
       }
-      return _.size(this.errors) === 0;
+      return size(this.errors) === 0;
     },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {

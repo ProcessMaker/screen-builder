@@ -230,10 +230,10 @@
 
 <script>
 import draggable from 'vuedraggable';
-import { dataSources, dataSourceValues } from './data-source-types';
+import {dataSources, dataSourceValues} from './data-source-types';
 import MonacoEditor from 'vue-monaco';
 import MustacheHelper from './mustache-helper';
-import _ from 'lodash';
+import {get} from 'lodash';
 
 export default {
   components: {
@@ -363,7 +363,7 @@ export default {
   },
   computed: {
     endPointList() {
-      return _.get(this.endpoints, this.selectedDataSource, []);
+      return get(this.endpoints, this.selectedDataSource, []);
     },
     dataSourceTypes() {
       if (typeof this.options.allowMultiSelect === 'undefined') {
@@ -428,12 +428,12 @@ export default {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
-    this.selectedDataSource = this.options.selectedDataSource,
-    this.selectedEndPoint = this.options.selectedEndPoint,
+    this.selectedDataSource = this.options.selectedDataSource;
+    this.selectedEndPoint = this.options.selectedEndPoint;
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
-    this.defaultOptionKey= this.options.defaultOptionKey;
+    this.defaultOptionKey = this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
     this.optionsList = this.options.optionsList ? this.options.optionsList : [];
     this.jsonData = JSON.stringify(this.optionsList);

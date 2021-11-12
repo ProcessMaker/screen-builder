@@ -1,12 +1,12 @@
-import _ from 'lodash';
+import {get} from 'lodash';
 
 export default {
   methods: {
     dataFields(screen, definition) {
       this.variables.filter(v => !this.isComputedVariable(v.name, definition))
         .forEach(v => {
-          let component = _.get(v, 'element.component');
-          let dataFormat = _.get(v, 'config.dataFormat', null);
+          let component = get(v, 'element.component');
+          let dataFormat = get(v, 'config.dataFormat', null);
           this.addData(screen, v.name, `
             this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
             this.getValue(${JSON.stringify(v.name)}, data) || 

@@ -57,8 +57,8 @@
             </div>
           </b-card-header>
           <b-collapse :id="formatRuleContentAsId(rule.content)" :accordion="formatRuleContentAsId(rule.content)" :visible="rule.visible" role="tabpanel">
-            <b-card-body> 
-              <div class="p-2"> 
+            <b-card-body>
+              <div class="p-2">
                 <div v-for="config in rule.configs" :key="config.label" class="mb-2">
                   <div v-if="config.type === 'FormInput'">
                     <form-input :label="config.label" :name="config.name || config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
@@ -91,8 +91,8 @@
 </template>
 
 <script>
-import { FormInput } from '@processmaker/vue-form-elements';
-import _ from 'lodash';
+import {FormInput} from '@processmaker/vue-form-elements';
+import {cloneDeep, isEqual, unescape} from 'lodash';
 import InputVariable from '../inspector/input-variable';
 
 export default {
@@ -292,7 +292,7 @@ export default {
       if (this.rules && this.rules.length) {
         return true;
       }
-      
+
       return false;
     },
   },
@@ -314,7 +314,7 @@ export default {
     value() {
       this.rules = this.value || [];
       this.cloneSetRules();
-      
+
     },
     selectedOption: {
       deep: true,
@@ -346,7 +346,7 @@ export default {
       this.optionError = '';
     },
     saveRule() {
-      const option = _.cloneDeep(this.selectedOption);
+      const option = cloneDeep(this.selectedOption);
       this.rules.push(option);
       this.hideCard();
       this.selectedOption = '';
@@ -354,7 +354,7 @@ export default {
     confirmDelete(index) {
       this.removeIndex = index;
       this.showDeleteConfirmCard = true;
-      this.confirmMessage = _.unescape(this.$t(
+      this.confirmMessage = unescape(this.$t(
         'Are you sure you want to delete the "{{item}}" rule?',
         {item: this.rules[index].content}
       ));
@@ -378,13 +378,13 @@ export default {
             }
           });
 
-          if (ruleConfigs.length > 1) {  
+          if (ruleConfigs.length > 1) {
             ruleConfigs = ruleConfigs.join(',');
           }
           if (ruleConfigs.length) {
             rule.value = rule.field + ruleConfigs;
           }
-          
+
         }
       });
     },
@@ -397,7 +397,7 @@ export default {
     onCancel(rule, index) {
       const content = this.formatRuleContentAsId(rule.content);
       if (this.cloneRules && this.cloneRules[index]) {
-        if (!_.isEqual(rule, this.cloneRules[index])) {
+        if (!isEqual(rule, this.cloneRules[index])) {
           Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
         }
       } else {

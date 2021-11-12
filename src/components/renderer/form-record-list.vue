@@ -148,7 +148,7 @@
 
 <script>
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import _ from 'lodash';
+import {get, cloneDeep} from 'lodash';
 import { dateUtils } from '@processmaker/vue-form-elements';
 //import ScreenRenderer from '../screen-renderer.vue';
 
@@ -263,7 +263,7 @@ export default {
       return dateUtils.formatIfDate(string);
     },
     isImage(field, item) {
-      const content = _.get(item, field.key);
+      const content = get(item, field.key);
       return typeof content === 'string' && content.substr(0,11) === 'data:image/';
     },
     isFiledownload(field) {
@@ -377,7 +377,7 @@ export default {
 
       // eslint-disable-next-line no-unused-vars
       let {_parent, ...result} = this.addItem;
-      this.initFormValues = _.cloneDeep(result);
+      this.initFormValues = cloneDeep(result);
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();

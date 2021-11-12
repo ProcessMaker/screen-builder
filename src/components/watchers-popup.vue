@@ -25,7 +25,7 @@ import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 import WatchersList from './watchers-list';
 import WatchersForm from './watchers-form';
-import _ from 'lodash';
+import {cloneDeep} from 'lodash';
 
 const globalObject = typeof window === 'undefined' ? global : window;
 
@@ -92,7 +92,7 @@ export default {
     },
     edit(item) {
       this.displayForm();
-      this.$set(this, 'add', _.cloneDeep(item));
+      this.$set(this, 'add', cloneDeep(item));
     },
     confirmRemoval(item) {
       globalObject.ProcessMaker.confirmModal(

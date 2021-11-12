@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import axios from 'axios';
-import _ from 'lodash';
+import {get, has} from 'lodash';
 
 export default {
   screensCache: [],
@@ -10,7 +10,7 @@ export default {
   },
   apiInstance() {
     // Use the real apiClient
-    if (_.has(window, 'ProcessMaker.apiClient') && !window.ProcessMaker.isStub) {
+    if (has(window, 'ProcessMaker.apiClient') && !window.ProcessMaker.isStub) {
       return window.ProcessMaker.apiClient;
     }
 
@@ -24,7 +24,7 @@ export default {
     }
 
     // If the apiClient is a stub, use it for running tests
-    if (_.has(window, 'ProcessMaker.apiClient') && window.ProcessMaker.isStub) {
+    if (has(window, 'ProcessMaker.apiClient') && window.ProcessMaker.isStub) {
       return window.ProcessMaker.apiClient;
     }
 
@@ -55,7 +55,7 @@ export default {
   // Methods below are used in the components
 
   getTasks(params) {
-    const endpoint = _.get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
+    const endpoint = get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
     return this.get(endpoint + params).then(response => {
       if (response.data.screen && response.data.screen.nested) {
         this.addNestedScreenCache(response.data.screen.nested);
@@ -78,7 +78,7 @@ export default {
     });
   },
   getScreen(id, query = '') {
-    const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
+    const endpoint = get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
     return new Promise((resolve, reject) => {
       const cache = this.screensCache.find(screen => screen.id == id);
       if (cache) {
@@ -97,7 +97,7 @@ export default {
   },
 
   postScript(id, params, options = {}) {
-    let endpoint = _.get(
+    let endpoint = get(
       window,
       'PM4ConfigOverrides.postScriptEndpoint',
       '/scripts/execute/{id}'
@@ -123,7 +123,7 @@ export default {
   },
 
   authQueryString() {
-    const authParams = _.get(
+    const authParams = get(
       window,
       'PM4ConfigOverrides.authParams',
       null
