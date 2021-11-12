@@ -1,0 +1,9 @@
+{
+  "presets": [
+    "@vue/app",
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    "istanbul", "@babel/plugin-proposal-class-properties"
+  ]
+}
