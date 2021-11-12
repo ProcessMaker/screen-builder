@@ -115,14 +115,14 @@ describe('Complex screen', () => {
         'form_record_list_3': null,
         'page2': null,
         'form_text_area_4': '',
-        'form_checkbox_4': null,
+        'form_checkbox_4': false,
         'form_date_picker_8': null,
         'form_input_4': '',
         'form_date_picker_5': null,
         'form_text_area_3': '',
         'form_date_picker_6': null,
         'form_select_list_3': null,
-        'form_checkbox_3': null,
+        'form_checkbox_3': false,
       });
     });
 
