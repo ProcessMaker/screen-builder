@@ -76,22 +76,22 @@ describe('select list mustache', () => {
     ).as('executeScript');
   });
 
-  it('Verify select list mustache + collection', () => {
-    cy.loadFromJson('select_list_collection.json', 0);
+  it('Verify radio list mustache + collection', () => {
+    cy.loadFromJson('select_list_radio_collection.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
     // Select all the row
-    cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption('1234');
+    cy.get('[data-cy="screen-field-form_select_list_1"]').parent().find('label:contains("1234")').click();
     // Select property `data.name`
-    cy.get('[data-cy="screen-field-form_select_list_2"]').selectOption('Oliver');
+    cy.get('[data-cy="screen-field-form_select_list_2"]').parent().find('label:contains("Oliver")').click();
     // Select all the row
-    cy.get('[data-cy="screen-field-form_select_list_3"]').selectOption('DNI: 1234 Name: Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_3"]').parent().find('label:contains("DNI: 1234 Name: Oliver Smith")').click();
     // Select data.dni
-    cy.get('[data-cy="screen-field-form_select_list_4"]').selectOption('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_4"]').parent().find('label:contains("Oliver Smith")').click();
     // Select {{ data.name.first }} {{ data.name.last }}
-    cy.get('[data-cy="screen-field-form_select_list_5"]').selectOption('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_5"]').parent().find('label:contains("Oliver Smith")').click();
     // Select {{ data.id }}
-    cy.get('[data-cy="screen-field-form_select_list_6"]').selectOption('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_6"]').parent().find('label:contains("Oliver Smith")').click();
 
     // Check the data of the screen
     cy.assertPreviewData({
