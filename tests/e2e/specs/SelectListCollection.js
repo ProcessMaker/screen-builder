@@ -276,4 +276,120 @@ describe('select list mustache', () => {
       ],
     });
   });
+
+  it('Verify multiselect list mustache + collection', () => {
+    cy.loadFromJson('select_list_multiselect_collection.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    // Select all the row
+    cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption('1234');
+    cy.get('[data-cy="screen-field-form_select_list_1"]').click();
+    cy.get('[data-cy="screen-field-form_select_list_1"] li:contains("5678")').click();
+    // Select property `data.name`
+    cy.get('[data-cy="screen-field-form_select_list_2"]').selectOption('Oliver');
+    cy.get('[data-cy="screen-field-form_select_list_2"]').click();
+    cy.get('[data-cy="screen-field-form_select_list_2"] li:contains("John")').click();
+    // Select all the row
+    cy.get('[data-cy="screen-field-form_select_list_3"]').selectOption('DNI: 1234 Name: Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_3"]').click();
+    cy.get('[data-cy="screen-field-form_select_list_3"] li:contains("DNI: 5678 Name: John Doe")').click();
+    // Select data.dni
+    cy.get('[data-cy="screen-field-form_select_list_4"]').selectOption('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_4"]').click();
+    cy.get('[data-cy="screen-field-form_select_list_4"] li:contains("John Doe")').click();
+    // Select {{ data.name.first }} {{ data.name.last }}
+    cy.get('[data-cy="screen-field-form_select_list_5"]').selectOption('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_5"]').click();
+    cy.get('[data-cy="screen-field-form_select_list_5"] li:contains("John Doe")').click();
+    // Select {{ data.id }}
+    cy.get('[data-cy="screen-field-form_select_list_6"]').selectOption('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_6"]').click();
+    cy.get('[data-cy="screen-field-form_select_list_6"] li:contains("John Doe")').click();
+
+    // Check the data of the screen
+    cy.assertPreviewData({
+      'form_select_list_1': [
+        {
+          'dni':
+              '1234',
+          'name':
+            {
+              'last':
+                'Smith',
+              'first':
+                'Oliver',
+            },
+          'id':
+              1,
+        },
+        {
+          'dni':
+              '5678',
+          'name':
+            {
+              'last':
+                'Doe',
+              'first':
+                'John',
+            },
+          'id':
+              2,
+        },
+      ],
+      'form_select_list_2': [
+        {
+          'last':
+              'Smith',
+          'first':
+              'Oliver',
+        },
+        {
+          'last':
+              'Doe',
+          'first':
+              'John',
+        },
+      ],
+      'form_select_list_3': [
+        {
+          'dni':
+              '1234',
+          'name':
+            {
+              'last':
+                'Smith',
+              'first':
+                'Oliver',
+            },
+          'id':
+              1,
+        },
+        {
+          'dni':
+              '5678',
+          'name':
+            {
+              'last':
+                'Doe',
+              'first':
+                'John',
+            },
+          'id':
+              2,
+        },
+      ],
+      'form_select_list_4': [
+        '1',
+        '2',
+      ],
+      'form_select_list_5': [
+        'Oliver Smith',
+        'John Doe',
+      ],
+      'form_select_list_6': [
+        '1',
+        '2',
+      ],
+    });
+  });
 });
