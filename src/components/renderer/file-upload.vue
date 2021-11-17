@@ -34,42 +34,20 @@
       </uploader-drop>
       <uploader-list>
         <template slot-scope="{ fileList }">
-          <ul v-if="multipleUpload">
-            <li v-for="fileId in (value ? value : [])" :key="getFileId(fileId)" :data-cy="fileId">
-              <div class="container-fluid pl-3 pr-3" v-if="configOverrideFile(fileId) && configOverrideFile(fileId).new && fileList.find(x=>x.name === configOverrideFile(fileId).file_name)">
+          <ul>
+            <li v-for="(file, i) in files " :key="i" :data-cy="file.id">
+              <div class="container-fluid pl-3 pr-3">
                 <div class="row" style="background:rgb(226 238 255)">
                   <div class="col-11 pr-0 pl-0">
-                    <uploader-file :file="fileList.find(x=>x.name === configOverrideFile(fileId).file_name)" :list="true" />
+                    <uploader-file :file="file.native" :list="true" />
                   </div>
                   <div class="col-1 my-auto uploader-file">
-                    <b-btn variant="outline" @click="removeFile(fileId)" v-b-tooltip.hover :title="$t('Delete')">
+                    <b-btn variant="outline" @click="removeFile(file.native)" v-b-tooltip.hover :title="$t('Delete')">
                       <i class="fas fa-trash-alt"/>
                     </b-btn>
                   </div>
                 </div>
               </div>
-              <div v-else class="container-fluid border-bottom pl-3 pr-3">
-                <div class="row">
-                  <div class="col-11 pr-0 pl-0 my-auto">
-                    <i class="fas fa-paperclip"/> {{ displayNameFor(fileId) }}
-                  </div>
-                  <div class="col-1 my-auto">
-                    <b-btn variant="outline" @click="removeFile(fileId)" v-b-tooltip.hover :title="$t('Delete')">
-                      <i class="fas fa-trash-alt"/>
-                    </b-btn>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-          <ul v-else>
-            <li v-if="fileList.length === 0 && value">
-              <div class="border-bottom py-2">
-                <i class="fas fa-paperclip"/> {{ displayName }}
-              </div>
-            </li>
-            <li v-for="file in fileList" :key="file.id" :data-cy="file.name.replace(/[^0-9a-zA-Z\-]/g, '-')" :nada="JSON.stringify(file)" >
-              <uploader-file :file="file" :list="true"/>
             </li>
           </ul>
         </template>
@@ -133,6 +111,8 @@ export default {
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
+
+    this.requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', []);
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
@@ -140,6 +120,23 @@ export default {
     }
   },
   computed: {
+    files() {
+      return this.requestFiles[this.fileDataName] || [];
+    },
+    fileIds() {
+      return this.files.map(f => f.id);
+    },
+    valueToSend() {
+      if (this.multipleUpload) {
+        return this.files.map(file => {
+          return { file: file.id };
+        });
+      }
+      if (this.files.length > 0) {
+        return this.files[0].id;
+      }
+      return null;
+    },
     nativeButtonAttrs() {
       const attrs = { 'data-cy':'file-upload-button' };
       if (this.disabled) {
@@ -158,8 +155,7 @@ export default {
       return ((this.mode === 'preview' && !window.exampleScreens) || this.mode === 'editor');
     },
     displayName() {
-      const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
-      const fileInfo = requestFiles[this.fileDataName];
+      const fileInfo = this.requestFiles[this.fileDataName];
       let id = this.uploaderId;
       if (fileInfo && id >= 0) {
         return fileInfo.file_name;
@@ -195,6 +191,9 @@ export default {
     },
   },
   watch: {
+    requestFiles() {
+      _.set(window, 'PM4ConfigOverrides.requestFiles', this.requestFiles);
+    },
     name: {
       handler() {
         this.options.query.data_name = this.fileDataName;
@@ -254,6 +253,7 @@ export default {
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
           'X-CSRF-TOKEN': window.ProcessMaker.apiClient.defaults.headers.common['X-CSRF-TOKEN'],
+          'Authorization': 'Bearer ' + this.$dataProvider.token(),
         },
         singleFile: !this.multipleUpload,
       },
@@ -261,31 +261,12 @@ export default {
         accept: this.accept,
       },
       disabled: false,
+      requestFiles: [],
     };
   },
   methods: {
-    configOverrideFile(id) {
-      // If there is just one file associated to the file_upload PM4ConfigOverrides returns it as an object,
-      // otherwise an array is returned. So, if the control is configured as multiple upload and
-      // has just one file, we must return the object, in other case a search by id is done.
-      const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
-      const files = requestFiles[this.fileDataName];
-      if (files) {
-        return Array.isArray(files)
-          ? files.find(x => x.id === id)
-          : files;
-      }
-      return null;
-    },
-    displayNameFor(fileData) {
-      if (this.fileType == 'request') {
-        let file = this.configOverrideFile(fileData);
-        return file ? file.file_name: fileData;
-      }
-      if (this.fileType == 'collection') {
-        let file = this.value.find(item => item.id == fileData.id);
-        return file ? file.name : fileData.id;
-      }
+    hasFileId(id) {
+      return this.fileIds.includes(id);
     },
     listenRemovedLoop(loop, removed) {
       this.deleteAssociatedFiles(removed);
@@ -299,39 +280,33 @@ export default {
     },
     deleteAssociatedFiles(object) {
       for (const prop in object) {
-        if (prop === this.name) {
-          this.deleteFile(object[prop]);
-        }
-        if (Array.isArray(object[prop])) {
-          for (const item of object[prop]) {
-            this.deleteAssociatedFiles(item);
+        if (prop === this.name && object[prop]) {
+          let ids = [object[prop]];
+          if (Array.isArray(object[prop])) {
+            ids = object[prop].map(i => i.file);
+          }
+
+          for (const id of ids) {
+            if (this.hasFileId(id)) {
+              this.$dataProvider.deleteFile(id).catch(e => {});
+              this.removeFromRequestFiles(id);
+            }
           }
         }
       }
     },
-    removeFile(fileData) {
-      if (this.fileType == 'request') {
-        this.deleteFile(fileData);
-        let files = window.PM4ConfigOverrides.requestFiles[this.fileDataName];
-        let filtered = files.filter(item => item.id !== fileData);
-        window.PM4ConfigOverrides.requestFiles[this.fileDataName] = filtered;
-        const ids = window.PM4ConfigOverrides.requestFiles[this.fileDataName].map(item => item.id);
-        this.$emit('input', ids);
-      }
-      if (this.fileType == 'collection') {
-        this.deleteFile(fileData.id);
-        let filtered = this.value.filter(item => item.id !== fileData.id);
-        this.$emit('input', filtered);
-      }
+    async removeFile(nativeFile) { 
+      const id = nativeFile._pm_id;
+      await this.$dataProvider.deleteFile(id);
+      this.$refs.uploader.uploader.removeFile(nativeFile);
+      
+      this.removeFromRequestFiles(id);
+      this.$emit('input', this.valueToSend);
     },
-    deleteFile(fileId) {
-      if (fileId) {
-        window.ProcessMaker.apiClient
-          .delete(`files/${fileId}`)
-          .catch(() => {
-            /** ignore exception **/
-          });
-      }
+    removeFromRequestFiles(id)
+    {
+      const filtered = this.files.filter(item => item.id !== id);
+      this.$set(this.requestFiles, this.fileDataName, filtered);
     },
     listenRecordList(recordList, index, id) {
       const parent = this.parentRecordList(this);
@@ -339,15 +314,6 @@ export default {
         return;
       }
       this.row_id = (parent !== null) ? id : null;
-      //update id to refresh computed values
-      this.uploaderId =new Date().getTime();
-      if (this.$refs.uploader) {
-        this.$refs.uploader.files = [];
-        this.$refs.uploader.fileList = [];
-        this.$refs.uploader.uploader.files = [];
-        this.$refs.uploader.uploader.fileList = [];
-      }
-      this.$forceUpdate();
     },
     setPrefix() {
       let parent = this.$parent;
@@ -421,31 +387,28 @@ export default {
     },
     fileUploaded(rootFile, file, message) {
       if (this.fileType == 'request') {
-        let id = file.name;
+        let name = file.name;
         if (message) {
           const msg = JSON.parse(message);
-          if (!_.has(window, 'PM4ConfigOverrides')) {
-            window.PM4ConfigOverrides = {};
+
+          if (!this.requestFiles[this.fileDataName]) {
+            this.$set(this.requestFiles, this.fileDataName, []);
           }
-          if (!_.has(window, 'PM4ConfigOverrides.requestFiles')) {
-            window.PM4ConfigOverrides.requestFiles = {};
-          }
-          if (typeof (window.PM4ConfigOverrides.requestFiles[this.fileDataName]) == 'undefined') {
-            window.PM4ConfigOverrides.requestFiles[this.fileDataName] = this.multipleUpload ? [] : {};
-          }
+          
+          const fileInfo = { id: msg.fileUploadId, file_name: name, native: rootFile };
+
+          // Mutate simple uploader's native file reference to add our
+          // file id so we can delete it later
+          file._pm_id = fileInfo.id;
+
           if (this.multipleUpload) {
-            const filesData = this.asArray(JSON.parse(JSON.stringify(window.PM4ConfigOverrides.requestFiles[this.fileDataName])));
-            filesData.push({id: msg.fileUploadId, file_name: file.name, new:true});
-            window.PM4ConfigOverrides.requestFiles[this.fileDataName] = filesData;
+            this.requestFiles[this.fileDataName].push(fileInfo);
           } else {
-            window.PM4ConfigOverrides.requestFiles[this.fileDataName] = {id: msg.fileUploadId, file_name: file.name, new:true};
+            this.$set(this.requestFiles, this.fileDataName, [fileInfo]);
           }
-          id = msg.fileUploadId;
+
         }
-        const valueToSend = this.multipleUpload
-          ? this.asArray(this.value).concat(id)
-          : id;
-        this.$emit('input', valueToSend);
+        this.$emit('input', this.valueToSend);
       }
 
       if (this.fileType == 'collection') {
@@ -464,17 +427,6 @@ export default {
           this.$emit('input', uploadedObject);
         }
       }
-    },
-    asArray(value) {
-      if (value === null || value === undefined) {
-        return [];
-      }
-      return Array.isArray(value) ? value : [value];
-    },
-    getFileId(value) {
-      return (typeof value === 'object' && value.id)
-        ? value.id
-        : value;
     },
     removed() {
       if (!this.inProgress) {
