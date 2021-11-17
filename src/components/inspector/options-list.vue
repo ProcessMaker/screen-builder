@@ -186,7 +186,7 @@
     <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
-      <div>
+      <div v-if="valueTypeReturned === 'single'">
         <label for="key">{{ $t('Value') }}</label>
         <mustache-helper/>
         <b-form-input id="key" v-model="key" @change="keyChanged" data-cy="inspector-datasource-value"/>
