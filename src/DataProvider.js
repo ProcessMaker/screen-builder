@@ -45,6 +45,9 @@ export default {
   post(...args) {
     return this.apiInstance().post(...args);
   },
+  delete(...args) {
+    return this.apiInstance().delete(...args);
+  },
   token() {
     return localStorage.getItem('token');
   },
@@ -135,5 +138,10 @@ export default {
     }
 
     return query;
+  },
+
+  deleteFile(id) {
+    const url = _.get(window, 'PM4ConfigOverrides.deleteFileEndpoint', 'files');
+    return this.delete(`${url}/${id}`);
   },
 };
