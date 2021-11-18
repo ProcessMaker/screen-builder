@@ -144,4 +144,8 @@ export default {
     const url = _.get(window, 'PM4ConfigOverrides.deleteFileEndpoint', 'files');
     return this.delete(`${url}/${id}`);
   },
+
+  download(url) {
+    return this.apiInstance().get(url, {responseType: 'blob'});
+  },
 };
