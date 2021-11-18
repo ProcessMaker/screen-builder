@@ -36,12 +36,6 @@
         <template>
           <ul>
             <li v-for="(file, i) in files " :key="i" :data-cy="file.id">
-
-
-
-              ID: {{ file.id }}
-
-              
               <div class="container-fluid pl-3 pr-3">
                 <div class="row" style="background:rgb(226 238 255)">
                   <div v-if="nativeFiles[file.id]" class="col-11 pr-0 pl-0">
@@ -527,23 +521,7 @@ export default {
       }
 
       if (this.collection) {
-        return 'http://pmdev41.nossl'
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        + '/api/1.0/files' +
+        return '/api/1.0/files' +
             '?model=' +
             'ProcessMaker\\Plugins\\Collections\\Models\\Collection' +
             '&model_id=' +
