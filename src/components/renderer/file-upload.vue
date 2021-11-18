@@ -33,16 +33,25 @@
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
       <uploader-list>
-        <template slot-scope="{ fileList }">
+        <template>
           <ul>
             <li v-for="(file, i) in files " :key="i" :data-cy="file.id">
+
+
+
+              ID: {{ file.id }}
+
+              
               <div class="container-fluid pl-3 pr-3">
                 <div class="row" style="background:rgb(226 238 255)">
-                  <div class="col-11 pr-0 pl-0">
-                    <uploader-file :file="file.native" :list="true" />
+                  <div v-if="nativeFiles[file.id]" class="col-11 pr-0 pl-0">
+                    <uploader-file :file="nativeFiles[file.id]" :list="true" />
+                  </div>
+                  <div v-else class="col-11 pr-0 pl-0 my-auto">
+                    <i class="fas fa-paperclip"/> {{ file.file_name }}
                   </div>
                   <div class="col-1 my-auto uploader-file">
-                    <b-btn variant="outline" @click="removeFile(file.native)" v-b-tooltip.hover :title="$t('Delete')">
+                    <b-btn variant="outline" @click="removeFile(file)" v-b-tooltip.hover :title="$t('Delete')">
                       <i class="fas fa-trash-alt"/>
                     </b-btn>
                   </div>
@@ -85,9 +94,6 @@ export default {
   components: uploader,
   mixins: [uniqIdsMixin],
   props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload'],
-  beforeMount() {
-    this.getFileType();
-  },
   updated() {
     this.removeDefaultClasses();
   },
@@ -111,8 +117,6 @@ export default {
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
-
-    this.requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', []);
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
@@ -120,22 +124,31 @@ export default {
     }
   },
   computed: {
-    files() {
-      return this.requestFiles[this.fileDataName] || [];
+    filesFromGlobalRequestFiles() {
+      return _.get(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, []);
+    },
+    filesFromCollection() {
+      if (!this.value) {
+        return [];
+      }
+      return this.filesFromCollectionValue(this.value);
+    },
+    collection() {
+      const collectionIdNode = document.head.querySelector('meta[name="collection-id"]');
+      if (collectionIdNode) {
+        return collectionIdNode.content;
+      }
+      return false;
+    },
+    filesData() {
+      if (this.collection) {
+        return this.filesFromCollection;
+      } else {
+        return this.filesFromGlobalRequestFiles;
+      }
     },
     fileIds() {
       return this.files.map(f => f.id);
-    },
-    valueToSend() {
-      if (this.multipleUpload) {
-        return this.files.map(file => {
-          return { file: file.id };
-        });
-      }
-      if (this.files.length > 0) {
-        return this.files[0].id;
-      }
-      return null;
     },
     nativeButtonAttrs() {
       const attrs = { 'data-cy':'file-upload-button' };
@@ -153,14 +166,6 @@ export default {
     },
     inPreviewMode() {
       return ((this.mode === 'preview' && !window.exampleScreens) || this.mode === 'editor');
-    },
-    displayName() {
-      const fileInfo = this.requestFiles[this.fileDataName];
-      let id = this.uploaderId;
-      if (fileInfo && id >= 0) {
-        return fileInfo.file_name;
-      }
-      return this.value.name ? this.value.name : this.value;
     },
     mode() {
       return this.$root.$children[0].mode;
@@ -191,8 +196,21 @@ export default {
     },
   },
   watch: {
-    requestFiles() {
-      _.set(window, 'PM4ConfigOverrides.requestFiles', this.requestFiles);
+    filesData: {
+      handler() {
+        this.setFiles();
+      },
+      immediate: true,
+      deep: true,
+    },
+    files: {
+      handler() {
+        if (!this.collection) {
+          this.setRequestFiles();
+        }
+        this.$emit('input', this.valueToSend());
+      },
+      deep: true,
     },
     name: {
       handler() {
@@ -231,7 +249,6 @@ export default {
     return {
       uploaderId: 1,
       content: '',
-      fileType: null,
       validator: {
         errorCount: 0,
         errors: [],
@@ -261,10 +278,63 @@ export default {
         accept: this.accept,
       },
       disabled: false,
-      requestFiles: [],
+      files: [],
+      nativeFiles: {},
     };
   },
   methods: {
+    setFiles() {
+      if (_.isEqual(this.filesData, this.files)) {
+        return;
+      }
+      this.files = this.filesData;
+    },
+    filesFromCollectionValue(value) {
+      if (!value) {
+        return [];
+      }
+      if (this.multipleUpload) {
+        return this.filesFromCollectionMulti(value);
+      } else {
+        return this.filesFromCollectionSingle(value);
+      }
+    },
+    filesFromCollectionSingle(value) {
+      return [{ id: value.id, file_name: value.name }];
+    },
+    filesFromCollectionMulti(value) {
+      return value.map(v => {
+        return { id: v.file.id, file_name: v.file.name };
+      });
+    },
+    setRequestFiles() {
+      _.set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
+      this.$emit('input', this.valueToSend());
+    },
+    valueToSend() {
+      if (this.multipleUpload) {
+        return this.valueForMulti();
+      } else {
+        return this.valueForSingle();
+      }
+    },
+    valueForMulti() {
+      return this.files.map(file => {
+        return { file: this.formatForType(file) };
+      });
+    },
+    valueForSingle() {
+      if (this.files.length > 0) {
+        return this.formatForType(this.files[0]);
+      }
+      return null;
+    },
+    formatForType(file) {
+      if (this.collection) {
+        return { id: file.id, name: file.file_name };
+      }
+      return file.id;
+    },
     hasFileId(id) {
       return this.fileIds.includes(id);
     },
@@ -278,35 +348,55 @@ export default {
       }
       this.deleteAssociatedFiles(record);
     },
-    deleteAssociatedFiles(object) {
+    async deleteAssociatedFiles(object) {
       for (const prop in object) {
         if (prop === this.name && object[prop]) {
-          let ids = [object[prop]];
-          if (Array.isArray(object[prop])) {
-            ids = object[prop].map(i => i.file);
-          }
+          const idsInRemoved = this.idsFromValue(object[prop]);
 
-          for (const id of ids) {
+          for (const id of idsInRemoved) {
             if (this.hasFileId(id)) {
-              this.$dataProvider.deleteFile(id).catch(e => {});
-              this.removeFromRequestFiles(id);
+              await this.$dataProvider.deleteFile(id).catch(e => {});
+              this.removeFromFiles(id);
             }
           }
         }
       }
     },
-    async removeFile(nativeFile) { 
-      const id = nativeFile._pm_id;
-      await this.$dataProvider.deleteFile(id);
-      this.$refs.uploader.uploader.removeFile(nativeFile);
-      
-      this.removeFromRequestFiles(id);
-      this.$emit('input', this.valueToSend);
+    idsFromValue(value) {
+      if (this.collection) {
+        return this.filesFromCollectionValue(value).map(f => f.id);
+      } else {
+        if (this.multipleUpload) {
+          return value.map(v => v.file);
+        } else {
+          return [value];
+        }
+      }
     },
-    removeFromRequestFiles(id)
-    {
-      const filtered = this.files.filter(item => item.id !== id);
-      this.$set(this.requestFiles, this.fileDataName, filtered);
+    async removeFile(file) { 
+      const id = file.id;
+      await this.$dataProvider.deleteFile(id);
+      
+      this.removeFromFiles(id);
+    },
+    removeFromFiles(id) {
+      const idx = this.files.findIndex(f => f.id === id);
+      this.$delete(this.files, idx);
+      
+      if (this.nativeFiles[id]) {
+        if (this.$refs.uploader) {
+          this.$refs.uploader.uploader.removeFile(this.nativeFiles[id]);
+        }
+        this.$delete(this.nativeFiles, id);
+      }
+
+    },
+    addToFiles(fileInfo) {
+      if (this.multipleUpload) {
+        this.files.push(fileInfo);
+      } else {
+        this.files = [fileInfo];
+      }
     },
     listenRecordList(recordList, index, id) {
       const parent = this.parentRecordList(this);
@@ -378,54 +468,23 @@ export default {
         e.target.click();
       }
     },
-    getFileType() {
-      if (document.head.querySelector('meta[name="collection-id"]')) {
-        this.fileType = 'collection';
-      } else {
-        this.fileType = 'request';
-      }
-    },
     fileUploaded(rootFile, file, message) {
-      if (this.fileType == 'request') {
-        let name = file.name;
-        if (message) {
-          const msg = JSON.parse(message);
+      let name = file.name;
+      if (message) {
+        const msg = JSON.parse(message);
 
-          if (!this.requestFiles[this.fileDataName]) {
-            this.$set(this.requestFiles, this.fileDataName, []);
-          }
-          
-          const fileInfo = { id: msg.fileUploadId, file_name: name, native: rootFile };
-
-          // Mutate simple uploader's native file reference to add our
-          // file id so we can delete it later
-          file._pm_id = fileInfo.id;
-
-          if (this.multipleUpload) {
-            this.requestFiles[this.fileDataName].push(fileInfo);
-          } else {
-            this.$set(this.requestFiles, this.fileDataName, [fileInfo]);
-          }
-
+        let id = msg.fileUploadId;
+        if (this.collection) {
+          id = msg.id;
         }
-        this.$emit('input', this.valueToSend);
-      }
-
-      if (this.fileType == 'collection') {
-        message = JSON.parse(message);
-        const uploadedObject = {
-          id: message.id,
-          name: message.file_name,
+        
+        const fileInfo = {
+          id,
+          file_name: name,
         };
-
-        if (this.multipleUpload) {
-          let currentVal = this.value ? this.value : [];
-          currentVal.push(uploadedObject);
-          this.$emit('input', currentVal);
-        }
-        else {
-          this.$emit('input', uploadedObject);
-        }
+       
+        this.$set(this.nativeFiles, id, rootFile);
+        this.addToFiles(fileInfo);
       }
     },
     removed() {
@@ -467,25 +526,34 @@ export default {
         return this.endpoint;
       }
 
-      if (this.fileType == 'request') {
-        const requestIDNode = document.head.querySelector('meta[name="request-id"]');
-
-        return requestIDNode
-          ? `/api/1.0/requests/${requestIDNode.content}/files`
-          : null;
-      }
-
-      if (this.fileType == 'collection') {
-        const collectionIdNode = document.head.querySelector('meta[name="collection-id"]');
-
-        return collectionIdNode
-          ? '/api/1.0/files' +
+      if (this.collection) {
+        return 'http://pmdev41.nossl'
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        + '/api/1.0/files' +
             '?model=' +
             'ProcessMaker\\Plugins\\Collections\\Models\\Collection' +
             '&model_id=' +
-            collectionIdNode.content +
+            this.collection +
             '&collection=' +
-            'collection'
+            'collection';
+      } else {
+        const requestIDNode = document.head.querySelector('meta[name="request-id"]');
+        return requestIDNode
+          ? `/api/1.0/requests/${requestIDNode.content}/files`
           : null;
       }
     },
