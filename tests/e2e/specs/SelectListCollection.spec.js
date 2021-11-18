@@ -392,4 +392,64 @@ describe('select list mustache', () => {
       ],
     });
   });
+
+  it('Verify Load values in select list mustache + collection', () => {
+    cy.loadFromJson('select_list_radio_collection.json', 0);
+    cy.setPreviewDataInput({
+      'form_select_list_1': {
+        'dni': '1234',
+        'name': {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        'id': 1,
+      },
+      'form_select_list_2': {
+        'last': 'Smith',
+        'first': 'Oliver',
+      },
+      'form_select_list_3': {
+        'dni': '1234',
+        'name': {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        'id': 1,
+      },
+      'form_select_list_4': '1',
+      'form_select_list_5': 'Oliver Smith',
+      'form_select_list_6': '1',
+    });
+
+    cy.get('[data-cy=mode-preview]').click();
+
+    // cy.get('[data-cy="screen-field-form_select_list_1"]').contains('1234');
+
+    // Check the data of the screen
+    cy.assertPreviewData({
+      'form_select_list_1': {
+        'dni': '1234',
+        'name': {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        'id': 1,
+      },
+      'form_select_list_2': {
+        'last': 'Smith',
+        'first': 'Oliver',
+      },
+      'form_select_list_3': {
+        'dni': '1234',
+        'name': {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        'id': 1,
+      },
+      'form_select_list_4': '1',
+      'form_select_list_5': 'Oliver Smith',
+      'form_select_list_6': '1',
+    });
+  });
 });
