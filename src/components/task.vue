@@ -227,7 +227,7 @@ export default {
     loadTask() {
       const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
       // For Vocabularies
-      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.indexOf('package-vocabularies')) {
+      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
       }
 
