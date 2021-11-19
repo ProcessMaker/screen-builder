@@ -451,8 +451,8 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_checkbox_5]').parent().click();
     cy.get('[data-cy=preview-content] [name=form_checkbox_6]').should('be.checked');
     cy.get('[data-cy=preview-content] [name=form_select_list_3]').eq(1).click();
-    cy.get('[data-cy=preview-content] [name=form_select_list_4]').eq(1).click();
-    cy.get('[data-cy=preview-content] [name=form_select_list_4]').eq(2).click();
+    cy.get('[data-cy=preview-content] [name=form_select_list_4]').eq(1).click(); // Select b
+    cy.get('[data-cy=preview-content] [name=form_select_list_4]').eq(2).click(); // Select c
     // record list - complete new fields
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=email]').clear().type('thomas@processmaker.com');
@@ -581,6 +581,7 @@ describe('Complex screen', () => {
         'page1': 1,
         'form_input_5': 123.45,
         'form_select_list_4': [
+          'b',
           'c',
         ],
         'form_date_picker_7': now.toISOString(),
