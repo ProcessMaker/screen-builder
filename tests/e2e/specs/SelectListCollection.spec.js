@@ -194,72 +194,48 @@ describe('select list mustache', () => {
     cy.assertPreviewData({
       'form_select_list_1': [
         {
-          'dni':
-              '1234',
-          'name':
-            {
-              'last':
-                'Smith',
-              'first':
-                'Oliver',
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
             },
-          'id':
-              1,
+          'id': 1,
         },
         {
-          'dni':
-              '5678',
-          'name':
-            {
-              'last':
-                'Doe',
-              'first':
-                'John',
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
             },
-          'id':
-              2,
+          'id': 2,
         },
       ],
       'form_select_list_2': [
         {
-          'last':
-              'Smith',
-          'first':
-              'Oliver',
+          'last': 'Smith',
+          'first': 'Oliver',
         },
         {
-          'last':
-              'Doe',
-          'first':
-              'John',
+          'last': 'Doe',
+          'first': 'John',
         },
       ],
       'form_select_list_3': [
         {
-          'dni':
-              '1234',
-          'name':
-            {
-              'last':
-                'Smith',
-              'first':
-                'Oliver',
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
             },
-          'id':
-              1,
+          'id': 1,
         },
         {
-          'dni':
-              '5678',
-          'name':
-            {
-              'last':
-                'Doe',
-              'first':
-                'John',
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
             },
-          'id':
-              2,
+          'id': 2,
         },
       ],
       'form_select_list_4': [
@@ -310,72 +286,48 @@ describe('select list mustache', () => {
     cy.assertPreviewData({
       'form_select_list_1': [
         {
-          'dni':
-              '1234',
-          'name':
-            {
-              'last':
-                'Smith',
-              'first':
-                'Oliver',
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
             },
-          'id':
-              1,
+          'id': 1,
         },
         {
-          'dni':
-              '5678',
-          'name':
-            {
-              'last':
-                'Doe',
-              'first':
-                'John',
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
             },
-          'id':
-              2,
+          'id': 2,
         },
       ],
       'form_select_list_2': [
         {
-          'last':
-              'Smith',
-          'first':
-              'Oliver',
+          'last': 'Smith',
+          'first': 'Oliver',
         },
         {
-          'last':
-              'Doe',
-          'first':
-              'John',
+          'last': 'Doe',
+          'first': 'John',
         },
       ],
       'form_select_list_3': [
         {
-          'dni':
-              '1234',
-          'name':
-            {
-              'last':
-                'Smith',
-              'first':
-                'Oliver',
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
             },
-          'id':
-              1,
+          'id': 1,
         },
         {
-          'dni':
-              '5678',
-          'name':
-            {
-              'last':
-                'Doe',
-              'first':
-                'John',
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
             },
-          'id':
-              2,
+          'id': 2,
         },
       ],
       'form_select_list_4': [
@@ -585,6 +537,296 @@ describe('select list mustache', () => {
       'form_select_list_4': '1',
       'form_select_list_5': 'Oliver Smith',
       'form_select_list_6': '1',
+    });
+  });
+
+  it('Verify Load value in check list mustache + collection', () => {
+    cy.loadFromJson('select_list_checkbox_collection.json', 0);
+    cy.setPreviewDataInput({
+      'form_select_list_1': [
+        {
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
+            },
+          'id': 1,
+        },
+        {
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
+            },
+          'id': 2,
+        },
+      ],
+      'form_select_list_2': [
+        {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        {
+          'last': 'Doe',
+          'first': 'John',
+        },
+      ],
+      'form_select_list_3': [
+        {
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
+            },
+          'id': 1,
+        },
+        {
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
+            },
+          'id': 2,
+        },
+      ],
+      'form_select_list_4': [
+        '1',
+        '2',
+      ],
+      'form_select_list_5': [
+        'Oliver Smith',
+        'John Doe',
+      ],
+      'form_select_list_6': [
+        '1',
+        '2',
+      ],
+    });
+    cy.get('[data-cy=mode-preview]').click();
+
+    cy.get('[data-cy="screen-field-form_select_list_1"] + .form-check-label:contains("1234")').parent().find('input').should('be.checked');
+    cy.get('[data-cy="screen-field-form_select_list_1"] + .form-check-label:contains("5678")').parent().find('input').should('be.checked');
+
+    cy.get('[data-cy="screen-field-form_select_list_2"] + .form-check-label:contains("Oliver")').parent().find('input').should('be.checked');
+    cy.get('[data-cy="screen-field-form_select_list_2"] + .form-check-label:contains("John")').parent().find('input').should('be.checked');
+
+    cy.get('[data-cy="screen-field-form_select_list_3"] + .form-check-label:contains("DNI: 1234 Name: Oliver Smith")').parent().find('input').should('be.checked');
+    cy.get('[data-cy="screen-field-form_select_list_3"] + .form-check-label:contains("DNI: 5678 Name: John Doe")').parent().find('input').should('be.checked');
+
+    cy.get('[data-cy="screen-field-form_select_list_4"] + .form-check-label:contains("Oliver Smith")').parent().find('input').should('be.checked');
+    cy.get('[data-cy="screen-field-form_select_list_4"] + .form-check-label:contains("John Doe")').parent().find('input').should('be.checked');
+
+    cy.get('[data-cy="screen-field-form_select_list_5"] + .form-check-label:contains("Oliver Smith")').parent().find('input').should('be.checked');
+    cy.get('[data-cy="screen-field-form_select_list_5"] + .form-check-label:contains("John Doe")').parent().find('input').should('be.checked');
+
+    cy.get('[data-cy="screen-field-form_select_list_6"] + .form-check-label:contains("Oliver Smith")').parent().find('input').should('be.checked');
+    cy.get('[data-cy="screen-field-form_select_list_6"] + .form-check-label:contains("John Doe")').parent().find('input').should('be.checked');
+
+    // Check the data of the screen
+    cy.assertPreviewData({
+      'form_select_list_1': [
+        {
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
+            },
+          'id': 1,
+        },
+        {
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
+            },
+          'id': 2,
+        },
+      ],
+      'form_select_list_2': [
+        {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        {
+          'last': 'Doe',
+          'first': 'John',
+        },
+      ],
+      'form_select_list_3': [
+        {
+          'dni': '1234',
+          'name': {
+              'last': 'Smith',
+              'first': 'Oliver',
+            },
+          'id': 1,
+        },
+        {
+          'dni': '5678',
+          'name': {
+              'last': 'Doe',
+              'first': 'John',
+            },
+          'id': 2,
+        },
+      ],
+      'form_select_list_4': [
+        '1',
+        '2',
+      ],
+      'form_select_list_5': [
+        'Oliver Smith',
+        'John Doe',
+      ],
+      'form_select_list_6': [
+        '1',
+        '2',
+      ],
+    });
+  });
+
+  it('Verify Load values in multiselect list mustache + collection', () => {
+    cy.loadFromJson('select_list_multiselect_collection.json', 0);
+    cy.setPreviewDataInput({
+      'form_select_list_1': [
+        {
+          'dni': '1234',
+          'name': {
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
+          'id': 1,
+        },
+        {
+          'id': 2,
+          'dni': '5678',
+          'name': {
+            'last': 'Doe',
+            'first': 'John',
+          },
+        },
+      ],
+      'form_select_list_2': [
+        {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        {
+          'last': 'Doe',
+          'first': 'John',
+        },
+      ],
+      'form_select_list_3': [
+        {
+          'dni': '1234',
+          'name': {
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
+          'id': 1,
+        },
+        {
+          'dni': '5678',
+          'name': {
+            'last': 'Doe',
+            'first': 'John',
+          },
+          'id': 2,
+        },
+      ],
+      'form_select_list_4': [
+        '1',
+        '2',
+      ],
+      'form_select_list_5': [
+        'Oliver Smith',
+        'John Doe',
+      ],
+      'form_select_list_6': [
+        '1',
+        '2',
+      ],
+    });
+    cy.get('[data-cy=mode-preview]').click();
+
+    cy.get('[data-cy="screen-field-form_select_list_1"] .multiselect__tag:contains("1234")').contains('1234');
+    cy.get('[data-cy="screen-field-form_select_list_1"] .multiselect__tag:contains("5678")').contains('5678');
+
+    cy.get('[data-cy="screen-field-form_select_list_2"] .multiselect__tag:contains("Oliver")').contains('Oliver');
+    cy.get('[data-cy="screen-field-form_select_list_2"] .multiselect__tag:contains("John")').contains('John');
+
+    cy.get('[data-cy="screen-field-form_select_list_3"] .multiselect__tag:contains("DNI: 1234 Name: Oliver Smith")').contains('DNI: 1234 Name: Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_3"] .multiselect__tag:contains("DNI: 5678 Name: John Doe")').contains('DNI: 5678 Name: John Doe');
+
+    cy.get('[data-cy="screen-field-form_select_list_4"] .multiselect__tag:contains("Oliver Smith")').contains('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_4"] .multiselect__tag:contains("John Doe")').contains('John Doe');
+
+    cy.get('[data-cy="screen-field-form_select_list_5"] .multiselect__tag:contains("Oliver Smith")').contains('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_5"] .multiselect__tag:contains("John Doe")').contains('John Doe');
+
+    cy.get('[data-cy="screen-field-form_select_list_6"] .multiselect__tag:contains("Oliver Smith")').contains('Oliver Smith');
+    cy.get('[data-cy="screen-field-form_select_list_6"] .multiselect__tag:contains("John Doe")').contains('John Doe');
+
+    // Check the data of the screen
+    cy.assertPreviewData({
+      'form_select_list_1': [
+        {
+          'dni': '1234',
+          'name': {
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
+          'id': 1,
+        },
+        {
+          'dni': '5678',
+          'name': {
+            'last': 'Doe',
+            'first': 'John',
+          },
+          'id': 2,
+        },
+      ],
+      'form_select_list_2': [
+        {
+          'last': 'Smith',
+          'first': 'Oliver',
+        },
+        {
+          'last': 'Doe',
+          'first': 'John',
+        },
+      ],
+      'form_select_list_3': [
+        {
+          'dni': '1234',
+          'name': {
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
+          'id': 1,
+        },
+        {
+          'dni': '5678',
+          'name': {
+            'last': 'Doe',
+            'first': 'John',
+          },
+          'id': 2,
+        },
+      ],
+      'form_select_list_4': [
+        '1',
+        '2',
+      ],
+      'form_select_list_5': [
+        'Oliver Smith',
+        'John Doe',
+      ],
+      'form_select_list_6': [
+        '1',
+        '2',
+      ],
     });
   });
 });
