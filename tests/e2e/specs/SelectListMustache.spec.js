@@ -84,29 +84,12 @@ describe('select list mustache', () => {
     // Check the data of the screen
     cy.assertPreviewData({
       form_select_list_1: {
+        'dni': '5678',
+        'name': {
+          'last': 'Loayza',
+          'first': 'Dante',
+        },
         'id': 2,
-        'created_by_id': 2,
-        'updated_by_id': 2,
-        'created_at': '2021-11-08 10:29:56',
-        'updated_at': '2021-11-08 10:29:56',
-        'data': {
-          'dni': '5678',
-          'name': {
-            'last': 'Loayza',
-            'first': 'Dante',
-          },
-          'id': 2,
-        },
-        'collection_id': 1,
-        'title': '2',
-        'created_by': {
-          'id': 2,
-          'email': 'admin@processmaker.com',
-        },
-        'updated_by': {
-          'id': 2,
-          'email': 'admin@processmaker.com',
-        },
       },
     });
   });
