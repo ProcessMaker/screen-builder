@@ -264,7 +264,6 @@ export default {
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
           'X-CSRF-TOKEN': window.ProcessMaker.apiClient.defaults.headers.common['X-CSRF-TOKEN'],
-          'Authorization': 'Bearer ' + this.$dataProvider.token(),
         },
         singleFile: !this.multipleUpload,
       },
