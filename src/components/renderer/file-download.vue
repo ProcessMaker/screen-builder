@@ -4,6 +4,9 @@
     <b-card v-if="inPreviewMode" class="mb-2">
       {{ messageForPreview }}
     </b-card>
+    <b-card v-else-if="donwloadingNotAvailable" class="mb-2">
+      {{ messageForNotAvailable }}
+    </b-card>
     <div v-else>
       <template v-if="filesInfo.length > 0">
         <div v-for="file in filesInfo" :key="file.id" :data-cy="file.id + '-' + file.name.replace(/[^0-9a-zA-Z\-]/g, '-')">
@@ -32,25 +35,16 @@ export default {
   data() {
     return {
       filesInfo: [],
-      fileName: null,
-      requestId: null,
-      collectionId: null,
-      recordId: null,
       prefix: '',
       rowId: null,
     };
   },
   props: ['name', 'value', 'endpoint', 'requestFiles', 'label'],
-  beforeMount() {
-    if (!this.collection) {
-      this.requestId = this.getRequestId();
-    }
-  },
   mounted() {
     this.$root.$on('set-upload-data-name',
       (recordList, index, id) => this.listenRecordList(recordList, index, id));
 
-    if (!this.collection && !this.requestId) {
+    if (this.donwloadingNotAvailable) {
       // Not somewhere we can download anything (like web entry start event)
       return;
     }
@@ -71,6 +65,9 @@ export default {
     },
   },
   computed: {
+    donwloadingNotAvailable() {
+      return !this.collection && !this.requestId;
+    },
     inPreviewMode() {
       return this.mode === 'preview' && !window.exampleScreens;
     },
@@ -80,6 +77,9 @@ export default {
         { fileName: this.name }
       );
     },
+    messageForNotAvailable() {
+      return this.$t('Downloading files is not available.');
+    },
     mode() {
       return this.$root.$children[0].mode;
     },
@@ -88,6 +88,13 @@ export default {
     },
     fileDataName() {
       return this.prefix + this.name + (this.rowId ? '.' + this.rowId : '');
+    },
+    requestId() {
+      let node = document.head.querySelector('meta[name="request-id"]');
+      if (node === null) {
+        return null;
+      }
+      return node.content;
     },
     collection() {
       const collectionIdNode = document.head.querySelector('meta[name="collection-id"]');
@@ -128,9 +135,8 @@ export default {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
       }
 
-      if (endpoint && this.filesInfo) {
-        const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.filesInfo.token;
-        return endpoint + query;
+      if (endpoint && file.token) {
+        return `${endpoint}/${file.id}?&token=${file.token}`;
       }
 
       return `/files/${file.id}/contents`;
@@ -175,13 +181,6 @@ export default {
       document.body.appendChild(link);
       link.click();
     },
-    getRequestId() {
-      let node = document.head.querySelector('meta[name="request-id"]');
-      if (node === null) {
-        return null;
-      }
-      return node.content;
-    },
     setFilesInfo() {
       if (this.collection) {
         this.setFilesInfoFromCollectionValue();
@@ -190,13 +189,37 @@ export default {
       }
     },
     setFilesInfoFromRequest() {
-      this.filesInfo = _.get(
+      let requestFiles = _.get(
         window,
         `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`,
         []
-      ).map(file => {
-        return { id: file.id, name: file.file_name };
+      );
+
+      // Might be accessing individual files from inside a loop
+      if (requestFiles.length === 0 && this.fileDataName.endsWith('.file')) {
+        requestFiles = this.requestFileInsideALoop();
+      }
+
+      this.filesInfo = requestFiles.map(file => {
+        const info = { id: file.id, name: file.file_name };
+        if (file.token) {
+          // web entry
+          info.token = file.token;
+        }
+        return info;
       });
+    },
+    requestFileInsideALoop() {
+      const path = this.fileDataName.slice(0, -5);
+      const loopFile = _.get(
+        window,
+        `PM4ConfigOverrides.requestFiles.${path}`,
+        null
+      );
+      if (loopFile) {
+        return [loopFile]; // Treat as single file download
+      }
+      return [];
     },
     setFilesInfoFromCollectionValue() {
       if (!this.value) {
