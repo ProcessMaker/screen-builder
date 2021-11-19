@@ -196,17 +196,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
@@ -224,17 +224,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
@@ -288,17 +288,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
@@ -316,17 +316,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
@@ -547,17 +547,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
@@ -575,17 +575,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
@@ -628,17 +628,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
@@ -656,17 +656,17 @@ describe('select list mustache', () => {
         {
           'dni': '1234',
           'name': {
-              'last': 'Smith',
-              'first': 'Oliver',
-            },
+            'last': 'Smith',
+            'first': 'Oliver',
+          },
           'id': 1,
         },
         {
           'dni': '5678',
           'name': {
-              'last': 'Doe',
-              'first': 'John',
-            },
+            'last': 'Doe',
+            'first': 'John',
+          },
           'id': 2,
         },
       ],
