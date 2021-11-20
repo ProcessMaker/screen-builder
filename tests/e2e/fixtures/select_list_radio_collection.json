@@ -1,0 +1,1694 @@
+{
+  "type": "screen_package",
+  "version": "2",
+  "screens": [
+    {
+      "id": 10,
+      "screen_category_id": "1",
+      "title": "select list collection",
+      "description": "select list collection",
+      "type": "FORM",
+      "config": [
+        {
+          "name": "select list collection",
+          "items": [
+            {
+              "label": "Select List",
+              "config": {
+                "icon": "fas fa-angle-double-down",
+                "name": "form_select_list_1",
+                "label": "Select (Object) content: data.dni  => value: data",
+                "helper": null,
+                "options": {
+                  "key": "data",
+                  "value": "data.dni",
+                  "dataName": "response.data",
+                  "jsonData": null,
+                  "renderAs": "checkbox",
+                  "editIndex": null,
+                  "pmqlQuery": null,
+                  "dataSource": "dataConnector",
+                  "optionsList": [],
+                  "removeIndex": null,
+                  "showRenderAs": true,
+                  "showJsonEditor": false,
+                  "showOptionCard": false,
+                  "selectedOptions": [],
+                  "allowMultiSelect": false,
+                  "selectedEndPoint": "ListAll",
+                  "showRemoveWarning": false,
+                  "valueTypeReturned": "object",
+                  "selectedDataSource": 2
+                },
+                "readonly": false,
+                "validation": [],
+                "placeholder": null,
+                "rootElement": "response",
+                "dataSourceUrl": null,
+                "dataSourceEndpoint": null
+              },
+              "component": "FormSelectList",
+              "inspector": [
+                {
+                  "type": "FormInput",
+                  "field": "name",
+                  "config": {
+                    "name": "Variable Name",
+                    "label": "Variable Name",
+                    "helper": "A variable name is a symbolic name to reference information.",
+                    "validation": "regex:\/^(?:[A-Za-z])(?:[0-9A-Z_a-z])*(?:\\.[0-9A-Z_a-z]+)*$\/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "label",
+                  "config": {
+                    "label": "Label",
+                    "helper": "The label describes the field's name"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "placeholder",
+                  "config": {
+                    "label": "Placeholder Text",
+                    "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                  }
+                },
+                {
+                  "type": "ValidationSelect",
+                  "field": "validation",
+                  "config": {
+                    "label": "Validation Rules",
+                    "helper": "The validation rules needed for this field"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "helper",
+                  "config": {
+                    "label": "Helper Text",
+                    "helper": "Help text is meant to provide additional guidance on the field's value"
+                  }
+                },
+                {
+                  "type": "OptionsList",
+                  "field": "options",
+                  "config": {
+                    "label": null,
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "color",
+                  "config": {
+                    "label": "Text Color",
+                    "helper": "Set the element's text color",
+                    "options": [
+                      {
+                        "value": "text-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "text-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "text-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "text-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "text-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "text-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "text-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "text-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "bgcolor",
+                  "config": {
+                    "label": "Background Color",
+                    "helper": "Set the element's background color",
+                    "options": [
+                      {
+                        "value": "alert alert-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "alert alert-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "alert alert-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "alert alert-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "alert alert-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "alert alert-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "alert alert-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "alert alert-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": {
+                    "props": [
+                      "value",
+                      "helper"
+                    ],
+                    "watch": {
+                      "value": {
+                        "immediate": true
+                      }
+                    },
+                    "methods": [],
+                    "_scopeId": "data-v-7c18055b",
+                    "computed": {
+                      "effectiveValue": []
+                    },
+                    "_compiled": true,
+                    "components": {
+                      "MonacoEditor": {
+                        "name": "monaco-editor",
+                        "_Ctor": [],
+                        "props": {
+                          "amdRequire": []
+                        },
+                        "extends": {
+                          "name": "MonacoEditor",
+                          "model": {
+                            "event": "change"
+                          },
+                          "props": {
+                            "theme": {
+                              "default": "vs"
+                            },
+                            "value": {
+                              "required": true
+                            },
+                            "options": [],
+                            "language": [],
+                            "original": [],
+                            "amdRequire": [],
+                            "diffEditor": {
+                              "default": false
+                            }
+                          },
+                          "watch": {
+                            "options": {
+                              "deep": true,
+                              "user": true
+                            }
+                          },
+                          "methods": []
+                        },
+                        "methods": []
+                      }
+                    },
+                    "staticRenderFns": []
+                  },
+                  "field": "defaultValue",
+                  "config": {
+                    "label": "Default Value",
+                    "helper": "The default value is pre populated using the existing request data. This feature will allow you to modify the value displayed on screen load if needed."
+                  }
+                },
+                {
+                  "type": "FormCheckbox",
+                  "field": "readonly",
+                  "config": {
+                    "label": "Read Only",
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "conditionalHide",
+                  "config": {
+                    "label": "Visibility Rule",
+                    "helper": "This control is hidden until this expression is true"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customFormatter",
+                  "config": {
+                    "label": "Custom Format String",
+                    "helper": "Use the Mask Pattern format <br> Date ##\/##\/#### <br> SSN ###-##-#### <br> Phone (###) ###-####",
+                    "validation": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customCssSelector",
+                  "config": {
+                    "label": "CSS Selector Name",
+                    "helper": "Use this in your custom css rules",
+                    "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                  }
+                }
+              ],
+              "editor-control": "FormSelectList",
+              "editor-component": "FormSelectList"
+            },
+            {
+              "label": "Select List",
+              "config": {
+                "icon": "fas fa-angle-double-down",
+                "name": "form_select_list_2",
+                "label": "Select (Object) content: data.name.first  => value: data.name",
+                "helper": null,
+                "options": {
+                  "key": "data.name",
+                  "value": "data.name.first",
+                  "dataName": "response.data",
+                  "jsonData": null,
+                  "renderAs": "checkbox",
+                  "editIndex": null,
+                  "pmqlQuery": null,
+                  "dataSource": "dataConnector",
+                  "optionsList": [],
+                  "removeIndex": null,
+                  "showRenderAs": true,
+                  "showJsonEditor": false,
+                  "showOptionCard": false,
+                  "selectedOptions": [],
+                  "allowMultiSelect": false,
+                  "selectedEndPoint": "ListAll",
+                  "showRemoveWarning": false,
+                  "valueTypeReturned": "object",
+                  "selectedDataSource": 2
+                },
+                "readonly": false,
+                "validation": [],
+                "placeholder": null,
+                "rootElement": "response",
+                "dataSourceUrl": null,
+                "dataSourceEndpoint": null
+              },
+              "component": "FormSelectList",
+              "inspector": [
+                {
+                  "type": "FormInput",
+                  "field": "name",
+                  "config": {
+                    "name": "Variable Name",
+                    "label": "Variable Name",
+                    "helper": "A variable name is a symbolic name to reference information.",
+                    "validation": "regex:\/^(?:[A-Za-z])(?:[0-9A-Z_a-z])*(?:\\.[0-9A-Z_a-z]+)*$\/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "label",
+                  "config": {
+                    "label": "Label",
+                    "helper": "The label describes the field's name"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "placeholder",
+                  "config": {
+                    "label": "Placeholder Text",
+                    "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                  }
+                },
+                {
+                  "type": "ValidationSelect",
+                  "field": "validation",
+                  "config": {
+                    "label": "Validation Rules",
+                    "helper": "The validation rules needed for this field"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "helper",
+                  "config": {
+                    "label": "Helper Text",
+                    "helper": "Help text is meant to provide additional guidance on the field's value"
+                  }
+                },
+                {
+                  "type": "OptionsList",
+                  "field": "options",
+                  "config": {
+                    "label": null,
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "color",
+                  "config": {
+                    "label": "Text Color",
+                    "helper": "Set the element's text color",
+                    "options": [
+                      {
+                        "value": "text-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "text-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "text-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "text-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "text-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "text-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "text-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "text-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "bgcolor",
+                  "config": {
+                    "label": "Background Color",
+                    "helper": "Set the element's background color",
+                    "options": [
+                      {
+                        "value": "alert alert-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "alert alert-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "alert alert-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "alert alert-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "alert alert-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "alert alert-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "alert alert-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "alert alert-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": {
+                    "props": [
+                      "value",
+                      "helper"
+                    ],
+                    "watch": {
+                      "value": {
+                        "immediate": true
+                      }
+                    },
+                    "methods": [],
+                    "_scopeId": "data-v-7c18055b",
+                    "computed": {
+                      "effectiveValue": []
+                    },
+                    "_compiled": true,
+                    "components": {
+                      "MonacoEditor": {
+                        "name": "monaco-editor",
+                        "_Ctor": [],
+                        "props": {
+                          "amdRequire": []
+                        },
+                        "extends": {
+                          "name": "MonacoEditor",
+                          "model": {
+                            "event": "change"
+                          },
+                          "props": {
+                            "theme": {
+                              "default": "vs"
+                            },
+                            "value": {
+                              "required": true
+                            },
+                            "options": [],
+                            "language": [],
+                            "original": [],
+                            "amdRequire": [],
+                            "diffEditor": {
+                              "default": false
+                            }
+                          },
+                          "watch": {
+                            "options": {
+                              "deep": true,
+                              "user": true
+                            }
+                          },
+                          "methods": []
+                        },
+                        "methods": []
+                      }
+                    },
+                    "staticRenderFns": []
+                  },
+                  "field": "defaultValue",
+                  "config": {
+                    "label": "Default Value",
+                    "helper": "The default value is pre populated using the existing request data. This feature will allow you to modify the value displayed on screen load if needed."
+                  }
+                },
+                {
+                  "type": "FormCheckbox",
+                  "field": "readonly",
+                  "config": {
+                    "label": "Read Only",
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "conditionalHide",
+                  "config": {
+                    "label": "Visibility Rule",
+                    "helper": "This control is hidden until this expression is true"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customFormatter",
+                  "config": {
+                    "label": "Custom Format String",
+                    "helper": "Use the Mask Pattern format <br> Date ##\/##\/#### <br> SSN ###-##-#### <br> Phone (###) ###-####",
+                    "validation": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customCssSelector",
+                  "config": {
+                    "label": "CSS Selector Name",
+                    "helper": "Use this in your custom css rules",
+                    "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                  }
+                }
+              ],
+              "editor-control": "FormSelectList",
+              "editor-component": "FormSelectList"
+            },
+            {
+              "label": "Select List",
+              "config": {
+                "icon": "fas fa-angle-double-down",
+                "name": "form_select_list_3",
+                "label": "Select (Object) content: DNI: { { data.dni } } Name: { { data.name.first } } { { data.name.last } }  => value: data",
+                "helper": null,
+                "options": {
+                  "key": "data",
+                  "value": "DNI: {{ data.dni }} Name: {{ data.name.first }} {{ data.name.last }}",
+                  "dataName": "response.data",
+                  "jsonData": null,
+                  "renderAs": "checkbox",
+                  "editIndex": null,
+                  "pmqlQuery": null,
+                  "dataSource": "dataConnector",
+                  "optionsList": [],
+                  "removeIndex": null,
+                  "showRenderAs": true,
+                  "showJsonEditor": false,
+                  "showOptionCard": false,
+                  "selectedOptions": [],
+                  "allowMultiSelect": false,
+                  "selectedEndPoint": "ListAll",
+                  "showRemoveWarning": false,
+                  "valueTypeReturned": "object",
+                  "selectedDataSource": 2
+                },
+                "readonly": false,
+                "validation": [],
+                "placeholder": null,
+                "rootElement": "response",
+                "dataSourceUrl": null,
+                "dataSourceEndpoint": null
+              },
+              "component": "FormSelectList",
+              "inspector": [
+                {
+                  "type": "FormInput",
+                  "field": "name",
+                  "config": {
+                    "name": "Variable Name",
+                    "label": "Variable Name",
+                    "helper": "A variable name is a symbolic name to reference information.",
+                    "validation": "regex:\/^(?:[A-Za-z])(?:[0-9A-Z_a-z])*(?:\\.[0-9A-Z_a-z]+)*$\/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "label",
+                  "config": {
+                    "label": "Label",
+                    "helper": "The label describes the field's name"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "placeholder",
+                  "config": {
+                    "label": "Placeholder Text",
+                    "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                  }
+                },
+                {
+                  "type": "ValidationSelect",
+                  "field": "validation",
+                  "config": {
+                    "label": "Validation Rules",
+                    "helper": "The validation rules needed for this field"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "helper",
+                  "config": {
+                    "label": "Helper Text",
+                    "helper": "Help text is meant to provide additional guidance on the field's value"
+                  }
+                },
+                {
+                  "type": "OptionsList",
+                  "field": "options",
+                  "config": {
+                    "label": null,
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "color",
+                  "config": {
+                    "label": "Text Color",
+                    "helper": "Set the element's text color",
+                    "options": [
+                      {
+                        "value": "text-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "text-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "text-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "text-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "text-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "text-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "text-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "text-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "bgcolor",
+                  "config": {
+                    "label": "Background Color",
+                    "helper": "Set the element's background color",
+                    "options": [
+                      {
+                        "value": "alert alert-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "alert alert-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "alert alert-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "alert alert-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "alert alert-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "alert alert-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "alert alert-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "alert alert-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": {
+                    "props": [
+                      "value",
+                      "helper"
+                    ],
+                    "watch": {
+                      "value": {
+                        "immediate": true
+                      }
+                    },
+                    "methods": [],
+                    "_scopeId": "data-v-7c18055b",
+                    "computed": {
+                      "effectiveValue": []
+                    },
+                    "_compiled": true,
+                    "components": {
+                      "MonacoEditor": {
+                        "name": "monaco-editor",
+                        "_Ctor": [],
+                        "props": {
+                          "amdRequire": []
+                        },
+                        "extends": {
+                          "name": "MonacoEditor",
+                          "model": {
+                            "event": "change"
+                          },
+                          "props": {
+                            "theme": {
+                              "default": "vs"
+                            },
+                            "value": {
+                              "required": true
+                            },
+                            "options": [],
+                            "language": [],
+                            "original": [],
+                            "amdRequire": [],
+                            "diffEditor": {
+                              "default": false
+                            }
+                          },
+                          "watch": {
+                            "options": {
+                              "deep": true,
+                              "user": true
+                            }
+                          },
+                          "methods": []
+                        },
+                        "methods": []
+                      }
+                    },
+                    "staticRenderFns": []
+                  },
+                  "field": "defaultValue",
+                  "config": {
+                    "label": "Default Value",
+                    "helper": "The default value is pre populated using the existing request data. This feature will allow you to modify the value displayed on screen load if needed."
+                  }
+                },
+                {
+                  "type": "FormCheckbox",
+                  "field": "readonly",
+                  "config": {
+                    "label": "Read Only",
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "conditionalHide",
+                  "config": {
+                    "label": "Visibility Rule",
+                    "helper": "This control is hidden until this expression is true"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customFormatter",
+                  "config": {
+                    "label": "Custom Format String",
+                    "helper": "Use the Mask Pattern format <br> Date ##\/##\/#### <br> SSN ###-##-#### <br> Phone (###) ###-####",
+                    "validation": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customCssSelector",
+                  "config": {
+                    "label": "CSS Selector Name",
+                    "helper": "Use this in your custom css rules",
+                    "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                  }
+                }
+              ],
+              "editor-control": "FormSelectList",
+              "editor-component": "FormSelectList"
+            },
+            {
+              "label": "Select List",
+              "config": {
+                "icon": "fas fa-angle-double-down",
+                "name": "form_select_list_4",
+                "label": "Select (Value) content: { {data.name.first} } { {data.name.last} } value:  data.id",
+                "helper": null,
+                "options": {
+                  "key": "data.id",
+                  "value": "{{data.name.first}} {{data.name.last}}",
+                  "dataName": "response.data",
+                  "jsonData": null,
+                  "renderAs": "checkbox",
+                  "editIndex": null,
+                  "pmqlQuery": null,
+                  "dataSource": "dataConnector",
+                  "optionsList": [],
+                  "removeIndex": null,
+                  "showRenderAs": true,
+                  "showJsonEditor": false,
+                  "showOptionCard": false,
+                  "selectedOptions": [],
+                  "allowMultiSelect": false,
+                  "selectedEndPoint": "ListAll",
+                  "showRemoveWarning": false,
+                  "valueTypeReturned": "single",
+                  "selectedDataSource": 2
+                },
+                "readonly": false,
+                "validation": [],
+                "placeholder": null,
+                "rootElement": "response",
+                "dataSourceUrl": null,
+                "dataSourceEndpoint": null
+              },
+              "component": "FormSelectList",
+              "inspector": [
+                {
+                  "type": "FormInput",
+                  "field": "name",
+                  "config": {
+                    "name": "Variable Name",
+                    "label": "Variable Name",
+                    "helper": "A variable name is a symbolic name to reference information.",
+                    "validation": "regex:\/^(?:[A-Za-z])(?:[0-9A-Z_a-z])*(?:\\.[0-9A-Z_a-z]+)*$\/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "label",
+                  "config": {
+                    "label": "Label",
+                    "helper": "The label describes the field's name"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "placeholder",
+                  "config": {
+                    "label": "Placeholder Text",
+                    "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                  }
+                },
+                {
+                  "type": "ValidationSelect",
+                  "field": "validation",
+                  "config": {
+                    "label": "Validation Rules",
+                    "helper": "The validation rules needed for this field"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "helper",
+                  "config": {
+                    "label": "Helper Text",
+                    "helper": "Help text is meant to provide additional guidance on the field's value"
+                  }
+                },
+                {
+                  "type": "OptionsList",
+                  "field": "options",
+                  "config": {
+                    "label": null,
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "color",
+                  "config": {
+                    "label": "Text Color",
+                    "helper": "Set the element's text color",
+                    "options": [
+                      {
+                        "value": "text-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "text-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "text-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "text-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "text-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "text-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "text-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "text-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "bgcolor",
+                  "config": {
+                    "label": "Background Color",
+                    "helper": "Set the element's background color",
+                    "options": [
+                      {
+                        "value": "alert alert-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "alert alert-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "alert alert-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "alert alert-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "alert alert-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "alert alert-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "alert alert-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "alert alert-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": {
+                    "_Ctor": [],
+                    "props": {
+                      "value": {
+                        "type": null
+                      },
+                      "helper": {
+                        "type": null
+                      }
+                    },
+                    "watch": {
+                      "value": {
+                        "user": true,
+                        "immediate": true
+                      }
+                    },
+                    "methods": [],
+                    "_scopeId": "data-v-7c18055b",
+                    "computed": {
+                      "effectiveValue": []
+                    },
+                    "_compiled": true,
+                    "components": {
+                      "MonacoEditor": {
+                        "name": "monaco-editor",
+                        "_Ctor": [],
+                        "props": {
+                          "amdRequire": []
+                        },
+                        "extends": {
+                          "name": "MonacoEditor",
+                          "model": {
+                            "event": "change"
+                          },
+                          "props": {
+                            "theme": {
+                              "default": "vs"
+                            },
+                            "value": {
+                              "required": true
+                            },
+                            "options": [],
+                            "language": [],
+                            "original": [],
+                            "amdRequire": [],
+                            "diffEditor": {
+                              "default": false
+                            }
+                          },
+                          "watch": {
+                            "options": {
+                              "deep": true,
+                              "user": true
+                            }
+                          },
+                          "methods": []
+                        },
+                        "methods": []
+                      }
+                    },
+                    "staticRenderFns": []
+                  },
+                  "field": "defaultValue",
+                  "config": {
+                    "label": "Default Value",
+                    "helper": "The default value is pre populated using the existing request data. This feature will allow you to modify the value displayed on screen load if needed."
+                  }
+                },
+                {
+                  "type": "FormCheckbox",
+                  "field": "readonly",
+                  "config": {
+                    "label": "Read Only",
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "conditionalHide",
+                  "config": {
+                    "label": "Visibility Rule",
+                    "helper": "This control is hidden until this expression is true"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customFormatter",
+                  "config": {
+                    "label": "Custom Format String",
+                    "helper": "Use the Mask Pattern format <br> Date ##\/##\/#### <br> SSN ###-##-#### <br> Phone (###) ###-####",
+                    "validation": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customCssSelector",
+                  "config": {
+                    "label": "CSS Selector Name",
+                    "helper": "Use this in your custom css rules",
+                    "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                  }
+                }
+              ],
+              "editor-control": "FormSelectList",
+              "editor-component": "FormSelectList"
+            },
+            {
+              "label": "Select List",
+              "config": {
+                "icon": "fas fa-angle-double-down",
+                "name": "form_select_list_5",
+                "label": "Select (Value) content: { { data.name.first } } { { data.name.last } } => Value: { { data.name.first } } { { data.name.last } } (Value)",
+                "helper": null,
+                "options": {
+                  "key": "{{data.name.first}} {{data.name.last}}",
+                  "value": "{{data.name.first}} {{data.name.last}}",
+                  "dataName": "response.data",
+                  "jsonData": null,
+                  "renderAs": "checkbox",
+                  "editIndex": null,
+                  "pmqlQuery": null,
+                  "dataSource": "dataConnector",
+                  "optionsList": [],
+                  "removeIndex": null,
+                  "showRenderAs": true,
+                  "showJsonEditor": false,
+                  "showOptionCard": false,
+                  "selectedOptions": [],
+                  "allowMultiSelect": false,
+                  "selectedEndPoint": "ListAll",
+                  "showRemoveWarning": false,
+                  "valueTypeReturned": "single",
+                  "selectedDataSource": 2
+                },
+                "readonly": false,
+                "validation": [],
+                "placeholder": null,
+                "rootElement": "response",
+                "dataSourceUrl": null,
+                "dataSourceEndpoint": null
+              },
+              "component": "FormSelectList",
+              "inspector": [
+                {
+                  "type": "FormInput",
+                  "field": "name",
+                  "config": {
+                    "name": "Variable Name",
+                    "label": "Variable Name",
+                    "helper": "A variable name is a symbolic name to reference information.",
+                    "validation": "regex:\/^(?:[A-Za-z])(?:[0-9A-Z_a-z])*(?:\\.[0-9A-Z_a-z]+)*$\/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "label",
+                  "config": {
+                    "label": "Label",
+                    "helper": "The label describes the field's name"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "placeholder",
+                  "config": {
+                    "label": "Placeholder Text",
+                    "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                  }
+                },
+                {
+                  "type": "ValidationSelect",
+                  "field": "validation",
+                  "config": {
+                    "label": "Validation Rules",
+                    "helper": "The validation rules needed for this field"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "helper",
+                  "config": {
+                    "label": "Helper Text",
+                    "helper": "Help text is meant to provide additional guidance on the field's value"
+                  }
+                },
+                {
+                  "type": "OptionsList",
+                  "field": "options",
+                  "config": {
+                    "label": null,
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "color",
+                  "config": {
+                    "label": "Text Color",
+                    "helper": "Set the element's text color",
+                    "options": [
+                      {
+                        "value": "text-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "text-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "text-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "text-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "text-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "text-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "text-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "text-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "bgcolor",
+                  "config": {
+                    "label": "Background Color",
+                    "helper": "Set the element's background color",
+                    "options": [
+                      {
+                        "value": "alert alert-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "alert alert-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "alert alert-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "alert alert-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "alert alert-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "alert alert-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "alert alert-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "alert alert-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": {
+                    "_Ctor": [],
+                    "props": {
+                      "value": {
+                        "type": null
+                      },
+                      "helper": {
+                        "type": null
+                      }
+                    },
+                    "watch": {
+                      "value": {
+                        "user": true,
+                        "immediate": true
+                      }
+                    },
+                    "methods": [],
+                    "_scopeId": "data-v-7c18055b",
+                    "computed": {
+                      "effectiveValue": []
+                    },
+                    "_compiled": true,
+                    "components": {
+                      "MonacoEditor": {
+                        "name": "monaco-editor",
+                        "_Ctor": [],
+                        "props": {
+                          "amdRequire": []
+                        },
+                        "extends": {
+                          "name": "MonacoEditor",
+                          "model": {
+                            "event": "change"
+                          },
+                          "props": {
+                            "theme": {
+                              "default": "vs"
+                            },
+                            "value": {
+                              "required": true
+                            },
+                            "options": [],
+                            "language": [],
+                            "original": [],
+                            "amdRequire": [],
+                            "diffEditor": {
+                              "default": false
+                            }
+                          },
+                          "watch": {
+                            "options": {
+                              "deep": true,
+                              "user": true
+                            }
+                          },
+                          "methods": []
+                        },
+                        "methods": []
+                      }
+                    },
+                    "staticRenderFns": []
+                  },
+                  "field": "defaultValue",
+                  "config": {
+                    "label": "Default Value",
+                    "helper": "The default value is pre populated using the existing request data. This feature will allow you to modify the value displayed on screen load if needed."
+                  }
+                },
+                {
+                  "type": "FormCheckbox",
+                  "field": "readonly",
+                  "config": {
+                    "label": "Read Only",
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "conditionalHide",
+                  "config": {
+                    "label": "Visibility Rule",
+                    "helper": "This control is hidden until this expression is true"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customFormatter",
+                  "config": {
+                    "label": "Custom Format String",
+                    "helper": "Use the Mask Pattern format <br> Date ##\/##\/#### <br> SSN ###-##-#### <br> Phone (###) ###-####",
+                    "validation": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customCssSelector",
+                  "config": {
+                    "label": "CSS Selector Name",
+                    "helper": "Use this in your custom css rules",
+                    "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                  }
+                }
+              ],
+              "editor-control": "FormSelectList",
+              "editor-component": "FormSelectList"
+            },
+            {
+              "label": "Select List",
+              "config": {
+                "icon": "fas fa-angle-double-down",
+                "name": "form_select_list_6",
+                "label": "Select (Value) content: { { data.name.first } } { { data.name.last } } => Value: { { data.id } }",
+                "helper": null,
+                "options": {
+                  "key": "{{ data.id }}",
+                  "value": "{{data.name.first}} {{data.name.last}}",
+                  "dataName": "response.data",
+                  "jsonData": null,
+                  "renderAs": "checkbox",
+                  "editIndex": null,
+                  "pmqlQuery": null,
+                  "dataSource": "dataConnector",
+                  "optionsList": [],
+                  "removeIndex": null,
+                  "showRenderAs": true,
+                  "showJsonEditor": false,
+                  "showOptionCard": false,
+                  "selectedOptions": [],
+                  "allowMultiSelect": false,
+                  "selectedEndPoint": "ListAll",
+                  "showRemoveWarning": false,
+                  "valueTypeReturned": "single",
+                  "selectedDataSource": 2
+                },
+                "readonly": false,
+                "validation": [],
+                "placeholder": null,
+                "rootElement": "response",
+                "dataSourceUrl": null,
+                "dataSourceEndpoint": null
+              },
+              "component": "FormSelectList",
+              "inspector": [
+                {
+                  "type": "FormInput",
+                  "field": "name",
+                  "config": {
+                    "name": "Variable Name",
+                    "label": "Variable Name",
+                    "helper": "A variable name is a symbolic name to reference information.",
+                    "validation": "regex:\/^(?:[A-Za-z])(?:[0-9A-Z_a-z])*(?:\\.[0-9A-Z_a-z]+)*$\/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "label",
+                  "config": {
+                    "label": "Label",
+                    "helper": "The label describes the field's name"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "placeholder",
+                  "config": {
+                    "label": "Placeholder Text",
+                    "helper": "The placeholder is what is shown in the field when no value is provided yet"
+                  }
+                },
+                {
+                  "type": "ValidationSelect",
+                  "field": "validation",
+                  "config": {
+                    "label": "Validation Rules",
+                    "helper": "The validation rules needed for this field"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "helper",
+                  "config": {
+                    "label": "Helper Text",
+                    "helper": "Help text is meant to provide additional guidance on the field's value"
+                  }
+                },
+                {
+                  "type": "OptionsList",
+                  "field": "options",
+                  "config": {
+                    "label": null,
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "color",
+                  "config": {
+                    "label": "Text Color",
+                    "helper": "Set the element's text color",
+                    "options": [
+                      {
+                        "value": "text-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "text-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "text-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "text-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "text-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "text-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "text-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "text-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ColorSelect",
+                  "field": "bgcolor",
+                  "config": {
+                    "label": "Background Color",
+                    "helper": "Set the element's background color",
+                    "options": [
+                      {
+                        "value": "alert alert-primary",
+                        "content": "primary"
+                      },
+                      {
+                        "value": "alert alert-secondary",
+                        "content": "secondary"
+                      },
+                      {
+                        "value": "alert alert-success",
+                        "content": "success"
+                      },
+                      {
+                        "value": "alert alert-danger",
+                        "content": "danger"
+                      },
+                      {
+                        "value": "alert alert-warning",
+                        "content": "warning"
+                      },
+                      {
+                        "value": "alert alert-info",
+                        "content": "info"
+                      },
+                      {
+                        "value": "alert alert-light",
+                        "content": "light"
+                      },
+                      {
+                        "value": "alert alert-dark",
+                        "content": "dark"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": {
+                    "_Ctor": [],
+                    "props": {
+                      "value": {
+                        "type": null
+                      },
+                      "helper": {
+                        "type": null
+                      }
+                    },
+                    "watch": {
+                      "value": {
+                        "user": true,
+                        "immediate": true
+                      }
+                    },
+                    "methods": [],
+                    "_scopeId": "data-v-7c18055b",
+                    "computed": {
+                      "effectiveValue": []
+                    },
+                    "_compiled": true,
+                    "components": {
+                      "MonacoEditor": {
+                        "name": "monaco-editor",
+                        "_Ctor": [],
+                        "props": {
+                          "amdRequire": []
+                        },
+                        "extends": {
+                          "name": "MonacoEditor",
+                          "model": {
+                            "event": "change"
+                          },
+                          "props": {
+                            "theme": {
+                              "default": "vs"
+                            },
+                            "value": {
+                              "required": true
+                            },
+                            "options": [],
+                            "language": [],
+                            "original": [],
+                            "amdRequire": [],
+                            "diffEditor": {
+                              "default": false
+                            }
+                          },
+                          "watch": {
+                            "options": {
+                              "deep": true,
+                              "user": true
+                            }
+                          },
+                          "methods": []
+                        },
+                        "methods": []
+                      }
+                    },
+                    "staticRenderFns": []
+                  },
+                  "field": "defaultValue",
+                  "config": {
+                    "label": "Default Value",
+                    "helper": "The default value is pre populated using the existing request data. This feature will allow you to modify the value displayed on screen load if needed."
+                  }
+                },
+                {
+                  "type": "FormCheckbox",
+                  "field": "readonly",
+                  "config": {
+                    "label": "Read Only",
+                    "helper": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "conditionalHide",
+                  "config": {
+                    "label": "Visibility Rule",
+                    "helper": "This control is hidden until this expression is true"
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customFormatter",
+                  "config": {
+                    "label": "Custom Format String",
+                    "helper": "Use the Mask Pattern format <br> Date ##\/##\/#### <br> SSN ###-##-#### <br> Phone (###) ###-####",
+                    "validation": null
+                  }
+                },
+                {
+                  "type": "FormInput",
+                  "field": "customCssSelector",
+                  "config": {
+                    "label": "CSS Selector Name",
+                    "helper": "Use this in your custom css rules",
+                    "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]"
+                  }
+                }
+              ],
+              "editor-control": "FormSelectList",
+              "editor-component": "FormSelectList"
+            }
+          ]
+        }
+      ],
+      "computed": [],
+      "custom_css": null,
+      "created_at": "2021-11-17T10:35:39-08:00",
+      "updated_at": "2021-11-17T14:20:03-08:00",
+      "status": "ACTIVE",
+      "key": null,
+      "watchers": [],
+      "categories": [
+        {
+          "id": 1,
+          "name": "Uncategorized",
+          "status": "ACTIVE",
+          "is_system": 0,
+          "created_at": "2021-11-09T13:51:50-08:00",
+          "updated_at": "2021-11-09T13:51:50-08:00",
+          "pivot": {
+            "assignable_id": 10,
+            "category_id": 1,
+            "category_type": "ProcessMaker\\Models\\ScreenCategory"
+          }
+        }
+      ]
+    }
+  ],
+  "screen_categories": [],
+  "scripts": []
+}
