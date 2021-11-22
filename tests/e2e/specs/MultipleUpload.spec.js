@@ -28,7 +28,7 @@ describe('Multiple Upload', () => {
     // The global variable should store the uploaded item
     cy.window().its('PM4ConfigOverrides.requestFiles.filesingle')
       .then(fileValue => {
-        expect(fileValue.file_name).to.equal('avatar.jpeg');
+        expect(fileValue[0].file_name).to.equal('avatar.jpeg');
       });
     // The download control should have the file to download
     cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
@@ -41,10 +41,10 @@ describe('Multiple Upload', () => {
     }));
     cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-filesingle] input[type=file]', 'file1.jpeg', 'image/jpg');
     cy.get('[data-cy=file1-jpeg] .uploader-file-name').should('include.text', 'file1.jpeg');
-    cy.waitUntil(() => cy.window().then(win => win.PM4ConfigOverrides.requestFiles.filesingle.file_name === 'file1.jpeg'));
+    cy.waitUntil(() => cy.window().then(win => win.PM4ConfigOverrides.requestFiles.filesingle[0].file_name === 'file1.jpeg'));
     cy.window().its('PM4ConfigOverrides.requestFiles.filesingle')
       .then(fileValue => {
-        expect(fileValue.file_name).to.equal('file1.jpeg');
+        expect(fileValue[0].file_name).to.equal('file1.jpeg');
       });
     // The download control should have the new file ready to download
     cy.get('[data-cy=2-file1-jpeg]').should('contain.text', 'file1.jpeg');
@@ -129,7 +129,7 @@ describe('Multiple Upload', () => {
       .then(requestFiles => {
         const firstMapFileVar = Object.keys(requestFiles).find(x => x.startsWith('members.map'));
         const rowId = firstMapFileVar.split('members.map.')[1];
-        expect(requestFiles['members.map.' + rowId].file_name).to.equal('avatar.jpeg');
+        expect(requestFiles['members.map.' + rowId][0].file_name).to.equal('avatar.jpeg');
       });
     // The download control should have the file to download
     cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');

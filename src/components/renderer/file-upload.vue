@@ -38,7 +38,7 @@
             <li v-for="(file, i) in files " :key="i" :data-cy="file.id">
               <div class="container-fluid pl-3 pr-3">
                 <div class="row" style="background:rgb(226 238 255)">
-                  <div v-if="nativeFiles[file.id]" class="col-11 pr-0 pl-0">
+                  <div v-if="nativeFiles[file.id]" class="col-11 pr-0 pl-0" :data-cy="file.file_name.replace(/[^0-9a-zA-Z\-]/g, '-')">
                     <uploader-file :file="nativeFiles[file.id]" :list="true" />
                   </div>
                   <div v-else class="col-11 pr-0 pl-0 my-auto">
@@ -348,6 +348,9 @@ export default {
 
           for (const id of idsInRemoved) {
             if (this.hasFileId(id)) {
+              // In record lists, delete can be called twice on the same file.
+              // Catch and igore the error.
+              // eslint-disable-next-line no-unused-vars
               await this.$dataProvider.deleteFile(id).catch(e => {});
               this.removeFromFiles(id);
             }
