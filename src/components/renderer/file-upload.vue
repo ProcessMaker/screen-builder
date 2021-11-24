@@ -382,7 +382,12 @@ export default {
     },
     async removeFile(file) { 
       const id = file.id;
-      await this.$dataProvider.deleteFile(id);
+      const token = file.token ? file.token : null;
+
+      // If it's not a web entry start event
+      if (!isNaN(id)) {
+        await this.$dataProvider.deleteFile(id, token);
+      }
       
       this.removeFromFiles(id);
     },
