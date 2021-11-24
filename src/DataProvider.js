@@ -140,9 +140,12 @@ export default {
     return query;
   },
 
-  deleteFile(id) {
-    const url = _.get(window, 'PM4ConfigOverrides.deleteFileEndpoint', 'files');
-    return this.delete(`${url}/${id}`);
+  deleteFile(id, token = null) {
+    let url = `files/${id}`;
+    if (token) {
+      url += `?token=${token}`;
+    }
+    return this.delete(url);
   },
 
   download(url) {
