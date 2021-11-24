@@ -36,15 +36,15 @@
         <template>
           <ul>
             <li v-for="(file, i) in files " :key="i" :data-cy="file.id">
-              <div class="container-fluid pl-3 pr-3">
-                <div class="row" style="background:rgb(226 238 255)">
-                  <div v-if="nativeFiles[file.id]" class="col-11 pr-0 pl-0" :data-cy="file.file_name.replace(/[^0-9a-zA-Z\-]/g, '-')">
+              <div class="">
+                <div class="" style="display:flex; background:rgb(226 238 255)">
+                  <div v-if="nativeFiles[file.id]" style="flex: 1" :data-cy="file.file_name.replace(/[^0-9a-zA-Z\-]/g, '-')">
                     <uploader-file :file="nativeFiles[file.id]" :list="true" />
                   </div>
-                  <div v-else class="col-11 pr-0 pl-0 my-auto">
+                  <div v-else style="flex: 1">
                     <i class="fas fa-paperclip"/> {{ file.file_name }}
                   </div>
-                  <div class="col-1 my-auto uploader-file">
+                  <div class="pt-1">
                     <b-btn variant="outline" @click="removeFile(file)" v-b-tooltip.hover :title="$t('Delete')">
                       <i class="fas fa-trash-alt"/>
                     </b-btn>
