@@ -119,7 +119,18 @@ export default {
   },
   computed: {
     filesFromGlobalRequestFiles() {
-      return _.get(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, []);
+      if (!this.value) {
+        return [];
+      }
+      return _.get(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, []).filter(file => {
+        // Filter any requestFiles that don't exist in this component's value. This can happen if
+        // a file is uploaded but the task is not saved.
+        if (this.multipleUpload) {
+          return this.value.some(valueFile => valueFile.file === file.id);
+        } else {
+          return file.id === this.value;
+        }
+      });
     },
     filesFromCollection() {
       if (!this.value) {
@@ -477,6 +488,7 @@ export default {
         const fileInfo = {
           id,
           file_name: name,
+          mime_type: rootFile.fileType,
         };
        
         this.$set(this.nativeFiles, id, rootFile);
