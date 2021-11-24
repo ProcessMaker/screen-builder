@@ -45,6 +45,9 @@ export default {
   post(...args) {
     return this.apiInstance().post(...args);
   },
+  delete(...args) {
+    return this.apiInstance().delete(...args);
+  },
   token() {
     return localStorage.getItem('token');
   },
@@ -135,5 +138,17 @@ export default {
     }
 
     return query;
+  },
+
+  deleteFile(id, token = null) {
+    let url = `files/${id}`;
+    if (token) {
+      url += `?token=${token}`;
+    }
+    return this.delete(url);
+  },
+
+  download(url) {
+    return this.apiInstance().get(url, {responseType: 'blob'});
   },
 };
