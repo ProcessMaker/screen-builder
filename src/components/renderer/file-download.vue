@@ -9,7 +9,7 @@
     </b-card>
     <div v-else>
       <template v-if="filesInfo.length > 0">
-        <div v-for="file in filesInfo" :key="file.id" :data-cy="file.id + '-' + file.name.replace(/[^0-9a-zA-Z\-]/g, '-')">
+        <div v-for="(file, idx) in filesInfo" :key="idx" :data-cy="file.id + '-' + file.name.replace(/[^0-9a-zA-Z\-]/g, '-')">
           <b-btn v-show="!isReadOnly"
             class="mb-2 d-print-none" variant="primary" :aria-label="$attrs['aria-label']"
             @click="downloadFile(file)"
@@ -189,11 +189,25 @@ export default {
       }
     },
     setFilesInfoFromRequest() {
+      if (!this.value) {
+        return;
+      }
+
       let requestFiles = _.get(
         window,
         `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`,
         []
       );
+
+      requestFiles = requestFiles.filter(file => {
+        // Filter any requestFiles that don't exist in this component's value. This can happen if
+        // a file is uploaded but the task is not saved.
+        if (Array.isArray(this.value)) {
+          return this.value.some(valueFile => valueFile.file === file.id);
+        } else {
+          return file.id === this.value;
+        }
+      });
 
       // Might be accessing individual files from inside a loop
       if (requestFiles.length === 0 && this.fileDataName.endsWith('.file')) {
