@@ -151,21 +151,12 @@ describe('select list mustache', () => {
       },
     }];
     let cities = [];
-    cy.route({
-      method: 'POST',
-      url: '/api/1.0/requests/data_sources/4',
-      onRequest: ({ xhr, request }) => {
-        switch (request.body.config.outboundConfig[0].value) {
-          case 'data.country_id=1':
-            cities = BoliviaCities;
-            break;
-          case 'data.country_id=2':
-            cities = USCities;
-            break;
-          default:
-            cities = [];
-        }
-        const response = {
+    cy.route(
+      'POST',
+      '/api/1.0/requests/data_sources/4?pmql=data.country_id=',
+      JSON.stringify({
+        'status': 200,
+        'response': {
           'data': cities,
           'meta': {
             'filter': '',
@@ -177,18 +168,63 @@ describe('select list mustache', () => {
             'from': 1,
             'last_page': 1,
             'path': '/api/1.0/collections/4/records',
-            'per_page': 9223372036854775807,
+            'per_page': 10,
             'to': cities.length,
             'total': cities.length,
           },
-        };
-        xhr.setRequestHeader(
-          'X-Cypress-Response',
-          '"response":' + JSON.stringify(response) + '}',
-        );
-      },
-      response: '{"status": 200',
-    });
+        },
+      })
+    ).as('executeScript');
+
+    cy.route(
+      'POST',
+      '/api/1.0/requests/data_sources/4?pmql=data.country_id=1',
+      JSON.stringify({
+        'status': 200,
+        'response': {
+          'data': BoliviaCities,
+          'meta': {
+            'filter': '',
+            'sort_by': '',
+            'sort_order': '',
+            'count': BoliviaCities.length,
+            'total_pages': 1,
+            'current_page': 1,
+            'from': 1,
+            'last_page': 1,
+            'path': '/api/1.0/collections/4/records',
+            'per_page': 100,
+            'to': BoliviaCities.length,
+            'total': BoliviaCities.length,
+          },
+        },
+      })
+    ).as('executeScript');
+
+    cy.route(
+      'POST',
+      '/api/1.0/requests/data_sources/4?pmql=data.country_id=2',
+      JSON.stringify({
+        'status': 200,
+        'response': {
+          'data': USCities,
+          'meta': {
+            'filter': '',
+            'sort_by': '',
+            'sort_order': '',
+            'count': USCities.length,
+            'total_pages': 1,
+            'current_page': 1,
+            'from': 1,
+            'last_page': 1,
+            'path': '/api/1.0/collections/4/records',
+            'per_page': 100,
+            'to': USCities.length,
+            'total': USCities.length,
+          },
+        },
+      })
+    ).as('executeScript');
   });
 
   it('Verify Load values in multiselect list mustache + collection', () => {
