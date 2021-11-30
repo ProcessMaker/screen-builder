@@ -44,10 +44,14 @@ export default {
       };
     },
     findParent(child, data = this.vdata, parent = this._parent) {
+
       if (child === data) {
         return parent;
       }
       for (const key in data) {
+        if (key === '_parent') {
+          continue;
+        }
         if (data[key] instanceof Array) {
           for (const item of data[key]) {
             const result = this.findParent(child, item, data);
