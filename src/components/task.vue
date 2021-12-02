@@ -91,6 +91,7 @@ export default {
       requestData: {},
       hasErrors: false,
       refreshScreen: 0,
+      redirecting: null,
     };
   },
   watch: {
@@ -157,6 +158,7 @@ export default {
       handler() {
         this.taskId = this.task.id;
         this.nodeId = this.task.element_id;
+        this.listenForParentChanges();
       },
     },
 
@@ -205,6 +207,9 @@ export default {
       const screenType = this.screen.type;
       return screenType.toLowerCase() + '-screen';
     },
+    parentRequest() {
+      return _.get(this.task, 'process_request.parent_request_id', null);
+    },
   },
   methods: {
     loadScreen(id) {
@@ -252,6 +257,7 @@ export default {
 
       if (this.task.process_request.status === 'ERROR') {
         this.hasErrors = true;
+        this.$emit('error', this.requestId);
       } else {
         this.hasErrors = false;
       }
@@ -291,12 +297,25 @@ export default {
         this.$emit('closed', this.task.id);
       }
     },
-    loadNextAssignedTask() {
-      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${this.requestId}&include_sub_tasks=1`;
+    loadNextAssignedTask(requestId = null) {
+      if (!requestId) {
+        requestId = this.requestId;
+      }
+      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1`;
       return this.$dataProvider
         .getTasks(url).then((response) => {
           if (response.data.data.length > 0) {
             let task = response.data.data[0];
+            if (task.process_request_id !== this.requestId) {
+              // Next task is in a subprocess, do a hard redirect
+              if (this.redirecting === task.process_request_id) {
+                return;
+              }
+              this.unsubscribeSocketListeners();
+              this.redirecting = task.process_request_id;
+              this.$emit('redirect', task);
+              return;
+            }
             this.taskId = task.id;
             this.nodeId = task.element_id;
           }
@@ -336,29 +355,32 @@ export default {
     },
     onUpdate(data) {
       this.$emit('input', data);
-      window.ProcessMaker.EventBus.$emit('form-data-updated', data);
     },
 
     activityAssigned() {
       // This may no longer be needed
     },
     processCompleted() {
+      if (this.parentRequest && this.task.allow_interstitial) {
+        // There could be another task in the parent, so don't emit completed
+        return;
+      }
       this.$emit('completed', this.requestId);
     },
-    processUpdated(data) {
+    processUpdated: _.debounce(function(data) {
       if (
         data.event === 'ACTIVITY_COMPLETED' ||
         data.event === 'ACTIVITY_ACTIVATED'
       ) {
         this.reload();
       }
-    },
-    initSocketListeners() {
-      if (this.socketListeners.length > 0) {
-        return;
+      if (data.event === 'ACTIVITY_EXCEPTION') {
+        this.$emit('error', this.requestId);
       }
-
+    }, 300),
+    initSocketListeners() {
       this.addSocketListener(
+        `completed-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessCompleted',
         (data) => {
@@ -367,6 +389,7 @@ export default {
       );
 
       this.addSocketListener(
+        `updated-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessUpdated',
         (data) => {
@@ -380,18 +403,41 @@ export default {
         this.reload();
       }
     },
-    addSocketListener(channel, event, callback) {
-      this.socketListeners.push({
+    listenForParentChanges() {
+      if (!this.parentRequest) {
+        return;
+      }
+      this.addSocketListener(
+        `parent-${this.requestId}`,
+        `ProcessMaker.Models.ProcessRequest.${this.parentRequest}`,
+        '.ProcessUpdated',
+        (data) => {
+          if (['ACTIVITY_COMPLETED', 'ACTIVITY_ACTIVATED'].includes(data.event)) {
+            this.loadNextAssignedTask(this.parentRequest);
+          }
+          if (data.event === 'ACTIVITY_EXCEPTION') {
+            this.$emit('error', this.requestId);
+          }
+        }
+      );
+    },
+    addSocketListener(key, channel, event, callback) {
+      if (key in this.socketListeners) {
+        return;
+      }
+      this.socketListeners[key] = {
         channel,
         event,
+      };
+      window.Echo.private(channel).listen(event, (data) => {
+        callback(data);
       });
-      window.Echo.private(channel).listen(event, callback);
     },
     unsubscribeSocketListeners() {
-      this.socketListeners.forEach((element) => {
+      Object.values(this.socketListeners).forEach(element => {
         window.Echo.private(element.channel).stopListening(element.event);
       });
-      this.socketListeners = [];
+      this.socketListeners = {};
     },
     obtainPayload(url) {
       return new Promise((resolve) => {
