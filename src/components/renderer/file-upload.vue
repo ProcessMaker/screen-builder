@@ -69,6 +69,8 @@ const uniqIdsMixin = createUniqIdsMixin();
 const ignoreErrors = [
   'Cannot read property \'assignBrowse\' of null',
   'Cannot read property \'assignDrop\' of null',
+  'Cannot read properties of null (reading \'assignBrowse\')',
+  'Cannot read properties of null (reading \'assignDrop\')',
 ];
 
 export default {
