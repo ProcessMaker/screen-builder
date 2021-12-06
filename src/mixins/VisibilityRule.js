@@ -28,7 +28,6 @@ export default {
         const data = Object.assign({ _parent: this._parent }, this.vdata);
         const isVisible = !!Parser.evaluate(rule, Object.assign({}, data));
 
-        //this.refreshValidationRulesByName(fieldName, isVisible);
         window.setTimeout(() => {
           this.refreshValidationRulesByName(fieldName, isVisible);
         }, 1000);
