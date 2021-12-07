@@ -99,7 +99,7 @@
 
       <draggable
         data-cy="editor-content"
-        class="h-100 custom-css-scope"
+        class="h-100"
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
         @input="updateConfig"
