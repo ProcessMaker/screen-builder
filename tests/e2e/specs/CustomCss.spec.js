@@ -53,7 +53,22 @@ describe('Custom CSS', () => {
     cy.assertComponentValue('[data-cy=monaco-editor]', 'div[selector=\'new_input_css\'] {background-color:red;padding:10px;}');
   });
 
-  it('Adds styling to element', () => {
+  it('Does not add styling to element in design mode', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
+    cy.get('[data-cy=topbar-css]').click();
+    cy.get('#custom-css').type('div[selector=\'new_input_css\'] {background-color:red;padding:10px;}', {parseSpecialCharSequences: false} );
+    cy.get('[data-cy=save-button]').click();
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('.page').should('contain.html', '<div selector="new_input_css">');
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=editor-content]').should('not.contain.class', 'custom-css-scope');
+  });
+
+  it('Adds styling to element in preview mode', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
