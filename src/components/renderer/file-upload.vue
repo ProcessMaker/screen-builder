@@ -498,6 +498,8 @@ export default {
        
         this.$set(this.nativeFiles, id, rootFile);
         this.addToFiles(fileInfo);
+      } else {
+        this.$emit('input', name);
       }
     },
     removed() {
