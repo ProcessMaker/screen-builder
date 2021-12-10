@@ -22,6 +22,7 @@ import {
   or,
   and,
   maxItems,
+  minItems,
 } from 'vuelidate/lib/validators';
 
 export const ValidationMsg = {
@@ -57,6 +58,7 @@ export const ValidationMsg = {
   customDate: 'Must be a valid Date',
   regex: 'Invalid value',
   maxItems: 'Should NOT have more than {max} items',
+  minItems: 'Must have at least {min}',
 };
 
 export const custom_date = (date) => {
@@ -228,4 +230,5 @@ export const validators = {
   regex,
   afterOrEqual: after_or_equal,
   maxItems,
+  minItems,
 };
