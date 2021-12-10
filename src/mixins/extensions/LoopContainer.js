@@ -47,6 +47,7 @@ export default {
       const addLoopRow = this.createComponent('AddLoopRow', {
         ':value': element.config.settings.varname,
         ':config': this.byValue(element.config),
+        ':error': `${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`,
       });
       loop.appendChild(child);
       node.appendChild(loop);

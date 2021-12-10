@@ -21,6 +21,7 @@ import {
   not,
   or,
   and,
+  maxItems,
 } from 'vuelidate/lib/validators';
 
 export const ValidationMsg = {
@@ -55,6 +56,7 @@ export const ValidationMsg = {
   invalid_default_value: 'Invalid default value',
   customDate: 'Must be a valid Date',
   regex: 'Invalid value',
+  maxItems: 'Should NOT have more than {max} items',
 };
 
 export const custom_date = (date) => {
@@ -225,4 +227,5 @@ export const validators = {
   notIn,
   regex,
   afterOrEqual: after_or_equal,
+  maxItems,
 };
