@@ -213,7 +213,6 @@ export default [
         },
         colorProperty,
         bgcolorProperty,
-        defaultValueProperty,
         readonlyProperty,
       ],
     },
