@@ -298,7 +298,7 @@ export default {
         Object.keys(component.watch).forEach((key) => {
           const watch = { deep: true };
           component.watch[key].forEach(w => Object.assign(watch, w.options));
-          watch.handler = new Function('value', component.watch[key].map(w => w.code).join('\n'));
+          watch.handler = new Function('value', component.watch[key].map(w => `try{${w.code}}catch(e){console.warn(e)}`).join('\n'));
           component.watch[key] = watch;
         });
         // Add validation rules
