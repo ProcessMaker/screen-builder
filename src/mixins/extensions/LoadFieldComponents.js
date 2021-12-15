@@ -26,7 +26,7 @@ export default {
         }
       });
     },
-    loadFieldProperties({ properties, element, componentName, definition , formIndex}) {
+    loadFieldProperties({ properties, element, componentName, definition , formIndex, screen}) {
       properties.class = this.elementCssClass(element);
       properties[':validation-data'] = 'getValidationData()';
 
@@ -38,7 +38,19 @@ export default {
           properties[':image'] = this.byRef(element.config.image);
         } else if (this.validVariableName(element.config.name)) {
           this.registerVariable(element.config.name, element);
-          properties['v-model'] = `${element.config.name}`;
+          // v-model are not assigned directly to the field name, to prevent invalid references like:
+          // `person.content` when `person`=null
+          const computed_property = `computedProxy__${element.config.name.split('.').join('_DOT_')}`;
+          properties['v-model'] = computed_property;
+          screen.computed[computed_property] = {
+            get() {
+              return this.getValue(element.config.name);
+            },
+            set(value) {
+              this.setValue(element.config.name, value);
+              return true;
+            },
+          };
         }
       }
       // Do not replace mustache in RichText control, it is replaced by the control
