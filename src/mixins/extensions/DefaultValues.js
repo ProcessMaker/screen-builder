@@ -28,11 +28,11 @@ export default {
       const splittedName = name.split('.').join('_DOT_'); 
       const defaultComputedName = `default_${splittedName}__`;
       this.addData(screen, `${name}_was_filled__`, `!!this.getValue(${JSON.stringify(name)}, this.vdata) || !!this.getValue(${JSON.stringify(name)}, data)`);
-      this.addMounted(screen, `if (!this.${splittedName}) {
-        this.tryFormField(${JSON.stringify(splittedName)}, () => {this.${this.dot2bracket(name)} = ${value};});
+      this.addMounted(screen, `if (!this.${name}) {
+        this.tryFormField(${JSON.stringify(name)}, () => {this.${this.dot2bracket(name)} = ${value};});
       }`);
       screen.computed[defaultComputedName] = {
-        get: new Function(`return this.tryFormField(${JSON.stringify(splittedName)}, () => ${value});`),
+        get: new Function(`return this.tryFormField(${JSON.stringify(name)}, () => ${value});`),
         set() {},
       };
       this.addWatch(screen, defaultComputedName, `!this.${name}_was_filled__ && this.setValue(${JSON.stringify(name)}, this.${defaultComputedName}, this.vdata, this);`);
@@ -45,9 +45,9 @@ export default {
       },
       onloadproperties({ properties, element, definition }) {
         const name = element.config.name;
-        const splittedName = name.split('.').join('_DOT_'); 
         if (this.isComputedVariable(name, definition)) return;
         if (element.config.defaultValue || element.config.initiallyChecked) {
+          const splittedName = name.split('.').join('_DOT_'); 
           const event = `${name}_was_filled__ |= !!$event; !${name}_was_filled__ && (vdata.${this.dot2bracket(name)} = default_${splittedName}__)`;
           this.addEvent(properties, 'input', event);
         }
