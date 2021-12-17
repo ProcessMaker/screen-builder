@@ -1,6 +1,7 @@
 import { helpers } from 'vuelidate/lib/validators';
 import moment from 'moment';
 import { get } from 'lodash';
+import Mustache from 'mustache';
 
 import {
   minLength,
@@ -75,13 +76,14 @@ export const after = (after, fieldName) => helpers.withParams({after}, function(
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
+  const afterReplaced = Mustache.render(after, dataWithParent);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, after.replace(/[{ }]/g, ''), after));
+  const checkDate = moment(get(dataWithParent, after, afterReplaced));
   if (!checkDate.isValid()) {
     return false;
   }
   const inputDate = moment(date).toISOString();
-  const afterDate = moment(checkDate.toISOString()).endOf('day').toDate().toISOString();
+  const afterDate = checkDate.toISOString();
   return inputDate > afterDate;
 });
 
@@ -89,13 +91,14 @@ export const after_or_equal = (after_or_equal, fieldName) => helpers.withParams(
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
+  const afterOrEqualReplaced = Mustache.render(after_or_equal, dataWithParent);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, after_or_equal.replace(/[{ }]/g, ''), after_or_equal));
+  const checkDate = moment(get(dataWithParent, after_or_equal, afterOrEqualReplaced));
   if (!checkDate.isValid()) {
     return false;
   }
   const inputDate = moment(date).toISOString();
-  const equalOrAfterDate = moment(checkDate.toISOString()).startOf('day').toDate().toISOString();
+  const equalOrAfterDate = checkDate.toISOString();
   return inputDate >= equalOrAfterDate;
 });
 
@@ -103,13 +106,14 @@ export const before = (before, fieldName) => helpers.withParams({before}, functi
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
+  const beforeReplaced = Mustache.render(before, dataWithParent);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, before.replace(/[{ }]/g, ''), before));
+  const checkDate = moment(get(dataWithParent, before, beforeReplaced));
   if (!checkDate.isValid()) {
     return false;
   }
   const inputDate = moment(date).toISOString();
-  const beforeDate = moment(checkDate.toISOString()).startOf('day').toDate().toISOString();
+  const beforeDate = checkDate.toISOString();
   return inputDate < beforeDate;
 });
 
@@ -117,13 +121,14 @@ export const before_or_equal = (before_or_equal, fieldName) => helpers.withParam
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
+  const beforeOrEqualReplaced = Mustache.render(before_or_equal, dataWithParent);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, before_or_equal.replace(/[{ }]/g, ''), before_or_equal));
+  const checkDate = moment(get(dataWithParent, before_or_equal, beforeOrEqualReplaced));
   if (!checkDate.isValid()) {
     return false;
   }
   const inputDate = moment(date).toISOString();
-  const beforeDate = moment(checkDate.toISOString()).endOf('day').toDate().toISOString();
+  const beforeDate = checkDate.toISOString();
   return inputDate <= beforeDate;
 });
 
