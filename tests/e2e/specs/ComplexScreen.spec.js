@@ -599,7 +599,7 @@ describe('Complex screen', () => {
         'form_input_2': 123,
         'form_input_6': moment(now).format('YYYY-MM-DD HH:mm'),
         'form_text_area_2': '',
-        'form_select_list_2': null,
+        'form_select_list_2': [], // form_select_list_2 is a disabled multi select list, its default value must an empty array
         'form_input_3': 12345,
         'form_input_7': moment(now).format('YYYY-MM-DD'),
         'form_input_8': 'password',

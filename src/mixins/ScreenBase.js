@@ -108,7 +108,7 @@ export default {
         },
       });
     },
-    initialValue(component, dataFormat) {
+    initialValue(component, dataFormat, config) {
       let value = null;
       if (component === 'FormInput') {
         if (stringFormats.includes(dataFormat)) {
@@ -118,6 +118,10 @@ export default {
         }
       } else if (component === 'FormTextArea') {
         value = '';
+      } else if (component === 'FormSelectList' && config.options.allowMultiSelect) {
+        value = [];
+      } else if (component === 'FormSelectList' && !config.options.allowMultiSelect) {
+        value = null;
       }
       return value;
     },
