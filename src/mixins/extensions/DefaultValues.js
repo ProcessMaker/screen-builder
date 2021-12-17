@@ -25,7 +25,8 @@ export default {
       });
     },
     setupDefaultValue(screen, name, value) {
-      const defaultComputedName = `default_${name}__`;
+      const splittedName = name.split('.').join('_DOT_'); 
+      const defaultComputedName = `default_${splittedName}__`;
       this.addData(screen, `${name}_was_filled__`, `!!this.getValue(${JSON.stringify(name)}, this.vdata) || !!this.getValue(${JSON.stringify(name)}, data)`);
       this.addMounted(screen, `if (!this.${name}) {
         this.tryFormField(${JSON.stringify(name)}, () => {this.${this.dot2bracket(name)} = ${value};});
@@ -46,7 +47,8 @@ export default {
         const name = element.config.name;
         if (this.isComputedVariable(name, definition)) return;
         if (element.config.defaultValue || element.config.initiallyChecked) {
-          const event = `${name}_was_filled__ |= !!$event; !${name}_was_filled__ && (vdata.${this.dot2bracket(name)} = default_${name}__)`;
+          const splittedName = name.split('.').join('_DOT_'); 
+          const event = `${name}_was_filled__ |= !!$event; !${name}_was_filled__ && (vdata.${this.dot2bracket(name)} = default_${splittedName}__)`;
           this.addEvent(properties, 'input', event);
         }
       },
