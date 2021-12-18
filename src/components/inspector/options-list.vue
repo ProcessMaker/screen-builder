@@ -42,6 +42,17 @@
 
       <div class="row">
         <div class="col">
+					<div>
+						<div class="row border-top">
+							<div class="col-1"></div>
+							<div class="col-1 d-flex align-items-center">
+								<input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="''">
+							</div>
+							<div class="col-6" style="cursor:grab">
+								{{ $t('Unselected') }}
+							</div>
+						</div>
+					</div>
           <draggable @update="updateSort" :element="'div'" v-model="optionsList" group="options" @start="drag=true" @end="drag=false" >
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
@@ -92,7 +103,7 @@
                   <span class="fas fa-arrows-alt-v"/>
                 </div>
                 <div class="col-1 d-flex align-items-center">
-                  <input type="radio" class="form-check" @click="defaultOptionClick" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
+                  <input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
                 </div>
                 <div class="col-5" style="cursor:grab">
                   {{ option[valueField] }}
@@ -426,8 +437,8 @@ export default {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
-    this.selectedDataSource = this.options.selectedDataSource,
-    this.selectedEndPoint = this.options.selectedEndPoint,
+    this.selectedDataSource = this.options.selectedDataSource;
+    this.selectedEndPoint = this.options.selectedEndPoint;
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -493,10 +504,10 @@ export default {
       });
       this.jsonError = '';
     },
-    defaultOptionClick() {
-      if (this.defaultOptionKey === event.target.value) {
-        this.defaultOptionKey = false;
-      }
+    defaultOptionClick(event) {
+			const {value} = event.target;
+      this.defaultOptionKey = value;
+			this.selectedControl.config.defaultValue.value = this.defaultOptionKey;
     },
     rowCss(index) {
       return index % 2 === 0 ? 'striped' : 'bg-default';
