@@ -173,3 +173,8 @@ Cypress.Commands.add('selectOption', { prevSubject: true }, (subject, option) =>
   cy.get(subject).find('input').clear().type(option);
   cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
 });
+
+Cypress.Commands.add('unselectOption', { prevSubject: true }, (subject, option) => {
+  cy.get(subject).click();
+  cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
+});
