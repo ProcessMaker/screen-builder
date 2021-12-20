@@ -69,7 +69,7 @@ export default {
       properties[':form-computed'] = JSON.stringify(definition.computed);
       properties[':form-watchers'] = JSON.stringify(definition.watchers);
       // Check if control is assigned to a calculated property
-      const isCalcProp = this.isComputedVariable(element.config.name, definition);
+      const isCalcProp = definition.computed && !!definition.computed.find(computed => computed.property == element.config.name);
       properties[':readonly'] = isCalcProp || element.config.readonly;
       properties[':disabled'] = isCalcProp || element.config.disabled;
       // Events
