@@ -214,7 +214,12 @@ export default {
       return name && typeof name === 'string' && name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/);
     },
     isComputedVariable(name, definition) {
-      return definition.computed && definition.computed.find(c => c.property === name);
+      return definition.computed && definition.computed.some(computed => {
+        // Check if the first part of an element's name (up to the first `.`)
+        // matches the name of a computed property.
+        const regex = new RegExp(`^${computed.property}(\\.|$)`, 'i');
+        return regex.test(name);
+      });
     },
     registerVariable(name, element = {}) {
       if (!this.validVariableName(name)) {
