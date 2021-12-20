@@ -4,7 +4,7 @@ describe('multiselect with string value', () => {
     cy.visit('/');
   });
 
-  it.skip('Multiselect checkbox with string value without user interaction keep its value', () => {
+  it('Multiselect checkbox with string value without user interaction keep its value', () => {
     cy.loadFromJson('multiselect_with_string_value.json', 0);
 
     // init screen data
