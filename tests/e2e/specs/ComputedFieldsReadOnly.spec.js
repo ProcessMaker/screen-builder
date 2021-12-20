@@ -201,4 +201,31 @@ describe('Computed fields', () => {
       form_select_list_1: '1',
     });
   });
+
+  it('The user should not be able to change an input assigned to a sub property of a computed property', () => {
+    cy.visit('/');
+
+    // Add an input field
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=screen-element-container]').eq(0).click();
+    cy.get('[data-cy=inspector-name]').clear().type('object.foo');
+
+    cy.get('[data-cy="topbar-calcs"]').click();
+    cy.get('[data-cy="calcs-add-property"]').click();
+    cy.get('[data-cy="calcs-property-name"]').clear().type('object');
+    cy.get('[data-cy="calcs-property-description"]').clear().type('returns object');
+    cy.get('[data-cy="calcs-switch-javascript"]').click();
+    cy.setVueComponentValue('[data-cy="calcs-property-javascript"]', 'return { foo: "bar" };');
+    cy.get('[data-cy="calcs-button-save"]').click();
+    cy.get('[data-cy="calcs-modal"] .close').click();
+    cy.get('[data-cy=mode-preview]').click();
+
+    // Assertion: Check the input is read only
+    cy.get('[data-cy=preview-content] [name="object.foo"]').should('have.attr', 'readonly');
+    // Assertion: Check the input is the computed object
+    cy.assertPreviewData({
+      object: { foo: 'bar' },
+    });
+
+  });
 });
