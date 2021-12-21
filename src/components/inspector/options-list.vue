@@ -42,11 +42,11 @@
 
       <div class="row">
         <div class="col">
-					<div>
+					<div data-cy="unselected-container">
 						<div class="row border-top">
 							<div class="col-1"></div>
 							<div class="col-1 d-flex align-items-center">
-								<input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="''">
+								<input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="''" data-cy="inspector-options-unselected">
 							</div>
 							<div class="col-6" style="cursor:grab">
 								{{ $t('Unselected') }}
@@ -98,7 +98,7 @@
                 </div>
               </div>
 
-              <div class="row border-top" :class="rowCss(index)">
+              <div class="row border-top" :class="rowCss(index)" :data-cy="'option-' + option[keyField].trim()">
                 <div class="col-1" style="cursor:grab">
                   <span class="fas fa-arrows-alt-v"/>
                 </div>
