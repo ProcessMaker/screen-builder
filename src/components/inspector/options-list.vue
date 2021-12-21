@@ -239,7 +239,7 @@
 
 <script>
 import draggable from 'vuedraggable';
-import { dataSources, dataSourceValues } from './data-source-types';
+import {dataSources, dataSourceValues} from './data-source-types';
 import MonacoEditor from 'vue-monaco';
 import MustacheHelper from './mustache-helper';
 import _ from 'lodash';
@@ -506,9 +506,24 @@ export default {
     },
     defaultOptionClick(event) {
 			const {value} = event.target;
-      this.defaultOptionKey = value;
-			this.selectedControl.config.defaultValue.value = this.defaultOptionKey;
-    },
+			this.defaultOptionKey = value;
+			if (this.valueTypeReturned === 'single') {
+				this.selectedControl.config.defaultValue = {
+					mode: 'basic',
+					value: this.defaultOptionKey
+				};
+			}
+			if (this.valueTypeReturned === 'object') {
+				this.optionsList.find(option => {
+					if (option.value === this.defaultOptionKey) {
+						this.selectedControl.config.defaultValue = {
+							mode: 'js',
+							value: `return ${JSON.stringify(option)}`
+						}
+					}
+				});
+			}
+		},
     rowCss(index) {
       return index % 2 === 0 ? 'striped' : 'bg-default';
     },
