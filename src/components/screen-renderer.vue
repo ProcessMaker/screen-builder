@@ -11,7 +11,7 @@ import Json2Vue from '../mixins/Json2Vue';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual, debounce } from 'lodash';
 
 export default {
   name: 'screen-renderer',
@@ -27,19 +27,29 @@ export default {
   mounted() {
     this.currentDefinition = cloneDeep(this.definition);
     this.component = this.buildComponent(this.currentDefinition);
+    this.rebuildScreen = debounce(this.rebuildScreen, 25);
   },
   watch: {
     definition: {
       deep: true,
       handler(definition) {
-        if (!isEqual(definition, this.currentDefinition)) {
-          this.currentDefinition = cloneDeep(definition);
-          this.component = this.buildComponent(this.currentDefinition);
-        }
+        this.rebuildScreen(definition);
       },
     },
   },
   methods: {
+    rebuildScreen(definition) {
+      if (!isEqual(definition, this.currentDefinition)) {
+        this.currentDefinition = cloneDeep(definition);
+        this.component = this.buildComponent(this.currentDefinition);
+      }
+    },
+    onAsyncWatcherOn() {
+      this.displayAsyncLoading = typeof this._parent === 'undefined';
+    },
+    onAsyncWatcherOff() {
+      this.displayAsyncLoading = false;
+    },
     getCurrentPage() {
       return this.$refs.component.getCurrentPage();
     },
