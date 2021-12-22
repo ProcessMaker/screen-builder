@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import Mustache from 'mustache';
 import { getValidPath } from '@/mixins';
 
 export default {
