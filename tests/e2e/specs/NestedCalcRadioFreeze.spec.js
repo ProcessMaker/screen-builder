@@ -10,6 +10,8 @@ describe('nested calc radio freeze', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     cy.get('[data-cy=preview-content] button:contains(Continue)').click();
+    // Wait until you load the screen
+    cy.wait(500);
 
     // Check the data of the screen
     cy.assertPreviewData({
