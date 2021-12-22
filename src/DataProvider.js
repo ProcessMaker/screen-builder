@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 export default {
   screensCache: [],
+  cachedScreenPromises: [],
 
   install(Vue) {
     Vue.prototype.$dataProvider = this;
@@ -77,23 +78,32 @@ export default {
       }
     });
   },
-  getScreen(id, query = '') {
-    const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
-    return new Promise((resolve, reject) => {
-      const cache = this.screensCache.find(screen => screen.id == id);
-      if (cache) {
-        resolve({data: cache});
+  getScreen(id, query='') {
+    let cachedPromise = this.cachedScreenPromises.find(item => item.id === id && item.query === query);
+    if (cachedPromise) {
+      return cachedPromise.screenPromise;
+    }
+    else {
+      const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
+      
+      const screensCacheHit = this.screensCache.find(screen => screen.id == id);
+      if (screensCacheHit) {
+        return Promise.resolve({data: screensCacheHit});
       }
-      if (!cache && id != undefined) {
-        const request = this.get(endpoint + `/${id}${query}`);
-        request.then(response => {
-          if (response.data.nested) {
-            this.addNestedScreenCache(response.data.nested);
-          }
-          resolve(response);
-        }).catch(response => reject(response));
-      }
-    });
+
+      let screenPromise = new Promise((resolve, reject) => {
+        this.get(endpoint + `/${id}${query}`)
+          .then(response => {
+            if (response.data.nested) {
+              this.addNestedScreenCache(response.data.nested);
+            }
+            resolve(response);
+          })
+          .catch(response => reject(response));
+      });
+      this.cachedScreenPromises.push({id, query, screenPromise});
+      return screenPromise;
+    }
   },
 
   postScript(id, params) {
