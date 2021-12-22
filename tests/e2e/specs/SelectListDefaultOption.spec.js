@@ -58,4 +58,29 @@ describe('Select List with Default Option selected', () => {
       cy.get('[data-cy="screen-field-form_select_list_1"] .multiselect__single').contains('False');
     });
   });
+
+  describe('Should change the data model of the defaultValue if the Type of Value Returned changes', () => {
+    it('should go back to design mode', () => {
+      cy.get('[data-cy="mode-editor"]').click();
+    });
+    it('should change the type of value returned from a single value to object', () => {
+      cy.get('[data-cy="inspector-value-returned"]').select('object');
+    });
+    it('should be defaultValue to be False', () => {
+      cy.get('[data-cy="mode-preview"]').click();
+      cy.get('[data-cy="screen-field-form_select_list_1"] .multiselect__single').contains('False');
+    });
+  });
+  describe('Should defaultValue to be false even if rolledback to single returned value', function () {
+    it('should go back to design mode', () => {
+      cy.get('[data-cy="mode-editor"]').click();
+    });
+    it('should change the type of value returned from a single value to object', () => {
+      cy.get('[data-cy="inspector-value-returned"]').select('single');
+    });
+    it('should be defaultValue to be False', () => {
+      cy.get('[data-cy="mode-preview"]').click();
+      cy.get('[data-cy="screen-field-form_select_list_1"] .multiselect__single').contains('False');
+    });
+  });
 });
