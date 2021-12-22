@@ -88,10 +88,14 @@ export default {
     }
     else {
       const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
-      const request = this.get(endpoint + `/${id}${query}`);
+      
+      const screensCacheHit = this.screensCache.find(screen => screen.id == id);
+      if (screensCacheHit) {
+        return Promise.resolve({data: screensCacheHit});
+      }
 
       let screenPromise = new Promise((resolve, reject) => {
-        request
+        this.get(endpoint + `/${id}${query}`)
           .then(response => {
             if (response.data.nested) {
               this.addNestedScreenCache(response.data.nested);
