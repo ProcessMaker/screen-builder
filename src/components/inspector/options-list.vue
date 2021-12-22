@@ -510,15 +510,22 @@ export default {
 		},
 		setDefaultValue() {
 			if (this.valueTypeReturned === 'single') {
-				this.selectedControl.config.defaultValue = {
+				return this.selectedControl.config.defaultValue = {
 					mode: 'basic',
 					value: this.defaultOptionKey
 				};
 			}
-			if (this.valueTypeReturned === 'object') {
+			// if the Unselected option was selected
+			if (this.valueTypeReturned === 'object' && this.defaultOptionKey === '') {
+				return this.selectedControl.config.defaultValue = {
+					mode: 'basic',
+					value: this.defaultOptionKey
+				}
+			}
+			if (this.valueTypeReturned === 'object' && this.defaultOptionKey !== '') {
 				this.optionsList.find(option => {
 					if (option.value === this.defaultOptionKey) {
-						this.selectedControl.config.defaultValue = {
+						return this.selectedControl.config.defaultValue = {
 							mode: 'js',
 							value: `return ${JSON.stringify(option)}`
 						}

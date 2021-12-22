@@ -71,7 +71,7 @@ describe('Select List with Default Option selected', () => {
       cy.get('[data-cy="screen-field-form_select_list_1"] .multiselect__single').contains('False');
     });
   });
-  describe('Should defaultValue to be false even if rolledback to single returned value', function () {
+  describe('Should defaultValue to be false even if rolledback to single returned value', () => {
     it('should go back to design mode', () => {
       cy.get('[data-cy="mode-editor"]').click();
     });
