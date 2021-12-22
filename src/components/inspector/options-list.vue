@@ -42,17 +42,17 @@
 
       <div class="row">
         <div class="col">
-					<div data-cy="unselected-container">
-						<div class="row border-top">
-							<div class="col-1"></div>
-							<div class="col-1 d-flex align-items-center">
-								<input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="''" data-cy="inspector-options-unselected">
-							</div>
-							<div class="col-6" style="cursor:grab">
-								{{ $t('Unselected') }}
-							</div>
-						</div>
-					</div>
+          <div data-cy="unselected-container">
+            <div class="row border-top">
+              <div class="col-1"/>
+              <div class="col-1 d-flex align-items-center">
+                <input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="''" data-cy="inspector-options-unselected">
+              </div>
+              <div class="col-6" style="cursor:grab">
+                {{ $t('Unselected') }}
+              </div>
+            </div>
+          </div>
           <draggable @update="updateSort" :element="'div'" v-model="optionsList" group="options" @start="drag=true" @end="drag=false" >
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
@@ -512,35 +512,35 @@ export default {
       this.jsonError = '';
     },
     defaultOptionClick(event) {
-			const {value} = event.target;
-			this.defaultOptionKey = value;
-			this.setDefaultValue();
-		},
-		setDefaultValue() {
-			if (this.valueTypeReturned === 'single') {
-				return this.selectedControl.config.defaultValue = {
-					mode: 'basic',
-					value: this.defaultOptionKey
-				};
-			}
-			// if the Unselected option was selected
-			if (this.valueTypeReturned === 'object' && this.defaultOptionKey === '') {
-				return this.selectedControl.config.defaultValue = {
-					mode: 'basic',
-					value: this.defaultOptionKey
-				}
-			}
-			if (this.valueTypeReturned === 'object' && this.defaultOptionKey !== '') {
-				this.optionsList.find(option => {
-					if (option.value === this.defaultOptionKey) {
-						return this.selectedControl.config.defaultValue = {
-							mode: 'js',
-							value: `return ${JSON.stringify(option)}`
-						}
-					}
-				});
-			}
-		},
+      const {value} = event.target;
+      this.defaultOptionKey = value;
+      this.setDefaultValue();
+    },
+    setDefaultValue() {
+      if (this.valueTypeReturned === 'single') {
+        return this.selectedControl.config.defaultValue = {
+          mode: 'basic',
+          value: this.defaultOptionKey,
+        };
+      }
+      // if the Unselected option was selected
+      if (this.valueTypeReturned === 'object' && this.defaultOptionKey === '') {
+        return this.selectedControl.config.defaultValue = {
+          mode: 'basic',
+          value: this.defaultOptionKey,
+        };
+      }
+      if (this.valueTypeReturned === 'object' && this.defaultOptionKey !== '') {
+        this.optionsList.find(option => {
+          if (option.value === this.defaultOptionKey) {
+            return this.selectedControl.config.defaultValue = {
+              mode: 'js',
+              value: `return ${JSON.stringify(option)}`,
+            };
+          }
+        });
+      }
+    },
     rowCss(index) {
       return index % 2 === 0 ? 'striped' : 'bg-default';
     },
