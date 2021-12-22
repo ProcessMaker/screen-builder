@@ -2,7 +2,7 @@ import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
-import _ from 'lodash';
+import _, { debounce, isEqual } from 'lodash';
 
 let screenRenderer;
 
@@ -336,19 +336,43 @@ export default {
     },
     addValidationRulesLoader(component, definition) {
       const firstPage = parseInt(this.currentPage) || 0;
+      function getKeys(input) {
+        if (input instanceof Array) {
+          const response = [];
+          input.forEach((item) => {
+            response.push(getKeys(item));
+          });
+          return response;
+        }
+        if (!(input instanceof Object)) {
+          return typeof input;
+        }
+        const keys = Object.keys(input);
+        const response = {};
+        keys.forEach((key) => {
+          response[key] = getKeys(input[key]);
+        });
+        return response;
+      }
+      let updateValidationRules = function(screenComponent, validations) {
+        const a = getKeys(screenComponent.ValidationRules__);
+        const b = getKeys(validations);
+        if (isEqual(a, b)) {
+          return;
+        }
+        screenComponent.ValidationRules__ = validations;
+        screenComponent.$nextTick(() => {
+          if (screenComponent.$v) {
+            screenComponent.$v.$touch();
+          }
+        });
+      };
+      updateValidationRules = debounce(updateValidationRules, 100);
       component.methods.loadValidationRules = function() {
         // Asynchronous loading of validations
         const validations = {};
         ValidationsFactory(definition, { screen: definition, firstPage, data: {_parent: this._parent, ...this.vdata} }).addValidations(validations).then(() => {
-          if (_.isEqual(this.ValidationRules__, validations)) {
-            return;
-          }
-          this.ValidationRules__ = validations;
-          this.$nextTick(() => {
-            if (this.$v) {
-              this.$v.$touch();
-            }
-          });
+          updateValidationRules(this, validations);
         });
       };
       component.mounted.push('this.loadValidationRules()');
