@@ -27,8 +27,7 @@ export default {
   mounted() {
     this.currentDefinition = cloneDeep(this.definition);
     this.component = this.buildComponent(this.currentDefinition);
-    // debounce rebuildScreen
-    this.rebuildScreen = debounce(this.rebuildScreen, 300);
+    this.rebuildScreen = debounce(this.rebuildScreen, 25);
   },
   watch: {
     definition: {
