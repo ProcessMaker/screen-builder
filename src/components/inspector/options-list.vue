@@ -193,7 +193,7 @@
     </div>
 
     <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
-    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
+    <b-form-select id="value-type-returded" @change="setDefaultValue" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
     <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
@@ -481,7 +481,6 @@ export default {
         text: option['name'],
       };
     },
-
     jsonDataChange() {
       let jsonList = [];
       try {
@@ -507,6 +506,9 @@ export default {
     defaultOptionClick(event) {
 			const {value} = event.target;
 			this.defaultOptionKey = value;
+			this.setDefaultValue();
+		},
+		setDefaultValue() {
 			if (this.valueTypeReturned === 'single') {
 				this.selectedControl.config.defaultValue = {
 					mode: 'basic',
