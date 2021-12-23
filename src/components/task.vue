@@ -55,10 +55,10 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import { get } from 'lodash';
 
 const defaultBeforeLoadTask = () => {
-  new Promise((resolve) => {
+  return new Promise((resolve) => {
     resolve();
   });
 };
@@ -177,8 +177,8 @@ export default {
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         } else {
-          const isInterstitial = _.get(this.screen, '_interstitial', false);
-          let component = _.get(this, 'task.component', 'task-screen');
+          const isInterstitial = get(this.screen, '_interstitial', false);
+          let component = get(this, 'task.component', 'task-screen');
           if (component === null || isInterstitial) {
             component = 'task-screen';
           }
@@ -235,24 +235,28 @@ export default {
         });
       }
     },
-    async loadTask() {
-      await this.beforeLoadTask(this.taskId, this.nodeId);
+    loadTask() {
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
+      // For Vocabularies
+      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
+        window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
+      }
 
-      return this.$dataProvider
-        .getTasks(
-          `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`
-        )
-        .then((response) => {
-          this.task = response.data;
-          this.checkTaskStatus();
-        })
-        .catch(() => {
-          this.hasErrors = true;
-        });
+      return this.beforeLoadTask(this.taskId, this.nodeId).then(() => {
+        this.$dataProvider
+          .getTasks(url)
+          .then((response) => {
+            this.task = response.data;
+            this.checkTaskStatus();
+          })
+          .catch(() => {
+            this.hasErrors = true;
+          });
+      });
     },
     prepareTask() {
       this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
+      this.requestData = get(this.task, 'request_data', {});
       this.refreshScreen++;
 
       this.$emit('task-updated', this.task);

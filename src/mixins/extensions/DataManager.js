@@ -12,8 +12,8 @@ export default {
             this.getValue(${JSON.stringify(v.name)}, data) || 
             this.initialValue('${component}', '${dataFormat}', ${JSON.stringify(v.config)})
           `);
-          this.addWatch(screen, v.name, `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);`);
-          this.addWatch(screen, `vdata.${v.name}`, `this.${v.name} = this.vdata.${v.name};`);
+          this.addWatch(screen, v.name, `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);this.setValue(${JSON.stringify(v.name)}, value, this.schema);`);
+          this.addWatch(screen, `vdata.${v.name}`, `this.setValue(${JSON.stringify(v.name)}, value, this);`);
         });
       screen.props.vdata = null;
     },
