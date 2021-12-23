@@ -311,9 +311,86 @@ describe('Validation Rules', () => {
     // Fill out the required missing field; ensure the form *can* be submitted
     cy.get('[data-cy=preview-content] [name="form_input"]')
       .type('text');
-    
+
     cy.get('[data-cy=preview-content] [name="submit_button"]')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
+  });
+
+
+  it('Required IF with boolean values', () => {
+    cy.loadFromJson('required_if_with_checkbox.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+    
+    // Check box 1
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
+      .click();
+    
+    // Name should be required
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('contain.text', 'Field is required');
+    
+    // Uncheck box 1
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
+      .click();
+    
+    // Name should not be required
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
+    
+    // Check box 1
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
+      .click();
+    
+    // Fill name
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .clear()
+      .type('test');
+    
+    // Name should not be required
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
+    
+  });
+
+  it('Required Unless with boolean values', () => {
+    cy.loadFromJson('required_unless_with_checkbox.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    // Check box 1
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
+      .click();
+
+    // Name should be required
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('contain.text', 'Field is required');
+
+    // Uncheck box 1
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
+      .click();
+
+    // Name should not be required
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
+
+    // Check box 1
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
+      .click();
+
+    // Fill name
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .clear()
+      .type('test');
+
+    // Name should not be required
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
+
   });
 });
