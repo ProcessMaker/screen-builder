@@ -57,8 +57,8 @@
             </div>
           </b-card-header>
           <b-collapse :id="formatRuleContentAsId(rule.content)" :accordion="formatRuleContentAsId(rule.content)" :visible="rule.visible" role="tabpanel">
-            <b-card-body> 
-              <div class="p-2"> 
+            <b-card-body>
+              <div class="p-2">
                 <div v-for="config in rule.configs" :key="config.label" class="mb-2">
                   <div v-if="config.type === 'FormInput'">
                     <form-input :label="config.label" :name="config.name || config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
@@ -294,7 +294,7 @@ export default {
       if (this.rules && this.rules.length) {
         return true;
       }
-      
+
       return false;
     },
   },
@@ -314,9 +314,8 @@ export default {
       },
     },
     value() {
-      this.rules = this.value;
+      this.rules = this.value || [];
       this.cloneSetRules();
-      
     },
     selectedOption: {
       deep: true,
@@ -380,13 +379,13 @@ export default {
             }
           });
 
-          if (ruleConfigs.length > 1) {  
+          if (ruleConfigs.length > 1) {
             ruleConfigs = ruleConfigs.join(',');
           }
           if (ruleConfigs.length) {
             rule.value = rule.field + ruleConfigs;
           }
-          
+
         }
       });
     },
