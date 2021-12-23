@@ -327,16 +327,18 @@ describe('Validation Rules', () => {
       .click();
     
     // Name should be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('contain.html', 'alert alert-danger');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('contain.text', 'Field is required');
     
     // Uncheck box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
     
     // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
     
     // Check box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
@@ -348,8 +350,9 @@ describe('Validation Rules', () => {
       .type('test');
     
     // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
     
   });
 
@@ -362,16 +365,18 @@ describe('Validation Rules', () => {
       .click();
 
     // Name should be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('contain.html', 'alert alert-danger');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('contain.text', 'Field is required');
 
     // Uncheck box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
 
     // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
 
     // Check box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
@@ -383,8 +388,9 @@ describe('Validation Rules', () => {
       .type('test');
 
     // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
+      .parent()
+      .should('not.contain.text', 'Field is required');
 
   });
 });
