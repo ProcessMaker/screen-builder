@@ -35,7 +35,11 @@ export default {
         get: new Function(`return this.tryFormField(${JSON.stringify(name)}, () => ${value});`),
         set() {},
       };
-      this.addWatch(screen, defaultComputedName, `!this.${name}_was_filled__ && this.setValue(${JSON.stringify(name)}, this.${defaultComputedName}, this.vdata, this);`);
+
+      // Do not reset default values on nested objects after a data has changed
+      const watchOptions = { deep: false };
+
+      this.addWatch(screen, defaultComputedName, `!this.${name}_was_filled__ && this.setValue(${JSON.stringify(name)}, this.${defaultComputedName}, this.vdata, this);`, watchOptions);
     },
   },
   mounted() {
