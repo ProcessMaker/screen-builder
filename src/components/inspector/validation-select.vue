@@ -57,9 +57,12 @@
             </div>
           </b-card-header>
           <b-collapse :id="formatRuleContentAsId(rule.content)" :accordion="formatRuleContentAsId(rule.content)" :visible="rule.visible" role="tabpanel">
-            <b-card-body> 
-              <div class="p-2"> 
+            <b-card-body>
+              <div class="p-2">
                 <div v-for="config in rule.configs" :key="config.label" class="mb-2">
+                  <div v-if="rule.showMustacheHelper">
+                    <mustache-helper/>
+                  </div>
                   <div v-if="config.type === 'FormInput'">
                     <form-input :label="config.label" :name="config.name || config.label" v-model="config.value" :validation="config.validation" :helper="config.helper"/>
                   </div>
@@ -92,6 +95,7 @@
 
 <script>
 import { FormInput } from '@processmaker/vue-form-elements';
+import MustacheHelper from './mustache-helper';
 import _ from 'lodash';
 import InputVariable from '../inspector/input-variable';
 
@@ -100,6 +104,7 @@ export default {
   components: {
     FormInput,
     InputVariable,
+    MustacheHelper,
   },
   data() {
     return {
@@ -237,6 +242,7 @@ export default {
           content: this.$t('After Date'),
           helper: this.$t('The field under validation must be after the given date.'),
           visible: true,
+          showMustacheHelper: true,
           configs: [
             {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
@@ -247,6 +253,7 @@ export default {
           content: this.$t('After or Equal to Date'),
           helper: this.$t('The field unter validation must be after or equal to the given field.'),
           visible: true,
+          showMustacheHelper: true,
           configs: [
             {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
@@ -257,6 +264,7 @@ export default {
           content: this.$t('Before Date'),
           helper: this.$t('The field unter validation must be before the given date.'),
           visible: true,
+          showMustacheHelper: true,
           configs: [
             {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
@@ -267,6 +275,7 @@ export default {
           content: this.$t('Before or Equal to Date'),
           helper: this.$t('The field unter validation must be before or equal to the given field.'),
           visible: true,
+          showMustacheHelper: true,
           configs: [
             {type: 'FormInput', label: this.$t('Date'), helper: '', validation: 'required'},
           ],
@@ -292,7 +301,7 @@ export default {
       if (this.rules && this.rules.length) {
         return true;
       }
-      
+
       return false;
     },
   },
@@ -314,7 +323,7 @@ export default {
     value() {
       this.rules = this.value || [];
       this.cloneSetRules();
-      
+
     },
     selectedOption: {
       deep: true,
@@ -378,13 +387,13 @@ export default {
             }
           });
 
-          if (ruleConfigs.length > 1) {  
+          if (ruleConfigs.length > 1) {
             ruleConfigs = ruleConfigs.join(',');
           }
           if (ruleConfigs.length) {
             rule.value = rule.field + ruleConfigs;
           }
-          
+
         }
       });
     },
