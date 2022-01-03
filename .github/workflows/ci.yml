@@ -40,7 +40,7 @@ jobs:
 #        run: npm run test
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v1
         with:
           build: npm run serve
           start: npm run run-cypress
