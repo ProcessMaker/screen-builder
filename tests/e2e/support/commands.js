@@ -1,5 +1,5 @@
 import '@4tw/cypress-drag-drop';
-import { set } from 'lodash';
+import set from 'lodash/set';
 import 'cypress-wait-until';
 
 Cypress.Commands.add('setPreviewDataInput', (input) => {
