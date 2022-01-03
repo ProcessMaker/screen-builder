@@ -5,21 +5,13 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name vue-form-builder ./src/components/index.js",
     "lint-fix": "vue-cli-service lint",
     "open-cypress": "TZ=UTC nyc cypress open",
     "run-cypress": "TZ=UTC nyc cypress run",
     "test": "vue-cli-service test:unit"
-  },
-  "nyc": {
-    "include": [
-      "src/**"
-    ],
-    "extension": [
-      ".js",
-      ".vue"
-    ]
   },
   "main": "./dist/vue-form-builder.common.js",
   "files": [
@@ -47,7 +39,7 @@
     "@processmaker/vue-form-elements": "0.28.2",
     "@processmaker/vue-multiselect": "^2.2.0",
     "@vue/cli-plugin-babel": "^3.6.0",
-    "@vue/cli-plugin-e2e-cypress": "^4.0.3",
+    "@vue/cli-plugin-e2e-cypress": "^4.5.15",
     "@vue/cli-plugin-eslint": "^3.6.0",
     "@vue/cli-plugin-unit-jest": "^4.3.0",
     "@vue/cli-service": "^3.6.0",
@@ -99,5 +91,14 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "nyc": {
+    "include": [
+      "src/**"
+    ],
+    "extension": [
+      ".js",
+      ".vue"
+    ]
+  }
 }
