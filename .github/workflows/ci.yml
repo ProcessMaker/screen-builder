@@ -42,8 +42,10 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
-          build: npm run serve
-          start: npm run run-cypress
+          start: npm run serve
+          wait-on: http://localhost:8080/
+          config_file: cypress.json
+          spec: "tests/e2e/**/*"
 
       - name: Run build bundle 📦
         run: npm run build-bundle
