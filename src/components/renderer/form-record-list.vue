@@ -73,6 +73,7 @@
       :title="$t('Add')"
       header-close-content="&times;"
       data-cy="modal-add"
+      @shown="emitShownEvent"
     >
       <vue-form-renderer
         :page="0"
@@ -98,6 +99,7 @@
       :title="$t('Edit Record')"
       header-close-content="&times;"
       data-cy="modal-edit"
+      @shown="emitShownEvent"
     >
       <vue-form-renderer
         :page="0"
@@ -257,6 +259,9 @@ export default {
     },
   },
   methods: {
+    emitShownEvent() {
+      window.ProcessMaker.EventBus.$emit('modal-shown');
+    },
     isImage(field, item) {
       const content = _.get(item, field.key);
       return typeof content === 'string' && content.substr(0,11) === 'data:image/';
@@ -336,7 +341,7 @@ export default {
       // Reset edit to be a copy of our data model item
       this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
       this.editIndex = pageIndex;
-      // rebuild the edit screen to avoid 
+      // rebuild the edit screen to avoid
       this.editFormVersion++;
       this.$nextTick(() => {
         this.setUploadDataNamePrefix(pageIndex);
