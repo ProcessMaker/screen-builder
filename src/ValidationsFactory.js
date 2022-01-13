@@ -167,19 +167,7 @@ class FormElementValidations extends Validations {
     }
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
-
-    // Disable validations if field is hidden
-    if (this.element.config.conditionalHide) {
-      let visible = true;
-      try {
-        visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
-      } catch (error) {
-        visible = false;
-      }
-      if (!visible) {
-        return;
-      }
-    }
+    const conditionalHide = this.element.config.conditionalHide;
 
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
@@ -203,7 +191,13 @@ class FormElementValidations extends Validations {
           params.push(fieldName);
           validationFn = validationFn(...params);
         }
-        fieldValidation[rule] = validationFn;
+        fieldValidation[rule] = function(...props) {
+          const visible = this.checkVisibilityRule(conditionalHide, props[1]);
+          if (!visible) {
+            return true;
+          }
+          return validationFn.apply(this,props);
+        };
       });
     } else if (typeof validationConfig === 'string' && validationConfig) {
       let validationFn = validators[validationConfig];
@@ -212,7 +206,13 @@ class FormElementValidations extends Validations {
         console.error(`Undefined validation rule "${validationConfig}"`);
         return;
       }
-      fieldValidation[validationConfig] = validationFn;
+      fieldValidation[validationConfig] = function(...props) {
+        const visible = this.checkVisibilityRule(conditionalHide, props[1]);
+        if (!visible) {
+          return true;
+        }
+        return validationFn.apply(this,props);
+      };
     }
     if (this.element.items) {
       ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
@@ -223,6 +223,16 @@ class FormElementValidations extends Validations {
   }
 }
 
+function checkVisibilityRule(conditionalHide, data) {
+  if (conditionalHide) {
+    let visible = true;
+    try {
+      visible = !!Parser.evaluate(conditionalHide, data);
+    } catch (error) {
+      visible = false;
+    }
+  }
+}
 function ValidationsFactory(element, options) {
   if (element instanceof Array) {
     return new ArrayOfFieldsValidations(element, options);
