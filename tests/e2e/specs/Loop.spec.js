@@ -53,4 +53,42 @@ describe('Loop control', () => {
       ],
     });
   });
+
+  it('Run validation only on visible fields', () => {
+    cy.visit('/');
+    // Add loop control
+    cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=inspector-name]');
+    cy.get('[data-cy=inspector-source]').select('existing');
+
+     // Add input to loop
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
+
+    // Configure Validation rule
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=inspector-label]').click().clear().type('New Input 2');
+    cy.get('[data-cy=add-rule]').click();
+    cy.get('[data-cy=select-rule]').click().type('Required{enter}{esc');
+    cy.get('[data-cy=save-rule]').click();
+
+    // Set Visibility rule
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-conditionalHide]').clear().type('name != "foo"');
+
+    // Add submit button
+    cy.get('[data-cy=controls] > :nth-child(14)').drag('[data-cy=screen-element-container]', 'bottom');
+
+    cy.setPreviewDataInput('{"loop_1":[{"name": "foo"}]}');
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_2]').should('be.not.visible');
+
+    //submit form valid
+    cy.get('[data-cy=preview-content] [name="Default"] > :nth-child(1) > .form-group > .btn').click();
+    cy.on('window:alert', (str) => {
+      expect(str).to.equal('Preview Form was Submitted');
+    });
+  });
 });
