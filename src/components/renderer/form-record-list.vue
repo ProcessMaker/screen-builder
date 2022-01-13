@@ -74,6 +74,7 @@
       :title="$t('Add')"
       header-close-content="&times;"
       data-cy="modal-add"
+      @shown="emitShownEvent"
     >
       <vue-form-renderer
         :page="0"
@@ -99,6 +100,7 @@
       :title="$t('Edit Record')"
       header-close-content="&times;"
       data-cy="modal-edit"
+      @shown="emitShownEvent"
     >
       <vue-form-renderer
         :page="0"
@@ -259,6 +261,9 @@ export default {
     },
   },
   methods: {
+    emitShownEvent() {
+      window.ProcessMaker.EventBus.$emit('modal-shown');
+    },
     formatIfDate(string) {
       return dateUtils.formatIfDate(string);
     },
