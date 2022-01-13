@@ -173,6 +173,7 @@ export default {
       perPageSelectEnabled: false,
       perPage: 5,
       lastPage: 1,
+      currentRowId: null,
       css: {
         tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
         loadingClass: 'loading',
@@ -189,6 +190,9 @@ export default {
       },
       initFormValues: {},
     };
+  },
+  mounted() {
+    this.$root.$on('get-current-row-id', () => this.getCurrentRowId());
   },
   computed: {
     popupConfig() {
@@ -257,6 +261,9 @@ export default {
     },
   },
   methods: {
+    getCurrentRowId() {
+      this.$root.$emit('current-row-id', this.currentRowId);
+    },
     isImage(field, item) {
       const content = _.get(item, field.key);
       return typeof content === 'string' && content.substr(0,11) === 'data:image/';
@@ -274,7 +281,7 @@ export default {
           rowId = this.addItem.row_id;
         }
       }
-
+      this.currentRowId = rowId;
       this.$root.$emit('set-upload-data-name', this, index, rowId);
     },
     getTableFieldsFromDataSource() {
@@ -336,7 +343,7 @@ export default {
       // Reset edit to be a copy of our data model item
       this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
       this.editIndex = pageIndex;
-      // rebuild the edit screen to avoid 
+      // rebuild the edit screen to avoid
       this.editFormVersion++;
       this.$nextTick(() => {
         this.setUploadDataNamePrefix(pageIndex);
