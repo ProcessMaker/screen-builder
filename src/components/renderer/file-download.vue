@@ -56,7 +56,7 @@ export default {
   },
   mounted() {
     this.$root.$on('set-upload-data-name',
-      (recordList, index, id) => this.listenRecordList(recordList, index, id));
+      (recordList) => this.listenRecordList(recordList));
 
     if (!this.fileType) {
       // Not somewhere we can download anything (like web entry start event)
@@ -107,7 +107,7 @@ export default {
       }
       return null;
     },
-    listenRecordList(recordList, index, id) {
+    listenRecordList(recordList) {
       const parent = this.parentRecordList(this);
       if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
         this.fileInfo = window.PM4ConfigOverrides.requestFiles[this.value];
