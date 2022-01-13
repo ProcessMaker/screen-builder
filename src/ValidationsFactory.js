@@ -231,6 +231,7 @@ function checkVisibilityRule(conditionalHide, data) {
     } catch (error) {
       visible = false;
     }
+    return visible;
   }
 }
 function ValidationsFactory(element, options) {
