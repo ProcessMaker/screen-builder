@@ -192,7 +192,15 @@ class FormElementValidations extends Validations {
           validationFn = validationFn(...params);
         }
         fieldValidation[rule] = function(...props) {
-          const visible = this.checkVisibilityRule(conditionalHide, props[1]);
+          const data = props[1];
+          let visible = true;
+          if (conditionalHide) {
+            try {
+              visibile = !!Parser.evaluate(conditionalHide, data);
+            } catch (error) {
+              visible = false;
+            }
+          }
           if (!visible) {
             return true;
           }
@@ -207,7 +215,15 @@ class FormElementValidations extends Validations {
         return;
       }
       fieldValidation[validationConfig] = function(...props) {
-        const visible = this.checkVisibilityRule(conditionalHide, props[1]);
+        const data = props[1];
+        let visible = true;
+        if (conditionalHide) {
+          try {
+            visibile = !!Parser.evaluate(conditionalHide, data);
+          } catch (error) {
+            visible = false;
+          }
+        }
         if (!visible) {
           return true;
         }
@@ -220,18 +236,6 @@ class FormElementValidations extends Validations {
   }
   camelCase(name) {
     return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
-  }
-
-  checkVisibilityRule(conditionalHide, data) {
-    if (conditionalHide) {
-      let visible = true;
-      try {
-        visible = !!Parser.evaluate(conditionalHide, data);
-      } catch (error) {
-        visible = false;
-      }
-      return visible;
-    }
   }
 }
 function ValidationsFactory(element, options) {
