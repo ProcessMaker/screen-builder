@@ -93,10 +93,8 @@ export default {
     this.$root.$on('removed-loop',
       (loop, removed) => this.listenRemovedLoop(loop, removed));
 
-    this.$root.$on('current-row-id', (currentRowId) => this.setRowId(currentRowId));
-
     this.removeDefaultClasses();
-
+    
     this.checkIfInRecordList();
 
     this.setPrefix();
@@ -131,7 +129,7 @@ export default {
     },
     displayName() {
       const requestFiles = _.get(window, 'PM4ConfigOverrides.requestFiles', {});
-      const fileInfo = requestFiles[this.value];
+      const fileInfo = requestFiles[this.fileDataName];
       let id = this.uploaderId;
       if (fileInfo && id >= 0) {
         return fileInfo.file_name;
@@ -163,7 +161,6 @@ export default {
       return accept;
     },
     fileDataName() {
-      this.$root.$emit('get-current-row-id');
       return this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
     },
   },
@@ -230,9 +227,6 @@ export default {
     };
   },
   methods: {
-    setRowId(currentRowId) {
-      this.row_id = currentRowId;
-    },
     listenRemovedLoop(loop, removed) {
       const fileId = removed[this.name];
       if (fileId) {
@@ -351,7 +345,7 @@ export default {
           if (!_.has(window, 'PM4ConfigOverrides.requestFiles')) {
             window.PM4ConfigOverrides.requestFiles = {};
           }
-          window.PM4ConfigOverrides.requestFiles[msg.fileUploadId] = { id:msg.fileUploadId, file_name:file.name };
+          window.PM4ConfigOverrides.requestFiles[this.fileDataName] = { id:msg.fileUploadId, file_name:file.name };
           id = msg.fileUploadId;
         }
         this.$emit('input', id);
@@ -399,7 +393,7 @@ export default {
       if (_.has(window, 'PM4ConfigOverrides.postFileEndpoint')) {
         return window.PM4ConfigOverrides.postFileEndpoint;
       }
-
+      
       if (this.endpoint) {
         return this.endpoint;
       }
