@@ -221,17 +221,17 @@ class FormElementValidations extends Validations {
   camelCase(name) {
     return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
   }
-}
 
-function checkVisibilityRule(conditionalHide, data) {
-  if (conditionalHide) {
-    let visible = true;
-    try {
-      visible = !!Parser.evaluate(conditionalHide, data);
-    } catch (error) {
-      visible = false;
+  checkVisibilityRule(conditionalHide, data) {
+    if (conditionalHide) {
+      let visible = true;
+      try {
+        visible = !!Parser.evaluate(conditionalHide, data);
+      } catch (error) {
+        visible = false;
+      }
+      return visible;
     }
-    return visible;
   }
 }
 function ValidationsFactory(element, options) {
