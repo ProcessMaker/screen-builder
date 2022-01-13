@@ -62,7 +62,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-name]');
     cy.get('[data-cy=inspector-source]').select('existing');
 
-     // Add input to loop
+    // Add input to loop
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
 
