@@ -9,7 +9,7 @@
     "build-bundle": "vue-cli-service build --target lib --name vue-form-builder ./src/components/index.js",
     "lint-fix": "vue-cli-service lint",
     "open-cypress": "TZ=UTC nyc cypress open",
-    "run-cypress": "TZ=UTC nyc cypress run",
+    "run-cypress": "TZ=UTC nyc cypress run --spec tests/e2e/specs/NestedCalcProperties.js",
     "test": "vue-cli-service test:unit"
   },
   "nyc": {
