@@ -101,6 +101,9 @@ export default {
     this.$root.$on('removed-loop',
       (loop, removed) => this.listenRemovedLoop(loop, removed));
 
+    this.$root.$on('current-row-id',
+      (currentRowId) => this.setRowId(currentRowId));
+
     this.removeDefaultClasses();
 
     this.checkIfInRecordList();
@@ -122,7 +125,7 @@ export default {
       if (!this.value) {
         return [];
       }
-      return _.get(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, []).filter(file => {
+      return _.get(window, `PM4ConfigOverrides.requestFiles["${this.value[0].file}"]`, []).filter(file => {
         // Filter any requestFiles that don't exist in this component's value. This can happen if
         // a file is uploaded but the task is not saved.
         if (this.multipleUpload) {
@@ -197,6 +200,7 @@ export default {
       return accept;
     },
     fileDataName() {
+      this.$root.$emit('get-current-row-id');
       return this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
     },
   },
@@ -219,7 +223,7 @@ export default {
     },
     name: {
       handler() {
-        this.options.query.data_name = this.fileDataName;
+        this.options.query.data_name = this.fileDataName + this.row_id;
       },
       immediate: true,
     },
@@ -231,7 +235,7 @@ export default {
     },
     prefix: {
       handler() {
-        this.options.query.data_name = this.fileDataName;
+        this.options.query.data_name = this.fileDataName + this.row_id;
       },
       immediate: true,
     },
@@ -287,8 +291,11 @@ export default {
     };
   },
   methods: {
+    setRowId(currentRowId) {
+      this.row_id = currentRowId;
+    },
     setFiles() {
-      if (_.isEqual(this.filesData, this.files)) {
+      if (_.isEqual(this.filesData, this.files) || !this.filesData.length) {
         return;
       }
       this.files = this.filesData;
@@ -312,7 +319,7 @@ export default {
       });
     },
     setRequestFiles() {
-      _.set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
+      _.set(window, `PM4ConfigOverrides.requestFiles["${this.files[0].id}"]`, this.files);
       this.$emit('input', this.valueToSend());
     },
     valueToSend() {
@@ -380,7 +387,7 @@ export default {
         }
       }
     },
-    async removeFile(file) { 
+    async removeFile(file) {
       const id = file.id;
       const token = file.token ? file.token : null;
 
@@ -388,13 +395,13 @@ export default {
       if (!isNaN(id)) {
         await this.$dataProvider.deleteFile(id, token);
       }
-      
+
       this.removeFromFiles(id);
     },
     removeFromFiles(id) {
       const idx = this.files.findIndex(f => f.id === id);
       this.$delete(this.files, idx);
-      
+
       if (this.nativeFiles[id]) {
         if (this.$refs.uploader) {
           this.$refs.uploader.uploader.removeFile(this.nativeFiles[id]);
@@ -465,7 +472,7 @@ export default {
       }
       file.ignored = false;
       if (!this.name) {
-        this.options.query.data_name = file.name;
+        this.options.query.data_name = file.name + this.row_id;
       }
       return true;
     },
@@ -489,13 +496,13 @@ export default {
         if (this.collection) {
           id = msg.id;
         }
-        
+
         const fileInfo = {
           id,
           file_name: name,
           mime_type: rootFile.fileType,
         };
-       
+
         this.$set(this.nativeFiles, id, rootFile);
         this.addToFiles(fileInfo);
       } else {
