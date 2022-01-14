@@ -167,19 +167,8 @@ class FormElementValidations extends Validations {
     }
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
+    const conditionalHide = this.element.config.conditionalHide;
 
-    // Disable validations if field is hidden
-    if (this.element.config.conditionalHide) {
-      let visible = true;
-      try {
-        visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
-      } catch (error) {
-        visible = false;
-      }
-      if (!visible) {
-        return;
-      }
-    }
 
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
@@ -203,7 +192,22 @@ class FormElementValidations extends Validations {
           params.push(fieldName);
           validationFn = validationFn(...params);
         }
-        fieldValidation[rule] = validationFn;
+        fieldValidation[rule] = function(...props) {
+          const data = props[1];
+          const dataWithParent = this.addReferenceToParents(data);
+          let visible = true;
+          if (conditionalHide) {
+            try {
+              visible = !!Parser.evaluate(conditionalHide, dataWithParent);
+            } catch (error) {
+              visible = false;
+            }
+          }
+          if (!visible) {
+            return true;
+          }
+          return validationFn.apply(this,props);
+        };
       });
     } else if (typeof validationConfig === 'string' && validationConfig) {
       let validationFn = validators[validationConfig];
@@ -212,7 +216,22 @@ class FormElementValidations extends Validations {
         console.error(`Undefined validation rule "${validationConfig}"`);
         return;
       }
-      fieldValidation[validationConfig] = validationFn;
+      fieldValidation[validationConfig] = function(...props) {
+        const data = props[1];
+        const dataWithParent = this.addReferenceToParents(data);
+        let visible = true;
+        if (conditionalHide) {
+          try {
+            visible = !!Parser.evaluate(conditionalHide, dataWithParent);
+          } catch (error) {
+            visible = false;
+          }
+        }
+        if (!visible) {
+          return true;
+        }
+        return validationFn.apply(this,props);
+      };
     }
     if (this.element.items) {
       ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
