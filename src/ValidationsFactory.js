@@ -203,7 +203,22 @@ class FormElementValidations extends Validations {
           params.push(fieldName);
           validationFn = validationFn(...params);
         }
-        fieldValidation[rule] = validationFn;
+        fieldValidation[rule] = function(...props) {
+          const data = props[1];
+          const dataWithParent = this.addReferenceToParents(data);
+          let visible = true;
+          if (conditionalHide) {
+            try {
+              visible = !!Parser.evaluate(conditionalHide, dataWithParent);
+            } catch (error) {
+              visible = false;
+            }
+          }
+          if (!visible) {
+            return true;
+          }
+          return validationFn.apply(this,props);
+        };
       });
     } else if (typeof validationConfig === 'string' && validationConfig) {
       let validationFn = validators[validationConfig];
@@ -212,7 +227,22 @@ class FormElementValidations extends Validations {
         console.error(`Undefined validation rule "${validationConfig}"`);
         return;
       }
-      fieldValidation[validationConfig] = validationFn;
+      fieldValidation[validationConfig] = function(...props) {
+        const data = props[1];
+        const dataWithParent = this.addReferenceToParents(data);
+        let visible = true;
+        if (conditionalHide) {
+          try {
+            visible = !!Parser.evaluate(conditionalHide, dataWithParent);
+          } catch (error) {
+            visible = false;
+          }
+        }
+        if (!visible) {
+          return true;
+        }
+        return validationFn.apply(this,props);
+      };
     }
     if (this.element.items) {
       ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
