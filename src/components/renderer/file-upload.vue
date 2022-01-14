@@ -125,7 +125,8 @@ export default {
       if (!this.value) {
         return [];
       }
-      return _.get(window, `PM4ConfigOverrides.requestFiles["${this.value[0].file}"]`, []).filter(file => {
+      let index = (Array.isArray(this.value) ? this.value[0].file : this.value);
+      return _.get(window, `PM4ConfigOverrides.requestFiles["${index}"]`, []).filter(file => {
         // Filter any requestFiles that don't exist in this component's value. This can happen if
         // a file is uploaded but the task is not saved.
         if (this.multipleUpload) {

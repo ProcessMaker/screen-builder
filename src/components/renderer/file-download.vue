@@ -192,10 +192,10 @@ export default {
       if (!this.value) {
         return;
       }
-
+      let index = (Array.isArray(this.value) ? this.value[0].file : this.value);
       let requestFiles = _.get(
         window,
-        `PM4ConfigOverrides.requestFiles["${this.value[0].file}"]`,
+        `PM4ConfigOverrides.requestFiles["${index}"]`,
         []
       );
 
