@@ -167,19 +167,8 @@ class FormElementValidations extends Validations {
     }
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
+    const conditionalHide = this.element.config.conditionalHide;
 
-    // Disable validations if field is hidden
-    if (this.element.config.conditionalHide) {
-      let visible = true;
-      try {
-        visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
-      } catch (error) {
-        visible = false;
-      }
-      if (!visible) {
-        return;
-      }
-    }
 
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
