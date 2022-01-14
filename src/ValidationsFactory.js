@@ -193,10 +193,11 @@ class FormElementValidations extends Validations {
         }
         fieldValidation[rule] = function(...props) {
           const data = props[1];
+          const dataWithParent = this.addReferenceToParents(data);
           let visible = true;
           if (conditionalHide) {
             try {
-              visibile = !!Parser.evaluate(conditionalHide, data);
+              visible = !!Parser.evaluate(conditionalHide, dataWithParent);
             } catch (error) {
               visible = false;
             }
@@ -216,10 +217,11 @@ class FormElementValidations extends Validations {
       }
       fieldValidation[validationConfig] = function(...props) {
         const data = props[1];
+        const dataWithParent = this.addReferenceToParents(data);
         let visible = true;
         if (conditionalHide) {
           try {
-            visibile = !!Parser.evaluate(conditionalHide, data);
+            visible = !!Parser.evaluate(conditionalHide, dataWithParent);
           } catch (error) {
             visible = false;
           }
