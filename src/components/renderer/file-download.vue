@@ -195,7 +195,7 @@ export default {
 
       let requestFiles = _.get(
         window,
-        `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`,
+        `PM4ConfigOverrides.requestFiles["${this.value[0].file}"]`,
         []
       );
 

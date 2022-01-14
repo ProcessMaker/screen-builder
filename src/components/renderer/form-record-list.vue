@@ -175,6 +175,7 @@ export default {
       perPageSelectEnabled: false,
       perPage: 5,
       lastPage: 1,
+      currentRowId: null,
       css: {
         tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
         loadingClass: 'loading',
@@ -191,6 +192,9 @@ export default {
       },
       initFormValues: {},
     };
+  },
+  mounted() {
+    this.$root.$on('get-current-row-id', () => this.getCurrentRowId());
   },
   computed: {
     popupConfig() {
@@ -259,6 +263,9 @@ export default {
     },
   },
   methods: {
+    getCurrentRowId() {
+      this.$root.$emit('current-row-id', this.currentRowId);
+    },
     formatIfDate(string) {
       return dateUtils.formatIfDate(string);
     },
@@ -280,6 +287,7 @@ export default {
         }
       }
 
+      this.currentRowId = rowId;
       this.$root.$emit('set-upload-data-name', this, index, rowId);
     },
     getTableFieldsFromDataSource() {
