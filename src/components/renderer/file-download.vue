@@ -131,7 +131,7 @@ export default {
       }
 
       if (endpoint && this.fileInfo) {
-        const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
+        const query = '?id=' + encodeURIComponent(this.value) + '&token=' + this.fileInfo.token;
         return endpoint + query;
       }
 
@@ -229,16 +229,16 @@ export default {
         requestFiles = window.PM4ConfigOverrides.requestFiles;
       }
 
-      if (this.fileType && requestFiles && requestFiles[this.prefix + this.name]) {
+      if (this.fileType && requestFiles && requestFiles[this.value]) {
         this.loading = false;
-        if (Array.isArray(requestFiles[this.prefix + this.name])) {
-          this.fileInfo = requestFiles[this.prefix + this.name].find(
+        if (Array.isArray(requestFiles[this.value])) {
+          this.fileInfo = requestFiles[this.value].find(
             item =>
               item.file_name === this.fileName
               || item.id === this.fileName
           );
         } else {
-          this.fileInfo = requestFiles[this.prefix + this.name];
+          this.fileInfo = requestFiles[this.value];
         }
         return;
       }
@@ -256,7 +256,7 @@ export default {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
         }
         if (endpoint && this.fileInfo && this.fileInfo.token) {
-          const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
+          const query = '?id=' + encodeURIComponent(this.value) + '&token=' + this.fileInfo.token;
           return endpoint + query;
         }
         window.ProcessMaker.apiClient
