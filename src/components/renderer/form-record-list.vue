@@ -387,7 +387,7 @@ export default {
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.$invalid) {
+      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         return;
       }
 
