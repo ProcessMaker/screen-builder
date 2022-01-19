@@ -194,7 +194,7 @@ describe('Loop control', () => {
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
   });
-  
+
   it('Verify validation with nested screen ', () => {
     // Load Nested Screen
     cy.server();
@@ -226,7 +226,7 @@ describe('Loop control', () => {
               'editor-control': 'FormInput',
               'label': 'Line Input',
               'value': '__vue_devtool_undefined__',
-            }
+            },
           ],
         },
       ],
