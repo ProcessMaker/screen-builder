@@ -54,7 +54,7 @@ describe('Loop control', () => {
     });
   });
 
-  it('Run validation only on visible fields', () => {
+  it('Verify validation on visible fields', () => {
     cy.visit('/');
     // Add loop control
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
