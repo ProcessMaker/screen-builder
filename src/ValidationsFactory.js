@@ -51,7 +51,7 @@ class Validations {
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (const item of this.element) {
-      await ValidationsFactory(item, { screen: this.screen, data: this.data }).addValidations(validations);
+      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule}).addValidations(validations);
     }
   }
 }
@@ -81,8 +81,12 @@ class FormNestedScreenValidations extends Validations {
       return;
     }
     const definition = await this.loadScreen(this.element.config.screen);
+    let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
     if (definition && definition[0] && definition[0].items) {
-      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data }).addValidations(validations);
+      if (!parentVisibilityRule) {
+        parentVisibilityRule = item.config.conditionalHide;
+      }
+      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data, parentVisibilityRule: parentVisibilityRule }).addValidations(validations);
     }
   }
 
@@ -125,7 +129,7 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
+    await ValidationsFactory(this.element.items, { screen: this.screen, loopContext: this.element.loopContext, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
   }
 }
 
@@ -167,7 +171,7 @@ class FormElementValidations extends Validations {
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
     const conditionalHide = this.element.config.conditionalHide;
-
+    const parentVisibilityRule = this.parentVisibilityRule;
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
     if (validationConfig instanceof Array) {
@@ -193,6 +197,26 @@ class FormElementValidations extends Validations {
         fieldValidation[rule] = function(...props) {
           const data = props[1];
           const dataWithParent = this.addReferenceToParents(data);
+          const dataWithParent2 = this.addReferenceToParents(this.findParent(data));
+          // Check Parent Visibility
+          if (parentVisibilityRule) {
+            let isParentVisible = true;
+            try {
+              isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);              
+            } catch (error1) {
+              isParentVisible = false;
+              try {
+                isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent2);
+              } catch (error2) {
+                isParentVisible = false;
+              }
+            }
+
+            if (!isParentVisible ) {
+              return true;
+            }
+          }
+          // Check Field Visibility
           let visible = true;
           if (conditionalHide) {
             try {
@@ -217,6 +241,26 @@ class FormElementValidations extends Validations {
       fieldValidation[validationConfig] = function(...props) {
         const data = props[1];
         const dataWithParent = this.addReferenceToParents(data);
+        const dataWithParent2 = this.addReferenceToParents(this.findParent(data));
+        // Check Parent Visibility
+        if (parentVisibilityRule) {
+          let isParentVisible = true;
+          try {
+            isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);
+          } catch (error1) {
+            isParentVisible = false;
+            try {
+              isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent2);
+            } catch (error2) {
+              isParentVisible = false;
+            }
+          }
+
+          if (!isParentVisible) {
+            return true;
+          }
+        }
+        // Check Field Visibility
         let visible = true;
         if (conditionalHide) {
           try {
