@@ -197,19 +197,15 @@ class FormElementValidations extends Validations {
         fieldValidation[rule] = function(...props) {
           const data = props[1];
           const dataWithParent = this.addReferenceToParents(data);
-          const dataWithParent2 = this.addReferenceToParents(this.findParent(data));
+          const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
+          const vdata = Object.assign(dataWithParent, nestedDataWithParent);
           // Check Parent Visibility
           if (parentVisibilityRule) {
             let isParentVisible = true;
             try {
-              isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);              
-            } catch (error1) {
+              isParentVisible = !!Parser.evaluate(parentVisibilityRule, vdata);              
+            } catch (error) {
               isParentVisible = false;
-              try {
-                isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent2);
-              } catch (error2) {
-                isParentVisible = false;
-              }
             }
 
             if (!isParentVisible ) {
@@ -241,19 +237,15 @@ class FormElementValidations extends Validations {
       fieldValidation[validationConfig] = function(...props) {
         const data = props[1];
         const dataWithParent = this.addReferenceToParents(data);
-        const dataWithParent2 = this.addReferenceToParents(this.findParent(data));
+        const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
+        const vdata = Object.assign(dataWithParent, nestedDataWithParent);
         // Check Parent Visibility
         if (parentVisibilityRule) {
           let isParentVisible = true;
           try {
-            isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);
-          } catch (error1) {
+            isParentVisible = !!Parser.evaluate(parentVisibilityRule, vdata);
+          } catch (error) {
             isParentVisible = false;
-            try {
-              isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent2);
-            } catch (error2) {
-              isParentVisible = false;
-            }
           }
 
           if (!isParentVisible) {
