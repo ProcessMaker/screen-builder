@@ -51,6 +51,44 @@ describe('Record list', () => {
     });
   });
 
+  it('Recordlist pagination when deleting items should go to previous page if no records in current page', () => {
+    cy.loadFromJson('record_list_single_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    //Add 7 rows
+    for (let i = 1; i <= 7; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(i);
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    //Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    //Delete record 7
+    cy.get('[aria-rowindex="7"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('#__BVID__94___BV_modal_footer_ > .btn-primary').click();
+
+    cy.get('.table-column')
+      .should('contain.text', '6');
+
+    cy.get('[data-cy=table-pagination]')
+      .should('be.visible');
+
+    //Delete record 6
+    cy.get('[data-cy=remove-row]').click();
+    cy.get('#__BVID__94___BV_modal_footer_ > .btn-primary').click();
+
+    //Assert we see page 1
+    cy.get('[data-cy=table-pagination]')
+      .should('be.not.visible');
+
+    for (let i = 1; i <= 5; i++) {
+      cy.get('[aria-rowindex="'+i+'"] > .table-column')
+        .should('contain.text', i);
+    }
+  });
+
   it('FileUpload in record lists', () => {
     cy.loadFromJson('record_list_fileupload.json', 0);
     cy.get('[data-cy=mode-preview]').click();
