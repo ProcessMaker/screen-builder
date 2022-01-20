@@ -354,7 +354,7 @@ export default {
       });
     },
     edit(event) {
-      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.$invalid) {
+      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         event.preventDefault();
         return;
       }
