@@ -126,7 +126,7 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    await ValidationsFactory(this.element.items, { screen: this.screen, loopContext: this.element.loopContext, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
   }
 }
 
