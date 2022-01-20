@@ -91,4 +91,55 @@ describe('Loop control', () => {
       expect(str).to.equal('Preview Form was Submitted');
     });
   });
+
+  it('Verify validation with multicolumn ', () => {
+    cy.visit('/');
+    let alert = false;
+    cy.on('window:alert', msg => alert = msg);
+
+    // Add loop control
+    cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=inspector-name]');
+    cy.get('[data-cy=inspector-source]').select('existing');
+
+    // Add multicolumn to loop
+    cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
+
+    // Set multicolumn Visibility Rule
+    cy.get('.mb-1 > :nth-child(1) > .row > :nth-child(1)').click();
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-conditionalHide]').clear().type('name != "foo"');
+
+    // Add input to multicolumn
+    cy.get('[data-cy=controls-FormInput]').drag('.mb-1 > :nth-child(1) > .row > :nth-child(1)', 'bottom');
+
+    // Configure Validation rule
+    cy.get('#form_input_1 > .m-2').click();
+    cy.get('[data-cy=add-rule]').click();
+    cy.get('[data-cy=select-rule]').click().type('Required{enter}{esc');
+    cy.get('[data-cy=save-rule]').click();
+
+    // Add submit button
+    cy.get('[data-cy=controls] > :nth-child(14)').drag('[data-cy=screen-element-container]', 'bottom');
+
+    // Set preview data
+    cy.setPreviewDataInput('{"loop_1":[{"name": "bar"}, {"name": "foo"}]}');
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get(':nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1)').should('be.not.visible');
+
+    // Ensure form cannot be submitted
+    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+      .click()
+      .then(() => expect(alert).to.equal(false));  
+
+    // Add data to input field
+    cy.get(':nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1) > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar');
+
+    // Ensure form can be submitted
+    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+      .click()
+      .then(() => expect(alert).to.equal('Preview Form was Submitted'));
+  });
 });
