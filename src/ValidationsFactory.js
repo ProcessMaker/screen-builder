@@ -113,7 +113,7 @@ class FormLoopValidations extends Validations {
     set(validations, this.element.config.name, {});
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {noData: true}, parentVisibilityRule: this.element.config.conditionalHide}).addValidations(loopField['$each']);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, noData: true}, parentVisibilityRule: this.element.config.conditionalHide}).addValidations(loopField['$each']);
   }
 }
 
@@ -193,14 +193,16 @@ class FormElementValidations extends Validations {
         }
         fieldValidation[rule] = function(...props) {
           const data = props[1];
-          const dataWithParent = this.addReferenceToParents(data);
+          let dataWithParent = this.addReferenceToParents(data);
           const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
-          const vdata = Object.assign(dataWithParent, nestedDataWithParent);
+          if (nestedDataWithParent) {
+            dataWithParent = Object.assign(nestedDataWithParent, dataWithParent);
+          }
           // Check Parent Visibility
           if (parentVisibilityRule) {
             let isParentVisible = true;
             try {
-              isParentVisible = !!Parser.evaluate(parentVisibilityRule, vdata);              
+              isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);              
             } catch (error) {
               isParentVisible = false;
             }
@@ -233,14 +235,16 @@ class FormElementValidations extends Validations {
       }
       fieldValidation[validationConfig] = function(...props) {
         const data = props[1];
-        const dataWithParent = this.addReferenceToParents(data);
+        let dataWithParent = this.addReferenceToParents(data);
         const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
-        const vdata = Object.assign(dataWithParent, nestedDataWithParent);
+        if (nestedDataWithParent) {
+          dataWithParent = Object.assign(nestedDataWithParent, dataWithParent);
+        }
         // Check Parent Visibility
         if (parentVisibilityRule) {
           let isParentVisible = true;
           try {
-            isParentVisible = !!Parser.evaluate(parentVisibilityRule, vdata);
+            isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);
           } catch (error) {
             isParentVisible = false;
           }
