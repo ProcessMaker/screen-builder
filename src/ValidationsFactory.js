@@ -34,7 +34,7 @@ class Validations {
   isVisible() {
     // Disable validations if field is hidden
     let visible = true;
-    if (this.element.config.conditionalHide) {
+    if (!this.data.noData && this.element.config.conditionalHide) {
       try {
         visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
       } catch (error) {
@@ -112,8 +112,7 @@ class FormLoopValidations extends Validations {
     set(validations, this.element.config.name, {});
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
-    const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow } }).addValidations(loopField['$each']);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, noData:true } }).addValidations(loopField['$each']);
   }
 }
 
