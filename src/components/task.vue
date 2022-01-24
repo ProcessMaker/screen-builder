@@ -279,7 +279,7 @@ export default {
       }
       this.prepareTask();
     },
-    closeTask() {
+    closeTask(parentRequestId = null) {
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
         return;
@@ -291,7 +291,7 @@ export default {
       } else if (this.task.allow_interstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
-        this.loadNextAssignedTask();
+        this.loadNextAssignedTask(parentRequestId);
 
       } else {
         this.$emit('closed', this.task.id);
@@ -315,6 +315,11 @@ export default {
               this.redirecting = task.process_request_id;
               this.$emit('redirect', task);
               return;
+            } else {
+              // Only emit completed after getting the subprocess tasks and there are no tasks
+              if (requestId == this.task.process_request_id && this.parentRequest) {
+                this.$emit('completed', this.parentRequest);
+              }
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
@@ -365,6 +370,9 @@ export default {
         // There could be another task in the parent, so don't emit completed
         return;
       }
+      if (this.parentRequest) {
+        this.$emit('completed', this.parentRequest);
+      }
       this.$emit('completed', this.requestId);
     },
     processUpdated: _.debounce(function(data) {
@@ -413,7 +421,8 @@ export default {
         '.ProcessUpdated',
         (data) => {
           if (['ACTIVITY_COMPLETED', 'ACTIVITY_ACTIVATED'].includes(data.event)) {
-            this.loadNextAssignedTask(this.parentRequest);
+            // this.loadNextAssignedTask(this.parentRequest);
+            this.closeTask(this.parentRequest);
           }
           if (data.event === 'ACTIVITY_EXCEPTION') {
             this.$emit('error', this.requestId);
