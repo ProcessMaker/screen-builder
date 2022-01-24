@@ -421,7 +421,6 @@ export default {
         '.ProcessUpdated',
         (data) => {
           if (['ACTIVITY_COMPLETED', 'ACTIVITY_ACTIVATED'].includes(data.event)) {
-            // this.loadNextAssignedTask(this.parentRequest);
             this.closeTask(this.parentRequest);
           }
           if (data.event === 'ACTIVITY_EXCEPTION') {
