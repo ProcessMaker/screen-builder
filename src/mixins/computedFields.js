@@ -6,15 +6,21 @@ export default {
     evaluateExpression(expression, type) {
       let value = null;
 
-      const merged = {};
-      _.merge(merged, this.vdata, this._data);
-
       try {
+        const self = this;
+        const merged = {};
+
+        _.merge({}, self.vdata, self._data);
+
         //monitor if variable belongs to data (defined variables) or vdata (external variables)
         //in this way the event is not executed again when the variable is update
         const data = new Proxy(merged, {
           get(data, name) {
-            return data[name];
+            if (undefined !== data[name]) {
+              return data[name];
+            }
+
+            return self.vdata[name];
           },
           set() {
             throw 'You are not allowed to set properties from inside an expression';
