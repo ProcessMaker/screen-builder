@@ -10,7 +10,7 @@ export default {
         const self = this;
         const merged = {};
 
-        _.merge({}, self.vdata, self._data);
+        _.merge(merged, self.vdata, self._data);
 
         //monitor if variable belongs to data (defined variables) or vdata (external variables)
         //in this way the event is not executed again when the variable is update
