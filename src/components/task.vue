@@ -286,7 +286,7 @@ export default {
       }
 
       if (this.task.process_request.status === 'COMPLETED') {
-        this.processCompleted();
+        this.loadNextAssignedTask(parentRequestId);
 
       } else if (this.task.allow_interstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
@@ -313,7 +313,7 @@ export default {
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              this.$emit('redirect', task);
+              window.location.href = `/tasks/${task.id}/edit`;
               return;
             } else {
               // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
