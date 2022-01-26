@@ -368,10 +368,6 @@ export default {
       // This may no longer be needed
     },
     processCompleted() {
-      if (this.parentRequest && this.task.allow_interstitial) {
-        // There could be another task in the parent, so don't emit completed
-        return;
-      }
       if (this.parentRequest) {
         this.$emit('completed', this.parentRequest);
       }
@@ -422,8 +418,13 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.parentRequest}`,
         '.ProcessUpdated',
         (data) => {
-          if (['ACTIVITY_COMPLETED', 'ACTIVITY_ACTIVATED'].includes(data.event)) {
+          if (['ACTIVITY_ACTIVATED'].includes(data.event)) {
             this.closeTask(this.parentRequest);
+          }
+          if (['ACTIVITY_COMPLETED'].includes(data.event)) {
+            if (this.task.process_request.status === 'COMPLETED') {
+              this.processCompleted();
+            }
           }
           if (data.event === 'ACTIVITY_EXCEPTION') {
             this.$emit('error', this.requestId);
