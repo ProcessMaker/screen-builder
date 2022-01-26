@@ -316,8 +316,8 @@ export default {
               this.$emit('redirect', task);
               return;
             } else {
-              // Only emit completed after getting the subprocess tasks and there are no tasks
-              if (requestId == this.task.process_request_id && this.parentRequest) {
+              // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
+              if (requestId == this.task.process_request_id && this.parentRequest && this.task.process_request.status === 'COMPLETED') {
                 this.$emit('completed', this.parentRequest);
               }
             }
