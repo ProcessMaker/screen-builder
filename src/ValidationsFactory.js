@@ -131,6 +131,10 @@ class FormLoopValidations extends Validations {
       if (siblings) {
         siblings.forEach(sibling => {
           sibling.items.filter(item => {
+            if (!item.config.validation) {
+              return;
+            }
+            
             item.config.validation.forEach(validation => {
               const rule = this.camelCase(validation.value.split(':')[0]);
               const validationFn = validators[rule];
