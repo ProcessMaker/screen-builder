@@ -109,14 +109,14 @@ describe('Loop control', () => {
 
     // Ensure the form cannot yet be submitted
     cy.get(':nth-child(4) > .form-group > .btn')
-     .click()
-     .then(() => expect(alert).to.equal(false));
+      .click()
+      .then(() => expect(alert).to.equal(false));
    
-   // Fill out the required missing field; ensure the form *can* be submitted
+    // Fill out the required missing field; ensure the form *can* be submitted
     cy.get('[data-cy=screen-field-form_input_1]').type('text');
 
     cy.get(':nth-child(4) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
-    });
+  });
 });
