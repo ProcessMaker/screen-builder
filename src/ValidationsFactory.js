@@ -1,6 +1,6 @@
 import { validators } from './mixins/ValidationRules';
 import DataProvider from './DataProvider';
-import { get, isEmpty, set } from 'lodash';
+import { get, set, merge } from 'lodash';
 import { Parser } from 'expr-eval';
 
 let globalObject = typeof window === 'undefined'
@@ -134,7 +134,7 @@ class FormLoopValidations extends Validations {
             if (!item.config.validation) {
               return;
             }
-            
+
             item.config.validation.forEach(validation => {
               const rule = this.camelCase(validation.value.split(':')[0]);
               const validationFn = validators[rule];
@@ -142,7 +142,7 @@ class FormLoopValidations extends Validations {
               let ruleObj = {};
               ruleObj[rule] = validationFn;
               obj[item.config.name] = ruleObj;
-              _.merge(siblingValidations, obj);
+              merge(siblingValidations, obj);
             });
           });
         });
@@ -154,7 +154,7 @@ class FormLoopValidations extends Validations {
       const loopValidations = get(validations, this.element.config.name);
       setTimeout(() => {
         if (loopValidations.hasOwnProperty('$each')) {
-          _.merge(loopValidations['$each'], siblingValidations);    
+          merge(loopValidations['$each'], siblingValidations);    
         }
         set(validations[this.element.config.name]['$each'], loopValidations);
       }, 1000);
