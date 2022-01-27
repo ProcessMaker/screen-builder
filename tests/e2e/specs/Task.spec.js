@@ -314,7 +314,6 @@ describe('Task component', () => {
         cy.stub(win, 'alert').as('windowAlert');
       },
     });
-    cy.wait(2000);
     cy.window().its('PM4ConfigOverrides.getScreenEndpoint').should('equal', 'tasks/1/screens');
   });
 });
