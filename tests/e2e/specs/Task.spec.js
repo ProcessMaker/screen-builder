@@ -301,8 +301,8 @@ describe('Task component', () => {
         requestIdMeta.setAttribute('content', '1');
         win.document.head.appendChild(requestIdMeta);
         win.PM4ConfigOverrides = {
-          getScreenEndpoint: 'tasks/123/screens'
-        } 
+          getScreenEndpoint: 'tasks/123/screens',
+        };
         // Call some code to initialize the fake server part using MockSocket
         cy.stub(win, 'WebSocket').callsFake((url) => ({
           url,
