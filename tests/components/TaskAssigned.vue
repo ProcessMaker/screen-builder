@@ -7,6 +7,8 @@
             :initial-task-id="task.id"
             v-model="data"
             @submit="submit"
+            :initialRequestId="1"
+            @completed="completed"
           />
         </b-tab>
         <b-tab title="Data">
@@ -109,6 +111,10 @@ export default {
     };
   },
   methods: {
+    completed() {
+      // eslint-disable-next-line no-console
+      console.log('completed process!!');
+    },
     moment(...args) {
       return moment(...args);
     },

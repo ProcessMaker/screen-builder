@@ -179,3 +179,9 @@ Cypress.Commands.add('unselectOption', { prevSubject: true }, (subject, option) 
   cy.get(subject).click();
   cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
 });
+
+Cypress.Commands.add('socketEvent', (event, body) => {
+  cy.window().then((win) => {
+    win.Echo.eventMocks(event, body);
+  });
+});

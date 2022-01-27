@@ -145,6 +145,8 @@ export default {
 
     requestId: {
       handler() {
+        // eslint-disable-next-line no-console
+        console.log('requestId', this.requestId);
         if (this.requestId) {
           this.setMetaValue();
           this.initSocketListeners();
@@ -384,6 +386,8 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessCompleted',
         (data) => {
+          // eslint-disable-next-line no-console
+          console.log("llego", data);
           this.processCompleted(data);
         }
       );
@@ -429,6 +433,8 @@ export default {
         channel,
         event,
       };
+      // eslint-disable-next-line no-console
+      console.log('addSocketListener', key, channel, event);
       window.Echo.private(channel).listen(event, (data) => {
         callback(data);
       });
@@ -465,6 +471,8 @@ export default {
     this.processId = this.initialProcessId;
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
+    // eslint-disable-next-line no-console
+    console.log(window.Echo);
   },
   destroyed() {
     this.unsubscribeSocketListeners();

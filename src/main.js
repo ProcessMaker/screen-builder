@@ -201,6 +201,16 @@ window.Echo = {
       }, 1000);
     });
   },
+  eventMocks(event, response) {
+    this.listeners.forEach((listener) => {
+      setTimeout(() => {
+        listener.callback({
+          type: event,
+          response,
+        });
+      }, 1000);
+    });
+  },
   private() {
     return {
       notification(callback) {
@@ -215,6 +225,8 @@ window.Echo = {
     };
   },
 };
+// eslint-disable-next-line no-console
+console.log('main.js');
 
 const scenario = (window.location.search.substr(1).match(/\w+=(\w+)/) || [])[1];
 if (scenario) {
