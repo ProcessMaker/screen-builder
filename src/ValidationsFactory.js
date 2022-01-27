@@ -1,6 +1,6 @@
 import { validators } from './mixins/ValidationRules';
 import DataProvider from './DataProvider';
-import { get, set } from 'lodash';
+import { get, set, merge } from 'lodash';
 import { Parser } from 'expr-eval';
 
 let globalObject = typeof window === 'undefined'
@@ -110,10 +110,59 @@ class FormLoopValidations extends Validations {
       return;
     }
     set(validations, this.element.config.name, {});
+    validations = this.checkForSiblings(validations);
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
     const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
     await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow } }).addValidations(loopField['$each']);
+  }
+  checkForSiblings(validations) {
+    const siblings = [];
+    const siblingValidations = [];
+    // Find loops that reference the same variable
+    this.screen.config.forEach(page => {
+      page.items.filter(item => {
+        if (item.component === 'FormLoop' && item.config.name === this.element.config.name) {
+          siblings.push(item);
+        }
+      });
+
+      // Get siblings validations
+      if (siblings) {
+        siblings.forEach(sibling => {
+          sibling.items.filter(item => {
+            if (!item.config.validation) {
+              return;
+            }
+
+            item.config.validation.forEach(validation => {
+              const rule = this.camelCase(validation.value.split(':')[0]);
+              const validationFn = validators[rule];
+              const obj = {};
+              let ruleObj = {};
+              ruleObj[rule] = validationFn;
+              obj[item.config.name] = ruleObj;
+              merge(siblingValidations, obj);
+            });
+          });
+        });
+      }
+    });
+
+    if (Object.keys(siblingValidations).length != 0) {
+      // Update the loop validations with its siblings. 
+      const loopValidations = get(validations, this.element.config.name);
+      setTimeout(() => {
+        if (loopValidations.hasOwnProperty('$each')) {
+          merge(loopValidations['$each'], siblingValidations);    
+        }
+        set(validations[this.element.config.name]['$each'], loopValidations);
+      }, 1000);
+    } 
+    return validations;
+  }
+  camelCase(name) {
+    return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
   }
 }
 
