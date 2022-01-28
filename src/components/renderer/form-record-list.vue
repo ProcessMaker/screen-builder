@@ -268,6 +268,15 @@ export default {
       return this.form && this.form === this.$parent.currentPage;
     },
   },
+  watch: {
+    'tableData.total': {
+      deep: true,
+      handler(total) {
+        let totalPages = Math.ceil(total / this.perPage);
+        this.currentPage = (this.currentPage > totalPages ? totalPages : this.currentPage);
+      },
+    },
+  },
   methods: {
     sortChanged(payload) {
       this.lastSortConfig = payload;
