@@ -258,13 +258,69 @@ describe('Task component', () => {
       cy.get('.form-group > :nth-child(1) > div').should('contain.text', 'Please wait');
     });
   });
-
+  it('It updates the PM4ConfigOverrides', () => {
+    cy.server();
+    cy.route(
+      'GET',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
+      {
+        id: 1,
+        advanceStatus: 'open',
+        component: 'task-screen',
+        created_at: moment().toISOString(),
+        completed_at: moment().toISOString(),
+        due_at: moment().add(1, 'day').toISOString(),
+        status: 'ACTIVE',
+        user: {
+          avatar: '',
+          fullname: 'Assigned User',
+        },
+        screen: Screens.screens[0],
+        process_request: {
+          id: 1,
+          status: 'ACTIVE',
+          user: {
+            avatar: '',
+            fullname: 'Requester User',
+          },
+        },
+        process: {
+          id: 1,
+          name: 'Process Name',
+        },
+        request_data: {
+          firstname: 'John',
+          lastname: 'Doe',
+        },
+      }
+    );
+    cy.visit('/?scenario=TaskAssigned', {
+      onBeforeLoad(win) {
+        // setup request-id=1
+        const requestIdMeta = win.document.createElement('meta');
+        requestIdMeta.setAttribute('name', 'request-id');
+        requestIdMeta.setAttribute('content', '1');
+        win.document.head.appendChild(requestIdMeta);
+        win.PM4ConfigOverrides = {
+          getScreenEndpoint: 'tasks/123/screens',
+        };
+        // Call some code to initialize the fake server part using MockSocket
+        cy.stub(win, 'WebSocket').callsFake((url) => ({
+          url,
+          onclose: null,
+          onopen: null,
+          close(){},
+          send(){},
+        }));
+        cy.stub(win, 'alert').as('windowAlert');
+      },
+    });
+    cy.window().its('PM4ConfigOverrides.getScreenEndpoint').should('equal', 'tasks/1/screens');
+  });
   /* DNAT = Display Next Assigned Task
-
    parentTask1                                           parentTask2
               \_______childTask1_______childTask2_______/
                         (DNAT)
-
    After childTask1 should redirect to childTask2
   */
   it('Task with display next assigned task checked with another pending task in same request should redirect to the next task of same request', () => {
@@ -338,11 +394,9 @@ describe('Task component', () => {
   });
 
   /* DNAT = Display Next Assigned Task
-
    parentTask1                           parentTask2
               \_______childTask1_______/
                         (DNAT)
-
    After childTask1 should redirect to parentTask2
   */
   it('Task with display next assigned task checked in different process request should redirect to the next task of parent request', () => {
@@ -415,10 +469,8 @@ describe('Task component', () => {
   });
 
   /* DNAT = Display Next Assigned Task
-
    parentTask1                           parentTask2
               \_______childTask1_______/
-
    After childTask1 (Not DNAT) should redirect to tasks list
   */
   it('Task with display next assigned task unchecked should redirect to tasks list', () => {
@@ -466,10 +518,8 @@ describe('Task component', () => {
   });
 
   /* DNAT = Display Next Assigned Task
-
    parentTask1_____________________endEvent
      (DNAT)
-
    After parentTask1 and not pending tasks should redirect to same request
   */
   it('Process without pending task should redirect to request', () => {
@@ -519,11 +569,9 @@ describe('Task component', () => {
   });
 
   /* DNAT = Display Next Assigned Task
-
    parentTask1                           endEvent
               \_______childTask1_______/
                        (DNAT)
-
    After childTask1 and not pending tasks should redirect to parent Request
   */
   it('Subprocess without pending task should redirect to parent request', () => {
