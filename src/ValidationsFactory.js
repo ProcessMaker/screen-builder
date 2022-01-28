@@ -110,9 +110,9 @@ class FormLoopValidations extends Validations {
       return;
     }
     set(validations, this.element.config.name, {});
-    validations = this.checkForSiblings(validations);
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
+    this.checkForSiblings(validations);
     const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
     await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow } }).addValidations(loopField['$each']);
   }
@@ -152,14 +152,11 @@ class FormLoopValidations extends Validations {
     if (Object.keys(siblingValidations).length != 0) {
       // Update the loop validations with its siblings. 
       const loopValidations = get(validations, this.element.config.name);
-      setTimeout(() => {
-        if (loopValidations.hasOwnProperty('$each')) {
-          merge(loopValidations['$each'], siblingValidations);    
-        }
-        set(validations[this.element.config.name]['$each'], loopValidations);
-      }, 1000);
+      if (loopValidations.hasOwnProperty('$each')) {
+        merge(loopValidations['$each'], siblingValidations);    
+      }
+      set(validations[this.element.config.name]['$each'], loopValidations);
     } 
-    return validations;
   }
   camelCase(name) {
     return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
