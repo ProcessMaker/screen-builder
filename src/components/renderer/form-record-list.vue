@@ -24,6 +24,8 @@
         :css="css"
         :empty-text="$t('No Data Available')"
         :current-page="currentPage"
+        @sort-changed="sortChanged"
+        @input="onInput"
         data-cy="table"
       >
         <template #cell()="{index,field,item}">
@@ -247,6 +249,7 @@ export default {
         from,
         to: value.length,
         data: value,
+        lastSortConfig: false,
       };
       return data;
     },
@@ -266,6 +269,15 @@ export default {
     },
   },
   methods: {
+    sortChanged(payload) {
+      this.lastSortConfig = payload;
+      this.tableData.data = _.orderBy(this.tableData.data, [payload.sortBy], [(payload.sortDesc ? 'desc' : 'asc')]);
+    },
+    onInput() {
+      if (this.lastSortConfig) {
+        this.tableData.data = _.orderBy(this.tableData.data, [this.lastSortConfig.sortBy], [(this.lastSortConfig.sortDesc ? 'desc' : 'asc')]);
+      }
+    },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
@@ -349,7 +361,7 @@ export default {
     showEditForm(index) {
       let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
+      this.editItem = JSON.parse(JSON.stringify(this.tableData.data[pageIndex]));
       this.editIndex = pageIndex;
       // rebuild the edit screen to avoid
       this.editFormVersion++;
@@ -365,7 +377,7 @@ export default {
       }
 
       // Edit the item in our model and emit change
-      let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
       data[this.editIndex] = JSON.parse(JSON.stringify(this.editItem));
 
       // Remove the parent object
@@ -452,7 +464,7 @@ export default {
     remove() {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
-      let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
       let recordData = data[this.deleteIndex];
       // Remove item from data array
       data.splice(this.deleteIndex, 1);
@@ -469,3 +481,4 @@ export default {
     max-width: 300px;
   }
 </style>
+
