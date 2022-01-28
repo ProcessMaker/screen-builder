@@ -163,7 +163,7 @@ const jsonOptionsActionsColumn = {
 
 export default {
   mixins: [mustacheEvaluation],
-  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers'],
+  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers', '_perPage'],
   data() {
     return {
       editFormVersion: 0,
@@ -193,6 +193,11 @@ export default {
       },
       initFormValues: {},
     };
+  },
+  mounted() {
+    if (this._perPage) {
+      this.perPage = this._perPage;
+    }
   },
   computed: {
     popupConfig() {
