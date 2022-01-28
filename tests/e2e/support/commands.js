@@ -33,6 +33,12 @@ Cypress.Commands.add('setVueComponentProperty', (selector, property, value) => {
   });
 });
 
+Cypress.Commands.add('socketEvent', (event, body) => {
+  cy.window().then((win) => {
+    win.Echo.eventMocks(event, body);
+  });
+});
+
 /**
  * Converts Cypress fixtures, including JSON, to a Blob. All file types are
  * converted to base64 then converted to a Blob using Cypress

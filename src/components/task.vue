@@ -284,19 +284,19 @@ export default {
       }
       this.prepareTask();
     },
-    closeTask() {
+    closeTask(parentRequestId = null) {
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
         return;
       }
 
       if (this.task.process_request.status === 'COMPLETED') {
-        this.processCompleted();
+        this.loadNextAssignedTask(parentRequestId);
 
       } else if (this.task.allow_interstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
-        this.loadNextAssignedTask();
+        this.loadNextAssignedTask(parentRequestId);
 
       } else {
         this.$emit('closed', this.task.id);
@@ -318,11 +318,18 @@ export default {
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              this.$emit('redirect', task);
+              this.$emit('redirect', task.id, true);
               return;
+            } else {
+              // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
+              if (requestId == this.task.process_request_id && this.parentRequest && this.task.process_request.status === 'COMPLETED') {
+                this.$emit('completed', this.parentRequest);
+              }
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
+          } else {
+            this.$emit('completed', (this.parentRequest ? this.parentRequest : requestId));
           }
         });
     },
@@ -366,9 +373,8 @@ export default {
       // This may no longer be needed
     },
     processCompleted() {
-      if (this.parentRequest && this.task.allow_interstitial) {
-        // There could be another task in the parent, so don't emit completed
-        return;
+      if (this.parentRequest) {
+        this.$emit('completed', this.parentRequest);
       }
       this.$emit('completed', this.requestId);
     },
@@ -417,8 +423,13 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.parentRequest}`,
         '.ProcessUpdated',
         (data) => {
-          if (['ACTIVITY_COMPLETED', 'ACTIVITY_ACTIVATED'].includes(data.event)) {
-            this.loadNextAssignedTask(this.parentRequest);
+          if (['ACTIVITY_ACTIVATED'].includes(data.event)) {
+            this.closeTask(this.parentRequest);
+          }
+          if (['ACTIVITY_COMPLETED'].includes(data.event)) {
+            if (this.task.process_request.status === 'COMPLETED') {
+              this.processCompleted();
+            }
           }
           if (data.event === 'ACTIVITY_EXCEPTION') {
             this.$emit('error', this.requestId);
