@@ -313,7 +313,7 @@ export default {
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              window.location.href = `/tasks/${task.id}/edit`;
+              this.$emit('redirect', task.id, true);
               return;
             } else {
               // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
@@ -324,7 +324,7 @@ export default {
             this.taskId = task.id;
             this.nodeId = task.element_id;
           } else {
-            this.$emit('completed', (this.parentRequest ? this.parentRequest : null));
+            this.$emit('completed', (this.parentRequest ? this.parentRequest : requestId));
           }
         });
     },
