@@ -1,5 +1,33 @@
 describe('Computed fields', () => {
 
+  it.only('Make sure new rows can be added to the loop, even with a javascript-driven computed field', () => {
+    cy.visit('/');
+
+    // Add a loop and configure it
+    cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=inspector-source]').select('existing');
+    cy.get('[data-cy=inspector-add]').click();
+
+    // Add input to loop
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
+
+    // Create a calculated property
+    cy.get('[data-cy="topbar-calcs"]').click();
+    cy.get('[data-cy="calcs-add-property"]').click();
+    cy.get('[data-cy="calcs-property-name"]').clear().type('loop_1');
+    cy.get('[data-cy="calcs-property-description"]').clear().type('loop_1');
+    cy.get('[data-cy="calcs-switch-javascript"]').click();
+    cy.get('[data-cy="calcs-property-javascript"]').type(`let agents = this.loop_1; 
+
+return (agents === undefined) ? [] : agents;`);
+    cy.get('[data-cy="calcs-button-save"]').click();
+    cy.get('[data-cy="calcs-modal"] .close').click();
+
+    // Preview
+    cy.get('[data-cy=mode-preview]').click();
+  });
+
   it('CRUD of computed fields', () => {
     cy.visit('/');
     // Create a calculated property
@@ -56,7 +84,7 @@ describe('Computed fields', () => {
   it('Create a javascript computed field', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     // Add a second input field
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
 
@@ -86,7 +114,7 @@ describe('Computed fields', () => {
   it('Create a computed field with formula', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     // Add a second input field
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
 
