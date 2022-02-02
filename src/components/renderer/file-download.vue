@@ -239,9 +239,9 @@ export default {
       
       if (this.fileType && fileId) {
         let endpoint = 'requests/' + this.requestId + '/files';
-        // if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
-        //   endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-        // }
+        if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+          endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+        }
         // if (endpoint && this.fileInfo && this.fileInfo.token) {
         //   const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
         //   return endpoint + query;
