@@ -110,13 +110,13 @@ export default {
       return null;
     },
     listenRecordList(recordList, index, id) {
-      const parent = this.parentRecordList(this);
-      if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
-        const prefix = (this.parentRecordList(this) === null) ? '' : recordList.name + '.';
-        const fileDataName = prefix + this.name + (id ? '.' + id : '');
-        this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
-        this.loading  = false;
-      }
+      // const parent = this.parentRecordList(this);
+      // if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
+      //   const prefix = (this.parentRecordList(this) === null) ? '' : recordList.name + '.';
+      //   const fileDataName = prefix + this.name + (id ? '.' + id : '');
+      //   this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
+      //   this.loading  = false;
+      // }
     },
     onClick() {
       if (this.fileType == 'request') {
