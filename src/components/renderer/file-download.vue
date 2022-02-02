@@ -55,9 +55,8 @@ export default {
     }
   },
   mounted() {
-    this.$root.$on('set-upload-data-name',
-      (recordList, index, id) => this.listenRecordList(recordList, index, id));
-
+    // this.$root.$on('set-upload-data-name',
+    //   (recordList, index, id) => this.listenRecordList(recordList, index, id));
     if (!this.fileType) {
       // Not somewhere we can download anything (like web entry start event)
       this.loading = false;
@@ -100,24 +99,23 @@ export default {
     },
   },
   methods: {
-    parentRecordList(node) {
-      if (node.$parent && node.$parent.$options) {
-        if (node.$parent.$options._componentTag ===  'form-record-list') {
-          return node.$parent;
-        }
-        return this.parentRecordList(node.$parent);
-      }
-      return null;
-    },
-    listenRecordList(recordList, index, id) {
-      // const parent = this.parentRecordList(this);
-      // if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
-      //   const prefix = (this.parentRecordList(this) === null) ? '' : recordList.name + '.';
-      //   const fileDataName = prefix + this.name + (id ? '.' + id : '');
-      //   this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
-      //   this.loading  = false;
-      // }
-    },
+    // parentRecordList(node) {
+    //   if (node.$parent && node.$parent.$options) {
+    //     if (node.$parent.$options._componentTag ===  'form-record-list') {
+    //       return node.$parent;
+    //     }
+    //     return this.parentRecordList(node.$parent);
+    //   }
+    //   return null;
+    // },
+    // listenRecordList(recordList, index, id) {
+    //   // if (_.has(window, 'PM4ConfigOverrides.requestFiles') && parent === recordList) {
+    //   //   const prefix = (this.parentRecordList(this) === null) ? '' : recordList.name + '.';
+    //   //   const fileDataName = prefix + this.name + (id ? '.' + id : '');
+    //   //   this.fileInfo = window.PM4ConfigOverrides.requestFiles[fileDataName];
+    //   //   this.loading  = false;
+    //   // }
+    // },
     onClick() {
       if (this.fileType == 'request') {
         this.downloadRequestFile();
@@ -234,11 +232,12 @@ export default {
       let fileId = _.get(transientData, this.name);
       
       if (!this.requestId || !fileId) {
+        this.loading = false;
         return;
       }
       
       if (this.fileType && fileId) {
-        let endpoint = 'requests/' + this.requestId + '/files';
+        let endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
         if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
         }
@@ -249,11 +248,7 @@ export default {
         window.ProcessMaker.apiClient
           .get(endpoint)
           .then(response => {
-            this.fileInfo = response.data.data.find(item => {
-              if (item.id === fileId) {
-                return item;
-              }
-            });
+            this.fileInfo = _.get(response, 'data.data.0', null);
             this.loading = false;
           });
       }
