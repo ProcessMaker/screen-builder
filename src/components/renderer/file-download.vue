@@ -42,7 +42,7 @@ export default {
       prefix: '',
     };
   },
-  props: ['name', 'value', 'endpoint', 'requestFiles', 'label'],
+  props: ['name', 'value', 'endpoint', 'requestFiles', 'label', 'transientData'],
   beforeMount() {
     this.getFileType();
 
@@ -66,8 +66,10 @@ export default {
 
     this.setPrefix();
 
-    if (this.fileType == 'request') {
-      this.getRequestFiles();
+    if (this.fileType == 'request') { 
+      this.$nextTick(() => {
+        this.getRequestFiles();
+      });
     }
 
     if (this.fileType == 'collection') {
@@ -140,6 +142,9 @@ export default {
       return '/request/' + this.requestId + '/files/' + this.fileInfo.id;
     },
     setPrefix() {
+      if (this.name.includes('_parent')) {
+        return;
+      }
       let parent = this.$parent;
       let i = 0;
       while (!parent.loopContext) {
@@ -225,49 +230,77 @@ export default {
       this.recordId = recordNode.content;
     },
     getRequestFiles() {
-      let requestFiles = this.requestFiles;
-
-      if (_.has(window, 'PM4ConfigOverrides.requestFiles')) {
-        requestFiles = window.PM4ConfigOverrides.requestFiles;
-      }
-
-      if (this.fileType && requestFiles && requestFiles[this.prefix + this.name]) {
-        this.loading = false;
-        if (Array.isArray(requestFiles[this.prefix + this.name])) {
-          this.fileInfo = requestFiles[this.prefix + this.name].find(
-            item =>
-              item.file_name === this.fileName
-              || item.id === this.fileName
-          );
-        } else {
-          this.fileInfo = requestFiles[this.prefix + this.name];
-        }
+      const transientData = _.cloneDeep(this.transientData);
+      let fileId = _.get(transientData, this.name);
+      
+      if (!this.requestId || !fileId) {
         return;
       }
-
-      if (this.requestId === null) {
-        this.loading = false;
-        return;
-      }
-
-      //do not preload files if the control is inside a record list because
-      // we don't know the row to which the control is associated
-      if (this.parentRecordList(this) === null) {
-        let endpoint = 'requests/' + this.requestId + '/files?name=' + this.prefix + this.name;
-        if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
-          endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-        }
-        if (endpoint && this.fileInfo && this.fileInfo.token) {
-          const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
-          return endpoint + query;
-        }
+      
+      if (this.fileType && fileId) {
+        let endpoint = 'requests/' + this.requestId + '/files';
+        // if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+        //   endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+        // }
+        // if (endpoint && this.fileInfo && this.fileInfo.token) {
+        //   const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
+        //   return endpoint + query;
+        // }
         window.ProcessMaker.apiClient
           .get(endpoint)
           .then(response => {
-            this.fileInfo = _.get(response, 'data.data.0', null);
+            this.fileInfo = response.data.data.find(item => {
+              if (item.id === fileId) {
+                return item;
+              }
+            });
             this.loading = false;
           });
       }
+
+      // let requestFiles = this.requestFiles;
+
+      // if (_.has(window, 'PM4ConfigOverrides.requestFiles')) {
+      //   requestFiles = window.PM4ConfigOverrides.requestFiles;
+      // }
+
+      // if (this.fileType && requestFiles && requestFiles[this.prefix + name]) {
+      //   this.loading = false;
+      //   if (Array.isArray(requestFiles[this.prefix + name])) {
+      //     this.fileInfo = requestFiles[this.prefix + name].find(
+      //       item =>
+      //         item.file_name === this.fileName
+      //         || item.id === this.fileName
+      //     );
+      //   } else {
+      //     this.fileInfo = requestFiles[this.prefix + name];
+      //   }
+      //   return;
+      // }
+
+      // if (this.requestId === null) {
+      //   this.loading = false;
+      //   return;
+      // }
+
+      // //do not preload files if the control is inside a record list because
+      // // we don't know the row to which the control is associated
+      // if (this.parentRecordList(this) === null) {
+      //   let endpoint = 'requests/' + this.requestId + '/files?name=' + this.prefix + this.name;
+      //   if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+      //     endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+      //   }
+      //   if (endpoint && this.fileInfo && this.fileInfo.token) {
+      //     const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
+      //     return endpoint + query;
+      //   }
+      //   window.ProcessMaker.apiClient
+      //     .get(endpoint)
+      //     .then(response => {
+      //       this.fileInfo = _.get(response, 'data.data.0', null);
+      //       this.loading = false;
+      //     });
+      // }
     },
     setFileInfoFromCache() {
       const info = _.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null);
