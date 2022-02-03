@@ -32,6 +32,7 @@ export default {
       type: Object,
       required: true,
     },
+    _parent: null,
     _initialPage: {
       default: 0,
     },
