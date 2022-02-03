@@ -240,6 +240,7 @@ export default {
         let endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
         if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+          endpoint += '?id=' + fileId;
         }
         // if (endpoint && this.fileInfo && this.fileInfo.token) {
         //   const query = '?name=' + encodeURIComponent(this.prefix + this.name) + '&token=' + this.fileInfo.token;
@@ -248,7 +249,11 @@ export default {
         window.ProcessMaker.apiClient
           .get(endpoint)
           .then(response => {
-            this.fileInfo = _.get(response, 'data.data.0', null);
+            if (response.data.data) {
+              this.fileInfo = _.get(response, 'data.data.0', null);
+            } else if (response.data){
+              this.fileInfo = _.get(response, 'data.0', null);
+            }
             this.loading = false;
           });
       }
