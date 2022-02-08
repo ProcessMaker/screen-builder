@@ -20,6 +20,7 @@
         :data-manager="dataManager"
         :fields="tableFields"
         :items="tableData.data"
+        :sort-compare-options="{ numeric: false }"
         sort-icon-left
         :css="css"
         :empty-text="$t('No Data Available')"
@@ -274,18 +275,25 @@ export default {
       handler(total) {
         let totalPages = Math.ceil(total / this.perPage);
         this.currentPage = (this.currentPage > totalPages ? totalPages : this.currentPage);
+        this.currentPage = (this.currentPage == 0 ? 1 : this.currentPage);
       },
     },
   },
   methods: {
     sortChanged(payload) {
       this.lastSortConfig = payload;
-      this.tableData.data = _.orderBy(this.tableData.data, [payload.sortBy], [(payload.sortDesc ? 'desc' : 'asc')]);
+      this.tableData.data = this.sort(this.tableData.data, payload);
     },
     onInput() {
       if (this.lastSortConfig) {
-        this.tableData.data = _.orderBy(this.tableData.data, [this.lastSortConfig.sortBy], [(this.lastSortConfig.sortDesc ? 'desc' : 'asc')]);
+        this.tableData.data = this.sort(this.tableData.data, this.lastSortConfig);
       }
+    },
+    sort(data, options) {
+      if (options.sortDesc) {
+        return data.sort((b,a) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
+      }
+      return data.sort((a,b) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
     },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
@@ -368,7 +376,7 @@ export default {
       }
     },
     showEditForm(index) {
-      let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
+      let pageIndex = ((this.currentPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
       this.editItem = JSON.parse(JSON.stringify(this.tableData.data[pageIndex]));
       this.editIndex = pageIndex;
@@ -436,7 +444,7 @@ export default {
       });
     },
     showDeleteConfirmation(index) {
-      let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
+      let pageIndex = ((this.currentPage-1) * this.perPage) + index;
       this.deleteIndex = pageIndex;
       this.$refs.deleteModal.show();
     },
