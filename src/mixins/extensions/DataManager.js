@@ -3,7 +3,7 @@ import _ from 'lodash';
 export default {
   methods: {
     dataFields(screen, definition) {
-      this.variables.filter(v => !this.isComputedVariable(v.name, definition))
+      this.variables.filter(v => (!v.name.startsWith('_parent') && !v.name.includes('._parent.') && !this.isComputedVariable(v.name, definition)))
         .forEach(v => {
           let component = _.get(v, 'element.component');
           let dataFormat = _.get(v, 'config.dataFormat', null);
