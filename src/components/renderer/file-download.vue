@@ -39,7 +39,7 @@ export default {
       rowId: null,
     };
   },
-  props: ['name', 'value', 'endpoint', 'requestFiles', 'label'],
+  props: ['name', 'value', 'endpoint', 'requestFiles', 'label', 'transient-data'],
   mounted() {
     this.$root.$on('set-upload-data-name',
       (recordList, index, id) => this.listenRecordList(recordList, index, id));
@@ -50,7 +50,7 @@ export default {
     }
 
     this.checkIfInRecordList();
-    this.setPrefix();
+    // this.setPrefix();
     this.setFilesInfo();
   },
   watch: {
@@ -103,6 +103,9 @@ export default {
       }
       return false;
     },
+    requestData() {
+      return {_parent: {...this.$parent._parent}, ...this.transientData};
+    }
   },
   methods: {
     parentRecordList(node) {
@@ -142,6 +145,10 @@ export default {
       return `/files/${file.id}/contents`;
     },
     setPrefix() {
+      // if (this.name.startsWith('_parent.')) {
+      //   // do not set the loop prefix
+      //   return;
+      // }
       let parent = this.$parent;
       let i = 0;
       while (!parent.loopContext) {
@@ -189,39 +196,76 @@ export default {
       }
     },
     setFilesInfoFromRequest() {
-      if (!this.value) {
+      let fileId = _.get(this.requestData, this.fileDataName);
+      if (!this.requestId|| !fileId) {
         return;
       }
-
-      let requestFiles = _.get(
-        window,
-        `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`,
-        []
-      );
-
-      requestFiles = requestFiles.filter(file => {
-        // Filter any requestFiles that don't exist in this component's value. This can happen if
-        // a file is uploaded but the task is not saved.
-        if (Array.isArray(this.value)) {
-          return this.value.some(valueFile => valueFile.file === file.id);
-        } else {
-          return file.id === this.value;
-        }
-      });
-
-      // Might be accessing individual files from inside a loop
-      if (requestFiles.length === 0 && this.fileDataName.endsWith('.file')) {
-        requestFiles = this.requestFileInsideALoop();
+      
+      let endpoint = this.endpoint;
+      if (!endpoint) {
+        endpoint = 'requests/' + this.requestId + '/files?id=' + fileId; 
+      }
+      if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+        endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+        endpoint += '?id=' + fileId;
       }
 
-      this.filesInfo = requestFiles.map(file => {
-        const info = { id: file.id, name: file.file_name };
-        if (file.token) {
-          // web entry
-          info.token = file.token;
+      this.$dataProvider.get(endpoint).then(response => {
+        if (response.data.data) {
+          const file = _.get(response, 'data.data.0', null);
+          const fileInfo = {
+            id: file.id,
+            name: file.file_name 
+          }
+          this.filesInfo.push(fileInfo);
         }
-        return info;
+        
+        // this.filesInfo = requestFiles.map(file => {
+        //   const info = { id: file.id, name: file.file_name };
+        //   if (file.token) {
+        //     // web entry
+        //     info.token = file.token;
+        //   }
+        //   return info;
+        // });
+          // if (response.data.data) {
+          //   this.fileInfo = _.get(response, 'data.data.0', null);
+          // } else if (response.data){
+          //   this.fileInfo = _.get(response, 'data.0', null);
+          // }
       });
+
+
+
+      // let requestFiles = _.get(
+      //   window,
+      //   `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`,
+      //   []
+      // );
+
+      // requestFiles = requestFiles.filter(file => {
+      //   // Filter any requestFiles that don't exist in this component's value. This can happen if
+      //   // a file is uploaded but the task is not saved.
+      //   if (Array.isArray(this.value)) {
+      //     return this.value.some(valueFile => valueFile.file === file.id);
+      //   } else {
+      //     return file.id === this.value;
+      //   }
+      // });
+
+      // Might be accessing individual files from inside a loop
+      // if (requestFiles.length === 0 && this.fileDataName.endsWith('.file')) {
+      //   requestFiles = this.requestFileInsideALoop();
+      // }
+
+      // this.filesInfo = requestFiles.map(file => {
+      //   const info = { id: file.id, name: file.file_name };
+      //   if (file.token) {
+      //     // web entry
+      //     info.token = file.token;
+      //   }
+      //   return info;
+      // });
     },
     requestFileInsideALoop() {
       const path = this.fileDataName.slice(0, -5);
