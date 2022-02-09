@@ -152,7 +152,7 @@ window.ProcessMaker = {
                 {value: 2, content: 'John'},
                 {value: 3, content: 'Mary'},
                 {value: 4, content: 'Patricia'},
-              ], 
+              ],
             }});
             break;
           default:
@@ -196,6 +196,16 @@ window.Echo = {
         listener.callback({
           type: '.ProcessMaker\\Events\\ScriptResponseEvent',
           watcher: body.watcher,
+          response,
+        });
+      }, 1000);
+    });
+  },
+  eventMocks(event, response) {
+    this.listeners.forEach((listener) => {
+      setTimeout(() => {
+        listener.callback({
+          type: event,
           response,
         });
       }, 1000);
