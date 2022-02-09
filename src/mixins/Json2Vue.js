@@ -222,6 +222,9 @@ export default {
       });
     },
     registerVariable(name, element = {}) {
+      if (name.startsWith('_parent.') || name.includes('._parent.')) {
+        return;
+      }
       if (!this.validVariableName(name)) {
         return;
       }
