@@ -66,7 +66,7 @@
     "inputmask": "^5.0.6",
     "monaco-editor-webpack-plugin": "~1.7.0",
     "mustache": "^3.0.1",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "nyc": "^15.1.0",
     "sass-loader": "^10.2.0",
     "v-calendar": "^0.9.7",
