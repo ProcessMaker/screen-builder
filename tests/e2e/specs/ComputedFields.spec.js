@@ -1,31 +1,36 @@
 describe('Computed fields', () => {
 
   it.only('Make sure new rows can be added to the loop, even with a javascript-driven computed field', () => {
+    cy.server();
     cy.visit('/');
+    cy.loadFromJson('FOUR-5139.json', 0);
 
-    // Add a loop and configure it
-    cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom');
-    cy.get('[data-cy=screen-element-container]').click();
-    cy.get('[data-cy=inspector-source]').select('existing');
-    cy.get('[data-cy=inspector-add]').click();
-
-    // Add input to loop
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
-
-    // Create a calculated property
-    cy.get('[data-cy="topbar-calcs"]').click();
-    cy.get('[data-cy="calcs-add-property"]').click();
-    cy.get('[data-cy="calcs-property-name"]').clear().type('loop_1');
-    cy.get('[data-cy="calcs-property-description"]').clear().type('loop_1');
-    cy.get('[data-cy="calcs-switch-javascript"]').click();
-    cy.get('[data-cy="calcs-property-javascript"]').type(`let agents = this.loop_1; 
-
-return (agents === undefined) ? [] : agents;`);
-    cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-modal"] .close').click();
-
-    // Preview
+    // Enter preview mode
     cy.get('[data-cy=mode-preview]').click();
+
+    // Add three inputs input in loop
+    cy.get('[data-cy=loop-loop_1-add]').click();
+    cy.get('[data-cy=loop-loop_1-add]').click();
+    cy.get('[data-cy=loop-loop_1-add]').click();
+
+    cy.get('[data-cy=screen-field-form_input_1]')
+      .first()
+      .clear()
+      .type('First input');
+
+    cy.assertPreviewData({
+      "loop_1": [
+          {
+            "form_input_1": "First input"
+          },
+          {
+            "form_input_1": ""
+          },
+          {
+            "form_input_1": ""
+          }
+      ]
+    });
   });
 
   it('CRUD of computed fields', () => {
