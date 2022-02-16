@@ -4,7 +4,7 @@ describe('Validation Calcs properties and loop', () => {
     cy.visit('/');
   });
 
-  it.only('Data is fully accessible from a collection screen', () => {
+  it('Data is fully accessible from a collection screen', () => {
     cy.loadFromJson('FOUR-4853.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
