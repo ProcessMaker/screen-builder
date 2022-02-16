@@ -4,16 +4,15 @@ describe('Validation Calcs properties and loop', () => {
     cy.visit('/');
   });
 
-  it('Data is fully accessible from a collection screen', () => {
+  it.only('Data is fully accessible from a collection screen', () => {
     cy.loadFromJson('FOUR-4853.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
-    cy.get('[data-cy=preview-data-input]').click()
+    cy.get('[data-cy=preview-data-input]')
+      .click()
       .focused()
-      .type('{ctrl}a')
-      .type('{\n')
-      .type('"foo": {\n')
-      .type('"one": "one",\n"two": "two"');
+      .type(`{backspace}{backspace}`)
+      .type(`{\n"foo": {\n"one": "one",\n"two": "two"`);
 
     cy.get('[data-cy=mode-editor]').click();
     cy.get('[data-cy=mode-preview]').click();
