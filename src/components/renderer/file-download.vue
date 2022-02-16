@@ -41,15 +41,14 @@ export default {
   },
   props: ['name', 'value', 'endpoint', 'requestFiles', 'label', 'transient-data'],
   mounted() {
-    this.$root.$on('set-upload-data-name',
-      (recordList, index, id) => this.listenRecordList(recordList, index, id));
+    // this.$root.$on('set-upload-data-name',
+    //   (recordList, index, id) => this.listenRecordList(recordList, index, id));
 
     if (this.donwloadingNotAvailable) {
       // Not somewhere we can download anything (like web entry start event)
       return;
     }
-
-    this.checkIfInRecordList();
+    // this.checkIfInRecordList();
     // this.setPrefix();
     this.setFilesInfo();
   },
@@ -108,22 +107,22 @@ export default {
     }
   },
   methods: {
-    parentRecordList(node) {
-      if (node.$parent && node.$parent.$options) {
-        if (node.$parent.$options._componentTag ===  'form-record-list') {
-          return node.$parent;
-        }
-        return this.parentRecordList(node.$parent);
-      }
-      return null;
-    },
-    listenRecordList(recordList, index, id) {
-      const parent = this.parentRecordList(this);
-      if (parent !== recordList) {
-        return;
-      }
-      this.rowId = (parent !== null) ? id : null;
-    },
+    // parentRecordList(node) {
+    //   if (node.$parent && node.$parent.$options) {
+    //     if (node.$parent.$options._componentTag ===  'form-record-list') {
+    //       return node.$parent;
+    //     }
+    //     return this.parentRecordList(node.$parent);
+    //   }
+    //   return null;
+    // },
+    // listenRecordList(recordList, index, id) {
+    //   const parent = this.parentRecordList(this);
+    //   if (parent !== recordList) {
+    //     return;
+    //   }
+    //   this.rowId = (parent !== null) ? id : null;
+    // },
     downloadFile(file) {
       if (this.collection) {
         this.downloadCollectionFile(file);
@@ -145,10 +144,10 @@ export default {
       return `/files/${file.id}/contents`;
     },
     setPrefix() {
-      // if (this.name.startsWith('_parent.')) {
-      //   // do not set the loop prefix
-      //   return;
-      // }
+      if (this.name.startsWith('_parent.')) {
+        // do not set the loop prefix
+        return;
+      }
       let parent = this.$parent;
       let i = 0;
       while (!parent.loopContext) {
@@ -190,25 +189,38 @@ export default {
     },
     setFilesInfo() {
       if (this.collection) {
+        this.setPrefix();
         this.setFilesInfoFromCollectionValue();
       } else {
         this.setFilesInfoFromRequest();
       }
     },
-    setFilesInfoFromRequest() {
-      let fileId = _.get(this.requestData, this.fileDataName);
-      if (!this.requestId|| !fileId) {
+    setFilesInfoFromRequest() {      
+      let fileId = this.value && !Array.isArray(this.value) ? this.value : _.get(this.requestData, this.fileDataName);
+      let fileIds = this.value && Array.isArray(this.value) ? this.value : null;
+      let endpoint = this.endpoint;
+      
+      if (!this.requestId || !fileId && !fileIds) {
         return;
       }
       
-      let endpoint = this.endpoint;
-      if (!endpoint) {
-        endpoint = 'requests/' + this.requestId + '/files?id=' + fileId; 
+      if (fileId && !endpoint) {
+        endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
+        if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+          endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+          endpoint += '?id=' + fileId;
+        }
       }
-      if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
-        endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-        endpoint += '?id=' + fileId;
-      }
+
+      //TODO: ADD SUPPORT FOR MULITFILES
+      // if (fileIds && !endpoint) {
+      //   // TODO: batch new filter to allow retrieving multiple files (IDS)
+      //   endpoint = 'requests/' + this.requestId + '/files?ids=' + fileIds;
+      //   if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+      //     endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+      //     endpoint += '?ids=' + fileIds;
+      //   }
+      // }
 
       this.$dataProvider.get(endpoint).then(response => {
         if (response.data.data) {
@@ -267,48 +279,48 @@ export default {
       //   return info;
       // });
     },
-    requestFileInsideALoop() {
-      const path = this.fileDataName.slice(0, -5);
-      const loopFile = _.get(
-        window,
-        `PM4ConfigOverrides.requestFiles.${path}`,
-        null
-      );
-      if (loopFile) {
-        return [loopFile]; // Treat as single file download
-      }
-      return [];
-    },
+    // requestFileInsideALoop() {
+    //   const path = this.fileDataName.slice(0, -5);
+    //   const loopFile = _.get(
+    //     window,
+    //     `PM4ConfigOverrides.requestFiles.${path}`,
+    //     null
+    //   );
+    //   if (loopFile) {
+    //     return [loopFile]; // Treat as single file download
+    //   }
+    //   return [];
+    // },
     setFilesInfoFromCollectionValue() {
-      if (!this.value) {
+      const files = this.value ? this.value : _.get(this.requestData, this.fileDataName);
+      if (!this.value && !files) {
         this.filesInfo = [];
         return;
       }
-      if (Array.isArray(this.value)) {
+      if (Array.isArray(this.value) || Array.isArray(files)) {
         // multi file upload
         this.filesInfo = this.value.map(value => value.file);
       } else {
-        this.filesInfo = [this.value];
-      }
-
-    },
-    checkIfInRecordList() {
-      const parent = this.parentRecordList(this);
-      if (parent !== null) {
-        const recordList = parent;
-        const prefix = recordList.name + '.';
-        this.setFileUploadNameForChildren(recordList.$children, prefix);
+        this.filesInfo = [this.value ? this.value : files];
       }
     },
-    setFileUploadNameForChildren(children, prefix) {
-      children.forEach(child => {
-        if (_.get(child, '$options.name') === 'FileDownload') {
-          child.prefix = prefix;
-        } else if (_.get(child, '$children', []).length > 0) {
-          this.setFileUploadNameForChildren(child.$children, prefix);
-        }
-      });
-    },
+    // checkIfInRecordList() {
+    //   const parent = this.parentRecordList(this);
+    //   if (parent !== null) {
+    //     const recordList = parent;
+    //     const prefix = recordList.name + '.';
+    //     this.setFileUploadNameForChildren(recordList.$children, prefix);
+    //   }
+    // },
+    // setFileUploadNameForChildren(children, prefix) {
+    //   children.forEach(child => {
+    //     if (_.get(child, '$options.name') === 'FileDownload') {
+    //       child.prefix = prefix;
+    //     } else if (_.get(child, '$children', []).length > 0) {
+    //       this.setFileUploadNameForChildren(child.$children, prefix);
+    //     }
+    //   });
+    // },
   },
 };
 </script>
