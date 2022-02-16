@@ -19,22 +19,23 @@ describe('Computed fields', () => {
       .type('First input');
 
     cy.assertPreviewData({
-      "loop_1": [
-          {
-            "form_input_1": "First input"
-          },
-          {
-            "form_input_1": ""
-          },
-          {
-            "form_input_1": ""
-          }
-      ]
+      'loop_1': [
+        {
+          'form_input_1': 'First input',
+        },
+        {
+          'form_input_1': '',
+        },
+        {
+          'form_input_1': '',
+        },
+      ],
     });
   });
 
   it('CRUD of computed fields', () => {
     cy.visit('/');
+
     // Create a calculated property
     cy.get('[data-cy="topbar-calcs"]').click();
     cy.get('[data-cy="calcs-add-property"]').click();
