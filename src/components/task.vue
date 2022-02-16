@@ -322,7 +322,7 @@ export default {
               return;
             } else if (this.task && requestId == this.task.process_request_id && this.parentRequest && this.task.process_request.status === 'COMPLETED') {
               // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
-                this.$emit('completed', this.parentRequest);
+              this.$emit('completed', this.parentRequest);
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
