@@ -93,7 +93,7 @@ export default {
     },
     tryFormField(variableName, callback, defaultValue = null) {
       try {
-        return callback() || "";
+        return callback() || '';
       } catch (e) {
         set(this.$v, `${variableName}.$invalid`, true);
         set(this.$v, `${variableName}.invalid_default_value`, false);
