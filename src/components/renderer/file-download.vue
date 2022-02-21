@@ -135,11 +135,12 @@ export default {
 
       if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+        return `${endpoint}/${file.id}`;
       }
 
-      if (endpoint && file.token) {
-        return `${endpoint}/${file.id}?&token=${file.token}`;
-      }
+      // if (endpoint && file.token) {
+      //   return `${endpoint}/${file.id}?&token=${file.token}`;
+      // }
 
       return `/files/${file.id}/contents`;
     },
@@ -205,10 +206,10 @@ export default {
       }
       
       if (fileId && !endpoint) {
-        endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
+        endpoint = 'requests/' + this.requestId + '/files/id=' + fileId;
         if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-          endpoint += '?id=' + fileId;
+          endpoint += '/' + fileId;
         }
       }
 
@@ -225,6 +226,13 @@ export default {
       this.$dataProvider.get(endpoint).then(response => {
         if (response.data.data) {
           const file = _.get(response, 'data.data.0', null);
+          const fileInfo = {
+            id: file.id,
+            name: file.file_name 
+          }
+          this.filesInfo.push(fileInfo);
+        } else if (response.data) {
+          const file = _.get(response, 'data', null);
           const fileInfo = {
             id: file.id,
             name: file.file_name 
