@@ -206,7 +206,7 @@ export default {
       }
       
       if (fileId && !endpoint) {
-        endpoint = 'requests/' + this.requestId + '/files/id=' + fileId;
+        endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
         if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
           endpoint += '/' + fileId;
