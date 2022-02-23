@@ -138,10 +138,6 @@ export default {
         return `${endpoint}/${file.id}`;
       }
 
-      // if (endpoint && file.token) {
-      //   return `${endpoint}/${file.id}?&token=${file.token}`;
-      // }
-
       return `/files/${file.id}/contents`;
     },
     setPrefix() {
@@ -196,16 +192,15 @@ export default {
         this.setFilesInfoFromRequest();
       }
     },
-    setFilesInfoFromRequest() {      
-      let fileId = this.value && !Array.isArray(this.value) ? this.value : _.get(this.requestData, this.fileDataName);
-      let fileIds = this.value && Array.isArray(this.value) ? this.value : null;
+    setFilesInfoFromRequest() { 
+      const fileId = this.value ? this.value : _.get(this.requestData, this.fileDataName, null);
       let endpoint = this.endpoint;
       
-      if (!this.requestId || !fileId && !fileIds) {
+      if (!this.requestId || !fileId) {
         return;
       }
       
-      if (fileId && !endpoint) {
+      if (!endpoint) {
         endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
         if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
@@ -213,92 +208,18 @@ export default {
         }
       }
 
-      //TODO: ADD SUPPORT FOR MULITFILES
-      // if (fileIds && !endpoint) {
-      //   // TODO: batch new filter to allow retrieving multiple files (IDS)
-      //   endpoint = 'requests/' + this.requestId + '/files?ids=' + fileIds;
-      //   if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
-      //     endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-      //     endpoint += '?ids=' + fileIds;
-      //   }
-      // }
-
       this.$dataProvider.get(endpoint).then(response => {
-        if (response.data.data) {
-          const file = _.get(response, 'data.data.0', null);
-          const fileInfo = {
-            id: file.id,
-            name: file.file_name 
-          }
+        const fileInfo = response.data.data ? _.get(response, 'data.data.0', null) : _.get(response, 'data', null);
+        if (fileInfo) {
           this.filesInfo.push(fileInfo);
-        } else if (response.data) {
-          const file = _.get(response, 'data', null);
-          const fileInfo = {
-            id: file.id,
-            name: file.file_name 
-          }
-          this.filesInfo.push(fileInfo);
+        } else {
+              ProcessMaker.alert(
+                this.$t('File Preview Missing File'),
+                'danger'
+            );
         }
-        
-        // this.filesInfo = requestFiles.map(file => {
-        //   const info = { id: file.id, name: file.file_name };
-        //   if (file.token) {
-        //     // web entry
-        //     info.token = file.token;
-        //   }
-        //   return info;
-        // });
-          // if (response.data.data) {
-          //   this.fileInfo = _.get(response, 'data.data.0', null);
-          // } else if (response.data){
-          //   this.fileInfo = _.get(response, 'data.0', null);
-          // }
       });
-
-
-
-      // let requestFiles = _.get(
-      //   window,
-      //   `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`,
-      //   []
-      // );
-
-      // requestFiles = requestFiles.filter(file => {
-      //   // Filter any requestFiles that don't exist in this component's value. This can happen if
-      //   // a file is uploaded but the task is not saved.
-      //   if (Array.isArray(this.value)) {
-      //     return this.value.some(valueFile => valueFile.file === file.id);
-      //   } else {
-      //     return file.id === this.value;
-      //   }
-      // });
-
-      // Might be accessing individual files from inside a loop
-      // if (requestFiles.length === 0 && this.fileDataName.endsWith('.file')) {
-      //   requestFiles = this.requestFileInsideALoop();
-      // }
-
-      // this.filesInfo = requestFiles.map(file => {
-      //   const info = { id: file.id, name: file.file_name };
-      //   if (file.token) {
-      //     // web entry
-      //     info.token = file.token;
-      //   }
-      //   return info;
-      // });
     },
-    // requestFileInsideALoop() {
-    //   const path = this.fileDataName.slice(0, -5);
-    //   const loopFile = _.get(
-    //     window,
-    //     `PM4ConfigOverrides.requestFiles.${path}`,
-    //     null
-    //   );
-    //   if (loopFile) {
-    //     return [loopFile]; // Treat as single file download
-    //   }
-    //   return [];
-    // },
     setFilesInfoFromCollectionValue() {
       const files = this.value ? this.value : _.get(this.requestData, this.fileDataName);
       if (!this.value && !files) {
