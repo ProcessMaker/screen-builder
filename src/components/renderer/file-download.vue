@@ -41,15 +41,10 @@ export default {
   },
   props: ['name', 'value', 'endpoint', 'requestFiles', 'label', 'transient-data'],
   mounted() {
-    // this.$root.$on('set-upload-data-name',
-    //   (recordList, index, id) => this.listenRecordList(recordList, index, id));
-
     if (this.donwloadingNotAvailable) {
       // Not somewhere we can download anything (like web entry start event)
       return;
     }
-    // this.checkIfInRecordList();
-    // this.setPrefix();
     this.setFilesInfo();
   },
   watch: {
@@ -107,22 +102,6 @@ export default {
     }
   },
   methods: {
-    // parentRecordList(node) {
-    //   if (node.$parent && node.$parent.$options) {
-    //     if (node.$parent.$options._componentTag ===  'form-record-list') {
-    //       return node.$parent;
-    //     }
-    //     return this.parentRecordList(node.$parent);
-    //   }
-    //   return null;
-    // },
-    // listenRecordList(recordList, index, id) {
-    //   const parent = this.parentRecordList(this);
-    //   if (parent !== recordList) {
-    //     return;
-    //   }
-    //   this.rowId = (parent !== null) ? id : null;
-    // },
     downloadFile(file) {
       if (this.collection) {
         this.downloadCollectionFile(file);
@@ -226,30 +205,8 @@ export default {
         this.filesInfo = [];
         return;
       }
-      if (Array.isArray(this.value) || Array.isArray(files)) {
-        // multi file upload
-        this.filesInfo = this.value.map(value => value.file);
-      } else {
-        this.filesInfo = [this.value ? this.value : files];
-      }
+      this.filesInfo = [this.value ? this.value : files];
     },
-    // checkIfInRecordList() {
-    //   const parent = this.parentRecordList(this);
-    //   if (parent !== null) {
-    //     const recordList = parent;
-    //     const prefix = recordList.name + '.';
-    //     this.setFileUploadNameForChildren(recordList.$children, prefix);
-    //   }
-    // },
-    // setFileUploadNameForChildren(children, prefix) {
-    //   children.forEach(child => {
-    //     if (_.get(child, '$options.name') === 'FileDownload') {
-    //       child.prefix = prefix;
-    //     } else if (_.get(child, '$children', []).length > 0) {
-    //       this.setFileUploadNameForChildren(child.$children, prefix);
-    //     }
-    //   });
-    // },
   },
 };
 </script>
