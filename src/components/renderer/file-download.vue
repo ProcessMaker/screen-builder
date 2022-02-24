@@ -99,7 +99,7 @@ export default {
     },
     requestData() {
       return {_parent: {...this.$parent._parent}, ...this.transientData};
-    }
+    },
   },
   methods: {
     downloadFile(file) {
@@ -192,10 +192,10 @@ export default {
         if (fileInfo) {
           this.filesInfo.push(fileInfo);
         } else {
-              ProcessMaker.alert(
-                this.$t('File Preview Missing File'),
-                'danger'
-            );
+          window.ProcessMaker.alert(
+            this.$t('File Preview Missing File'),
+            'danger'
+          );
         }
       });
     },
