@@ -34,7 +34,7 @@ class Validations {
   isVisible() {
     // Disable validations if field is hidden
     let visible = true;
-    if (this.element.config.conditionalHide) {
+    if (!this.data.noData && this.element.config.conditionalHide) {
       try {
         visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
       } catch (error) {
@@ -51,7 +51,7 @@ class Validations {
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (const item of this.element) {
-      await ValidationsFactory(item, { screen: this.screen, data: this.data }).addValidations(validations);
+      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule }).addValidations(validations);
     }
   }
 }
@@ -81,8 +81,9 @@ class FormNestedScreenValidations extends Validations {
       return;
     }
     const definition = await this.loadScreen(this.element.config.screen);
+    let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
     if (definition && definition[0] && definition[0].items) {
-      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data }).addValidations(validations);
+      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data, parentVisibilityRule }).addValidations(validations);
     }
   }
 
@@ -113,8 +114,7 @@ class FormLoopValidations extends Validations {
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
     this.checkForSiblings(validations);
-    const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow } }).addValidations(loopField['$each']);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, noData:true }, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(loopField['$each']);
   }
   checkForSiblings(validations) {
     const siblings = [];
@@ -172,7 +172,7 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
   }
 }
 
@@ -214,7 +214,7 @@ class FormElementValidations extends Validations {
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
     const conditionalHide = this.element.config.conditionalHide;
-
+    const parentVisibilityRule = this.parentVisibilityRule;
 
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
@@ -240,7 +240,25 @@ class FormElementValidations extends Validations {
         }
         fieldValidation[rule] = function(...props) {
           const data = props[1];
-          const dataWithParent = this.addReferenceToParents(data);
+          let dataWithParent = this.addReferenceToParents(data);
+          const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
+          if (nestedDataWithParent) {
+            dataWithParent = Object.assign(nestedDataWithParent, dataWithParent);
+          }
+          // Check Parent Visibility
+          if (parentVisibilityRule) {
+            let isParentVisible = true;
+            try {
+              isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);              
+            } catch (error) {
+              isParentVisible = false;
+            }
+
+            if (!isParentVisible ) {
+              return true;
+            }
+          }
+          // Check Field Visibility
           let visible = true;
           if (conditionalHide) {
             try {
@@ -264,7 +282,25 @@ class FormElementValidations extends Validations {
       }
       fieldValidation[validationConfig] = function(...props) {
         const data = props[1];
-        const dataWithParent = this.addReferenceToParents(data);
+        let dataWithParent = this.addReferenceToParents(data);
+        const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
+        if (nestedDataWithParent) {
+          dataWithParent = Object.assign(nestedDataWithParent, dataWithParent);
+        }
+        // Check Parent Visibility
+        if (parentVisibilityRule) {
+          let isParentVisible = true;
+          try {
+            isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);
+          } catch (error) {
+            isParentVisible = false;
+          }
+
+          if (!isParentVisible) {
+            return true;
+          }
+        }
+        // Check Field Visibility
         let visible = true;
         if (conditionalHide) {
           try {

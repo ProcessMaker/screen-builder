@@ -51,6 +51,44 @@ describe('Record list', () => {
     });
   });
 
+  it('Recordlist pagination when deleting items should go to previous page if no records in current page', () => {
+    cy.loadFromJson('record_list_single_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    //Add 7 rows
+    for (let i = 1; i <= 7; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(i);
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    //Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    //Delete record 7
+    cy.get('[aria-rowindex="7"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('#__BVID__94___BV_modal_footer_ > .btn-primary').click();
+
+    cy.get('.table-column')
+      .should('contain.text', '6');
+
+    cy.get('[data-cy=table-pagination]')
+      .should('be.visible');
+
+    //Delete record 6
+    cy.get('[data-cy=remove-row]').click();
+    cy.get('#__BVID__94___BV_modal_footer_ > .btn-primary').click();
+
+    //Assert we see page 1
+    cy.get('[data-cy=table-pagination]')
+      .should('be.not.visible');
+
+    for (let i = 1; i <= 5; i++) {
+      cy.get('[aria-rowindex="'+i+'"] > .table-column')
+        .should('contain.text', i);
+    }
+  });
+
   it('FileUpload in record lists', () => {
     cy.loadFromJson('record_list_fileupload.json', 0);
     cy.get('[data-cy=mode-preview]').click();
@@ -143,5 +181,143 @@ describe('Record list', () => {
         ],
       });
     });
+  });
+
+  it('Check editing the correct record in recordlist after sorting', () => {
+    cy.loadFromJson('record_list_single_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    let data = ['B', 'C', 'A', 'E', 'D', 'G', 'F'];
+
+    //Add 7 rows
+    for (let i = 0; i < 7; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]);
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    //Sort data
+    cy.get('.b-table-sort-icon-left').click();
+
+    // Select and edit "B" to "BBB"
+    cy.get('[aria-rowindex="2"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]');
+    //Check after sort the field has B
+    cy.should('have.value', 'B');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').type('BB');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+    //Check the data is correct after edit
+    cy.get('[aria-rowindex="1"] > .table-column').should('contain.text', 'A');
+    cy.get('[aria-rowindex="2"] > .table-column').should('contain.text', 'BBB');
+    cy.get('[aria-rowindex="3"] > .table-column').should('contain.text', 'C');
+    cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'D');
+    cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'E');
+    // Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+    cy.get('[aria-rowindex="6"] > .table-column').should('contain.text', 'F');
+    cy.get('[aria-rowindex="7"] > .table-column').should('contain.text', 'G');
+
+    //Sort data
+    cy.get('.b-table-sort-icon-left').click();
+    //Check last row A has the correct value "A" in the modal
+    cy.get('[aria-rowindex="7"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').should('have.value', 'A');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+
+    // Go to pagination page 1
+    cy.get(':nth-child(3) > .page-link').click();
+    //Sort data
+    cy.get('.b-table-sort-icon-left').click();
+    //Get record "D" and replace to "Z"
+    cy.get('[aria-rowindex="4"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').should('have.value', 'D').clear().type('Z');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+
+    //Check the data is correct after edit
+    cy.get('[aria-rowindex="1"] > .table-column').should('contain.text', 'A');
+    cy.get('[aria-rowindex="2"] > .table-column').should('contain.text', 'BBB');
+    cy.get('[aria-rowindex="3"] > .table-column').should('contain.text', 'C');
+    cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'E');
+    cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'F');
+  });
+
+  it('Check deleting the correct record in recordlist after sorting', () => {
+    cy.loadFromJson('record_list_single_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    let data = ['B', 'C', 'A', 'E', 'D', 'G', 'F'];
+
+    //Add 7 rows
+    for (let i = 0; i < 7; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]);
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    //Sort data
+    cy.get('.b-table-sort-icon-left').click();
+
+    // Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    // Delete H
+    cy.get('[aria-rowindex="6"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    //Check after Delete it was deleted the correct row and other data are in table
+    cy.get('.table-column').should('contain.text', 'G');
+    cy.get(':nth-child(3) > .page-link').click();
+    cy.get('[aria-rowindex="1"] > .table-column').should('contain.text', 'A');
+    cy.get('[aria-rowindex="2"] > .table-column').should('contain.text', 'B');
+    cy.get('[aria-rowindex="3"] > .table-column').should('contain.text', 'C');
+    cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'D');
+    cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'E');
+
+    //Sort data
+    cy.get('.b-table-sort-icon-left').click();
+
+    // Delete B
+    cy.get('[aria-rowindex="5"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    //Check after Delete B, it was deleted the correct row and other data are in table
+    cy.get('[aria-rowindex="1"] > .table-column').should('contain.text', 'G');
+    cy.get('[aria-rowindex="2"] > .table-column').should('contain.text', 'E');
+    cy.get('[aria-rowindex="3"] > .table-column').should('contain.text', 'D');
+    cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'C');
+    cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'A');
+  });
+
+  it('Check editing after remove all records from second page', () => {
+    cy.loadFromJson('record_list_single_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    let data = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    //Add 7 rows
+    for (let i = 0; i < 6; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]);
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    // Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    // Delete F
+    cy.get('[data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    //Get record "B" and replace to "BB"
+    cy.get('[aria-rowindex="2"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').should('have.value', 'B').type('B');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+
+    //Check the data is correct after edit
+    cy.get('[aria-rowindex="1"] > .table-column').should('contain.text', 'A');
+    cy.get('[aria-rowindex="2"] > .table-column').should('contain.text', 'BB');
+    cy.get('[aria-rowindex="3"] > .table-column').should('contain.text', 'C');
+    cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'D');
+    cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'E');
   });
 });
