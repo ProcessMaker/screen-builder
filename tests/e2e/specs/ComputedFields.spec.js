@@ -1,7 +1,41 @@
 describe('Computed fields', () => {
 
+  it('Make sure new rows can be added to the loop, even with a javascript-driven computed field', () => {
+    cy.server();
+    cy.visit('/');
+    cy.loadFromJson('FOUR-5139.json', 0);
+
+    // Enter preview mode
+    cy.get('[data-cy=mode-preview]').click();
+
+    // Add three inputs input in loop
+    cy.get('[data-cy=loop-loop_1-add]').click();
+    cy.get('[data-cy=loop-loop_1-add]').click();
+    cy.get('[data-cy=loop-loop_1-add]').click();
+
+    cy.get('[data-cy=screen-field-form_input_1]')
+      .first()
+      .clear()
+      .type('First input');
+
+    cy.assertPreviewData({
+      'loop_1': [
+        {
+          'form_input_1': 'First input',
+        },
+        {
+          'form_input_1': '',
+        },
+        {
+          'form_input_1': '',
+        },
+      ],
+    });
+  });
+
   it('CRUD of computed fields', () => {
     cy.visit('/');
+
     // Create a calculated property
     cy.get('[data-cy="topbar-calcs"]').click();
     cy.get('[data-cy="calcs-add-property"]').click();
@@ -56,7 +90,7 @@ describe('Computed fields', () => {
   it('Create a javascript computed field', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     // Add a second input field
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
 
@@ -86,7 +120,7 @@ describe('Computed fields', () => {
   it('Create a computed field with formula', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     // Add a second input field
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
 
