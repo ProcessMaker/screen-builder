@@ -20,10 +20,13 @@
         :data-manager="dataManager"
         :fields="tableFields"
         :items="tableData.data"
+        :sort-compare-options="{ numeric: false }"
         sort-icon-left
         :css="css"
         :empty-text="$t('No Data Available')"
         :current-page="currentPage"
+        @sort-changed="sortChanged"
+        @input="onInput"
         data-cy="table"
       >
         <template #cell()="{index,field,item}">
@@ -163,7 +166,7 @@ const jsonOptionsActionsColumn = {
 
 export default {
   mixins: [mustacheEvaluation],
-  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers'],
+  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers', '_perPage'],
   data() {
     return {
       editFormVersion: 0,
@@ -193,6 +196,11 @@ export default {
       },
       initFormValues: {},
     };
+  },
+  mounted() {
+    if (this._perPage) {
+      this.perPage = this._perPage;
+    }
   },
   computed: {
     popupConfig() {
@@ -242,6 +250,7 @@ export default {
         from,
         to: value.length,
         data: value,
+        lastSortConfig: false,
       };
       return data;
     },
@@ -260,7 +269,32 @@ export default {
       return this.form && this.form === this.$parent.currentPage;
     },
   },
+  watch: {
+    'tableData.total': {
+      deep: true,
+      handler(total) {
+        let totalPages = Math.ceil(total / this.perPage);
+        this.currentPage = (this.currentPage > totalPages ? totalPages : this.currentPage);
+        this.currentPage = (this.currentPage == 0 ? 1 : this.currentPage);
+      },
+    },
+  },
   methods: {
+    sortChanged(payload) {
+      this.lastSortConfig = payload;
+      this.tableData.data = this.sort(this.tableData.data, payload);
+    },
+    onInput() {
+      if (this.lastSortConfig) {
+        this.tableData.data = this.sort(this.tableData.data, this.lastSortConfig);
+      }
+    },
+    sort(data, options) {
+      if (options.sortDesc) {
+        return data.sort((b,a) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
+      }
+      return data.sort((a,b) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
+    },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
@@ -342,9 +376,9 @@ export default {
       }
     },
     showEditForm(index) {
-      let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
+      let pageIndex = ((this.currentPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(JSON.stringify(this.value[pageIndex]));
+      this.editItem = JSON.parse(JSON.stringify(this.tableData.data[pageIndex]));
       this.editIndex = pageIndex;
       // rebuild the edit screen to avoid
       this.editFormVersion++;
@@ -354,13 +388,13 @@ export default {
       });
     },
     edit(event) {
-      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.$invalid) {
+      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         event.preventDefault();
         return;
       }
 
       // Edit the item in our model and emit change
-      let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
       data[this.editIndex] = JSON.parse(JSON.stringify(this.editItem));
 
       // Remove the parent object
@@ -387,7 +421,7 @@ export default {
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.$invalid) {
+      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         return;
       }
 
@@ -410,7 +444,7 @@ export default {
       });
     },
     showDeleteConfirmation(index) {
-      let pageIndex = ((this.paginatorPage-1) * this.perPage) + index;
+      let pageIndex = ((this.currentPage-1) * this.perPage) + index;
       this.deleteIndex = pageIndex;
       this.$refs.deleteModal.show();
     },
@@ -447,7 +481,7 @@ export default {
     remove() {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
-      let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
       let recordData = data[this.deleteIndex];
       // Remove item from data array
       data.splice(this.deleteIndex, 1);
@@ -464,3 +498,4 @@ export default {
     max-width: 300px;
   }
 </style>
+
