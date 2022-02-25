@@ -115,7 +115,7 @@ describe('Loop control', () => {
     // Fill out the required missing field; ensure the form *can* be submitted
     cy.get('[data-cy=screen-field-form_input_1]').type('text');
 
-    cy.get(':nth-child(4) > .form-group > .btn')
+    cy.get(':nth-child(4) > .form-group > .btn');
 
   });
 
