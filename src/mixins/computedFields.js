@@ -1,23 +1,18 @@
-import _ from 'lodash';
 import { Parser } from 'expr-eval';
 
 export default {
   methods: {
     evaluateExpression(expression, type) {
+      const self = this;
       let value = null;
 
-      const self = this;
-
       try {
-        //monitor if variable belongs to data (defined variables) or vdata (external variables)
-        //in this way the event is not executed again when the variable is update
-        const data = new Proxy(Object.assign({}, this), {
+        // Monitor if variable belongs to data (defined variables) or
+        // vdata (external variables)in this way the event is not
+        // executed again when the variable is update
+        const data = new Proxy(Object.assign({}, self, self.vdata), {
           get(data, name) {
-            if (data[name] === undefined || !_.isEqual(data[name]), self.vdata[name]) {
-              return self.vdata[name];
-            } else {
-              return data[name];
-            }
+            return undefined === data[name] ? self.vdata[name] : data[name];
           },
           set() {
             throw 'You are not allowed to set properties from inside an expression';
