@@ -113,7 +113,7 @@
                                         "items": [
                                             {
                                                 "label": "File Download",
-                                                "config": { "icon": "fas fa-file-download", "name": "_parent.file_upload_1", "label": "Loop Single File Download" },
+                                                "config": { "icon": "fas fa-file-download", "name": "_parent.file_upload_1", "label": "Loop Single File Download (_parent.file_upload_1)" },
                                                 "component": "FileDownload",
                                                 "inspector": [
                                                     { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The text to display" } },
@@ -141,7 +141,7 @@
                                             }
                                         ],
                                         "label": "Loop",
-                                        "config": { "icon": "fas fa-redo", "name": "loop_1", "label": null, "settings": { "add": false, "type": "existing", "times": "3", "varname": "loop_1" } },
+                                        "config": { "icon": "fas fa-redo", "name": "loop_1", "label": null, "settings": { "add": false, "type": "new", "times": "1", "varname": "loop_1" } },
                                         "component": "FormLoop",
                                         "container": true,
                                         "inspector": [
@@ -656,7 +656,7 @@
             "computed": [],
             "custom_css": null,
             "created_at": "2022-02-28T18:00:18+00:00",
-            "updated_at": "2022-02-28T22:02:22+00:00",
+            "updated_at": "2022-03-01T21:57:54+00:00",
             "status": "ACTIVE",
             "key": null,
             "watchers": [],
