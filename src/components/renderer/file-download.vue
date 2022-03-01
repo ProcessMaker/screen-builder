@@ -193,7 +193,7 @@ export default {
           this.filesInfo.push(fileInfo);
         } else {
           window.ProcessMaker.alert(
-            this.$t('File Preview Missing File'),
+            this.$t('File Download Missing File'),
             'danger'
           );
         }
