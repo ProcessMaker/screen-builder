@@ -13,7 +13,7 @@ describe('File Download', () => {
     });
 
     it('Displays a file to download', () => {
-        uploadSingleFile();
+        uploadFile();
         // Mock file download
         cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
         // Assert standard file download configuration has an image to download
@@ -23,7 +23,7 @@ describe('File Download', () => {
     });
 
     it('Downloads the file', () => {
-        uploadSingleFile();
+        uploadFile();
         // Mock file download
         cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
         // Assert the image is downloadable
@@ -34,7 +34,7 @@ describe('File Download', () => {
     });
 });
 
-function uploadSingleFile() {
+function uploadFile() {
     cy.get('[data-cy=mode-preview]').click();
     // Upload single file should show the uploaded file name
     cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
