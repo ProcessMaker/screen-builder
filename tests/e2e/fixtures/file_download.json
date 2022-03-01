@@ -1,0 +1,678 @@
+{
+    "type": "screen_package",
+    "version": "2",
+    "screens": [
+        {
+            "id": 47,
+            "screen_category_id": "2",
+            "title": "File Download Test",
+            "description": "test",
+            "type": "FORM",
+            "config": [
+                {
+                    "name": "File Download Test",
+                    "items": [
+                        {
+                            "label": "File Upload",
+                            "config": { "icon": "fas fa-file-upload", "name": "file_upload_1", "label": "New File Upload" },
+                            "component": "FileUpload",
+                            "inspector": [
+                                {
+                                    "type": "FormInput",
+                                    "field": "name",
+                                    "config": {
+                                        "name": "Variable Name",
+                                        "label": "Variable Name",
+                                        "helper": "A variable name is a symbolic name to reference information.",
+                                        "validation": "regex:/^([a-zA-Z]([a-zA-Z0-9_]?)+\\.?)+(?<!\\.)$/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super,true,false"
+                                    }
+                                },
+                                { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The label describes the field's name" } },
+                                { "type": "MultipleUploadsCheckbox", "field": "multipleUpload", "config": { "label": "Upload multiple files", "helper": null } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "accept",
+                                    "config": { "label": "File Accepted", "helper": "application/msword, image/gif, image/jpeg, application/pdf, application/vnd.ms-powerpoint, application/vnd.ms-excel, text/plain" }
+                                },
+                                { "type": "RequiredCheckbox", "field": "validation", "config": { "label": "Required", "helper": "Prevent form from being submitted unless a file is uploaded" } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FileUpload",
+                            "editor-component": "FileUpload"
+                        },
+                        {
+                            "label": "Rich Text",
+                            "config": { "icon": "fas fa-pencil-ruler", "label": null, "content": "<h2>Single File Downloads</h2>", "interactive": true, "renderVarHtml": false },
+                            "component": "FormHtmlViewer",
+                            "inspector": [
+                                { "type": "FormTextArea", "field": "content", "config": { "rows": 5, "label": "Content", "value": null, "helper": "The HTML text to display" } },
+                                { "type": "FormCheckbox", "field": "renderVarHtml", "config": { "label": "Render HTML from a Variable", "value": null, "helper": null } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FormHtmlEditor",
+                            "editor-component": "FormHtmlEditor"
+                        },
+                        {
+                            "items": [
+                                [
+                                    {
+                                        "label": "File Download",
+                                        "config": { "icon": "fas fa-file-download", "name": "file_upload_1", "label": "Single File Download" },
+                                        "component": "FileDownload",
+                                        "inspector": [
+                                            { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The text to display" } },
+                                            { "type": "FormInput", "field": "name", "config": { "label": "Name", "helper": "The name of the Download" } },
+                                            { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customFormatter",
+                                                "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                            },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customCssSelector",
+                                                "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" }
+                                            },
+                                            { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "tabindex",
+                                                "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                            }
+                                        ],
+                                        "editor-control": "FormText",
+                                        "editor-component": "FormText"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "items": [
+                                            {
+                                                "label": "File Download",
+                                                "config": { "icon": "fas fa-file-download", "name": "_parent.file_upload_1", "label": "Loop Single File Download" },
+                                                "component": "FileDownload",
+                                                "inspector": [
+                                                    { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The text to display" } },
+                                                    { "type": "FormInput", "field": "name", "config": { "label": "Name", "helper": "The name of the Download" } },
+                                                    { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                                    {
+                                                        "type": "FormInput",
+                                                        "field": "customFormatter",
+                                                        "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                                    },
+                                                    {
+                                                        "type": "FormInput",
+                                                        "field": "customCssSelector",
+                                                        "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" }
+                                                    },
+                                                    { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                                    {
+                                                        "type": "FormInput",
+                                                        "field": "tabindex",
+                                                        "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                                    }
+                                                ],
+                                                "editor-control": "FileDownload",
+                                                "editor-component": "FormText"
+                                            }
+                                        ],
+                                        "label": "Loop",
+                                        "config": { "icon": "fas fa-redo", "name": "loop_1", "label": null, "settings": { "add": false, "type": "existing", "times": "3", "varname": "loop_1" } },
+                                        "component": "FormLoop",
+                                        "container": true,
+                                        "inspector": [
+                                            { "type": "LoopInspector", "field": "settings", "config": { "label": null, "helper": null } },
+                                            { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customFormatter",
+                                                "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                            },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customCssSelector",
+                                                "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" }
+                                            },
+                                            { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "tabindex",
+                                                "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                            }
+                                        ],
+                                        "editor-control": "Loop",
+                                        "editor-component": "Loop"
+                                    }
+                                ]
+                            ],
+                            "label": "Multicolumn / Table",
+                            "config": {
+                                "icon": "fas fa-table",
+                                "label": null,
+                                "options": [
+                                    { "value": "1", "content": "6" },
+                                    { "value": "2", "content": "6" }
+                                ]
+                            },
+                            "component": "FormMultiColumn",
+                            "container": true,
+                            "inspector": [
+                                { "type": "ContainerColumns", "field": "options", "config": { "label": "Column Width", "helper": null, "validation": "columns-adds-to-12" } },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "color",
+                                    "config": {
+                                        "label": "Text Color",
+                                        "helper": "Set the element's text color",
+                                        "options": [
+                                            { "value": "text-primary", "content": "primary" },
+                                            { "value": "text-secondary", "content": "secondary" },
+                                            { "value": "text-success", "content": "success" },
+                                            { "value": "text-danger", "content": "danger" },
+                                            { "value": "text-warning", "content": "warning" },
+                                            { "value": "text-info", "content": "info" },
+                                            { "value": "text-light", "content": "light" },
+                                            { "value": "text-dark", "content": "dark" }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "bgcolor",
+                                    "config": {
+                                        "label": "Background Color",
+                                        "helper": "Set the element's background color",
+                                        "options": [
+                                            { "value": "alert alert-primary", "content": "primary" },
+                                            { "value": "alert alert-secondary", "content": "secondary" },
+                                            { "value": "alert alert-success", "content": "success" },
+                                            { "value": "alert alert-danger", "content": "danger" },
+                                            { "value": "alert alert-warning", "content": "warning" },
+                                            { "value": "alert alert-info", "content": "info" },
+                                            { "value": "alert alert-light", "content": "light" },
+                                            { "value": "alert alert-dark", "content": "dark" }
+                                        ]
+                                    }
+                                },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FormMultiColumn",
+                            "editor-component": "MultiColumn"
+                        },
+                        {
+                            "label": "Rich Text",
+                            "config": { "icon": "fas fa-pencil-ruler", "label": null, "content": "<h2>Multi File Downloads</h2>", "interactive": true, "renderVarHtml": false },
+                            "component": "FormHtmlViewer",
+                            "inspector": [
+                                { "type": "FormTextArea", "field": "content", "config": { "rows": 5, "label": "Content", "value": null, "helper": "The HTML text to display" } },
+                                { "type": "FormCheckbox", "field": "renderVarHtml", "config": { "label": "Render HTML from a Variable", "value": null, "helper": null } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FormHtmlEditor",
+                            "editor-component": "FormHtmlEditor"
+                        },
+                        {
+                            "items": [
+                                {
+                                    "label": "File Download",
+                                    "config": { "icon": "fas fa-file-download", "name": "file", "label": "Multi File Download" },
+                                    "component": "FileDownload",
+                                    "inspector": [
+                                        { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The text to display" } },
+                                        { "type": "FormInput", "field": "name", "config": { "label": "Name", "helper": "The name of the Download" } },
+                                        { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "customFormatter",
+                                            "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                        },
+                                        { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                        { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "tabindex",
+                                            "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                        }
+                                    ],
+                                    "editor-control": "FileDownload",
+                                    "editor-component": "FormText"
+                                }
+                            ],
+                            "label": "Loop",
+                            "config": { "icon": "fas fa-redo", "name": "multi_files", "label": null, "settings": { "add": false, "type": "existing", "times": "3", "varname": "multi_files" } },
+                            "component": "FormLoop",
+                            "container": true,
+                            "inspector": [
+                                { "type": "LoopInspector", "field": "settings", "config": { "label": null, "helper": null } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "Loop",
+                            "editor-component": "Loop"
+                        },
+                        {
+                            "label": "Record List",
+                            "config": {
+                                "form": "1",
+                                "icon": "fas fa-th-list",
+                                "name": "form_record_list_1",
+                                "label": "New Record List",
+                                "fields": { "jsonData": "[]", "editIndex": null, "dataSource": "provideData", "optionsList": [], "removeIndex": null, "showJsonEditor": false, "showOptionCard": false, "showRemoveWarning": false },
+                                "editable": true
+                            },
+                            "component": "FormRecordList",
+                            "inspector": [
+                                {
+                                    "type": "FormInput",
+                                    "field": "name",
+                                    "config": {
+                                        "name": "Variable Name",
+                                        "label": "Variable Name",
+                                        "helper": "A variable name is a symbolic name to reference information.",
+                                        "validation": "regex:/^([a-zA-Z]([a-zA-Z0-9_]?)+\\.?)+(?<!\\.)$/|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super,true,false"
+                                    }
+                                },
+                                { "type": "FormInput", "field": "label", "config": { "label": "List Label", "helper": "The label describes this record list" } },
+                                { "type": "FormCheckbox", "field": "editable", "config": { "label": "Editable?", "helper": "Should records be editable/removable and can new records be added" } },
+                                { "type": "ColumnSetup", "field": "fields", "config": { "label": "Columns", "helper": "List of columns to display in the record list" } },
+                                { "type": "PageSelect", "field": "form", "config": { "label": "Record Form", "helper": "The form to use for adding/editing records" } },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "color",
+                                    "config": {
+                                        "label": "Text Color",
+                                        "helper": "Set the element's text color",
+                                        "options": [
+                                            { "value": "text-primary", "content": "primary" },
+                                            { "value": "text-secondary", "content": "secondary" },
+                                            { "value": "text-success", "content": "success" },
+                                            { "value": "text-danger", "content": "danger" },
+                                            { "value": "text-warning", "content": "warning" },
+                                            { "value": "text-info", "content": "info" },
+                                            { "value": "text-light", "content": "light" },
+                                            { "value": "text-dark", "content": "dark" }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "bgcolor",
+                                    "config": {
+                                        "label": "Background Color",
+                                        "helper": "Set the element's background color",
+                                        "options": [
+                                            { "value": "alert alert-primary", "content": "primary" },
+                                            { "value": "alert alert-secondary", "content": "secondary" },
+                                            { "value": "alert alert-success", "content": "success" },
+                                            { "value": "alert alert-danger", "content": "danger" },
+                                            { "value": "alert alert-warning", "content": "warning" },
+                                            { "value": "alert alert-info", "content": "info" },
+                                            { "value": "alert alert-light", "content": "light" },
+                                            { "value": "alert alert-dark", "content": "dark" }
+                                        ]
+                                    }
+                                },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FormText",
+                            "editor-component": "FormText"
+                        }
+                    ]
+                },
+                {
+                    "name": "record_page",
+                    "items": [
+                        {
+                            "label": "Rich Text",
+                            "config": { "icon": "fas fa-pencil-ruler", "label": null, "content": "<h2>Single File Downloads</h2>", "interactive": true, "renderVarHtml": false },
+                            "component": "FormHtmlViewer",
+                            "inspector": [
+                                { "type": "FormTextArea", "field": "content", "config": { "rows": 5, "label": "Content", "value": null, "helper": "The HTML text to display" } },
+                                { "type": "FormCheckbox", "field": "renderVarHtml", "config": { "label": "Render HTML from a Variable", "value": null, "helper": null } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FormHtmlEditor",
+                            "editor-component": "FormHtmlEditor"
+                        },
+                        {
+                            "items": [
+                                [
+                                    {
+                                        "label": "File Download",
+                                        "config": { "icon": "fas fa-file-download", "name": "_parent.file_upload_1", "label": "Single File Download" },
+                                        "component": "FileDownload",
+                                        "inspector": [
+                                            { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The text to display" } },
+                                            { "type": "FormInput", "field": "name", "config": { "label": "Name", "helper": "The name of the Download" } },
+                                            { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customFormatter",
+                                                "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                            },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customCssSelector",
+                                                "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" }
+                                            },
+                                            { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "tabindex",
+                                                "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                            }
+                                        ],
+                                        "editor-control": "FormText",
+                                        "editor-component": "FormText"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "items": [
+                                            {
+                                                "label": "File Download",
+                                                "config": { "icon": "fas fa-file-download", "name": "_parent.file_upload_1", "label": "Loop Single File Download" },
+                                                "component": "FileDownload",
+                                                "inspector": [
+                                                    { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The text to display" } },
+                                                    { "type": "FormInput", "field": "name", "config": { "label": "Name", "helper": "The name of the Download" } },
+                                                    { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                                    {
+                                                        "type": "FormInput",
+                                                        "field": "customFormatter",
+                                                        "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                                    },
+                                                    {
+                                                        "type": "FormInput",
+                                                        "field": "customCssSelector",
+                                                        "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" }
+                                                    },
+                                                    { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                                    {
+                                                        "type": "FormInput",
+                                                        "field": "tabindex",
+                                                        "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                                    }
+                                                ],
+                                                "editor-control": "FileDownload",
+                                                "editor-component": "FormText"
+                                            }
+                                        ],
+                                        "label": "Loop",
+                                        "config": { "icon": "fas fa-redo", "name": "loop_1", "label": null, "settings": { "add": false, "type": "existing", "times": "3", "varname": "loop_1" } },
+                                        "component": "FormLoop",
+                                        "container": true,
+                                        "inspector": [
+                                            { "type": "LoopInspector", "field": "settings", "config": { "label": null, "helper": null } },
+                                            { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customFormatter",
+                                                "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                            },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "customCssSelector",
+                                                "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" }
+                                            },
+                                            { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                            {
+                                                "type": "FormInput",
+                                                "field": "tabindex",
+                                                "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                            }
+                                        ],
+                                        "editor-control": "Loop",
+                                        "editor-component": "Loop"
+                                    }
+                                ]
+                            ],
+                            "label": "Multicolumn / Table",
+                            "config": {
+                                "icon": "fas fa-table",
+                                "label": null,
+                                "options": [
+                                    { "value": "1", "content": "6" },
+                                    { "value": "2", "content": "6" }
+                                ]
+                            },
+                            "component": "FormMultiColumn",
+                            "container": true,
+                            "inspector": [
+                                { "type": "ContainerColumns", "field": "options", "config": { "label": "Column Width", "helper": null, "validation": "columns-adds-to-12" } },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "color",
+                                    "config": {
+                                        "label": "Text Color",
+                                        "helper": "Set the element's text color",
+                                        "options": [
+                                            { "value": "text-primary", "content": "primary" },
+                                            { "value": "text-secondary", "content": "secondary" },
+                                            { "value": "text-success", "content": "success" },
+                                            { "value": "text-danger", "content": "danger" },
+                                            { "value": "text-warning", "content": "warning" },
+                                            { "value": "text-info", "content": "info" },
+                                            { "value": "text-light", "content": "light" },
+                                            { "value": "text-dark", "content": "dark" }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "ColorSelect",
+                                    "field": "bgcolor",
+                                    "config": {
+                                        "label": "Background Color",
+                                        "helper": "Set the element's background color",
+                                        "options": [
+                                            { "value": "alert alert-primary", "content": "primary" },
+                                            { "value": "alert alert-secondary", "content": "secondary" },
+                                            { "value": "alert alert-success", "content": "success" },
+                                            { "value": "alert alert-danger", "content": "danger" },
+                                            { "value": "alert alert-warning", "content": "warning" },
+                                            { "value": "alert alert-info", "content": "info" },
+                                            { "value": "alert alert-light", "content": "light" },
+                                            { "value": "alert alert-dark", "content": "dark" }
+                                        ]
+                                    }
+                                },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FormMultiColumn",
+                            "editor-component": "MultiColumn"
+                        },
+                        {
+                            "label": "Rich Text",
+                            "config": { "icon": "fas fa-pencil-ruler", "label": null, "content": "<h2>Multi File Downloads</h2>", "interactive": true, "renderVarHtml": false },
+                            "component": "FormHtmlViewer",
+                            "inspector": [
+                                { "type": "FormTextArea", "field": "content", "config": { "rows": 5, "label": "Content", "value": null, "helper": "The HTML text to display" } },
+                                { "type": "FormCheckbox", "field": "renderVarHtml", "config": { "label": "Render HTML from a Variable", "value": null, "helper": null } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "FormHtmlEditor",
+                            "editor-component": "FormHtmlEditor"
+                        },
+                        {
+                            "items": [
+                                {
+                                    "label": "File Download",
+                                    "config": { "icon": "fas fa-file-download", "name": "file", "label": "New File Download" },
+                                    "component": "FileDownload",
+                                    "inspector": [
+                                        { "type": "FormInput", "field": "label", "config": { "label": "Label", "helper": "The text to display" } },
+                                        { "type": "FormInput", "field": "name", "config": { "label": "Name", "helper": "The name of the Download" } },
+                                        { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "customFormatter",
+                                            "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                        },
+                                        { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                        { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                        {
+                                            "type": "FormInput",
+                                            "field": "tabindex",
+                                            "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                        }
+                                    ],
+                                    "editor-control": "FileDownload",
+                                    "editor-component": "FormText"
+                                }
+                            ],
+                            "label": "Loop",
+                            "config": { "icon": "fas fa-redo", "name": "_parent.multi_files", "label": null, "settings": { "add": false, "type": "existing", "times": "3", "varname": "_parent.multi_files" } },
+                            "component": "FormLoop",
+                            "container": true,
+                            "inspector": [
+                                { "type": "LoopInspector", "field": "settings", "config": { "label": null, "helper": null } },
+                                { "type": "FormInput", "field": "conditionalHide", "config": { "label": "Visibility Rule", "helper": "This control is hidden until this expression is true" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "customFormatter",
+                                    "config": { "label": "Custom Format String", "helper": "Use the Mask Pattern format <br> Date ##/##/#### <br> SSN ###-##-#### <br> Phone (###) ###-####", "validation": null }
+                                },
+                                { "type": "FormInput", "field": "customCssSelector", "config": { "label": "CSS Selector Name", "helper": "Use this in your custom css rules", "validation": "regex: [-?[_a-zA-Z]+[_-a-zA-Z0-9]*]" } },
+                                { "type": "FormInput", "field": "ariaLabel", "config": { "label": "Aria Label", "helper": "Attribute designed to help assistive technology (e.g. screen readers) attach a label" } },
+                                {
+                                    "type": "FormInput",
+                                    "field": "tabindex",
+                                    "config": { "label": "Tab Order", "helper": "Order in which a user will move focus from one control to another by pressing the Tab key", "validation": "regex: [0-9]*" }
+                                }
+                            ],
+                            "editor-control": "Loop",
+                            "editor-component": "Loop"
+                        }
+                    ]
+                }
+            ],
+            "computed": [],
+            "custom_css": null,
+            "created_at": "2022-02-28T18:00:18+00:00",
+            "updated_at": "2022-02-28T22:02:22+00:00",
+            "status": "ACTIVE",
+            "key": null,
+            "watchers": [],
+            "categories": [
+                {
+                    "id": 2,
+                    "name": "Uncategorized",
+                    "status": "ACTIVE",
+                    "is_system": 0,
+                    "created_at": "2022-01-27T15:53:56+00:00",
+                    "updated_at": "2022-01-27T15:53:56+00:00",
+                    "pivot": { "assignable_id": 47, "category_id": 2, "category_type": "ProcessMaker\\Models\\ScreenCategory" }
+                }
+            ]
+        }
+    ],
+    "screen_categories": [],
+    "scripts": []
+}
