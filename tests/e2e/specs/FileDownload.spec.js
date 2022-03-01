@@ -1,6 +1,4 @@
 describe('File Download', () => {
-    // const files = [];
-
     beforeEach(() => {
         cy.server();
         cy.visit('/');
@@ -10,12 +8,10 @@ describe('File Download', () => {
             requestIdMeta.setAttribute('name', 'request-id');
             requestIdMeta.setAttribute('content', '1');
             win.document.head.appendChild(requestIdMeta);
-          });
-          cy.get('[data-cy=controls-FileUpload]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
-          cy.get('[data-cy=controls-FileDownload]').drag('[data-cy=screen-element-container]', 'bottom'); 
-          cy.get(':nth-child(1) > [data-cy=screen-element-container]').click();
-          cy.get('[data-cy=inspector-name]').type('file_upload_1');
-        // cy.loadFromJson('file_download.json',0);
+        });
+        cy.loadFromJson('file_download.json', 0);
+    });
+    it('Can download a single file', () => {
         cy.get('[data-cy=mode-preview]').click();
         // Upload single file should show the uploaded file name
         cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
@@ -24,24 +20,24 @@ describe('File Download', () => {
         }));
         cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-file_upload_1] input[type=file]', 'avatar.jpeg', 'image/jpg');
         
-    });
-    it('can download standard file', () => {
-        cy.log('TEST DOWNLOAD');
-        // cy.downloadFile('[data-cy=preview-content] [data-cy="screen-field-page1"] input[type=file]', 'avatar.jpeg', 'image/jpg');
-        // Mock uploaded file
-        // files.push(1);
-        // cy.route('GET', '/api/1.0/requests/1/files');
+        // Mock file info
+        cy.route('/api/1.0/requests/1/files?id=*', 
+            {
+                id: 1, 
+                file_name: 'avatar.jpeg', 
+                name: 'avatar'
+            }
+        ).as('getFileInfo');
+        // Mock download file
+        cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
         
-        // Upload file
-        // cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
-        //     message: 'The file was uploaded.',
-        //     fileUploadId: 1,
-        // }));
-        // cy.uploadFile('[data-cy=preview-content] [data-cy="screen-field-page1"] input[type=file]', 'avatar.jpeg', 'image/jpg');
-        // Mock uploaded file
-        // files.push({
-        //     file_name: 'avatar.jpeg',
-        // });
-        // cy.wait('@uploadFile');
+        // Assert file download control has an image
+        cy.get('[data-cy="1-avatar"]').contains('avatar.jpeg');
+
+        // Assert the image is downloadable
+        cy.get('[data-cy="1-avatar"] > .btn').click();
+        cy.wait('@download').then((xhr) => {
+            expect(xhr.response.body).to.equal('avatar.jpeg');
+        });
     });
 });
