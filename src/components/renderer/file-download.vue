@@ -16,7 +16,7 @@
           >
             <i class="fas fa-file-download"/> {{ $t('Download') }}
           </b-btn>
-          {{ file.name }}
+          {{ file.file_name }}
         </div>
       </template>
       <div v-else>
@@ -159,7 +159,7 @@ export default {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', file.name);
+      link.setAttribute('download', file.file_name);
       document.body.appendChild(link);
       link.click();
     },
