@@ -31,7 +31,7 @@ describe('File Download', () => {
     cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
     
     // A standard file is downloadable
-    cy.get('[data-cy="1-avatar"] > .btn').click();
+    cy.get('.row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
     cy.wait('@download').then((xhr) => {
       expect(xhr.response.body).to.equal('avatar.jpeg');
     });
