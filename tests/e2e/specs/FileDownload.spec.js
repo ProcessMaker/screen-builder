@@ -9,25 +9,45 @@ describe('File Download', () => {
       requestIdMeta.setAttribute('content', '1');
       win.document.head.appendChild(requestIdMeta);
     });
-    cy.loadFromJson('file_download.json', 0);
+    cy.loadFromJson('single_file_download.json', 0);
   });
 
   it('Displays a file to download', () => {
     uploadFile();
     // Mock file download
     cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
-    // Assert standard file download configuration has an image to download
-    cy.get(':nth-child(3) > .row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains('avatar.jpeg');
-    // Assert file download using _parent configuration has an image to download
-    cy.get('.page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains('avatar.jpeg');        
+    
+    // Assert standard file download config has an image to download
+    cy.get(':nth-child(2) > .row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains('avatar.jpeg');
+    
+    // Assert file download using `_parent` config has an image to download
+    cy.get('.page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains('avatar.jpeg');
+
+    // Assert Record List with standard file download config has an image to download
+    cy.get('[data-cy=add-row]').click();
+    cy.get('#__BVID__98___BV_modal_body_ > .custom-css-scope > [data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains('avatar.jpeg');
   });
 
   it('Downloads the file', () => {
     uploadFile();
     // Mock file download
     cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
-    // Assert the image is downloadable
+    
+    // Assert standard file is downloadable
     cy.get('[data-cy="1-avatar"] > .btn').click();
+    cy.wait('@download').then((xhr) => {
+      expect(xhr.response.body).to.equal('avatar.jpeg');
+    });
+
+    // Assert Loop file is downloadable
+    cy.get('[icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
+    cy.wait('@download').then((xhr) => {
+      expect(xhr.response.body).to.equal('avatar.jpeg');
+    });
+
+    // Assert Record List file is downloadable
+    cy.get('[data-cy=add-row]').click();
+    cy.get('#__BVID__98___BV_modal_body_ > .custom-css-scope > [data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
     cy.wait('@download').then((xhr) => {
       expect(xhr.response.body).to.equal('avatar.jpeg');
     });
