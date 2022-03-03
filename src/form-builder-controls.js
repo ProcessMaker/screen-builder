@@ -283,6 +283,7 @@ export default [
           type: 'FormInput',
           field: 'minDate',
           config: {
+            name: 'Minimum Date',
             label: 'Minimum Date',
             validation: 'date_or_mustache',
           },
@@ -291,8 +292,9 @@ export default [
           type: 'FormInput',
           field: 'maxDate',
           config: {
+            name: 'Maximum Date',
             label: 'Maximum Date',
-            validation: 'date_or_mustache',
+            validation: 'after_min_date|date_or_mustache',
           },
         },
         keyNameProperty,
