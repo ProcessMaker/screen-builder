@@ -26,7 +26,7 @@ import Json2Vue from '../mixins/Json2Vue';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
-import { cloneDeep, isEqual, debounce } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 
 export default {
   name: 'screen-renderer',
