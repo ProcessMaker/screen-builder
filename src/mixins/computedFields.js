@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Parser } from 'expr-eval';
 
 export default {
@@ -10,9 +11,14 @@ export default {
         // Monitor if variable belongs to data (defined variables) or
         // vdata (external variables)in this way the event is not
         // executed again when the variable is update
-        const data = new Proxy(Object.assign({}, self, self.vdata), {
+
+        const data = new Proxy(Object.assign({}, this), {
           get(data, name) {
-            return undefined === data[name] ? self.vdata[name] : data[name];
+            if (data[name] === undefined || !_.isEqual(data[name]), self.vdata[name]) {
+              return self.vdata[name];
+            } else {
+              return data[name];
+            }
           },
           set() {
             throw 'You are not allowed to set properties from inside an expression';
