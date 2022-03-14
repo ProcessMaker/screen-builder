@@ -85,7 +85,11 @@ export default {
   },
   mounted() {
     this.$root.$on('set-upload-data-name',
-      (recordList, index, id) => this.listenRecordList(recordList, index, id));
+      (recordList, index, id) => {
+        // eslint-disable-next-line no-console
+        console.log(recordList, index, id);
+        this.listenRecordList(recordList, index, id);
+      });
 
     this.$root.$on('removed-record',
       (recordList, record) => this.listenRemovedRecord(recordList, record));
@@ -103,6 +107,11 @@ export default {
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
+  },
+  destroyed() {
+    this.$root.$off('set-upload-data-name');
+    this.$root.$off('removed-record');
+    this.$root.$off('removed-loop');
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
