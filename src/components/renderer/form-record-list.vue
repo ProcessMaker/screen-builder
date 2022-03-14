@@ -459,7 +459,6 @@ export default {
     },
   },
   mounted() {
-    // debounce updateRowDataNamePrefix
     this.updateRowDataNamePrefix = _.debounce(this.updateRowDataNamePrefix, 100);
   },
 };
