@@ -21,6 +21,7 @@
         :fields="tableFields"
         :items="tableData.data"
         :sort-compare-options="{ numeric: false }"
+        :sort-null-last="true"
         sort-icon-left
         :css="css"
         :empty-text="$t('No Data Available')"
@@ -290,10 +291,37 @@ export default {
       }
     },
     sort(data, options) {
-      if (options.sortDesc) {
-        return data.sort((b,a) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
-      }
-      return data.sort((a,b) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
+
+    //   if (options.sortDesc) {
+    //     return data.sort((b, a) => (a[options.sortBy] > b[options.sortBy]) ? 1 : -1);
+    //   }
+    //   return data.sort((a, b) => (a[options.sortBy] > b[options.sortBy]) ? 1 : -1);
+      data.sort(function(a, b) {
+        if (options.sortDesc) {
+          if (a[options.sortBy] == null || a[options.sortBy] == '') {
+            return -1;
+          }
+          if (b[options.sortBy] == null || b[options.sortBy] == '') {
+            return +1;
+          }
+          return b[options.sortBy].localeCompare(a[options.sortBy], 0, {numeric: false});
+        }
+        else {
+          if (a[options.sortBy] == null || a[options.sortBy] == '') {
+            return +1;
+          }
+          if (b[options.sortBy] == null || b[options.sortBy] == '') {
+            return -1;
+          }
+          return a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false});
+        }
+      });
+
+
+    //   if (options.sortDesc) {
+    //     return data.sort((b,a) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
+    //   }
+    //   return data.sort((a,b) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
     },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
