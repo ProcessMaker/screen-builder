@@ -127,9 +127,9 @@ describe('Multiple Upload', () => {
     // The global variable should store the uploaded item
     cy.window().its('PM4ConfigOverrides.requestFiles')
       .then(requestFiles => {
-        const firstMapFileVar = Object.keys(requestFiles).find(x => x.startsWith('members.map'));
-        const rowId = firstMapFileVar.split('members.map.')[1];
-        expect(requestFiles['members.map.' + rowId][0].file_name).to.equal('avatar.jpeg');
+        const firstMapFileVar = Object.keys(requestFiles).find(x => x.startsWith('map'));
+        const rowId = firstMapFileVar.split('map.')[1];
+        expect(requestFiles['map.' + rowId][0].file_name).to.equal('avatar.jpeg');
       });
     // The download control should have the file to download
     cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
@@ -158,7 +158,6 @@ describe('Multiple Upload', () => {
       .should('include.text', 'file1.jpeg');
     // The file should be listed in multiple download control
     cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
-
 
     // Remove the last file
     cy.route('DELETE', '/api/1.0/files/2', JSON.stringify({
