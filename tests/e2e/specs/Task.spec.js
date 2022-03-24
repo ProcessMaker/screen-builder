@@ -561,8 +561,11 @@ describe('Task component', () => {
 
       getTasks('http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1');
 
-      cy.wait(2000);
-      cy.reload();
+    });
+
+    cy.socketEvent('ProcessMaker\\Events\\ProcessUpdated', {
+      requestId: 1,
+      event: 'ACTIVITY_COMPLETED',
     });
 
     cy.url().should('eq', 'http://localhost:8080/requests/1');
