@@ -66,8 +66,8 @@ function getFixtureBlob(fileUrl, type) {
  * @param {String} fileUrl - The file url to upload
  * @param {String} type - content type of the uploaded file
  */
-Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
-  return cy.get(selector).then(subject => {
+Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '', index = 0) => {
+  return cy.get(selector).eq(index).then(subject => {
     return getFixtureBlob(fileUrl, type).then(blob => {
       return cy.window().then(win => {
         const el = subject[0];
