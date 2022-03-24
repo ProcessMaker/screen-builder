@@ -49,7 +49,6 @@ export default {
       return;
     }
 
-    this.checkIfInRecordList();
     this.setPrefix();
     this.setFilesInfo();
   },
@@ -247,14 +246,6 @@ export default {
         this.filesInfo = [this.value];
       }
 
-    },
-    checkIfInRecordList() {
-      const parent = this.parentRecordList(this);
-      if (parent !== null) {
-        const recordList = parent;
-        const prefix = recordList.name + '.';
-        this.setFileUploadNameForChildren(recordList.$children, prefix);
-      }
     },
     setFileUploadNameForChildren(children, prefix) {
       children.forEach(child => {
