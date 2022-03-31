@@ -326,8 +326,8 @@ export default {
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
-          } else {
-            this.$emit('completed', (this.parentRequest ? this.parentRequest : requestId));
+          } else if (this.parentRequest) {
+            this.$emit('completed', this.parentRequest);
           }
         });
     },
