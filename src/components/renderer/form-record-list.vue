@@ -436,8 +436,7 @@ export default {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
-
-      const item = JSON.parse(JSON.stringify(this.addItem));
+      const item = JSON.parse(JSON.stringify({...this.addItem, _parent: undefined }));
       delete item._parent;
       data[data.length] = item;
 

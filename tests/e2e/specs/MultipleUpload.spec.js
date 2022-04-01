@@ -25,15 +25,6 @@ describe('Multiple Upload', () => {
     cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-filesingle] input[type=file]', 'avatar.jpeg', 'image/jpg');
     cy.get('[data-cy=avatar-jpeg] .uploader-file-name').should('include.text', 'avatar.jpeg');
 
-    // The global variable should store the uploaded item
-    cy.window().its('PM4ConfigOverrides.requestFiles.filesingle')
-      .then(fileValue => {
-        expect(fileValue[0].file_name).to.equal('avatar.jpeg');
-      });
-    // The download control should have the file to download
-    cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
-
-
     // Upload another file, it should replace the file displayed in the control
     cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
@@ -41,13 +32,6 @@ describe('Multiple Upload', () => {
     }));
     cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-filesingle] input[type=file]', 'file1.jpeg', 'image/jpg');
     cy.get('[data-cy=file1-jpeg] .uploader-file-name').should('include.text', 'file1.jpeg');
-    cy.waitUntil(() => cy.window().then(win => win.PM4ConfigOverrides.requestFiles.filesingle[0].file_name === 'file1.jpeg'));
-    cy.window().its('PM4ConfigOverrides.requestFiles.filesingle')
-      .then(fileValue => {
-        expect(fileValue[0].file_name).to.equal('file1.jpeg');
-      });
-    // The download control should have the new file ready to download
-    cy.get('[data-cy=2-file1-jpeg]').should('contain.text', 'file1.jpeg');
   });
 
   it('Upload multiple files', () => {
@@ -64,9 +48,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-filemultiple]')
       .find('[data-cy=1] .uploader-file-name')
       .should('include.text', 'avatar.jpeg');
-    // The file should be listed in multiple download control
-    cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
-
     // Add a new file
     cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
@@ -77,8 +58,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-filemultiple]')
       .find('[data-cy=2] .uploader-file-name')
       .should('include.text', 'file1.jpeg');
-    // The file should be listed in multiple download control
-    cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
 
     // Remove the last file
     cy.route('DELETE', '/api/1.0/files/2', JSON.stringify({
@@ -94,8 +73,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-filemultiple]')
       .find('[data-cy=1] .uploader-file-name')
       .should('exist');
-    // The file should not be listed in multiple download control
-    cy.get('[data-cy=2-file-jpeg]').should('not.exist');
 
     // Remove the first file
     cy.route('DELETE', '/api/1.0/files/1', JSON.stringify({
@@ -107,8 +84,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-filemultiple]')
       .find('[data-cy=1] .uploader-file-name')
       .should('not.exist');
-    // The file should not be listed in multiple download control
-    cy.get('[data-cy=2-avatar-jpeg]').should('not.exist');
   });
 
   it('Upload files in record lists', () => {
@@ -131,8 +106,6 @@ describe('Multiple Upload', () => {
         const rowId = firstMapFileVar.split('map.')[1];
         expect(requestFiles['map.' + rowId][0].file_name).to.equal('avatar.jpeg');
       });
-    // The download control should have the file to download
-    cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
 
     // Upload a file in multiple file mode
     cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
@@ -144,8 +117,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-pictures]')
       .find('[data-cy=1] .uploader-file-name')
       .should('include.text', 'avatar.jpeg');
-    // The file should be listed in multiple download control
-    cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
 
     cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
@@ -156,8 +127,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-pictures]')
       .find('[data-cy=2] .uploader-file-name')
       .should('include.text', 'file1.jpeg');
-    // The file should be listed in multiple download control
-    cy.get('[data-cy=1-avatar-jpeg]').should('contain.text', 'avatar.jpeg');
 
     // Remove the last file
     cy.route('DELETE', '/api/1.0/files/2', JSON.stringify({
@@ -173,8 +142,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-pictures]')
       .find('[data-cy=1] .uploader-file-name')
       .should('exist');
-    // The file should not be listed in multiple download control
-    cy.get('[data-cy=2-file-jpeg]').should('not.exist');
   });
 
 });
