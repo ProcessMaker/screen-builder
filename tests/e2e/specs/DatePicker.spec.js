@@ -1,6 +1,39 @@
 import moment from 'moment';
 
 describe('Date Picker', () => {
+
+  it('Date time picker with maxDate before minDate should show a validation error', () => {
+    const today = moment(new Date());
+    const yesterday = moment(new Date()).subtract(1, 'days');
+
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=accordion-Configuration]').click();
+    cy.get('[data-cy=inspector-minDate]').clear().type(today.format('YYYY-MM-DD'));
+    cy.get('[data-cy=inspector-maxDate]').clear().type(yesterday.format('YYYY-MM-DD'));
+
+    // Assert error validation showing
+    cy.get('.invalid-feedback > div')
+      .should('be.visible')
+      .should('contain.text', 'Must be after or equal Minimum Date');
+  });
+  it('Date time picker with maxDate after minDate should not show a validation error', () => {
+    const today = moment(new Date());
+    const tomorrow = moment(new Date()).add(1, 'days');
+
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=accordion-Configuration]').click();
+    cy.get('[data-cy=inspector-minDate]').clear().type(today.format('YYYY-MM-DD'));
+    cy.get('[data-cy=inspector-maxDate]').clear().type(tomorrow.format('YYYY-MM-DD'));
+    // Assert error validation not showing
+    cy.get('.invalid-feedback > div')
+      .should('be.not.visible');
+  });
   it('Date type', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
