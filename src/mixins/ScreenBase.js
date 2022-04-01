@@ -93,7 +93,8 @@ export default {
     },
     tryFormField(variableName, callback, defaultValue = null) {
       try {
-        return callback();
+        let result = callback();
+        return (result === undefined) ? null : result;
       } catch (e) {
         set(this.$v, `${variableName}.$invalid`, true);
         set(this.$v, `${variableName}.invalid_default_value`, false);
@@ -154,21 +155,17 @@ export default {
     },
     setValue(name, value, object = this, defaults = object) {
       if (object && value !== undefined) {
-        const splittedName = name.split('.');
-        splittedName.forEach((attr, index) => {
+        const parsedName = name.split('.');
 
-          let isLastElement, setValue;
+        for (const attr of parsedName) {
+          let setValue;
+          let index = parsedName.indexOf(attr);
+          let isLastElement = index === parsedName.length - 1;
+
           const originalValue = get(object, attr);
-
-          if (index === splittedName.length - 1) {
-            isLastElement = true;
-          } else {
-            isLastElement = false;
-          }
 
           if (isLastElement) {
             setValue = value;
-
           } else {
             setValue = originalValue;
 
@@ -176,7 +173,7 @@ export default {
               // Check defaults
               setValue = get(defaults, attr);
             }
-            
+
             if (!setValue) {
               // Still no value? Set empty object
               setValue = {};
@@ -192,9 +189,10 @@ export default {
             attr,
             setValue
           );
+
           object = get(object, attr);
           defaults = get(defaults, attr);
-        });
+        }
       }
     },
     validationMessage(validation) {

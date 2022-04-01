@@ -92,6 +92,33 @@ describe('Loop control', () => {
     });
   });
 
+  it('Runs validations on loops referencing same variable ', () => {
+    cy.visit('/');
+    cy.server();
+    let alert = false;
+    cy.on('window:alert', msg => alert = msg);
+    cy.loadFromJson('multi_loop_validations.json', 0);
+
+    cy.setPreviewDataInput('{"accounts": [{"name": "foobar"}]}');
+
+    cy.get('[data-cy=mode-preview]').click();
+
+    //  Add data to input field in last loop
+    cy.get('[data-cy=screen-field-form_input_2]').type('bar');
+    cy.wait(1000);
+
+    // Ensure the form cannot yet be submitted
+    cy.get(':nth-child(4) > .form-group > .btn')
+      .click()
+      .then(() => expect(alert).to.equal(false));
+
+    // Fill out the required missing field; ensure the form *can* be submitted
+    cy.get('[data-cy=screen-field-form_input_1]').type('text');
+
+    cy.get(':nth-child(4) > .form-group > .btn');
+
+  });
+
   it('Verify validation with multicolumn ', () => {
     cy.visit('/');
     let alert = false;
