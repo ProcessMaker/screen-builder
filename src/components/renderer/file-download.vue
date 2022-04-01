@@ -16,7 +16,7 @@
           >
             <i class="fas fa-file-download"/> {{ $t('Download') }}
           </b-btn>
-          {{ file.name }}
+          {{ file.file_name }}
         </div>
       </template>
       <div v-else>
@@ -39,17 +39,12 @@ export default {
       rowId: null,
     };
   },
-  props: ['name', 'value', 'endpoint', 'requestFiles', 'label'],
+  props: ['name', 'value', 'endpoint', 'requestFiles', 'label', 'transient-data'],
   mounted() {
-    this.$root.$on('set-upload-data-name',
-      (recordList, index, id) => this.listenRecordList(recordList, index, id));
-
     if (this.donwloadingNotAvailable) {
       // Not somewhere we can download anything (like web entry start event)
       return;
     }
-
-    this.setPrefix();
     this.setFilesInfo();
   },
   watch: {
@@ -102,24 +97,11 @@ export default {
       }
       return false;
     },
+    requestData() {
+      return {_parent: {...this.$parent._parent}, ...this.transientData};
+    },
   },
   methods: {
-    parentRecordList(node) {
-      if (node.$parent && node.$parent.$options) {
-        if (node.$parent.$options._componentTag ===  'form-record-list') {
-          return node.$parent;
-        }
-        return this.parentRecordList(node.$parent);
-      }
-      return null;
-    },
-    listenRecordList(recordList, index, id) {
-      const parent = this.parentRecordList(this);
-      if (parent !== recordList) {
-        return;
-      }
-      this.rowId = (parent !== null) ? id : null;
-    },
     downloadFile(file) {
       if (this.collection) {
         this.downloadCollectionFile(file);
@@ -132,15 +114,16 @@ export default {
 
       if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-      }
-
-      if (endpoint && file.token) {
-        return `${endpoint}/${file.id}?&token=${file.token}`;
+        return `${endpoint}/${file.id}`;
       }
 
       return `/files/${file.id}/contents`;
     },
     setPrefix() {
+      if (this.name.startsWith('_parent.')) {
+        // do not set the loop prefix
+        return;
+      }
       let parent = this.$parent;
       let i = 0;
       while (!parent.loopContext) {
@@ -176,85 +159,53 @@ export default {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', file.name);
+      link.setAttribute('download', file.file_name);
       document.body.appendChild(link);
       link.click();
     },
     setFilesInfo() {
       if (this.collection) {
+        this.setPrefix();
         this.setFilesInfoFromCollectionValue();
       } else {
         this.setFilesInfoFromRequest();
       }
     },
-    setFilesInfoFromRequest() {
-      if (!this.value) {
+    setFilesInfoFromRequest() { 
+      const fileId = this.value ? this.value : _.get(this.requestData, this.fileDataName, null);
+      let endpoint = this.endpoint;
+      
+      if (!this.requestId || !fileId) {
         return;
       }
+      
+      if (!endpoint) {
+        endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
+        if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+          endpoint = window.PM4ConfigOverrides.getFileEndpoint;
+          endpoint += '/' + fileId;
+        }
+      }
 
-      let requestFiles = _.get(
-        window,
-        `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`,
-        []
-      );
-
-      requestFiles = requestFiles.filter(file => {
-        // Filter any requestFiles that don't exist in this component's value. This can happen if
-        // a file is uploaded but the task is not saved.
-        if (Array.isArray(this.value)) {
-          return this.value.some(valueFile => valueFile.file === file.id);
+      this.$dataProvider.get(endpoint).then(response => {
+        const fileInfo = response.data.data ? _.get(response, 'data.data.0', null) : _.get(response, 'data', null);
+        if (fileInfo) {
+          this.filesInfo.push(fileInfo);
         } else {
-          return file.id === this.value;
+          window.ProcessMaker.alert(
+            this.$t('File Download Missing File'),
+            'danger'
+          );
         }
       });
-
-      // Might be accessing individual files from inside a loop
-      if (requestFiles.length === 0 && this.fileDataName.endsWith('.file')) {
-        requestFiles = this.requestFileInsideALoop();
-      }
-
-      this.filesInfo = requestFiles.map(file => {
-        const info = { id: file.id, name: file.file_name };
-        if (file.token) {
-          // web entry
-          info.token = file.token;
-        }
-        return info;
-      });
-    },
-    requestFileInsideALoop() {
-      const path = this.fileDataName.slice(0, -5);
-      const loopFile = _.get(
-        window,
-        `PM4ConfigOverrides.requestFiles.${path}`,
-        null
-      );
-      if (loopFile) {
-        return [loopFile]; // Treat as single file download
-      }
-      return [];
     },
     setFilesInfoFromCollectionValue() {
-      if (!this.value) {
+      const files = this.value ? this.value : _.get(this.requestData, this.fileDataName);
+      if (!this.value && !files) {
         this.filesInfo = [];
         return;
       }
-      if (Array.isArray(this.value)) {
-        // multi file upload
-        this.filesInfo = this.value.map(value => value.file);
-      } else {
-        this.filesInfo = [this.value];
-      }
-
-    },
-    setFileUploadNameForChildren(children, prefix) {
-      children.forEach(child => {
-        if (_.get(child, '$options.name') === 'FileDownload') {
-          child.prefix = prefix;
-        } else if (_.get(child, '$children', []).length > 0) {
-          this.setFileUploadNameForChildren(child.$children, prefix);
-        }
-      });
+      this.filesInfo = [this.value ? this.value : files];
     },
   },
 };
