@@ -102,9 +102,9 @@ describe('Multiple Upload', () => {
     // The global variable should store the uploaded item
     cy.window().its('PM4ConfigOverrides.requestFiles')
       .then(requestFiles => {
-        const firstMapFileVar = Object.keys(requestFiles).find(x => x.startsWith('members.map'));
-        const rowId = firstMapFileVar.split('members.map.')[1];
-        expect(requestFiles['members.map.' + rowId][0].file_name).to.equal('avatar.jpeg');
+        const firstMapFileVar = Object.keys(requestFiles).find(x => x.startsWith('map'));
+        const rowId = firstMapFileVar.split('map.')[1];
+        expect(requestFiles['map.' + rowId][0].file_name).to.equal('avatar.jpeg');
       });
 
     // Upload a file in multiple file mode
@@ -127,7 +127,6 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-pictures]')
       .find('[data-cy=2] .uploader-file-name')
       .should('include.text', 'file1.jpeg');
-
 
     // Remove the last file
     cy.route('DELETE', '/api/1.0/files/2', JSON.stringify({

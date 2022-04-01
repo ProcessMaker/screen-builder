@@ -90,6 +90,7 @@
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
+        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -116,6 +117,7 @@
         debug-context="Record List Edit"
         :_parent="validationData"
         :key="editFormVersion"
+        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -195,12 +197,14 @@ export default {
         },
       },
       initFormValues: {},
+      currentRowIndex: null,
     };
   },
   mounted() {
     if (this._perPage) {
       this.perPage = this._perPage;
     }
+    this.updateRowDataNamePrefix = _.debounce(this.updateRowDataNamePrefix, 100);
   },
   computed: {
     popupConfig() {
@@ -280,6 +284,9 @@ export default {
     },
   },
   methods: {
+    updateRowDataNamePrefix() {
+      this.setUploadDataNamePrefix(this.currentRowIndex);
+    },
     sortChanged(payload) {
       this.lastSortConfig = payload;
       this.tableData.data = this.sort(this.tableData.data, payload);
@@ -309,6 +316,7 @@ export default {
       return field.key === '__filedownload';
     },
     setUploadDataNamePrefix(index = null) {
+      this.currentRowIndex = index;
       let  rowId = null;
       if (index !== null  && this.editItem) {
         rowId = this.editItem.row_id;
