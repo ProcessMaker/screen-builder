@@ -287,4 +287,37 @@ describe('Record list', () => {
     cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'C');
     cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'A');
   });
+
+  it('Check editing after remove all records from second page', () => {
+    cy.loadFromJson('record_list_single_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    let data = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    //Add 7 rows
+    for (let i = 0; i < 6; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]);
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    // Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    // Delete F
+    cy.get('[data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    //Get record "B" and replace to "BB"
+    cy.get('[aria-rowindex="2"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').should('have.value', 'B').type('B');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+
+    //Check the data is correct after edit
+    cy.get('[aria-rowindex="1"] > .table-column').should('contain.text', 'A');
+    cy.get('[aria-rowindex="2"] > .table-column').should('contain.text', 'BB');
+    cy.get('[aria-rowindex="3"] > .table-column').should('contain.text', 'C');
+    cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'D');
+    cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'E');
+  });
 });
