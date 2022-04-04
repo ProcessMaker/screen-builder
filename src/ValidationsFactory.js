@@ -121,7 +121,7 @@ class FormLoopValidations extends Validations {
     const siblingValidations = [];
     // Find loops that reference the same variable
     this.screen.config.forEach(page => {
-      if (!page) {
+      if (!page || !page.items) {
         return;
       }
       page.items.filter(item => {
