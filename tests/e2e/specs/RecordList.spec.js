@@ -1,3 +1,4 @@
+import moment from 'moment';
 
 describe('Record list', () => {
 
@@ -319,5 +320,191 @@ describe('Record list', () => {
     cy.get('[aria-rowindex="3"] > .table-column').should('contain.text', 'C');
     cy.get('[aria-rowindex="4"] > .table-column').should('contain.text', 'D');
     cy.get('[aria-rowindex="5"] > .table-column').should('contain.text', 'E');
+  });
+
+  it('Check deleting the correct record in recordlist with empty after sorting', () => {
+    cy.loadFromJson('record_list_date_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    let data = [
+      { 'date': moment('01/02/2022').format('MM/DD/YYYY'), 'name': 'B' },
+      { 'date': moment('01/03/2022').format('MM/DD/YYYY'), 'name': 'C' },
+      { 'date': moment('01/01/2022').format('MM/DD/YYYY'), 'name': 'A' },
+      { 'date': moment('01/05/2022').format('MM/DD/YYYY'), 'name': 'E' },
+      { 'date': moment('01/04/2022').format('MM/DD/YYYY'), 'name': 'D' },
+      { 'date': moment('01/06/2022').format('MM/DD/YYYY'), 'name': 'G' },
+      { 'date': '', 'name': '' },
+      { 'date': '', 'name': 'F' },
+      { 'date': '', 'name': 'H'},
+    ];
+
+    //Add data
+    for (let i = 0; i < 9; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      if (data[i]['date'] != '') {
+        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"]').type(data[i]['date']);
+      }
+      if (data[i]['name'] != '') {
+        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]['name']);
+      }
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    //Sort data
+    cy.get('[aria-colindex="1"] > div').click();
+
+    // Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    // Delete G
+    cy.get('[aria-rowindex="6"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    //Sort data
+    cy.get('[aria-colindex="1"] > div').click();
+
+    // Delete B
+    cy.get('[aria-rowindex="7"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    // Go to pagination page 1
+    cy.get(':nth-child(3) > .page-link').click();
+
+    // Delete Empty
+    cy.get('[aria-rowindex="1"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    // Delete H
+    cy.get('[aria-rowindex="2"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
+    cy.get('[data-cy=modal-remove] .btn-primary').click();
+
+    //Sort data
+    cy.get('[aria-colindex="1"] > div').click();
+
+    //Check after Delete it was deleted the correct row and other data are in table
+    cy.get('[aria-rowindex="1"] > [aria-colindex="1"]').should('contain.text', '01/01/2022');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"]').should('contain.text', '01/03/2022');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"]').should('contain.text', '01/04/2022');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"]').should('contain.text', '01/05/2022');
+    cy.get('[aria-rowindex="5"] > [aria-colindex="1"]').should('contain.text', '');
+
+    cy.get('[aria-rowindex="1"] > [aria-colindex="2"]').should('contain.text', 'A');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="2"]').should('contain.text', 'C');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="2"]').should('contain.text', 'D');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="2"]').should('contain.text', 'E');
+    cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should('contain.text', 'F');
+  });
+
+  it('Check editing records with empty from second page', () => {
+    cy.loadFromJson('record_list_date_input.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+
+    let data = [
+      { 'date': moment('01/02/2022').format('MM/DD/YYYY'), 'name': 'B' },
+      { 'date': moment('01/03/2022').format('MM/DD/YYYY'), 'name': 'C' },
+      { 'date': moment('01/01/2022').format('MM/DD/YYYY'), 'name': 'A' },
+      { 'date': moment('01/05/2022').format('MM/DD/YYYY'), 'name': 'E' },
+      { 'date': moment('01/04/2022').format('MM/DD/YYYY'), 'name': 'D' },
+      { 'date': moment('01/06/2022').format('MM/DD/YYYY'), 'name': 'G' },
+      { 'date': '', 'name': '' },
+      { 'date': '', 'name': 'F' },
+      { 'date': '', 'name': 'H'},
+    ];
+
+    //Add data
+    for (let i = 0; i < 9; i++) {
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+      if (data[i]['date'] != '') {
+        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"]').type(data[i]['date']);
+      }
+      if (data[i]['name'] != '') {
+        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]['name']);
+      }
+      cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    }
+
+    //Sort data
+    cy.get('[aria-colindex="1"] > div').click();
+
+    // Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    //Get record "G" and replace to "GG" and date 01/06/2022 to 06/06/2022
+    cy.get('[aria-rowindex="6"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=screen-field-date] > .form-control').should('have.value', '01/06/2022').clear().type('06/06/2022');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').should('have.value', 'G').type('G');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+
+    //Get record empty "" and replace to "New value" and date 01/10/2022
+    cy.get('[aria-rowindex="7"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=screen-field-date] > .form-control').should('have.value', '').type('01/10/2022');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').should('have.value', '').type('New value');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+
+    //Check after edit values are correct
+    cy.get('[aria-rowindex="6"] > [aria-colindex="1"]').should('contain.text', '01/10/2022');
+    cy.get('[aria-rowindex="7"] > [aria-colindex="1"]').should('contain.text', '06/06/2022');
+    cy.get('[aria-rowindex="8"] > [aria-colindex="1"]').should('contain.text', '');
+    cy.get('[aria-rowindex="9"] > [aria-colindex="1"]').should('contain.text', '');
+
+    cy.get('[aria-rowindex="6"] > [aria-colindex="2"]').should('contain.text', 'New value');
+    cy.get('[aria-rowindex="7"] > [aria-colindex="2"]').should('contain.text', 'GG');
+    cy.get('[aria-rowindex="8"] > [aria-colindex="2"]').should('contain.text', 'F');
+    cy.get('[aria-rowindex="9"] > [aria-colindex="2"]').should('contain.text', 'H');
+
+    // Go to pagination page 1
+    cy.get(':nth-child(3) > .page-link').click();
+
+    //Check after edit values are correct
+    cy.get('[aria-rowindex="1"] > [aria-colindex="1"]').should('contain.text', '01/01/2022');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"]').should('contain.text', '01/02/2022');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"]').should('contain.text', '01/03/2022');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"]').should('contain.text', '01/04/2022');
+    cy.get('[aria-rowindex="5"] > [aria-colindex="1"]').should('contain.text', '01/05/2022');
+
+    cy.get('[aria-rowindex="1"] > [aria-colindex="2"]').should('contain.text', 'A');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="2"]').should('contain.text', 'B');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="2"]').should('contain.text', 'C');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="2"]').should('contain.text', 'D');
+    cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should('contain.text', 'E');
+
+    //Sort data
+    cy.get('[aria-colindex="1"] > div').click();
+
+    // Go to pagination page 2
+    cy.get(':nth-child(4) > .page-link').click();
+
+    //Get record "B" and replace to "BB" and date 01/02/2022 to 02/02/2022
+    cy.get('[aria-rowindex="8"] > .text-right > .actions > .btn-group > [data-cy=edit-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=screen-field-date] > .form-control').should('have.value', '01/02/2022').clear().type('02/02/2022');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=name]').should('have.value', 'B').type('B');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary').click();
+
+    //Check after edit values are correct
+    cy.get('[aria-rowindex="6"] > [aria-colindex="1"]').should('contain.text', '01/05/2022');
+    cy.get('[aria-rowindex="7"] > [aria-colindex="1"]').should('contain.text', '01/04/2022');
+    cy.get('[aria-rowindex="8"] > [aria-colindex="1"]').should('contain.text', '01/03/2022');
+    cy.get('[aria-rowindex="9"] > [aria-colindex="1"]').should('contain.text', '01/01/2022');
+
+    cy.get('[aria-rowindex="6"] > [aria-colindex="2"]').should('contain.text', 'E');
+    cy.get('[aria-rowindex="7"] > [aria-colindex="2"]').should('contain.text', 'D');
+    cy.get('[aria-rowindex="8"] > [aria-colindex="2"]').should('contain.text', 'C');
+    cy.get('[aria-rowindex="9"] > [aria-colindex="2"]').should('contain.text', 'A');
+
+    // Go to pagination page 2
+    cy.get(':nth-child(3) > .page-link').click();
+
+    //Check after edit values are correct
+    cy.get('[aria-rowindex="1"] > [aria-colindex="1"]').should('contain.text', '');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"]').should('contain.text', '');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"]').should('contain.text', '06/06/2022');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"]').should('contain.text', '02/02/2022');
+    cy.get('[aria-rowindex="5"] > [aria-colindex="1"]').should('contain.text', '01/10/2022');
+
+    cy.get('[aria-rowindex="1"] > [aria-colindex="2"]').should('contain.text', 'F');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="2"]').should('contain.text', 'H');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="2"]').should('contain.text', 'GG');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="2"]').should('contain.text', 'BB');
+    cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should('contain.text', 'New value');
   });
 });
