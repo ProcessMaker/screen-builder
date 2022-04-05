@@ -21,12 +21,11 @@
         :fields="tableFields"
         :items="tableData.data"
         :sort-compare-options="{ numeric: false }"
+        :sort-null-last="true"
         sort-icon-left
         :css="css"
         :empty-text="$t('No Data Available')"
         :current-page="currentPage"
-        @sort-changed="sortChanged"
-        @input="onInput"
         data-cy="table"
       >
         <template #cell()="{index,field,item}">
@@ -40,13 +39,13 @@
             {{ formatIfDate(mustache(field.key, item)) }}
           </template>
         </template>
-        <template #cell(__actions)="{index}">
+        <template #cell(__actions)="{index,item}">
           <div class="actions">
             <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-              <button @click="showEditForm(index)" class="btn btn-primary" :title="$t('Edit')" data-cy="edit-row">
+              <button @click="showEditForm(index, item.row_id)" class="btn btn-primary" :title="$t('Edit')" data-cy="edit-row">
                 <i class="fas fa-edit"/>
               </button>
-              <button @click="showDeleteConfirmation(index)" class="btn btn-danger" :title="$t('Delete')" data-cy="remove-row">
+              <button @click="showDeleteConfirmation(index, item.row_id)" class="btn btn-danger" :title="$t('Delete')" data-cy="remove-row">
                 <i class="fas fa-trash-alt"/>
               </button>
             </div>
@@ -287,21 +286,6 @@ export default {
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
-    sortChanged(payload) {
-      this.lastSortConfig = payload;
-      this.tableData.data = this.sort(this.tableData.data, payload);
-    },
-    onInput() {
-      if (this.lastSortConfig) {
-        this.tableData.data = this.sort(this.tableData.data, this.lastSortConfig);
-      }
-    },
-    sort(data, options) {
-      if (options.sortDesc) {
-        return data.sort((b,a) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
-      }
-      return data.sort((a,b) => a[options.sortBy].localeCompare(b[options.sortBy], 0, {numeric: false}));
-    },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
@@ -383,10 +367,10 @@ export default {
         this.paginatorPage = this.lastPage;
       }
     },
-    showEditForm(index) {
+    showEditForm(index, rowId) {
       let pageIndex = ((this.currentPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(JSON.stringify(this.tableData.data[pageIndex]));
+      this.editItem = _.find(this.tableData.data, {'row_id': rowId});
       this.editIndex = pageIndex;
       // rebuild the edit screen to avoid
       this.editFormVersion++;
@@ -403,10 +387,11 @@ export default {
 
       // Edit the item in our model and emit change
       let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
-      data[this.editIndex] = JSON.parse(JSON.stringify(this.editItem));
+      var index = _.findIndex(data, {'row_id': this.editItem.rowId});
+      data[index] = JSON.parse(JSON.stringify(this.editItem));
 
       // Remove the parent object
-      delete data[this.editIndex]._parent;
+      delete data[index]._parent;
 
       // Emit the newly updated data model
       this.$emit('input', data);
@@ -450,9 +435,8 @@ export default {
         this.$refs.addModal.hide();
       });
     },
-    showDeleteConfirmation(index) {
-      let pageIndex = ((this.currentPage-1) * this.perPage) + index;
-      this.deleteIndex = pageIndex;
+    showDeleteConfirmation(index, rowId) {
+      this.deleteIndex = _.find(this.tableData.data, {'row_id': rowId});
       this.$refs.deleteModal.show();
     },
     downloadFile(rowData, rowField, rowIndex) {
@@ -489,9 +473,11 @@ export default {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
-      let recordData = data[this.deleteIndex];
+      let recordData = this.deleteIndex;
       // Remove item from data array
-      data.splice(this.deleteIndex, 1);
+      _.remove(data, {
+        'row_id': this.deleteIndex.row_id,
+      });
       // Emit the newly updated data model
       this.$emit('input', data);
       this.$root.$emit('removed-record', this, recordData);
