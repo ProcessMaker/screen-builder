@@ -107,6 +107,7 @@ export default {
       pmql += ' and id != ' + this.builder.screen.id;
     }
     this.pmql = pmql;
+    this.fields = 'screens.id,title';
   },
 };
 </script>

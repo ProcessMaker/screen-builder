@@ -31,6 +31,7 @@ export default {
       pmql: null,
       options: [],
       selectedOption: null,
+      fields: null,
     };
   },
   watch: {
@@ -50,8 +51,9 @@ export default {
     },
     loadOptions(filter) {
       const pmql = this.pmql;
+      const fields = this.fields || undefined;
       window.ProcessMaker.apiClient
-        .get(this.api, { params: { filter, pmql } })
+        .get(this.api, { params: { filter, pmql, fields } })
         .then(response => {
           this.options = response.data.data || [];
         });
