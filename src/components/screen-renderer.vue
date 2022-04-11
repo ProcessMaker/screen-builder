@@ -11,6 +11,14 @@
       </svg>
       {{ $t('Loading...') }}
     </div>
+    <!-- Global error summary -->
+    <div v-if="isInvalid" class="alert alert-danger mt-3">
+      <i class="fas fa-exclamation-circle"/>
+      You have 15 validation errors in your form.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <component ref="component" :is="component" :vdata="value" :_parent="_parent" :_initial-page="currentPage"
       @submit="submit"
       @asyncWatcherTriggered="onAsyncWatcherOn"
@@ -70,6 +78,15 @@ export default {
     },
     setCurrentPage(page) {
       this.$refs.component.setCurrentPage(page);
+    },
+  },
+
+  computed: {
+    isInvalid() {
+      /* eslint-disable */
+      console.log(this.$store);
+      return false;
+      // return this.$store.getters['globalErrorsModule/isValidScreen'] === false;
     },
   },
 };

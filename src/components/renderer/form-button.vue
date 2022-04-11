@@ -1,9 +1,5 @@
 <template>
   <div class="form-group"  style="overflow-x: hidden">
-    <div class="alert alert-danger" v-if="!valid">
-      <i class="fas fa-exclamation-circle"/>
-      {{ message }}
-    </div>
     <button v-b-tooltip="options" @click="click" :class="classList" :name="name" :aria-label="$attrs['aria-label']" :tabindex="$attrs['tabindex']">
       {{ label }}
     </button>
@@ -46,10 +42,13 @@ export default {
       };
     },
     valid() {
+      let isValid = true;
       if (this.$attrs.validate) {
-        return !this.$attrs.validate.$invalid;
+        isValid = !this.$attrs.validate.$invalid;
       }
-      return true;
+      /* eslint-disable */
+      // this.$store.commit('globalErrorsModule/basic', {key: 'screen.valid', value: isValid});
+      return isValid;
     },
     message() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
