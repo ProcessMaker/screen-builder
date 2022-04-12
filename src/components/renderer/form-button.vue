@@ -2,6 +2,9 @@
   <div class="form-group"  style="overflow-x: hidden">
     <button v-b-tooltip="options" @click="click" :class="classList" :name="name" :aria-label="$attrs['aria-label']" :tabindex="$attrs['tabindex']">
       {{ label }}
+      <span style="display: none;">
+        {{ message }}
+      </span>
     </button>
   </div>
 </template>
@@ -46,23 +49,25 @@ export default {
       if (this.$attrs.validate) {
         isValid = !this.$attrs.validate.$invalid;
       }
-      /* eslint-disable */
-      // this.$store.commit('globalErrorsModule/basic', {key: 'screen.valid', value: isValid});
+      this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: isValid});
       return isValid;
     },
     message() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.errors = 0;
+      let message = '';
       if (!this.valid) {
         this.countErrors(this.$attrs.validate.vdata);
         this.countErrors(this.$attrs.validate.schema);
-        let message = 'There are {{items}} validation errors in your form.';
+        message = 'There are {{items}} validation errors in your form.';
         if (this.errors === 1) {
           message = 'There is a validation error in your form.';
         }
-        return this.$t(message, {items: this.errors});
+        message = this.$t(message, {items: this.errors});
       }
-      return '';
+
+      this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
+      return message;
     },
   },
   data() {

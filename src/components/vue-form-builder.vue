@@ -311,7 +311,7 @@ import * as renderer from './renderer';
 import * as inspector from './inspector';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
-// import globalErrorsModule from '../globalErrorsModule';
+import globalErrorsModule from '@/store/modules/global-errors';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
@@ -811,6 +811,13 @@ export default {
       }
       this.collator = Intl.Collator(this.language);
     },
+    registerStoreModule(moduleName, storeModule) {
+      const store = this.$store;
+
+      if (!(store && store.state && store.state[moduleName])) {
+        store.registerModule(moduleName, storeModule);
+      }
+    },
   },
   created() {
     this.loadVariablesTree = _.debounce(this.loadVariablesTree, 2000);
@@ -824,8 +831,8 @@ export default {
       },
       this.$t('Must be unique')
     );
-    // this.$store.registerModule('globalErrorsModule', globalErrorsModule);
-    this.$store.registerModule('undoRedoModule', undoRedoModule);
+    this.registerStoreModule('globalErrorsModule', globalErrorsModule);
+    this.registerStoreModule('undoRedoModule', undoRedoModule);
     this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage});
     this.initiateLanguageSupport();
   },
