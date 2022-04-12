@@ -11,10 +11,9 @@
       </svg>
       {{ $t('Loading...') }}
     </div>
-    <!-- Global error summary -->
     <div v-if="isInvalid" class="alert alert-danger mt-3">
       <i class="fas fa-exclamation-circle"/>
-      You have 15 validation errors in your form.
+      {{ errorMessage }}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -83,10 +82,10 @@ export default {
 
   computed: {
     isInvalid() {
-      /* eslint-disable */
-      console.log(this.$store);
-      return false;
-      // return this.$store.getters['globalErrorsModule/isValidScreen'] === false;
+      return this.$store ? this.$store.getters['globalErrorsModule/isValidScreen'] === false : false;
+    },
+    errorMessage() {
+      return this.$store ? this.$store.getters['globalErrorsModule/getErrorMessage'] : '';
     },
   },
 };
