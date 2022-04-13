@@ -95,7 +95,9 @@ export default {
           return false;
         }
       }
-      this.$emit('input', this.storeId ? get(value, this.trackBy) : value);
+      const id = this.storeId ? get(value, this.trackBy) : value;
+      this.$dataProvider.removeScreenFromCache(id);
+      this.$emit('input', id);
     },
   },
   mounted() {
