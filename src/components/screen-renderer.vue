@@ -11,13 +11,6 @@
       </svg>
       {{ $t('Loading...') }}
     </div>
-    <div v-if="isInvalid" class="alert alert-danger mt-3">
-      <i class="fas fa-exclamation-circle"/>
-      {{ errorMessage }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
     <component ref="component" :is="component" :vdata="value" :_parent="_parent" :_initial-page="currentPage"
       @submit="submit"
       @asyncWatcherTriggered="onAsyncWatcherOn"
@@ -77,15 +70,6 @@ export default {
     },
     setCurrentPage(page) {
       this.$refs.component.setCurrentPage(page);
-    },
-  },
-
-  computed: {
-    isInvalid() {
-      return this.$store ? this.$store.getters['globalErrorsModule/isValidScreen'] === false : false;
-    },
-    errorMessage() {
-      return this.$store ? this.$store.getters['globalErrorsModule/getErrorMessage'] : '';
     },
   },
 };
