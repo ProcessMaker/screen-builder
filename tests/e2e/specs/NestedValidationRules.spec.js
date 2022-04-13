@@ -125,20 +125,16 @@ function fillInputText(dataCy, index = null, value = 'test')
 
 function shouldHaveValidationErrors()
 {
-  cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-    .should('contain.html', 'alert alert-danger');
+  cy.get('[data-cy=preview-content]').should('contain.html', 'alert alert-danger');
 }
 
 function shouldNotHaveValidationErrors()
 {
-  cy.get('#preview .form-group.form-group--error:visible')
-    .should('have.length', 0);
+  cy.get('[data-cy=preview-content]').should('not.contain.html', 'alert alert-danger');
 }
 
 function submitForm()
 {
-  cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-    .should('not.contain.html', 'alert alert-danger');
-  cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"] button')
-    .click();
+  shouldNotHaveValidationErrors();
+  cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"] button').click();
 }
