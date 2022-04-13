@@ -102,6 +102,7 @@
         class="h-100"
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
+        :key="editorContentKey"
         @input="updateConfig"
         v-bind="{
           group: {name: 'controls'},
@@ -437,6 +438,7 @@ export default {
       variablesTree: [],
       language: 'en',
       collator: null,
+      editorContentKey: 0,
     };
   },
   computed: {
@@ -511,6 +513,9 @@ export default {
     },
   },
   methods: {
+    refreshContent() {
+      this.editorContentKey++;
+    },
     loadVariablesTree() {
       const definition = {
         config : this.$parent.config,
