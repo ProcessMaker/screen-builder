@@ -3,7 +3,7 @@ const globalErrorsModule = {
   namespaced,
   state: () => {
     return {
-      valid: false,
+      valid: true,
       message: '',
     };
   },
