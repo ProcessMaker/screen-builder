@@ -1,0 +1,32 @@
+describe('refresh nested screen', () => {
+  beforeEach(() => {
+    cy.server();
+    cy.visit('/');
+  });
+
+  it('Verify main screen', () => {
+    cy.loadFromJson('refresh_nested_screen.json', 0);
+
+    // Preview the screen
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content]').should('contain.text', 'Form Input 1');
+    cy.get('[data-cy=preview-content]').should('contain.text', 'Form Input 2');
+
+    // Go back to edit the screen
+    cy.get('[data-cy=mode-editor]').click();
+
+    // CHANGE the nested screen content from behind the scenes
+    cy.loadFromJson('refresh_nested_screen_2.json');
+
+    // Preview the screen: It should show the new content
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content]').should('contain.text', 'CHANGED Form Input 1');
+    cy.get('[data-cy=preview-content]').should('contain.text', 'CHANGED Form Input 2');
+
+    // Go back to edit the screen: Should show the new content
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=editor-content]').should('contain.text', 'CHANGED Form Input 1');
+    cy.get('[data-cy=editor-content]').should('contain.text', 'CHANGED Form Input 2');
+
+  });
+});
