@@ -43,7 +43,7 @@ export default {
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: !this.valid,
+        disabled: !this.$store.getters['globalErrorsModule/isValidScreen'],
       };
     },
     options() {
