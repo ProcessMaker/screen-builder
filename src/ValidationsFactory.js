@@ -243,12 +243,8 @@ class FormElementValidations extends Validations {
         }
         fieldValidation[rule] = function(...props) {
           const data = props[1];
-          let dataWithParent = this.addReferenceToParents(data);
-          const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
-          if (nestedDataWithParent) {
-            dataWithParent = Object.assign(nestedDataWithParent, dataWithParent);
-          }
-          // Check Parent Visibility
+          const level = fieldName.split('.').length - 1;
+          const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
           if (parentVisibilityRule) {
             let isParentVisible = true;
             try {
@@ -285,11 +281,8 @@ class FormElementValidations extends Validations {
       }
       fieldValidation[validationConfig] = function(...props) {
         const data = props[1];
-        let dataWithParent = this.addReferenceToParents(data);
-        const nestedDataWithParent = this.addReferenceToParents(this.findParent(data));
-        if (nestedDataWithParent) {
-          dataWithParent = Object.assign(nestedDataWithParent, dataWithParent);
-        }
+        const level = fieldName.split('.').length - 1;
+        const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
         // Check Parent Visibility
         if (parentVisibilityRule) {
           let isParentVisible = true;
