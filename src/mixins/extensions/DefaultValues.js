@@ -32,7 +32,7 @@ export default {
         this.tryFormField(${JSON.stringify(name)}, () => {this.${this.dot2bracket(name)} = ${value};});
       }`);
       screen.computed[defaultComputedName] = {
-        get: new Function(`return this.tryFormField(${JSON.stringify(name)}, () => ${value});`),
+        get: new Function(`if (this.vdata['${name}']) return; return this.tryFormField(${JSON.stringify(name)}, () => ${value});`),
         set() {},
       };
       this.addWatch(screen, defaultComputedName, `!this.${name}_was_filled__ && this.setValue(${JSON.stringify(name)}, this.${defaultComputedName}, this.vdata, this);`);
