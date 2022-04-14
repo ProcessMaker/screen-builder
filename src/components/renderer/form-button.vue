@@ -2,9 +2,6 @@
   <div class="form-group"  style="overflow-x: hidden">
     <button v-b-tooltip="options" @click="click" :class="classList" :name="name" :aria-label="$attrs['aria-label']" :tabindex="$attrs['tabindex']">
       {{ label }}
-      <span style="display: none;">
-        {{ message }}
-      </span>
     </button>
   </div>
 </template>
@@ -16,6 +13,30 @@ import { getValidPath } from '@/mixins';
 export default {
   mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
+  watch: {
+    '$attrs.validate': {
+      deep: true,
+      handler(validate) {
+        if (validate) {
+          this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
+
+          this.errors = 0;
+          let message = '';
+          if (validate.$invalid) {
+            this.countErrors(validate.vdata);
+            this.countErrors(validate.schema);
+            message = this.errors === 1 
+              ? 'There is a validation error in your form.'
+              : 'There are {{items}} validation errors in your form.';
+           
+            message = this.$t(message, {items: this.errors});
+          }
+
+          this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
+        }
+      },
+    },
+  },
   computed: {
     classList() {
       let variant = this.variant || 'primary';
@@ -43,31 +64,6 @@ export default {
         variant: this.tooltip.variant || '',
         boundary: 'window',
       };
-    },
-    valid() {
-      let isValid = true;
-      if (this.$attrs.validate) {
-        isValid = !this.$attrs.validate.$invalid;
-      }
-      this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: isValid});
-      return isValid;
-    },
-    message() {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.errors = 0;
-      let message = '';
-      if (!this.valid) {
-        this.countErrors(this.$attrs.validate.vdata);
-        this.countErrors(this.$attrs.validate.schema);
-        message = 'There are {{items}} validation errors in your form.';
-        if (this.errors === 1) {
-          message = 'There is a validation error in your form.';
-        }
-        message = this.$t(message, {items: this.errors});
-      }
-
-      this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
-      return message;
     },
   },
   data() {

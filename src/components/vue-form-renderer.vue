@@ -1,12 +1,5 @@
 <template>
   <div :class="containerClass">
-    <div v-if="isInvalid" class="alert alert-danger mt-3">
-      <i class="fas fa-exclamation-circle"/>
-      {{ errorMessage }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" :current-page="currentPage" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
   </div>
@@ -36,12 +29,6 @@ export default {
   computed: {
     containerClass() {
       return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
-    },
-    isInvalid() {
-      return this.$store ? this.$store.getters['globalErrorsModule/isValidScreen'] === false : false;
-    },
-    errorMessage() {
-      return this.$store ? this.$store.getters['globalErrorsModule/getErrorMessage'] : '';
     },
   },
   data() {
