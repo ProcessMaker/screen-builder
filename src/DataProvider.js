@@ -109,13 +109,6 @@ export default {
     }
   },
 
-  removeScreenFromCache(id) {
-    let index = this.cachedScreenPromises.findIndex(item => item.id === id);
-    if (index > -1) {
-      this.cachedScreenPromises.splice(index, 1);
-    }
-  },
-
   flushScreenCache() {
     this.cachedScreenPromises.splice(0, this.cachedScreenPromises.length);
   },

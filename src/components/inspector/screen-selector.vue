@@ -96,7 +96,8 @@ export default {
         }
       }
       const id = this.storeId ? get(value, this.trackBy) : value;
-      this.$dataProvider.removeScreenFromCache(id);
+      // Make sure to load latest config from screen and nested screens
+      this.$dataProvider.flushScreenCache();
       this.$emit('input', id);
     },
   },
