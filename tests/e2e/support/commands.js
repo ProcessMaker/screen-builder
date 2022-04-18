@@ -110,6 +110,9 @@ Cypress.Commands.add('assertComponentValueAsJson', (selector, expectedData) => {
  */
 Cypress.Commands.add('loadFromJson', (filename, index) => {
   return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
+    cy.window().then((win) => {
+      win.exampleScreens = content.screens;
+    });
     content.screens.forEach(screen => {
       cy.route(`/api/1.0/screens/${screen.id}`, JSON.stringify(screen));
     });

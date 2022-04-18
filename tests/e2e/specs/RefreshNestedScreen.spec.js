@@ -4,7 +4,7 @@ describe('refresh nested screen', () => {
     cy.visit('/');
   });
 
-  it('Verify main screen', () => {
+  it('Verify main screen is refreshed with nested changes', () => {
     cy.loadFromJson('refresh_nested_screen.json', 0);
 
     // Preview the screen
@@ -28,5 +28,22 @@ describe('refresh nested screen', () => {
     cy.get('[data-cy=editor-content]').should('contain.text', 'CHANGED Form Input 1');
     cy.get('[data-cy=editor-content]').should('contain.text', 'CHANGED Form Input 2');
 
+  });
+
+  it('Verify main screen is refreshed with nested nested changes', () => {
+    cy.loadFromJson('refresh_nested_nested_screen.json', 0);
+
+    // CHANGE the nested screen content from behind the scenes
+    cy.loadFromJson('refresh_nested_nested_screen_2.json');
+
+    cy.get('[data-cy=screen-element-container]').eq(0).click();
+    cy.get('[data-cy=inspector-screen] div.multiselect').click();
+    cy.get('[data-cy=inspector-screen] span:contains("Nested Screen"):first').click();
+    cy.get('[data-cy=inspector-screen] div.multiselect').click();
+    cy.get('[data-cy=inspector-screen] span:contains("Nested Screen"):first').click();
+
+    // Should show the new content
+    cy.get('[data-cy=editor-content]').should('contain.text', 'CHANGED Form Input 1');
+    cy.get('[data-cy=editor-content]').should('contain.text', 'CHANGED Nested Nested Input 1');
   });
 });
