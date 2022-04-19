@@ -9,6 +9,7 @@
 <script>
 import Mustache from 'mustache';
 import { getValidPath } from '@/mixins';
+import { isProxy } from 'is-proxy';
 
 export default {
   mixins: [getValidPath],
@@ -18,21 +19,20 @@ export default {
       deep: true,
       handler(validate) {
         if (validate) {
-          this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
-
-          this.errors = 0;
-          let message = '';
-          if (validate.$invalid) {
-            this.countErrors(validate.vdata);
-            this.countErrors(validate.schema);
-            message = this.errors === 1 
-              ? 'There is a validation error in your form.'
-              : 'There are {{items}} validation errors in your form.';
-           
-            message = this.$t(message, {items: this.errors});
+          if (!isProxy(validate.vdata.$model)) {
+            this.errors = 0;
+            let message = '';
+            if (validate.$invalid) {
+              this.countErrors(validate.vdata);
+              this.countErrors(validate.schema);
+              message = this.errors === 1
+                ? 'There is a validation error in your form.'
+                : 'There are {{items}} validation errors in your form.';
+              message = this.$t(message, {items: this.errors});
+            }
+            this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
+            this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
           }
-
-          this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
         }
       },
     },
@@ -124,6 +124,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-</style>
