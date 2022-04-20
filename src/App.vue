@@ -77,7 +77,7 @@
             <div v-if="$store.getters['globalErrorsModule/isValidScreen'] === false" class="alert alert-danger mt-3">
               <i class="fas fa-exclamation-circle"/>
               {{ $store.getters['globalErrorsModule/getErrorMessage'] }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <button type="button" class="close" aria-label="Close" @click="$store.dispatch('globalErrorsModule/close')">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
