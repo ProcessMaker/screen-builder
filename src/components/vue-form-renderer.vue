@@ -13,6 +13,7 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
+import globalErrorsModule from '@/store/modules/global-errors';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -107,6 +108,7 @@ export default {
     },
   },
   created() {
+    this.registerStoreModule('globalErrorsModule', globalErrorsModule);
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
@@ -118,6 +120,13 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
+    registerStoreModule(moduleName, storeModule) {
+      const store = this.$store;
+
+      if (!(store && store.state && store.state[moduleName])) {
+        store.registerModule(moduleName, storeModule);
+      }
+    },
     countElements(config) {
       const definition = { config };
       return this.$refs.renderer.countElements(definition);
