@@ -18,21 +18,19 @@ export default {
     '$attrs.validate': {
       deep: true,
       handler(validate) {
-        if (validate) {
-          if (!isProxy(validate.vdata.$model)) {
-            this.errors = 0;
-            let message = '';
-            if (validate.$invalid) {
-              this.countErrors(validate.vdata);
-              this.countErrors(validate.schema);
-              message = this.errors === 1
-                ? 'There is a validation error in your form.'
-                : 'There are {{items}} validation errors in your form.';
-              message = this.$t(message, {items: this.errors});
-            }
-            this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
-            this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
+        if (validate && !isProxy(validate.vdata.$model)) {
+          this.errors = 0;
+          let message = '';
+          if (validate.$invalid) {
+            this.countErrors(validate.vdata);
+            this.countErrors(validate.schema);
+            message = this.errors === 1
+              ? 'There is a validation error in your form.'
+              : 'There are {{items}} validation errors in your form.';
+            message = this.$t(message, {items: this.errors});
           }
+          this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
+          this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
         }
       },
     },
@@ -43,7 +41,7 @@ export default {
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: !this.$store.getters['globalErrorsModule/isValidScreen'],
+        disabled: this.errors,
       };
     },
     options() {

@@ -20,6 +20,11 @@ const globalErrorsModule = {
       state[payload.key] = payload.value;
     },
   },
+  actions: {
+    close({ commit }) {
+      commit('basic', { key: 'valid', value: true });
+    },
+  },
 };
 
 export default globalErrorsModule;
