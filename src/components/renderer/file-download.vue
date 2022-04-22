@@ -60,7 +60,12 @@ export default {
   },
   computed: {
     donwloadingNotAvailable() {
-      return !this.collection && !this.requestId;
+      let valid = !this.collection && !this.requestId;
+
+      if (this.filesInfo.length > 0) {
+        valid = false;
+      }
+      return valid;
     },
     inPreviewMode() {
       return this.mode === 'preview' && !window.exampleScreens;
@@ -105,6 +110,8 @@ export default {
     downloadFile(file) {
       if (this.collection) {
         this.downloadCollectionFile(file);
+      } else if (file && file.name.includes('fileId_')) {
+        this.downloadFileStorage(file);
       } else {
         this.downloadRequestFile(file);
       }
@@ -154,6 +161,13 @@ export default {
         this.sendToBrowser(response, file);
       });
     },
+    downloadFileStorage(file) {
+      let provider = this.$dataProvider;
+      provider.apiInstance().defaults.baseURL = '';
+      provider.download('/storage/tmp/' + file.name).then(response => {
+        this.sendToBrowser(response, file);
+      });
+    },
     sendToBrowser(response, file) {
       //axios needs to be told to open the file
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -175,7 +189,21 @@ export default {
       const fileId = this.value ? this.value : _.get(this.requestData, this.fileDataName, null);
       let endpoint = this.endpoint;
       
-      if (!this.requestId || !fileId) {
+      if (this.requestId && fileId) {
+        endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
+      } else if (fileId && fileId.id) {
+        endpoint = 'files/' + fileId.id;
+      } else if (fileId && fileId.includes('fileId_')) {
+        endpoint = '/storage/tmp/' + fileId;
+        this.loading = false;
+        let filename = fileId.slice(7);
+        this.filesInfo = [{
+          id: 1,
+          file_name: filename.slice(filename.indexOf('_') + 1),
+          name: fileId,
+        }];
+        return;
+      } else {
         return;
       }
       
@@ -200,12 +228,12 @@ export default {
       });
     },
     setFilesInfoFromCollectionValue() {
-      const files = this.value ? this.value : _.get(this.requestData, this.fileDataName);
-      if (!this.value && !files) {
-        this.filesInfo = [];
-        return;
+      this.filesInfo = [];
+      let files = this.value ? this.value : _.get(this.requestData, this.fileDataName);
+      if (files) {
+        files.file_name = files.file_name || files.name;
+        this.filesInfo = [files];
       }
-      this.filesInfo = [this.value ? this.value : files];
     },
   },
 };
