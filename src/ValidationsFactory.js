@@ -10,6 +10,7 @@ class Validations {
   screen = null;
   firstPage = 0;
   data = {};
+  insideLoop = false;
   constructor(element, options) {
     this.element = element;
     Object.assign(this, options);
@@ -51,7 +52,7 @@ class Validations {
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (const item of this.element) {
-      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule }).addValidations(validations);
+      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop }).addValidations(validations);
     }
   }
 }
@@ -114,7 +115,7 @@ class FormLoopValidations extends Validations {
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
     this.checkForSiblings(validations);
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, noData:true }, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(loopField['$each']);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, noData:true }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true }).addValidations(loopField['$each']);
   }
   checkForSiblings(validations) {
     const siblings = [];
@@ -218,6 +219,7 @@ class FormElementValidations extends Validations {
     const validationConfig = this.element.config.validation;
     const conditionalHide = this.element.config.conditionalHide;
     const parentVisibilityRule = this.parentVisibilityRule;
+    const insideLoop = this.insideLoop || false;
 
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
@@ -246,9 +248,11 @@ class FormElementValidations extends Validations {
           const level = fieldName.split('.').length - 1;
           const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
           if (parentVisibilityRule) {
+            const nextParentLevel = insideLoop ? 1 : 0;
+            const parentDataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level + nextParentLevel);
             let isParentVisible = true;
             try {
-              isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);              
+              isParentVisible = !!Parser.evaluate(parentVisibilityRule, parentDataWithParent);              
             } catch (error) {
               isParentVisible = false;
             }
@@ -285,9 +289,11 @@ class FormElementValidations extends Validations {
         const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
         // Check Parent Visibility
         if (parentVisibilityRule) {
+          const nextParentLevel = insideLoop ? 1 : 0;
+          const parentDataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level + nextParentLevel);
           let isParentVisible = true;
           try {
-            isParentVisible = !!Parser.evaluate(parentVisibilityRule, dataWithParent);
+            isParentVisible = !!Parser.evaluate(parentVisibilityRule, parentDataWithParent);
           } catch (error) {
             isParentVisible = false;
           }
