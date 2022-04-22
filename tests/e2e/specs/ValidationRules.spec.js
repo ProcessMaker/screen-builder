@@ -326,16 +326,14 @@ describe('Validation Rules', () => {
       .click();
 
     // Name should be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('contain.html', 'alert alert-danger');
+    shouldHaveValidationErrors();
 
     // Uncheck box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
 
     // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
+    shouldNotHaveValidationErrors();
 
     // Check box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
@@ -361,16 +359,14 @@ describe('Validation Rules', () => {
       .click();
 
     // Name should be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('contain.html', 'alert alert-danger');
+    shouldHaveValidationErrors();
 
     // Uncheck box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
 
     // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
+    shouldNotHaveValidationErrors();
 
     // Check box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
@@ -382,8 +378,14 @@ describe('Validation Rules', () => {
       .type('test');
 
     // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
-
+    shouldNotHaveValidationErrors();
   });
 });
+
+function shouldHaveValidationErrors() {
+  cy.get('[data-cy=preview-content]').should('contain.html', 'alert alert-danger');
+}
+
+function shouldNotHaveValidationErrors() {
+  cy.get('[data-cy=preview-content]').should('not.contain.html', 'alert alert-danger');
+}
