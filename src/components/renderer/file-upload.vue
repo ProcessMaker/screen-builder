@@ -94,8 +94,6 @@ export default {
       (loop, removed) => this.listenRemovedLoop(loop, removed));
 
     this.removeDefaultClasses();
-    
-    this.checkIfInRecordList();
 
     this.setPrefix();
     if (this.$refs['uploader']) {
@@ -288,15 +286,6 @@ export default {
         this.prefix = parent.loopContext + '.';
       }
     },
-    setFileUploadNameForChildren(children, prefix) {
-      children.forEach(child => {
-        if (_.get(child, '$options.name') === 'FileUpload') {
-          child.prefix = prefix;
-        } else if (_.get(child, '$children', []).length > 0) {
-          this.setFileUploadNameForChildren(child.$children, prefix);
-        }
-      });
-    },
     addFile(file) {
       if (this.disabled) {
         file.ignored = true;
@@ -418,14 +407,6 @@ export default {
             '&collection=' +
             'collection'
           : null;
-      }
-    },
-    checkIfInRecordList() {
-      const parent = this.parentRecordList(this);
-      if (parent !== null) {
-        const recordList = parent;
-        const prefix = recordList.name + '.';
-        this.setFileUploadNameForChildren(recordList.$children, prefix);
       }
     },
   },
