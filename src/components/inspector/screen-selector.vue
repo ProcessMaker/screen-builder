@@ -95,7 +95,10 @@ export default {
           return false;
         }
       }
-      this.$emit('input', this.storeId ? get(value, this.trackBy) : value);
+      const id = this.storeId ? get(value, this.trackBy) : value;
+      // Make sure to load latest config from screen and nested screens
+      this.$dataProvider.flushScreenCache();
+      this.$emit('input', id);
     },
   },
   mounted() {

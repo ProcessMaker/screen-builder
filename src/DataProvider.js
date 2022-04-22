@@ -109,6 +109,10 @@ export default {
     }
   },
 
+  flushScreenCache() {
+    this.cachedScreenPromises.splice(0, this.cachedScreenPromises.length);
+  },
+
   postScript(id, params, options = {}) {
     let endpoint = _.get(
       window,
