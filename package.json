@@ -32,7 +32,7 @@
   "dependencies": {
     "is-proxy": "^1.0.6",
     "lodash": "^4.17.20",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.27",
     "scrollparent": "^2.0.1",
     "vue-loader": "^15.9.2",
