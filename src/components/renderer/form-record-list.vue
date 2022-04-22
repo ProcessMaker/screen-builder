@@ -86,6 +86,7 @@
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
+        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -112,6 +113,7 @@
         debug-context="Record List Edit"
         :_parent="validationData"
         :key="editFormVersion"
+        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -164,6 +166,7 @@ export default {
   props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers'],
   data() {
     return {
+      currentRowIndex: null,
       editFormVersion: 0,
       single: '',
       plural: '',
@@ -259,6 +262,9 @@ export default {
     },
   },
   methods: {
+    updateRowDataNamePrefix() {
+      this.setUploadDataNamePrefix(this.currentRowIndex);
+    },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
@@ -270,6 +276,7 @@ export default {
       return field.key === '__filedownload';
     },
     setUploadDataNamePrefix(index = null) {
+      this.currentRowIndex = index;
       let  rowId = null;
       if (index !== null  && this.editItem) {
         rowId = this.editItem.row_id;
@@ -450,6 +457,9 @@ export default {
       this.$emit('input', data);
       this.$root.$emit('removed-record', this, recordData);
     },
+  },
+  mounted() {
+    this.updateRowDataNamePrefix = _.debounce(this.updateRowDataNamePrefix, 100);
   },
 };
 </script>
