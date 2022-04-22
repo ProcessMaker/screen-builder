@@ -1,9 +1,5 @@
 <template>
   <div class="form-group"  style="overflow-x: hidden">
-    <div class="alert alert-danger" v-if="!valid">
-      <i class="fas fa-exclamation-circle"/>
-      {{ message }}
-    </div>
     <button v-b-tooltip="options" @click="click" :class="classList" :name="name" :aria-label="$attrs['aria-label']" :tabindex="$attrs['tabindex']">
       {{ label }}
     </button>
@@ -13,17 +9,39 @@
 <script>
 import Mustache from 'mustache';
 import { getValidPath } from '@/mixins';
+import { isProxy } from 'is-proxy';
 
 export default {
   mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
+  watch: {
+    '$attrs.validate': {
+      deep: true,
+      handler(validate) {
+        if (validate && !isProxy(validate.vdata.$model)) {
+          this.errors = 0;
+          let message = '';
+          if (validate.$invalid) {
+            this.countErrors(validate.vdata);
+            this.countErrors(validate.schema);
+            message = this.errors === 1
+              ? 'There is a validation error in your form.'
+              : 'There are {{items}} validation errors in your form.';
+            message = this.$t(message, {items: this.errors});
+          }
+          this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
+          this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
+        }
+      },
+    },
+  },
   computed: {
     classList() {
       let variant = this.variant || 'primary';
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: !this.valid,
+        disabled: this.errors,
       };
     },
     options() {
@@ -44,26 +62,6 @@ export default {
         variant: this.tooltip.variant || '',
         boundary: 'window',
       };
-    },
-    valid() {
-      if (this.$attrs.validate) {
-        return !this.$attrs.validate.$invalid;
-      }
-      return true;
-    },
-    message() {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.errors = 0;
-      if (!this.valid) {
-        this.countErrors(this.$attrs.validate.vdata);
-        this.countErrors(this.$attrs.validate.schema);
-        let message = 'There are {{items}} validation errors in your form.';
-        if (this.errors === 1) {
-          message = 'There is a validation error in your form.';
-        }
-        return this.$t(message, {items: this.errors});
-      }
-      return '';
     },
   },
   data() {
@@ -124,6 +122,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-</style>
