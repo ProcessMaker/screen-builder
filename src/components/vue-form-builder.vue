@@ -538,7 +538,7 @@ export default {
         if (item.items) {
           this.checkForCaptcha(item.items, true);
         }
-        if (item.component == 'FormNestedScreen' && insideLoop && item.config.screen) {
+        if (item.component == 'FormNestedScreen' && insideLoop && item.config.screen && window.nestedScreens) {
           let nestedScreenItems = window.nestedScreens['id_' + item.config.screen];
           if (nestedScreenItems) {
             nestedScreenItems.forEach(nestedScreenPage => {
