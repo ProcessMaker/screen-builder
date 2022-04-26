@@ -116,6 +116,7 @@ export default {
                 globalObject['nestedScreens'] = {};
               }
               globalObject.nestedScreens['id_' + id] = this.config;
+              this.$root.$emit('nested-screen-updated');
             }
           });
       }
