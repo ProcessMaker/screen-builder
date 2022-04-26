@@ -474,6 +474,7 @@ export default {
   watch: {
     config: {
       handler() {
+        this.checkForCaptchaInLoops();
         this.$emit('change', this.config);
         this.loadVariablesTree();
       },
@@ -516,6 +517,36 @@ export default {
   methods: {
     refreshContent() {
       this.editorContentKey++;
+    },
+    checkForCaptchaInLoops() {
+      this.config.forEach(page => {
+        this.checkForCaptcha(page.items);
+      });
+    },
+    checkForCaptcha(items, insideLoop = false, nestedScreen = null) {
+      items.forEach(item => {
+        if (!item.items && item.component == 'Captcha' && insideLoop) {
+          if (nestedScreen && nestedScreen.config.screen) {
+            this.$root.$emit('remove-nested', nestedScreen.config.screen);
+            nestedScreen.config.screen = null;
+            globalObject.ProcessMaker.alert(this.$t('You are trying to place a nested screen within CAPTCHA elements inside a loop. CAPTCHA controls cannot be placed within a Loop control.'), 'danger');
+          } else {
+            items.splice(items.indexOf(item), 1);
+            globalObject.ProcessMaker.alert(this.$t('CAPTCHA controls cannot be placed within a Loop control.'), 'danger');
+          }
+        }
+        if (item.items) {
+          this.checkForCaptcha(item.items, true);
+        }
+        if (item.component == 'FormNestedScreen' && insideLoop && item.config.screen) {
+          let nestedScreenItems = window.nestedScreens['id_' + item.config.screen];
+          if (nestedScreenItems) {
+            nestedScreenItems.forEach(nestedScreenPage => {
+              this.checkForCaptcha(nestedScreenPage.items, true, item);
+            });
+          }
+        }
+      });
     },
     loadVariablesTree() {
       const definition = {
@@ -843,6 +874,9 @@ export default {
   },
   mounted() {
     this.loadVariablesTree();
+    this.$root.$on('nested-screen-updated', () => {
+      this.checkForCaptchaInLoops();
+    });
   },
 };
 </script>
