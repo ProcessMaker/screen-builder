@@ -175,7 +175,6 @@ export default {
       plural: '',
       addItem: {},
       editItem: {},
-      editIndex: null,
       currentPage: 1,
       paginatorPage: 1,
       perPageSelectEnabled: false,
@@ -371,7 +370,6 @@ export default {
       let pageIndex = ((this.currentPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
       this.editItem = _.find(this.tableData.data, {'row_id': rowId});
-      this.editIndex = pageIndex;
       // rebuild the edit screen to avoid
       this.editFormVersion++;
       this.$nextTick(() => {
@@ -387,7 +385,7 @@ export default {
 
       // Edit the item in our model and emit change
       let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
-      var index = _.findIndex(data, {'row_id': this.editItem.rowId});
+      var index = _.findIndex(data, {'row_id': this.editItem.row_id});
       data[index] = JSON.parse(JSON.stringify(this.editItem));
 
       // Remove the parent object
