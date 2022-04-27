@@ -397,7 +397,6 @@ export default {
     showAddForm() {
       const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
       this.$set(this.addItem, 'row_id', uniqueId);
-      this.setUploadDataNamePrefix();
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
