@@ -325,6 +325,8 @@ describe('Record list', () => {
   it('FileUpload in record lists within loops', () => {
     cy.loadFromJson('record_list_fileupload_loops.json', 0);
     cy.get('[data-cy=mode-preview]').click();
+
+    // Add 1 row to the record list.
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
 
     // Upload the first file.
@@ -352,6 +354,7 @@ describe('Record list', () => {
     // Edit record and check the uploaded files are displayed.
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"]').eq(0).should('contain.text', 'avatar.jpeg');
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=form_input_4]').eq(1).clear().type('Second edited');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"]').eq(1).should('contain.text', 'avatar.jpeg');
 
     // Add a third file in edit modal.
@@ -373,10 +376,15 @@ describe('Record list', () => {
     cy.wait(500);
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Save)').click();
 
+    // Add 2nd. row to the record list.
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
+    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button:contains(Ok)').click();
+
     // Verify the data structure.
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
       const record_row_id = data.form_record_list_1[0].row_id;
+      const second_record_row_id = data.form_record_list_1[1].row_id;
       expect(data).to.eql({
         'form_record_list_1': [
           {
@@ -386,11 +394,20 @@ describe('Record list', () => {
                 'file_upload_2': 1,
               },
               {
-                'form_input_4': 'Second',
+                'form_input_4': 'Second edited',
                 'file_upload_2': 2,
               },
             ],
             'row_id': record_row_id,
+          },
+          {
+            'loop_1': [
+              {
+                'form_input_4': '',
+                'file_upload_2': null,
+              },
+            ],
+            'row_id': second_record_row_id,
           },
         ],
         'loop_1': [
