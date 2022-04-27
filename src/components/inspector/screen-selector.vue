@@ -102,6 +102,12 @@ export default {
     },
   },
   mounted() {
+    this.$root.$on('remove-nested', (nestedScreenId) => {
+      if (this.value === nestedScreenId) {
+        this.$emit('input', null);
+      }
+    });
+
     let pmql = '(type = "FORM" or type = "DISPLAY")';
     if (this.screenType === formTypes.display) {
       pmql = '(type = "DISPLAY")';
