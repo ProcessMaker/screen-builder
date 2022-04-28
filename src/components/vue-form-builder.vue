@@ -874,6 +874,7 @@ export default {
   },
   mounted() {
     this.loadVariablesTree();
+    this.checkForCaptchaInLoops();
     this.$root.$on('nested-screen-updated', () => {
       this.checkForCaptchaInLoops();
     });
