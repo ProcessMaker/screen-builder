@@ -536,13 +536,13 @@ export default {
           }
         }
         if (item.items) {
-          this.checkForCaptcha(item.items, true);
+          this.checkForCaptcha(item.items, true, nestedScreen);
         }
-        if (item.component == 'FormNestedScreen' && insideLoop && item.config.screen && window.nestedScreens) {
+        if (item.component == 'FormNestedScreen' && item.config.screen && window.nestedScreens) {
           let nestedScreenItems = window.nestedScreens['id_' + item.config.screen];
           if (nestedScreenItems) {
             nestedScreenItems.forEach(nestedScreenPage => {
-              this.checkForCaptcha(nestedScreenPage.items, true, item);
+              this.checkForCaptcha(nestedScreenPage.items, insideLoop, item);
             });
           }
         }
