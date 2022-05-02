@@ -89,7 +89,6 @@
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
-        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -116,7 +115,6 @@
         debug-context="Record List Edit"
         :_parent="validationData"
         :key="editFormVersion"
-        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -202,7 +200,6 @@ export default {
     if (this._perPage) {
       this.perPage = this._perPage;
     }
-    this.updateRowDataNamePrefix = _.debounce(this.updateRowDataNamePrefix, 100);
   },
   computed: {
     popupConfig() {
@@ -282,9 +279,6 @@ export default {
     },
   },
   methods: {
-    updateRowDataNamePrefix() {
-      this.setUploadDataNamePrefix(this.currentRowIndex);
-    },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
@@ -372,8 +366,8 @@ export default {
       this.editItem = _.find(this.tableData.data, {'row_id': rowId});
       // rebuild the edit screen to avoid
       this.editFormVersion++;
+      this.setUploadDataNamePrefix(pageIndex);
       this.$nextTick(() => {
-        this.setUploadDataNamePrefix(pageIndex);
         this.$refs.editModal.show();
       });
     },
@@ -395,8 +389,6 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
-      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      this.$set(this.addItem, 'row_id', uniqueId);
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
@@ -417,12 +409,16 @@ export default {
 
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
+      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      this.$set(this.addItem, 'row_id', uniqueId);
+
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       const item = JSON.parse(JSON.stringify({...this.addItem, _parent: undefined }));
       delete item._parent;
       data[data.length] = item;
 
       // Emit the newly updated data model
+      this.setUploadDataNamePrefix();
       this.$emit('input', data);
 
       // Reset our add item
