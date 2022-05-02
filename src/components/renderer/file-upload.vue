@@ -92,7 +92,7 @@ export default {
     this.removeDefaultClasses();
   },
   mounted() {
-    this.$root.$on('set-upload-data-name',
+    this.$root.$once('set-upload-data-name',
       (recordList, index, id) => this.listenRecordList(recordList, index, id));
 
     this.$root.$on('removed-record',
@@ -409,11 +409,9 @@ export default {
       }
     },
     listenRecordList(recordList, index, id) {
-      const parent = this.parentRecordList(this);
-      if (parent !== recordList) {
-        return;
+      if (recordList) {
+        this.row_id = id;
       }
-      this.row_id = (parent !== null) ? id : null;
     },
     setPrefix() {
       let parent = this.$parent;
