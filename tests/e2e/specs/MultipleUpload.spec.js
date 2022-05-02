@@ -102,9 +102,7 @@ describe('Multiple Upload', () => {
     // The global variable should store the uploaded item
     cy.window().its('PM4ConfigOverrides.requestFiles')
       .then(requestFiles => {
-        const firstMapFileVar = Object.keys(requestFiles).find(x => x.startsWith('map'));
-        const rowId = firstMapFileVar.split('map.')[1];
-        expect(requestFiles['map.' + rowId][0].file_name).to.equal('avatar.jpeg');
+        expect(requestFiles['map'][0].file_name).to.equal('avatar.jpeg');
       });
 
     // Upload a file in multiple file mode
