@@ -380,10 +380,10 @@ export default {
       return this.optionError ? 'is-invalid' : '';
     },
     keyField() {
-      return this.key || 'value';
+      return  this.options.dataSource === 'provideData' ? 'value' : this.key || 'value';
     },
     valueField() {
-      return this.value || 'content';
+      return  this.options.dataSource === 'provideData' ? 'content' : this.value || 'content';
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
