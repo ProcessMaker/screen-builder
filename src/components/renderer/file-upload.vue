@@ -92,7 +92,8 @@ export default {
     this.removeDefaultClasses();
   },
   mounted() {
-    this.$root.$once('set-upload-data-name',
+    /* eslint-disable */
+    this.$root.$on('set-upload-data-name',
       (recordList, index, id) => this.listenRecordList(recordList, index, id));
 
     this.$root.$on('removed-record',
@@ -109,6 +110,7 @@ export default {
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
+    console.log('mounted options at the end', this.options.query.row_id);
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
@@ -409,7 +411,9 @@ export default {
       }
     },
     listenRecordList(recordList, index, id) {
-      if (recordList) {
+      /* eslint-disable */
+      const parent = this.parentRecordList(this);
+      if (!!id && (parent === recordList)) {
         this.row_id = id;
       }
     },
@@ -488,6 +492,7 @@ export default {
       } else {
         this.$emit('input', name);
       }
+      console.log("options: ", this.options.query.row_id);
     },
     removed() {
       if (!this.inProgress) {

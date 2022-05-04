@@ -77,6 +77,7 @@
       header-close-content="&times;"
       data-cy="modal-add"
       @shown="emitShownEvent"
+      :lazy="true"
     >
       <vue-form-renderer
         :page="0"
@@ -89,6 +90,7 @@
         debug-context="Record List Add"
         :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
+        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -103,6 +105,7 @@
       header-close-content="&times;"
       data-cy="modal-edit"
       @shown="emitShownEvent"
+      :lazy="true"
     >
       <vue-form-renderer
         :page="0"
@@ -115,6 +118,7 @@
         debug-context="Record List Edit"
         :_parent="validationData"
         :key="editFormVersion"
+        @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
@@ -127,6 +131,7 @@
       :title="$t('Delete Record')"
       header-close-content="&times;"
       data-cy="modal-remove"
+      :lazy="true"
     >
       <p>{{ $t('Are you sure you want to remove this record?') }}</p>
     </b-modal>
@@ -140,6 +145,7 @@
       header-close-content="&times;"
       ok-only
       data-cy="modal-not-assigned"
+      :lazy="true"
     >
       <p>{{ $t('The form to be displayed is not assigned.') }}</p>
     </b-modal>
@@ -154,7 +160,6 @@
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
 import { dateUtils } from '@processmaker/vue-form-elements';
-//import ScreenRenderer from '../screen-renderer.vue';
 
 const jsonOptionsActionsColumn = {
   key: '__actions',
@@ -200,6 +205,7 @@ export default {
     if (this._perPage) {
       this.perPage = this._perPage;
     }
+    this.updateRowDataNamePrefix = _.debounce(this.updateRowDataNamePrefix, 100);
   },
   computed: {
     popupConfig() {
@@ -279,6 +285,9 @@ export default {
     },
   },
   methods: {
+    updateRowDataNamePrefix() {
+      this.setUploadDataNamePrefix(this.currentRowIndex);
+    },
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
@@ -293,14 +302,17 @@ export default {
       return field.key === '__filedownload';
     },
     setUploadDataNamePrefix(index = null) {
+      /* eslint-disable */
       this.currentRowIndex = index;
-      let  rowId = null;
-      if (index !== null  && this.editItem) {
+      let rowId = null;
+      if (index !== null && this.editItem) {
         rowId = this.editItem.row_id;
+        console.log('emitting edit id', rowId);
       }
       else {
         if (this.addItem) {
           rowId = this.addItem.row_id;
+          console.log('emitting add id', rowId);
         }
       }
 
@@ -366,9 +378,9 @@ export default {
       this.editItem = _.find(this.tableData.data, {'row_id': rowId});
       // rebuild the edit screen to avoid
       this.editFormVersion++;
-      this.setUploadDataNamePrefix(pageIndex);
+      this.$refs.editModal.show();
       this.$nextTick(() => {
-        this.$refs.editModal.show();
+        this.setUploadDataNamePrefix(pageIndex);
       });
     },
     edit(event) {
@@ -399,6 +411,12 @@ export default {
       // eslint-disable-next-line no-unused-vars
       let {_parent, ...result} = this.addItem;
       this.initFormValues = _.cloneDeep(result);
+
+      this.$nextTick(() => {
+        const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        this.$set(this.addItem, 'row_id', uniqueId);
+        this.setUploadDataNamePrefix();
+      });
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
@@ -409,16 +427,12 @@ export default {
 
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
-      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      this.$set(this.addItem, 'row_id', uniqueId);
-
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       const item = JSON.parse(JSON.stringify({...this.addItem, _parent: undefined }));
       delete item._parent;
       data[data.length] = item;
 
       // Emit the newly updated data model
-      this.setUploadDataNamePrefix();
       this.$emit('input', data);
 
       // Reset our add item
