@@ -287,7 +287,7 @@ export default {
       disabled: false,
       files: [],
       nativeFiles: {},
-      uploading: false
+      uploading: false, 
     };
   },
   methods: {
