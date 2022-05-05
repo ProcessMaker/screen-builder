@@ -268,6 +268,7 @@ export default {
             this.loading = false;
           });
       }
+      this.loading = false;
     },
     setFileInfoFromCache() {
       const info = _.get(window.ProcessMaker.CollectionData, this.prefix + this.name, null);
