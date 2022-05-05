@@ -17,7 +17,7 @@ import globalErrorsModule from '@/store/modules/global-errors';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
- 
+
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
@@ -123,7 +123,7 @@ export default {
     registerStoreModule(moduleName, storeModule) {
       const store = this.$store;
 
-      if (!(store && store.state && store.state[moduleName])) {
+      if (store && store.state && !store.state[moduleName]) {
         store.registerModule(moduleName, storeModule);
       }
     },
