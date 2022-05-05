@@ -18,7 +18,7 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop class="form-control-file">
+      <uploader-drop v-if="this.$refs['uploader']" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
         <uploader-btn
           :attrs="nativeButtonAttrs"
@@ -110,7 +110,6 @@ export default {
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
-    console.log('mounted options at the end', this.options.query.row_id);
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
@@ -411,9 +410,8 @@ export default {
       }
     },
     listenRecordList(recordList, index, id) {
-      /* eslint-disable */
       const parent = this.parentRecordList(this);
-      if (!!id && (parent === recordList)) {
+      if ((parent === recordList) && !!id) {
         this.row_id = id;
       }
     },
@@ -492,7 +490,6 @@ export default {
       } else {
         this.$emit('input', name);
       }
-      console.log("options: ", this.options.query.row_id);
     },
     removed() {
       if (!this.inProgress) {
@@ -517,6 +514,9 @@ export default {
       if (this.parentRecordList(this) === null) {
         this.row_id = null;
       }
+
+      console.log("file upload started row_id: ", this.row_id);
+      console.log("file upload started options row_id: ", this.options.query.row_id);
 
       // Block submit until files are loaded
       this.validator.errorCount = 1;

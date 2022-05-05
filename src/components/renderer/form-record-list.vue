@@ -77,7 +77,6 @@
       header-close-content="&times;"
       data-cy="modal-add"
       @shown="emitShownEvent"
-      :lazy="true"
     >
       <vue-form-renderer
         :page="0"
@@ -105,7 +104,6 @@
       header-close-content="&times;"
       data-cy="modal-edit"
       @shown="emitShownEvent"
-      :lazy="true"
     >
       <vue-form-renderer
         :page="0"
@@ -131,7 +129,6 @@
       :title="$t('Delete Record')"
       header-close-content="&times;"
       data-cy="modal-remove"
-      :lazy="true"
     >
       <p>{{ $t('Are you sure you want to remove this record?') }}</p>
     </b-modal>
@@ -145,7 +142,6 @@
       header-close-content="&times;"
       ok-only
       data-cy="modal-not-assigned"
-      :lazy="true"
     >
       <p>{{ $t('The form to be displayed is not assigned.') }}</p>
     </b-modal>
@@ -378,9 +374,9 @@ export default {
       this.editItem = _.find(this.tableData.data, {'row_id': rowId});
       // rebuild the edit screen to avoid
       this.editFormVersion++;
-      this.$refs.editModal.show();
       this.$nextTick(() => {
         this.setUploadDataNamePrefix(pageIndex);
+        this.$refs.editModal.show();
       });
     },
     edit(event) {
@@ -405,18 +401,16 @@ export default {
         this.$refs.infoModal.show();
         return;
       }
+      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      this.$set(this.addItem, 'row_id', uniqueId);
+      this.setUploadDataNamePrefix();
+
       // Open form
       this.$refs.addModal.show();
 
       // eslint-disable-next-line no-unused-vars
       let {_parent, ...result} = this.addItem;
       this.initFormValues = _.cloneDeep(result);
-
-      this.$nextTick(() => {
-        const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-        this.$set(this.addItem, 'row_id', uniqueId);
-        this.setUploadDataNamePrefix();
-      });
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
