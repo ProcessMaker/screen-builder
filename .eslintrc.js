@@ -25,6 +25,5 @@ module.exports = {
     'vue/mustache-interpolation-spacing': 'error',
   },
   parserOptions: {
-    parser: 'babel-eslint',
   },
 };
