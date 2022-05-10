@@ -577,7 +577,7 @@ describe('Task component', () => {
                        (DNAT)
    After childTask1 and not pending tasks should redirect to parent Request
   */
-  it('Subprocess without pending task should redirect to parent request', () => {
+  it.only('Subprocess without pending task should redirect to parent request', () => {
     cy.server();
     cy.route(
       'GET',

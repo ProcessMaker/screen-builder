@@ -327,17 +327,26 @@ export default {
               this.redirecting = task.process_request_id;
               this.$emit('redirect', task.id, true);
               return;
-            } else if (this.task && requestId == this.task.process_request_id && this.parentRequest && this.task.process_request.status === 'COMPLETED') {
-              // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
-              this.$emit('completed', this.parentRequest);
+            } else {
+              this.emitIfTaskCompleted(requestId);
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
-          } else if (this.parentRequest) {
+          } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.parentRequest);
           }
         });
     },
+    emitIfTaskCompleted(requestId) {
+      // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
+      if (this.task
+          && this.parentRequest
+          && requestId == this.task.process_request_id
+          && this.task.process_request.status === 'COMPLETED') {
+        this.$emit('completed',  this.parentRequest);
+      }
+    },
+
     classHeaderCard(status) {
       let header = 'bg-success';
       switch (status) {
