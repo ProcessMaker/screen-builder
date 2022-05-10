@@ -346,7 +346,6 @@ export default {
         this.$emit('completed',  this.parentRequest);
       }
     },
-
     classHeaderCard(status) {
       let header = 'bg-success';
       switch (status) {
