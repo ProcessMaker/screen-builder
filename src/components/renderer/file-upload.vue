@@ -33,8 +33,13 @@
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
       <uploader-list>
-        <template>
-          <ul>
+        <template slot-scope = "{ fileList }">
+          <ul v-if="uploading">
+            <li v-for="file in fileList" :key="file.id">
+              <uploader-file :file="file" :list="true"/>
+            </li>
+          </ul>
+          <ul v-else>
             <li v-for="(file, i) in files " :key="i" :data-cy="file.id">
               <div class="">
                 <div class="" style="display:flex; background:rgb(226 238 255)">
@@ -282,6 +287,7 @@ export default {
       disabled: false,
       files: [],
       nativeFiles: {},
+      uploading: false, 
     };
   },
   methods: {
@@ -470,6 +476,7 @@ export default {
       }
     },
     fileUploaded(rootFile, file, message) {
+      this.uploading = false;
       let name = file.name;
       if (message) {
         const msg = JSON.parse(message);
@@ -511,6 +518,7 @@ export default {
       return null;
     },
     start() {
+      this.uploading = true;
       if (this.parentRecordList(this) === null) {
         this.row_id = null;
       }
