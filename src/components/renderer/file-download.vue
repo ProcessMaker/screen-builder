@@ -175,6 +175,11 @@ export default {
       const fileId = this.value ? this.value : _.get(this.requestData, this.fileDataName, null);
       let endpoint = this.endpoint;
       
+      if (this.requestFiles) {
+        this.filesInfo.push(_.get(this.requestFiles, this.fileDataName, null));
+        return;
+      }
+      
       if (!this.requestId || !fileId) {
         return;
       }
