@@ -850,7 +850,7 @@ export default {
     registerStoreModule(moduleName, storeModule) {
       const store = this.$store;
 
-      if (!(store && store.state && store.state[moduleName])) {
+      if (store && store.state && !store.state[moduleName]) {
         store.registerModule(moduleName, storeModule);
       }
     },
