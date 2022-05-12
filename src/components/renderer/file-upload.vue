@@ -18,7 +18,7 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop class="form-control-file">
+      <uploader-drop v-if="this.$refs['uploader']" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
         <uploader-btn
           :attrs="nativeButtonAttrs"
@@ -33,12 +33,17 @@
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
       <uploader-list>
-        <template>
-          <ul>
+        <template slot-scope = "{ fileList }">
+          <ul v-if="uploading">
+            <li v-for="file in fileList" :key="file.id">
+              <uploader-file :file="file" :list="true"/>
+            </li>
+          </ul>
+          <ul v-else>
             <li v-for="(file, i) in files " :key="i" :data-cy="file.id">
               <div class="">
                 <div class="" style="display:flex; background:rgb(226 238 255)">
-                  <div v-if="nativeFiles[file.id]" style="flex: 1" :data-cy="file.file_name.replace(/[^0-9a-zA-Z\-]/g, '-')">
+                  <div v-if="nativeFiles[file.id]" style="flex: 1" class="overflow-hidden" :data-cy="file.file_name.replace(/[^0-9a-zA-Z\-]/g, '-')">
                     <uploader-file :file="nativeFiles[file.id]" :list="true" />
                   </div>
                   <div v-else style="flex: 1">
@@ -282,6 +287,7 @@ export default {
       disabled: false,
       files: [],
       nativeFiles: {},
+      uploading: false, 
     };
   },
   methods: {
@@ -378,7 +384,7 @@ export default {
         }
       }
     },
-    async removeFile(file) { 
+    async removeFile(file) {
       const id = file.id;
       const token = file.token ? file.token : null;
 
@@ -386,13 +392,13 @@ export default {
       if (!isNaN(id)) {
         await this.$dataProvider.deleteFile(id, token);
       }
-      
+
       this.removeFromFiles(id);
     },
     removeFromFiles(id) {
       const idx = this.files.findIndex(f => f.id === id);
       this.$delete(this.files, idx);
-      
+
       if (this.nativeFiles[id]) {
         if (this.$refs.uploader) {
           this.$refs.uploader.uploader.removeFile(this.nativeFiles[id]);
@@ -470,6 +476,7 @@ export default {
       }
     },
     fileUploaded(rootFile, file, message) {
+      this.uploading = false;
       let name = file.name;
       if (message) {
         const msg = JSON.parse(message);
@@ -478,13 +485,13 @@ export default {
         if (this.collection) {
           id = msg.id;
         }
-        
+
         const fileInfo = {
           id,
           file_name: name,
           mime_type: rootFile.fileType,
         };
-       
+
         this.$set(this.nativeFiles, id, rootFile);
         this.addToFiles(fileInfo);
       } else {
@@ -511,6 +518,7 @@ export default {
       return null;
     },
     start() {
+      this.uploading = true;
       if (this.parentRecordList(this) === null) {
         this.row_id = null;
       }
