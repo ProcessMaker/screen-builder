@@ -18,7 +18,7 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop class="form-control-file">
+      <uploader-drop v-if="this.$refs['uploader']" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
         <uploader-btn
           :attrs="nativeButtonAttrs"
