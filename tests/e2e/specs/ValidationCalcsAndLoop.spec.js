@@ -12,7 +12,7 @@ describe('Validation Calcs properties and loop', () => {
       .click()
       .focused()
       .type('{backspace}{backspace}')
-      .type('{\n"foo": {\n"one": "one",\n"two": "two"');
+      .type('{\n"foo": {\n"one": "one",\n"two": "two"\n}\n}');
 
     cy.get('[data-cy=mode-editor]').click();
     cy.get('[data-cy=mode-preview]').click();
