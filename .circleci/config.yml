@@ -18,7 +18,7 @@ jobs:
         paths:
         - ~/.npm
         - ~/.cache
-    - run: npm run lint
+    # - run: npm run lint
     - persist_to_workspace:
         root: ~/
         paths:
