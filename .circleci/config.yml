@@ -13,8 +13,6 @@ jobs:
     - run:
         name: Npm CI
         command: npm ci && npx browserslist@latest --update-db
-    - run:
-        command: npx cypress verify
     - save_cache:
         key: cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
         paths:
@@ -33,6 +31,8 @@ jobs:
     steps:
     - attach_workspace:
         at: ~/
+    - run:
+        command: npx cypress verify
     - run:
         name: before tests
         command: circleci tests glob "tests/e2e/*/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests && cat circleci.tests
