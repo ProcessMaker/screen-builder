@@ -92,6 +92,27 @@ export default {
 
       });
     },
+    disableForm(config) {
+      config.forEach(item => {
+
+        //If the element has containers
+        if (Array.isArray(item)) {
+          this.disableForm(item);
+        }
+
+        //If the element has items
+        if (item.items) {
+          this.disableForm(item.items);
+        }
+
+        //Disable element
+        if (item && item.config) {
+          item.config.disabled = true;
+          item.config.readonly = true;
+          item.config.editable = false;
+        }
+      });
+    },
     loadScreen(id) {
       this.config = defaultConfig;
       this.computed = [];
@@ -108,6 +129,10 @@ export default {
             this.customCSS = response.data.custom_css;
             this.watchers = response.data.watchers;
             this.screenTitle = response.data.title;
+
+            if (this.$attrs['disabled']) {
+              this.disableForm(this.config);
+            }
 
             if (this.ancestorScreens.includes(this.screenTitle)) {
               globalObject.ProcessMaker.alert(`Rendering of nested "${this.screenTitle}" screen was disallowed to prevent loop.`, 'warning');
