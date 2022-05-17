@@ -38,10 +38,11 @@ export default {
   computed: {
     classList() {
       let variant = this.variant || 'primary';
+      let isInvalid = this.$store.getters['globalErrorsModule/isValidScreen'] === false;
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: this.errors,
+        disabled: this.event === 'submit' && isInvalid,
       };
     },
     options() {
