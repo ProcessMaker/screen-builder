@@ -46,7 +46,7 @@
                   <div v-if="nativeFiles[file.id]" style="flex: 1" class="overflow-hidden" :data-cy="file.file_name.replace(/[^0-9a-zA-Z\-]/g, '-')">
                     <uploader-file :file="nativeFiles[file.id]" :list="true" />
                   </div>
-                  <div v-else style="flex: 1">
+                  <div v-else class="text-truncate" :title="file.file_name" style="flex: 1">
                     <i class="fas fa-paperclip"/> {{ file.file_name }}
                   </div>
                   <div class="pt-1">
@@ -287,7 +287,7 @@ export default {
       disabled: false,
       files: [],
       nativeFiles: {},
-      uploading: false, 
+      uploading: false,
     };
   },
   methods: {
