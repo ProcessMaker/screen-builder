@@ -4,6 +4,7 @@ export default {
     pageNavigate() {},
     pageNavigationProperties({ properties }) {
       properties['@page-navigate'] = 'pageNavigate';
+      properties[':validate'] = '$v';
     },
     pageNavigationBuild(screen) {
       this.addData(screen, 'currentPage__', 'this._initialPage');
@@ -19,7 +20,7 @@ export default {
   mounted() {
     this.extensions.push({
       onloadproperties(params) {
-        if (params.componentName === 'FormButton') {
+        if (params.element.component === 'FormButton' && params.element.config.event === 'pageNavigate') {
           this.pageNavigationProperties(params);
         }
       },
