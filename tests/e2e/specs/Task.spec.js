@@ -394,6 +394,75 @@ describe('Task component', () => {
   });
 
   /* DNAT = Display Next Assigned Task
+   parentTask1                                                     parentTask2
+              \_______childTask1___scriptTask____childTask2_______/
+                        (DNAT)
+  */
+  it('Task with display next assigned task checked in subprocess and no pending task and status closed or open should redirect to parent requests', () => {
+    cy.server();
+    cy.route(
+      'GET',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
+      {
+        id: 1,
+        advanceStatus: 'open',
+        component: 'task-screen',
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: 'ACTIVE',
+        },
+      }
+    );
+
+    cy.visit('/?scenario=TaskRedirect', {});
+
+    cy.wait(2000);
+    cy.get('.form-group').find('button').click();
+
+    cy.route('PUT', 'http://localhost:8080/api/1.0/tasks/1').then(function() {
+      let responseDataTask1 = {
+        'status': 'CLOSED',
+        'process_request_id': 2,
+        'id': 1,
+        'screen': SingleScreen.screens[0],
+        'allow_interstitial': true,
+        'interstitial_screen': InterstitialScreen.screens[0],
+        'parent_request_id': 1,
+      };
+
+      getTask(
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
+        responseDataTask1
+      );
+
+      getTasks(
+        'http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1',
+        null
+      );
+
+      let responseDataTask2 = {
+        'status': 'ACTIVE',
+        'process_request_id': 2,
+        'taskId': 2,
+        'screen': Screens.screens[0],
+        'allow_interstitial': false,
+        'interstitial_screen': null,
+      };
+
+      getTask(
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask2['taskId']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
+        responseDataTask2
+      );
+
+      cy.wait(2000);
+      cy.reload();
+    });
+
+    cy.url().should('eq', 'http://localhost:8080/requests/1');
+  });
+
+  /* DNAT = Display Next Assigned Task
    parentTask1                           parentTask2
               \_______childTask1_______/
                         (DNAT)
