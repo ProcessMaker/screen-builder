@@ -198,7 +198,7 @@ export default {
           this.filesInfo.push(fileInfo);
         } else {
           window.ProcessMaker.alert(
-            this.$t('File Download Missing File'),
+            this.$t('File ID does not exist'),
             'danger'
           );
         }
