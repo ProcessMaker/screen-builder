@@ -18,7 +18,7 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop v-if="this.$refs['uploader']" class="form-control-file">
+      <uploader-drop v-if="uploaderLoaded" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
         <uploader-btn
           :attrs="nativeButtonAttrs"
@@ -287,10 +287,13 @@ export default {
       disabled: false,
       files: [],
       nativeFiles: {},
-      uploading: false, 
+      uploading: false,
     };
   },
   methods: {
+    uploaderLoaded() {
+      return this.$refs['uploader'];
+    },
     setFiles() {
       if (_.isEqual(this.filesData, this.files)) {
         return;
