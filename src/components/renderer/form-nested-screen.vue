@@ -11,6 +11,7 @@
     :computed="computed"
     :custom-css="customCSS"
     :watchers="watchers"
+    :isNestedScreen="true"
     debug-context="Nested Screen"
     @css-errors="cssErrors = $event"
     :_parent="getParent()"
