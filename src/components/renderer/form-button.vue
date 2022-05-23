@@ -15,25 +15,16 @@ export default {
   mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
   watch: {
-    '$attrs.validate': {
+    '$parent.$v': {
       deep: true,
       handler(validate) {
-        if (validate && !isProxy(validate.vdata.$model)) {
-          this.errors = 0;
-          let message = '';
-          if (validate.$invalid) {
-            this.countErrors(validate.vdata);
-            this.countErrors(validate.schema);
-            message = this.errors === 1
-              ? 'There is a validation error in your form.'
-              : 'There are {{items}} validation errors in your form.';
-            message = this.$t(message, {items: this.errors});
-          }
-          this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
-          this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
+        if (this.$parent.$attrs.isRecordList ) {
+          this.setErrors(validate, 'recordListErrorsModule/basic');
+        } else if (validate && !isProxy(validate.vdata.$model)) {
+          this.setErrors(validate, 'globalErrorsModule/basic');
         }
-      },
-    },
+      }
+    }
   },
   computed: {
     classList() {
@@ -41,7 +32,7 @@ export default {
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: this.errors,
+        disabled: this.event === 'submit' && this.errors,
       };
     },
     options() {
@@ -119,6 +110,21 @@ export default {
         this.$emit('page-navigate', this.eventData);
       }
     },
+    setErrors(validate, mutation) {
+      this.errors = 0;
+      let message = '';
+      console.log("VALIDATE", validate, mutation);
+      if (validate.$invalid) {
+        this.countErrors(validate.vdata);
+        this.countErrors(validate.schema);
+        message = this.errors === 1
+          ? 'There is a validation error in your form.'
+          : 'There are {{items}} validation errors in your form.';
+        message = this.$t(message, {items: this.errors});
+      }
+      this.$store.commit(mutation, {key: 'valid', value: !validate.$invalid});
+      this.$store.commit(mutation, {key: 'message', value: message});
+    }
   },
 };
 </script>
