@@ -312,7 +312,6 @@ import * as renderer from './renderer';
 import * as inspector from './inspector';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import undoRedoModule from '../undoRedoModule';
-import globalErrorsModule from '@/store/modules/global-errors';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';
@@ -867,7 +866,6 @@ export default {
       },
       this.$t('Must be unique')
     );
-    this.registerStoreModule('globalErrorsModule', globalErrorsModule);
     this.registerStoreModule('undoRedoModule', undoRedoModule);
     this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage});
     this.initiateLanguageSupport();
