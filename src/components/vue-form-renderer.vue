@@ -1,7 +1,8 @@
 <template>
   <div :class="containerClass">
+    <global-error-banner :isRecordList="isRecordList" :isNestedScreen="isNestedScreen"></global-error-banner>
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
-    <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" :current-page="currentPage" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
+    <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" :current-page="currentPage" :isRecordList="isRecordList" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
   </div>
 </template>
 
@@ -13,16 +14,16 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
-import globalErrorsModule from '@/store/modules/global-errors';
+import GlobalErrorBanner from './global-error-banner.vue';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
 
 export default {
   name: 'VueFormRenderer',
-  components: { CustomCssOutput },
+  components: { CustomCssOutput, GlobalErrorBanner},
   mixins: [CurrentPageProperty],
-  props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
+  props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition', 'isRecordList', 'isNestedScreen'],
   model: {
     prop: 'data',
     event: 'update',
@@ -108,10 +109,10 @@ export default {
     },
   },
   created() {
-    this.registerStoreModule('globalErrorsModule', globalErrorsModule);
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
+    console.log("IS MOUNTED");
     this.parseCss();
     this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
@@ -120,13 +121,6 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    registerStoreModule(moduleName, storeModule) {
-      const store = this.$store;
-
-      if (store && store.state && !store.state[moduleName]) {
-        store.registerModule(moduleName, storeModule);
-      }
-    },
     countElements(config) {
       const definition = { config };
       return this.$refs.renderer.countElements(definition);
