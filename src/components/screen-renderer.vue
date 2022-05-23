@@ -11,7 +11,7 @@
       </svg>
       {{ $t('Loading...') }}
     </div>
-    <component ref="component" :is="component" :vdata="value" :_parent="_parent" :_initial-page="currentPage"
+    <component ref="component" :is="component" :vdata="value" :_parent="_parent" :isRecordList="isRecordList" :_initial-page="currentPage"
       @submit="submit"
       @asyncWatcherTriggered="onAsyncWatcherOn"
       @asyncWatcherCompleted="onAsyncWatcherOff"

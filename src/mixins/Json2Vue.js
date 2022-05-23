@@ -26,6 +26,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isRecordList: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
