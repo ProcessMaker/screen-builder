@@ -103,6 +103,7 @@ export default {
     },
     mustache(text) {
       try {
+        const test = !!this._parent ? Object.assign({}, this._parent) : Object.assign({_parent: this._parent}, this.vdata);
         const data = new Proxy(this, {
           get(target, name) {
             if (name === '_parent') {
@@ -111,8 +112,12 @@ export default {
               return target.vdata[name];
             }
           },
+          ownKeys(target) { // to intercept property list
+            return Object.keys(target).filter(key => !key.startsWith('_'));
+          },
         });
-        return text && Mustache.render(text, data);
+        console.log(Mustache.render(text, test));
+        return text && Mustache.render(text, test);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
       }
