@@ -60,6 +60,6 @@ export default {
 
 <style lang="scss">
   .is-invalid .multiselect__tags {
-    border-color: red !important;
+    border-color: red;
   }
 </style>
