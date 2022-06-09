@@ -57,6 +57,20 @@ describe('Form Input', () => {
       form_input_1: 1234,
     });
   });
+  it('Data type Currency when backspacing a decimal digit', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Currency');
+    cy.get('[data-cy=mode-preview]').click();
+
+    cy.get('[name=form_input_1]:visible').type('1.1');
+    cy.get('[data-cy=preview-data-input]').click(); // blur the text box
+    cy.assertPreviewData({ form_input_1: 1.1 });
+
+    cy.get('[name=form_input_1]:visible').type('{home}{rightArrow}{rightArrow}{rightArrow}{backspace}');
+    cy.assertPreviewData({ form_input_1: 1 });
+  });
   it('Validation rule', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
