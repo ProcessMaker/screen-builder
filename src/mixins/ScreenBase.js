@@ -103,7 +103,7 @@ export default {
     },
     mustache(text) {
       try {
-        const data = !!this._parent ? Object.assign({}, this._parent) : Object.assign({_parent: this._parent}, this.vdata);
+        const data = Object.assign({_parent: this._parent}, this.vdata);
         return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
@@ -179,7 +179,7 @@ export default {
           this.$set(
             object,
             attr,
-            setValue
+            setValue,
           );
 
           object = get(object, attr);
