@@ -103,15 +103,7 @@ export default {
     },
     mustache(text) {
       try {
-        const data = new Proxy(this, {
-          get(target, name) {
-            if (name === '_parent') {
-              return target._parent;
-            } else {
-              return target.vdata[name];
-            }
-          },
-        });
+        const data = Object.assign({_parent: this._parent}, this.vdata);
         return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
@@ -187,7 +179,7 @@ export default {
           this.$set(
             object,
             attr,
-            setValue
+            setValue,
           );
 
           object = get(object, attr);
