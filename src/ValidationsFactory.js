@@ -51,7 +51,7 @@ class Validations {
    hasVisibleContainers(containers) {
     const visibles = containers.filter(container => {
       let visible = true;
-      if (container.config.conditionalHide) {
+      if (!this.data.noData && container.config.conditionalHide) {
         try {
           visible = !!Parser.evaluate(container.config.conditionalHide, this.data);
         } catch (error) {
@@ -252,12 +252,6 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
-    // Disable validations if parent containers are hidden.
-    const hasVisibleContainers = this.hasVisibleContainers(this.getContainers(this.screen, this.element));
-    if (!hasVisibleContainers) {
-      return false;
-    }
-
     if (this.element.config && this.element.config.readonly) {
       //readonly elements do not need validation
       return;
@@ -269,6 +263,11 @@ class FormElementValidations extends Validations {
     if (!(this.element.config && this.element.config.name && typeof this.element.config.name === 'string' && this.element.config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
       //element invalid
       return;
+    }
+    // Disable validations if parent containers are hidden.
+    const hasVisibleContainers = this.hasVisibleContainers(this.getContainers(this.screen, this.element));
+    if (!hasVisibleContainers) {
+      return false;
     }
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
