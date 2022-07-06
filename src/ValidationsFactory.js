@@ -33,7 +33,7 @@ class Validations {
    * Check if element/container is visible.
    */
   isVisible() {
-    // Disable validations if field is hidden
+    // Disable validations if field is hidden.
     let visible = true;
     if (!this.data.noData && this.element.config.conditionalHide) {
       try {
@@ -43,7 +43,56 @@ class Validations {
       }
     }
     return visible;
-  }    
+  }
+
+  /**
+   * Check if parent containers are visible.
+   */
+   hasVisibleContainers(containers) {
+    const visibles = containers.filter(container => {
+      let visible = true;
+      if (container.config.conditionalHide) {
+        try {
+          visible = !!Parser.evaluate(container.config.conditionalHide, this.data);
+        } catch (error) {
+          visible = false;
+        }
+      }
+      return visible;
+    });
+    
+    return visibles.length === containers.length;
+  }
+
+  getContainers(screen, element) {
+    let containers = [];
+
+    screen.config.forEach(page => {
+      containers = [];
+      if (!page || !page.items) {
+        return;
+      }
+      
+      let elements = [];
+      page.items.forEach(arr => elements.push(arr));
+      while(elements.length) {
+        let item = elements.shift();
+        if (!item.hasOwnProperty('container') && (item.config && item.config.name === element.config.name)) {
+          return true;
+        }
+        
+        if (item.items && item.items.length) {
+          elements.push(...item.items);
+        }
+        
+        if (item.container) {
+          containers.push(item);
+        }
+      }
+    });
+    
+    return containers;  
+  }
 }
 
 /**
@@ -203,6 +252,12 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
+    // Disable validations if parent containers are hidden.
+    const hasVisibleContainers = this.hasVisibleContainers(this.getContainers(this.screen, this.element));
+    if (!hasVisibleContainers) {
+      return false;
+    }
+
     if (this.element.config && this.element.config.readonly) {
       //readonly elements do not need validation
       return;
