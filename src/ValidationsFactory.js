@@ -33,6 +33,10 @@ class Validations {
    * Check if element/container is visible.
    */
   isVisible() {
+    if (this.element.component === 'FormNestedScreen') {
+      this.data.noData = false;
+    }
+
     // Disable validations if field is hidden.
     let visible = true;
     if (!this.data.noData && this.element.config.conditionalHide) {
@@ -43,55 +47,6 @@ class Validations {
       }
     }
     return visible;
-  }
-
-  /**
-   * Check if parent containers are visible.
-   */
-   hasVisibleContainers(containers) {
-    const visibles = containers.filter(container => {
-      let visible = true;
-      if (!this.data.noData && container.config.conditionalHide) {
-        try {
-          visible = !!Parser.evaluate(container.config.conditionalHide, this.data);
-        } catch (error) {
-          visible = false;
-        }
-      }
-      return visible;
-    });
-    
-    return visibles.length === containers.length;
-  }
-
-  getContainers(screen, element) {
-    let containers = [];
-
-    screen.config.forEach(page => {
-      containers = [];
-      if (!page || !page.items) {
-        return;
-      }
-      
-      let elements = [];
-      page.items.forEach(arr => elements.push(arr));
-      while(elements.length) {
-        let item = elements.shift();
-        if (!item.hasOwnProperty('container') && (item.config && item.config.name === element.config.name)) {
-          return true;
-        }
-        
-        if (item.items && item.items.length) {
-          elements.push(...item.items);
-        }
-        
-        if (item.container) {
-          containers.push(item);
-        }
-      }
-    });
-    
-    return containers;  
   }
 }
 
@@ -263,11 +218,6 @@ class FormElementValidations extends Validations {
     if (!(this.element.config && this.element.config.name && typeof this.element.config.name === 'string' && this.element.config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
       //element invalid
       return;
-    }
-    // Disable validations if parent containers are hidden.
-    const hasVisibleContainers = this.hasVisibleContainers(this.getContainers(this.screen, this.element));
-    if (!hasVisibleContainers) {
-      return false;
     }
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
