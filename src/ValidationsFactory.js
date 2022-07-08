@@ -33,13 +33,9 @@ class Validations {
    * Check if element/container is visible.
    */
   isVisible() {
-    if (this.element.component === 'FormNestedScreen') {
-      this.data.noData = false;
-    }
-
-    // Disable validations if field is hidden.
+    // Disable validations if field is hidden
     let visible = true;
-    if (!this.data.noData && this.element.config.conditionalHide) {
+    if (this.element.config.conditionalHide) {
       try {
         visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
       } catch (error) {
@@ -119,7 +115,8 @@ class FormLoopValidations extends Validations {
     const loopField = get(validations, this.element.config.name);
     loopField['$each'] = {};
     this.checkForSiblings(validations);
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, noData:true }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true }).addValidations(loopField['$each']);
+    const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true }).addValidations(loopField['$each']);
   }
   checkForSiblings(validations) {
     const siblings = [];
