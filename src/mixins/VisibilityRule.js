@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 
 export default {
   mounted() {
-    this.refreshValidationRulesByName = debounce(this.refreshValidationRulesByName, 1000);
+    this.refreshValidationRulesByName = debounce(this.refreshValidationRulesByName, 300);
 
     this.$root.$on('refresh-validation-rules', () => {
       this.loadValidationRules();
