@@ -27,7 +27,7 @@
 <script>
 import moment from 'moment';
 import MonacoEditor from 'vue-monaco';
-import Screens from '../e2e/fixtures/webentry.json';
+import Screens from '../../cypress/fixtures/webentry.json';
 
 export default {
   components: {MonacoEditor},
