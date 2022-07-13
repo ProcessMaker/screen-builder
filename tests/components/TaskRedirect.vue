@@ -78,7 +78,7 @@
 <script>
 import moment from 'moment';
 import MonacoEditor from 'vue-monaco';
-import Screens from '../e2e/fixtures/single_line_input.json';
+import Screens from '../../cypress/fixtures/single_line_input.json';
 
 export default {
   components: {MonacoEditor},
