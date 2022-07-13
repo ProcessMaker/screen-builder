@@ -109,7 +109,7 @@ Cypress.Commands.add('assertComponentValueAsJson', (selector, expectedData) => {
  * @param {String} filename - The screen filename to load
  */
 Cypress.Commands.add('loadFromJson', (filename, index) => {
-  return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
+  return cy.readFile(`cypress/fixtures/${filename}`).then((content) => {
     cy.window().then((win) => {
       win.exampleScreens = content.screens;
     });
