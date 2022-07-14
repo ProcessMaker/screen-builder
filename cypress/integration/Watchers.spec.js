@@ -62,7 +62,7 @@ describe('Watchers', () => {
 
   it('CRUD of watchers', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     // Create
     cy.get('[data-cy="topbar-watchers"]').click();
     cy.get('[data-cy="watchers-add-watcher"]').click();
@@ -113,7 +113,7 @@ describe('Watchers', () => {
   });
   it('Test cancel', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     // Create a calculated watcher
     cy.get('[data-cy="topbar-watchers"]').click();
     cy.get('[data-cy="watchers-add-watcher"]').click();
@@ -124,9 +124,9 @@ describe('Watchers', () => {
   });
   it('Test variables in multi columns', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable', {position: 'bottom'});
     // Create a calculated watcher
     cy.get('[data-cy="topbar-watchers"]').click();
     cy.get('[data-cy="watchers-add-watcher"]').click();
@@ -136,7 +136,7 @@ describe('Watchers', () => {
 
   it('Test variables in nested screens', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormNestedScreen]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormNestedScreen]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-screen] div.multiselect').click();
     cy.get('[data-cy=inspector-screen] span:contains("Sub screen example"):first').click();
@@ -151,7 +151,7 @@ describe('Watchers', () => {
 
   it('Create duplicated properties', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     // Create a calculated watcher
     cy.get('[data-cy="topbar-watchers"]').click();
     cy.get('[data-cy="watchers-add-watcher"]').click();
@@ -188,8 +188,8 @@ describe('Watchers', () => {
     }));
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=inspector-name]').clear().type('user.name');
 
@@ -232,8 +232,8 @@ describe('Watchers', () => {
     }));
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=inspector-name]').clear().type('user.name');
 
@@ -278,8 +278,8 @@ describe('Watchers', () => {
     });
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=inspector-name]').clear().type('user.name');
 
@@ -407,7 +407,7 @@ describe('Watchers', () => {
   });
   it.only('Focuses the first field that has an error', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy="topbar-watchers"]').click();
     cy.get('[data-cy="watchers-add-watcher"]').click();
     cy.get('[data-cy="watchers-watcher-name"]').clear().type('Watcher test');
@@ -421,7 +421,7 @@ describe('Watchers', () => {
     cy.get('[data-cy="watchers-accordion-output"]').click();
     cy.get('[data-cy="watchers-watcher-output_variable"]').clear().type('output');
     cy.get('[data-cy="watchers-button-save"]').click();
-    
+
     cy.focused().should('be.visible'); // Source accordion opens automatically
     cy.focused().should('have.attr', 'class', 'inputarea'); // Monaco should be focused
   });

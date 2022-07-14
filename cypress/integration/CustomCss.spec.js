@@ -1,7 +1,7 @@
 describe('Custom CSS', () => {
   it('Shows Modal', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
     cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
@@ -11,7 +11,7 @@ describe('Custom CSS', () => {
 
   it('Closes Modal', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
     cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
@@ -24,7 +24,7 @@ describe('Custom CSS', () => {
 
   it('Does Not Save Custom CSS', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
     cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
@@ -39,7 +39,7 @@ describe('Custom CSS', () => {
 
   it('Saves Custom CSS', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
     cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
@@ -55,7 +55,7 @@ describe('Custom CSS', () => {
 
   it('Does not add styling to element in design mode', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
     cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
@@ -70,7 +70,7 @@ describe('Custom CSS', () => {
 
   it('Adds styling to element in preview mode', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
     cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
@@ -81,4 +81,3 @@ describe('Custom CSS', () => {
     cy.get('.page').should('contain.html', '<div selector="new_input_css">');
   });
 });
-  

@@ -2,7 +2,7 @@ describe('MultiColumns', () => {
 
   it('Configure using JSON', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable:empty');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable:empty');
@@ -30,7 +30,7 @@ describe('MultiColumns', () => {
 
   it('Configure using columns configuration', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
 
     // Remove first column

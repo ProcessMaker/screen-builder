@@ -1,7 +1,7 @@
 describe('Form Input', () => {
   it('Default properties', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=form_input_1]').type('Hello World');
@@ -11,7 +11,7 @@ describe('Form Input', () => {
   });
   it('Variable properties', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('firstname');
     cy.get('[data-cy=inspector-label]').clear().type('Your Firstname');
@@ -24,7 +24,7 @@ describe('Form Input', () => {
   });
   it('Data type Integer', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Integer');
     cy.get('[data-cy=mode-preview]').click();
@@ -35,7 +35,7 @@ describe('Form Input', () => {
   });
   it('Data type Currency', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Currency');
     cy.get('[data-cy=mode-preview]').click();
@@ -48,7 +48,7 @@ describe('Form Input', () => {
   it('Data type Currency with initial data', () => {
     cy.visit('/');
     cy.setPreviewDataInput('{"form_input_1":1234}');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Currency');
     cy.get('[data-cy=mode-preview]').click();
@@ -59,7 +59,7 @@ describe('Form Input', () => {
   });
   it('Data type Currency when backspacing a decimal digit', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Currency');
     cy.get('[data-cy=mode-preview]').click();
@@ -73,7 +73,7 @@ describe('Form Input', () => {
   });
   it('Validation rule', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-readonly]').click();
     cy.get('[data-cy=mode-preview]').click();
@@ -81,7 +81,7 @@ describe('Form Input', () => {
   });
   it('Placeholder', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Configuration]').click();
     cy.get('[data-cy=inspector-placeholder]').clear().type('enter text here');
@@ -90,7 +90,7 @@ describe('Form Input', () => {
   });
   it('Data type Percentage', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Percentage');
     cy.get('[data-cy=mode-preview]').click();
@@ -102,7 +102,7 @@ describe('Form Input', () => {
   });
   it('Data type Datetime', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=mode-preview]').click();
@@ -114,7 +114,7 @@ describe('Form Input', () => {
   });
   it('Data type Date', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date', 1);
     cy.get('[data-cy=mode-preview]').click();
@@ -126,7 +126,7 @@ describe('Form Input', () => {
   });
   it('Data type password', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Password');
     cy.get('[data-cy=mode-preview]').click();

@@ -90,9 +90,9 @@ describe('Computed fields', () => {
   it('Create a javascript computed field', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     // Add a second input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
 
     cy.get('[data-cy=screen-element-container]').eq(0).click();
     cy.get('[data-cy=screen-element-container]').eq(1).click();
@@ -120,9 +120,9 @@ describe('Computed fields', () => {
   it('Create a computed field with formula', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     // Add a second input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
 
     cy.get('[data-cy=screen-element-container]').eq(0).click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Integer');

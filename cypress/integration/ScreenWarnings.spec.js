@@ -13,7 +13,7 @@ describe('Screen Warnings', () => {
   });
 
   it('Use script warning', () => {
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy="topbar-watchers"]').click();
     cy.get('[data-cy="watchers-add-watcher"]').click();
     cy.get('[data-cy="watchers-watcher-name"]').type('test');

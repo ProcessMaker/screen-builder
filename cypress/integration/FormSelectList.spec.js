@@ -2,7 +2,7 @@ describe('Form Select List', () => {
   beforeEach(() => {
     cy.visit('/');
     // Add loop control
-    cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
   });
 
