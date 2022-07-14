@@ -39,7 +39,7 @@
             <i class="far fa-calendar-alt"/>
             <small>
               {{ __('Due') }}
-              {{ moment(task.due_at).fromNow() }}
+              {{ formatDateFromNow(task.due_at) }}
             </small>
             <div>{{ formatDate(task.due_at) }}</div>
           </b-list-group-item>
@@ -52,7 +52,7 @@
             <i class="far fa-calendar-alt"/>
             <small>
               {{ __('Assigned') }}
-              {{ moment(task.created_at).fromNow() }}
+              {{ formatDateFromNow(task.created_at) }}
             </small>
             <div>{{ formatDate(task.created_at) }}</div>
           </b-list-group-item>
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import { format, formatISO, addDays, formatDistanceToNow } from 'date-fns';
 import MonacoEditor from 'vue-monaco';
 import Screens from '../e2e/fixtures/single_line_input.json';
 
@@ -89,9 +89,9 @@ export default {
         id: 1,
         advanceStatus: 'open',
         component: 'task-screen',
-        created_at: moment().toISOString(),
-        completed_at: moment().toISOString(),
-        due_at: moment().add(1, 'day').toISOString(),
+        created_at: formatISO(new Date()),
+        completed_at: formatISO(new Date()),
+        due_at: formatISO(addDays(new Date(), 1)),
         user: {
           avatar: '',
           fullname: 'Assigned User',
@@ -123,14 +123,14 @@ export default {
     redirectToTask(task) {
       window.location.href = 'tasks/' + task + '/edit';
     },
-    moment(...args) {
-      return moment(...args);
-    },
     __(text) {
       return text;
     },
     formatDate(date) {
-      return moment(date).format('YYYY-MM-DD HH:mm');
+      return format(new Date(date), 'yyyy-MM-dd HH:mm');
+    },
+    formatDateFromNow(date) {
+      return formatDistanceToNow(new Date(date), { addSuffix: true})
     },
     submit(task) {
       if (this.disabled) {
