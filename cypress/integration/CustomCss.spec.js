@@ -19,7 +19,7 @@ describe('Custom CSS', () => {
     cy.get('#custom-css').should('be.visible');
     cy.wait(1000);
     cy.get('#custom-css___BV_modal_header_ > .close').click();
-    cy.get('#custom-css').should('not.be.visible');
+    cy.get('#custom-css').should('not.exist');
   });
 
   it('Does Not Save Custom CSS', () => {

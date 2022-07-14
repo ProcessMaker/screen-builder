@@ -78,7 +78,7 @@ beforeEach(() => {
 describe('Pagination', () => {
   it('Should Not Be Visible', () => {
     cy.setPreviewDataInput({form_record_list_1: [{'form_input_1': 'John'}]});
-    cy.get('[data-cy=table-pagination]').should('not.be.visible');
+    cy.get('[data-cy=table-pagination]').should('not.exist');
   });
 
   it('Should Be Visible', () => {
