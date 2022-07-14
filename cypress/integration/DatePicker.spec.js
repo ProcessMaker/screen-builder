@@ -7,7 +7,7 @@ describe('Date Picker', () => {
     const yesterday = moment(new Date()).subtract(1, 'days');
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=accordion-Configuration]').click();
@@ -24,7 +24,7 @@ describe('Date Picker', () => {
     const tomorrow = moment(new Date()).add(1, 'days');
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=accordion-Configuration]').click();
@@ -36,7 +36,7 @@ describe('Date Picker', () => {
   });
   it('Date type', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=mode-preview]').click();
@@ -54,7 +54,7 @@ describe('Date Picker', () => {
   });
   it('DateTime type', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=mode-preview]').click();
@@ -88,10 +88,10 @@ describe('Date Picker', () => {
     const dateBefore = moment(new Date()).subtract(1, 'days').format('MM/DD/YYYY');
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=accordion-Configuration]').click();
@@ -113,10 +113,10 @@ describe('Date Picker', () => {
     const dateSame = moment(new Date()).format('MM/DD/YYYY');
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=accordion-Configuration]').click();
@@ -138,10 +138,10 @@ describe('Date Picker', () => {
     const dateBefore = moment(new Date()).subtract(1, 'days').format('MM/DD/YYYY');
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=accordion-Configuration]').click();
@@ -163,10 +163,10 @@ describe('Date Picker', () => {
     const dateSame = moment(new Date()).format('MM/DD/YYYY');
 
     cy.visit('/');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=accordion-Configuration]').click();

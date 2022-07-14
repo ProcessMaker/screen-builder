@@ -3,7 +3,7 @@ describe('Computed fields', () => {
   it('The user should not be able to change a FormInput assigned to a computed property', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
 
     cy.get('[data-cy=screen-element-container]').eq(0).click();
 
@@ -113,7 +113,7 @@ describe('Computed fields', () => {
   it('The user should not be able to change a FormTextArea assigned to a computed property', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormTextArea]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormTextArea]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
 
     cy.get('[data-cy=screen-element-container]').eq(0).click();
 
@@ -138,7 +138,7 @@ describe('Computed fields', () => {
   it('The user should not be able to change a FormDatePicker assigned to a computed property', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
 
@@ -163,7 +163,7 @@ describe('Computed fields', () => {
   it('The user should not be able to change a FormSelectList assigned to a computed property', () => {
     cy.visit('/');
     // Add an input field
-    cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-DataSource]').click();
     cy.get('[data-cy=inspector-data-sources]').select('Provide Values');
@@ -206,7 +206,7 @@ describe('Computed fields', () => {
     cy.visit('/');
 
     // Add an input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').eq(0).click();
     cy.get('[data-cy=inspector-name]').clear().type('object.foo');
 

@@ -1,7 +1,7 @@
 describe('Default values', () => {
   it('Variable names with dots 2 levels', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('user.address');
     cy.get('[data-cy=mode-preview]').click();
@@ -13,7 +13,7 @@ describe('Default values', () => {
   });
   it('Variable names with dots 3 levels', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('user.address.city');
     cy.get('[data-cy=mode-preview]').click();
@@ -28,7 +28,7 @@ describe('Default values', () => {
   });
   it('Variable names with dots and one attribute same as the name', () => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('address.address.city');
     cy.get('[data-cy=mode-preview]').click();

@@ -1,13 +1,13 @@
 describe('Screen Builder', () => {
   beforeEach(() => {
     cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
   });
 
   it('Validation in inspector properties', () => {
     // Add a second input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').eq(0).click();
     cy.get('[data-cy=inspector-name]').clear();
     cy.get('[data-cy=screen-element-container]').eq(1).click();
@@ -22,7 +22,7 @@ describe('Screen Builder', () => {
     cy.get('[data-cy=mode-editor]').click();
     cy.get('[data-cy=mode-preview]').click();
     cy.assertPreviewData({
-      form_input_1: '', 
+      form_input_1: '',
     });
   });
 
@@ -39,7 +39,7 @@ describe('Screen Builder', () => {
 
   it('Validates variable names', () => {
     cy.get('[data-cy=screen-element-container]').eq(0).click();
-    
+
     // Valid variable names
     [
       'A',
@@ -53,7 +53,7 @@ describe('Screen Builder', () => {
       cy.get('[data-cy=inspector-name]').clear().type(name);
       cy.get('[data-cy=inspector-name]').should('not.have.class', 'is-invalid');
     });
-    
+
     // Invalid variable names
     [
       '1',
