@@ -32,7 +32,7 @@
     "vuelidate": "^0.7.5"
   },
   "devDependencies": {
-    "@4tw/cypress-drag-drop": "~2.2.1",
+    "@4tw/cypress-drag-drop": "^2.2.1",
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
     "@cypress/code-coverage": "^3.10.0",
