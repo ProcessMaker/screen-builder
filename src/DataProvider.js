@@ -136,7 +136,19 @@ export default {
     }
     url += this.authQueryString();
 
-    return this.post(url, params, { timeout: 0});
+    if (window.ProcessMaker.cachedDataSources === undefined) {
+      window.ProcessMaker.cachedDataSources = [];
+    }
+    let cachedDataSources = window.ProcessMaker.cachedDataSources;
+    let cached = cachedDataSources.find(item => item.url === url);
+    if (cached) {
+      return cached.value;
+    }
+    else {
+      let post = this.post(url, params, { timeout: 0});
+      cachedDataSources.push({url, value: post});
+      return post;
+    }
   },
 
   authQueryString() {
