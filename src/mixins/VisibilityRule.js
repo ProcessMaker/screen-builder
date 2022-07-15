@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 
 export default {
   mounted() {
-    this.refreshValidationRulesByName = debounce(this.refreshValidationRulesByName, 1000);
+    this.refreshValidationRulesByName = debounce(this.refreshValidationRulesByName, 500);
 
     this.$root.$on('refresh-validation-rules', () => {
       this.loadValidationRules();
@@ -30,7 +30,7 @@ export default {
 
         window.setTimeout(() => {
           this.refreshValidationRulesByName(fieldName, isVisible);
-        }, 1000);
+        }, 250);
         return isVisible;
       } catch (e) {
         return false;
