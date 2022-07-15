@@ -322,25 +322,19 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     // Check box 1
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
-      .click();
-
-    cy.on('window:alert', msg => {
-      expect(msg).to.equal('There is a validation error in your form.');
-    });
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]').click();
+    shouldHaveValidationErrors('screen-field-form_input_2');
 
     // Uncheck box 1
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
-      .click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]').click();
+    shouldNotHaveValidationErrors('screen-field-form_input_2');
 
     // Check box 1
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
-      .click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]').click();
 
     // Fill name
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
-      .clear()
-      .type('test');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]').clear().type('test');
+    shouldNotHaveValidationErrors('screen-field-form_input_2');
   });
 
   it('Required Unless with boolean values', () => {
@@ -348,20 +342,28 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     // Check box 1
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
-      .click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]').click();
+    shouldHaveValidationErrors('screen-field-form_input_2');
 
     // Uncheck box 1
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
-      .click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]').click();
+    shouldNotHaveValidationErrors('screen-field-form_input_2');
 
     // Check box 1
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
-      .click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]').click();
 
     // Fill name
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
       .clear()
       .type('test');
+    shouldNotHaveValidationErrors('screen-field-form_input_2');
   });
 });
+
+function shouldHaveValidationErrors(name) {
+  cy.get(`[data-cy=preview-content] [data-cy=${name}]`).should('have.class', 'is-invalid');
+}
+
+function shouldNotHaveValidationErrors(name) {
+  cy.get(`[data-cy=preview-content] [data-cy=${name}]`).should('not.have.class', 'is-invalid');
+}
