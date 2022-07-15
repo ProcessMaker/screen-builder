@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "is-proxy": "^1.0.6",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.27",
     "scrollparent": "^2.0.1",
