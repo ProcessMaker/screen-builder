@@ -4,8 +4,8 @@
     <component
       v-if="componentType!=='input'"
       :is="componentType"
-			:value="localValue"
-			@input="updateInternalValue"
+      :value="internalValue"
+      @input="updateInternalValue"
       v-bind="componentConfig"
       v-uni-id="name"
       :name="name"
@@ -14,8 +14,8 @@
       type="text"
     />
     <input v-else
-		  :value="localValue"
-		  @input="updateInternalValue"
+      :value="internalValue"
+      @input="updateInternalValue"
       v-bind="componentConfig"
       v-uni-id="name"
       :name="name"
@@ -43,7 +43,7 @@ import { TheMask } from 'vue-the-mask';
 import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import moment from 'moment';
-import debounce from 'lodash/debounce';
+import InputDebounce from '@processmaker/vue-form-elements/src/components/mixins/InputDebounce';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -64,7 +64,7 @@ const componentTypesConfigs = {
 export default {
   inheritAttrs: false,
   components: { TheMask, Inputmasked },
-  mixins: [ uniqIdsMixin, ValidationMixin ],
+  mixins: [ uniqIdsMixin, ValidationMixin, InputDebounce ],
   props: [
     'value',
     'label',
@@ -135,15 +135,6 @@ export default {
         dateTime: ['####-##-## ##:##'],
       };
     },
-		updateInternalValue (event) {
-			this.touched = true;
-			this.updateValue(event.target.value);
-		},
-		updateValue: debounce(function (value) {
-			this.touched = false;
-			this.$emit('input', value);
-			this.$emit('update:value', value);
-		}, 600),
   },
   computed: {
     dataFormat() {
@@ -248,8 +239,6 @@ export default {
   data() {
     return {
       validator: null,
-      localValue: null,
-			touched: false,
       validationRules: {
         'percentage': 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
       },
