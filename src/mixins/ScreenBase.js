@@ -7,12 +7,28 @@ const stringFormats = ['string', 'datetime', 'date', 'password'];
 export default {
   schema: [
     function() {
+      if (window.ProcessMaker.cachedSchemas === undefined) {
+        window.ProcessMaker.cachedSchemas = [];
+      }
+
+
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         if (window.ProcessMaker.VocabulariesSchemaUrl) {
-          let response = window.ProcessMaker.apiClient.get(window.ProcessMaker.VocabulariesSchemaUrl);
-          return response.then(response => {
-            return response.data;
-          });
+          let cachedSchemas = window.ProcessMaker.cachedSchemas;
+          let schemaUrl = window.ProcessMaker.VocabulariesSchemaUrl;
+          let cached = cachedSchemas.find(item => item.url === schemaUrl);
+          if (cached) {
+            return cached.value;
+          }
+          else {
+            let response = window.ProcessMaker.apiClient.get(window.ProcessMaker.VocabulariesSchemaUrl);
+            let result = response.then(response => {
+              window.ProcessMaker.cachedSchema = response.data;
+              return response.data;
+            });
+            cachedSchemas.push({url: schemaUrl, value: result});
+            return result;
+          }
         }
         if (window.ProcessMaker.VocabulariesPreview) {
           return window.ProcessMaker.VocabulariesPreview;
