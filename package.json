@@ -72,7 +72,7 @@
     "vue-deepset": "^0.6.3",
     "vue-json-pretty": "^1.4.0",
     "vue-monaco": "^0.3.1",
-    "vue-template-compiler": "^2.7.5",
+    "vue-template-compiler": "^2.6.14",
     "vue-uniq-ids": "^1.0.0",
     "vue-upload-component": "^2.8.14",
     "vue-vuelidate-jsonschema": "^0.13.4",
