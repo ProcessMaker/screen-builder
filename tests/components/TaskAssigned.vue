@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { format, formatISO, addDays, formatDistanceToNow } from 'date-fns';
+import { format, addDays, formatDistanceToNow } from 'date-fns';
 import MonacoEditor from 'vue-monaco';
 import Screens from '../e2e/fixtures/webentry.json';
 
@@ -84,9 +84,9 @@ export default {
         id: 1,
         advanceStatus: 'open',
         component: 'task-screen',
-        created_at: formatISO(new Date()),
-        completed_at: formatISO(new Date()),
-        due_at: formatISO(addDays(new Date(), 1)),
+        created_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        due_at: addDays(new Date(), 1).toISOString(),
         user: {
           avatar: '',
           fullname: 'Assigned User',

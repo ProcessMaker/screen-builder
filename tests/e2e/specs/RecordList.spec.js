@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { format } from 'date-fns';
 
 describe('Record list', () => {
 
@@ -405,8 +405,8 @@ describe('Record list', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     let data = [
-      { 'date': moment('01/02/2022').format('MM/DD/YYYY'), 'name': 'B' },
-      { 'date': moment('01/03/2022').format('MM/DD/YYYY'), 'name': 'C' },
+      { 'date': format(new Date(2022, 1, 2), 'MM/dd/yyyy'), 'name': 'B' },
+      { 'date': format(new Date(2022, 1, 3), 'MM/dd/yyyy'), 'name': 'C' },
       { 'date': moment('01/01/2022').format('MM/DD/YYYY'), 'name': 'A' },
       { 'date': moment('01/05/2022').format('MM/DD/YYYY'), 'name': 'E' },
       { 'date': moment('01/04/2022').format('MM/DD/YYYY'), 'name': 'D' },

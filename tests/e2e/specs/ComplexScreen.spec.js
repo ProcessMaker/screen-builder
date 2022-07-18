@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { format } from 'date-fns';
 
 describe('Complex screen', () => {
   const today = new Date();
@@ -6,7 +6,7 @@ describe('Complex screen', () => {
   today.setUTCMinutes(0);
   today.setUTCSeconds(0);
   today.setUTCMilliseconds(0);
-  const today_date = moment(today).format('YYYY-MM-DD');
+  const today_date = format(today, 'yyyy-MM-dd');
 
   const now = new Date();
   now.setUTCHours(8);
@@ -442,8 +442,8 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_input_3]').clear().type('123.45');
     cy.get('[data-cy=preview-content] [name=form_input_4]').type('19.21');
     cy.get('[data-cy=preview-content] [name=form_input_5]').clear().type('123.45');
-    cy.get('[data-cy=preview-content] [name=form_input_6]').clear().type(moment(now).format('YYYY-MM-DD HH:mm'));
-    cy.get('[data-cy=preview-content] [name=form_input_7]').clear().type(moment(now).format('YYYY-MM-DD HH:mm'));
+    cy.get('[data-cy=preview-content] [name=form_input_6]').clear().type(format(now, 'yyyy-MM-dd HH:mm')); 
+    cy.get('[data-cy=preview-content] [name=form_input_7]').clear().type(format(now, 'yyyy-MM-dd HH:mm'));
     cy.get('[data-cy=preview-content] [name=form_input_8]').type('password');
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').selectOption('b');
     cy.get('[data-cy=preview-content] [name=form_checkbox_1]').click();
@@ -597,11 +597,11 @@ describe('Complex screen', () => {
         'form_select_list_3': 'b',
         'form_checkbox_3': true,
         'form_input_2': 123,
-        'form_input_6': moment(now).format('YYYY-MM-DD HH:mm'),
+        'form_input_6': format(now, 'yyyy-MM-dd HH:mm'),
         'form_text_area_2': '',
         'form_select_list_2': [], // form_select_list_2 is a disabled multi select list, its default value must an empty array
         'form_input_3': 12345,
-        'form_input_7': moment(now).format('YYYY-MM-DD'),
+        'form_input_7': format(now, 'yyyy-MM-dd'),
         'form_input_8': 'password',
         'form_checkbox_5': true,
         'form_checkbox_2': true,
