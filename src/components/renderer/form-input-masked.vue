@@ -1,5 +1,5 @@
 <template>
-  <input type="text" class="form-control" v-model="currencyValue" ref="currencyInput" >
+  <input type="text" class="form-control" @keyup="keyup" v-model="currencyValue" ref="currencyInput" >
 </template>
 
 <script>
@@ -64,6 +64,13 @@ export default {
       }).mask(this.currencyInput);
       if (this.value) {
         this.currencyInput.inputmask.setValue(this.value);
+      }
+    },
+    keyup(event) {
+      // Workaround for a bug in inputmask where backspacing after
+      // the decimal does not trigger an input event
+      if (this.currencyValue !== event.target.value) {
+        this.currencyValue = event.target.value;
       }
     },
   },

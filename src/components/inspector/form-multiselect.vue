@@ -45,7 +45,7 @@ export default {
   computed: {
     classList() {
       return {
-        'is-invalid': (this.validator && this.validator.errorCount) || this.error,
+        'has-errors': (this.validator && this.validator.errorCount) || this.error,
       };
     },
   },
@@ -59,7 +59,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .is-invalid .multiselect__tags {
-    border-color: red !important;
+  .has-errors .multiselect__tags {
+    border-color: red;
   }
 </style>
