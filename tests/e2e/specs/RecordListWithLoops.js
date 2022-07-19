@@ -32,6 +32,7 @@ describe('Record list', () => {
       message: 'The file was uploaded.',
       fileUploadId: 2,
     }));
+    cy.wait(1000);
     cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file_upload_2"] input[type=file]', 'avatar.jpeg', 'image/jpg', 1);
     cy.wait(1000);
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file_upload_2"]').eq(0).should('contain.text', 'avatar.jpeg');
@@ -50,6 +51,7 @@ describe('Record list', () => {
       message: 'The file was uploaded.',
       fileUploadId: 3,
     }));
+    cy.wait(1000);
     cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"] input[type=file]', 'avatar.jpeg', 'image/jpg', 2);
     cy.wait(1000);
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"]').eq(2).should('contain.text', 'avatar.jpeg');
@@ -68,6 +70,7 @@ describe('Record list', () => {
       message: 'The file was uploaded.',
       fileUploadId: 4,
     }));
+    cy.wait(1000);
     cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file_upload_2"] input[type=file]', 'avatar.jpeg', 'image/jpg');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button:contains(Ok)').click();
 
