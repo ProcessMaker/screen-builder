@@ -83,8 +83,8 @@ export const after = (after, fieldName) => helpers.withParams({after}, function(
     return false;
   }
 
-  const inputDate = formatISO(date);
-  const afterDate = formatISO(checkDate);
+  const inputDate = formatISO(new Date(date));
+  const afterDate = formatISO(new Date(checkDate));
 
   return inputDate > afterDate;
 });
@@ -99,8 +99,8 @@ export const after_or_equal = (after_or_equal, fieldName) => helpers.withParams(
     return false;
   }
 
-  const inputDate = formatISO(date);
-  const equalOrAfterDate = formatISO(checkDate);
+  const inputDate = formatISO(new Date(date));
+  const equalOrAfterDate = formatISO(new Date(checkDate));
   return inputDate >= equalOrAfterDate;
 });
 
@@ -114,8 +114,8 @@ export const before = (before, fieldName) => helpers.withParams({before}, functi
     return false;
   }
 
-  const inputDate = formatISO(date);
-  const beforeDate = formatISO(checkDate);
+  const inputDate = formatISO(new Date(date));
+  const beforeDate = formatISO(new Date(checkDate));
   return inputDate < beforeDate;
 });
 
@@ -129,8 +129,8 @@ export const before_or_equal = (before_or_equal, fieldName) => helpers.withParam
     return false;
   }
     
-  const inputDate = formatISO(date);
-  const beforeDate = formatISO(checkDate);
+  const inputDate = formatISO(new Date(date));
+  const beforeDate = formatISO(new Date(checkDate));
     
   return inputDate <= beforeDate;
 });

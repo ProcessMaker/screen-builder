@@ -19,32 +19,32 @@ Validator.register('custom-same', function(val, req) {
   
 Validator.register('after', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = formatISO(date);
-  const afterDate = formatISO(params);
+  const inputDate = formatISO(new Date(date));
+  const afterDate = formatISO(new Date(params));
 
   return inputDate > afterDate;
 }, 'The :attribute must be after :after.');
 
 Validator.register('after_or_equal', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = formatISO(date);
-  const equalOrAfterDate = formatISO(params);
+  const inputDate = formatISO(new Date(date));
+  const equalOrAfterDate = formatISO(new Date(params));
     
   return inputDate >= equalOrAfterDate;
 }, 'The :attribute must be equal or after :after_or_equal.');
 
 Validator.register('before', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = formatISO(date);
-  const beforeDate = formatISO(params);
+  const inputDate = formatISO(new Date(date));
+  const beforeDate = formatISO(new Date(params));
     
   return inputDate < beforeDate;
 }, 'The :attribute must be before :before.');
 
 Validator.register('before_or_equal', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = formatISO(date);
-  const beforeDate = formatISO(params);
+  const inputDate = formatISO(new Date(date));
+  const beforeDate = formatISO(new Date(params));
     
   return inputDate <= beforeDate;
 }, 'The :attribute must be equal or before :before_or_equal.');
