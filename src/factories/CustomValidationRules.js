@@ -1,5 +1,5 @@
 const Validator = require('validatorjs');
-import moment from 'moment-timezone';
+import { formatISO, parseISO, format as formatDateFns } from 'date-fns';
 
 Validator.register('custom-same', function(val, req) {
   let val1;
@@ -19,42 +19,42 @@ Validator.register('custom-same', function(val, req) {
   
 Validator.register('after', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = moment(date).toISOString();
-  const afterDate = moment(params).toISOString();
+  const inputDate = formatISO(date);
+  const afterDate = formatISO(params);
 
   return inputDate > afterDate;
 }, 'The :attribute must be after :after.');
 
 Validator.register('after_or_equal', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = moment(date).toISOString();
-  const equalOrAfterDate = moment(params).toISOString();
+  const inputDate = formatISO(date);
+  const equalOrAfterDate = formatISO(params);
     
   return inputDate >= equalOrAfterDate;
 }, 'The :attribute must be equal or after :after_or_equal.');
 
 Validator.register('before', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = moment(date).toISOString();
-  const beforeDate = moment(params).toISOString();
+  const inputDate = formatISO(date);
+  const beforeDate = formatISO(params);
     
   return inputDate < beforeDate;
 }, 'The :attribute must be before :before.');
 
 Validator.register('before_or_equal', function(date, params) {
   // checks if incoming 'params' is a date or a key reference.
-  const inputDate = moment(date).toISOString();
-  const beforeDate = moment(params).toISOString();
+  const inputDate = formatISO(date);
+  const beforeDate = formatISO(params);
     
   return inputDate <= beforeDate;
 }, 'The :attribute must be equal or before :before_or_equal.');
 
 Validator.register('custom_date', function(date) {
-  let format = 'MM/DD/YYYY';
+  let format = 'MM/dd/yyyy';
   if (typeof window.ProcessMaker !== 'undefined' && window.ProcessMaker.user && window.ProcessMaker.user.datetime_format) {
     format = window.ProcessMaker.user.datetime_format.replace(/[\sHh:msaAzZ]/g, '');
   }
 
-  let checkDate = moment(date, [format, moment.ISO_8601], true);
+  let checkDate = formatDateFns(parseISO(date), format);
   return checkDate.isValid();
 }, 'The :attribute must be a valid date.');

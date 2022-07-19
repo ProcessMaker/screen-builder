@@ -1,5 +1,5 @@
 import { helpers } from 'vuelidate/lib/validators';
-import moment from 'moment';
+import { formatISO, parseISO, format as formatDateFns } from 'date-fns';
 import { get } from 'lodash';
 
 import {
@@ -64,12 +64,12 @@ export const ValidationMsg = {
 };
 
 export const custom_date = (date) => {
-  let format = 'MM/DD/YYYY';
+  let format = 'MM/dd/yyyy';
   if (typeof window.ProcessMaker !== 'undefined' && window.ProcessMaker.user && window.ProcessMaker.user.datetime_format) {
     format = window.ProcessMaker.user.datetime_format.replace(/[\sHh:msaAzZ]/g, '');
   }
 
-  let checkDate = moment(date, [format, moment.ISO_8601], true);
+  let checkDate = formatDateFns(parseISO(date), format);
   return checkDate.isValid();
 };
   
@@ -77,14 +77,14 @@ export const after = (after, fieldName) => helpers.withParams({after}, function(
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-  dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, after, after));
+  dataWithParent.today = format(new Date(), 'yyyy-MM-dd');
+  const checkDate = new Date(get(dataWithParent, after, after));
   if (!checkDate.isValid()) {
     return false;
   }
 
-  const inputDate = moment(date).toISOString();
-  const afterDate = checkDate.toISOString();
+  const inputDate = formatISO(date);
+  const afterDate = formatISO(checkDate);
 
   return inputDate > afterDate;
 });
@@ -93,14 +93,14 @@ export const after_or_equal = (after_or_equal, fieldName) => helpers.withParams(
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-  dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, after_or_equal, after_or_equal));
+  dataWithParent.today = format(new Date(), 'yyyy-MM-dd');
+  const checkDate = new Date(get(dataWithParent, after_or_equal, after_or_equal));
   if (!checkDate.isValid()) {
     return false;
   }
 
-  const inputDate = moment(date).toISOString();
-  const equalOrAfterDate = checkDate.toISOString();
+  const inputDate = formatISO(date);
+  const equalOrAfterDate = formatISO(checkDate);
   return inputDate >= equalOrAfterDate;
 });
 
@@ -108,14 +108,14 @@ export const before = (before, fieldName) => helpers.withParams({before}, functi
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-  dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, before, before));
+  dataWithParent.today = format(new Date(), 'yyyy-MM-dd');
+  const checkDate = new Date(get(dataWithParent, before, before));
   if (!checkDate.isValid()) {
     return false;
   }
 
-  const inputDate = moment(date).toISOString();
-  const beforeDate = checkDate.toISOString();
+  const inputDate = formatISO(date);
+  const beforeDate = formatISO(checkDate);
   return inputDate < beforeDate;
 });
 
@@ -123,14 +123,14 @@ export const before_or_equal = (before_or_equal, fieldName) => helpers.withParam
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-  dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, before_or_equal, before_or_equal));
+  dataWithParent.today = format(new Date(), 'yyyy-MM-dd');
+  const checkDate = new Date(get(dataWithParent, before_or_equal, before_or_equal));
   if (!checkDate.isValid()) {
     return false;
   }
     
-  const inputDate = moment(date).toISOString();
-  const beforeDate = checkDate.toISOString();
+  const inputDate = formatISO(date);
+  const beforeDate = formatISO(checkDate);
     
   return inputDate <= beforeDate;
 });
