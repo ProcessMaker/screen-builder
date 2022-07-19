@@ -94,7 +94,6 @@ describe('Loop control', () => {
 
   it('Runs validations on loops referencing same variable ', () => {
     cy.visit('/');
-    cy.server();
     let alert = false;
     cy.on('window:alert', msg => alert = msg);
     cy.loadFromJson('multi_loop_validations.json', 0);
@@ -224,8 +223,7 @@ describe('Loop control', () => {
 
   it('Verify validation with nested screen ', () => {
     // Load Nested Screen
-    cy.server();
-    cy.route('GET', '/api/1.0/screens/1', JSON.stringify({
+    cy.intercept('GET', '/api/1.0/screens/1', JSON.stringify({
       id: 1,
       screen_category_id: 1,
       title: 'Sub screen example',
