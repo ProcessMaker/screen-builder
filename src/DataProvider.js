@@ -136,6 +136,12 @@ export default {
     }
     url += this.authQueryString();
 
+    //TODO added for a problem present in cypress tests
+    console.log('post datasource');
+    if (window.ProcessMaker && !window.ProcessMaker.debounce) {
+      return this.post(url, params, { timeout: 0});
+    }
+
     if (window.ProcessMaker.cachedDataSources === undefined) {
       window.ProcessMaker.cachedDataSources = [];
     }
