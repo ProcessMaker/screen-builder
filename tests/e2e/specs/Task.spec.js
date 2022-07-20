@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { formatISO, addDays } from 'date-fns';
 import Screens from '../fixtures/webentry.json';
 import SingleScreen from '../fixtures/single_line_input.json';
 import InterstitialScreen from '../fixtures/interstitial_screen.json';
@@ -34,9 +34,9 @@ describe('Task component', () => {
         id: 1,
         advanceStatus: 'open',
         component: 'task-screen',
-        created_at: moment().toISOString(),
-        completed_at: moment().toISOString(),
-        due_at: moment().add(1, 'day').toISOString(),
+        created_at: formatISO(new Date()),
+        completed_at: formatISO(new Date()),
+        due_at: formatISO(addDays(new Date(), 1)), 
         user: {
           avatar: '',
           fullname: 'Assigned User',
@@ -89,9 +89,9 @@ describe('Task component', () => {
         id: 1,
         advanceStatus: 'open',
         component: 'task-screen',
-        created_at: moment().toISOString(),
-        completed_at: moment().toISOString(),
-        due_at: moment().add(1, 'day').toISOString(),
+        created_at: formatISO(new Date()),
+        completed_at: formatISO(new Date()),
+        due_at: formatISO(addDays(new Date(), 1)),
         user: {
           avatar: '',
           fullname: 'Assigned User',
@@ -165,9 +165,9 @@ describe('Task component', () => {
         id: 1,
         advanceStatus: 'open',
         component: 'task-screen',
-        created_at: moment().toISOString(),
-        completed_at: moment().toISOString(),
-        due_at: moment().add(1, 'day').toISOString(),
+        created_at: formatISO(new Date()),
+        completed_at: formatISO(new Date()),
+        due_at: formatISO(addDays(new Date(), 1)),
         status: 'ACTIVE',
         user: {
           avatar: '',
@@ -223,9 +223,9 @@ describe('Task component', () => {
               id: 1,
               advanceStatus: 'completed',
               component: 'task-screen',
-              created_at: moment().toISOString(),
-              completed_at: moment().toISOString(),
-              due_at: moment().add(1, 'day').toISOString(),
+              created_at: formatISO(new Date()),
+              completed_at: formatISO(new Date()),
+              due_at: formatISO(addDays(new Date(), 1)),
               status: 'CLOSED',
               allow_interstitial: true,
               interstitial_screen: InterstitialScreen.screens[0],
@@ -267,9 +267,9 @@ describe('Task component', () => {
         id: 1,
         advanceStatus: 'open',
         component: 'task-screen',
-        created_at: moment().toISOString(),
-        completed_at: moment().toISOString(),
-        due_at: moment().add(1, 'day').toISOString(),
+        created_at: formatISO(new Date()),
+        completed_at: formatISO(new Date()),
+        due_at: formatISO(addDays(new Date(), 1)),
         status: 'ACTIVE',
         user: {
           avatar: '',
@@ -731,7 +731,7 @@ function getTasks(url, responseData = null) {
             subprocess_request_id: 1,
             status: responseData['status'],
             completed_at: null,
-            due_at: moment().add(1, 'day').toISOString(),
+            due_at: formatISO(addDays(new Date(), 1)),
             due_notified: 0,
             process_request: {
               id: 1,

@@ -407,10 +407,10 @@ describe('Record list', () => {
     let data = [
       { 'date': format(new Date(2022, 1, 2), 'MM/dd/yyyy'), 'name': 'B' },
       { 'date': format(new Date(2022, 1, 3), 'MM/dd/yyyy'), 'name': 'C' },
-      { 'date': moment('01/01/2022').format('MM/DD/YYYY'), 'name': 'A' },
-      { 'date': moment('01/05/2022').format('MM/DD/YYYY'), 'name': 'E' },
-      { 'date': moment('01/04/2022').format('MM/DD/YYYY'), 'name': 'D' },
-      { 'date': moment('01/06/2022').format('MM/DD/YYYY'), 'name': 'G' },
+      { 'date': format(new Date(2022, 1, 1), 'MM/dd/yyyy'), 'name': 'A' },
+      { 'date': format(new Date(2022, 1, 5), 'MM/dd/yyyy'), 'name': 'E' },
+      { 'date': format(new Date(2022, 1, 4), 'MM/dd/yyyy'), 'name': 'D' },
+      { 'date': format(new Date(2022, 1, 6), 'MM/dd/yyyy'), 'name': 'G' },
       { 'date': '', 'name': '' },
       { 'date': '', 'name': 'F' },
       { 'date': '', 'name': 'H'},
@@ -478,12 +478,12 @@ describe('Record list', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     let data = [
-      { 'date': moment('01/02/2022').format('MM/DD/YYYY'), 'name': 'B' },
-      { 'date': moment('01/03/2022').format('MM/DD/YYYY'), 'name': 'C' },
-      { 'date': moment('01/01/2022').format('MM/DD/YYYY'), 'name': 'A' },
-      { 'date': moment('01/05/2022').format('MM/DD/YYYY'), 'name': 'E' },
-      { 'date': moment('01/04/2022').format('MM/DD/YYYY'), 'name': 'D' },
-      { 'date': moment('01/06/2022').format('MM/DD/YYYY'), 'name': 'G' },
+      { 'date': format(new Date(2022, 1, 2), 'MM/dd/yyyy'), 'name': 'B' },
+      { 'date': format(new Date(2022, 1, 3), 'MM/dd/yyyy'), 'name': 'C' },
+      { 'date': format(new Date(2022, 1, 1), 'MM/dd/yyyy'), 'name': 'A' },
+      { 'date': format(new Date(2022, 1, 5), 'MM/dd/yyyy'), 'name': 'E' },
+      { 'date': format(new Date(2022, 1, 4), 'MM/dd/yyyy'), 'name': 'D' },
+      { 'date': format(new Date(2022, 1, 6), 'MM/dd/yyyy'), 'name': 'G' },
       { 'date': '', 'name': '' },
       { 'date': '', 'name': 'F' },
       { 'date': '', 'name': 'H'},

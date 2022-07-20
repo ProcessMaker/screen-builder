@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { format, subDays, addDays } from 'date-fns';
 
 describe('Validation Rules', () => {
   beforeEach(() => {
@@ -166,9 +166,9 @@ describe('Validation Rules', () => {
   it('Date Validations must be able to access the _parent\'s variables', () => {
     cy.loadFromJson('test_parent_in_validations.json', 0);
 
-    const date = moment(new Date()).format('YYYY-MM-DD');
-    const dateBefore = moment(new Date()).subtract(1, 'days').format('YYYY-MM-DD');
-    const dateAfter = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
+    const date = format(new Date(), 'yyyy-MM-dd');
+    const dateBefore = format(subDays(new Date(), 1), 'yyyy-MM-dd');
+    const dateAfter = format(addDays(new Date(), 1), 'yyyy-MM-dd');
 
     // Change validation rule to After Date
     cy.get('[data-cy=mode-editor]').click();
