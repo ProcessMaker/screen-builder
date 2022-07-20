@@ -11,7 +11,7 @@ Cypress.Commands.add('setPreviewDataInput', (input) => {
 Cypress.Commands.add('assertPreviewData', (expectedData) => {
   cy.get('#screen-builder-container').then((div) => {
     const data = div[0].__vue__.previewData;
-    expect(data).to.eql(expectedData);
+    expect(JSON.stringify(data)).to.eql(JSON.stringify(expectedData));
   });
 });
 
