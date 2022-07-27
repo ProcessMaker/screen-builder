@@ -93,6 +93,7 @@ window.exampleScreens = [
   },
 ];
 window.ProcessMaker = {
+  debounce: false,
   isStub: true,
   user: {
     id: 1,

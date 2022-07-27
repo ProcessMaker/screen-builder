@@ -136,8 +136,7 @@ export default {
     }
     url += this.authQueryString();
 
-    //TODO added for a problem present in cypress tests
-    if (window.ProcessMaker && !window.ProcessMaker.debounce) {
+    if (window.ProcessMaker && window.ProcessMaker.debounce !== undefined && window.ProcessMaker.debounce === false) {
       return this.post(url, params, { timeout: 0});
     }
 
