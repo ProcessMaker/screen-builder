@@ -192,6 +192,10 @@ export default {
             return;
           }
 
+          if (Number.isNaN(originalValue)) {
+            delete object[attr];
+          }
+
           this.$set(
             object,
             attr,
