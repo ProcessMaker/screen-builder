@@ -42,7 +42,29 @@ export default {
   },
   mounted() {
     this.currentDefinition = cloneDeep(this.definition);
-    this.component = this.buildComponent(this.currentDefinition);
+
+    let screenName =  this.currentDefinition.config[0] ? this.currentDefinition.config[0].name : null;
+
+    let itemName = 'hash' + this.hash(JSON.stringify(this.currentDefinition));
+
+    if (['emtpy', undefined, null].includes(screenName)) {
+      this.component = this.buildComponent(this.currentDefinition);
+      return;
+    }
+
+    if (window.ProcessMaker.cachedScreens === undefined) {
+      window.ProcessMaker.cachedScreens = [];
+    }
+    let cachedScreen = window.ProcessMaker.cachedScreens.find(x => x.name === itemName);
+    if (cachedScreen) {
+      this.component = cachedScreen.component;
+    }
+    else {
+      let component = this.buildComponent(this.currentDefinition);
+      this.component = component;
+      window.ProcessMaker.cachedScreens.push({name: itemName, component: cloneDeep(component), definition: this.definition});
+    }
+
   },
   watch: {
     definition: {
@@ -53,6 +75,11 @@ export default {
     },
   },
   methods: {
+    hash(s) {
+      for (var i=0,h=9;i<s.length;)
+        h=Math.imul(h^s.charCodeAt(i++),9**9);
+      return h^h>>>9;
+    },
     rebuildScreen(definition) {
       if (!isEqual(definition, this.currentDefinition)) {
         this.currentDefinition = cloneDeep(definition);
