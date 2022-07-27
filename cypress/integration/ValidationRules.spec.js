@@ -120,30 +120,30 @@ describe('Validation Rules', () => {
       .parent()
       .find('.invalid-feedback')
       .should('be.visible');
-      
+
     cy.get('[data-cy=editor-content] [name="form_input_readonly"]')
       .parent()
       .find('.invalid-feedback')
-      .should('be.not.visible');
+      .should('be.not.exist');
 
-    // In preview: ensure standard required field displays error while readonly required field does not    
+    // In preview: ensure standard required field displays error while readonly required field does not
     cy.get('[data-cy=mode-preview]').click();
-    
+
     cy.get('[data-cy=preview-content] [name="form_input"]')
       .parent()
       .find('.invalid-feedback')
       .should('be.visible');
-      
+
     cy.get('[data-cy=preview-content] [name="form_input_readonly"]')
       .parent()
       .find('.invalid-feedback')
-      .should('be.not.visible');
-    
+      .should('be.not.exist');
+
     // Ensure the form cannot yet be submitted
     cy.get('[data-cy=preview-content] [name="submit_button"]')
       .click()
       .then(() => expect(alert).to.equal(false));
-    
+
     // Fill out the required missing field; ensure the form *can* be submitted
     cy.get('[data-cy=preview-content] [name="form_input"]')
       .type('text');
@@ -156,8 +156,8 @@ describe('Validation Rules', () => {
   it('RequireIf validation must be able to access the _parent\'s variables', () => {
     cy.loadFromJson('test_parent_in_validations.json', 0);
     cy.get('[data-cy=mode-preview]').click();
-    cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.not.visible');
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.not.exist');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]').selectOption('YES');
     cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
@@ -184,7 +184,7 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateBefore);
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type(date);
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
 
     // Change validation rule to After or Equal to Date
     cy.get('[data-cy=mode-editor]').click();
@@ -200,9 +200,9 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateBefore);
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type(dateBefore);
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').clear().type(date);
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
 
     // Change validation rule to Before date
     cy.get('[data-cy=mode-editor]').click();
@@ -218,7 +218,7 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateAfter);
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type(date);
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
 
     // Change validation rule to Before or Equal to Date
     cy.get('[data-cy=mode-editor]').click();
@@ -234,9 +234,9 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateAfter);
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type(dateAfter);
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').clear().type(date);
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
   });
 
   it('RequireUnless must be able to access the _parent\'s variables', () => {
@@ -255,9 +255,9 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type('abc');
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type('abc');
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
   });
 
   it('SameAs must be able to access the _parent\'s variables', () => {
@@ -276,7 +276,7 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type('abc');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type('abc');
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
   });
 
   it('Access to Request _parent variables', () => {
@@ -308,13 +308,13 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type('abc');
     cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_1"]').clear().type('from_parent_request');
-    cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').parent().find('.invalid-feedback').should('be.not.exist');
 
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type('abc');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.visible');
     cy.get('[data-cy=preview-content] [name="form_input_2"]').clear().type('from_parent_request');
-    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.visible');
+    cy.get('[data-cy=preview-content] [name="form_input_2"]').parent().find('.invalid-feedback').should('be.not.exist');
   });
 
   it('Required IF with boolean values', () => {
