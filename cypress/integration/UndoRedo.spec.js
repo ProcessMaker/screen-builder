@@ -11,6 +11,6 @@ describe('Undo and Redo', () => {
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=toolbar-undo]').click();
     cy.get('[data-cy=toolbar-redo]').click();
-    cy.get('[data-cy=screen-drop-zone]').should('not.contain.text', 'Drag an element here');
+    cy.get('[data-cy=screen-drop-zone]').should('not.exist');
   });
 });
