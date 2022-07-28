@@ -1,8 +1,7 @@
 describe('select list mustache', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
-    cy.route(
+    cy.intercept(
       'POST',
       '/api/1.0/requests/data_sources/2',
       JSON.stringify({

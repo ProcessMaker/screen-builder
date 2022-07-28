@@ -1,6 +1,5 @@
 describe('Validation Rules', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

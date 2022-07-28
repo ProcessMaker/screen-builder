@@ -1,6 +1,5 @@
 describe('Screen Warnings', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

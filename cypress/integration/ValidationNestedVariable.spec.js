@@ -1,6 +1,5 @@
 describe('Validate nested variable', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

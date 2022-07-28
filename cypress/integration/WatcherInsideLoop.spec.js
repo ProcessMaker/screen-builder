@@ -1,8 +1,7 @@
 describe('watcher inside loop', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
-    cy.route(
+    cy.intercept(
       'POST',
       '/api/1.0/scripts/execute/6',
       JSON.stringify({

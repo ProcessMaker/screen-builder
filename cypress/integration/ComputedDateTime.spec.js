@@ -1,7 +1,6 @@
 describe('Computed datetime', () => {
 
   it('', () => {
-    cy.server();
     cy.visit('/', {
       onBeforeLoad(win) {
         cy.stub(win.console, 'log').as('consoleLog');

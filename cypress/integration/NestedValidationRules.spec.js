@@ -1,7 +1,6 @@
 
 describe('Validation Rules (Hidden fields and Nested Screens)', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

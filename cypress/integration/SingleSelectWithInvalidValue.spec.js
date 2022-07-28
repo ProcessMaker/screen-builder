@@ -1,6 +1,5 @@
 describe('single select with invalid initial value', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

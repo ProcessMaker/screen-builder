@@ -1,6 +1,5 @@
 describe('Tests null object property bind to an input text', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

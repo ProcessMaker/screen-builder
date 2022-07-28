@@ -1,6 +1,5 @@
 describe('nested calc radio freeze', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 
