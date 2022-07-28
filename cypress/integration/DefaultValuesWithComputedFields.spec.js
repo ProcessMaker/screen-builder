@@ -2,7 +2,6 @@ describe('Computed field and default values', () => {
 
   it('Test default values with computed fields', () => {
     cy.visit('/');
-    cy.server();
     cy.loadFromJson('default_values_with_computed_fields.json', 0);
 
     // Preview

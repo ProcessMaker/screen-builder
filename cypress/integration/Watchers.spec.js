@@ -1,8 +1,7 @@
 describe('Watchers', () => {
 
   beforeEach(() => {
-    cy.server();
-    cy.route('GET', '/api/1.0/screens/1', JSON.stringify({
+    cy.intercept('GET', '/api/1.0/screens/1', JSON.stringify({
       id: 1,
       screen_category_id: 1,
       title: 'Sub screen example',
@@ -180,8 +179,7 @@ describe('Watchers', () => {
   });
   it('Test synchronous watcher', () => {
     // Mock script response
-    cy.server();
-    cy.route('POST', '/api/1.0/scripts/execute/1', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/scripts/execute/1', JSON.stringify({
       output: {
         name: 'Steve',
       },
@@ -224,8 +222,7 @@ describe('Watchers', () => {
   });
   it('Test asynchronous watcher', () => {
     // Mock script response
-    cy.server();
-    cy.route('POST', '/api/1.0/scripts/execute/1', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/scripts/execute/1', JSON.stringify({
       output: {
         name: 'Steve',
       },
@@ -266,8 +263,7 @@ describe('Watchers', () => {
   });
   it('Test error in synchronous watcher', () => {
     // Mock script response
-    cy.server();
-    cy.route({
+    cy.intercept({
       method: 'POST',
       url: '/api/1.0/scripts/execute/1',
       response: JSON.stringify({
@@ -312,9 +308,8 @@ describe('Watchers', () => {
   it('Test watcher with select list', () => {
     cy.visit('/');
     // Mock script response
-    cy.server();
     cy.loadFromJson('watcher_select_list.json', 0);
-    cy.route(
+    cy.intercept(
       'POST',
       '/api/1.0/scripts/execute/1',
       JSON.stringify({

@@ -2,7 +2,6 @@
 describe('Multiple Upload', () => {
 
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
     cy.window().then(win => {
       // Add request-id header
@@ -18,7 +17,7 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     // Upload single file should show the uploaded file name
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     }));
@@ -26,7 +25,7 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=avatar-jpeg] .uploader-file-name').should('include.text', 'avatar.jpeg');
 
     // Upload another file, it should replace the file displayed in the control
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 2,
     }));
@@ -39,7 +38,7 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     // Upload one file
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     }));
@@ -49,7 +48,7 @@ describe('Multiple Upload', () => {
       .find('[data-cy=1] .uploader-file-name')
       .should('include.text', 'avatar.jpeg');
     // Add a new file
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 2,
     }));
@@ -60,7 +59,7 @@ describe('Multiple Upload', () => {
       .should('include.text', 'file1.jpeg');
 
     // Remove the last file
-    cy.route('DELETE', '/api/1.0/files/2', JSON.stringify({
+    cy.intercept('DELETE', '/api/1.0/files/2', JSON.stringify({
       message: 'File deleted',
     }));
     cy.get('[data-cy=preview-content] [data-cy=screen-field-filemultiple]')
@@ -75,7 +74,7 @@ describe('Multiple Upload', () => {
       .should('exist');
 
     // Remove the first file
-    cy.route('DELETE', '/api/1.0/files/1', JSON.stringify({
+    cy.intercept('DELETE', '/api/1.0/files/1', JSON.stringify({
       message: 'File deleted',
     }));
     cy.get('[data-cy=preview-content] [data-cy=screen-field-filemultiple]')
@@ -93,7 +92,7 @@ describe('Multiple Upload', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-members] [data-cy=add-row]').click();
 
     // Upload single file should show the uploaded file name
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     }));
@@ -108,7 +107,7 @@ describe('Multiple Upload', () => {
       });
 
     // Upload a file in multiple file mode
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     }));
@@ -118,7 +117,7 @@ describe('Multiple Upload', () => {
       .find('[data-cy=1] .uploader-file-name')
       .should('include.text', 'avatar.jpeg');
 
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 2,
     }));
@@ -129,7 +128,7 @@ describe('Multiple Upload', () => {
       .should('include.text', 'file1.jpeg');
 
     // Remove the last file
-    cy.route('DELETE', '/api/1.0/files/2', JSON.stringify({
+    cy.intercept('DELETE', '/api/1.0/files/2', JSON.stringify({
       message: 'File deleted',
     }));
     cy.get('[data-cy=preview-content] [data-cy=screen-field-pictures]')

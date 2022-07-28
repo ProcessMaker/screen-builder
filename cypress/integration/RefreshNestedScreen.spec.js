@@ -1,6 +1,5 @@
 describe('refresh nested screen', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

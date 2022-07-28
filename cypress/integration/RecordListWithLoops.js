@@ -1,6 +1,5 @@
 describe('Record list', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
     cy.window().then(win => {
       // Add request-id header
@@ -20,7 +19,7 @@ describe('Record list', () => {
 
     // Upload the first file.
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_4]').eq(0).clear().type('First');
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     }));
@@ -28,7 +27,7 @@ describe('Record list', () => {
     // Upload a second file.
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=loop-loop_1-add]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_4]').eq(1).clear().type('Second');
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 2,
     }));
@@ -46,7 +45,7 @@ describe('Record list', () => {
     // Add a third file in edit modal.
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=loop-loop_1-add]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=form_input_4]').eq(2).clear().type('Third');
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 3,
     }));
@@ -64,7 +63,7 @@ describe('Record list', () => {
 
     // Add 2nd. row to the record list and add a new file.
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 4,
     }));

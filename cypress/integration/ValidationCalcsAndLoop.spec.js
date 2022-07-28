@@ -1,6 +1,5 @@
 describe('Validation Calcs properties and loop', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

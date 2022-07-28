@@ -1,7 +1,6 @@
 describe('Computed fields', () => {
 
   it('Make sure new rows can be added to the loop, even with a javascript-driven computed field', () => {
-    cy.server();
     cy.visit('/');
     cy.loadFromJson('FOUR-5139.json', 0);
 

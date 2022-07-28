@@ -1,6 +1,5 @@
 describe('multiselect with string value', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

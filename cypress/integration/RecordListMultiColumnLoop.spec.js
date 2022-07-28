@@ -2,8 +2,6 @@ describe('Record List', () => {
 
   beforeEach(() => {
     cy.visit('/');
-
-    cy.server();
   });
 
   it('Recordlist with MultiColumn and Loop', () => {

@@ -1,6 +1,5 @@
 describe('nested calculated properties', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

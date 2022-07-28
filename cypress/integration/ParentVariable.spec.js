@@ -1,9 +1,4 @@
 describe('_parent variable', () => {
-
-  beforeEach(() => {
-    cy.server();
-  });
-  
   it('Test _parent in loop>nested', () => {
     cy.visit('/');
     cy.loadFromJson('parent_variable.json', 1);
@@ -33,7 +28,7 @@ describe('_parent variable', () => {
       });
     });
   });
-  
+
   it('Test _parent in record list', () => {
     cy.visit('/');
     cy.loadFromJson('parent_variable.json', 1);
@@ -71,4 +66,3 @@ describe('_parent variable', () => {
     });
   });
 });
-  
