@@ -1,12 +1,10 @@
-
 describe('Subtotals implementations', () => {
 
   beforeEach(() => {
     cy.visit('/');
-    cy.server();
   });
 
-  it('Simple using calculated properties and defualt values', () => {
+  it('Simple using calculated properties and default values', () => {
     cy.loadFromJson('subtotals_with_loops.json', 0);
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=count]').eq(0).type('3');
@@ -57,7 +55,7 @@ describe('Subtotals implementations', () => {
       });
   });
 
-  it('Simple using calculated properties and defualt values with Currency Inputs', () => {
+  it('Simple using calculated properties and default values with Currency Inputs', () => {
     cy.loadFromJson('subtotals_with_loops_currency.json', 0);
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=count]').eq(0).type('3');
@@ -108,7 +106,7 @@ describe('Subtotals implementations', () => {
       });
   });
 
-  it('Simple using calculated properties and defualt values with Decimal', () => {
+  it('Simple using calculated properties and default values with Decimal', () => {
     cy.loadFromJson('subtotals_with_loops_decimal.json', 0);
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=count]').eq(0).type('3');
@@ -173,11 +171,11 @@ describe('Subtotals implementations', () => {
     // Check final result
     cy.assertPreviewData(
       {
-        'quantity': 3,
         'amount': 123,
-        'total_line': 369,
-        'quantity_1': 3,
+        'quantity': 3,
         'amount_1': 4,
+        'quantity_1': 3,
+        'total_line': 369,
         'total_line_1': 12,
         'total_total': 381,
       });
@@ -205,14 +203,14 @@ describe('Subtotals implementations', () => {
         'input_1': '',
         'input_2': '',
         'input_3': '',
-        'cost_1': 3,
         'count_1': 4,
-        'subtotal_1': 12,
-        'cost_2': 3,
         'count_2': 123,
-        'subtotal_2': 369,
-        'cost_3': 2,
         'count_3': 12,
+        'cost_1': 3,
+        'cost_2': 3,
+        'cost_3': 2,
+        'subtotal_1': 12,
+        'subtotal_2': 369,
         'subtotal_3': 24,
         'total': 405,
       });
