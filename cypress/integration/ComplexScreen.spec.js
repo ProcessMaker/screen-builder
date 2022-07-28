@@ -21,7 +21,6 @@ describe('Complex screen', () => {
 
   before(() => {
     cy.visit('/');
-    cy.server();
     cy.window().then(win => {
       // Add request-id header
       const requestIdMeta = window.document.createElement('meta');
@@ -35,10 +34,9 @@ describe('Complex screen', () => {
   });
 
   beforeEach(() => {
-    cy.server();
     cy.loadFromJson('complex_screen.json');
-    cy.route('GET', '/api/1.0/requests/1/files?name=page1', JSON.stringify({data: files.page1}));
-    cy.route('GET', '/api/1.0/requests/1/files?name=page2', JSON.stringify({data: files.page2}));
+    cy.intercept('GET', '/api/1.0/requests/1/files?name=page1', JSON.stringify({data: files.page1}));
+    cy.intercept('GET', '/api/1.0/requests/1/files?name=page2', JSON.stringify({data: files.page2}));
   });
 
   it('Fill page 1', () => {
@@ -70,7 +68,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Save)').click();
 
     // Upload file
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     }));
@@ -166,7 +164,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_checkbox_3]').click();
 
     // Upload file
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     }));
@@ -468,7 +466,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_input_9]').eq(2).clear().type('form input 1');
     cy.get('[data-cy=preview-content] [name=form_input_9]').eq(3).clear().type('form input 1');
     // Upload file
-    cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+    cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
       message: 'The file was uploaded.',
       fileUploadId: 1,
     })).as('uploadFile');
