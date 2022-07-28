@@ -779,12 +779,12 @@ describe('select list mustache', () => {
           'id': 1,
         },
         {
+          'id': 2,
           'dni': '5678',
           'name': {
             'last': 'Doe',
             'first': 'John',
           },
-          'id': 2,
         },
       ],
       'form_select_list_2': [
