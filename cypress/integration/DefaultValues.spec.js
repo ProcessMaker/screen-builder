@@ -42,7 +42,7 @@ describe('Default values', () => {
     // Add an input field
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     // Add a second input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'top'});
 
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -63,7 +63,7 @@ describe('Default values', () => {
     // Add an input field
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     // Add a second input field
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'top'});
 
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=accordion-Advanced]').click();
