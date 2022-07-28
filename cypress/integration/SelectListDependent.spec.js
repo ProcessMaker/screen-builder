@@ -1,8 +1,7 @@
 describe('select list mustache', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
-    cy.route(
+    cy.intercept(
       'POST',
       '/api/1.0/requests/data_sources/3',
       JSON.stringify({
@@ -151,7 +150,7 @@ describe('select list mustache', () => {
       },
     }];
     let cities = [];
-    cy.route({
+    cy.intercept({
       method: 'POST',
       url: '/api/1.0/requests/data_sources/4',
       onRequest: ({ xhr, request }) => {

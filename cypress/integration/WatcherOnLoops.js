@@ -3,8 +3,6 @@ describe('Watcher on Loops', () => {
 
   beforeEach(() => {
     cy.visit('/');
-
-    cy.server();
   });
 
   it('Watcher on a Loop of New Array of Objects should not be triggered on load screen', () => {
@@ -20,7 +18,7 @@ describe('Watcher on Loops', () => {
     // Load screen
     cy.loadFromJson('watcher_on_loop_new_array.json', 0);
     // Mock script call
-    cy.route(
+    cy.intercept(
       'POST',
       '/api/1.0/scripts/execute/4',
       JSON.stringify({
@@ -37,7 +35,7 @@ describe('Watcher on Loops', () => {
     // Load screen
     cy.loadFromJson('watcher_on_loop_inside_recordlist.json', 0);
     // Mock script call
-    cy.route(
+    cy.intercept(
       'POST',
       '/api/1.0/scripts/execute/4',
       JSON.stringify({

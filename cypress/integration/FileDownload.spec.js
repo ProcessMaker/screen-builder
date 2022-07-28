@@ -1,6 +1,5 @@
 describe('File Download', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
     cy.window().then(win => {
       // Add request-id header
@@ -28,7 +27,7 @@ describe('File Download', () => {
   it('Can download a single file', () => {
     uploadSingleFile();
     // Mock file download
-    cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
+    cy.intercept('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
 
     // A standard file is downloadable
     cy.get('.row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
@@ -66,9 +65,9 @@ describe('File Download', () => {
   it('Can download multiple files', () => {
     uploadMultiFile();
     // Mock the first file download
-    cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
+    cy.intercept('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
     // Mock the second file download
-    cy.route('/api/1.0/files/2/contents', 'file1.jpeg').as('download');
+    cy.intercept('/api/1.0/files/2/contents', 'file1.jpeg').as('download');
 
     // The first file should be downloaded
     cy.get('.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn')
@@ -108,14 +107,14 @@ function uploadSingleFile() {
   cy.loadFromJson('single_file_download.json', 0);
   cy.get('[data-cy=mode-preview]').click();
   // Upload single file should show the uploaded file name
-  cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+  cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
     message: 'The file was uploaded.',
     fileUploadId: 1,
   }));
   cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-file_upload_1] input[type=file]', 'avatar.jpeg', 'image/jpg');
 
   // Mock file info
-  cy.route('/api/1.0/requests/1/files?id=*',
+  cy.intercept('/api/1.0/requests/1/files?id=*',
     {
       id: 1,
       file_name: 'avatar.jpeg',
@@ -129,12 +128,12 @@ function uploadMultiFile() {
   cy.get('[data-cy=mode-preview]').click();
 
   // Upload first file
-  cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+  cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
     message: 'The file was uploaded.',
     fileUploadId: 1,
   }));
   cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-file_upload_1] input[type=file]', 'avatar.jpeg', 'image/jpg');
-  cy.route('/api/1.0/requests/1/files?id=1',
+  cy.intercept('/api/1.0/requests/1/files?id=1',
     {
       id: 1,
       file_name: 'avatar.jpeg',
@@ -143,12 +142,12 @@ function uploadMultiFile() {
   ).as('getFileInfo');
 
   // Upload second file
-  cy.route('POST', '/api/1.0/requests/1/files', JSON.stringify({
+  cy.intercept('POST', '/api/1.0/requests/1/files', JSON.stringify({
     message: 'The file was uploaded.',
     fileUploadId: 2,
   }));
   cy.uploadFile('[data-cy=preview-content] [data-cy=screen-field-file_upload_1] input[type=file]', 'file1.jpeg', 'image/jpg');
-  cy.route('/api/1.0/requests/1/files?id=2',
+  cy.intercept('/api/1.0/requests/1/files?id=2',
     {
       id: 2,
       file_name: 'file1.jpeg',

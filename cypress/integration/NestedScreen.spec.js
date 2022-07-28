@@ -1,8 +1,7 @@
 describe('Nested screen', () => {
 
   beforeEach(() => {
-    cy.server();
-    cy.route('GET', '/api/1.0/screens/1', JSON.stringify({
+    cy.intercept('GET', '/api/1.0/screens/1', JSON.stringify({
       id: 1,
       screen_category_id: 1,
       title: 'Sub screen example',
