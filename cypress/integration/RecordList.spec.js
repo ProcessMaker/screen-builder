@@ -82,7 +82,7 @@ describe('Record list', () => {
 
     //Assert we see page 1
     cy.get('[data-cy=table-pagination]')
-      .should('be.not.visible');
+      .should('be.not.exist');
 
     for (let i = 1; i <= 5; i++) {
       cy.get('[aria-rowindex="'+i+'"] > .table-column')
