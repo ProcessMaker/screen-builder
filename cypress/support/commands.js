@@ -114,7 +114,7 @@ Cypress.Commands.add('loadFromJson', (filename, index) => {
       win.exampleScreens = content.screens;
     });
     content.screens.forEach(screen => {
-      cy.route(`/api/1.0/screens/${screen.id}`, JSON.stringify(screen));
+      cy.intercept(`/api/1.0/screens/${screen.id}`, JSON.stringify(screen));
     });
     if (index !== undefined) {
       const screen = content.screens[index];
