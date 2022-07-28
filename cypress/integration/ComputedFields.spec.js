@@ -111,8 +111,8 @@ describe('Computed fields', () => {
     // Assertion: Check the form_input_1 is the upper case of form_input_2
     cy.get('[data-cy=preview-content] [name=form_input_1]').should('have.value', 'NAME');
     cy.assertPreviewData({
-      form_input_1: 'NAME',
       form_input_2: 'name',
+      form_input_1: 'NAME',
     });
   });
 
@@ -143,8 +143,8 @@ describe('Computed fields', () => {
     // Assertion: Check the form_input_1 is the upper case of form_input_2
     cy.get('[data-cy=preview-content] [name=form_input_1]').should('have.value', '16');
     cy.assertPreviewData({
-      form_input_1: 16,
       form_input_2: 4,
+      form_input_1: 16,
     });
   });
 
