@@ -112,6 +112,11 @@ export default {
     requestEndpoint(file) {
       let endpoint = this.endpoint;
 
+      if (_.has(window, 'PM4ConfigOverrides.useDefaultUrlDownload') && window.PM4ConfigOverrides.useDefaultUrlDownload) {
+        // Use default endpoint when coming from a package.
+        return `../files/${file.id}/contents`;
+      }
+
       if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
         return `${endpoint}/${file.id}`;
@@ -145,16 +150,19 @@ export default {
       }
     },
     downloadRequestFile(file) {
+      console.log('downloadRequestFile');
       this.$dataProvider.download(this.requestEndpoint(file)).then(response => {
         this.sendToBrowser(response, file);
       });
     },
     downloadCollectionFile(file) {
+      console.log('downloadCollectionFile');
       this.$dataProvider.download('/files/' + file.id + '/contents').then(response => {
         this.sendToBrowser(response, file);
       });
     },
     sendToBrowser(response, file) {
+      console.log('sendToBrowser');
       //axios needs to be told to open the file
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -172,6 +180,7 @@ export default {
       }
     },
     setFilesInfoFromRequest() { 
+      console.log('setFilesInfoFromRequest');
       const fileId = this.value ? this.value : _.get(this.requestData, this.fileDataName, null);
       let endpoint = this.endpoint;
       
@@ -194,6 +203,7 @@ export default {
 
       this.$dataProvider.get(endpoint).then(response => {
         const fileInfo = response.data.data ? _.get(response, 'data.data.0', null) : _.get(response, 'data', null);
+        console.log('fileInfo: ' + fileInfo);
         if (fileInfo) {
           this.filesInfo.push(fileInfo);
         } else {
