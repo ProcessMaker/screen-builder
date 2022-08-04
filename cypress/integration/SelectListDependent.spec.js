@@ -63,7 +63,7 @@ describe('select list mustache', () => {
             'total': 2,
           },
         },
-      })
+      }),
     ).as('executeScript');
     // Bolivia Cities
     const BoliviaCities = [{
@@ -150,43 +150,41 @@ describe('select list mustache', () => {
       },
     }];
     let cities = [];
-    cy.intercept({
-      method: 'POST',
-      url: '/api/1.0/requests/data_sources/4',
-      onRequest: ({ xhr, request }) => {
-        switch (request.body.config.outboundConfig[0].value) {
-          case 'data.country_id=1':
-            cities = BoliviaCities;
-            break;
-          case 'data.country_id=2':
-            cities = USCities;
-            break;
-          default:
-            cities = [];
-        }
-        const response = {
-          'data': cities,
-          'meta': {
-            'filter': '',
-            'sort_by': '',
-            'sort_order': '',
-            'count': cities.length,
-            'total_pages': 1,
-            'current_page': 1,
-            'from': 1,
-            'last_page': 1,
-            'path': '/api/1.0/collections/4/records',
-            'per_page': 9223372036854775807,
-            'to': cities.length,
-            'total': cities.length,
-          },
-        };
-        xhr.setRequestHeader(
-          'X-Cypress-Response',
-          '"response":' + JSON.stringify(response) + '}',
-        );
-      },
-      response: '{"status": 200',
+    cy.intercept('POST', '/api/1.0/requests/data_sources/4', (req) => {
+      switch (req.body.config.outboundConfig[0].value) {
+        case 'data.country_id=1':
+          cities = BoliviaCities;
+          break;
+        case 'data.country_id=2':
+          cities = USCities;
+          break;
+        default:
+          cities = [];
+      }
+      const response = {
+        'data': cities,
+        'meta': {
+          'filter': '',
+          'sort_by': '',
+          'sort_order': '',
+          'count': cities.length,
+          'total_pages': 1,
+          'current_page': 1,
+          'from': 1,
+          'last_page': 1,
+          'path': '/api/1.0/collections/4/records',
+          'per_page': 9223372036854775807,
+          'to': cities.length,
+          'total': cities.length,
+        },
+      };
+      req.reply({
+        headers: {
+          'X-Cypress-Response': `"response":${JSON.stringify(response)}}`
+        },
+        statusCode: 200,
+        body: {response}
+      });
     });
   });
 
