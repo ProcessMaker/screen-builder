@@ -375,7 +375,7 @@ export default {
           }
         });
       };
-      updateValidationRules = debounce(updateValidationRules, 500);
+      updateValidationRules = debounce(updateValidationRules, 100);
       component.methods.loadValidationRules = function() {
         // Asynchronous loading of validations
         const validations = {};

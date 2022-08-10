@@ -26,7 +26,7 @@ import Json2Vue from '../mixins/Json2Vue';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 import WatchersSynchronous from '@/components/watchers-synchronous';
 import ScreenRendererError from '../components/renderer/screen-renderer-error';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual, debounce, get as getFromObject} from 'lodash';
 
 export default {
   name: 'screen-renderer',
@@ -43,11 +43,10 @@ export default {
   mounted() {
     this.currentDefinition = cloneDeep(this.definition);
 
-    let screenName =  this.currentDefinition.config[0] ? this.currentDefinition.config[0].name : null;
+    let screenName =  getFromObject(this.currentDefinition, 'config.0.name');
+    const itemName = `hash${this.hash(JSON.stringify(this.currentDefinition))}`;
 
-    let itemName = 'hash' + this.hash(JSON.stringify(this.currentDefinition));
-
-    if (['emtpy', undefined, null].includes(screenName)) {
+    if (['empty', undefined, null].includes(screenName)) {
       this.component = this.buildComponent(this.currentDefinition);
       return;
     }
@@ -74,17 +73,19 @@ export default {
       },
     },
   },
+  created() {
+    this.rebuildScreen =  debounce(function(definition) {
+      if (!isEqual(definition, this.currentDefinition)) {
+        this.currentDefinition = cloneDeep(definition);
+        this.component = this.buildComponent(this.currentDefinition);
+      }
+    }, 500);
+  },
   methods: {
     hash(s) {
       for (var i=0,h=9;i<s.length;)
         h=Math.imul(h^s.charCodeAt(i++),9**9);
       return h^h>>>9;
-    },
-    rebuildScreen(definition) {
-      if (!isEqual(definition, this.currentDefinition)) {
-        this.currentDefinition = cloneDeep(definition);
-        this.component = this.buildComponent(this.currentDefinition);
-      }
     },
     onAsyncWatcherOn() {
       this.displayAsyncLoading = typeof this._parent === 'undefined';
