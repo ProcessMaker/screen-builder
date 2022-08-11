@@ -148,6 +148,8 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [name="form_input"]')
       .type('text');
 
+    cy.wait(1000);
+
     cy.get('[data-cy=preview-content] [name="submit_button"]')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
