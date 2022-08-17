@@ -250,7 +250,7 @@ export default {
             this.task = response.data;
             this.checkTaskStatus();
             if (window.PM4ConfigOverrides.getScreenEndpoint && window.PM4ConfigOverrides.getScreenEndpoint.includes('tasks/')) {
-              const screenPath = window.PM4ConfigOverrides.getScreenEndpoint.split('/');              
+              const screenPath = window.PM4ConfigOverrides.getScreenEndpoint.split('/');
               screenPath[1] = this.task.id;
               window.PM4ConfigOverrides.getScreenEndpoint = screenPath.join('/');
             }
@@ -334,6 +334,8 @@ export default {
             this.nodeId = task.element_id;
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.parentRequest);
+          } else {
+            this.$emit('closed');
           }
         });
     },
