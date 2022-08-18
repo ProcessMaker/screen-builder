@@ -32,8 +32,9 @@ yarn-error.log*
 *.bpmn
 *.svg
 
-cypress-coverage
-jest-coverage
+.circleci
+.github
+.nyc_output
+cypress
 public
 reports
-test_summary_reports
