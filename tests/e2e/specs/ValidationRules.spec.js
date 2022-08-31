@@ -120,30 +120,30 @@ describe('Validation Rules', () => {
       .parent()
       .find('.invalid-feedback')
       .should('be.visible');
-      
+
     cy.get('[data-cy=editor-content] [name="form_input_readonly"]')
       .parent()
       .find('.invalid-feedback')
       .should('be.not.visible');
 
-    // In preview: ensure standard required field displays error while readonly required field does not    
+    // In preview: ensure standard required field displays error while readonly required field does not
     cy.get('[data-cy=mode-preview]').click();
-    
+
     cy.get('[data-cy=preview-content] [name="form_input"]')
       .parent()
       .find('.invalid-feedback')
       .should('be.visible');
-      
+
     cy.get('[data-cy=preview-content] [name="form_input_readonly"]')
       .parent()
       .find('.invalid-feedback')
       .should('be.not.visible');
-    
+
     // Ensure the form cannot yet be submitted
     cy.get('[data-cy=preview-content] [name="submit_button"]')
       .click()
       .then(() => expect(alert).to.equal(false));
-    
+
     // Fill out the required missing field; ensure the form *can* be submitted
     cy.get('[data-cy=preview-content] [name="form_input"]')
       .type('text');
@@ -325,15 +325,13 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
 
-    // Name should be required
-    shouldHaveValidationErrors();
+    cy.on('window:alert', msg => {
+      expect(msg).to.equal('There is a validation error in your form.');
+    });
 
     // Uncheck box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
-
-    // Name should not be required
-    shouldNotHaveValidationErrors();
 
     // Check box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
@@ -343,11 +341,6 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
       .clear()
       .type('test');
-
-    // Name should not be required
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-submit"]')
-      .should('not.contain.html', 'alert alert-danger');
-
   });
 
   it('Required Unless with boolean values', () => {
@@ -358,15 +351,9 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
 
-    // Name should be required
-    shouldHaveValidationErrors();
-
     // Uncheck box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
       .click();
-
-    // Name should not be required
-    shouldNotHaveValidationErrors();
 
     // Check box 1
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]')
@@ -376,16 +363,5 @@ describe('Validation Rules', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_input_2"]')
       .clear()
       .type('test');
-
-    // Name should not be required
-    shouldNotHaveValidationErrors();
   });
 });
-
-function shouldHaveValidationErrors() {
-  cy.get('[data-cy=preview-content]').should('contain.html', 'alert alert-danger');
-}
-
-function shouldNotHaveValidationErrors() {
-  cy.get('[data-cy=preview-content]').should('not.contain.html', 'alert alert-danger');
-}
