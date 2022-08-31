@@ -1,0 +1,10 @@
+**/node_modules
+**/.circleci
+**/.github
+**/.nyc_output
+**/coverage
+**/cypress
+**/dist
+**/public
+*.json
+*.svg
