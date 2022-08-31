@@ -111,6 +111,8 @@ export default {
     },
     submitForm() {
       if (this.$v.$invalid) {
+        let msgError = this.$store.getters['globalErrorsModule/getErrorMessage'];
+        window.ProcessMaker.alert(msgError, 'danger');
         //if the form is not valid the data is not emitted
         return;
       }
