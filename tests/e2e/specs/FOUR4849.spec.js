@@ -22,6 +22,7 @@ describe('Tests null object property bind to an input text', () => {
     cy.get('[data-cy=preview-content] [name=check]').click();
     cy.get('[data-cy=preview-content] [name="select1.form_input_1"]').should('be.visible');
     cy.get('[data-cy=preview-content] [name="select1.form_input_1"]').clear().type('still working with person=1');
+    cy.wait(650);
     // Check the data of the screen
     cy.assertPreviewData({
       'check': true,
@@ -42,6 +43,7 @@ describe('Tests null object property bind to an input text', () => {
     cy.get('[data-cy=preview-content] [name=check]').click();
     cy.get('[data-cy=preview-content] [name="select1.form_input_1"]').should('be.visible');
     cy.get('[data-cy=preview-content] [name="select1.form_input_1"]').clear().type('still working with person back to null');
+    cy.wait(650);
 
     // Check the data of the screen
     cy.assertPreviewData({

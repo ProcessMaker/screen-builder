@@ -157,6 +157,7 @@ describe('Loop control', () => {
     cy.get(':nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1)').should('be.not.visible');
 
     // Ensure form cannot be submitted
+    cy.wait(1000);
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal(false));  
@@ -165,6 +166,7 @@ describe('Loop control', () => {
     cy.get(':nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1) > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar');
 
     // Ensure form can be submitted
+    cy.wait(1000);
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
@@ -209,6 +211,7 @@ describe('Loop control', () => {
     cy.get('[name="loop_1"] > :nth-child(2) > :nth-child(1)').should('be.not.visible');
 
     // Ensure form cannot be submitted
+    cy.wait(1000);
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal(false));
@@ -217,6 +220,7 @@ describe('Loop control', () => {
     cy.get(':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [name="loop_2"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar');
 
     // Ensure form can be submitted
+    cy.wait(1000);
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
@@ -297,6 +301,7 @@ describe('Loop control', () => {
       .should('be.visible');
 
     // Ensure form cannot be submitted
+    cy.wait(1000);
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal(false));
@@ -305,6 +310,7 @@ describe('Loop control', () => {
     cy.get(':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [data-cy="screen-field-Nested Screen"] > [data-cy=screen-renderer] > :nth-child(1) > .page > [selector="first-name"] > .form-group > [data-cy=screen-field-firstname]').clear().type('foobar');
 
     // Ensure form can be submitted
+    cy.wait(1000);
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));

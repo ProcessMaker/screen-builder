@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import {size, cloneDeep, debounce, get} from 'lodash';
 import CustomCssOutput from './custom-css-output';
 import currencies from '../currency.json';
 import Inputmask from 'inputmask';
-import { getItemsFromConfig } from '../itemProcessingUtils';
-import { ValidatorFactory } from '../factories/ValidatorFactory';
+import {getItemsFromConfig} from '@/itemProcessingUtils';
+import {ValidatorFactory} from '@/factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 import globalErrorsModule from '@/store/modules/global-errors';
 
@@ -19,9 +19,9 @@ const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
 
 export default {
-  name: 'VueFormRenderer',
-  components: { CustomCssOutput },
-  mixins: [CurrentPageProperty],
+	name: 'VueFormRenderer',
+	components: {CustomCssOutput},
+	mixins: [CurrentPageProperty],
   props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
@@ -69,7 +69,7 @@ export default {
           };
           return function(text) {
             const params = JSON.parse(`[${text}]`);
-            return format(_.get(this, params[0]), params[1]);
+            return format(get(this, params[0]), params[1]);
           };
         },
       },
@@ -91,8 +91,8 @@ export default {
     data: {
       deep: true,
       handler() {
-        this.$emit('update', this.data);
-      },
+				this.debouncedWatch();
+			},
     },
     computed: {
       deep: true,
@@ -108,9 +108,13 @@ export default {
     },
   },
   created() {
+		this.debouncedWatch = debounce(() => this.$emit('update', this.data), 500);
     this.registerStoreModule('globalErrorsModule', globalErrorsModule);
-    this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+    this.parseCss = debounce(this.parseCss, 500, {leading: true});
   },
+	beforeUnmount() {
+		this.debouncedWatch.cancel();
+	},
   mounted() {
     this.parseCss();
     this.registerCustomFunctions();
@@ -162,7 +166,7 @@ export default {
      */
     isValid() {
       const items = getItemsFromConfig(this.definition.config);
-      let config = _.cloneDeep(this.definition.config);
+      let config = cloneDeep(this.definition.config);
 
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
@@ -171,7 +175,7 @@ export default {
       if (this.errors) {
         this.formSubmitErrorClass = 'invalid-form-submission';
       }
-      return _.size(this.errors) === 0;
+      return size(this.errors) === 0;
     },
     registerCustomFunctions(node=this) {
       if (node.registerCustomFunction instanceof Function) {
