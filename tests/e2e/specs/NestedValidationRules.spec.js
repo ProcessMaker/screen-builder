@@ -13,12 +13,19 @@ describe('Validation Rules (Hidden fields and Nested Screens)', () => {
       .click();
 
     fillInputText('screen-field-parent_input_1');
+    cy.shouldNotHaveValidationErrors('screen-field-parent_input_1');
     fillInputText('screen-field-parent_loop_input_2', 0);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 0);
     fillInputText('screen-field-parent_loop_input_2', 1);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 1);
     fillInputText('screen-field-parent_loop_input_2', 2);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 2);
     fillInputText('screen-field-nested_1');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_1');
     fillInputText('screen-field-nested_2');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_2');
     fillInputText('screen-field-nested_3');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_3');
 
     submitForm();
   });
@@ -31,12 +38,19 @@ describe('Validation Rules (Hidden fields and Nested Screens)', () => {
       .click();
 
     fillInputText('screen-field-parent_input_1');
+    cy.shouldNotHaveValidationErrors('screen-field-parent_input_1');
     fillInputText('screen-field-parent_loop_input_2', 0);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 0);
     fillInputText('screen-field-parent_loop_input_2', 1);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 1);
     fillInputText('screen-field-parent_loop_input_2', 2);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 2);
     fillInputText('screen-field-nested_1');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_1');
     fillInputText('screen-field-nested_2');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_2');
     fillInputText('screen-field-nested_3');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_3');
 
     submitForm();
   });
@@ -49,12 +63,19 @@ describe('Validation Rules (Hidden fields and Nested Screens)', () => {
       .click();
 
     fillInputText('screen-field-parent_input_1');
+    cy.shouldNotHaveValidationErrors('screen-field-parent_input_1');
     fillInputText('screen-field-nested_1');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_1');
     fillInputText('screen-field-nested_2');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_2');
     fillInputText('screen-field-nested_3');
+    cy.shouldNotHaveValidationErrors('screen-field-nested_3');
     fillInputText('screen-field-parent_loop_input_2', 0);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 0);
     fillInputText('screen-field-parent_loop_input_2', 1);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 1);
     fillInputText('screen-field-parent_loop_input_2', 2);
+    cy.shouldNotHaveValidationErrors('screen-field-parent_loop_input_2', 2);
 
     submitForm();
   });
@@ -64,13 +85,21 @@ describe('Validation Rules (Hidden fields and Nested Screens)', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     fillInputText('screen-field-form_input_1', 0, '13');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_1', 0);
     fillInputText('screen-field-form_input_3', 0, 'ok');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_3', 0);
     fillInputText('screen-field-form_input_3', 1, 'ok');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_3', 1);
     fillInputText('screen-field-form_input_3', 2, 'ok');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_3', 2);
     fillInputText('screen-field-form_input_1', 1, '12');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_1', 1);
     fillInputText('screen-field-form_input_2', 0, 'ok');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_2', 0);
     fillInputText('screen-field-form_input_2', 0, '10');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_2', 0);
     fillInputText('screen-field-form_input_4', 0, 'ok');
+    cy.shouldNotHaveValidationErrors('screen-field-form_input_4', 0);
 
     submitForm();
   });
