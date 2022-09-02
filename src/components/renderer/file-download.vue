@@ -112,6 +112,11 @@ export default {
     requestEndpoint(file) {
       let endpoint = this.endpoint;
 
+      if (_.has(window, 'PM4ConfigOverrides.useDefaultUrlDownload') && window.PM4ConfigOverrides.useDefaultUrlDownload) {
+        // Use default endpoint when coming from a package.
+        return `../files/${file.id}/contents`;
+      }
+
       if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
         return `${endpoint}/${file.id}`;
