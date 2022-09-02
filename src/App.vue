@@ -74,13 +74,6 @@
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
           <b-col class="overflow-auto h-100" data-cy="preview-content">
-            <div v-if="$store.getters['globalErrorsModule/isValidScreen'] === false" class="alert alert-danger mt-3">
-              <i class="fas fa-exclamation-circle"/>
-              {{ $store.getters['globalErrorsModule/getErrorMessage'] }}
-              <button type="button" class="close" aria-label="Close" @click="$store.dispatch('globalErrorsModule/close')">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
             <vue-form-renderer ref="renderer"
               :key="rendererKey"
               v-model="previewData"
@@ -458,7 +451,7 @@ export default {
       if (customCSS) {
         this.customCSS = customCSS;
       }
-      
+
       if (computed) {
         this.computed = JSON.parse(computed);
       }
@@ -611,7 +604,7 @@ export default {
     .modal-backdrop {
       opacity: 0.5;
     }
-    
+
     .form-group--error {
       animation: none;
     }

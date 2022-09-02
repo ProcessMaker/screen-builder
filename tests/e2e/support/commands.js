@@ -190,3 +190,11 @@ Cypress.Commands.add('unselectOption', { prevSubject: true }, (subject, option) 
   cy.get(subject).click();
   cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
 });
+
+Cypress.Commands.add('shouldNotHaveValidationErrors', (name, index = 0) => {
+  cy.get(`[data-cy=preview-content] [data-cy=${name}]`).eq(index).should('not.have.class', 'is-invalid');
+})
+
+Cypress.Commands.add('shouldHaveValidationErrors', (name, index = 0) => {
+  cy.get(`[data-cy=preview-content] [data-cy=${name}]`).eq(index).should('have.class', 'is-invalid');
+})

@@ -14,7 +14,7 @@ export default {
 
         const data = new Proxy(Object.assign({}, this), {
           get(data, name) {
-            if (data[name] === undefined || !isEqual(data[name]), self.vdata[name]) {
+            if (data[name] === undefined || !isEqual(data[name], self.vdata[name])) {
               return self.vdata[name];
             } else {
               return data[name];
