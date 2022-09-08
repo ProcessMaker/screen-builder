@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { validators } from './mixins/ValidationRules';
 import DataProvider from './DataProvider';
 import { get, set, merge } from 'lodash';
@@ -33,8 +34,11 @@ class Validations {
    * Check if element/container is visible.
    */
   isVisible() {
-    // Disable validations if field is hidden
     let visible = true;
+    if (!this.disableHiddenFields) {
+      return visible;
+    }
+    // Disable validations if field is hidden
     if (this.element.config.conditionalHide) {
       try {
         visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
@@ -52,7 +56,7 @@ class Validations {
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (const item of this.element) {
-      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop }).addValidations(validations);
+      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop, disableHiddenFields: this.disableHiddenFields }).addValidations(validations);
     }
   }
 }
@@ -65,7 +69,7 @@ class ScreenValidations extends Validations {
     // add validations for page 1
     if (this.element.config[this.firstPage]) {
       this.element.pagesValidated = [this.firstPage];
-      const screenValidations = ValidationsFactory(this.element.config[this.firstPage].items, { screen: this.element, data: this.data });
+      const screenValidations = ValidationsFactory(this.element.config[this.firstPage].items, { screen: this.element, data: this.data, disableHiddenFields: this.disableHiddenFields });
       await screenValidations.addValidations(validations);
       delete this.element.pagesValidated;
     }
@@ -84,7 +88,7 @@ class FormNestedScreenValidations extends Validations {
     const definition = await this.loadScreen(this.element.config.screen);
     let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
     if (definition && definition[0] && definition[0].items) {
-      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data, parentVisibilityRule }).addValidations(validations);
+      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data, parentVisibilityRule, disableHiddenFields: this.disableHiddenFields }).addValidations(validations);
     }
   }
 
@@ -116,8 +120,9 @@ class FormLoopValidations extends Validations {
     loopField['$each'] = {};
     this.checkForSiblings(validations);
     const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true }).addValidations(loopField['$each']);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true, disableHiddenFields: this.disableHiddenFields }).addValidations(loopField['$each']);
   }
+  // eslint-disable-next-line lines-between-class-members
   checkForSiblings(validations) {
     const siblings = [];
     const siblingValidations = [];
@@ -177,7 +182,7 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide, disableHiddenFields: this.disableHiddenFields }).addValidations(validations);
   }
 }
 
@@ -193,7 +198,7 @@ class PageNavigateValidations extends Validations {
     if (this.screen.pagesValidated && !this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
       if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
-        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
+        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data, disableHiddenFields: this.disableHiddenFields }).addValidations(validations);
       }
     }
   }
@@ -204,6 +209,7 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
+    const formElementValidations = this;
     if (this.element.config && this.element.config.readonly) {
       //readonly elements do not need validation
       return;
@@ -245,6 +251,9 @@ class FormElementValidations extends Validations {
           validationFn = validationFn(...params);
         }
         fieldValidation[rule] = function(...props) {
+          if (!formElementValidations.disableHiddenFields) {
+            return validationFn.apply(this,props);
+          }
           const data = props[1];
           const level = fieldName.split('.').length - 1;
           const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
@@ -285,6 +294,9 @@ class FormElementValidations extends Validations {
         return;
       }
       fieldValidation[validationConfig] = function(...props) {
+        if (!formElementValidations.disableHiddenFields) {
+          return validationFn.apply(this,props);
+        }
         const data = props[1];
         const level = fieldName.split('.').length - 1;
         const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
@@ -319,7 +331,7 @@ class FormElementValidations extends Validations {
       };
     }
     if (this.element.items) {
-      ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
+      ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, disableHiddenFields: this.disableHiddenFields }).addValidations(validations);
     }
   }
   camelCase(name) {
