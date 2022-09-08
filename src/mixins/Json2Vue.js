@@ -362,26 +362,38 @@ export default {
         });
         return response;
       }
-      let updateValidationRules = function(screenComponent, validations) {
-        const a = getKeys(screenComponent.ValidationRules__);
-        const b = getKeys(validations);
-        if (isEqual(a, b)) {
-          return;
-        }
-        screenComponent.ValidationRules__ = validations;
-        screenComponent.$nextTick(() => {
-          if (screenComponent.$v) {
-            screenComponent.$v.$touch();
+      const updateValidationRules = function (screenComponent, validations) {
+        return new Promise((resolve) => {
+          const a = getKeys(screenComponent.ValidationRules__);
+          const b = getKeys(validations);
+          if (isEqual(a, b)) {
+            resolve();
+            return;
           }
+          screenComponent.ValidationRules__ = validations;
+          screenComponent.$nextTick(() => {
+            if (screenComponent.$v) {
+              screenComponent.$v.$touch();
+              resolve();
+            }
+          });
         });
       };
-      updateValidationRules = debounce(updateValidationRules, 100);
-      component.methods.loadValidationRules = function() {
+      component.methods.loadValidationRules = async function (
+        disableHiddenFields = false
+      ) {
         // Asynchronous loading of validations
         const validations = {};
-        ValidationsFactory(definition, { screen: definition, firstPage, data: {_parent: this._parent, ...this.vdata} }).addValidations(validations).then(() => {
-          updateValidationRules(this, validations);
-        });
+        await ValidationsFactory(definition, {
+          disableHiddenFields,
+          screen: definition,
+          firstPage,
+          data: {
+            _parent: this._parent,
+            ...this.vdata
+          }
+        }).addValidations(validations);
+        await updateValidationRules(this, validations);
       };
       component.mounted.push('this.loadValidationRules()');
     },
