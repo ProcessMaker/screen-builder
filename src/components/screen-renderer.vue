@@ -42,28 +42,7 @@ export default {
   },
   mounted() {
     this.currentDefinition = cloneDeep(this.definition);
-
-    let screenName =  getFromObject(this.currentDefinition, 'config.0.name');
-    const itemName = `hash${this.hash(JSON.stringify(this.currentDefinition))}`;
-
-    if (['empty', undefined, null].includes(screenName)) {
-      this.component = this.buildComponent(this.currentDefinition);
-      return;
-    }
-
-    if (window.ProcessMaker.cachedScreens === undefined) {
-      window.ProcessMaker.cachedScreens = [];
-    }
-    let cachedScreen = window.ProcessMaker.cachedScreens.find(x => x.name === itemName);
-    if (cachedScreen) {
-      this.component = cachedScreen.component;
-    }
-    else {
-      let component = this.buildComponent(this.currentDefinition);
-      this.component = component;
-      window.ProcessMaker.cachedScreens.push({name: itemName, component: cloneDeep(component), definition: this.definition});
-    }
-
+    this.component = this.buildComponent(this.currentDefinition);
   },
   watch: {
     definition: {
