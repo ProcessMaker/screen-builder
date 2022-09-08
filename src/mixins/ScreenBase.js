@@ -125,7 +125,8 @@ export default {
         return 'MUSTACHE: ' + e.message;
       }
     },
-    submitForm() {
+    async submitForm() {
+      await this.loadValidationRules(true);
       if (this.$v.$invalid) {
         let msgError = this.$store.getters['globalErrorsModule/getErrorMessage'];
         window.ProcessMaker.alert(msgError, 'danger');
