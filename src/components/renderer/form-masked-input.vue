@@ -228,7 +228,7 @@ export default {
       }
     },
     localValue(value) {
-      if (value != this.value) {
+      if (value !== this.value) {
         this.$emit('input', this.convertToData(value));
       }
     },
