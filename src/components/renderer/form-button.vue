@@ -109,12 +109,10 @@ export default {
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
       if (this.event === 'submit') {
-        window.setTimeout(() => {
-          this.$emit('input', this.fieldValue);
-          this.$nextTick(()=>{
-            this.$emit('submit', this.eventData);
-          });
-        }, 600);
+        this.$emit('input', this.fieldValue);
+        this.$nextTick(()=>{
+          this.$emit('submit', this.eventData);
+        });
         return;
       }
       this.$emit(this.event, this.eventData);
