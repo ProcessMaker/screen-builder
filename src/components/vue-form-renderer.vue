@@ -92,6 +92,13 @@ export default {
       deep: true,
       handler() {
         this.$emit('update', this.data);
+        const mainScreen = this.getMainScreen();
+        if (mainScreen) {
+          this.$store.dispatch(
+            "globalErrorsModule/updateValidation",
+            mainScreen
+          );
+        }
       },
     },
     computed: {
@@ -120,6 +127,9 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
+    getMainScreen() {
+      return this.$refs.renderer && this.$refs.renderer.$refs.component
+    },
     registerStoreModule(moduleName, storeModule) {
       const store = this.$store;
 
