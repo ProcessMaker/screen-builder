@@ -9,19 +9,18 @@
 <script>
 import Mustache from 'mustache';
 import { getValidPath } from '@/mixins';
+import { mapState } from 'vuex';
 
 export default {
   mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
   watch: {
-    "$store.state.globalErrorsModule": {
-      deep: true,
-      handler(validate) {
-        this.isInvalid = !validate.valid;
-      },
-    },
+    valid(valid) {
+      this.isInvalid = !valid;
+    }
   },
   computed: {
+    ...mapState('globalErrorsModule', ['valid']),
     classList() {
       let variant = this.variant || 'primary';
       return {
