@@ -31,7 +31,6 @@ function countErrors(obj) {
 }
 
 let updateValidationRules = async (mainScreen, commit) => {
-  console.log("updateValidation");
   await mainScreen.loadValidationRules(true);
   const validate = mainScreen.$v;
   // update the global error state used by submit buttons
@@ -55,7 +54,6 @@ let updateValidationRules = async (mainScreen, commit) => {
       key: "message",
       value: message
     });
-    console.log("valid?", !validate.$invalid);
   }
 };
 updateValidationRules = debounce(updateValidationRules, 1000);
