@@ -128,7 +128,7 @@ export default {
   },
   methods: {
     getMainScreen() {
-      return this.$refs.renderer && this.$refs.renderer.$refs.component
+      return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
     registerStoreModule(moduleName, storeModule) {
       const store = this.$store;
