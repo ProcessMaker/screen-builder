@@ -30,8 +30,8 @@ function countErrors(obj) {
   return errors;
 }
 
-let updateValidationRules = async (mainScreen, commit) => {
-  await mainScreen.loadValidationRules(true);
+const updateValidationRules = async (mainScreen, commit) => {
+  await mainScreen.loadValidationRules();
   const validate = mainScreen.$v;
   // update the global error state used by submit buttons
   if (validate) {
@@ -56,7 +56,7 @@ let updateValidationRules = async (mainScreen, commit) => {
     });
   }
 };
-updateValidationRules = debounce(updateValidationRules, 1000);
+const updateValidationRulesDebounced = debounce(updateValidationRules, 1000);
 
 const globalErrorsModule = {
   namespaced,
@@ -80,8 +80,11 @@ const globalErrorsModule = {
     }
   },
   actions: {
-    updateValidation({ commit }, mainScreen) {
-      updateValidationRules(mainScreen, commit);
+    validate({ commit }, mainScreen) {
+      updateValidationRulesDebounced(mainScreen, commit);
+    },
+    async validateNow({ commit }, mainScreen) {
+      await updateValidationRules(mainScreen, commit);
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
