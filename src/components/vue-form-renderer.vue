@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import _ from 'lodash';
 import CustomCssOutput from './custom-css-output';
 import currencies from '../currency.json';
@@ -13,7 +14,6 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
-import globalErrorsModule from '@/store/modules/global-errors';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -94,10 +94,7 @@ export default {
         this.$emit('update', this.data);
         const mainScreen = this.getMainScreen();
         if (mainScreen) {
-          this.$store.dispatch(
-            "globalErrorsModule/updateValidation",
-            mainScreen
-          );
+          this.validate(mainScreen);
         }
       },
     },
@@ -115,7 +112,6 @@ export default {
     },
   },
   created() {
-    this.registerStoreModule('globalErrorsModule', globalErrorsModule);
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
@@ -127,6 +123,7 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["validate"]),
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
