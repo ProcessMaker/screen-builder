@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import globalErrorsModule from "@/store/modules/global-errors";
 import { mapActions } from "vuex";
 import _ from 'lodash';
 import CustomCssOutput from './custom-css-output';
@@ -113,6 +114,7 @@ export default {
   },
   created() {
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+    this.registerStoreModule("globalErrorsModule", globalErrorsModule);
   },
   mounted() {
     this.parseCss();
@@ -124,6 +126,13 @@ export default {
   },
   methods: {
     ...mapActions("globalErrorsModule", ["validate"]),
+    registerStoreModule(moduleName, storeModule) {
+      const store = this.$store;
+
+      if (store && store.state && !store.state[moduleName]) {
+        store.registerModule(moduleName, storeModule);
+      }
+    },
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
