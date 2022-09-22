@@ -1,5 +1,6 @@
 import { get, isEqual, set } from 'lodash';
 import Mustache from 'mustache';
+import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
@@ -38,11 +39,16 @@ export default {
     },
   },
   computed: {
+    ...mapState("globalErrorsModule", {
+      valid__: "valid",
+      message__: "message"
+    }),
     references__() {
       return this.$parent && this.$parent.references__;
     },
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["validateNow"]),
     getDataAccordingToFieldLevel(dataWithParent, level) {
       if (level === 0 || !dataWithParent) {
         return dataWithParent;
@@ -109,11 +115,11 @@ export default {
         return 'MUSTACHE: ' + e.message;
       }
     },
-    submitForm() {
-      if (this.$v.$invalid) {
-        let msgError = this.$store.getters['globalErrorsModule/getErrorMessage'];
-        window.ProcessMaker.alert(msgError, 'danger');
-        //if the form is not valid the data is not emitted
+    async submitForm() {
+      await this.validateNow(this);
+      if (!this.valid__) {
+        window.ProcessMaker.alert(this.message__, "danger");
+        // if the form is not valid the data is not emitted
         return;
       }
       this.$emit('submit', this.vdata);
