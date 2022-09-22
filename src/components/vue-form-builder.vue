@@ -356,6 +356,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
+import defaultValueEditor from "./inspector/default-value-editor";
 
 import RequiredCheckbox from './utils/required-checkbox';
 import MultipleUploadsCheckbox from './utils/multiple-uploads-checkbox';
@@ -400,6 +401,7 @@ export default {
     FormHtmlViewer,
     RequiredCheckbox,
     MultipleUploadsCheckbox,
+    defaultValueEditor,
     ...inspector,
     ...renderer,
   },

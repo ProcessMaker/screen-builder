@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import globalErrorsModule from "@/store/modules/global-errors";
+import { mapActions } from "vuex";
 import _ from 'lodash';
 import CustomCssOutput from './custom-css-output';
 import currencies from '../currency.json';
@@ -13,7 +15,6 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
-import globalErrorsModule from '@/store/modules/global-errors';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -92,6 +93,10 @@ export default {
       deep: true,
       handler() {
         this.$emit('update', this.data);
+        const mainScreen = this.getMainScreen();
+        if (mainScreen) {
+          this.validate(mainScreen);
+        }
       },
     },
     computed: {
@@ -108,8 +113,8 @@ export default {
     },
   },
   created() {
-    this.registerStoreModule('globalErrorsModule', globalErrorsModule);
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+    this.registerStoreModule("globalErrorsModule", globalErrorsModule);
   },
   mounted() {
     this.parseCss();
@@ -120,6 +125,17 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["validate"]),
+    registerStoreModule(moduleName, storeModule) {
+      const store = this.$store;
+
+      if (store && store.state && !store.state[moduleName]) {
+        store.registerModule(moduleName, storeModule);
+      }
+    },
+    getMainScreen() {
+      return this.$refs.renderer && this.$refs.renderer.$refs.component;
+    },
     registerStoreModule(moduleName, storeModule) {
       const store = this.$store;
 
