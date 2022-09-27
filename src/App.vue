@@ -78,6 +78,7 @@
               :key="rendererKey"
               v-model="previewData"
               @submit="previewSubmit"
+              @update="updateDataPreview"
               :mode="mode"
               :config="preview.config"
               :computed="preview.computed"
@@ -101,7 +102,14 @@
                 </b-button>
 
                 <b-collapse v-model="showDataInput" id="showDataInput">
-                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json" data-cy="preview-data-input"/>
+                  <monaco-editor
+                    v-model="previewInput"
+                    :options="monacoOptions"
+                    class="data-collapse"
+                    language="json"
+                    data-cy="preview-data-input"
+                    @change="updateDataInput"
+                  />
                 </b-collapse>
 
                 <b-button variant="outline"
@@ -206,11 +214,9 @@ import WatchersPopup from './components/watchers-popup.vue';
 import CustomCss from './components/custom-css.vue';
 import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
-import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
 import { cloneDeep, debounce } from 'lodash';
-import 'vue-json-pretty/lib/styles.css';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -319,25 +325,8 @@ export default {
     CustomCss,
     VueFormBuilder,
     VueFormRenderer,
-    VueJsonPretty,
     MonacoEditor,
     WatchersPopup,
-  },
-  watch: {
-    previewData: {
-      deep: true,
-      handler() {
-        this.updateDataPreview();
-      }
-    },
-    previewInput() {
-      if (this.previewInputValid) {
-        // Copy data over
-        this.previewData = JSON.parse(this.previewInput);
-      } else {
-        this.previewData = {};
-      }
-    },
   },
   computed: {
     previewInputValid() {
@@ -406,9 +395,6 @@ export default {
       return warnings;
     },
   },
-  created() {
-    this.updateDataPreview = debounce(this.updateDataPreview, 1000);
-  },
   mounted() {
     this.countElements = debounce(this.countElements, 2000);
     if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
@@ -430,9 +416,18 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
-    updateDataPreview() {
+    // eslint-disable-next-line func-names
+    updateDataInput: debounce(function () {
+      if (this.previewInputValid) {
+        // Copy data over
+        this.previewData = JSON.parse(this.previewInput);
+        this.updateDataPreview();
+      }
+    }, 1000),
+    // eslint-disable-next-line func-names
+    updateDataPreview: debounce(function () {
       this.previewDataStringify = JSON.stringify(this.previewData, null, 2);
-    },
+    }, 1000),
     monacoMounted(editor) {
       this.editor = editor;
       this.editor.updateOptions({ readOnly: true });
