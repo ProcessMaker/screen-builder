@@ -11,7 +11,9 @@ import axios from 'axios';
 import TestComponents from '../tests/components';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import VueCompositionAPI from '@vue/composition-api';
 
+Vue.use(VueCompositionAPI);
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 
