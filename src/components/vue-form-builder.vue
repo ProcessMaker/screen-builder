@@ -20,9 +20,10 @@
 
         <b-card-body no-body class="p-0 overflow-auto">
           <draggable
+            v-if="renderControls"
             id="controls"
-            data-cy="controls"
             v-model="filteredControls"
+            data-cy="controls"
             v-bind="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
             :clone="cloneControl"
             class="controls list-group w-auto list-group-flush"
@@ -98,6 +99,7 @@
       </div>
 
       <draggable
+        v-if="renderControls"
         data-cy="editor-content"
         class="h-100"
         ghost-class="form-control-ghost"
@@ -195,7 +197,10 @@
     </b-col>
 
     <!-- Inspector -->
-    <b-col class="overflow-hidden h-100 p-0 inspector-column">
+    <b-col
+      v-if="renderControls"
+      class="overflow-hidden h-100 p-0 inspector-column"
+    >
       <b-card no-body class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0">
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
@@ -299,9 +304,6 @@
       <p>{{ confirmMessage }}</p>
       <div slot="modal-ok">{{ $t('Delete') }}</div>
     </b-modal>
-
-    <!-- Auxilar instance to get the Tree of variables -->
-    <screen-renderer ref="treeOfVariables" :value="{}" :definition="{config:[]}" v-show="false" />
   </b-row>
 </template>
 
@@ -372,6 +374,10 @@ const defaultConfig = [{
 
 export default {
   props: {
+    renderControls: {
+      type: Boolean,
+      default: true
+    },
     validationErrors: {
       type: Array,
     },
@@ -557,8 +563,8 @@ export default {
         customCSS : this.$parent.customCSS,
         watchers : this.$parent.watchers,
       };
-      this.variablesTree = this.$refs.treeOfVariables.getVariablesTree(definition);
-      this.$refs.treeOfVariables.getVariablesTree({config: []});
+      // this.variablesTree = this.$refs.treeOfVariables.getVariablesTree(definition);
+      // this.$refs.treeOfVariables.getVariablesTree({config: []});
     },
     accordionName(accordion) {
       return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
