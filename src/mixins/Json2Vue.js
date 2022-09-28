@@ -162,7 +162,7 @@ export default {
           } else if (typeof value === 'string' && value.indexOf('{{') !== -1 && !properties.ignoreMustache) {
             node.setAttribute(':' + this.escapeVuePropertyName(property), 'mustache('+this.byValue(value)+')');
           } else if (value !== undefined) {
-            node.setAttribute(':' + this.escapeVuePropertyName(property), this.byValue(value));
+            node.setAttribute(':' + this.escapeVuePropertyName(property), this.byRef(value));
           }
         }
       }
