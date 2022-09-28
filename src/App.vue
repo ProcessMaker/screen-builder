@@ -67,6 +67,7 @@
           :class="displayBuilder ? 'd-flex' : 'd-none'"
           :screen="screen"
           title="Default"
+          :render-controls="displayBuilder"
         >
           <default-loading-spinner/>
         </vue-form-builder>
