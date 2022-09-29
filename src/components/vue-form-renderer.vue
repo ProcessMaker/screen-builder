@@ -92,7 +92,7 @@ export default {
     data: {
       deep: true,
       handler() {
-        this.debounceUpdate();
+        this.$emit("update", this.data);
         const mainScreen = this.getMainScreen();
         if (mainScreen) {
           this.validate(mainScreen);
@@ -127,9 +127,6 @@ export default {
   methods: {
     ...mapActions("globalErrorsModule", ["validate"]),
     // eslint-disable-next-line func-names
-    debounceUpdate: _.debounce(function () {
-      this.$emit("update", this.data);
-    }, 1000),
     registerStoreModule(moduleName, storeModule) {
       const store = this.$store;
 
