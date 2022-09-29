@@ -58,6 +58,9 @@ export default {
         delete properties.content;
         properties[':content'] = this.byValue(element.config.content);
       }
+      if (componentName === "FormNestedScreen") {
+        properties[":_parent"] = "_parent";
+      }
       // Add cypress testing tags
       if (element.config.name) {
         properties['data-cy'] = `screen-field-${element.config.name}`;
