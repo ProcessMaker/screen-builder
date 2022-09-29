@@ -96,7 +96,6 @@ export default {
         const mainScreen = this.getMainScreen();
         if (mainScreen) {
           this.validate(mainScreen);
-          this.updateData(mainScreen);
         }
       },
     },
