@@ -7,7 +7,6 @@
 
 <script>
 import globalErrorsModule from "@/store/modules/global-errors";
-import globalDataModule from "@/store/modules/global-data";
 import { mapActions } from "vuex";
 import _ from 'lodash';
 import CustomCssOutput from './custom-css-output';
@@ -117,7 +116,6 @@ export default {
   created() {
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
     this.registerStoreModule("globalErrorsModule", globalErrorsModule);
-    this.registerStoreModule("globalDataModule", globalDataModule);
   },
   mounted() {
     this.parseCss();
@@ -128,7 +126,6 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    ...mapActions("globalDataModule", ["updateData"]),
     ...mapActions("globalErrorsModule", ["validate"]),
     // eslint-disable-next-line func-names
     debounceUpdate: _.debounce(function () {
