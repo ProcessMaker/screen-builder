@@ -419,12 +419,15 @@ export default {
   methods: {
     // eslint-disable-next-line func-names
     updateDataInput: debounce(function () {
+      this.updateDataInputNow();
+    }, 1000),
+    updateDataInputNow() {
       if (this.previewInputValid) {
         // Copy data over
         this.previewData = JSON.parse(this.previewInput);
         this.updateDataPreview();
       }
-    }, 1000),
+    },
     // eslint-disable-next-line func-names
     updateDataPreview: debounce(function () {
       this.previewDataStringify = JSON.stringify(this.previewData, null, 2);
