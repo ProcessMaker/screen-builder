@@ -66,8 +66,11 @@ export default {
         {},
         {
           get: (target, name) => {
-            if (name === "_parent") {
+            if (name === "_parent" && parent) {
               return parent;
+            }
+            if (name in target) {
+              return target[name];
             }
             return data[name];
           },
@@ -75,7 +78,12 @@ export default {
             if (name === "_parent") {
               return parent !== undefined;
             }
-            return data[name] !== undefined;
+            return data[name] !== undefined || target[name] !== undefined;
+          },
+          // ValidationRules mixin uses this to set the value of some custom fields like "today" date
+          set: (target, name, value) => {
+            target[name] = value;
+            return true;
           }
         }
       );
