@@ -120,7 +120,12 @@ export default {
       this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner, definition }));
       pages.forEach((page, index) => {
         if (page) {
-          const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
+          const component = this.createComponent("div", {
+            name: page.name,
+            class: "page",
+            "v-if": `currentPage__==${index}`,
+            key: `page-${index}`
+          });
           this.loadItems(page.items, component, screen, definition, index);
           owner.appendChild(component);
         }
