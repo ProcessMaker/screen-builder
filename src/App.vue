@@ -445,18 +445,18 @@ export default {
       });
     },
     changeMode(mode) {
-      this.mode = mode;
       this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
-      this.rendererKey++;
-      if (mode == 'preview') {
+      if (mode === "preview") {
         this.$dataProvider.flushScreenCache();
         this.preview.config = cloneDeep(this.config);
         this.preview.computed = cloneDeep(this.computed);
         this.preview.customCSS = cloneDeep(this.customCSS);
         this.preview.watchers = cloneDeep(this.watchers);
+        this.rendererKey++;
       } else {
         this.$refs.builder.refreshContent();
       }
+      this.mode = mode;
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
