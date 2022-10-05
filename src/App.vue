@@ -381,7 +381,10 @@ export default {
       const warnings = [];
       // Check if screen has watchers that use scripts
       const watchersWithScripts = this.watchers
-        .filter(watcher => watcher.script.id.substr(0, 7) === 'script-').length;
+        ? this.watchers.filter(
+            (watcher) => watcher.script.id.substr(0, 7) === "script-"
+          ).length
+        : 0;
       if (watchersWithScripts > 0) {
         warnings.push({
           message: this.$t('Using watchers with Scripts can slow the performance of your screen.'),
