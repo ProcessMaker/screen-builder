@@ -56,7 +56,7 @@ export default {
       // Do not replace mustache in RichText control, it is replaced by the control
       if (componentName === 'FormHtmlViewer' || componentName === 'FormHtmlEditorStatic') {
         delete properties.content;
-        properties[':content'] = this.byValue(element.config.content);
+        properties[':content'] = this.byRef(element.config.content);
       }
       if (componentName === "FormNestedScreen") {
         properties[":_parent"] = "_parent";
