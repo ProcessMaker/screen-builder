@@ -11,6 +11,8 @@ import axios from 'axios';
 import TestComponents from '../tests/components';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import globalErrorsModule from "@/store/modules/globalErrorsModule";
+import undoRedoModule from "@/store/modules/undoRedoModule";
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
@@ -28,7 +30,12 @@ Vue.component('Multiselect', Multiselect);
 // Stub for standalone. Real one is in core.
 Vue.component('required', { template: '<div class="text-right"><small>* = Required</small></div>'});
 
-const store = new Vuex.Store({ modules: {} });
+const store = new Vuex.Store({
+  modules: {
+    globalErrorsModule,
+    undoRedoModule
+  }
+});
 
 window.axios = axios.create({
   baseURL: '/api/1.0/',
