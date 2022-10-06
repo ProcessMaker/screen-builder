@@ -482,21 +482,8 @@ export default {
       handler() {
         this.checkForCaptchaInLoops();
         this.$emit('change', this.config);
-        this.loadVariablesTree();
       },
       deep: true,
-    },
-    '$parent.computed': {
-      deep: true,
-      handler() {
-        this.loadVariablesTree();
-      },
-    },
-    '$parent.watchers': {
-      deep: true,
-      handler() {
-        this.loadVariablesTree();
-      },
     },
     currentPage() {
       this.inspect();
@@ -561,8 +548,8 @@ export default {
         customCSS : this.$parent.customCSS,
         watchers : this.$parent.watchers,
       };
-      // this.variablesTree = this.$refs.treeOfVariables.getVariablesTree(definition);
-      // this.$refs.treeOfVariables.getVariablesTree({config: []});
+      this.variablesTree = this.$refs.treeOfVariables.getVariablesTree(definition);
+      this.$refs.treeOfVariables.getVariablesTree({config: []});
     },
     accordionName(accordion) {
       return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
@@ -855,7 +842,6 @@ export default {
     },
   },
   created() {
-    this.loadVariablesTree = _.debounce(this.loadVariablesTree, 2000);
     Validator.register(
       'unique-page-name',
       value => {
@@ -870,7 +856,6 @@ export default {
     this.initiateLanguageSupport();
   },
   mounted() {
-    this.loadVariablesTree();
     this.checkForCaptchaInLoops();
     this.$root.$on('nested-screen-updated', () => {
       this.checkForCaptchaInLoops();
