@@ -78,6 +78,7 @@
               :key="rendererKey"
               v-model="previewData"
               @submit="previewSubmit"
+              @update="updateDataPreview"
               :mode="mode"
               :config="preview.config"
               :computed="preview.computed"
@@ -90,7 +91,7 @@
 
           <b-col class="overflow-hidden h-100 preview-inspector p-0">
             <b-card no-body class="p-0 h-100 rounded-0 border-top-0 border-right-0 border-bottom-0">
-              <b-card-body class="p-0 overflow-auto">
+              <b-card-body class="p-0">
                 <b-button variant="outline"
                   class="text-left card-header d-flex align-items-center w-100 shadow-none"
                   @click="showDataInput = !showDataInput"
@@ -101,7 +102,14 @@
                 </b-button>
 
                 <b-collapse v-model="showDataInput" id="showDataInput">
-                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json" data-cy="preview-data-input"/>
+                  <monaco-editor
+                    v-model="previewInput"
+                    :options="monacoOptions"
+                    class="data-collapse"
+                    language="json"
+                    data-cy="preview-data-input"
+                    @change="updateDataInput"
+                  />
                 </b-collapse>
 
                 <b-button variant="outline"
@@ -115,7 +123,13 @@
                 </b-button>
 
                 <b-collapse v-model="showDataPreview" id="showDataPreview" data-cy="preview-data-content" class="mt-2">
-                  <vue-json-pretty :data="previewData" class="p-2 data-collapse"/>
+                  <monaco-editor
+                    v-model="previewDataStringify"
+                    :options="monacoOptions"
+                    class="editor"
+                    language="json"
+                    @editorDidMount="monacoMounted"
+                  />
                 </b-collapse>
 
               </b-card-body>
@@ -200,11 +214,9 @@ import WatchersPopup from './components/watchers-popup.vue';
 import CustomCss from './components/custom-css.vue';
 import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
-import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
 import { cloneDeep, debounce } from 'lodash';
-import 'vue-json-pretty/lib/styles.css';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -255,6 +267,7 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      previewDataStringify: "",
       numberOfElements: 0,
       preview: {
         config: [
@@ -301,7 +314,9 @@ export default {
       monacoOptions: {
         automaticLayout: true,
         lineNumbers: 'off',
-        minimap: false,
+        minimap: {
+          enabled: false
+        }
       },
     };
   },
@@ -310,19 +325,8 @@ export default {
     CustomCss,
     VueFormBuilder,
     VueFormRenderer,
-    VueJsonPretty,
     MonacoEditor,
     WatchersPopup,
-  },
-  watch: {
-    previewInput() {
-      if (this.previewInputValid) {
-        // Copy data over
-        this.previewData = JSON.parse(this.previewInput);
-      } else {
-        this.previewData = {};
-      }
-    },
   },
   computed: {
     previewInputValid() {
@@ -412,6 +416,22 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
+    // eslint-disable-next-line func-names
+    updateDataInput: debounce(function () {
+      if (this.previewInputValid) {
+        // Copy data over
+        this.previewData = JSON.parse(this.previewInput);
+        this.updateDataPreview();
+      }
+    }, 1000),
+    // eslint-disable-next-line func-names
+    updateDataPreview: debounce(function () {
+      this.previewDataStringify = JSON.stringify(this.previewData, null, 2);
+    }, 1000),
+    monacoMounted(editor) {
+      this.editor = editor;
+      this.editor.updateOptions({ readOnly: true });
+    },
     countElements() {
       this.$refs.renderer.countElements(this.config).then(allElements => {
         this.numberOfElements = allElements.length;
@@ -607,5 +627,8 @@ export default {
 
     .form-group--error {
       animation: none;
+    }
+    .editor {
+      height: 30em;
     }
 </style>
