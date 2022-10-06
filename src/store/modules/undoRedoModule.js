@@ -3,7 +3,7 @@ const undoRedoModule = {
   state() {
     return {
       stack: [],
-      position: null,
+      position: null
     };
   },
   getters: {
@@ -14,7 +14,7 @@ const undoRedoModule = {
       return state.position < state.stack.length - 1;
     },
     currentState(state, getters) {
-      let currentState = state.stack[state.position];
+      const currentState = state.stack[state.position];
 
       if (getters.nextState && getters.nextState.deletedPage) {
         currentState.currentPage = getters.nextState.currentPage;
@@ -28,7 +28,7 @@ const undoRedoModule = {
       }
 
       return false;
-    },
+    }
   },
   mutations: {
     setPosition(state, position) {
@@ -36,7 +36,7 @@ const undoRedoModule = {
     },
     setState(state, newState) {
       state.stack.push(newState);
-    },
+    }
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
@@ -44,24 +44,24 @@ const undoRedoModule = {
         return;
       }
 
-      commit('setState', newState);
-      commit('setPosition', state.stack.length - 1);
+      commit("setState", newState);
+      commit("setPosition", state.stack.length - 1);
     },
     undo({ state, getters, commit }) {
       if (!getters.canUndo) {
         return;
       }
 
-      commit('setPosition', state.position - 1);
+      commit("setPosition", state.position - 1);
     },
     redo({ state, getters, commit }) {
       if (!getters.canRedo) {
         return;
       }
 
-      commit('setPosition', state.position + 1);
-    },
-  },
+      commit("setPosition", state.position + 1);
+    }
+  }
 };
 
 export default undoRedoModule;
