@@ -25,7 +25,7 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
           }
         }
       })
-    ).as("DataSource_38");
+    ).as("DataSourceOne");
     cy.route(
       "POST",
       "/api/1.0/requests/data_sources/22",
@@ -54,6 +54,12 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
 
   it("Verify RAOS 1.0.0 People Screen", () => {
     cy.loadFromJson("RAOS_1.0.0_-_People_2.json", 7);
+
+    // Wait screen configuration to load
+    cy.wait("@DataSourceOne");
+    cy.wait("@DataSourceTwo");
+    cy.wait("@DataSourceTwo");
+
     // set init screen test data
     cy.setPreviewDataInput({
       _user: {
@@ -343,24 +349,24 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
       applicationTrackerError: null
     });
 
-    // Wait screen configuration to load
-    cy.wait(5000);
+    // Wait Designer to load before continuing to Preview
+    cy.wait(2000);
 
     // Start performance check
     cy.window().its("performance").invoke("mark", "startPreviewScreen");
     cy.get("[data-cy=mode-preview]").click();
 
     // wait DataSources to load
-    cy.wait("@DataSource_38.29");
-    cy.get("@DataSourceTwo");
-    cy.get("@DataSourceTwo");
-    cy.get("@DataSourceTwo");
-    cy.get("@DataSourceTwo");
-    cy.get("@DataSourceTwo");
-    cy.get("@DataSourceTwo");
-    cy.window().its("performance").invoke("mark", "endPreviewScreen");
+    cy.wait("@DataSourceOne");
+    cy.wait("@DataSourceOne");
+    cy.wait("@DataSourceOne");
+    cy.wait("@DataSourceTwo");
+    cy.wait("@DataSourceTwo");
+    cy.wait("@DataSourceTwo");
+    cy.wait("@DataSourceTwo");
 
-    // End performance check
+    // Check performance measure
+    cy.window().its("performance").invoke("mark", "endPreviewScreen");
     cy.window()
       .its("performance")
       .invoke(
@@ -370,6 +376,6 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
         "endPreviewScreen"
       )
       .its("duration")
-      .should("be.lessThan", 5000);
+      .should("be.lessThan", 10000);
   });
 });
