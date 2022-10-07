@@ -18,6 +18,7 @@ export default {
     loadFormLoopItems({ element, node, definition }) {
       const loop = this.createComponent('div', {
         'v-for': `(loopRow, index) in ${element.config.settings.varname}`,
+        ':key': `'loop_' + index`
       });
       const nested = {
         config: [
@@ -36,7 +37,7 @@ export default {
 
       // Add nested component inside loop
       const child = this.createComponent('ScreenRenderer', {
-        ':definition': this.byValue(nested),
+        ':definition': this.byRef(nested),
         ':value': 'loopRow',
         ':loop-context': `'${loopContext}.' + index`,
         ':_parent': 'getValidationData()',
@@ -46,7 +47,7 @@ export default {
       });
       const addLoopRow = this.createComponent('AddLoopRow', {
         ':value': element.config.settings.varname,
-        ':config': this.byValue(element.config),
+        ':config': this.byRef(element.config),
         ':error': `${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`,
       });
       loop.appendChild(child);
