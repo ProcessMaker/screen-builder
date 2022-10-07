@@ -195,21 +195,21 @@ describe('select list mustache', () => {
     cy.loadFromJson('select_list_dependent.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
-    // // Country should be empty
-    // cy.get('[data-cy="screen-field-country"] .multiselect__placeholder').should('be.visible');
-    // // City should be empty
-    // cy.get('[data-cy="screen-field-city"] .multiselect__placeholder').should('be.visible');
+    // Country should be empty
+    cy.get('[data-cy="screen-field-country"] .multiselect__placeholder').should('be.visible');
+    // City should be empty
+    cy.get('[data-cy="screen-field-city"] .multiselect__placeholder').should('be.visible');
 
-    // cy.get('[data-cy="screen-field-country"]').selectOption('Bolivia');
-    // cy.get('[data-cy="screen-field-city"]').selectOption('La Paz');
-    // cy.get('[data-cy="screen-field-country"]').selectOption('United States');
-    // // Once selected a different country city should be cleaned
-    // cy.get('[data-cy="screen-field-city"] .multiselect__placeholder').should('be.visible');
-    // cy.get('[data-cy="screen-field-city"]').selectOption('Asheville');
+    cy.get('[data-cy="screen-field-country"]').selectOption('Bolivia');
+    cy.get('[data-cy="screen-field-city"]').selectOption('La Paz');
+    cy.get('[data-cy="screen-field-country"]').selectOption('United States');
+    // Once selected a different country city should be cleaned
+    cy.get('[data-cy="screen-field-city"] .multiselect__placeholder').should('be.visible');
+    cy.get('[data-cy="screen-field-city"]').selectOption('Asheville');
 
-    // cy.assertPreviewData({
-    //   'country': '2',
-    //   'city': '4',
-    // });
+    cy.assertPreviewData({
+      'country': '2',
+      'city': '4',
+    });
   });
 });
