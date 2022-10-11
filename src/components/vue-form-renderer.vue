@@ -91,7 +91,7 @@ export default {
     data: {
       deep: true,
       handler() {
-        this.$emit('update', this.data);
+        this.$emit("update", this.data);
         const mainScreen = this.getMainScreen();
         if (mainScreen) {
           this.validate(mainScreen);

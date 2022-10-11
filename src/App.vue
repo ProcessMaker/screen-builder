@@ -67,6 +67,7 @@
           :class="displayBuilder ? 'd-flex' : 'd-none'"
           :screen="screen"
           title="Default"
+          :render-controls="displayBuilder"
         >
           <default-loading-spinner/>
         </vue-form-builder>
@@ -380,7 +381,10 @@ export default {
       const warnings = [];
       // Check if screen has watchers that use scripts
       const watchersWithScripts = this.watchers
-        .filter(watcher => watcher.script.id.substr(0, 7) === 'script-').length;
+        ? this.watchers.filter(
+            (watcher) => watcher.script.id.substr(0, 7) === "script-"
+          ).length
+        : 0;
       if (watchersWithScripts > 0) {
         warnings.push({
           message: this.$t('Using watchers with Scripts can slow the performance of your screen.'),
@@ -418,12 +422,15 @@ export default {
   methods: {
     // eslint-disable-next-line func-names
     updateDataInput: debounce(function () {
+      this.updateDataInputNow();
+    }, 1000),
+    updateDataInputNow() {
       if (this.previewInputValid) {
         // Copy data over
         this.previewData = JSON.parse(this.previewInput);
         this.updateDataPreview();
       }
-    }, 1000),
+    },
     // eslint-disable-next-line func-names
     updateDataPreview: debounce(function () {
       this.previewDataStringify = JSON.stringify(this.previewData, null, 2);
@@ -438,18 +445,18 @@ export default {
       });
     },
     changeMode(mode) {
-      this.mode = mode;
       this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
-      this.rendererKey++;
-      if (mode == 'preview') {
+      if (mode === "preview") {
         this.$dataProvider.flushScreenCache();
         this.preview.config = cloneDeep(this.config);
         this.preview.computed = cloneDeep(this.computed);
         this.preview.customCSS = cloneDeep(this.customCSS);
         this.preview.watchers = cloneDeep(this.watchers);
+        this.rendererKey++;
       } else {
         this.$refs.builder.refreshContent();
       }
+      this.mode = mode;
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
