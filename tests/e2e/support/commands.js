@@ -3,15 +3,15 @@ import { set } from 'lodash';
 import 'cypress-wait-until';
 
 Cypress.Commands.add('setPreviewDataInput', (input) => {
-  cy.get('#screen-builder-container').then((div) => {
+  cy.get('#screen-builder-container').then(async (div) => {
     div[0].__vue__.previewInput = typeof input === 'string' ? input : JSON.stringify(input);
-    div[0].__vue__.updateDataInput();
+    div[0].__vue__.updateDataInputNow();
   });
 });
 
 Cypress.Commands.add('assertPreviewData', (expectedData) => {
   cy.get('#screen-builder-container').then((div) => {
-    const data = div[0].__vue__.previewData;
+    const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
     expect(data).to.eql(expectedData);
   });
 });

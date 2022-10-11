@@ -56,7 +56,10 @@ export default {
       // Do not replace mustache in RichText control, it is replaced by the control
       if (componentName === 'FormHtmlViewer' || componentName === 'FormHtmlEditorStatic') {
         delete properties.content;
-        properties[':content'] = this.byValue(element.config.content);
+        properties[':content'] = this.byRef(element.config.content);
+      }
+      if (componentName === "FormNestedScreen") {
+        properties[":_parent"] = "_parent";
       }
       // Add cypress testing tags
       if (element.config.name) {
@@ -83,7 +86,7 @@ export default {
           this.loadFormPopups(params);
           this.loadFieldProperties(params);
         }
-        params.properties[':config'] = this.byValue(params.element.config);
+        params.properties[':config'] = this.byRef(params.element.config);
         params.properties[':transientData'] = 'vdata';
       },
     });

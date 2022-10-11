@@ -4,8 +4,10 @@ import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
+const parentReference = [];
 
 export default {
+  name: "ScreenContent",
   schema: [
     function() {
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
@@ -57,13 +59,34 @@ export default {
     },
     addReferenceToParents(data) {
       if (!data) {
-        return;
+        return undefined;
       }
       const parent = this.addReferenceToParents(this.findParent(data));
-      return {
-        _parent: parent,
-        ...data,
-      };
+      return new Proxy(
+        {},
+        {
+          get: (target, name) => {
+            if (name === "_parent" && parent) {
+              return parent;
+            }
+            if (name in target) {
+              return target[name];
+            }
+            return data[name];
+          },
+          has: (target, name) => {
+            if (name === "_parent") {
+              return parent !== undefined;
+            }
+            return data[name] !== undefined || target[name] !== undefined;
+          },
+          // ValidationRules mixin uses this to set the value of some custom fields like "today" date
+          set: (target, name, value) => {
+            target[name] = value;
+            return true;
+          }
+        }
+      );
     },
     findParent(child, data = this.vdata, parent = this._parent) {
 
@@ -125,13 +148,7 @@ export default {
       this.$emit('submit', this.vdata);
     },
     getValidationData() {
-      const screen = this;
-      return new Proxy(this.vdata || {}, {
-        get(target, name) {
-          if (name in target) return target[name];
-          if (name === '_parent') return screen._parent === undefined ? this._parent : screen._parent;
-        },
-      });
+      return this.vdata;
     },
     initialValue(component, dataFormat, config) {
       let value = null;
