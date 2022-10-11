@@ -8,6 +8,7 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import axios from 'axios';
+import LRUCache from 'lru-cache';
 import { cacheAdapterEnhancer, throttleAdapterEnhancer } from 'axios-extensions';
 import TestComponents from '../tests/components';
 import BootstrapVue from 'bootstrap-vue';
@@ -37,14 +38,9 @@ const store = new Vuex.Store({
     undoRedoModule
   }
 });
-debugger;
-const screenConfig = {enabledByDefault: false, threshold: 5000,  cacheFlag: "useCache",};
 window.axios = axios.create({
   baseURL: '/api/1.0/',
-  headers: { 'Cache-Control': 'no-cache' },
-  adapter: throttleAdapterEnhancer(
-    cacheAdapterEnhancer(axios.defaults.adapter, screenConfig)
-  )
+  adapter: cacheAdapterEnhancer(axios.defaults.adapter, false, 'useCache')
 });
 
 window.exampleScreens = [
@@ -120,7 +116,7 @@ window.ProcessMaker = {
         },
       },
     },
-    get(url) {
+    get(url, params) {
       return new Promise((resolve, reject) => {
         let screen;
         if (url.substr(0, 8) === 'screens/') {
@@ -149,7 +145,7 @@ window.ProcessMaker = {
             ],
           }});
         } else {
-          window.axios.get(url)
+          window.axios.get(url, params)
             .then(response => resolve(response))
             .catch(error => reject(error));
         }
@@ -169,7 +165,6 @@ window.ProcessMaker = {
             }});
             break;
           default:
-            console.log("aqui pasas");
             window.axios.post(url, body)
               .then(response => resolve(response))
               .catch(error => reject(error));

@@ -10,7 +10,6 @@ export default {
     Vue.prototype.$dataProvider = this;
   },
   apiInstance() {
-    debugger;
     // Use the real apiClient
     if (_.has(window, 'ProcessMaker.apiClient') && !window.ProcessMaker.isStub) {
       return window.ProcessMaker.apiClient;
@@ -138,6 +137,15 @@ export default {
     url += this.authQueryString();
 
     return this.post(url, params, { timeout: 0});
+  },
+
+  getDataSource(scriptId, requestId, params) {
+    console.log("getDataSource");
+    console.log(params);
+    const url = `/requests/data_sources/${scriptId}/resources/${params.config.endpoint}/data?pmql=data.category%20%3D%20%22Name%20Prefix%22%20and%20data.name%20like%20%22%22`;
+    return this.get(url, {useCache: true}).then(response => {
+      return response;
+    });
   },
 
   authQueryString() {
