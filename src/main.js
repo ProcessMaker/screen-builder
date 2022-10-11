@@ -16,6 +16,8 @@ import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 
+const FIVE_MINUTES = 3000000;
+
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 
@@ -40,7 +42,13 @@ const store = new Vuex.Store({
 });
 window.axios = axios.create({
   baseURL: '/api/1.0/',
-  adapter: cacheAdapterEnhancer(axios.defaults.adapter, false, 'useCache')
+  adapter: throttleAdapterEnhancer(
+    cacheAdapterEnhancer(axios.defaults.adapter, {
+      enabledByDefault: false,
+      cacheFlag: "useCache",
+      defaultCache: new LRUCache({ maxAge: FIVE_MINUTES, max: 100 })
+    })
+  )
 });
 
 window.exampleScreens = [
