@@ -23,6 +23,7 @@
   "dependencies": {
     "axios-extensions": "^2.0.3",
     "lodash": "^4.17.21",
+    "lru-cache": "^7.14.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.27",
     "scrollparent": "^2.0.1",
