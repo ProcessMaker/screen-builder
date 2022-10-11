@@ -16,7 +16,7 @@ import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 
-const FIVE_MINUTES = 3000000;
+const FIVE_MINUTES = 1000 * 60 * 5;
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
