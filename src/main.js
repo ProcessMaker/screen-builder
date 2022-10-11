@@ -8,6 +8,7 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import axios from 'axios';
+import { cacheAdapterEnhancer, throttleAdapterEnhancer } from 'axios-extensions';
 import TestComponents from '../tests/components';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
@@ -36,9 +37,14 @@ const store = new Vuex.Store({
     undoRedoModule
   }
 });
-
+debugger;
+const screenConfig = {enabledByDefault: false, threshold: 5000,  cacheFlag: "useCache",};
 window.axios = axios.create({
   baseURL: '/api/1.0/',
+  headers: { 'Cache-Control': 'no-cache' },
+  adapter: throttleAdapterEnhancer(
+    cacheAdapterEnhancer(axios.defaults.adapter, screenConfig)
+  )
 });
 
 window.exampleScreens = [
@@ -163,6 +169,7 @@ window.ProcessMaker = {
             }});
             break;
           default:
+            console.log("aqui pasas");
             window.axios.post(url, body)
               .then(response => resolve(response))
               .catch(error => reject(error));

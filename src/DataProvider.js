@@ -10,6 +10,7 @@ export default {
     Vue.prototype.$dataProvider = this;
   },
   apiInstance() {
+    debugger;
     // Use the real apiClient
     if (_.has(window, 'ProcessMaker.apiClient') && !window.ProcessMaker.isStub) {
       return window.ProcessMaker.apiClient;
