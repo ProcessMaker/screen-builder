@@ -1,6 +1,10 @@
 /* istanbul ignore file */
-import axios from 'axios';
-import _ from 'lodash';
+import axios from "axios";
+import { has, get } from "lodash";
+import { cacheAdapterEnhancer } from "axios-extensions";
+import LRUCache from "lru-cache";
+
+const FIVE_MINUTES = 1000 * 60 * 5;
 
 export default {
   screensCache: [],
@@ -11,7 +15,7 @@ export default {
   },
   apiInstance() {
     // Use the real apiClient
-    if (_.has(window, 'ProcessMaker.apiClient') && !window.ProcessMaker.isStub) {
+    if (has(window, "ProcessMaker.apiClient") && !window.ProcessMaker.isStub) {
       return window.ProcessMaker.apiClient;
     }
 
@@ -19,13 +23,22 @@ export default {
     if (this.token()) {
       axios.defaults.baseURL = this.baseURL();
       axios.defaults.headers.common = {
-        'Authorization': 'Bearer ' + this.token(),
+        Authorization: `Bearer ${this.token()}`
       };
+      axios.defaults.adapter = cacheAdapterEnhancer(
+        axios.defaults.adapter,
+        window.ProcessMaker.screen.cacheEnabled,
+        "useCache",
+        new LRUCache({
+          ttl: window.ProcessMaker.screen.cacheTimeout,
+          max: 100
+        })
+      );
       return axios;
     }
 
     // If the apiClient is a stub, use it for running tests
-    if (_.has(window, 'ProcessMaker.apiClient') && window.ProcessMaker.isStub) {
+    if (has(window, "ProcessMaker.apiClient") && window.ProcessMaker.isStub) {
       return window.ProcessMaker.apiClient;
     }
 
@@ -34,10 +47,10 @@ export default {
       get() {
         return Promise.resolve({
           data: {
-            data: [],
-          },
+            data: []
+          }
         });
-      },
+      }
     };
   },
   get(...args) {
@@ -50,17 +63,21 @@ export default {
     return this.apiInstance().delete(...args);
   },
   token() {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   },
   baseURL() {
-    return localStorage.getItem('baseURL');
+    return localStorage.getItem("baseURL");
   },
 
   // Methods below are used in the components
 
   getTasks(params) {
-    const endpoint = _.get(window, 'PM4ConfigOverrides.getTasksEndpoint', '/tasks');
-    return this.get(endpoint + params).then(response => {
+    const endpoint = get(
+      window,
+      "PM4ConfigOverrides.getTasksEndpoint",
+      "/tasks"
+    );
+    return this.get(endpoint + params).then((response) => {
       if (response.data.screen && response.data.screen.nested) {
         this.addNestedScreenCache(response.data.screen.nested);
       }
@@ -68,12 +85,12 @@ export default {
     });
   },
   addNestedScreenCache(nested) {
-    nested.forEach(screen => {
+    nested.forEach((screen) => {
       if (screen.screen_id) {
         // It's from a screen version, so reference it by it's parent id
         screen.id = screen.screen_id;
       }
-      const index = this.screensCache.findIndex(s => s.id == screen.id);
+      const index = this.screensCache.findIndex((s) => s.id === screen.id);
       if (index > -1) {
         this.screensCache.splice(index, 1, screen);
       } else {
@@ -81,32 +98,39 @@ export default {
       }
     });
   },
-  getScreen(id, query='') {
-    let cachedPromise = this.cachedScreenPromises.find(item => item.id === id && item.query === query);
+  getScreen(id, query = "") {
+    const cachedPromise = this.cachedScreenPromises.find(
+      (item) => item.id === id && item.query === query
+    );
     if (cachedPromise) {
       return cachedPromise.screenPromise;
     }
-    else {
-      const endpoint = _.get(window, 'PM4ConfigOverrides.getScreenEndpoint', '/screens');
-      
-      const screensCacheHit = this.screensCache.find(screen => screen.id == id);
-      if (screensCacheHit) {
-        return Promise.resolve({data: screensCacheHit});
-      }
 
-      let screenPromise = new Promise((resolve, reject) => {
-        this.get(endpoint + `/${id}${query}`)
-          .then(response => {
-            if (response.data.nested) {
-              this.addNestedScreenCache(response.data.nested);
-            }
-            resolve(response);
-          })
-          .catch(response => reject(response));
-      });
-      this.cachedScreenPromises.push({id, query, screenPromise});
-      return screenPromise;
+    const endpoint = get(
+      window,
+      "PM4ConfigOverrides.getScreenEndpoint",
+      "/screens"
+    );
+
+    const screensCacheHit = this.screensCache.find(
+      (screen) => screen.id === id
+    );
+    if (screensCacheHit) {
+      return Promise.resolve({ data: screensCacheHit });
     }
+
+    const screenPromise = new Promise((resolve, reject) => {
+      this.get(`${endpoint}/${id}${query}`)
+        .then((response) => {
+          if (response.data.nested) {
+            this.addNestedScreenCache(response.data.nested);
+          }
+          resolve(response);
+        })
+        .catch((response) => reject(response));
+    });
+    this.cachedScreenPromises.push({ id, query, screenPromise });
+    return screenPromise;
   },
 
   flushScreenCache() {
@@ -114,14 +138,14 @@ export default {
   },
 
   postScript(id, params, options = {}) {
-    let endpoint = _.get(
+    const endpoint = get(
       window,
-      'PM4ConfigOverrides.postScriptEndpoint',
-      '/scripts/execute/{id}'
+      "PM4ConfigOverrides.postScriptEndpoint",
+      "/scripts/execute/{id}"
     );
 
     return this.post(
-      endpoint.replace('{id}', id) + this.authQueryString(),
+      endpoint.replace("{id}", id) + this.authQueryString(),
       params,
       options
     );
@@ -136,19 +160,35 @@ export default {
     }
     url += this.authQueryString();
 
-    return this.post(url, params, { timeout: 0});
+    return this.post(url, params, { timeout: 0 });
+  },
+
+  /**
+   * Gets data source service
+   * @param {number|null} dataSourceId
+   * @param {object} params
+   * @returns {object}
+   */
+  getDataSource(dataSourceId, params) {
+    let url = `/requests/data_sources/${dataSourceId}/resources/${params.config.endpoint}/data`;
+    url += this.authQueryString();
+    return this.get(url, {
+      useCache: window.ProcessMaker.screen.cacheEnabled,
+      params: {
+        pmds_config: JSON.stringify(params.config),
+        pmds_data: JSON.stringify(params.data)
+      }
+    }).then((response) => {
+      return response;
+    });
   },
 
   authQueryString() {
-    const authParams = _.get(
-      window,
-      'PM4ConfigOverrides.authParams',
-      null
-    );
+    const authParams = get(window, "PM4ConfigOverrides.authParams", null);
 
-    let query = '';
+    let query = "";
     if (authParams) {
-      query = '?' + (new URLSearchParams(authParams)).toString();
+      query = `?${new URLSearchParams(authParams).toString()}`;
     }
 
     return query;
@@ -163,6 +203,6 @@ export default {
   },
 
   download(url) {
-    return this.apiInstance().get(url, {responseType: 'blob'});
-  },
+    return this.apiInstance().get(url, { responseType: "blob" });
+  }
 };
