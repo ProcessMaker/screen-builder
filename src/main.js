@@ -8,15 +8,13 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import axios from 'axios';
-import LRUCache from 'lru-cache';
-import { cacheAdapterEnhancer, throttleAdapterEnhancer } from 'axios-extensions';
+import { cacheAdapterEnhancer } from 'axios-extensions';
 import TestComponents from '../tests/components';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import LRUCache from 'lru-cache';
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
-
-const FIVE_MINUTES = 1000 * 60 * 5;
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
@@ -39,16 +37,6 @@ const store = new Vuex.Store({
     globalErrorsModule,
     undoRedoModule
   }
-});
-window.axios = axios.create({
-  baseURL: '/api/1.0/',
-  adapter: throttleAdapterEnhancer(
-    cacheAdapterEnhancer(axios.defaults.adapter, {
-      enabledByDefault: false,
-      cacheFlag: "useCache",
-      defaultCache: new LRUCache({ maxAge: FIVE_MINUTES, max: 100 })
-    })
-  )
 });
 
 window.exampleScreens = [
@@ -204,6 +192,10 @@ window.ProcessMaker = {
     variant;
     message;
   },
+  screen: {
+    cacheEnabled: false,
+    cacheTimeout: 5000
+  }
 };
 window.Echo = {
   listeners: [],
@@ -242,6 +234,19 @@ window.Echo = {
     };
   },
 };
+
+window.axios = axios.create({
+  baseURL: "/api/1.0/",
+  adapter: cacheAdapterEnhancer(
+    axios.defaults.adapter,
+    window.ProcessMaker.screen.cacheEnabled,
+    "useCache",
+    new LRUCache({
+      maxAge: window.ProcessMaker.screen.cacheTimeout,
+      max: 100
+    })
+  )
+});
 
 const scenario = (window.location.search.substr(1).match(/\w+=(\w+)/) || [])[1];
 if (scenario) {
