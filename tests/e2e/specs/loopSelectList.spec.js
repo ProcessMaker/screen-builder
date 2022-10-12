@@ -4,7 +4,7 @@ describe('Select List Cache', () => {
     cy.visit('/');
     cy.route(
       'GET',
-      '/api/1.0/requests/data_sources/**',
+      '/api/1.0/requests/data_sources/3/resources/ListAll/data**',
       JSON.stringify({
         'status': 200,
         'response': {
@@ -70,6 +70,7 @@ describe('Select List Cache', () => {
 
   it('None Cached - Verify number of service calls for loop that contains a multiselect list', () => {
     cy.loadFromJson('loop_select_list.json', 0);
+    cy.wait('@getDataSource');     // designer call
     cy.get('[data-cy=mode-preview]').click();
     cy.wait('@getDataSource');
     cy.wait('@getDataSource');
@@ -88,7 +89,7 @@ describe('Select List Cache', () => {
         cacheTimeout: 3000
       };
     });
-    cy.wait('@getDataSource');
+    cy.wait('@getDataSource');  // designer call does not use cache
     cy.get('[data-cy=mode-preview]').click();
     cy.wait('@getDataSource');
     cy.get('@getDataSource.all').should('have.length', 2)
