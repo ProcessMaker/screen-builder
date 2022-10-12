@@ -82,7 +82,7 @@ export default {
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,
-        // @todo this module is used in the form builder, but is not used in the form renderer
+        // @todo Improve how to load this module, it is used only in the form builder, not used in the form renderer.
         undoRedoModule
       }
     });
