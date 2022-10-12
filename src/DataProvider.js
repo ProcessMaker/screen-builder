@@ -164,13 +164,34 @@ export default {
     return this.post(url, params, { timeout: 0 });
   },
 
-  getDataSource(scriptId, requestId, params) {
-    console.log("getDataSource");
-    console.log(params);
-    const url = `/requests/data_sources/${scriptId}/resources/${params.config.endpoint}/data?pmql=data.category%20%3D%20%22Name%20Prefix%22%20and%20data.name%20like%20%22%22`;
-    return this.get(url, { useCache: true }).then((response) => {
+  /**
+   * Gets data source service
+   * @param {number|null} dataSourceId
+   * @param {object} params
+   * @returns {object}
+   */
+  getDataSource(dataSourceId, params) {
+    let url = `/requests/data_sources/${dataSourceId}/resources/${params.config.endpoint}/data`;
+    url += this.authQueryString();
+    return this.get(url, {
+      useCache: window.ProcessMaker.screen.cacheEnabled,
+      params: params.config.outboundConfig
+        ? this.dataSourceParams(params.config.outboundConfig)
+        : null
+    }).then((response) => {
       return response;
     });
+  },
+  /**
+   * Prepare data source params
+   * @param {object} config
+   * @returns {object}
+   */
+  dataSourceParams(config) {
+    return config.reduce((acc, item) => {
+      acc[item.key] = item.value;
+      return acc;
+    }, {});
   },
 
   authQueryString() {
