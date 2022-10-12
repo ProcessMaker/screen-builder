@@ -1,10 +1,7 @@
 /* istanbul ignore file */
 import axios from "axios";
 import { has, get } from "lodash";
-import {
-  cacheAdapterEnhancer,
-  throttleAdapterEnhancer
-} from "axios-extensions";
+import { cacheAdapterEnhancer } from "axios-extensions";
 import LRUCache from "lru-cache";
 
 const FIVE_MINUTES = 1000 * 60 * 5;
@@ -33,7 +30,7 @@ export default {
         window.ProcessMaker.screen.cacheEnabled,
         "useCache",
         new LRUCache({
-          maxAge: window.ProcessMaker.screen.cacheTimeout,
+          ttl: window.ProcessMaker.screen.cacheTimeout,
           max: 100
         })
       );
