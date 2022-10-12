@@ -242,7 +242,7 @@ window.axios = axios.create({
     window.ProcessMaker.screen.cacheEnabled,
     "useCache",
     new LRUCache({
-      maxAge: window.ProcessMaker.screen.cacheTimeout,
+      ttl: window.ProcessMaker.screen.cacheTimeout,
       max: 100
     })
   )
