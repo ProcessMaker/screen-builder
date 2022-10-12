@@ -22,6 +22,11 @@ import FileDownload from './renderer/file-download.vue';
 import FormMaskedInput from './renderer/form-masked-input';
 import DefaultLoadingSpinner from './utils/default-loading-spinner';
 import DataProvider from '../DataProvider';
+import { cacheAdapterEnhancer } from "axios-extensions";
+import LRUCache from "lru-cache";
+import Vuex from "vuex";
+import globalErrorsModule from "@/store/modules/globalErrorsModule";
+import undoRedoModule from "@/store/modules/undoRedoModule";
 
 const rendererComponents = {
   ...renderer,
@@ -72,5 +77,33 @@ export default {
 
     Vue.component('FormMaskedInput', FormMaskedInput);
     Vue.use(DataProvider);
-  },
+
+    Vue.use(Vuex);
+    const store = new Vuex.Store({
+      modules: {
+        globalErrorsModule,
+        // @todo Improve how to load this module, it is used only in the form builder, not used in the form renderer.
+        undoRedoModule
+      }
+    });
+    Vue.mixin({ store });
+  }
 };
+
+/**
+ * Initialize the axios cache adapter
+ *
+ * @param {Object} apiClient
+ * @param {Object} screenConfig
+ */
+export function initializeScreenCache(apiClient, screenConfig) {
+  apiClient.defaults.adapter = cacheAdapterEnhancer(
+    apiClient.defaults.adapter,
+    screenConfig.cacheEnabled,
+    "useCache",
+    new LRUCache({
+      ttl: screenConfig.cacheTimeout,
+      max: 100
+    })
+  );
+}
