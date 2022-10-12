@@ -28,11 +28,13 @@ export default {
       axios.defaults.headers.common = {
         Authorization: `Bearer ${this.token()}`
       };
-      axios.defaults.adapter = throttleAdapterEnhancer(
-        cacheAdapterEnhancer(axios.defaults.adapter, {
-          enabledByDefault: false,
-          cacheFlag: "useCache",
-          defaultCache: new LRUCache({ maxAge: FIVE_MINUTES, max: 100 })
+      axios.defaults.adapter = cacheAdapterEnhancer(
+        axios.defaults.adapter,
+        window.ProcessMaker.screen.cacheEnabled,
+        "useCache",
+        new LRUCache({
+          maxAge: window.ProcessMaker.screen.cacheTimeout,
+          max: 100
         })
       );
       return axios;
@@ -175,23 +177,13 @@ export default {
     url += this.authQueryString();
     return this.get(url, {
       useCache: window.ProcessMaker.screen.cacheEnabled,
-      params: params.config.outboundConfig
-        ? this.dataSourceParams(params.config.outboundConfig)
-        : null
+      params: {
+        pmds_config: JSON.stringify(params.config),
+        pmds_data: JSON.stringify(params.data)
+      }
     }).then((response) => {
       return response;
     });
-  },
-  /**
-   * Prepare data source params
-   * @param {object} config
-   * @returns {object}
-   */
-  dataSourceParams(config) {
-    return config.reduce((acc, item) => {
-      acc[item.key] = item.value;
-      return acc;
-    }, {});
   },
 
   authQueryString() {
