@@ -5,7 +5,7 @@
       v-if="componentType!=='input'"
       :is="componentType"
       v-model="localValue"
-      v-bind="componentConfig"
+      v-bind="componentConfigComputed"
       v-uni-id="name"
       :name="name"
       class="form-control"
@@ -71,6 +71,10 @@ export default {
     'controlClass',
     'dataMask',
     'config',
+    // these should not be passed by $attrs
+    "transientData",
+    "formConfig",
+    "form-watchers"
   ],
   data() {
     const { dataFormat, customFormatter } = this.config;
@@ -167,7 +171,9 @@ export default {
       componentType,
       dataType,
       getCustomFormatter,
-      componentConfig: { ...(config ? configs[config] : {}), ...this.$attrs },
+      componentConfig: JSON.parse(
+        JSON.stringify({ ...(config ? configs[config] : {}), ...this.$attrs })
+      ),
       validator: null,
       localValue: null,
       validationRules: {
@@ -181,6 +187,9 @@ export default {
         'is-invalid': (this.validator && this.validator.errorCount) || this.error,
         [this.controlClass]: !!this.controlClass,
       };
+    },
+    componentConfigComputed() {
+      return JSON.parse(JSON.stringify(this.componentConfig));
     }
   },
   watch: {
@@ -194,6 +203,11 @@ export default {
         this.$emit('input', this.convertToData(value));
       }
     },
+  },
+  mounted() {
+    if (this.value !== undefined) {
+      this.localValue = this.value;
+    }
   },
   methods: {
     getUserConfig() {
@@ -254,12 +268,7 @@ export default {
         date: ['####-##-##'],
         dateTime: ['####-##-## ##:##'],
       };
-    },
-  },
-  mounted() {
-    if (this.value !== undefined) {
-      this.localValue = this.value;
     }
-  },
+  }
 };
 </script>
