@@ -24,6 +24,10 @@ export default {
           computed.property,
           `this.setValue(${JSON.stringify(computed.property)}, value, this.vdata);`
         );
+
+        this.addMounted(screen, `
+          this.setValue(${JSON.stringify(computed.property)}, this.getValue(${JSON.stringify(computed.property)}), this.vdata, this);
+        `);
       }
     },
   },
