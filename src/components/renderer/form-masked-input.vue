@@ -82,9 +82,11 @@ export default {
           ? this.dataMask && this.dataMask.format
           : null;
       const separators = format ? format.match(/[.,]/g) : [".", ","];
-      if (separators.length === 0) separators.push("", ".");
-      else if (separators.length === 1)
+      if (separators.length === 0) {
+        separators.push("", ".");
+      } else if (separators.length === 1) {
         separators.push(separators[0] === "." ? "," : ".");
+      }
       const precision = format
         ? (format.split(separators[1])[1] || "").length
         : 2;
