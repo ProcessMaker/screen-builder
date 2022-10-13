@@ -1,7 +1,12 @@
 describe('Select List Cache', () => {
+  function addHeader(win, name, value) {
+    const meta = win.document.createElement("meta");
+    meta.setAttribute("name", name);
+    meta.setAttribute("content", value);
+    win.document.head.appendChild(meta);
+  }
   beforeEach(() => {
     cy.server();
-    cy.visit('/');
     cy.route(
       'GET',
       '/api/1.0/requests/data_sources/3/resources/ListAll/data**',
@@ -69,6 +74,14 @@ describe('Select List Cache', () => {
   });
 
   it('None Cached - Verify number of service calls for loop that contains a multiselect list', () => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        // add meta headers
+        addHeader(win, "screen-cache-enabled", "false");
+        addHeader(win, "screen-cache-timeout", "3000");
+      }
+    });
+
     cy.loadFromJson('loop_select_list.json', 0);
     cy.wait('@getDataSource');     // designer call
     cy.get('[data-cy=mode-preview]').click();
@@ -81,15 +94,17 @@ describe('Select List Cache', () => {
   });
 
   it('Cached - Verify number of service calls for loop that contains a multiselect list', () => {
-    cy.loadFromJson('loop_select_list.json', 0);
-
-    cy.window().then((win) => {
-      win.ProcessMaker.screen = {
-        cacheEnabled: true,
-        cacheTimeout: 3000
-      };
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        // add meta headers
+        addHeader(win, "screen-cache-enabled", "true");
+        addHeader(win, "screen-cache-timeout", "3000");
+      }
     });
-    cy.wait('@getDataSource');  // designer call does not use cache
+
+    cy.loadFromJson('loop_select_list.json', 0);
+    cy.wait('@getDataSource');  // get data source from designer
+    cy.wait(5000);
     cy.get('[data-cy=mode-preview]').click();
     cy.wait('@getDataSource');
     cy.get('@getDataSource.all').should('have.length', 2)

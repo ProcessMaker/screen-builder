@@ -97,6 +97,14 @@ window.exampleScreens = [
     status: 'ACTIVE',
   },
 ];
+// get cache config from header
+const cacheEnabled = document.head.querySelector(
+  "meta[name='screen-cache-enabled']"
+);
+const cacheTimeout = document.head.querySelector(
+  "meta[name='screen-cache-timeout']"
+);
+
 window.ProcessMaker = {
   isStub: true,
   user: {
@@ -193,8 +201,8 @@ window.ProcessMaker = {
     message;
   },
   screen: {
-    cacheEnabled: false,
-    cacheTimeout: 5000
+    cacheEnabled: cacheEnabled ? cacheEnabled.content === "true" : false,
+    cacheTimeout: cacheTimeout ? Number(cacheTimeout.content) : 0
   }
 };
 window.Echo = {
