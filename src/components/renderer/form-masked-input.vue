@@ -148,6 +148,13 @@ export default {
     } else {
       config = componentTypesConfigs[dataFormat];
     }
+    const configs = {
+      getCurrencyFormat,
+      getDateFormat,
+      getDatetimeFormat,
+      getPercentageFormat,
+      getCustomFormatter
+    };
     return {
       dataFormat,
       customFormatter,
@@ -159,7 +166,7 @@ export default {
       componentType,
       dataType,
       getCustomFormatter,
-      componentConfig: { ...(config ? this[config] : {}), ...this.$attrs },
+      componentConfig: { ...(config ? configs[config] : {}), ...this.$attrs },
       validator: null,
       localValue: null,
       validationRules: {
