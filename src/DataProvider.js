@@ -170,6 +170,13 @@ export default {
    * @returns {object}
    */
   getDataSource(dataSourceId, params) {
+    // keep backwards compatibility
+    if (
+      !window.ProcessMaker.screen.cacheEnabled &&
+      !window.ProcessMaker.screen.cacheTimeout
+    ) {
+      return this.postDataSource(dataSourceId, null, params);
+    }
     let url = `/requests/data_sources/${dataSourceId}/resources/${params.config.endpoint}/data`;
     url += this.authQueryString();
     return this.get(url, {
