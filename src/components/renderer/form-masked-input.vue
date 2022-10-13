@@ -73,8 +73,7 @@ export default {
     'config',
   ],
   data() {
-    const { dataFormat } = this.config;
-    const { customFormatter } = this.config;
+    const { dataFormat, customFormatter } = this.config;
     const maxlength =
       dataFormat === "int" || dataFormat === "float" ? 15 : null;
     const getCurrencyFormat = (() => {
