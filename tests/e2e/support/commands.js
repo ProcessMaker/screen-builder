@@ -1,6 +1,7 @@
 import '@4tw/cypress-drag-drop';
 import { set } from 'lodash';
 import 'cypress-wait-until';
+import "cypress-audit/commands";
 
 Cypress.Commands.add('setPreviewDataInput', (input) => {
   cy.get('#screen-builder-container').then(async (div) => {

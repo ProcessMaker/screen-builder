@@ -8,9 +8,11 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import axios from 'axios';
+import { cacheAdapterEnhancer } from 'axios-extensions';
 import TestComponents from '../tests/components';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import LRUCache from 'lru-cache';
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 
@@ -35,10 +37,6 @@ const store = new Vuex.Store({
     globalErrorsModule,
     undoRedoModule
   }
-});
-
-window.axios = axios.create({
-  baseURL: '/api/1.0/',
 });
 
 window.exampleScreens = [
@@ -99,6 +97,14 @@ window.exampleScreens = [
     status: 'ACTIVE',
   },
 ];
+// get cache config from header
+const cacheEnabled = document.head.querySelector(
+  "meta[name='screen-cache-enabled']"
+);
+const cacheTimeout = document.head.querySelector(
+  "meta[name='screen-cache-timeout']"
+);
+
 window.ProcessMaker = {
   isStub: true,
   user: {
@@ -114,7 +120,7 @@ window.ProcessMaker = {
         },
       },
     },
-    get(url) {
+    get(url, params) {
       return new Promise((resolve, reject) => {
         let screen;
         if (url.substr(0, 8) === 'screens/') {
@@ -143,7 +149,7 @@ window.ProcessMaker = {
             ],
           }});
         } else {
-          window.axios.get(url)
+          window.axios.get(url, params)
             .then(response => resolve(response))
             .catch(error => reject(error));
         }
@@ -194,6 +200,10 @@ window.ProcessMaker = {
     variant;
     message;
   },
+  screen: {
+    cacheEnabled: cacheEnabled ? cacheEnabled.content === "true" : false,
+    cacheTimeout: cacheTimeout ? Number(cacheTimeout.content) : 0
+  }
 };
 window.Echo = {
   listeners: [],
@@ -232,6 +242,19 @@ window.Echo = {
     };
   },
 };
+
+window.axios = axios.create({
+  baseURL: "/api/1.0/",
+  adapter: cacheAdapterEnhancer(
+    axios.defaults.adapter,
+    window.ProcessMaker.screen.cacheEnabled,
+    "useCache",
+    new LRUCache({
+      ttl: window.ProcessMaker.screen.cacheTimeout,
+      max: 100
+    })
+  )
+});
 
 const scenario = (window.location.search.substr(1).match(/\w+=(\w+)/) || [])[1];
 if (scenario) {
