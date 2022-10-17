@@ -5,13 +5,5 @@
 </template>
 
 <script>
-export default {
-  props: {
-    config: Object,
-  },
-};
+export default {};
 </script>
-
-<style>
-
-</style>

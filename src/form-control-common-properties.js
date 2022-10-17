@@ -1,4 +1,3 @@
-import defaultValueEditor from './components/inspector/default-value-editor';
 import Tooltip from './components/inspector/tooltip';
 
 export const bgcolorProperty = {
@@ -221,7 +220,7 @@ export const buttonVariantStyleProperty = {
 };
 
 export const defaultValueProperty = {
-  type: defaultValueEditor,
+  type: "default-value-editor",
   field: 'defaultValue',
   config: {
     label: 'Default Value',
