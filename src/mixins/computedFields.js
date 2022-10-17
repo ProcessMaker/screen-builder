@@ -12,12 +12,12 @@ export default {
         // vdata (external variables)in this way the event is not
         // executed again when the variable is update
 
-        const data = new Proxy(Object.assign({}, this), {
+        const data = new Proxy({}, {
           get(data, name) {
-            if (data[name] === undefined || !isEqual(data[name], self.vdata[name])) {
+            if (self[name] === undefined || !isEqual(self[name], self.vdata[name])) {
               return self.vdata[name];
             } else {
-              return data[name];
+              return self[name];
             }
           },
           set() {
