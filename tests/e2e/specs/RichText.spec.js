@@ -19,4 +19,11 @@ describe('Rich Text control', () => {
     cy.setPreviewDataInput('{"name":"<p>Hello <b>World</b></p>"}');
     cy.get('[data-cy=preview-content]').should('contain.html', '<p>Hello <b>World</b></p>');
   });
+  it('Type a mustache variable into tinyMCE editor', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormHtmlViewer]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=inspector-content]').focus().clear().type('{{ name }}', {parseSpecialCharSequences: false});
+    cy.get('[data-cy=editor-content]').should('contain.html', '<p>{{ name }}</p>');
+  });
 });
