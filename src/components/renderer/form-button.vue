@@ -9,40 +9,24 @@
 <script>
 import Mustache from 'mustache';
 import { getValidPath } from '@/mixins';
-import { isProxy } from 'is-proxy';
+import { mapState } from 'vuex';
 
 export default {
   mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
   watch: {
-    '$attrs.validate': {
-      deep: true,
-      handler(validate) {
-        if (validate && !isProxy(validate.vdata.$model)) {
-          this.errors = 0;
-          let message = '';
-          if (validate.$invalid) {
-            this.countErrors(validate.vdata);
-            this.countErrors(validate.schema);
-            message = this.errors === 1
-              ? 'There is a validation error in your form.'
-              : 'There are {{items}} validation errors in your form.';
-            message = this.$t(message, {items: this.errors});
-          }
-          this.$store.commit('globalErrorsModule/basic', {key: 'valid', value: !validate.$invalid});
-          this.$store.commit('globalErrorsModule/basic', {key: 'message', value: message});
-        }
-      },
-    },
+    valid(valid) {
+      this.isInvalid = !valid;
+    }
   },
   computed: {
+    ...mapState('globalErrorsModule', ['valid']),
     classList() {
       let variant = this.variant || 'primary';
-      let isInvalid = this.$store.getters['globalErrorsModule/isValidScreen'] === false;
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: this.event === 'submit' && isInvalid,
+        disabled: this.event === 'submit' && this.isInvalid,
       };
     },
     options() {
@@ -67,29 +51,10 @@ export default {
   },
   data() {
     return {
-      errors: 0,
+      isInvalid: false,
     };
   },
   methods: {
-    countErrors(obj) {
-      if (typeof obj !== 'object') {
-        return;
-      }
-      Object.entries(obj).forEach(([key, value]) => {
-        if (value) {
-          if (typeof value === 'object' && '$each' in value) {
-            this.countErrors(value.$each);
-            return;
-          }
-          if (typeof value === 'object' && '$invalid' in value && value.$invalid && isNaN(key)) {
-            this.errors++;
-          }
-          if (key !== '$iter' && value) {
-            this.countErrors(value);
-          }
-        }
-      });
-    },
     setValue(parent, name, value) {
       if (parent) {
         if (parent.items) {
