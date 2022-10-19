@@ -68,7 +68,7 @@ describe('Record list', () => {
 
     //Delete record 7
     cy.get('[aria-rowindex="7"] > .text-right > .actions > .btn-group > [data-cy=remove-row]').click();
-    cy.get('#__BVID__95___BV_modal_footer_ > .btn-primary').click();
+    cy.get("[data-cy='modal-remove'] button.btn.btn-primary").click();
 
     cy.get('.table-column')
       .should('contain.text', '6');
@@ -78,7 +78,7 @@ describe('Record list', () => {
 
     //Delete record 6
     cy.get('[data-cy=remove-row]').click();
-    cy.get('#__BVID__95___BV_modal_footer_ > .btn-primary').click();
+    cy.get("[data-cy='modal-remove'] button.btn.btn-primary").click();
 
     //Assert we see page 1
     cy.get('[data-cy=table-pagination]')
