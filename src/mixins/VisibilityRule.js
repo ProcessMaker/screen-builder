@@ -1,36 +1,28 @@
 import { Parser } from 'expr-eval';
-import { debounce } from 'lodash';
 
 export default {
-  mounted() {
-    this.refreshValidationRulesByName = debounce(this.refreshValidationRulesByName, 500);
-
-    this.$root.$on('refresh-validation-rules', () => {
-      this.loadValidationRules();
-    });
-  },
   methods: {
-    refreshValidationRulesByName(fieldName, isVisible) {
-      if (fieldName) {
-        // Update the array of hidden fields
-        const fieldExists = this.hiddenFields__.indexOf(fieldName) !== -1;
-        if (isVisible && fieldExists) {
-          this.hiddenFields__ = this.hiddenFields__.filter((f) => f !== fieldName);
-        } else if (!isVisible && !fieldExists) {
-          this.hiddenFields__.push(fieldName);
-        }
-      }
-      this.$root.$emit('refresh-validation-rules');
-    },
-
-    visibilityRuleIsVisible(rule, fieldName) {
+    visibilityRuleIsVisible(rule) {
       try {
-        const data = Object.assign({ _parent: this._parent }, this.vdata);
-        const isVisible = !!Parser.evaluate(rule, Object.assign({}, data));
-
-        window.setTimeout(() => {
-          this.refreshValidationRulesByName(fieldName, isVisible);
-        }, 250);
+        const that = this;
+        const dataWithParent = new Proxy(
+          {},
+          {
+            get: (target, name) => {
+              if (name === "_parent") {
+                return that._parent;
+              }
+              return that.vdata[name];
+            },
+            has: (target, name) => {
+              if (name === "_parent") {
+                return that._parent !== undefined;
+              }
+              return that.vdata[name] !== undefined;
+            }
+          }
+        );
+        const isVisible = Boolean(Parser.evaluate(rule, dataWithParent));
         return isVisible;
       } catch (e) {
         return false;

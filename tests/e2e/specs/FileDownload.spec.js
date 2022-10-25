@@ -32,21 +32,24 @@ describe('File Download', () => {
 
     // A standard file is downloadable
     cy.get('.row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
-    cy.wait('@download').then((xhr) => {
-      expect(xhr.response.body).to.equal('avatar.jpeg');
+    cy.wait("@download").then(async (xhr) => {
+      const content = await xhr.response.body.text();
+      expect(content).to.equal("avatar.jpeg");
     });
 
     // A Loop file is downloadable
     cy.get('[icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
-    cy.wait('@download').then((xhr) => {
-      expect(xhr.response.body).to.equal('avatar.jpeg');
+    cy.wait("@download").then(async (xhr) => {
+      const content = await xhr.response.body.text();
+      expect(content).to.equal("avatar.jpeg");
     });
 
     // A Record List file is downloadable
     cy.get('[data-cy=add-row]').click();
     cy.get('[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').eq(0).click();
-    cy.wait('@download').then((xhr) => {
-      expect(xhr.response.body).to.equal('avatar.jpeg');
+    cy.wait("@download").then(async (xhr) => {
+      const content = await xhr.response.body.text();
+      expect(content).to.equal("avatar.jpeg");
     });
   });
 
@@ -69,19 +72,21 @@ describe('File Download', () => {
     cy.route('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
     // Mock the second file download
     cy.route('/api/1.0/files/2/contents', 'file1.jpeg').as('download');
-
+    cy.wait(1000);
     // The first file should be downloaded
     cy.get('.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn')
       .click();
-    cy.wait('@download').then((xhr) => {
-      expect(xhr.response.body).to.equal('avatar.jpeg');
+    cy.wait('@download').then(async (xhr) => {
+      const content = await xhr.response.body.text();
+      expect(content).to.equal("avatar.jpeg");
     });
 
     // The second file should be downloaded
     cy.get('.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="2-file1"] > .btn')
       .click();
-    cy.wait('@download').then((xhr) => {
-      expect(xhr.response.body).to.equal('file1.jpeg');
+    cy.wait("@download").then(async (xhr) => {
+      const content = await xhr.response.body.text();
+      expect(content).to.equal("file1.jpeg");
     });
 
     // Assert Record List multiple files are downloadable
@@ -90,16 +95,18 @@ describe('File Download', () => {
     cy.get('[data-cy=screen-renderer] > :nth-child(1) > [name="record_page"] > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn')
       .eq(0)
       .click();
-    cy.wait('@download').then((xhr) => {
-      expect(xhr.response.body).to.equal('avatar.jpeg');
+    cy.wait("@download").then(async (xhr) => {
+      const content = await xhr.response.body.text();
+      expect(content).to.equal("avatar.jpeg");
     });
 
     // The second file should be downloaded
     cy.get('[data-cy=screen-renderer] > :nth-child(1) > [name="record_page"] > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="2-file1"] > .btn')
       .eq(0)
       .click();
-    cy.wait('@download').then((xhr) => {
-      expect(xhr.response.body).to.equal('file1.jpeg');
+    cy.wait("@download").then(async (xhr) => {
+      const content = await xhr.response.body.text();
+      expect(content).to.equal("file1.jpeg");
     });
   });
 });
