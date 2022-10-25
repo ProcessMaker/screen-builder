@@ -1,10 +1,13 @@
 import { get, isEqual, set } from 'lodash';
 import Mustache from 'mustache';
+import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
+const parentReference = [];
 
 export default {
+  name: "ScreenContent",
   schema: [
     function() {
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
@@ -38,11 +41,16 @@ export default {
     },
   },
   computed: {
+    ...mapState("globalErrorsModule", {
+      valid__: "valid",
+      message__: "message"
+    }),
     references__() {
       return this.$parent && this.$parent.references__;
     },
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["validateNow"]),
     getDataAccordingToFieldLevel(dataWithParent, level) {
       if (level === 0 || !dataWithParent) {
         return dataWithParent;
@@ -51,13 +59,34 @@ export default {
     },
     addReferenceToParents(data) {
       if (!data) {
-        return;
+        return undefined;
       }
       const parent = this.addReferenceToParents(this.findParent(data));
-      return {
-        _parent: parent,
-        ...data,
-      };
+      return new Proxy(
+        {},
+        {
+          get: (target, name) => {
+            if (name === "_parent" && parent) {
+              return parent;
+            }
+            if (name in target) {
+              return target[name];
+            }
+            return data[name];
+          },
+          has: (target, name) => {
+            if (name === "_parent") {
+              return parent !== undefined;
+            }
+            return data[name] !== undefined || target[name] !== undefined;
+          },
+          // ValidationRules mixin uses this to set the value of some custom fields like "today" date
+          set: (target, name, value) => {
+            target[name] = value;
+            return true;
+          }
+        }
+      );
     },
     findParent(child, data = this.vdata, parent = this._parent) {
 
@@ -109,23 +138,17 @@ export default {
         return 'MUSTACHE: ' + e.message;
       }
     },
-    submitForm() {
-      if (this.$v.$invalid) {
-        let msgError = this.$store.getters['globalErrorsModule/getErrorMessage'];
-        window.ProcessMaker.alert(msgError, 'danger');
-        //if the form is not valid the data is not emitted
+    async submitForm() {
+      await this.validateNow(this);
+      if (!this.valid__) {
+        window.ProcessMaker.alert(this.message__, "danger");
+        // if the form is not valid the data is not emitted
         return;
       }
       this.$emit('submit', this.vdata);
     },
     getValidationData() {
-      const screen = this;
-      return new Proxy(this.vdata || {}, {
-        get(target, name) {
-          if (name in target) return target[name];
-          if (name === '_parent') return screen._parent === undefined ? this._parent : screen._parent;
-        },
-      });
+      return this.vdata;
     },
     initialValue(component, dataFormat, config) {
       let value = null;

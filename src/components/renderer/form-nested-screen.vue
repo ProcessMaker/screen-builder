@@ -13,7 +13,7 @@
     :watchers="watchers"
     debug-context="Nested Screen"
     @css-errors="cssErrors = $event"
-    :_parent="getParent()"
+    :_parent="_parent"
   />
 </template>
 
@@ -35,6 +35,7 @@ export default {
     screen: Number,
     value: null,
     validationData: null,
+    _parent: null,
     ancestorScreens: {type: Array, default: () => []},
   },
   data() {
@@ -66,9 +67,6 @@ export default {
     },
   },
   methods: {
-    getParent() {
-      return (this.validationData && this.validationData._parent) || {};
-    },
     isSubmitButton(item) {
       return item.config && item.component === 'FormButton' && item.config.event === 'submit';
     },

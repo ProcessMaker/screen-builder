@@ -2,7 +2,7 @@ import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
-import _, { debounce, isEqual } from 'lodash';
+import _, { isEqual } from 'lodash';
 
 let screenRenderer;
 
@@ -120,7 +120,12 @@ export default {
       this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner, definition }));
       pages.forEach((page, index) => {
         if (page) {
-          const component = this.createComponent('div', {name: page.name, class:'page', 'v-if': `currentPage__==${index}`});
+          const component = this.createComponent("div", {
+            name: page.name,
+            class: "page",
+            "v-if": `currentPage__==${index}`,
+            key: `page-${index}`
+          });
           this.loadItems(page.items, component, screen, definition, index);
           owner.appendChild(component);
         }
@@ -162,7 +167,7 @@ export default {
           } else if (typeof value === 'string' && value.indexOf('{{') !== -1 && !properties.ignoreMustache) {
             node.setAttribute(':' + this.escapeVuePropertyName(property), 'mustache('+this.byValue(value)+')');
           } else if (value !== undefined) {
-            node.setAttribute(':' + this.escapeVuePropertyName(property), this.byValue(value));
+            node.setAttribute(':' + this.escapeVuePropertyName(property), this.byRef(value));
           }
         }
       }
@@ -362,35 +367,40 @@ export default {
         });
         return response;
       }
-      let updateValidationRules = function(screenComponent, validations) {
-        const a = getKeys(screenComponent.ValidationRules__);
-        const b = getKeys(validations);
-        if (isEqual(a, b)) {
-          return;
-        }
-        screenComponent.ValidationRules__ = validations;
-        screenComponent.$nextTick(() => {
-          if (screenComponent.$v) {
-            screenComponent.$v.$touch();
-          }
+      const updateValidationRules = function (screenComponent, validations) {
+        return new Promise((resolve) => {
+          screenComponent.ValidationRules__ = validations;
+          screenComponent.$nextTick(() => {
+            if (screenComponent.$v) {
+              screenComponent.$v.$touch();
+              resolve();
+            }
+          });
         });
       };
-      updateValidationRules = debounce(updateValidationRules, 25);
-      component.methods.loadValidationRules = function() {
+      component.methods.loadValidationRules = async function () {
         // Asynchronous loading of validations
         const validations = {};
-        ValidationsFactory(definition, { screen: definition, firstPage, data: {_parent: this._parent, ...this.vdata} }).addValidations(validations).then(() => {
-          updateValidationRules(this, validations);
-        });
+        await ValidationsFactory(definition, {
+          screen: definition,
+          firstPage,
+          data: {
+            _parent: this._parent,
+            ...this.vdata
+          }
+        }).addValidations(validations);
+        await updateValidationRules(this, validations);
       };
-      component.mounted.push('this.loadValidationRules()');
+      component.mounted.push("this.loadValidationRules(true)");
     },
     countElements(definition) {
-      return new Promise(( resolve ) => {
+      return new Promise((resolve) => {
         const allElements = [];
-        CountElements(definition, { screen: definition }).countItems(allElements).then(() => {
-          resolve(allElements);
-        });
+        CountElements(definition, { screen: definition })
+          .countItems(allElements)
+          .then(() => {
+            resolve(allElements);
+          });
       });
     },
   },

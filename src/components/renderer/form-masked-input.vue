@@ -5,7 +5,7 @@
       v-if="componentType!=='input'"
       :is="componentType"
       v-model="localValue"
-      v-bind="componentConfig"
+      v-bind="componentConfigComputed"
       v-uni-id="name"
       :name="name"
       class="form-control"
@@ -71,7 +71,144 @@ export default {
     'controlClass',
     'dataMask',
     'config',
+    // these should not be passed by $attrs
+    "transientData",
+    "formConfig",
+    "form-watchers"
   ],
+  data() {
+    const { dataFormat, customFormatter } = this.config;
+    const maxlength =
+      dataFormat === "int" || dataFormat === "float" ? 15 : null;
+    const getCurrencyFormat = (() => {
+      const format =
+        this.dataMask && this.dataMask
+          ? this.dataMask && this.dataMask.format
+          : null;
+      const separators = format ? format.match(/[.,]/g) : [".", ","];
+      if (separators.length === 0) {
+        separators.push("", ".");
+      } else if (separators.length === 1) {
+        separators.push(separators[0] === "." ? "," : ".");
+      }
+      const precision = format
+        ? (format.split(separators[1])[1] || "").length
+        : 2;
+      return {
+        decimal: separators[1],
+        thousands: separators[0],
+        prefix:
+          this.dataMask && this.dataMask.symbol
+            ? `${this.dataMask.symbol} `
+            : "",
+        suffix:
+          this.dataMask && this.dataMask.code ? ` ${this.dataMask.code}` : "",
+        precision,
+        masked: false
+      };
+    })();
+    const getPercentageFormat = {
+      decimal: ".",
+      thousands: "",
+      prefix: "",
+      suffix: " %",
+      precision: 2,
+      masked: false
+    };
+    const getDateFormat = {
+      masked: true,
+      mask: this.getUserConfig().date_mask || this.getMask().date
+    };
+    const getDatetimeFormat = {
+      masked: true,
+      mask: this.getUserConfig().datetime_mask || this.getMask().dateTime
+    };
+    const componentType = (() => {
+      if (customFormatter) {
+        return componentTypes.custom;
+      }
+      return componentTypes[dataFormat] || "input";
+    })();
+    const dataType = (() => {
+      switch (dataFormat) {
+        case "int":
+          return "number";
+        case "float":
+          return "number";
+        case "email":
+          return "email";
+        case "password":
+          return "password";
+        default:
+          return "text";
+      }
+    })();
+    const getCustomFormatter = {
+      masked: true,
+      mask: customFormatter
+    };
+    let config;
+    if (customFormatter) {
+      config = componentTypesConfigs.custom;
+    } else {
+      config = componentTypesConfigs[dataFormat];
+    }
+    const configs = {
+      getCurrencyFormat,
+      getDateFormat,
+      getDatetimeFormat,
+      getPercentageFormat,
+      getCustomFormatter
+    };
+    return {
+      dataFormat,
+      customFormatter,
+      maxlength,
+      getCurrencyFormat,
+      getPercentageFormat,
+      getDateFormat,
+      getDatetimeFormat,
+      componentType,
+      dataType,
+      getCustomFormatter,
+      componentConfig: JSON.parse(
+        JSON.stringify({ ...(config ? configs[config] : {}), ...this.$attrs })
+      ),
+      validator: null,
+      localValue: null,
+      validationRules: {
+        percentage: "regex:/^[+-]?\\d+(\\.\\d+)?$/"
+      }
+    };
+  },
+  computed: {
+    classList() {
+      return {
+        'is-invalid': (this.validator && this.validator.errorCount) || this.error,
+        [this.controlClass]: !!this.controlClass,
+      };
+    },
+    componentConfigComputed() {
+      return JSON.parse(JSON.stringify(this.componentConfig));
+    }
+  },
+  watch: {
+    value(value) {
+      if (this.localValue !== value) {
+        this.localValue = value;
+      }
+    },
+    localValue(value) {
+      if (value !== this.value) {
+        this.$emit('input', this.convertToData(value));
+      }
+    },
+  },
+  mounted() {
+    if (this.value !== undefined) {
+      this.localValue = this.value;
+    }
+  },
   methods: {
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
@@ -131,121 +268,7 @@ export default {
         date: ['####-##-##'],
         dateTime: ['####-##-## ##:##'],
       };
-    },
-  },
-  computed: {
-    dataFormat() {
-      return this.config.dataFormat;
-    },
-    customFormatter() {
-      return this.config.customFormatter;
-    },
-    maxlength() {
-      if (this.dataFormat === 'int' || this.dataFormat === 'float') {
-        return 15;
-      }
-      return null;
-    },
-    componentConfig() {
-      let config;
-      if (this.customFormatter) {
-        config = componentTypesConfigs['custom'];
-      } else  {
-        config = componentTypesConfigs[this.dataFormat];
-      }
-      return Object.assign({}, (config ? this[config] : {}) , this.$attrs);
-    },
-    getCurrencyFormat() {
-      const format = this.dataMask && this.dataMask ? this.dataMask && this.dataMask.format : null;
-      const separators = format ? format.match(/[.,]/g) : ['.', ','];
-      if (separators.length === 0) separators.push('', '.');
-      else if (separators.length === 1) separators.push(separators[0] === '.' ? ',': '.');
-      const presicion = format ? (format.split(separators[1])[1] || '').length : 2;
-      return {
-        decimal: separators[1],
-        thousands: separators[0],
-        prefix: this.dataMask && this.dataMask.symbol ? this.dataMask.symbol + ' ' : '',
-        suffix: this.dataMask && this.dataMask.code ? ' ' + this.dataMask.code : '',
-        precision: presicion,
-        masked: false,
-      };
-    },
-    getPercentageFormat() {
-      return {
-        decimal: '.',
-        thousands: '',
-        prefix: '',
-        suffix: ' %',
-        precision: 2,
-        masked: false,
-      };
-    },
-    getDateFormat() {
-      return {
-        masked: true,
-        mask: this.getUserConfig().date_mask || this.getMask().date,
-      };
-    },
-    getDatetimeFormat() {
-      return {
-        masked: true,
-        mask: this.getUserConfig().datetime_mask || this.getMask().dateTime,
-      };
-    },
-    componentType() {
-      if (this.customFormatter) {
-        return componentTypes['custom'];
-      } else {
-        return componentTypes[this.dataFormat] || 'input';
-      }
-    },
-    classList() {
-      return {
-        'is-invalid': (this.validator && this.validator.errorCount) || this.error,
-        [this.controlClass]: !!this.controlClass,
-      };
-    },
-    dataType() {
-      switch (this.dataFormat) {
-        case 'int': return 'number';
-        case 'float': return 'number';
-        case 'email': return 'email';
-        case 'password': return 'password';
-        default: return 'text';
-      }
-    },
-    getCustomFormatter() {
-      return {
-        masked: true,
-        mask: this.customFormatter,
-      };
-    },
-  },
-  watch: {
-    value(value) {
-      if (this.localValue !== value) {
-        this.localValue = value;
-      }
-    },
-    localValue(value) {
-      if (value !== this.value) {
-        this.$emit('input', this.convertToData(value));
-      }
-    },
-  },
-  data() {
-    return {
-      validator: null,
-      localValue: null,
-      validationRules: {
-        'percentage': 'regex:/^[+-]?\\d+(\\.\\d+)?$/',
-      },
-    };
-  },
-  mounted() {
-    if (this.value !== undefined) {
-      this.localValue = this.value;
     }
-  },
+  }
 };
 </script>
