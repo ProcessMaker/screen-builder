@@ -3,7 +3,7 @@ import { Parser } from 'expr-eval';
 
 export default {
   methods: {
-    evaluateExpression(expression, type) {
+    evaluateExpression(expression, type, selfName) {
       const self = this;
       let value = null;
 
@@ -14,6 +14,11 @@ export default {
 
         const data = new Proxy({}, {
           get(data, name) {
+            // Detect circular reference
+            if (name === selfName) {
+              console.warn(`Circular reference detected in calculated property ${name}`);
+              return;
+            }
             if (self[name] === undefined || !isEqual(self[name], self.vdata[name])) {
               return self.vdata[name];
             } else {
