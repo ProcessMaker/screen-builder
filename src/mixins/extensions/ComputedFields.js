@@ -11,8 +11,9 @@ export default {
           get: (() => {
             const formula = JSON.stringify(computed.formula);
             const type = JSON.stringify(computed.type);
+            const property = JSON.stringify(computed.property);
 
-            return new Function(`return this.evaluateExpression(${formula}, ${type});`);
+            return new Function(`return this.evaluateExpression(${formula}, ${type}, ${property});`);
           })(),
           set() {
             // Do nothing (as it's not allowed)
