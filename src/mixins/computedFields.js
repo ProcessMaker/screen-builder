@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash';
 import { Parser } from 'expr-eval';
 
 export default {
@@ -14,7 +13,7 @@ export default {
 
         const data = new Proxy({}, {
           get(data, name) {
-            if (self[name] === undefined || !isEqual(self[name], self.vdata[name])) {
+            if (self.vdata[name] !== undefined) {
               return self.vdata[name];
             } else {
               return self[name];
