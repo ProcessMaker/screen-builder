@@ -88,8 +88,10 @@ export default {
               if (name === "_parent") {
                 // Recursive access to _parent
                 const screen = findScreenOwner(self);
-                const parentScreen = findScreenOwner(screen);
-                return wrapScreenData(parentScreen);
+                const parentScreen = screen && findScreenOwner(screen);
+                if (parentScreen) {
+                  return wrapScreenData(parentScreen);
+                }
               }
               if (self.vdata[name] !== undefined) {
                 return self.vdata[name];
