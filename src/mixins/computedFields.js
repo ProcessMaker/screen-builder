@@ -117,8 +117,7 @@ export default {
 
         return value;
       } catch (e) {
-        // eslint-disable-next-line no-unused-expressions
-        e;
+        console.warn("There was a problem evaluating the expression", e);
       }
     }
   }
