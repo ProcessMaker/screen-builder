@@ -12,7 +12,7 @@ export default {
           if (config.defaultValue.mode === 'basic') {
             this.setupDefaultValue(screen, name, `this.mustache(${JSON.stringify(config.defaultValue.value)})`);
           } else if (config.defaultValue.mode === 'js') {
-            this.setupDefaultValue(screen, name, `(function() {${config.defaultValue.value}}).bind(this.vdata)()`);
+            this.setupDefaultValue(screen, name, `(function() {${config.defaultValue.value}}).bind(this.getDataReference())()`);
           }
         }
         if ('initiallyChecked' in config) {

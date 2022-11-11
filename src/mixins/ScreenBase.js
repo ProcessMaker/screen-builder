@@ -2,12 +2,14 @@ import { get, isEqual, set } from 'lodash';
 import Mustache from 'mustache';
 import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
+import DataReference from "./DataReference";
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
 const parentReference = [];
 
 export default {
   name: "ScreenContent",
+  mixins: [DataReference],
   schema: [
     function() {
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
