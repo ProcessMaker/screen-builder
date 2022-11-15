@@ -80,7 +80,7 @@ export default {
         // Monitor if variable belongs to data (defined variables) or
         // vdata (external variables)in this way the event is not
         // executed again when the variable is update
-
+        console.log("evaluateExpression");
         const data = new Proxy(
           {},
           {

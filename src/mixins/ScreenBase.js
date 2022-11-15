@@ -200,6 +200,8 @@ export default {
           if (isLastElement && isEqual(setValue, originalValue)) {
             return;
           }
+          
+          debugger;
 
           this.$set(
             object,

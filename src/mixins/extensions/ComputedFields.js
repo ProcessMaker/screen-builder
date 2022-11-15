@@ -1,6 +1,16 @@
-import computedFields from '../computedFields';
+import { defineComponent } from "vue";
+import computedFields from "../computedFields";
 
-export default {
+export default defineComponent({
+  mounted() {
+    this.extensions.push({
+      onbuild({ screen, definition }) {
+        if (definition.computed) {
+          this.computedFields(screen, definition);
+        }
+      }
+    });
+  },
   methods: {
     computedFields(screen, definition) {
       // Add computed fields
@@ -9,35 +19,37 @@ export default {
       for (const computed of definition.computed) {
         screen.computed[computed.property] = {
           get: (() => {
+            
             const formula = JSON.stringify(computed.formula);
             const type = JSON.stringify(computed.type);
-
-            return new Function(`return this.evaluateExpression(${formula}, ${type});`);
+            // console.log("Computed property");
+            return new Function(
+              `return this.evaluateExpression(${formula}, ${type});`
+            );
           })(),
           set() {
             // Do nothing (as it's not allowed)
-          },
+          }
         };
 
         this.addWatch(
           screen,
           computed.property,
-          `this.setValue(${JSON.stringify(computed.property)}, value, this.vdata);`
+          `this.setValue(${JSON.stringify(
+            computed.property
+          )}, value, this.vdata);`
         );
 
-        this.addMounted(screen, `
-          this.setValue(${JSON.stringify(computed.property)}, this.getValue(${JSON.stringify(computed.property)}), this.vdata, this);
-        `);
+        this.addMounted(
+          screen,
+          `this.setValue(${JSON.stringify(
+              computed.property
+            )}, this.getValue(${JSON.stringify(
+              computed.property
+            )}), this.vdata, this);
+          `
+        );
       }
-    },
-  },
-  mounted() {
-    this.extensions.push({
-      onbuild({ screen, definition }) {
-        if (definition.computed) {
-          this.computedFields(screen, definition);
-        }
-      },
-    });
-  },
-};
+    }
+  }
+});
