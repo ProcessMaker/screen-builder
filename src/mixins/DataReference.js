@@ -10,7 +10,15 @@ function findScreenOwner(control) {
       owner.$parent && owner.$parent.$parent && owner.$parent.$parent.$parent;
     const isNestedScreen =
       nestedScreen && nestedScreen.$options.name === "FormNestedScreen";
-    if (isScreen && !isNestedScreen && owner !== control) {
+    const isRecordListModal =
+      nestedScreen && nestedScreen.$options.name === "BModal";
+    const isRoot =
+      !isNestedScreen &&
+      !isRecordListModal &&
+      owner.$parent &&
+      owner.$parent.$parent &&
+      owner.$parent.$parent.$options.name === "VueFormRenderer";
+    if ((isScreen && !isNestedScreen && owner !== control) || isRoot) {
       return owner;
     }
     if (isNestedScreen) {
@@ -32,13 +40,13 @@ function wrapScreenData(screen, customProperties = null, setter = null) {
         return customProperties[name];
       }
       if (name === "_parent") {
+        if (screen.vdata._parent !== undefined) {
+          return screen.vdata._parent;
+        }
         const screenOwner = findScreenOwner(screen);
         // Get _parent for the current screen (e.g. Inside Loops, Inside Tabs?, RecordLists...?)
-        if (screenOwner) {
+        if (screenOwner && screenOwner !== screen) {
           return wrapScreenData(screenOwner);
-        }
-        if (screen.vdata) {
-          return screen.vdata._parent;
         }
         return undefined;
       }
