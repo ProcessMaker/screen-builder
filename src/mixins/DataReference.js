@@ -79,7 +79,7 @@ export default {
      * @return {object} proxy
      */
     getDataReference(customProperties = null, setter = null) {
-      return wrapScreenData(this, setter, customProperties);
+      return wrapScreenData(this, customProperties, setter);
     }
   }
 };
