@@ -26,6 +26,8 @@ export default {
         if (value instanceof Date) {
           value = value.toISOString();
         }
+
+        return value;
       } catch (e) {
         console.warn("There was a problem evaluating the expression", e);
       }
