@@ -44,8 +44,7 @@ describe("Test access to _parent", () => {
             parentInput: "value in parent",
             loop_1: [
               {
-                // @todo: this should be "value in parent:value in loop:value in record list + loop"
-                form_input_1: ":value in loop"
+                form_input_1: "value in parent:value in loop"
               }
             ]
           }
@@ -55,7 +54,7 @@ describe("Test access to _parent", () => {
             parentInput: "value in parent",
             loop_1: [
               {
-                form_input_1: ":value in record list + loop"
+                form_input_1: "value in parent:value in record list + loop"
               }
             ],
             row_id: recordRowId
