@@ -4,28 +4,20 @@
  */
 function findScreenOwner(control) {
   let owner = control;
+  let level = 1;
   while (owner) {
     const isScreen = owner.$options.name === "ScreenContent";
-    const nestedScreen =
-      owner.$parent && owner.$parent.$parent && owner.$parent.$parent.$parent;
-    const isNestedScreen =
-      nestedScreen && nestedScreen.$options.name === "FormNestedScreen";
-    const isRecordListModal =
-      nestedScreen && nestedScreen.$options.name === "BModal";
-    const isRoot =
-      !isNestedScreen &&
-      !isRecordListModal &&
-      owner.$parent &&
-      owner.$parent.$parent &&
-      owner.$parent.$parent.$options.name === "VueFormRenderer";
-    if ((isScreen && !isNestedScreen && owner !== control) || isRoot) {
+    const isNested = owner.$options.name === "FormNestedScreen";
+    if (isScreen) {
+      level--;
+    }
+    if (isNested) {
+      level++;
+    }
+    if (level === -1) {
       return owner;
     }
-    if (isNestedScreen) {
-      owner = nestedScreen.$parent.$parent;
-    } else {
-      owner = owner.$parent;
-    }
+    owner = owner.$parent;
   }
   return null;
 }
