@@ -119,6 +119,10 @@ export default {
       return Promise.resolve({ data: screensCacheHit });
     }
 
+    if (!id) {
+      return null;
+    }
+
     const screenPromise = new Promise((resolve, reject) => {
       this.get(`${endpoint}/${id}${query}`)
         .then((response) => {
