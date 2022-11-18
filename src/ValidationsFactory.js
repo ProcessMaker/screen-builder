@@ -95,6 +95,9 @@ class FormNestedScreenValidations extends Validations {
     if (globalObject.nestedScreens['id_' + id]) {
       return globalObject.nestedScreens['id_' + id];
     }
+    if (!id) {
+      return null;
+    }
     const response = await DataProvider.getScreen(id);
     globalObject.nestedScreens['id_' + id] = response.data.config;
     return response.data.config;
