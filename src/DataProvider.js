@@ -99,6 +99,10 @@ export default {
     });
   },
   getScreen(id, query = "") {
+    if (!id) {
+      return null;
+    }
+
     const cachedPromise = this.cachedScreenPromises.find(
       (item) => item.id === id && item.query === query
     );
@@ -117,10 +121,6 @@ export default {
     );
     if (screensCacheHit) {
       return Promise.resolve({ data: screensCacheHit });
-    }
-
-    if (!id) {
-      return null;
     }
 
     const screenPromise = new Promise((resolve, reject) => {
