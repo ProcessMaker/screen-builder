@@ -99,6 +99,10 @@ export default {
     });
   },
   getScreen(id, query = "") {
+    if (!id) {
+      return null;
+    }
+
     const cachedPromise = this.cachedScreenPromises.find(
       (item) => item.id === id && item.query === query
     );
