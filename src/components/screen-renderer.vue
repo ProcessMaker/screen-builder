@@ -53,6 +53,7 @@
 
 <script>
 import { cloneDeep, isEmpty, isEqual } from "lodash";
+import { ref } from "vue";
 import Json2Vue from "../mixins/Json2Vue";
 import CurrentPageProperty from "../mixins/CurrentPageProperty";
 import WatchersSynchronous from "@/components/watchers-synchronous";
@@ -62,11 +63,14 @@ export default {
   name: "ScreenRenderer",
   components: { WatchersSynchronous, ScreenRendererError },
   mixins: [Json2Vue, CurrentPageProperty],
-  data() {
+  setup() {
+    const currentDefinition = ref(null);
+    const codigo = ref("");
+    const displayAsyncLoading = ref(false);
     return {
-      currentDefinition: null,
-      codigo: "",
-      displayAsyncLoading: false
+      currentDefinition,
+      codigo,
+      displayAsyncLoading
     };
   },
   watch: {

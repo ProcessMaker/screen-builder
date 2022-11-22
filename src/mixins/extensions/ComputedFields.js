@@ -19,10 +19,8 @@ export default defineComponent({
       for (const computed of definition.computed) {
         screen.computed[computed.property] = {
           get: (() => {
-            
             const formula = JSON.stringify(computed.formula);
             const type = JSON.stringify(computed.type);
-            // console.log("Computed property");
             return new Function(
               `return this.evaluateExpression(${formula}, ${type});`
             );
@@ -31,7 +29,6 @@ export default defineComponent({
             // Do nothing (as it's not allowed)
           }
         };
-
         this.addWatch(
           screen,
           computed.property,
