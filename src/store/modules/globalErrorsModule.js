@@ -31,7 +31,13 @@ function countErrors(obj) {
 }
 
 const updateValidationRules = async (mainScreen, commit) => {
-  await mainScreen.loadValidationRules();
+  try {
+    await mainScreen.loadValidationRules();
+  } catch (error) {
+    if (this.$store.getters["globalErrorsModule/getMode"] === "preview") {
+      console.warn("There was a problem rendering the screen", error);
+    }
+  }
   const validate = mainScreen.$v;
   // update the global error state used by submit buttons
   if (validate) {
@@ -63,7 +69,8 @@ const globalErrorsModule = {
   state: () => {
     return {
       valid: true,
-      message: ""
+      message: "",
+      mode: ""
     };
   },
   getters: {
@@ -72,11 +79,17 @@ const globalErrorsModule = {
     },
     getErrorMessage(state) {
       return state.message;
+    },
+    getMode(state) {
+      return state.mode;
     }
   },
   mutations: {
     basic(state, payload) {
       state[payload.key] = payload.value;
+    },
+    setMode(state, mode) {
+      state.mode = mode;
     }
   },
   actions: {
