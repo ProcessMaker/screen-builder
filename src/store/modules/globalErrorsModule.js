@@ -34,7 +34,7 @@ const updateValidationRules = async (mainScreen, commit) => {
   try {
     await mainScreen.loadValidationRules();
   } catch (error) {
-    if (this.$store.getters["globalErrorsModule/getMode"] === "preview") {
+    if (this.getMode === "preview") {
       console.warn("There was a problem rendering the screen", error);
     }
   }
