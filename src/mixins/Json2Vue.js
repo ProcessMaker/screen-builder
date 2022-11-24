@@ -2,6 +2,7 @@ import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
+import { mapGetters } from 'vuex';
 import _, { isEqual } from 'lodash';
 
 let screenRenderer;
@@ -377,7 +378,7 @@ export default {
                 resolve();
               }
             } catch (error) {
-              if (this.$store.getters["globalErrorsModule/getMode"] === "preview") {
+              if (this.getMode() === "preview") {
                 console.warn("There was a problem rendering the screen", error);
               }
             }
