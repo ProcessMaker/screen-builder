@@ -1,4 +1,5 @@
 import { validationMixin } from 'vuelidate';
+import { mapGetters } from 'vuex';
 import VueVuelidateJsonschema from 'vue-vuelidate-jsonschema';
 import { javascriptReservedKeywords } from '../../form-control-common-properties';
 
@@ -12,7 +13,7 @@ export default {
           delete properties['validation'];
           // Add validation class and error message
           if (!this.isValidVariableName(element.config.name)) {
-            if (this.$store.getters["globalErrorsModule/getMode"] === "preview") {
+            if (this.getMode() === "preview") {
               console.error("Invalid variable name");
             }
           } else {
@@ -28,6 +29,7 @@ export default {
     });
   },
   methods: {
+    ...mapGetters("globalErrorsModule", ["getMode"]),
     isValidVariableName(name) {
       const validVariableNameExp = RegExp('^[A-Za-z][0-9a-zA-Z_$]*$');
       const nameParts = name.split(".");
