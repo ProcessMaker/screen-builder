@@ -45,14 +45,19 @@ export default {
   computed: {
     ...mapState("globalErrorsModule", {
       valid__: "valid",
-      message__: "message"
+      message__: "message",
+      locked__: "locked",
     }),
     references__() {
       return this.$parent && this.$parent.references__;
     },
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validateNow"]),
+    ...mapActions("globalErrorsModule", [
+      "validateNow",
+      "lockActions",
+      "unlockActions"
+    ]),
     getDataAccordingToFieldLevel(dataWithParent, level) {
       if (level === 0 || !dataWithParent) {
         return dataWithParent;

@@ -291,6 +291,7 @@ export default {
           props: {},
           computed: {},
           methods: {},
+          created: [],
           data: {},
           watch: {},
           mounted: [],
@@ -306,7 +307,26 @@ export default {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)({ screen: component, definition }) : null;
         });
         // Build data
-        component.data = new Function('const data = {};' + Object.keys(component.data).map(key => `this.setValue(${JSON.stringify(key)}, ${component.data[key]}, data);`).join('\n') + 'return data;');
+        const hiddenVars = ["currentPage__"];
+        const dataCode = `let value;const data = {};
+          ${Object.keys(component.data)
+            .map(
+              (key) =>
+                `value = ${component.data[key]};
+                this.setValue(${JSON.stringify(key)}, value, data);
+                ${
+                  hiddenVars.includes(key)
+                    ? ""
+                    : `this.setValue(${JSON.stringify(
+                        key
+                      )}, value, this.vdata);`
+                }`
+            )
+            .join("\n")};
+            return data;`;
+        console.log(dataCode);
+        // eslint-disable-next-line no-new-func
+        component.data = new Function(dataCode);
         // Build watchers
         Object.keys(component.watch).forEach((key) => {
           const watch = { deep: true };
@@ -316,6 +336,8 @@ export default {
         });
         // Add validation rules
         this.addValidationRulesLoader(component, definition);
+        // Build mounted
+        component.created = new Function(component.created.join('\n'));
         // Build mounted
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
@@ -341,8 +363,21 @@ export default {
         screen.watch[name] = [{code, options}];
       }
     },
+    addMethod(screen, name, params, code, { debounced }) {
+      // eslint-disable-next-line no-new-func, no-param-reassign
+      screen.methods[name] = new Function(...params, code);
+      if (debounced) {
+        this.addCreated(
+          screen,
+          `this.${name} = _.debounce(this.${name}, ${debounced});`
+        );
+      }
+    },
     addMounted(screen, code) {
       screen.mounted.push(code);
+    },
+    addCreated(screen, code) {
+      screen.created.push(code);
     },
     addEvent(properties, event, code) {
       properties[`@${event}`] = code;

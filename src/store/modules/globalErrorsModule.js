@@ -62,6 +62,7 @@ const globalErrorsModule = {
   namespaced,
   state: () => {
     return {
+      locked: false,
       valid: true,
       message: ""
     };
@@ -80,6 +81,31 @@ const globalErrorsModule = {
     }
   },
   actions: {
+    lockActions({ commit }) {
+      commit("basic", {
+        key: "locked",
+        value: true
+      });
+    },
+    unlockActions({ commit }) {
+      commit("basic", {
+        key: "locked",
+        value: false
+      });
+    },
+    async unlocked({ getters }) {
+      if (!getters.locked) {
+        return true;
+      }
+      return new Promise((resolve) => {
+        const interval = setInterval(() => {
+          if (!getters.locked) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 100);
+      });
+    },
     validate({ commit }, mainScreen) {
       updateValidationRulesDebounced(mainScreen, commit);
     },
