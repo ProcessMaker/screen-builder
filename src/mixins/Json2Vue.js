@@ -367,13 +367,19 @@ export default {
         });
         return response;
       }
-      const updateValidationRules = function (screenComponent, validations) {
+      const updateValidationRules = (screenComponent, validations) => {
         return new Promise((resolve) => {
           screenComponent.ValidationRules__ = validations;
           screenComponent.$nextTick(() => {
-            if (screenComponent.$v) {
-              screenComponent.$v.$touch();
-              resolve();
+            try {
+              if (screenComponent.$v) {
+                screenComponent.$v.$touch();
+                resolve();
+              }
+            } catch (error) {
+              if (this.$store.getters["globalErrorsModule/getMode"] === "preview") {
+                console.warn("There was a problem rendering the screen", error);
+              }
             }
           });
         });
