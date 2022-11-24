@@ -456,6 +456,7 @@ export default {
       } else {
         this.$refs.builder.refreshContent();
       }
+      this.$store.commit("globalErrorsModule/setMode", this.mode);
       this.mode = mode;
     },
     loadFromLocalStorage() {
