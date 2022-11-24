@@ -156,7 +156,7 @@
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
 import { dateUtils } from '@processmaker/vue-form-elements';
-//import ScreenRenderer from '../screen-renderer.vue';
+import { mapActions, mapState } from "vuex";
 
 const jsonOptionsActionsColumn = {
   key: '__actions',
@@ -283,6 +283,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["unlocked"]),
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
@@ -411,9 +412,10 @@ export default {
       let {_parent, ...result} = this.addItem;
       this.initFormValues = _.cloneDeep(result);
     },
-    handleOk(bvModalEvt) {
+    async handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
+      await this.unlocked();
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         return;
       }
