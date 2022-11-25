@@ -151,21 +151,21 @@
       </div>
       <div class="small-editor-container">
         <monaco-editor
-          :options="monacoOptions"
-          class="editor"
-          v-model="jsonData"
-          language="json"
-          @change="jsonDataChange"
-          data-cy="inspector-monaco-json"
-          @editorDidMount="monacoMounted"
+            :options="monacoOptions"
+            class="editor"
+            v-model="jsonData"
+            language="json"
+            @change="jsonDataChange"
+            data-cy="inspector-monaco-json"
+            @editorDidMount="monacoMounted"
         />
       </div>
 
       <b-modal v-model="showPopup" size="lg" centered :title="$t('Script Config Editor')" v-cloak>
         <div class="editor-container">
           <monaco-editor :options="monacoLargeOptions" v-model="jsonData" language="json" class="editor"
-            @change="jsonDataChange"
-            data-cy="inspector-monaco-json-expanded"
+                         @change="jsonDataChange"
+                         data-cy="inspector-monaco-json-expanded"
           />
         </div>
         <div slot="modal-footer">
@@ -219,7 +219,21 @@
       <small class="form-text text-muted mb-3">{{ $t('Endpoint to populate select') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataConnector">
+    <div v-if="dataSource === dataSourceValues.collection">
+      <label for="collection-list">{{ $t('Collection') }}</label>
+      <b-form-select id="collection-list" v-model="selectedDataSource" :options="collectionsList" data-cy="inspector-collection" :class="!selectedDataSource ? 'is-invalid' : ''"/>
+      <div v-if="!selectedDataSource" class="invalid-feedback">{{ $t('An Collection must be selected') }}</div>
+      <small class="form-text text-muted mb-3">{{ $t('Collection to populate select') }}</small>
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.collection">
+      <label for="collection-value-list">{{ $t('Column from Collection') }}</label>
+      <b-form-select id="collection-value-list" v-model="selectedCollectionValue" :options="collectionValueList" data-cy="inspector-collection-value" :class="selectedDataSource && !selectedCollectionValue ? 'is-invalid' : ''"/>
+      <div v-if="selectedDataSource && !selectedCollectionValue" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
+      <small class="form-text text-muted mb-3">{{ $t('Collection columns to populate select') }}</small>
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.collection">
       <label for="pmql-query">{{ $t('PMQL') }}</label>
       <mustache-helper/>
       <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
@@ -261,6 +275,9 @@ export default {
       dataSourcesList: [],
       selectedEndPoint: '',
       endpoints: {},
+      collectionsList: [],
+      selectedCollectionValue: '',
+      collectionValues: {},
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -327,6 +344,7 @@ export default {
         case 'dataConnector':
           this.jsonData = '';
           this.dataName = '';
+          this.selectedCollectionValue = '';
           this.getDataSourceList();
           break;
         case 'dataObject':
@@ -336,6 +354,12 @@ export default {
         case 'provideData':
           this.dataName = '';
           this.selectedDataSource = '';
+          break;
+        case 'collection':
+          this.jsonData = '';
+          this.dataName = '';
+          this.selectedEndPoint =  '';
+          this.getCollectionList();
           break;
       }
     },
@@ -360,10 +384,31 @@ export default {
         this.selectedEndPoint = this.endPointList[0].value;
       }
     },
+    collectionsList() {
+      if (this.collectionsList.some(e => e.value === this.selectedDataSource)) {
+        return;
+      }
+
+      if (this.collectionsList.length > 0 ) {
+        this.selectedDataSource = this.collectionsList[0].value;
+      }
+    },
+    collectionsValueList() {
+      if (this.collectionValueList.some(e => e.value === this.selectedCollectionValue)) {
+        return;
+      }
+
+      if (this.collectionValueList.length > 0 ) {
+        this.selectedCollectionValue = this.collectionValueList[0].value;
+      }
+    },
   },
   computed: {
     endPointList() {
       return _.get(this.endpoints, this.selectedDataSource, []);
+    },
+    collectionValueList(){
+      return _.get(this.collectionValues, this.selectedDataSource, []);
     },
     dataSourceTypes() {
       if (typeof this.options.allowMultiSelect === 'undefined') {
@@ -406,6 +451,7 @@ export default {
         dataName: this.dataName,
         selectedDataSource: this.selectedDataSource,
         selectedEndPoint: this.selectedEndPoint,
+        selectedCollectionValue: this.selectedCollectionValue,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -428,8 +474,9 @@ export default {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
-    this.selectedDataSource = this.options.selectedDataSource,
-    this.selectedEndPoint = this.options.selectedEndPoint,
+    this.selectedDataSource = this.options.selectedDataSource;
+    this.selectedEndPoint = this.options.selectedEndPoint;
+    this.selectedCollectionValue = this.options.selectedCollectionValue;
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -448,16 +495,16 @@ export default {
     },
     getDataSourceList() {
       this.$dataProvider
-        .get('/data_sources')
-        .then(response => {
-          let jsonData = response.data.data;
-          // Map the data sources response to value/text items list
-          this.dataSourcesList = [{
-            value: null,
-            text: this.$t('Select...'),
-          }].concat(jsonData.map(this.convertToSelectOptions));
-          this.setEndpointList(jsonData);
-        });
+          .get('/data_sources')
+          .then(response => {
+            let jsonData = response.data.data;
+            // Map the data sources response to value/text items list
+            this.dataSourcesList = [{
+              value: null,
+              text: this.$t('Select...'),
+            }].concat(jsonData.map(this.convertToSelectOptions));
+            this.setEndpointList(jsonData);
+          });
     },
     setEndpointList(dataSources) {
       const endpoints = {};
@@ -471,6 +518,33 @@ export default {
         }));
       });
       this.endpoints = endpoints;
+    },
+
+    getCollectionList() {
+      this.$dataProvider
+          .get('/saved-searches/collections')
+          .then(response => {
+            let jsonData = response.data;
+            // Map the data sources response to value/text items list
+            this.collectionsList = [{
+              value: null,
+              text: this.$t('Select...'),
+            }].concat(jsonData.map(this.convertToSelectOptions));
+            this.setCollectionValueList(jsonData);
+          });
+    },
+    setCollectionValueList(collections) {
+      const values = {};
+      collections.forEach(clValues => {
+        const dsCollectionValues = clValues.values ? clValues.values : [];
+        values[clValues.id] = [{
+          value: null,
+          text: this.$t('Select...'),
+        }].concat(dsCollectionValues.map(obj => {
+          return { text: obj.name, value: obj.value };
+        }));
+      });
+      this.collectionValues = values;
     },
     convertToSelectOptions(option) {
       return {
@@ -544,10 +618,10 @@ export default {
           return;
         }
         this.optionsList.push(
-          {
-            [this.valueField]: this.optionContent,
-            [this.keyField]: this.optionValue,
-          }
+            {
+              [this.valueField]: this.optionContent,
+              [this.keyField]: this.optionValue,
+            }
         );
       }
       else {
@@ -586,34 +660,34 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .edit-json {
-    font-size: 0.75rem;
-    margin: 0;
-    padding: 0;
-    background: none;
-    border: none;
-    width: 100%;
-    text-align: right;
+.edit-json {
+  font-size: 0.75rem;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: right;
 
-    &:hover {
-      text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
   }
+}
 
-  .striped {
-    background-color: rgba(0,0,0,.05);
-  }
+.striped {
+  background-color: rgba(0,0,0,.05);
+}
 
-  .small-editor-container .editor {
-    width: inherit;
-    height: 150px;
-  }
+.small-editor-container .editor {
+  width: inherit;
+  height: 150px;
+}
 
-  .editor-container {
-    height: 70vh;
-  }
+.editor-container {
+  height: 70vh;
+}
 
-  .editor-container .editor {
-    height: inherit;
-  }
+.editor-container .editor {
+  height: inherit;
+}
 </style>

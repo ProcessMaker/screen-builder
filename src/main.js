@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import Vue from 'vue';
 import App from './App.vue';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -99,10 +98,10 @@ window.exampleScreens = [
 ];
 // get cache config from header
 const cacheEnabled = document.head.querySelector(
-  "meta[name='screen-cache-enabled']"
+    "meta[name='screen-cache-enabled']"
 );
 const cacheTimeout = document.head.querySelector(
-  "meta[name='screen-cache-timeout']"
+    "meta[name='screen-cache-timeout']"
 );
 
 window.ProcessMaker = {
@@ -130,8 +129,8 @@ window.ProcessMaker = {
           resolve({data: screen});
         } else if (url === 'screens') {
           resolve({ data: {
-            data: window.exampleScreens,
-          }});
+              data: window.exampleScreens,
+            }});
         } else if (url === '/data_sources/1') {
           resolve({
             data: {
@@ -142,16 +141,28 @@ window.ProcessMaker = {
           });
         } else if (url === '/data_sources') {
           resolve({data: {
-            data: [
-              {id: 1, name: 'Persons', endpoints: {
-                'list': { },
-              }},
+              data: [
+                {id: 1, name: 'Persons', endpoints: {
+                    'list': { },
+                  }},
+              ],
+            }});
+        } else if (url === '/saved-searches/collections') {
+          resolve({data: [
+              {id: 1, name: 'PersonsCollections', values: [
+                  {value: 'name', name:'Nombre' },
+                  {value: 'surname', name:'Apellido' }
+                ]},
+              {id: 2, name: 'PersonsCollections2', values: [
+                  {value: 'name', name:'Nombres' },
+                  {value: 'surname', name:'Apellidos' }
+                ]},
             ],
-          }});
+          });
         } else {
           window.axios.get(url, params)
-            .then(response => resolve(response))
-            .catch(error => reject(error));
+              .then(response => resolve(response))
+              .catch(error => reject(error));
         }
       });
     },
@@ -160,33 +171,41 @@ window.ProcessMaker = {
         switch (url) {
           case '/requests/data_sources/1':
             resolve({data: {
-              response: [
-                {value: 1, content: 'James'},
-                {value: 2, content: 'John'},
-                {value: 3, content: 'Mary'},
-                {value: 4, content: 'Patricia'},
-              ],
-            }});
+                response: [
+                  {value: 1, content: 'James'},
+                  {value: 2, content: 'John'},
+                  {value: 3, content: 'Mary'},
+                  {value: 4, content: 'Patricia'},
+                ],
+              }});
+            break
+          case '/saved-searches/collections/1':
+            resolve({data: {
+                response: [
+                  {value: 1, name: 'Augusto', surname: 'Lopez'},
+                  {value: 2, name: 'Andrew', surname: 'Rodriguez'},
+                ],
+              }});
             break;
           default:
             window.axios.post(url, body)
-              .then(response => resolve(response))
-              .catch(error => reject(error));
+                .then(response => resolve(response))
+                .catch(error => reject(error));
         }
       });
     },
     put() {
       return new Promise((resolve) => {
         resolve({data: {
-          response: [],
-        }});
+            response: [],
+          }});
       });
     },
     delete() {
       return new Promise((resolve) => {
         resolve({data: {
-          response: [],
-        }});
+            response: [],
+          }});
       });
     },
   },
@@ -246,13 +265,13 @@ window.Echo = {
 window.axios = axios.create({
   baseURL: "/api/1.0/",
   adapter: cacheAdapterEnhancer(
-    axios.defaults.adapter,
-    window.ProcessMaker.screen.cacheEnabled,
-    "useCache",
-    new LRUCache({
-      ttl: window.ProcessMaker.screen.cacheTimeout,
-      max: 100
-    })
+      axios.defaults.adapter,
+      window.ProcessMaker.screen.cacheEnabled,
+      "useCache",
+      new LRUCache({
+        ttl: window.ProcessMaker.screen.cacheTimeout,
+        max: 100
+      })
   )
 });
 

@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import axios from "axios";
 import { has, get } from "lodash";
 import { cacheAdapterEnhancer } from "axios-extensions";
@@ -26,13 +25,13 @@ export default {
         Authorization: `Bearer ${this.token()}`
       };
       axios.defaults.adapter = cacheAdapterEnhancer(
-        axios.defaults.adapter,
-        window.ProcessMaker.screen.cacheEnabled,
-        "useCache",
-        new LRUCache({
-          ttl: window.ProcessMaker.screen.cacheTimeout,
-          max: 100
-        })
+          axios.defaults.adapter,
+          window.ProcessMaker.screen.cacheEnabled,
+          "useCache",
+          new LRUCache({
+            ttl: window.ProcessMaker.screen.cacheTimeout,
+            max: 100
+          })
       );
       return axios;
     }
@@ -73,9 +72,9 @@ export default {
 
   getTasks(params) {
     const endpoint = get(
-      window,
-      "PM4ConfigOverrides.getTasksEndpoint",
-      "/tasks"
+        window,
+        "PM4ConfigOverrides.getTasksEndpoint",
+        "/tasks"
     );
     return this.get(endpoint + params).then((response) => {
       if (response.data.screen && response.data.screen.nested) {
@@ -99,25 +98,21 @@ export default {
     });
   },
   getScreen(id, query = "") {
-    if (!id) {
-      return null;
-    }
-
     const cachedPromise = this.cachedScreenPromises.find(
-      (item) => item.id === id && item.query === query
+        (item) => item.id === id && item.query === query
     );
     if (cachedPromise) {
       return cachedPromise.screenPromise;
     }
 
     const endpoint = get(
-      window,
-      "PM4ConfigOverrides.getScreenEndpoint",
-      "/screens"
+        window,
+        "PM4ConfigOverrides.getScreenEndpoint",
+        "/screens"
     );
 
     const screensCacheHit = this.screensCache.find(
-      (screen) => screen.id === id
+        (screen) => screen.id === id
     );
     if (screensCacheHit) {
       return Promise.resolve({ data: screensCacheHit });
@@ -125,13 +120,13 @@ export default {
 
     const screenPromise = new Promise((resolve, reject) => {
       this.get(`${endpoint}/${id}${query}`)
-        .then((response) => {
-          if (response.data.nested) {
-            this.addNestedScreenCache(response.data.nested);
-          }
-          resolve(response);
-        })
-        .catch((response) => reject(response));
+          .then((response) => {
+            if (response.data.nested) {
+              this.addNestedScreenCache(response.data.nested);
+            }
+            resolve(response);
+          })
+          .catch((response) => reject(response));
     });
     this.cachedScreenPromises.push({ id, query, screenPromise });
     return screenPromise;
@@ -143,15 +138,15 @@ export default {
 
   postScript(id, params, options = {}) {
     const endpoint = get(
-      window,
-      "PM4ConfigOverrides.postScriptEndpoint",
-      "/scripts/execute/{id}"
+        window,
+        "PM4ConfigOverrides.postScriptEndpoint",
+        "/scripts/execute/{id}"
     );
 
     return this.post(
-      endpoint.replace("{id}", id) + this.authQueryString(),
-      params,
-      options
+        endpoint.replace("{id}", id) + this.authQueryString(),
+        params,
+        options
     );
   },
 
@@ -176,12 +171,51 @@ export default {
   getDataSource(dataSourceId, params) {
     // keep backwards compatibility
     if (
-      !window.ProcessMaker.screen.cacheEnabled &&
-      !window.ProcessMaker.screen.cacheTimeout
+        !window.ProcessMaker.screen.cacheEnabled &&
+        !window.ProcessMaker.screen.cacheTimeout
     ) {
       return this.postDataSource(dataSourceId, null, params);
     }
     let url = `/requests/data_sources/${dataSourceId}/resources/${params.config.endpoint}/data`;
+    url += this.authQueryString();
+    return this.get(url, {
+      useCache: window.ProcessMaker.screen.cacheEnabled,
+      params: {
+        pmds_config: JSON.stringify(params.config),
+        pmds_data: JSON.stringify(params.data)
+      }
+    }).then((response) => {
+      return response;
+    });
+  },
+
+  postDataSourceCollection(scriptId, requestId, params) {
+    let url;
+    if (requestId) {
+      url = `/requests/${requestId}/data_sources/${scriptId}`;
+    } else {
+      url = `/saved-searches/collections/${scriptId}`;
+    }
+    url += this.authQueryString();
+
+    return this.post(url, params, { timeout: 0 });
+  },
+
+  /**
+   * Gets data source collection service
+   * @param {number|null} dataSourceId
+   * @param {object} params
+   * @returns {object}
+   */
+  getDataSourceCollections(dataSourceId, params) {
+    // keep backwards compatibility
+    if (
+        !window.ProcessMaker.screen.cacheEnabled &&
+        !window.ProcessMaker.screen.cacheTimeout
+    ) {
+      return this.postDataSourceCollection(dataSourceId, null, params);
+    }
+    let url = `/collections/${dataSourceId}/records?page=1&per_page=10000`;
     url += this.authQueryString();
     return this.get(url, {
       useCache: window.ProcessMaker.screen.cacheEnabled,
