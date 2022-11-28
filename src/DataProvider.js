@@ -194,7 +194,7 @@ export default {
     if (requestId) {
       url = `/requests/${requestId}/data_sources/${scriptId}`;
     } else {
-      url = `/saved-searches/collections/${scriptId}`;
+      url = `/collections/${scriptId}/records`;
     }
     url += this.authQueryString();
 
@@ -213,7 +213,7 @@ export default {
         !window.ProcessMaker.screen.cacheEnabled &&
         !window.ProcessMaker.screen.cacheTimeout
     ) {
-      return this.postDataSourceCollection(dataSourceId, null, params);
+      return this.postDataSourceCollection(dataSourceId,null, params);
     }
     let url = `/collections/${dataSourceId}/records?page=1&per_page=10000`;
     url += this.authQueryString();

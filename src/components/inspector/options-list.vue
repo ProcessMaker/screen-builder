@@ -522,7 +522,7 @@ export default {
 
     getCollectionList() {
       this.$dataProvider
-          .get('/saved-searches/collections')
+          .get('/collections')
           .then(response => {
             let jsonData = response.data;
             // Map the data sources response to value/text items list
@@ -536,7 +536,7 @@ export default {
     setCollectionValueList(collections) {
       const values = {};
       collections.forEach(clValues => {
-        const dsCollectionValues = clValues.values ? clValues.values : [];
+        const dsCollectionValues = clValues.columns ? clValues.columns : [];
         values[clValues.id] = [{
           value: null,
           text: this.$t('Select...'),
