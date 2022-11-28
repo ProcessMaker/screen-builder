@@ -66,8 +66,8 @@
 
     <b-modal
       :static="true"
+      @hidden="handleHidden"
       @ok="handleOk"
-      @cancel="handleCancel"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
@@ -95,6 +95,7 @@
     <b-modal
       :static="true"
       @ok="edit"
+      @hidden="handleHidden"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="editModal"
@@ -185,6 +186,7 @@ export default {
       perPageSelectEnabled: false,
       perPage: 5,
       lastPage: 1,
+      validateModal: false,
       css: {
         tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
         loadingClass: 'loading',
@@ -287,10 +289,12 @@ export default {
     },
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["cancelValidations"]),
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
     emitShownEvent() {
+      this.validateModal = false;
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
     formatIfDate(string) {
@@ -380,10 +384,12 @@ export default {
       this.editFormVersion++;
       this.$nextTick(() => {
         this.setUploadDataNamePrefix(pageIndex);
+        this.validateModal = false;
         this.$refs.editModal.show();
       });
     },
     edit(event) {
+      this.validateModal = true;
       if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         event.preventDefault();
         return;
@@ -401,14 +407,14 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
+      this.validateModal = false;
       // Validate the form is set up correctly
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
       }
       // Reset addItem to an empty object and with a new row_id
-      const uniqueId =
-        Math.random().toString(36).substring(2) + Date.now().toString(36);
+      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
       this.addItem = {
         row_id: uniqueId
       };
@@ -416,15 +422,16 @@ export default {
       this.addFormInstanceKey = uniqueId;
       this.setUploadDataNamePrefix();
 
-
       // Open form
       this.$refs.addModal.show();
     },
-    async handleCancel(bvModalEvt) {
-      this.close();
+    handleHidden() {
+      if (!this.validateModal) {
+        this.cancelValidations();
+      }
     },
-    ...mapActions("globalErrorsModule", ["close"]),
     async handleOk(bvModalEvt) {
+      this.validateModal = true;
       bvModalEvt.preventDefault();
 
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {

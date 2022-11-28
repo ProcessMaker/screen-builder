@@ -56,7 +56,13 @@ const updateValidationRules = async (mainScreen, commit) => {
     });
   }
 };
+
+const cancelValidations = async (commit) => {
+  commit("basic", { key: "valid", value: true });
+};
+
 const updateValidationRulesDebounced = debounce(updateValidationRules, 1000);
+const cancelValidationsDebounced = debounce(cancelValidations, 1100);
 
 const globalErrorsModule = {
   namespaced,
@@ -88,6 +94,9 @@ const globalErrorsModule = {
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
+    },
+    cancelValidations({ commit }) {
+      cancelValidationsDebounced(commit);
     }
   }
 };
