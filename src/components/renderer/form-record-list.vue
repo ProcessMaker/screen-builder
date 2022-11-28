@@ -153,6 +153,7 @@
 
 
 <script>
+import { mapActions } from "vuex";
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
 import { dateUtils } from '@processmaker/vue-form-elements';
@@ -420,8 +421,9 @@ export default {
       this.$refs.addModal.show();
     },
     async handleCancel(bvModalEvt) {
-      alert(1);
+      this.close();
     },
+    ...mapActions("globalErrorsModule", ["close"]),
     async handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
