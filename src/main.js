@@ -147,16 +147,12 @@ window.ProcessMaker = {
                   }},
               ],
             }});
-        } else if (url === '/saved-searches/collections') {
+        } else if (url === '/collections') {
           resolve({data: [
-              {id: 1, name: 'PersonsCollections', values: [
+              {id: 1, name: 'PersonsCollections', columns: [
                   {value: 'name', name:'Nombre' },
                   {value: 'surname', name:'Apellido' }
-                ]},
-              {id: 2, name: 'PersonsCollections2', values: [
-                  {value: 'name', name:'Nombres' },
-                  {value: 'surname', name:'Apellidos' }
-                ]},
+                ]}
             ],
           });
         } else {
@@ -179,7 +175,7 @@ window.ProcessMaker = {
                 ],
               }});
             break
-          case '/saved-searches/collections/1':
+          case '/collections/1/records':
             resolve({data: {
                 response: [
                   {value: 1, name: 'Augusto', surname: 'Lopez'},
