@@ -148,13 +148,14 @@ window.ProcessMaker = {
               ],
             }});
         } else if (url === '/collections') {
-          resolve({data: [
+          resolve({data: {
+            data: [
               {id: 1, name: 'PersonsCollections', columns: [
                   {value: 'name', name:'Nombre' },
                   {value: 'surname', name:'Apellido' }
                 ]}
-            ],
-          });
+            ], 
+          }});
         } else {
           window.axios.get(url, params)
               .then(response => resolve(response))
