@@ -524,7 +524,7 @@ export default {
       this.$dataProvider
           .get('/collections')
           .then(response => {
-            let jsonData = response.data;
+            let jsonData = response.data.data;
             // Map the data sources response to value/text items list
             this.collectionsList = [{
               value: null,
@@ -541,7 +541,7 @@ export default {
           value: null,
           text: this.$t('Select...'),
         }].concat(dsCollectionValues.map(obj => {
-          return { text: obj.name, value: obj.value };
+          return { text: obj.label, value: obj.field };
         }));
       });
       this.collectionValues = values;
