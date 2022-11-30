@@ -32,7 +32,7 @@ export default {
             `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);
             this.setValue(${JSON.stringify(v.name)}, value, this.schema);
             this.unlockActions();`,
-            { debounced: 210 }
+            { debounced: 0 }
           );
           this.addWatch(screen, v.name, `this.lockActions();this.${updateMethod}(value);`);
           this.addWatch(
