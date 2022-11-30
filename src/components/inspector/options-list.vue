@@ -227,10 +227,33 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.collection">
-      <label for="collection-value-list">{{ $t('Column from Collection') }}</label>
+      <label for="collection-label-list">{{ $t('Label') }}</label>
+      <b-form-select id="collection-label-list" v-model="selectedCollectionLabel" :options="collectionLabelList" data-cy="inspector-collection-label" :class="selectedDataSource && !selectedCollectionLabel ? 'is-invalid' : ''"/>
+      <div v-if="selectedDataSource && !selectedCollectionLabel" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
+      <!-- <small class="form-text text-muted mb-3">{{ $t('Collection columns to populate select') }}</small> -->
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.collection">
+      <label for="collection-value-list">{{ $t('Value') }}</label>
       <b-form-select id="collection-value-list" v-model="selectedCollectionValue" :options="collectionValueList" data-cy="inspector-collection-value" :class="selectedDataSource && !selectedCollectionValue ? 'is-invalid' : ''"/>
       <div v-if="selectedDataSource && !selectedCollectionValue" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
-      <small class="form-text text-muted mb-3">{{ $t('Collection columns to populate select') }}</small>
+      <!-- <small class="form-text text-muted mb-3">{{ $t('Collection columns to populate select') }}</small> -->
+    </div>
+
+    <div v-if="dataSource === dataSourceValues.collection">
+      <div class="row mb-3">
+        <div class="col-12">
+          <input type="checkbox"  v-model="collectionDependant" data-cy="inspector-allow-multi-select" @click="selectedCollectionDependValue = undefined">
+          {{ $t('This list is a Dependent Field') }}
+        </div>
+      </div>
+    </div>
+
+    <div v-if="collectionDependant && dataSource === dataSourceValues.collection">
+      <label for="collection-value-depend-list">{{ $t('Field to Depend From') }}</label>
+      <b-form-select id="collection-value-depend-list" v-model="selectedCollectionDependValue" :options="collectionValueDependList" data-cy="inspector-collection-depend-value" :class="selectedDataSource && collectionDependant && !selectedCollectionDependValue ? 'is-invalid' : ''"/>
+      <div v-if="selectedDataSource && collectionDependant && !selectedCollectionDependValue" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
+      <small class="form-text text-muted mb-3">{{ $t('Column to depend') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.collection">
@@ -276,8 +299,12 @@ export default {
       selectedEndPoint: '',
       endpoints: {},
       collectionsList: [],
+      selectedCollectionLabel: '',
       selectedCollectionValue: '',
+      selectedCollectionDependValue: '',
+      collectionLabels: {},
       collectionValues: {},
+      collectionDependValues: {},
       pmqlQuery: '',
       optionsList: [],
       showOptionCard: false,
@@ -291,6 +318,7 @@ export default {
       showRenderAs: false,
       renderAs: 'dropdown',
       allowMultiSelect: false,
+      collectionDependant: false,
       defaultOptionKey: false,
       selectedOptions: [],
       renderAsOptions: [
@@ -344,7 +372,9 @@ export default {
         case 'dataConnector':
           this.jsonData = '';
           this.dataName = '';
+          this.selectedCollectionLabel = '';
           this.selectedCollectionValue = '';
+          this.selectedCollectionDependValue = '';
           this.getDataSourceList();
           break;
         case 'dataObject':
@@ -389,8 +419,17 @@ export default {
         return;
       }
 
-      if (this.collectionsList.length > 0 ) {
+      if (this.collectionsList.length > 0) {
         this.selectedDataSource = this.collectionsList[0].value;
+      }
+    },
+    collectionsLabelList() {
+      if (this.collectionLabelList.some(e => e.value === this.selectedCollectionLabel)) {
+        return;
+      }
+
+      if (this.collectionLabelList.length > 0) {
+        this.selectedCollectionLabel = this.collectionLabelList[0].value;
       }
     },
     collectionsValueList() {
@@ -398,8 +437,17 @@ export default {
         return;
       }
 
-      if (this.collectionValueList.length > 0 ) {
+      if (this.collectionValueList.length > 0) {
         this.selectedCollectionValue = this.collectionValueList[0].value;
+      }
+    },
+    collectionsValueDependList() {
+      if (this.collectionValueDependList.some(e => e.value === this.selectedCollectionDependValue)) {
+        return;
+      }
+
+      if (this.collectionValueDependList.length > 0) {
+        this.selectedCollectionDependValue = this.collectionValueDependList[0].value;
       }
     },
   },
@@ -407,8 +455,14 @@ export default {
     endPointList() {
       return _.get(this.endpoints, this.selectedDataSource, []);
     },
+    collectionLabelList(){
+      return _.get(this.collectionLabels, this.selectedDataSource, []);
+    },
     collectionValueList(){
       return _.get(this.collectionValues, this.selectedDataSource, []);
+    },
+    collectionValueDependList(){
+      return _.get(this.collectionDependValues, this.selectedDataSource, []);
     },
     dataSourceTypes() {
       if (typeof this.options.allowMultiSelect === 'undefined') {
@@ -451,7 +505,9 @@ export default {
         dataName: this.dataName,
         selectedDataSource: this.selectedDataSource,
         selectedEndPoint: this.selectedEndPoint,
+        selectedCollectionLabel: this.selectedCollectionLabel,
         selectedCollectionValue: this.selectedCollectionValue,
+        selectedCollectionDependValue: this.selectedCollectionDependValue,
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
@@ -461,6 +517,7 @@ export default {
         showRenderAs: this.showRenderAs,
         renderAs: this.renderAs,
         allowMultiSelect: this.allowMultiSelect,
+        collectionDependant: this.collectionDependant,
         showOptionCard: this.showOptionCard,
         showRemoveWarning: this.showRemoveWarning,
         showJsonEditor: this.showJsonEditor,
@@ -476,7 +533,9 @@ export default {
     this.dataName = this.options.dataName;
     this.selectedDataSource = this.options.selectedDataSource;
     this.selectedEndPoint = this.options.selectedEndPoint;
+    this.selectedCollectionLabel = this.options.selectedCollectionLabel;
     this.selectedCollectionValue = this.options.selectedCollectionValue;
+    this.selectedCollectionDependValue = this.options.selectedCollectionDependValue;
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -487,6 +546,7 @@ export default {
     this.showRenderAs = this.options.showRenderAs;
     this.renderAs = this.options.renderAs;
     this.allowMultiSelect = this.options.allowMultiSelect;
+    this.collectionDependant = this.options.collectionDependant;
     this.valueTypeReturned = this.options.valueTypeReturned;
   },
   methods: {
@@ -544,7 +604,9 @@ export default {
           return { text: obj.label, value: obj.field };
         }));
       });
+      this.collectionLabels = values;
       this.collectionValues = values;
+      this.collectionDependValues = values;
     },
     convertToSelectOptions(option) {
       return {

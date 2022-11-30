@@ -194,7 +194,7 @@ export default {
     if (requestId) {
       url = `/requests/${requestId}/data_sources/${scriptId}`;
     } else {
-      url = `/collections/${scriptId}/records`;
+      url = `/collections/${scriptId}/records?page=1&per_page=10000`;
     }
     url += this.authQueryString();
 
