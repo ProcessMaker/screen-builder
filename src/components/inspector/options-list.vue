@@ -240,6 +240,13 @@
       <small class="form-text text-muted mb-3">{{ $t('Collection columns to use as value') }}</small>
     </div>
 
+    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.collection">
+      <label for="pmql-query">{{ $t('PMQL') }}</label>
+      <mustache-helper/>
+      <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
+      <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
+    </div>
+
     <div v-if="dataSource === dataSourceValues.collection">
       <div class="row mb-3">
         <div class="col-12">
@@ -256,11 +263,11 @@
       <small class="form-text text-muted mb-3">{{ $t('Column to depend from based on other value') }}</small>
     </div>
 
-    <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.collection">
-      <label for="pmql-query">{{ $t('PMQL') }}</label>
+    <div v-if="collectionDependant && dataSource === dataSourceValues.collection">
+      <label for="pmql-query-depend">{{ $t('PMQL Dependant') }}</label>
       <mustache-helper/>
-      <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
-      <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
+      <b-form-textarea id="json-data" rows="2" v-model="pmqlQueryDepend"/>
+      <small class="form-text text-muted">{{ $t('Query definition for dependance') }}</small>
     </div>
   </div>
 </template>
@@ -306,6 +313,7 @@ export default {
       collectionValues: {},
       collectionDependValues: {},
       pmqlQuery: '',
+      pmqlQueryDepend: '',
       optionsList: [],
       showOptionCard: false,
       showRemoveWarning: false,
@@ -511,6 +519,7 @@ export default {
         key: this.key,
         value: this.value,
         pmqlQuery: this.pmqlQuery,
+        pmqlQueryDepend: this.pmqlQueryDepend,
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         optionsList: this.optionsList,
@@ -539,6 +548,7 @@ export default {
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
+    this.pmqlQueryDepend = this.options.pmqlQueryDepend;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
     this.optionsList = this.options.optionsList ? this.options.optionsList : [];
