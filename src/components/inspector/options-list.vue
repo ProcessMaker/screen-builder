@@ -230,14 +230,14 @@
       <label for="collection-label-list">{{ $t('Label') }}</label>
       <b-form-select id="collection-label-list" v-model="selectedCollectionLabel" :options="collectionLabelList" data-cy="inspector-collection-label" :class="selectedDataSource && !selectedCollectionLabel ? 'is-invalid' : ''"/>
       <div v-if="selectedDataSource && !selectedCollectionLabel" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
-      <!-- <small class="form-text text-muted mb-3">{{ $t('Collection columns to populate select') }}</small> -->
+      <small class="form-text text-muted mb-3">{{ $t('Collection columns to use as label') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.collection">
       <label for="collection-value-list">{{ $t('Value') }}</label>
       <b-form-select id="collection-value-list" v-model="selectedCollectionValue" :options="collectionValueList" data-cy="inspector-collection-value" :class="selectedDataSource && !selectedCollectionValue ? 'is-invalid' : ''"/>
       <div v-if="selectedDataSource && !selectedCollectionValue" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
-      <!-- <small class="form-text text-muted mb-3">{{ $t('Collection columns to populate select') }}</small> -->
+      <small class="form-text text-muted mb-3">{{ $t('Collection columns to use as value') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.collection">
@@ -253,7 +253,7 @@
       <label for="collection-value-depend-list">{{ $t('Field to Depend From') }}</label>
       <b-form-select id="collection-value-depend-list" v-model="selectedCollectionDependValue" :options="collectionValueDependList" data-cy="inspector-collection-depend-value" :class="selectedDataSource && collectionDependant && !selectedCollectionDependValue ? 'is-invalid' : ''"/>
       <div v-if="selectedDataSource && collectionDependant && !selectedCollectionDependValue" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
-      <small class="form-text text-muted mb-3">{{ $t('Column to depend') }}</small>
+      <small class="form-text text-muted mb-3">{{ $t('Column to depend from based on other value') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector || dataSource === dataSourceValues.collection">
