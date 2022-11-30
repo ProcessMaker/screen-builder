@@ -134,7 +134,7 @@ export default {
     },
     mustache(text) {
       try {
-        const data = this.getScreenDataReference();
+        const data = this.getDataReference();
         return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
