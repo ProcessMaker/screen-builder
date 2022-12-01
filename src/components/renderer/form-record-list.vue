@@ -66,6 +66,7 @@
 
     <b-modal
       :static="true"
+      @hidden="addItem = initFormValues"
       @ok="handleOk"
       size="lg"
       v-if="editable && !selfReferenced"
@@ -86,7 +87,7 @@
         :computed="formComputed"
         :watchers="formWatchers"
         debug-context="Record List Add"
-        :key="addFormInstanceKey"
+        :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
       />
@@ -172,9 +173,7 @@ export default {
       editFormVersion: 0,
       single: '',
       plural: '',
-      addItem: {
-        row_id: null,
-      },
+      addItem: {},
       addFormInstanceKey: null,
       editItem: {},
       editIndex: null,
@@ -399,39 +398,34 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
-      // Validate the form is set up correctly
+      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      this.$set(this.addItem, 'row_id', uniqueId);
+      this.setUploadDataNamePrefix();
       if (!this.form) {
         this.$refs.infoModal.show();
         return;
       }
-      // Reset addItem to an empty object and with a new row_id
-      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      this.addItem = {
-        row_id: uniqueId
-      };
-      // Rebuild the addItem screen to initialize the form (defaultValues and variables)
-      this.addFormInstanceKey = uniqueId;
-      this.setUploadDataNamePrefix();
-
       // Open form
       this.$refs.addModal.show();
+      // eslint-disable-next-line no-unused-vars
+      let {_parent, ...result} = this.addItem;
+      this.initFormValues = _.cloneDeep(result);
     },
-    async handleOk(bvModalEvt) {
+    handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
-
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         return;
       }
-
-      // Clone this.addItem
-      const newRow = JSON.parse(JSON.stringify(this.addItem));
-      delete newRow._parent;
-
-      // Get data from value or set an empty array if null
+      // Add the item to our model and emit change
+      // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
-      data.push(newRow);
-      this.$emit("input", data);
-
+      const item = JSON.parse(JSON.stringify({...this.addItem, _parent: undefined }));
+      delete item._parent;
+      data[data.length] = item;
+      // Emit the newly updated data model
+      this.$emit('input', data);
+      // Reset our add item
+      this.addItem = {};
       this.$nextTick(() => {
         this.$refs.addModal.hide();
       });
