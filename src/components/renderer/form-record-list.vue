@@ -66,7 +66,6 @@
 
     <b-modal
       :static="true"
-      @hidden="handleHidden"
       @ok="handleOk"
       size="lg"
       v-if="editable && !selfReferenced"
@@ -95,7 +94,6 @@
     <b-modal
       :static="true"
       @ok="edit"
-      @hidden="handleHidden"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="editModal"
@@ -186,7 +184,6 @@ export default {
       perPageSelectEnabled: false,
       perPage: 5,
       lastPage: 1,
-      validateModal: false,
       css: {
         tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
         loadingClass: 'loading',
@@ -294,7 +291,6 @@ export default {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
     emitShownEvent() {
-      this.validateModal = false;
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
     formatIfDate(string) {
@@ -384,12 +380,10 @@ export default {
       this.editFormVersion++;
       this.$nextTick(() => {
         this.setUploadDataNamePrefix(pageIndex);
-        this.validateModal = false;
         this.$refs.editModal.show();
       });
     },
     edit(event) {
-      this.validateModal = true;
       if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         event.preventDefault();
         return;
@@ -407,7 +401,6 @@ export default {
       this.$emit('input', data);
     },
     showAddForm() {
-      this.validateModal = false;
       // Validate the form is set up correctly
       if (!this.form) {
         this.$refs.infoModal.show();
@@ -425,13 +418,7 @@ export default {
       // Open form
       this.$refs.addModal.show();
     },
-    handleHidden() {
-      if (!this.validateModal) {
-        this.cancelValidations();
-      }
-    },
     async handleOk(bvModalEvt) {
-      this.validateModal = true;
       bvModalEvt.preventDefault();
 
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {

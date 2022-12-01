@@ -3,6 +3,7 @@ import Mustache from 'mustache';
 import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 import DataReference from "./DataReference";
+import { findRootScreen } from "./DataReference";
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
 const parentReference = [];
@@ -141,7 +142,7 @@ export default {
       }
     },
     async submitForm() {
-      await this.validateNow(this);
+      await this.validateNow(findRootScreen(this));
       if (!this.valid__) {
         window.ProcessMaker.alert(this.message__, "danger");
         // if the form is not valid the data is not emitted
