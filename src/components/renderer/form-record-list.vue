@@ -152,7 +152,6 @@
 
 
 <script>
-import { mapActions } from "vuex";
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
 import { dateUtils } from '@processmaker/vue-form-elements';
@@ -286,7 +285,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["cancelValidations"]),
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
