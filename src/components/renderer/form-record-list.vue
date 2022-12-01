@@ -66,8 +66,8 @@
 
     <b-modal
       :static="true"
-      @hidden="addItem = initFormValues"
       @ok="handleOk"
+      @hidden="addItem = initFormValues"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
@@ -174,7 +174,6 @@ export default {
       single: '',
       plural: '',
       addItem: {},
-      addFormInstanceKey: null,
       editItem: {},
       editIndex: null,
       currentPage: 1,
@@ -407,30 +406,35 @@ export default {
       }
       // Open form
       this.$refs.addModal.show();
+
       // eslint-disable-next-line no-unused-vars
       let {_parent, ...result} = this.addItem;
       this.initFormValues = _.cloneDeep(result);
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
+
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         return;
       }
+
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       const item = JSON.parse(JSON.stringify({...this.addItem, _parent: undefined }));
       delete item._parent;
       data[data.length] = item;
+
       // Emit the newly updated data model
       this.$emit('input', data);
+
       // Reset our add item
       this.addItem = {};
+
       this.$nextTick(() => {
         this.$refs.addModal.hide();
       });
     },
-
     showDeleteConfirmation(index, rowId) {
       this.deleteIndex = _.find(this.tableData.data, {'row_id': rowId});
       this.$refs.deleteModal.show();
