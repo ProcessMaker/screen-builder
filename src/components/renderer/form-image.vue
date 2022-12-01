@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     imageUrl() {
-      if (this.mode === 'preview' ) { 
+      if (this.mode !== 'editor') {
         return get(this.getScreenDataReference(), this.variableName || this.imageName);
       }
     },
