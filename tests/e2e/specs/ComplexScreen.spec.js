@@ -64,6 +64,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=first_name]').clear().type('Thomas');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=last_name]').clear().type('Anderson');
+    cy.wait(210);
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]').eq(0).click();
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [name=first_name]').type(' A.');
@@ -143,6 +144,8 @@ describe('Complex screen', () => {
     cy.get('[data-cy=modal-not-assigned] button.btn-primary').click();
 
     cy.get('[data-cy=preview-content] [name=form_text_area_4]').type('form text area 4');
+
+    cy.wait(210);
 
     cy.get('[data-cy=preview-content] [name=form_checkbox_4]').click();
 
