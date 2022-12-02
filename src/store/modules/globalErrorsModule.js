@@ -1,4 +1,5 @@
 import { debounce } from "lodash";
+import { findRootScreen } from "../../mixins/DataReference";
 
 const namespaced = true;
 
@@ -30,7 +31,8 @@ function countErrors(obj) {
   return errors;
 }
 
-const updateValidationRules = async (mainScreen, commit) => {
+const updateValidationRules = async (screen, commit) => {
+  const mainScreen = findRootScreen(screen);
   try {
     await mainScreen.loadValidationRules();
   } catch (error) {
@@ -62,6 +64,7 @@ const updateValidationRules = async (mainScreen, commit) => {
     });
   }
 };
+
 const updateValidationRulesDebounced = debounce(updateValidationRules, 1000);
 
 const globalErrorsModule = {
@@ -101,7 +104,7 @@ const globalErrorsModule = {
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
-    }
+    },
   }
 };
 
