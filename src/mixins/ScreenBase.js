@@ -214,6 +214,32 @@ export default {
         }
       }
     },
+    addNonDefinedComputedAttributes(value, key, owner = null) {
+      if (value instanceof Array) {
+        value.forEach((item, index) => {
+          this.addNonDefinedComputedAttributes(item, index, value);
+        });
+      } else if (value instanceof Object) {
+        Object.keys(value).forEach((k) => {
+          this.addNonDefinedComputedAttributes(value[k], k, value);
+        });
+      } else if (
+        owner &&
+        owner instanceof Object &&
+        !(value instanceof Array)
+      ) {
+        // check if value is reactive using getOwnPropertyDescriptor
+        const descriptor = Object.getOwnPropertyDescriptor(owner, key);
+        const isReactive = descriptor && descriptor.get;
+        if (!isReactive) {
+          // remove static value
+          delete owner[key];
+          // add reactive value
+          this.$set(owner, key, value);
+        }
+      }
+      return value;
+    },
     validationMessage(validation) {
       const message = [];
       Object.keys(ValidationMsg).forEach(key => {
