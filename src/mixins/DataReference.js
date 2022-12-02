@@ -83,3 +83,20 @@ export default {
     }
   }
 };
+
+/**
+ * Gets the root screen or same element if couldn't find
+ * @returns {object|null}
+ */
+export function findRootScreen(element) {
+  let owner = findScreenOwner(element);
+  while (owner) {
+    const screenOwner = findScreenOwner(owner);
+    if (screenOwner) {
+      owner = screenOwner;
+    } else {
+      return owner;
+    }
+  }
+  return element;
+}
