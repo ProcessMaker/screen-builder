@@ -12,7 +12,10 @@ export default {
             const formula = JSON.stringify(computed.formula);
             const type = JSON.stringify(computed.type);
 
-            return new Function(`return this.evaluateExpression(${formula}, ${type});`);
+            // addNonDefinedComputedAttributes is required to support reactivity for new non defined nor initialized attributes
+            // added in a calc property, this way the user can add dynamically attributes
+            // that reacts immediatly when the attribute is changed
+            return new Function(`return this.addNonDefinedComputedAttributes(this.evaluateExpression(${formula}, ${type}));`);
           })(),
           set() {
             // Do nothing (as it's not allowed)
