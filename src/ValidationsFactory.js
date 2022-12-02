@@ -89,6 +89,9 @@ class FormNestedScreenValidations extends Validations {
   }
 
   async loadScreen(id) {
+    if (!id) {
+      return null;
+    }
     if (!globalObject['nestedScreens']) {
       globalObject['nestedScreens'] = {};
     }
@@ -99,7 +102,6 @@ class FormNestedScreenValidations extends Validations {
     globalObject.nestedScreens['id_' + id] = response.data.config;
     return response.data.config;
   }
-
 }
 
 /**
