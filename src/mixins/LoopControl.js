@@ -1,6 +1,10 @@
+import { mapActions } from "vuex";
+
 export default {
   methods: {
-    initLoopVariable(variable, config) {
+    ...mapActions("globalErrorsModule", ["unlocked"]),
+    async initLoopVariable(variable, config) {
+      await this.unlocked();
       if (config.settings.type === 'existing') {
         // Do not initialize any variables if the loop is
         // configured to use existing data.
