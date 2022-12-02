@@ -201,6 +201,7 @@ export default {
     },
     localValue(value) {
       if (value !== this.value) {
+        // this.$emit('input', this.convertToData(value));
         this.debouncedWatch(value);
       }
     },
@@ -208,7 +209,7 @@ export default {
   created() {
     this.debouncedWatch = debounce((value) => {
       this.$emit('input', this.convertToData(value));
-    }, 210);
+    }, 0);
   },
   mounted() {
     if (this.value !== undefined) {
