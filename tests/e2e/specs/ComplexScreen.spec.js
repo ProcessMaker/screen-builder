@@ -132,6 +132,7 @@ describe('Complex screen', () => {
   it('Fill page 2', () => {
     // Next Page
     cy.get('[data-cy=preview-content] button:contains(Page Navigation >>)').click();
+    cy.wait(210);
 
     cy.get('[data-cy=preview-content] [name=form_input_5]').type('form input 5');
 
@@ -175,6 +176,7 @@ describe('Complex screen', () => {
     files.page2.push({
       file_name: 'avatar.jpeg',
     });
+    cy.wait(210);
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
       const record_row_id = data.form_record_list_1[0].row_id;
@@ -320,6 +322,7 @@ describe('Complex screen', () => {
 
     cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('1999');
     cy.get('[data-cy=preview-content] [name=season]').eq(loop).clear().type('2000');
+    cy.wait(210);
 
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
@@ -472,12 +475,14 @@ describe('Complex screen', () => {
       message: 'The file was uploaded.',
       fileUploadId: 1,
     })).as('uploadFile');
+    
     cy.uploadFile('[data-cy=preview-content] [data-cy="screen-field-nested_file"] input[type=file]', 'avatar.jpeg', 'image/jpg');
     // Mock uploaded file
     files.page1.push({
       file_name: 'avatar.jpeg',
     });
     cy.wait('@uploadFile');
+    cy.wait(210);
     cy.get('#screen-builder-container').then((div) => {
       const data = div[0].__vue__.previewData;
       const row_id0 = data.loop[0].form_record_list_2[0].row_id;
@@ -485,8 +490,8 @@ describe('Complex screen', () => {
       const row_id2 = data.loop[2].form_record_list_2[0].row_id;
       const row_id3 = data.loop[3].form_record_list_2[0].row_id;
       const record_row_id = data.form_record_list_1[0].row_id;
-
-      expect(data).to.eql({
+      console.log(JSON.stringify(data));
+      const expe ={
         'form_input_1': 'form input 1',
         'form_text_area_1': 'Hello!',
         'form_select_list_1': 'b',
@@ -613,7 +618,9 @@ describe('Complex screen', () => {
         'nested_file': 1,
         'form_checkbox_9': true,
         'form_checkbox_10': true,
-      });
+      };
+      console.log(JSON.stringify(expe));
+      expect(data).to.eql(expe);
     });
   });
 });
