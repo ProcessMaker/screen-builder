@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   props: {
     value: Array,
@@ -27,7 +29,9 @@ export default {
     error: String,
   },
   methods: {
-    add() {
+    ...mapActions("globalErrorsModule", ["unlocked"]),
+    async add() {
+      await this.unlocked();
       this.value.push({});
     },
     remove() {
