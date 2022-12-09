@@ -197,7 +197,6 @@ export default {
       url = `/collections/${scriptId}/records?page=1&per_page=10000`;
     }
     url += this.authQueryString();
-
     return this.post(url, params, { timeout: 0 });
   },
 
@@ -210,12 +209,15 @@ export default {
   getDataSourceCollections(dataSourceId, params) {
     // keep backwards compatibility
     if (
-        !window.ProcessMaker.screen.cacheEnabled &&
-        !window.ProcessMaker.screen.cacheTimeout
+      !window.ProcessMaker.screen.cacheEnabled &&
+      !window.ProcessMaker.screen.cacheTimeout
     ) {
-      return this.postDataSourceCollection(dataSourceId,null, params);
+      return this.postDataSourceCollection(dataSourceId, null, params);
     }
-    let url = `/collections/${dataSourceId}/records?page=1&per_page=10000`;
+    const outboundConfigs = params.config["outboundConfig"];
+    const pmql = outboundConfigs !== undefined ? outboundConfigs.find(elem => elem.key === "pmql") : undefined;
+    let url = `/collections/${dataSourceId}/records?${pmql !== undefined ? "pmql=" + pmql.value + "&" : ""}page=1&per_page=10000`;
+    console.warn(`DEBUG: url=${url}`);
     url += this.authQueryString();
     return this.get(url, {
       useCache: window.ProcessMaker.screen.cacheEnabled,
