@@ -45,6 +45,11 @@ export default {
       // Not somewhere we can download anything (like web entry start event)
       return;
     }
+
+    if (this.value) {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.value.file_name = this.value.name;
+    }
     this.setFilesInfo();
   },
   watch: {
