@@ -46,7 +46,7 @@ export default {
       return;
     }
 
-    if (this.value) {
+    if (this.collection && this.value) {
       // eslint-disable-next-line vue/no-mutating-props
       this.value.file_name = this.value.name;
     }
