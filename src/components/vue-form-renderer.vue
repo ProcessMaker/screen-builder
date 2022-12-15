@@ -96,6 +96,28 @@ export default {
         if (mainScreen) {
           this.validate(mainScreen);
         }
+
+        console.log(this.$refs);
+        // Get the index of the screen content
+        const validateScreenContent = (element) => element.$vnode.tag.match(/^.*ScreenContent$/);
+        const componentContent = this.$refs.renderer.$children.findIndex(validateScreenContent);
+
+        // Retreiving object with all controls
+        const content = this.$refs.renderer.$children[componentContent];
+
+        // Going trought objet to find all items
+        content.$children.forEach((element) => {
+          if (element.$vnode.tag.match(/^.*NewFormMultiColumn$/)) {
+            // Another loop looking for childs inside multiColumn
+            element.$children.forEach((elem) => {
+              this.dependantValidation(elem);
+            });
+          } else {
+            // Going straight 'cause has no childs
+            this.dependantValidation(element);
+          }
+        });
+
       },
     },
     computed: {
@@ -234,6 +256,43 @@ export default {
     },
     setCurrentPage(page) {
       this.$refs.renderer.setCurrentPage(page);
+    },
+    optionsContructor(control) {
+      return {
+        selectedCollectionValue: control.options.selectedCollectionValue,
+        selectedDataSource: control.options.selectedDataSource,
+        dataName: control.options.dataName,
+        // pmqlQuery: control.options.pmqlQuery,
+        selectedCollectionLabel: control.options.selectedCollectionLabel
+      };
+    },
+    dependantCall(elem) {
+      const control = elem.$options.propsData;
+      // Generate object options for request
+      const options = this.optionsContructor(control);
+      const pmql = control.options.pmqlQuery;
+
+      // Get the value to search
+      const pmqlSplitted = pmql.split("@");
+      const pmqlValue = pmqlSplitted[pmqlSplitted.length - 1];
+
+      // Get the actual value changed
+      const value = this.data[pmqlValue] ? this.data[pmqlValue] : -1;
+
+      // Setting the value in the PMQL
+      const newPmql = pmql.replace(`@${pmqlValue}`, value);
+      control.options.pmqlQuery = newPmql;
+      elem.loadOptionsFromCollection(options);
+
+      // Restoring pmql
+      control.options.pmqlQuery = pmql;
+    },
+    dependantValidation(elem) {
+      if (elem.$options.propsData.options) {
+        if (elem.$options.propsData.options.collectionDependant) {
+          this.dependantCall(elem);
+        }
+      }
     },
   },
 };
