@@ -97,7 +97,6 @@ export default {
           this.validate(mainScreen);
         }
 
-        console.log(this.$refs);
         // Get the index of the screen content
         const validateScreenContent = (element) => element.$vnode.tag.match(/^.*ScreenContent$/);
         const componentContent = this.$refs.renderer.$children.findIndex(validateScreenContent);
