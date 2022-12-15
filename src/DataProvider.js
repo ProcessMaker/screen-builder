@@ -216,6 +216,13 @@ export default {
     }
     const outboundConfigs = params.config["outboundConfig"];
     const pmql = outboundConfigs !== undefined ? outboundConfigs.find(elem => elem.key === "pmql") : undefined;
+
+    // Validating if it has @ for dependant pmql
+    if (pmql !== undefined && pmql.value.includes("@")) {
+      console.log("Es dependiente no devolver nada");
+      return false;
+    }
+
     let url = `/collections/${dataSourceId}/records?${pmql !== undefined ? "pmql=" + pmql.value + "&" : ""}page=1&per_page=10000`;
     url += this.authQueryString();
     return this.get(url, {
