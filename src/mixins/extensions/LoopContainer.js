@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     loadFormLoopProperties({ properties, element }) {
-      this.registerVariable(element.config.settings.varname, {});
+      this.registerVariable(element.config.settings.varname, element);
       this.loops.push({ variable: element.config.settings.varname, element, properties });
     },
     loadFormLoopItems({ element, node, definition }) {
@@ -78,10 +78,7 @@ export default {
       },
       onbuild({ screen }) {
         screen.mixins.push(LoopControl);
-        this.loops.forEach(({variable, element}) => {
-          this.addMounted(screen, `this.initLoopVariable(${JSON.stringify(variable)}, ${JSON.stringify(element.config)});`);
-        });
-      },
+      }
     });
-  },
+  }
 };

@@ -1,15 +1,16 @@
-import { get, isEqual, set } from 'lodash';
+import { get, isEqual, set, debounce } from 'lodash';
 import Mustache from 'mustache';
 import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 import DataReference from "./DataReference";
+import computedFields from "./computedFields";
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
 const parentReference = [];
 
 export default {
   name: "ScreenContent",
-  mixins: [DataReference],
+  mixins: [DataReference, computedFields],
   schema: [
     function() {
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
@@ -171,8 +172,34 @@ export default {
         value = [];
       } else if (component === 'FormSelectList' && !config.options.allowMultiSelect) {
         value = null;
+      } else if (component === "FormLoop") {
+        value = this.emptyLoopValue(config);
       }
       return value;
+    },
+    emptyLoopValue(config) {
+      if (config.settings.type === "existing") {
+        return [];
+      }
+      const times = Number(config.settings.times);
+      const loopVariable = [];
+      for (let i = 0; i < times; i++) {
+        loopVariable.push({});
+      }
+      return loopVariable;
+    },
+    updateScreenData(safeDotName, variable) {
+      this.blockUpdate(safeDotName, 210);
+      this.setValueDebounced(variable, this[safeDotName], this.vdata);
+    },
+    blockUpdate(safeDotName, time) {
+      this.blockedUpdates[safeDotName] = new Date().getTime() + time;
+    },
+    canUpdate(safeDotName) {
+      return (
+        !this.blockedUpdates[safeDotName] ||
+        this.blockedUpdates[safeDotName] < new Date().getTime()
+      );
     },
     getValue(name, object = this) {
       return object ? get(object, name) : undefined;
@@ -219,6 +246,32 @@ export default {
         }
       }
     },
+    addNonDefinedComputedAttributes(value, key, owner = null) {
+      if (value instanceof Array) {
+        value.forEach((item, index) => {
+          this.addNonDefinedComputedAttributes(item, index, value);
+        });
+      } else if (value instanceof Object) {
+        Object.keys(value).forEach((k) => {
+          this.addNonDefinedComputedAttributes(value[k], k, value);
+        });
+      } else if (
+        owner &&
+        owner instanceof Object &&
+        !(value instanceof Array)
+      ) {
+        // check if value is reactive using getOwnPropertyDescriptor
+        const descriptor = Object.getOwnPropertyDescriptor(owner, key);
+        const isReactive = descriptor && descriptor.get;
+        if (!isReactive) {
+          // remove static value
+          delete owner[key];
+          // add reactive value
+          this.$set(owner, key, value);
+        }
+      }
+      return value;
+    },
     validationMessage(validation) {
       const message = [];
       Object.keys(ValidationMsg).forEach(key => {
@@ -239,8 +292,18 @@ export default {
     setCurrentPage(page) {
       this.currentPage__ = page;
     },
+    setValueAsync(name, value, object = this, defaults = object) {}
   },
   validations() {
     return { vdata: this.ValidationRules__ };
   },
+  created() {
+    this.blockedUpdates = {};
+    this.setValueDebounced = debounce(this.setValue, 210);
+    this.setValueAsync = (name, value, object = this, defaults = object) =>
+      Promise.resolve().then(() => {
+        console.log(name, value, this.$el);
+        this.setValue(name, value, object, defaults)
+      });
+  }
 };
