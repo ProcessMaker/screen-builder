@@ -313,9 +313,9 @@ export default {
             .map(
               (key) =>
                 `value = ${component.data[key]};
-                this.setValue(${JSON.stringify(key)}, value, data);
+                data.${this.safeDotName(key)} = value;
                 ${
-                  hiddenVars.includes(key)
+                  hiddenVars.includes(key) || key.endsWith("__")
                     ? ""
                     : `this.setValue(${JSON.stringify(
                         key
@@ -324,7 +324,7 @@ export default {
             )
             .join("\n")};
             return data;`;
-        console.log(dataCode);
+        // console.log(dataCode);
         // eslint-disable-next-line no-new-func
         component.data = new Function(dataCode);
         // Build watchers
@@ -353,8 +353,19 @@ export default {
         };
       }
     },
+    addProp(screen, name, value) {
+      screen.props[name] = value;
+    },
     addData(screen, name, code) {
       screen.data[name] = code;
+    },
+    addComputed(screen, name, getterCode, setterCode) {
+      screen.computed[name] = {
+        // eslint-disable-next-line no-new-func
+        get: new Function(getterCode),
+        // eslint-disable-next-line no-new-func
+        set: new Function("value", setterCode)
+      };
     },
     addWatch(screen, name, code, options = {}) {
       if (screen.watch[name]) {

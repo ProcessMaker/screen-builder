@@ -1,47 +1,49 @@
-import _ from "lodash";
-
 export default {
   methods: {
     dataFields(screen, definition) {
-      this.variables
-        .filter(
-          (v) =>
-            !v.name.startsWith("_parent") &&
-            !v.name.includes("._parent.") &&
-            !this.isComputedVariable(v.name, definition)
-        )
-        .forEach((v) => {
-          const { component } = v.element;
-          const dataFormat = v.config.dataFormat || null;
-          this.addData(
-            screen,
-            v.name,
-            `
+      const localVariables = this.variables.filter(
+        (v) =>
+          // !v.name.startsWith("_parent") &&
+          // !v.name.includes("._parent.") &&
+          !this.isComputedVariable(v.name, definition)
+      );
+      localVariables.forEach((v) => {
+        const { component } = v.element;
+        const dataFormat = v.config.dataFormat || null;
+        const safeDotName = this.safeDotName(v.name);
+        this.addData(
+          screen,
+          safeDotName,
+          `
             this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
             this.getValue(${JSON.stringify(v.name)}, data) || 
-            this.initialValue('${component}', '${dataFormat}', ${JSON.stringify(
-              v.config
-            )})
+            this.initialValue(
+              '${component}',
+              '${dataFormat}',
+              ${JSON.stringify(v.config)})
           `
-          );
-          const updateMethod = `update${_.upperFirst(v.name)}`;
-          this.addMethod(
-            screen,
-            updateMethod,
-            ["value"],
-            `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);
-            this.setValue(${JSON.stringify(v.name)}, value, this.schema);
-            this.unlockActions();`,
-            { debounced: 210 }
-          );
-          this.addWatch(screen, v.name, `this.lockActions();this.${updateMethod}(value);`);
-          this.addWatch(
-            screen,
-            `vdata.${v.name}`,
-            `this.setValue(${JSON.stringify(v.name)}, value, this);`
-          );
-        });
-      screen.props.vdata = null;
+        );
+        this.addWatch(
+          screen,
+          `vdata.${v.name}`,
+          `if (this.canUpdate("${safeDotName}")) {
+            this.${safeDotName} = value;
+          }`
+        );
+      });
+      this.addProp(screen, "vdata", null);
+    },
+    /**
+     * Replace `.` by `_DOT_` in a variable name
+     * @param {string} name
+     * @returns {string}
+     */
+    safeDotName(name) {
+      // if starts with _parent returns as is
+      if (name.startsWith("_parent")) {
+        return name;
+      }
+      return name.replace(/\./g, "_DOT_");
     }
   },
   mounted() {

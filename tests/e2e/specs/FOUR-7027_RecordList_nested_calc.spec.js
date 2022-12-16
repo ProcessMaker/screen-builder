@@ -25,6 +25,7 @@ describe("screen error nested calc", () => {
     ).click();
 
     // Check the data of the screen
+    cy.wait(2000);
     cy.get("#screen-builder-container").then((div) => {
       const data = div[0].__vue__.previewData;
       const recordRowId = data.form_record_list_1[0].row_id;
