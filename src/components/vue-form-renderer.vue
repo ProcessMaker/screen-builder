@@ -275,9 +275,17 @@ export default {
       const pmqlSplitted = pmql.split("@");
       const pmqlValue = pmqlSplitted[pmqlSplitted.length - 1];
 
-      // Get the actual value changed
-      const value = this.data[pmqlValue] ? this.data[pmqlValue] : -1;
+      const pmqlSplittedChild = pmqlValue.split(".");
 
+      // Get the actual value changed
+      let value = this.data;
+      if (pmqlSplittedChild.length > 1) {
+        pmqlSplittedChild.forEach((child) => {
+          value = value[child] ? value[child] : -1;
+        });
+      } else {
+        value = this.data[pmqlValue] ? this.data[pmqlValue] : -1;
+      }
       // Setting the value in the PMQL
       const newPmql = pmql.replace(`@${pmqlValue}`, value);
       control.options.pmqlQuery = newPmql;
