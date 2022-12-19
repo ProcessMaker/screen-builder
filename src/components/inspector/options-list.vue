@@ -250,25 +250,26 @@
     <div v-if="dataSource === dataSourceValues.collection">
       <div class="row mb-3">
         <div class="col-12">
-          <input type="checkbox"  v-model="collectionDependant" data-cy="inspector-allow-multi-select" @click="selectedCollectionDependValue = undefined">
+          <input type="checkbox"  v-model="collectionDependant" data-cy="inspector-allow-multi-select">
+          <!-- <input type="checkbox"  v-model="collectionDependant" data-cy="inspector-allow-multi-select" @click="selectedCollectionDependValue = undefined"> -->
           {{ $t('This list is a Dependent Field') }}
         </div>
       </div>
     </div>
 
-    <div v-if="collectionDependant && dataSource === dataSourceValues.collection">
+    <!-- <div v-if="collectionDependant && dataSource === dataSourceValues.collection">
       <label for="collection-value-depend-list">{{ $t('Field to Depend From') }}</label>
       <b-form-select id="collection-value-depend-list" v-model="selectedCollectionDependValue" :options="collectionValueDependList" data-cy="inspector-collection-depend-value" :class="selectedDataSource && collectionDependant && !selectedCollectionDependValue ? 'is-invalid' : ''"/>
       <div v-if="selectedDataSource && collectionDependant && !selectedCollectionDependValue" class="invalid-feedback">{{ $t('An Collection column must be selected') }}</div>
       <small class="form-text text-muted mb-3">{{ $t('Column to depend from based on other value') }}</small>
-    </div>
+    </div> -->
 
-    <div v-if="collectionDependant && dataSource === dataSourceValues.collection">
+    <!-- <div v-if="collectionDependant && dataSource === dataSourceValues.collection">
       <label for="pmql-query-depend">{{ $t('PMQL Dependant') }}</label>
       <mustache-helper/>
       <b-form-textarea id="json-data" rows="2" v-model="pmqlQueryDepend"/>
       <small class="form-text text-muted">{{ $t('Query definition for dependance') }}</small>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -308,12 +309,12 @@ export default {
       collectionsList: [],
       selectedCollectionLabel: '',
       selectedCollectionValue: '',
-      selectedCollectionDependValue: '',
+      // selectedCollectionDependValue: '',
       collectionLabels: {},
       collectionValues: {},
-      collectionDependValues: {},
+      // collectionDependValues: {},
       pmqlQuery: '',
-      pmqlQueryDepend: '',
+      // pmqlQueryDepend: '',
       optionsList: [],
       showOptionCard: false,
       showRemoveWarning: false,
@@ -382,7 +383,7 @@ export default {
           this.dataName = '';
           this.selectedCollectionLabel = '';
           this.selectedCollectionValue = '';
-          this.selectedCollectionDependValue = '';
+          // this.selectedCollectionDependValue = '';
           this.getDataSourceList();
           break;
         case 'dataObject':
@@ -449,15 +450,15 @@ export default {
         this.selectedCollectionValue = this.collectionValueList[0].value;
       }
     },
-    collectionsValueDependList() {
-      if (this.collectionValueDependList.some(e => e.value === this.selectedCollectionDependValue)) {
-        return;
-      }
+    // collectionsValueDependList() {
+    //   if (this.collectionValueDependList.some(e => e.value === this.selectedCollectionDependValue)) {
+    //     return;
+    //   }
 
-      if (this.collectionValueDependList.length > 0) {
-        this.selectedCollectionDependValue = this.collectionValueDependList[0].value;
-      }
-    },
+    //   if (this.collectionValueDependList.length > 0) {
+    //     this.selectedCollectionDependValue = this.collectionValueDependList[0].value;
+    //   }
+    // },
   },
   computed: {
     endPointList() {
@@ -544,11 +545,11 @@ export default {
     this.selectedEndPoint = this.options.selectedEndPoint;
     this.selectedCollectionLabel = this.options.selectedCollectionLabel;
     this.selectedCollectionValue = this.options.selectedCollectionValue;
-    this.selectedCollectionDependValue = this.options.selectedCollectionDependValue;
+    // this.selectedCollectionDependValue = this.options.selectedCollectionDependValue;
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
-    this.pmqlQueryDepend = this.options.pmqlQueryDepend;
+    // this.pmqlQueryDepend = this.options.pmqlQueryDepend;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
     this.optionsList = this.options.optionsList ? this.options.optionsList : [];
@@ -616,7 +617,7 @@ export default {
       });
       this.collectionLabels = values;
       this.collectionValues = values;
-      this.collectionDependValues = values;
+      // this.collectionDependValues = values;
     },
     convertToSelectOptions(option) {
       return {
