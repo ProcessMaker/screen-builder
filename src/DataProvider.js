@@ -217,23 +217,26 @@ export default {
     const outboundConfigs = params.config["outboundConfig"];
     const pmql = outboundConfigs !== undefined ? outboundConfigs.find(elem => elem.key === "pmql") : undefined;
 
+    let dependant = false;
     // Validating if it has @ for dependant pmql
     if (pmql !== undefined && pmql.value.includes("@")) {
-      console.log("Es dependiente no devolver nada");
-      return false;
+      dependant = true;
     }
 
-    let url = `/collections/${dataSourceId}/records?${pmql !== undefined ? "pmql=" + pmql.value + "&" : ""}page=1&per_page=10000`;
-    url += this.authQueryString();
-    return this.get(url, {
-      useCache: window.ProcessMaker.screen.cacheEnabled,
-      params: {
-        pmds_config: JSON.stringify(params.config),
-        pmds_data: JSON.stringify(params.data)
-      }
-    }).then((response) => {
-      return response;
-    });
+    if (!dependant) {
+      let url = `/collections/${dataSourceId}/records?${pmql !== undefined ? "pmql=" + pmql.value + "&" : ""}page=1&per_page=10000`;
+      url += this.authQueryString();
+      return this.get(url, {
+        useCache: window.ProcessMaker.screen.cacheEnabled,
+        params: {
+          pmds_config: JSON.stringify(params.config),
+          pmds_data: JSON.stringify(params.data)
+        }
+      }).then((response) => {
+        return response;
+      });
+    }
+    return false;
   },
 
   authQueryString() {
