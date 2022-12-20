@@ -189,8 +189,13 @@ export default {
       return loopVariable;
     },
     updateScreenData(safeDotName, variable) {
+      this[`${safeDotName}_was_filled__`] = true; // !!this[safeDotName];
       this.blockUpdate(safeDotName, 210);
       this.setValueDebounced(variable, this[safeDotName], this.vdata);
+    },
+    updateScreenDataNow(safeDotName, variable) {
+      this[`${safeDotName}_was_filled__`] = true; // !!this[safeDotName];
+      this.setValue(variable, this[safeDotName], this.vdata);
     },
     blockUpdate(safeDotName, time) {
       this.blockedUpdates[safeDotName] = new Date().getTime() + time;
@@ -299,11 +304,20 @@ export default {
   },
   created() {
     this.blockedUpdates = {};
-    this.setValueDebounced = debounce(this.setValue, 210);
+    const debouncedValuesQueue = [];
+    const setDebouncedValues = debounce(() => {
+      debouncedValuesQueue.forEach((args) => {
+        this.setValue(...args);
+      });
+    }, 210);
+    this.setValueDebounced = (...args) => {
+      debouncedValuesQueue.push(args);
+      setDebouncedValues();
+    };
     this.setValueAsync = (name, value, object = this, defaults = object) =>
       Promise.resolve().then(() => {
         console.log(name, value, this.$el);
-        this.setValue(name, value, object, defaults)
+        this.setValue(name, value, object, defaults);
       });
   }
 };

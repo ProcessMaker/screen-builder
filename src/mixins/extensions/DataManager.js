@@ -21,7 +21,8 @@ export default {
               '${component}',
               '${dataFormat}',
               ${JSON.stringify(v.config)})
-          `
+          `,
+          v.name
         );
         this.addWatch(
           screen,

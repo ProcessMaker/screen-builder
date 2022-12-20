@@ -14,11 +14,14 @@ export default {
         const type = JSON.stringify(computed.type);
         const name = JSON.stringify(computed.property);
         const safeDotName = this.safeDotName(computed.property);
-        const code = `let value = this.evaluateExpression(${formula}, ${type});
+        const code = `
+        let value = this.evaluateExpression(${formula}, ${type});
         value = this.addNonDefinedComputedAttributes(value);
         this.setValue(${name}, value, this.vdata);
         return value;`;
         this.addComputed(screen, safeDotName, code, "");
+        // required to enable reactivity of computed field
+        this.addWatch(screen, safeDotName, "");
       });
     }
   },

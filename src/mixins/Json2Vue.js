@@ -310,18 +310,20 @@ export default {
         const hiddenVars = ["currentPage__"];
         const dataCode = `let value;const data = {};
           ${Object.keys(component.data)
-            .map(
-              (key) =>
-                `value = ${component.data[key]};
+            .map((key) => {
+              const { code, variable } = component.data[key];
+              return `value = ${code};
                 data.${this.safeDotName(key)} = value;
                 ${
-                  hiddenVars.includes(key) || key.endsWith("__")
+                  !variable ||
+                  hiddenVars.includes(variable) ||
+                  variable.endsWith("__")
                     ? ""
                     : `this.setValue(${JSON.stringify(
-                        key
+                        variable
                       )}, value, this.vdata);`
-                }`
-            )
+                }`;
+            })
             .join("\n")};
             return data;`;
         // console.log(dataCode);
@@ -356,8 +358,8 @@ export default {
     addProp(screen, name, value) {
       screen.props[name] = value;
     },
-    addData(screen, name, code) {
-      screen.data[name] = code;
+    addData(screen, name, code, variable = null) {
+      screen.data[name] = { code, variable };
     },
     addComputed(screen, name, getterCode, setterCode) {
       screen.computed[name] = {

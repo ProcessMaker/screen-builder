@@ -51,6 +51,7 @@ export default {
           const safeDotName = this.safeDotName(element.config.name);
           properties["v-model"] = safeDotName;
           properties["@input"] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
+          properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
         }
       }
       // Do not replace mustache in RichText control, it is replaced by the control
