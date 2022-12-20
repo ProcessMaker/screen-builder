@@ -218,8 +218,8 @@ export default {
     const pmql = outboundConfigs !== undefined ? outboundConfigs.find(elem => elem.key === "pmql") : undefined;
 
     let dependant = false;
-    // Validating if it has @ for dependant pmql
-    if (pmql !== undefined && pmql.value.includes("@")) {
+    // Validating if it has {{}} for dependant pmql
+    if (pmql !== undefined && pmql.value.match(/^.*{{.*}}.*$/)) {
       dependant = true;
     }
 

@@ -272,8 +272,9 @@ export default {
       const pmql = control.options.pmqlQuery;
 
       // Get the value to search
-      const pmqlSplitted = pmql.split("@");
-      const pmqlValue = pmqlSplitted[pmqlSplitted.length - 1];
+      const pmqlSplitted = pmql.substring(pmql.indexOf("{{") + 2);
+      const pmqlSplittedMustache = pmqlSplitted.substr(0, pmqlSplitted.indexOf("}}"));
+      const pmqlValue = pmqlSplittedMustache;
 
       const pmqlSplittedChild = pmqlValue.split(".");
 
@@ -287,7 +288,7 @@ export default {
         value = this.data[pmqlValue] ? this.data[pmqlValue] : -1;
       }
       // Setting the value in the PMQL
-      const newPmql = pmql.replace(`@${pmqlValue}`, value);
+      const newPmql = pmql.replace(`{{${pmqlValue}}}`, value);
       control.options.pmqlQuery = newPmql;
       elem.loadOptionsFromCollection(options);
 
