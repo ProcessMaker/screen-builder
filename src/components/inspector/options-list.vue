@@ -256,6 +256,15 @@
         </div>
       </div>
     </div>
+    
+    <div v-if="dataSource === dataSourceValues.collection">
+      <div class="row mb-3">
+        <div class="col-12">
+          <input type="checkbox"  v-model="suggestSelect" data-cy="inspector-allow-multi-select">
+          {{ $t('Suggest') }}
+        </div>
+      </div>
+    </div>
 
     <!-- <div v-if="collectionDependant && dataSource === dataSourceValues.collection">
       <label for="collection-value-depend-list">{{ $t('Field to Depend From') }}</label>
@@ -328,6 +337,7 @@ export default {
       renderAs: 'dropdown',
       allowMultiSelect: false,
       collectionDependant: false,
+      suggestSelect: false,
       defaultOptionKey: false,
       selectedOptions: [],
       renderAsOptions: [
@@ -528,6 +538,7 @@ export default {
         renderAs: this.renderAs,
         allowMultiSelect: this.allowMultiSelect,
         collectionDependant: this.collectionDependant,
+        suggestSelect: this.suggestSelect,
         showOptionCard: this.showOptionCard,
         showRemoveWarning: this.showRemoveWarning,
         showJsonEditor: this.showJsonEditor,
@@ -558,6 +569,7 @@ export default {
     this.renderAs = this.options.renderAs;
     this.allowMultiSelect = this.options.allowMultiSelect;
     this.collectionDependant = this.options.collectionDependant;
+    this.suggestSelect = this.options.suggestSelect;
     this.valueTypeReturned = this.options.valueTypeReturned;
   },
   methods: {
