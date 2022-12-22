@@ -2,6 +2,7 @@ import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
+import { mapGetters } from 'vuex';
 import _, { isEqual } from 'lodash';
 
 let screenRenderer;
@@ -432,13 +433,19 @@ export default {
         });
         return response;
       }
-      const updateValidationRules = function (screenComponent, validations) {
+      const updateValidationRules = (screenComponent, validations) => {
         return new Promise((resolve) => {
           screenComponent.ValidationRules__ = validations;
           screenComponent.$nextTick(() => {
-            if (screenComponent.$v) {
-              screenComponent.$v.$touch();
-              resolve();
+            try {
+              if (screenComponent.$v) {
+                screenComponent.$v.$touch();
+                resolve();
+              }
+            } catch (error) {
+              if (this.getMode() === "preview") {
+                console.warn("There was a problem rendering the screen", error);
+              }
             }
           });
         });
