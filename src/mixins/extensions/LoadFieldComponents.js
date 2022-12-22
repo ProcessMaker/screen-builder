@@ -50,8 +50,17 @@ export default {
           // `person.content` when `person`=null
           const safeDotName = this.safeDotName(element.config.name);
           properties["v-model"] = safeDotName;
-          properties["@input"] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
-          properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+          // FormTextArea, FormInput, FormMaskedInput
+          if (
+            componentName === "FormTextArea" ||
+            componentName === "FormInput"
+          ) {
+            properties["@input"] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
+            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+          } else {
+            properties["@input"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+          }
         }
       }
       // Do not replace mustache in RichText control, it is replaced by the control
