@@ -80,7 +80,7 @@ export default {
           if (typeof this.getValue(`${map.key}_was_filled__`) !== 'undefined') {
             // If the variable already exist it must be set as filled and updated
             this.setValue(`${map.key}_was_filled__`, true);
-            this.setValue(map.key, response[map.key]);
+            this.setValue(map.key, response[map.key], this.vdata);
           }
           else {
             // If it is a new variable, the value  is set directly
