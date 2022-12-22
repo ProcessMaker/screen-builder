@@ -196,9 +196,13 @@ export default {
     updateScreenDataNow(safeDotName, variable) {
       this[`${safeDotName}_was_filled__`] = true; // !!this[safeDotName];
       this.setValue(variable, this[safeDotName], this.vdata);
+      this.unblockUpdate(safeDotName);
     },
     blockUpdate(safeDotName, time) {
       this.blockedUpdates[safeDotName] = new Date().getTime() + time;
+    },
+    unblockUpdate(safeDotName) {
+      this.blockUpdate(safeDotName, 0);
     },
     canUpdate(safeDotName) {
       return (
