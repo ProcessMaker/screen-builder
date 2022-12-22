@@ -121,6 +121,9 @@ export default {
     }
   },
   computed: {
+    hasVariableName () {
+      return this.name && typeof this.$parent[this.name] !== 'undefined';
+    },
     filesFromGlobalRequestFiles() {
       if (!this.value) {
         return [];
@@ -222,33 +225,33 @@ export default {
     },
     name: {
       handler() {
-        this.options.query.data_name = this.fileDataName;
+        this.staticQuery.data_name = this.fileDataName;
       },
       immediate: true,
     },
     parent: {
       handler() {
-        this.options.query.parent = this.parent;
+        this.staticQuery.parent = this.parent;
       },
       immediate: true,
     },
     prefix: {
       handler() {
-        this.options.query.data_name = this.fileDataName;
+        this.staticQuery.data_name = this.fileDataName;
       },
       immediate: true,
     },
     row_id: {
       handler() {
-        this.options.query.row_id = this.row_id;
-        this.options.query.data_name = this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
+        this.staticQuery.row_id = this.row_id;
+        this.staticQuery.data_name = this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
       },
       immediate: true,
     },
     multipleUpload: {
       handler() {
         // Add the multiple parameter for the endpoint call that will be executed by vue-simple-uploader
-        this.options.query.multiple = this.multipleUpload;
+        this.staticQuery.multiple = this.multipleUpload;
       },
       immediate: true,
     },
@@ -263,16 +266,23 @@ export default {
       },
       prefix: '',
       row_id: null,
+      staticQuery: {
+        chunk: true,
+        data_name: this.name,
+        parent: null,
+        row_id: null,
+      },
       options: {
+        query: (file) => {
+          const query = Object.assign({}, this.staticQuery);
+          if (!this.hasVariableName) {
+            query.data_name = file.name;
+          }
+          return query;
+        },
         target: this.getTargetUrl,
         // We cannot increase this until laravel chunk uploader handles this gracefully
         simultaneousUploads: 1,
-        query: {
-          chunk: true,
-          data_name: this.name,
-          parent: null,
-          row_id: null,
-        },
         testChunks: false,
         // Setup our headers to deal with API calls
         headers: {
@@ -462,9 +472,6 @@ export default {
         }
       }
       file.ignored = false;
-      if (!this.name) {
-        this.options.query.data_name = file.name;
-      }
       return true;
     },
     removeDefaultClasses() {
