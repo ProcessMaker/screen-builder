@@ -8,8 +8,9 @@
 
 <script>
 import Mustache from 'mustache';
+import { mapActions, mapState } from "vuex";
 import { getValidPath } from '@/mixins';
-import { mapState } from 'vuex';
+
 
 export default {
   mixins: [getValidPath],
@@ -55,6 +56,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["unlocked"]),
     setValue(parent, name, value) {
       if (parent) {
         if (parent.items) {
@@ -64,7 +66,8 @@ export default {
         }
       }
     },
-    click() {
+    async click() {
+      await this.unlocked();
       if (this.event === 'script') {
         const trueValue = this.fieldValue || '1';
         const value = (this.value == trueValue) ? null : trueValue;

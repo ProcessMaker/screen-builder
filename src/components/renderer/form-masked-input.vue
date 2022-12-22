@@ -41,6 +41,7 @@ import { TheMask } from 'vue-the-mask';
 import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import moment from 'moment';
+import debounce from "lodash/debounce";
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {

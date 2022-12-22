@@ -307,6 +307,23 @@ export default {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)({ screen: component, definition }) : null;
         });
         // Build data
+      
+        // const dataCode = `let value;const data = {};
+        //   ${Object.keys(component.data)
+        //     .map(
+        //       (key) =>
+        //         `value = ${component.data[key]};
+        //         this.setValue(${JSON.stringify(key)}, value, data);
+        //         ${
+        //           hiddenVars.includes(key)
+        //             ? ""
+        //             : `this.setValue(${JSON.stringify(
+        //                 key
+        //               )}, value, this.vdata);`
+        //         }`
+        //     )
+        //     .join("\n")};
+        //     return data;`;
         const hiddenVars = ["currentPage__"];
         const dataCode = `let value;const data = {};
           ${Object.keys(component.data)
