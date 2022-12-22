@@ -11,6 +11,7 @@
       class="form-control"
       :class="classList"
       type="text"
+      @change="onChange"
     />
     <input v-else
       v-model="localValue"
@@ -21,6 +22,7 @@
       :class="classList"
       :type="dataType"
       :maxlength="maxlength"
+      @change="onChange"
     >
     <template v-if="validator && validator.errorCount">
       <div class="invalid-feedback" v-for="(errors, index) in validator.errors.all()" :key="index">
@@ -211,6 +213,9 @@ export default {
     }
   },
   methods: {
+    onChange() {
+      this.$emit("change", this.convertToData(this.localValue));
+    },
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
     },
