@@ -17,7 +17,7 @@ describe('Computed fields', () => {
       .first()
       .clear()
       .type('First input');
-
+    cy.wait(210);
     cy.assertPreviewData({
       'loop_1': [
         {
