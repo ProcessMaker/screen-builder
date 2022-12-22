@@ -15,11 +15,6 @@ import { getValidPath } from '@/mixins';
 export default {
   mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
-  watch: {
-    valid(valid) {
-      this.isInvalid = !valid;
-    }
-  },
   computed: {
     ...mapState('globalErrorsModule', ['valid']),
     classList() {
@@ -27,7 +22,7 @@ export default {
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: this.event === 'submit' && this.isInvalid,
+        disabled: this.event === 'submit' && !this.valid
       };
     },
     options() {
@@ -49,11 +44,6 @@ export default {
         boundary: 'window',
       };
     },
-  },
-  data() {
-    return {
-      isInvalid: false,
-    };
   },
   methods: {
     ...mapActions("globalErrorsModule", ["unlocked"]),

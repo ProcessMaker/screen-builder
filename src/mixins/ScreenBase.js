@@ -4,6 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 import DataReference from "./DataReference";
 import computedFields from "./computedFields";
+import { findRootScreen } from "./DataReference";
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
 const parentReference = [];
@@ -140,14 +141,14 @@ export default {
     },
     mustache(text) {
       try {
-        const data = Object.assign({_parent: this._parent}, this.vdata);
+        const data = this.getDataReference();
         return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
       }
     },
     async submitForm() {
-      await this.validateNow(this);
+      await this.validateNow(findRootScreen(this));
       if (!this.valid__) {
         window.ProcessMaker.alert(this.message__, "danger");
         // if the form is not valid the data is not emitted
