@@ -1,0 +1,8 @@
+Typing Speed=10ms  -> Total Time=undefinedms
+Typing Speed=10ms  -> Total Time=undefinedms
+Typing Speed=200ms  -> Total Time=undefinedms
+Typing Speed=200ms  -> Total Time=undefinedms
+Typing Speed=200ms  -> Total Time=undefinedms
+Typing Speed=200ms  -> Total Time=undefinedms
+Typing Speed=50ms  -> Total Time=undefinedms
+Typing Speed=50ms  -> Total Time=undefinedms
