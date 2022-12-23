@@ -21,7 +21,7 @@ export default {
         screen.mixins.push(watchersMixin);
         definition.watchers.filter(this.filterWatchers).forEach((watcher) => {
           this.addMounted(screen, `
-            this.$nextTick(() => this.$watch('${watcher.watching}', (newValue) => {
+            this.$nextTick(() => this.$watch('vdata.${watcher.watching}', (newValue) => {
               if (typeof newValue !== 'undefined') {
                 this.queueWatcher(${JSON.stringify(watcher)});
               }
