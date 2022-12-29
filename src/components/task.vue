@@ -230,7 +230,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,processRequestParent`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -379,10 +379,14 @@ export default {
       // This may no longer be needed
     },
     processCompleted() {
-      if (this.parentRequest) {
+      if (this.shouldRedirectToParentRequest()) {
         this.$emit('completed', this.parentRequest);
+      }else {
+        this.$emit('completed', this.requestId);
       }
-      this.$emit('completed', this.requestId);
+    },
+    shouldRedirectToParentRequest() {
+      return this.parentRequest && this.task.process_request_parent.status === 'COMPLETED';
     },
     processUpdated: _.debounce(function(data) {
       if (
