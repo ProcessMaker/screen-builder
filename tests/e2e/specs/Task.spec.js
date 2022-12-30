@@ -724,7 +724,7 @@ describe('Task component', () => {
 
     cy.visit('/?scenario=TaskRedirect', {});
 
-    // cy.wait(2000);
+    
     cy.get('.form-group').find('button').click();
 
     cy.route('PUT', 'http://localhost:8080/api/1.0/tasks/1').then(function() {
@@ -744,7 +744,7 @@ describe('Task component', () => {
       );
       
       getTasks('http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1');
-      // cy.wait(2000);
+      
       cy.reload();
     });
 
