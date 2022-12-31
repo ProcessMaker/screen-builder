@@ -208,7 +208,13 @@ export default {
       return screenType.toLowerCase() + '-screen';
     },
     parentRequest() {
-      return _.get(this.task, 'process_request.parent_request_id', null);
+      if (!_.get(this.task, 'can_view_parent_request', false)) {
+        console.log('Returning');
+        return null;
+      } else {
+        console.log('Get');
+        return _.get(this.task, 'process_request.parent_request_id', null);
+      }
     },
   },
   methods: {
@@ -230,7 +236,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,processRequestParent`;
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -285,6 +291,7 @@ export default {
       this.prepareTask();
     },
     closeTask(parentRequestId = null) {
+      console.log(parentRequestId, 'parentRequestId')
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
         return;
@@ -309,6 +316,9 @@ export default {
       const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1`;
       return this.$dataProvider
         .getTasks(url).then((response) => {
+         
+          console.log(this.task);
+
           if (response.data.data.length > 0) {
             let task = response.data.data[0];
             if (task.process_request_id !== this.requestId) {
@@ -379,14 +389,11 @@ export default {
       // This may no longer be needed
     },
     processCompleted() {
-      if (this.shouldRedirectToParentRequest()) {
+      if (this.parentRequest) {
         this.$emit('completed', this.parentRequest);
-      }else {
+      } else {
         this.$emit('completed', this.requestId);
       }
-    },
-    shouldRedirectToParentRequest() {
-      return this.parentRequest && this.task.process_request_parent.status === 'COMPLETED';
     },
     processUpdated: _.debounce(function(data) {
       if (

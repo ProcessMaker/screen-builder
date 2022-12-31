@@ -694,59 +694,67 @@ describe('Task component', () => {
     cy.url().should('eq', 'http://localhost:8080/requests/3');
   });
 
-  /* DNAT = Subprocess Next Assigned Task
-   parentTask1                           ParentTask2
-              \_______childTask1_______/
-                       (DNAT)
-   After childTask1 and not pending tasks should redirect to parent Request
-  */
-   it('When subprocess finishes but parent has not finished, redirect to sub-process request page.', () => {
+
+  it('When user can view parent, redirect to parent request page.', () => {
     cy.server();
     cy.route(
       'GET',
       'http://localhost:8080/api/1.0/tasks/1?include=*',
       {
         id: 1,
-        advanceStatus: 'open',
+        status: 'COMPLETED',
         component: 'task-screen',
         screen: SingleScreen.screens[0],
         process_request: {
-          id: 2,
-          status: 'ACTIVE',
-          parent_request_id: 1,
+          id: 3,
+          status: 'COMPLETED',
+          parent_request_id: 2,
         },
+        can_view_parent_request: true,
       }
     );
 
+    cy.route(
+      'GET',
+      'http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1',
+        {
+          data: []
+        }
+    );
+
     cy.visit('/?scenario=TaskRedirect', {});
-
-    
-    cy.get('.form-group').find('button').click();
-
-    cy.route('PUT', 'http://localhost:8080/api/1.0/tasks/1').then(function() {
-      let responseDataTask1 = {
-        'status': 'CLOSED',
-        'process_request_id': 2,
-        'parent_request_id': 3,
-        'id': 1,
-        'screen': SingleScreen.screens[0],
-        'allow_interstitial': true,
-        'interstitial_screen': InterstitialScreen.screens[0],
-        'process_request_parent': {'status': 'CLOSED'},
-      };
-      getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=*',
-        responseDataTask1
-      );
-      
-      getTasks('http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1');
-      
-      cy.reload();
-    });
-
-    cy.url().should('eq', 'http://localhost:8080/requests/3');
+    cy.url().should('eq', 'http://localhost:8080/requests/2');
   });
 
+  it('When user can NOT view parent, redirect to subprocess request page.', () => {
+    cy.server();
+    cy.route(
+      'GET',
+      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      {
+        id: 1,
+        status: 'COMPLETED',
+        component: 'task-screen',
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 3,
+          status: 'COMPLETED',
+          parent_request_id: 2,
+        },
+        can_view_parent_request: false,
+      }
+    );
+
+    cy.route(
+      'GET',
+      'http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1',
+        {
+          data: []
+        }
+    );
+    cy.visit('/?scenario=TaskRedirect', {});
+    cy.url().should('eq', 'http://localhost:8080/requests/2');
+  });
 });
 
 function getTask(url, responseData) {
@@ -765,7 +773,10 @@ function getTask(url, responseData) {
         id: 1,
         parent_request_id: responseData['parent_request_id'],
         status: responseData['status'],
+        process_request_parent: responseData['status'],
+        process_request_parent: responseData['status']
       },
+      process_request_parent: {'status': 'CLOSED'},
     }
   );
 }
