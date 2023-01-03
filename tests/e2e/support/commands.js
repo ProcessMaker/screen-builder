@@ -12,7 +12,7 @@ Cypress.Commands.add('setPreviewDataInput', (input) => {
 
 Cypress.Commands.add(
   "assertPreviewData",
-  (expectedData, removeRowIds = false) => {
+  (expectedData, removeRowIds = true) => {
     cy.wait(500);
     cy.get("#screen-builder-container").then((div) => {
       const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
