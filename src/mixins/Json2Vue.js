@@ -389,16 +389,6 @@ export default {
         screen.watch[name] = [{code, options}];
       }
     },
-    addMethod(screen, name, params, code, { debounced }) {
-      // eslint-disable-next-line no-new-func, no-param-reassign
-      screen.methods[name] = new Function(...params, code);
-      if (debounced) {
-        this.addCreated(
-          screen,
-          `this.${name} = _.debounce(this.${name}, ${debounced});`
-        );
-      }
-    },
     addMounted(screen, code) {
       screen.mounted.push(code);
     },
