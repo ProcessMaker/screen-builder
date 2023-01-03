@@ -149,6 +149,7 @@ export default {
     },
     async submitForm() {
       await this.validateNow(findRootScreen(this));
+      console.log(this.valid__, this.message__);
       if (!this.valid__) {
         window.ProcessMaker.alert(this.message__, "danger");
         // if the form is not valid the data is not emitted
@@ -190,12 +191,12 @@ export default {
       return loopVariable;
     },
     updateScreenData(safeDotName, variable) {
-      this[`${safeDotName}_was_filled__`] = true; // !!this[safeDotName];
+      this[`${safeDotName}_was_filled__`] = true;
       this.blockUpdate(safeDotName, 210);
       this.setValueDebounced(variable, this[safeDotName], this.vdata);
     },
     updateScreenDataNow(safeDotName, variable) {
-      this[`${safeDotName}_was_filled__`] = true; // !!this[safeDotName];
+      this[`${safeDotName}_was_filled__`] = true;
       this.setValue(variable, this[safeDotName], this.vdata);
       this.unblockUpdate(safeDotName);
     },
