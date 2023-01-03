@@ -37,31 +37,28 @@ describe("Test access to _parent", () => {
     ).click();
 
     // Check the data of the screen
-    cy.assertPreviewData(
-      {
-        parentInput: "value in parent",
-        loop_1: [
-          {
-            parentInput: "value in parent",
-            loop_1: [
-              {
-                form_input_1: "value in parent:value in loop"
-              }
-            ]
-          }
-        ],
-        form_record_list_1: [
-          {
-            parentInput: "value in parent",
-            loop_1: [
-              {
-                form_input_1: "value in parent:value in record list + loop"
-              }
-            ]
-          }
-        ]
-      },
-      true
-    );
+    cy.assertPreviewData({
+      parentInput: "value in parent",
+      loop_1: [
+        {
+          parentInput: "value in parent",
+          loop_1: [
+            {
+              form_input_1: "value in parent:value in loop"
+            }
+          ]
+        }
+      ],
+      form_record_list_1: [
+        {
+          parentInput: "value in parent",
+          loop_1: [
+            {
+              form_input_1: "value in parent:value in record list + loop"
+            }
+          ]
+        }
+      ]
+    });
   });
 });
