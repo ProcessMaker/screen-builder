@@ -2,10 +2,7 @@ export default {
   methods: {
     dataFields(screen, definition) {
       const localVariables = this.variables.filter(
-        (v) =>
-          // !v.name.startsWith("_parent") &&
-          // !v.name.includes("._parent.") &&
-          !this.isComputedVariable(v.name, definition)
+        (v) => !this.isComputedVariable(v.name, definition)
       );
       localVariables.forEach((v) => {
         const { component } = v.element;
