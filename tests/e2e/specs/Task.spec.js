@@ -661,6 +661,7 @@ describe('Task component', () => {
           status: 'ACTIVE',
           parent_request_id: 1,
         },
+        can_view_parent_request: true,
       }
     );
 
@@ -678,6 +679,7 @@ describe('Task component', () => {
         'screen': SingleScreen.screens[0],
         'allow_interstitial': true,
         'interstitial_screen': InterstitialScreen.screens[0],
+        'can_view_parent_request': true,
       };
 
       getTask(
@@ -733,11 +735,11 @@ describe('Task component', () => {
       'http://localhost:8080/api/1.0/tasks/1?include=*',
       {
         id: 1,
-        status: 'COMPLETED',
+        status: 'CLOSED',
         component: 'task-screen',
         screen: SingleScreen.screens[0],
         process_request: {
-          id: 3,
+          id: 1,
           status: 'COMPLETED',
           parent_request_id: 2,
         },
@@ -751,9 +753,17 @@ describe('Task component', () => {
         {
           data: []
         }
-    );
+    ).as('LoadTasks');
     cy.visit('/?scenario=TaskRedirect', {});
-    cy.url().should('eq', 'http://localhost:8080/requests/2');
+
+    cy.wait('@LoadTasks').then(() => {
+      cy.socketEvent('ProcessMaker\\Events\\ProcessCompleted', {
+        requestId: 1,
+        // event: 'ACTIVITY_COMPLETED',
+      });
+      
+    });
+    cy.url().should('eq', 'http://localhost:8080/requests/1');
   });
 });
 
@@ -774,9 +784,9 @@ function getTask(url, responseData) {
         parent_request_id: responseData['parent_request_id'],
         status: responseData['status'],
         process_request_parent: responseData['status'],
-        process_request_parent: responseData['status']
       },
       process_request_parent: {'status': 'CLOSED'},
+      can_view_parent_request: true,
     }
   );
 }
@@ -802,6 +812,7 @@ function getTasks(url, responseData = null) {
               id: 1,
               status: responseData['status'],
             },
+            can_view_parent_request: true,
           },
         ],
       }

@@ -209,12 +209,11 @@ export default {
     },
     parentRequest() {
       if (!_.get(this.task, 'can_view_parent_request', false)) {
-        console.log('Returning');
         return null;
       } else {
-        console.log('Get');
         return _.get(this.task, 'process_request.parent_request_id', null);
       }
+
     },
   },
   methods: {
@@ -291,7 +290,6 @@ export default {
       this.prepareTask();
     },
     closeTask(parentRequestId = null) {
-      console.log(parentRequestId, 'parentRequestId')
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
         return;
@@ -316,9 +314,6 @@ export default {
       const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1`;
       return this.$dataProvider
         .getTasks(url).then((response) => {
-         
-          console.log(this.task);
-
           if (response.data.data.length > 0) {
             let task = response.data.data[0];
             if (task.process_request_id !== this.requestId) {
@@ -335,6 +330,7 @@ export default {
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
+          
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.parentRequest);
           }
