@@ -1,5 +1,3 @@
-import LoopControl from '../../mixins/LoopControl';
-
 export default {
   props: {
     configRef: null,
@@ -75,9 +73,6 @@ export default {
         if (params.element.container && params.componentName === 'FormLoop') {
           this.loadFormLoopItems(params);
         }
-      },
-      onbuild({ screen }) {
-        screen.mixins.push(LoopControl);
       }
     });
   }

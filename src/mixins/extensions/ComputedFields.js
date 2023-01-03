@@ -1,6 +1,8 @@
 export default {
   methods: {
     /**
+     * Implements computed fields like this:
+     *
      * calcProperty() {
      *   let value = this.evaluateExpression('return formula();', 'javascript');
      *   value = this.addNonDefinedComputedAttributes(value);
