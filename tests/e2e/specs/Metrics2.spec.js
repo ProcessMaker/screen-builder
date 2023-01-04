@@ -353,33 +353,40 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
     cy.get("[data-cy=mode-preview]").click();
 
     // set init screen test data
+    let logText;
     let measure;
     let t0;
     let t1;
     const delayValue = 50;
-    // measure time to type 10ms delay
+    const text = "12345678901234567890123456789012345678901234567890";
+
+    // measure time to type 50ms delay
     cy.get("[data-cy=preview-content] [name='middleName']")
       .eq(0)
       .then((element) => {
         t0 = new Date().getTime();
         return element;
       })
-      .type("text to test performance", {
+      .type(text, {
         delay: delayValue
       })
       .then((element) => {
         t1 = new Date().getTime();
         measure = t1 - t0;
-        console.log(measure);
-        return element;
+        logText =
+          "Characters Number: " +
+          text.length +
+          " =>  Time: " +
+          measure +
+          "ms \n";
+        cy.log(logText).then(() => {
+          return element;
+        });
+        cy.writeFile("tests/e2e/fixtures/results.txt", logText, {
+          flag: "a+"
+        }).then(() => {
+          return element;
+        });
       });
-    //TODO write the results (PR, artifact CircleCI, Github comments)
-    cy.writeFile(
-      "tests/e2e/fixtures/results.txt",
-      "Typing Speed=" + delayValue + "ms  -> Total Time=" + measure + "ms\n",
-      {
-        flag: "a+"
-      }
-    );
   });
 });
