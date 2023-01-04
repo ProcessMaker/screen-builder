@@ -1,9 +1,8 @@
+import _ from "lodash";
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
-import { mapGetters } from 'vuex';
-import _, { isEqual } from 'lodash';
 
 let screenRenderer;
 
@@ -185,12 +184,26 @@ export default {
       return reference;
     },
     loadItems(items, component, screen, definition, formIndex) {
-      items.forEach(element => {
+      items.forEach((element) => {
         const componentName = element[this.nodeNameProperty];
         const nodeName = this.alias[componentName] || componentName;
         const properties = { ...element.config };
         // Extensions.onloadproperties
-        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen, definition , formIndex}));
+        this.extensions.forEach(
+          (ext) =>
+            ext.onloadproperties instanceof Function &&
+            ext.onloadproperties.bind(this)({
+              properties,
+              element,
+              component,
+              items,
+              nodeName,
+              componentName,
+              screen,
+              definition,
+              formIndex
+            })
+        );
         // Create component
         const node = this.createComponent(nodeName, properties);
         // Create wrapper
@@ -308,23 +321,6 @@ export default {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)({ screen: component, definition }) : null;
         });
         // Build data
-      
-        // const dataCode = `let value;const data = {};
-        //   ${Object.keys(component.data)
-        //     .map(
-        //       (key) =>
-        //         `value = ${component.data[key]};
-        //         this.setValue(${JSON.stringify(key)}, value, data);
-        //         ${
-        //           hiddenVars.includes(key)
-        //             ? ""
-        //             : `this.setValue(${JSON.stringify(
-        //                 key
-        //               )}, value, this.vdata);`
-        //         }`
-        //     )
-        //     .join("\n")};
-        //     return data;`;
         const hiddenVars = ["currentPage__"];
         const dataCode = `let value;const data = {};
           ${Object.keys(component.data)
@@ -344,7 +340,6 @@ export default {
             })
             .join("\n")};
             return data;`;
-        // console.log(dataCode);
         // eslint-disable-next-line no-new-func
         component.data = new Function(dataCode);
         // Build watchers
@@ -392,16 +387,6 @@ export default {
         screen.watch[name].push({code, options});
       } else {
         screen.watch[name] = [{code, options}];
-      }
-    },
-    addMethod(screen, name, params, code, { debounced }) {
-      // eslint-disable-next-line no-new-func, no-param-reassign
-      screen.methods[name] = new Function(...params, code);
-      if (debounced) {
-        this.addCreated(
-          screen,
-          `this.${name} = _.debounce(this.${name}, ${debounced});`
-        );
       }
     },
     addMounted(screen, code) {
