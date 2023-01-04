@@ -29,9 +29,7 @@ export default {
     error: String,
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["unlocked"]),
     async add() {
-      await this.unlocked();
       this.value.push({});
     },
     remove() {

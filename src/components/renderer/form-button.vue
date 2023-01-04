@@ -46,7 +46,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["unlocked"]),
     setValue(parent, name, value) {
       if (parent) {
         if (parent.items) {
@@ -57,7 +56,6 @@ export default {
       }
     },
     async click() {
-      await this.unlocked();
       if (this.event === 'script') {
         const trueValue = this.fieldValue || '1';
         const value = (this.value == trueValue) ? null : trueValue;
