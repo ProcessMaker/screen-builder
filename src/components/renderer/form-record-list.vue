@@ -283,7 +283,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["unlocked"]),
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
@@ -415,7 +414,6 @@ export default {
     async handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      await this.unlocked();
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         return;
       }

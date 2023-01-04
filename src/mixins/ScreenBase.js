@@ -55,11 +55,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("globalErrorsModule", [
-      "validateNow",
-      "lockActions",
-      "unlockActions"
-    ]),
+    ...mapActions("globalErrorsModule", ["validateNow"]),
     getDataAccordingToFieldLevel(dataWithParent, level) {
       if (level === 0 || !dataWithParent) {
         return dataWithParent;
