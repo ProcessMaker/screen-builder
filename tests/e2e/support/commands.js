@@ -225,3 +225,23 @@ Cypress.Commands.add("postGithubComment", (comment) => {
   encodedComment = JSON.stringify(encodedComment);
   cy.exec(`.circleci/gh_comment.sh ${encodedComment}`);
 });
+
+Cypress.Commands.add("lighthouseAndCommentPR", (thresholds, opts, title) => {
+  cy.url()
+    .then((url) => {
+      console.log(url);
+      cy.task("lighthouse", {
+        url,
+        thresholds,
+        opts
+      });
+    })
+    .then((report) => {
+      report.array.forEach((element) => {
+        cy.log(element);
+      });
+      const header = `## lighthouse test\n**${title}**\n\n`;
+      const comment = `${header}${report.join("\n")}`;
+      cy.postGithubComment(comment);
+    });
+});
