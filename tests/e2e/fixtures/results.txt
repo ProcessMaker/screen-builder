@@ -1,1 +1,0 @@
-Characters Number: 50 =>  Time: 4670ms 

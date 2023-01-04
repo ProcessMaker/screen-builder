@@ -382,7 +382,7 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
         cy.log(logText).then(() => {
           return element;
         });
-        cy.writeFile("tests/e2e/fixtures/results.txt", logText, {
+        cy.writeFile("tests/e2e/screenshots/results.txt", logText, {
           flag: "a+"
         }).then(() => {
           return element;
