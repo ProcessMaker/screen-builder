@@ -318,7 +318,6 @@ export default {
     };
     this.setValueAsync = (name, value, object = this, defaults = object) =>
       Promise.resolve().then(() => {
-        console.log(name, value, this.$el);
         this.setValue(name, value, object, defaults);
       });
   }
