@@ -50,7 +50,7 @@ export default {
           // `person.content` when `person`=null
           const safeDotName = this.safeDotName(element.config.name);
           properties["v-model"] = safeDotName;
-          // FormTextArea, FormInput, FormMaskedInput
+          // Debounce input from FormTextArea and FormInput
           if (
             componentName === "FormTextArea" ||
             componentName === "FormInput"
