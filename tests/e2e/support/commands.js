@@ -216,3 +216,12 @@ Cypress.Commands.add('shouldNotHaveValidationErrors', (name, index = 0) => {
 Cypress.Commands.add('shouldHaveValidationErrors', (name, index = 0) => {
   cy.get(`[data-cy=preview-content] [data-cy=${name}]`).eq(index).should('have.class', 'is-invalid');
 })
+
+Cypress.Commands.add("postGithubComment", (comment) => {
+  // escape comment to avoid bash injection
+  let encodedComment = comment.replace(/"/g, "'");
+  encodedComment = encodedComment.replace(/\\/g, "");
+  encodedComment = encodedComment.replace(/\$/g, "");
+  encodedComment = JSON.stringify(encodedComment);
+  cy.exec(`.circleci/gh_comment.sh ${encodedComment}`);
+});
