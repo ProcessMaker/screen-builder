@@ -13,7 +13,9 @@ describe("FOUR-6788 screen performance", () => {
     const maximumScreenRenderTime = 4000;
 
     cy.loadFromJson("FOUR-6788_screen_performance.json");
-    cy.visit("/?scenario=RenderScreen");
+    cy.visit(
+      "/?scenario=RenderScreen&title=Loop6+multi-column+select+lists+rich+texts+text+areas"
+    );
     const customThresholds = {
       performance: minimumPerformanceScore,
       accessibility,
@@ -34,7 +36,10 @@ describe("FOUR-6788 screen performance", () => {
     const maximumScreenRenderTime = 4000;
 
     cy.loadFromJson("FOUR-6788_screen_performance_2.json");
-    cy.visit("/?scenario=RenderScreen2");
+    cy.visit(
+      "/?scenario=RenderScreen2&title=Loop6+multi-column+select+lists+rich+texts+text+areas" +
+        "+validations+rules+visibility+rules+and+submit+button"
+    );
     const customThresholds = {
       performance: minimumPerformanceScore,
       accessibility,

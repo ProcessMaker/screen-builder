@@ -8,7 +8,19 @@ module.exports = (on, config) => {
     prepareAudit({ args: Array.isArray(launchOptions) ? launchOptions : [] });
   });
   on("task", {
-    lighthouse: lighthouse()
+    lighthouse: lighthouse((lighthouseReport) => {
+      const keys = Object.keys(lighthouseReport.lhr.categories);
+      const results = keys.map((key) => {
+        return `${key}: ${lighthouseReport.lhr.categories[key].score * 100}`;
+      });
+      // cy.postGithubComment("## " + results.join("\n"));
+      const url = lighthouseReport.artifacts.URL.requestedUrl;
+      // get title from search params from url
+      const title = new URL(url).searchParams.get("title");
+      const header = `## lighthouse test\n**${title}**\n\n`;
+      const report = `${header}${results.join("\n")}`;
+      cy.postGithubComment(report);
+    })
   });
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',
