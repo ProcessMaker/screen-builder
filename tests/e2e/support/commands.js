@@ -237,7 +237,7 @@ Cypress.Commands.add("lighthouseAndCommentPR", (thresholds, opts, title) => {
       });
     })
     .then((report) => {
-      report.array.forEach((element) => {
+      report.forEach((element) => {
         cy.log(element);
       });
       const header = `## lighthouse test\n**${title}**\n\n`;
