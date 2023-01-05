@@ -50,6 +50,7 @@ jobs:
     - run: ls -la coverage-test
     - store_artifacts:
         path: tests/e2e/screenshots
+    - store_artifacts:
         path: tests/e2e/metrics
   cypress/report:
     docker:
