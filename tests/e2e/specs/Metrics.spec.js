@@ -1,3 +1,70 @@
+function leastSquares(valuesX, valuesY) {
+  let sumX = 0;
+  let sumY = 0;
+  let sumXY = 0;
+  let sumXX = 0;
+  let count = 0;
+
+  /*
+   * We'll use those variables for faster read/write access.
+   */
+  let x = 0;
+  let y = 0;
+  const valuesLength = valuesX.length;
+
+  if (valuesLength !== valuesY.length) {
+    throw new Error(
+      "The parameters values_x and values_y need to have same size!"
+    );
+  }
+
+  /*
+   * Nothing to do.
+   */
+  if (valuesLength === 0) {
+    return [[], []];
+  }
+
+  /*
+   * Calculate the sum for each of the parts necessary.
+   */
+  for (let v = 0; v < valuesLength; v += 1) {
+    x = valuesX[v];
+    y = valuesY[v];
+    sumX += x;
+    sumY += y;
+    sumXX += x * x;
+    sumXY += x * y;
+    count++;
+  }
+
+  /*
+   * Calculate m and b for the formula:
+   * y = m * x + b
+   */
+  const m = (count * sumXY - sumX * sumY) / (count * sumXX - sumX * sumX);
+  const b = (sumY - m * sumX) / count;
+
+  /*
+   * We will make the x and y result line now
+   */
+  const resultValuesX = [];
+  const resultValuesY = [];
+
+  for (let v = 0; v < valuesLength; v += 1) {
+    x = valuesX[v];
+    y = x * m + b;
+    resultValuesX.push(x);
+    resultValuesY.push(y);
+  }
+
+  return {
+    resultValuesX,
+    resultValuesY,
+    m,
+    b
+  };
+}
 describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
   // initial data to test the screen
   const initialData = {
@@ -351,41 +418,65 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
     cy.wait(5000);
 
     cy.get("[data-cy=mode-preview]").click();
-
+    // Wait Designer to load before continuing to type text in a field
+    cy.wait(5000);
     // set init screen test data
     let logText;
     let measure;
     let t0;
     let t1;
+    let valuesX = [];
+    let valuesY = [];
     const delayValue = 50;
-    const text = "12345678901234567890123456789012345678901234567890";
+    const textArray = [
+      "1234567890",
+      "12345678901234567890",
+      "123456789012345678901234567890",
+      "1234567890123456789012345678901234567890",
+      "12345678901234567890123456789012345678901234567890"
+    ];
+    cy.wrap(textArray)
+      .each((item, i, array) => {
+        cy.get("[data-cy=preview-content] [name='middleName']")
+          .eq(0)
+          .then((element) => {
+            t0 = new Date().getTime();
+            return element;
+          })
+          .type(item, {
+            delay: delayValue
+          })
+          .then((element) => {
+            t1 = new Date().getTime();
+            measure = t1 - t0;
+            valuesX.push(item.length);
+            valuesY.push(measure);
 
-    // measure time to type 50ms delay
-    cy.get("[data-cy=preview-content] [name='middleName']")
-      .eq(0)
-      .then((element) => {
-        t0 = new Date().getTime();
-        return element;
+            logText =
+              "(Delay: " +
+              delayValue +
+              ", Characters Number: " +
+              item.length +
+              ") =>  Total Time: " +
+              measure +
+              "ms \n";
+            cy.log(logText).then(() => {
+              return element;
+            });
+            cy.writeFile("tests/e2e/metrics/results.txt", logText, {
+              flag: "a+"
+            }).then(() => {
+              return element;
+            });
+          });
       })
-      .type(text, {
-        delay: delayValue
-      })
-      .then((element) => {
-        t1 = new Date().getTime();
-        measure = t1 - t0;
-        logText =
-          "Characters Number: " +
-          text.length +
-          " =>  Time: " +
-          measure +
-          "ms \n";
-        cy.log(logText).then(() => {
-          return element;
-        });
+      .then((array) => {
+        const result = leastSquares(valuesX, valuesY);
+        logText = "Time per Character: " + result.m + "ms \n";
         cy.writeFile("tests/e2e/metrics/results.txt", logText, {
           flag: "a+"
         }).then(() => {
-          return element;
+          return array;
         });
       });
   });
