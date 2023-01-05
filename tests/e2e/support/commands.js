@@ -237,11 +237,13 @@ Cypress.Commands.add("lighthouseAndCommentPR", (thresholds, opts, title) => {
       });
     })
     .then((report) => {
-      report.forEach((element) => {
-        cy.log(element);
-      });
-      const header = `## lighthouse test\n**${title}**\n\n`;
-      const comment = `${header}${report.join("\n")}`;
-      cy.postGithubComment(comment);
+      if (report && report.results) {
+        report.results.forEach((element) => {
+          cy.log(element);
+        });
+        const header = `## lighthouse test\n**${title}**\n\n`;
+        const comment = `${header}${report.results.join("\n")}`;
+        cy.postGithubComment(comment);
+      }
     });
 });
