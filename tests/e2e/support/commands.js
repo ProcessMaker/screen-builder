@@ -216,3 +216,34 @@ Cypress.Commands.add('shouldNotHaveValidationErrors', (name, index = 0) => {
 Cypress.Commands.add('shouldHaveValidationErrors', (name, index = 0) => {
   cy.get(`[data-cy=preview-content] [data-cy=${name}]`).eq(index).should('have.class', 'is-invalid');
 })
+
+Cypress.Commands.add("postGithubComment", (comment) => {
+  // escape comment to avoid bash injection
+  let encodedComment = comment.replace(/"/g, "'");
+  encodedComment = encodedComment.replace(/\\/g, "");
+  encodedComment = encodedComment.replace(/\$/g, "");
+  encodedComment = JSON.stringify(encodedComment);
+  cy.exec(`.circleci/gh_comment.sh ${encodedComment}`);
+});
+
+Cypress.Commands.add("lighthouseAndCommentPR", (thresholds, opts, title) => {
+  cy.url()
+    .then((url) => {
+      console.log(url);
+      cy.task("lighthouse", {
+        url,
+        thresholds,
+        opts
+      });
+    })
+    .then((report) => {
+      if (report && report.results) {
+        report.results.forEach((element) => {
+          cy.log(element);
+        });
+        const header = `## lighthouse test\n**${title}**\n\n`;
+        const comment = `${header}${report.results.join("\n")}`;
+        cy.postGithubComment(comment);
+      }
+    });
+});
