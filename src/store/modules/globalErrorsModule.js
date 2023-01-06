@@ -26,7 +26,11 @@ function countErrors(obj) {
       if (key !== "$iter" && value) {
         errors += countErrors(value);
       }
-    }
+      // Values are empty but the keys still need to be counted ex. {"name": "", "email": ""};
+      if (!value) {
+        errors ++;
+      }
+    } 
   });
   return errors;
 }
@@ -43,16 +47,19 @@ const updateValidationRules = async (screen, commit) => {
   const validate = mainScreen.$v;
   // update the global error state used by submit buttons
   if (validate) {
+    console.log('validate', validate);
     let errors = 0;
     let message = "";
     if (validate.$invalid) {
       errors += countErrors(validate.vdata);
       errors += countErrors(validate.schema);
+      console.log('VALIDATE ERRORS', errors);
       message =
         errors === 1
           ? "There is a validation error in your form."
           : "There are {{items}} validation errors in your form.";
       message = mainScreen.$t(message, { items: errors });
+      console.log('MESSAGE', message);
     }
     commit("basic", {
       key: "valid",
