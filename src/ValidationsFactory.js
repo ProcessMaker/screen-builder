@@ -1,6 +1,6 @@
 import { validators } from './mixins/ValidationRules';
 import DataProvider from './DataProvider';
-import { get, set, merge } from 'lodash';
+import { get, set, merge, first } from 'lodash';
 import { Parser } from 'expr-eval';
 
 let globalObject = typeof window === 'undefined'
@@ -87,7 +87,7 @@ class FormNestedScreenValidations extends Validations {
     if (definition && definition[0] && definition[0].items) {
       // Parse the first nested page components
       const firstNestedPage = JSON.parse(JSON.stringify(definition[0].items));
-      if (firstNestedPage.length > 0) {
+      if (firstNestedPage.length > 1) {
         firstNestedPage.forEach(async item => {
           // Check if there is a navigation button and the page validations
           if (item.component === 'FormButton' && item['editor-control'] === "PageNavigation") {
