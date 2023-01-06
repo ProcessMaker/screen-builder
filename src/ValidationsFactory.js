@@ -52,7 +52,8 @@ class Validations {
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (const item of this.element) {
-      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop }).addValidations(validations);
+      const screenValidations = ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop });
+      await screenValidations.addValidations(validations);
     }
   }
 }
@@ -84,7 +85,20 @@ class FormNestedScreenValidations extends Validations {
     const definition = await this.loadScreen(this.element.config.screen);
     let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
     if (definition && definition[0] && definition[0].items) {
-      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data, parentVisibilityRule }).addValidations(validations);
+      // Parse the first nested page components
+      const firstNestedPage = JSON.parse(JSON.stringify(definition[0].items));
+      if (firstNestedPage.length > 0) {
+        firstNestedPage.forEach(async item => {
+          // Check if there is a navigation button and the page validations
+          if (item.component === 'FormButton' && item['editor-control'] === "PageNavigation") {
+            const screenValidations = ValidationsFactory(definition[item.config.eventData].items, { screen: definition, data: this.data, parentVisibilityRule });
+            await screenValidations.addValidations(validations);
+          } 
+        }); 
+      } else {
+        const screenValidations = ValidationsFactory(definition[0].items, { screen: definition, data: this.data, parentVisibilityRule });
+        await screenValidations.addValidations(validations);
+      }
     }
   }
 
@@ -118,7 +132,8 @@ class FormLoopValidations extends Validations {
     loopField['$each'] = {};
     this.checkForSiblings(validations);
     const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true }).addValidations(loopField['$each']);
+    const screenValidations = ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true });
+    await screenValidations.addValidations(loopField['$each']);
   }
   checkForSiblings(validations) {
     const siblings = [];
@@ -179,7 +194,8 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
+    const screenValidations = ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide });
+    await screenValidations.addValidations(validations);
   }
 }
 
@@ -195,7 +211,8 @@ class PageNavigateValidations extends Validations {
     if (this.screen.pagesValidated && !this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
       this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
       if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
-        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
+        const screenValidations = ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data });
+        await screenValidations.addValidations(validations);
       }
     }
   }
@@ -321,7 +338,8 @@ class FormElementValidations extends Validations {
       };
     }
     if (this.element.items) {
-      ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
+      const screenValidations =  ValidationsFactory(this.element.items, { screen: this.screen, data: this.data });
+      screenValidations.addValidations(validations);
     }
   }
   camelCase(name) {
