@@ -388,14 +388,15 @@ export default {
       component.methods.loadValidationRules = async function () {
         // Asynchronous loading of validations
         const validations = {};
-        await ValidationsFactory(definition, {
+        const screenValidations = ValidationsFactory(definition, {
           screen: definition,
           firstPage,
           data: {
             _parent: this._parent,
             ...this.vdata
           }
-        }).addValidations(validations);
+        });
+        await screenValidations.addValidations(validations);
         await updateValidationRules(this, validations);
       };
       component.mounted.push("this.loadValidationRules(true)");
