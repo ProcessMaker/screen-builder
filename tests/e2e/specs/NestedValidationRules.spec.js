@@ -103,6 +103,27 @@ describe('Validation Rules (Hidden fields and Nested Screens)', () => {
 
     submitForm();
   });
+
+  it('Verify validation rules with nested screens and page navigate button', () => {
+    cy.loadFromJson('nested_screen_with_validations_and_page navigation.json', 0);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('.form-group > .btn').click();
+
+    fillInputText('screen-field-name', 0, 'John');
+    cy.get('[data-cy="screen-field-Nested Screen"] > [data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(2) > .form-group > .btn').click();
+    cy.get('[name="form2"] > :nth-child(2) > .form-group > .btn').click();
+    
+    cy.on('window:alert', (str) => {
+      expect(str).to.equal('There is a validation error in your form.');
+    });
+    
+    fillInputText('screen-field-email', 0, 'test@email.com');
+    
+    cy.get('[name="form2"] > :nth-child(2) > .form-group > .btn').click();
+    cy.on('window:alert', (str) => {
+      expect(str).to.equal('Preview Form was Submitted');
+    });
+  });
 });
 
 function fillInputText(dataCy, index = null, value = 'test')
