@@ -435,8 +435,9 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
       "1234567890123456789012345678901234567890",
       "12345678901234567890123456789012345678901234567890"
     ];
+    const prComment = ["## Typing speed test\n"];
     cy.wrap(textArray)
-      .each((item, i, array) => {
+      .each((item) => {
         cy.get("[data-cy=preview-content] [name='middleName']")
           .eq(0)
           .then((element) => {
@@ -452,14 +453,7 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
             valuesX.push(item.length);
             valuesY.push(measure);
 
-            logText =
-              "(Delay: " +
-              delayValue +
-              ", Characters Number: " +
-              item.length +
-              ") =>  Total Time: " +
-              measure +
-              "ms \n";
+            logText = `(Delay: ${delayValue}, Characters Number: ${item.length}) =>  Total Time: ${measure}ms \n`;
             cy.log(logText).then(() => {
               return element;
             });
@@ -468,16 +462,27 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
             }).then(() => {
               return element;
             });
+            prComment.push(logText);
           });
       })
       .then((array) => {
         const result = leastSquares(valuesX, valuesY);
-        logText = "Time per Character: " + result.m + "ms \n";
+        logText = `Time per Character: ${result.m}ms \n`;
         cy.writeFile("tests/e2e/metrics/results.txt", logText, {
           flag: "a+"
         }).then(() => {
           return array;
         });
+        prComment.push(logText);
+        const sbDelay = result.m - delayValue;
+        logText = `Screen-builder delay per Character: ${sbDelay}ms \n`;
+        cy.writeFile("tests/e2e/metrics/results.txt", logText, {
+          flag: "a+"
+        }).then(() => {
+          return array;
+        });
+        prComment.push(logText);
+        cy.postGithubComment(prComment.join(""));
       });
   });
 });
