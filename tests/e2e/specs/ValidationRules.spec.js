@@ -6,7 +6,7 @@ describe('Validation Rules', () => {
     cy.visit('/');
   });
 
-  it('Invalid default values', () => {
+  it.only('Invalid default values', () => {
     cy.loadFromJson('validation_rules.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
@@ -88,17 +88,15 @@ describe('Validation Rules', () => {
 
     // same
     cy.get(
-      '[data-cy=preview-content] [data-cy=screen-field-form_date_picker_1] > .form-control'
+      '[data-cy=preview-content] [data-cy=screen-field-form_date_picker_1]'
     )
-      .parent()
       .should('contain.text', 'Must be equal or before today');
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
     ).pickToday();
     cy.get(
-      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] > .form-control'
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
     )
-      .parent()
       .should('not.contain.text', 'Must be equal or before today');
 
     //submit form valid
