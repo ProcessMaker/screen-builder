@@ -6,7 +6,7 @@
     class="tab-pane active show h-100"
   >
     <template v-if="screen">
-      <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
+      <div class="card card-body border-top-0 h-100" :class="[screenTypeClass, webEntryClass]">
         <div v-if="renderComponent === 'task-screen'">
           <vue-form-renderer
             ref="renderer"
@@ -70,6 +70,7 @@ export default {
     initialRequestId: { type: Number, default: null },
     initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
+    isWebEntry: { type: Boolean, default: false },
     userId: { type: Number, default: null },
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
@@ -206,6 +207,9 @@ export default {
       }
       const screenType = this.screen.type;
       return screenType.toLowerCase() + '-screen';
+    },
+    webEntryClass() {
+      return this.isWebEntry ? 'border-0' : '';
     },
     parentRequest() {
       return _.get(this.task, 'process_request.parent_request_id', null);
