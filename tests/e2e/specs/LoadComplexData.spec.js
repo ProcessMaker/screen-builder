@@ -16,13 +16,10 @@ describe('Validation Rules (Advanced test)', () => {
     cy.assertPreviewData({
       'FPP_COLLEGE': '',
       'FPP_DEPARTMENT': '',
-      // 'FPP_USER_FULL_TIME': {
-      //   'FPP_TL_FULL_TIME': null,
-      //   'FPP_NTL_FULL_TIME': null,
-      // },
-      // @todo this was overwritten to null by SelectList when list is refreshed
-      // at FormSelectList.vue @ updateWatcherDependentFieldValue()
-      'FPP_USER_FULL_TIME': null,
+      'FPP_USER_FULL_TIME': {
+        'FPP_TL_FULL_TIME': null,
+        'FPP_NTL_FULL_TIME': null,
+      },
       'FPP_NAME_FULL_TIME': '',
       'FPP_RANK_FULL_TIME': '',
       'FPP_EMPLOYEE_FULL_TIME': '',
@@ -34,13 +31,10 @@ describe('Validation Rules (Advanced test)', () => {
       'FPP_SUB_TOTAL_FACULTY_TL_FULL_TIME': '0',
       'FPP_SUB_TOTAL_PREMIUM_TL_FULL_TIME': '0',
       'FPP_REQUEST_ID': '',
-      // 'FPP_USER_PART_TIME': {
-      //   'FPP_TL_PART_TIME': null,
-      //   'FPP_NTL_PART_TIME': null,
-      // },
-      // @todo this was overwritten to null by SelectList when list is refreshed
-      // at FormSelectList.vue @ updateWatcherDependentFieldValue()
-      'FPP_USER_PART_TIME': null,
+      'FPP_USER_PART_TIME': {
+        'FPP_TL_PART_TIME': null,
+        'FPP_NTL_PART_TIME': null,
+      },
       'FPP_NAME_PART_TIME': '',
       'FPP_RANK_PART_TIME': '',
       'FPP_EMPLOYEE_PART_TIME': '',
