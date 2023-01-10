@@ -6,7 +6,7 @@ describe('Validation Rules', () => {
     cy.visit('/');
   });
 
-  it.only('Invalid default values', () => {
+  it('Invalid default values', () => {
     cy.loadFromJson('validation_rules.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
