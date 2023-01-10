@@ -150,6 +150,9 @@ export default {
       }
       this.$emit('submit', this.vdata);
     },
+    resetValue(variableName) {
+      this.setValue(variableName, null);
+    },
     getValidationData() {
       return this.vdata;
     },
