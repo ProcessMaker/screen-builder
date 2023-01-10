@@ -77,6 +77,7 @@ export default {
       properties[':disabled'] = isCalcProp || element.config.disabled;
       // Events
       properties['@submit'] = 'submitForm';
+      properties['@reset'] = 'resetValue';
     },
   },
   mounted() {
