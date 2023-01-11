@@ -96,8 +96,9 @@ export default {
       properties[":readonly"] = isCalcProp || element.config.readonly;
       properties[":disabled"] = isCalcProp || element.config.disabled;
       // Events
-      properties["@submit"] = "submitForm";
-    }
+      properties['@submit'] = 'submitForm';
+      properties['@reset'] = 'resetValue';
+    },
   },
   mounted() {
     this.extensions.push({
