@@ -10,12 +10,30 @@ Cypress.Commands.add('setPreviewDataInput', (input) => {
   });
 });
 
-Cypress.Commands.add('assertPreviewData', (expectedData) => {
-  cy.get('#screen-builder-container').then((div) => {
-    const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
-    expect(data).to.eql(expectedData);
-  });
-});
+Cypress.Commands.add(
+  "assertPreviewData",
+  (expectedData, removeRowIds = true) => {
+    cy.wait(500);
+    cy.get("#screen-builder-container").then((div) => {
+      const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
+      // recursively remove row_id from data
+      if (removeRowIds) {
+        const removeRowId = (obj) => {
+          if (obj && typeof obj === "object") {
+            if (Array.isArray(obj)) {
+              obj.forEach(removeRowId);
+            } else {
+              delete obj.row_id;
+              Object.values(obj).forEach(removeRowId);
+            }
+          }
+        };
+        removeRowId(data);
+      }
+      expect(data).to.eql(expectedData);
+    });
+  }
+);
 
 Cypress.Commands.add('setMultiselect', (selector, text, index = 0) => {
   cy.get(`${selector}`).click();
