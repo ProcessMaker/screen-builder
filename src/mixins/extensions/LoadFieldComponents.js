@@ -61,6 +61,10 @@ export default {
             properties["@input"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
             properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           }
+          // Process the FormSelectList@reset event
+          properties[
+            "@reset"
+          ] = `resetValue('${safeDotName}', '${element.config.name}')`;
         }
       }
       // Do not replace mustache in RichText control, it is replaced by the control
@@ -97,7 +101,6 @@ export default {
       properties[":disabled"] = isCalcProp || element.config.disabled;
       // Events
       properties['@submit'] = 'submitForm';
-      properties['@reset'] = 'resetValue';
     },
   },
   mounted() {
