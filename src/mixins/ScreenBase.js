@@ -153,8 +153,9 @@ export default {
       }
       this.$emit('submit', this.vdata);
     },
-    resetValue(variableName) {
-      this.setValue(variableName, null);
+    resetValue(safeDotName, variableName) {
+      this.setValue(safeDotName, null);
+      this.updateScreenDataNow(safeDotName, variableName);
     },
     getValidationData() {
       return this.vdata;
