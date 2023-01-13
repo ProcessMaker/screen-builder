@@ -8,8 +8,9 @@
 
 <script>
 import Mustache from 'mustache';
+import { mapActions, mapState } from "vuex";
 import { getValidPath } from '@/mixins';
-import { mapState } from 'vuex';
+
 
 export default {
   mixins: [getValidPath],
@@ -54,7 +55,7 @@ export default {
         }
       }
     },
-    click() {
+    async click() {
       if (this.event === 'script') {
         const trueValue = this.fieldValue || '1';
         const value = (this.value == trueValue) ? null : trueValue;

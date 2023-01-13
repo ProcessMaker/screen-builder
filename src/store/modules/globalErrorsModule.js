@@ -71,6 +71,7 @@ const globalErrorsModule = {
   namespaced,
   state: () => {
     return {
+      locked: false,
       valid: true,
       message: "",
       mode: ""
