@@ -402,6 +402,7 @@ export default {
   },
   created() {
     this.updateDataInput = debounce(this.updateDataInput, 1000);
+    this.updateDataPreview = debounce(this.updateDataPreview, 1000);
   },
   mounted() {
     this.countElements = debounce(this.countElements, 2000);
@@ -435,10 +436,9 @@ export default {
         this.updateDataPreview();
       }
     },
-    // eslint-disable-next-line func-names
-    updateDataPreview: debounce(function () {
+    updateDataPreview() {
       this.previewDataStringify = JSON.stringify(this.previewData, null, 2);
-    }, 1000),
+    },
     monacoMounted(editor) {
       this.editor = editor;
       this.editor.updateOptions({ readOnly: true });
