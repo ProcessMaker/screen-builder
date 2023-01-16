@@ -145,7 +145,6 @@ export default {
     },
     async submitForm() {
       await this.validateNow(findRootScreen(this));
-      console.log(this.valid__, this.message__);
       if (!this.valid__) {
         window.ProcessMaker.alert(this.message__, "danger");
         // if the form is not valid the data is not emitted
