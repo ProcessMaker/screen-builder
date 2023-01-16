@@ -43,6 +43,22 @@ export {
   Task,
 };
 
+/**
+ * Gets the screen parent or null if don't have
+ * @returns {object|null}
+ */
+ function findScreenOwner(control) {
+  let owner = control.$parent;
+  while (owner) {
+    const isScreen = owner.$options.name === "ScreenContent";
+    if (isScreen) {
+      return owner;
+    }
+    owner = owner.$parent;
+  }
+  return null;
+}
+
 // Export our Vue plugin as our default
 export default {
   install(Vue) {
@@ -87,6 +103,13 @@ export default {
       }
     });
     Vue.mixin({ store });
+
+    //Helper to access data reference.
+    Vue.mixin({ methods:{ getScreenDataReference(customProperties = null, setter = null) {
+      const control = this;
+      const screen = findScreenOwner(control);
+      return screen.getDataReference(customProperties, setter);
+    }}});
   }
 };
 

@@ -1,15 +1,17 @@
-import { get, isEqual, set } from 'lodash';
+import { get, isEqual, set, debounce } from 'lodash';
 import Mustache from 'mustache';
 import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 import DataReference from "./DataReference";
+import computedFields from "./computedFields";
+import { findRootScreen } from "./DataReference";
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
 const parentReference = [];
 
 export default {
   name: "ScreenContent",
-  mixins: [DataReference],
+  mixins: [DataReference, computedFields],
   schema: [
     function() {
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
@@ -45,7 +47,8 @@ export default {
   computed: {
     ...mapState("globalErrorsModule", {
       valid__: "valid",
-      message__: "message"
+      message__: "message",
+      locked__: "locked",
     }),
     references__() {
       return this.$parent && this.$parent.references__;
@@ -134,20 +137,25 @@ export default {
     },
     mustache(text) {
       try {
-        const data = Object.assign({_parent: this._parent}, this.vdata);
+        const data = this.getDataReference();
         return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
       }
     },
     async submitForm() {
-      await this.validateNow(this);
+      await this.validateNow(findRootScreen(this));
+      console.log(this.valid__, this.message__);
       if (!this.valid__) {
         window.ProcessMaker.alert(this.message__, "danger");
         // if the form is not valid the data is not emitted
         return;
       }
       this.$emit('submit', this.vdata);
+    },
+    resetValue(safeDotName, variableName) {
+      this.setValue(safeDotName, null);
+      this.updateScreenDataNow(safeDotName, variableName);
     },
     getValidationData() {
       return this.vdata;
@@ -166,8 +174,43 @@ export default {
         value = [];
       } else if (component === 'FormSelectList' && !config.options.allowMultiSelect) {
         value = null;
+      } else if (component === "FormLoop") {
+        value = this.emptyLoopValue(config);
       }
       return value;
+    },
+    emptyLoopValue(config) {
+      if (config.settings.type === "existing") {
+        return [];
+      }
+      const times = Number(config.settings.times);
+      const loopVariable = [];
+      for (let i = 0; i < times; i++) {
+        loopVariable.push({});
+      }
+      return loopVariable;
+    },
+    updateScreenData(safeDotName, variable) {
+      this[`${safeDotName}_was_filled__`] = true;
+      this.blockUpdate(safeDotName, 210);
+      this.setValueDebounced(variable, this[safeDotName], this.vdata);
+    },
+    updateScreenDataNow(safeDotName, variable) {
+      this[`${safeDotName}_was_filled__`] = true;
+      this.setValue(variable, this[safeDotName], this.vdata);
+      this.unblockUpdate(safeDotName);
+    },
+    blockUpdate(safeDotName, time) {
+      this.blockedUpdates[safeDotName] = new Date().getTime() + time;
+    },
+    unblockUpdate(safeDotName) {
+      this.blockUpdate(safeDotName, 0);
+    },
+    canUpdate(safeDotName) {
+      return (
+        !this.blockedUpdates[safeDotName] ||
+        this.blockedUpdates[safeDotName] < new Date().getTime()
+      );
     },
     getValue(name, object = this) {
       return object ? get(object, name) : undefined;
@@ -260,8 +303,26 @@ export default {
     setCurrentPage(page) {
       this.currentPage__ = page;
     },
+    setValueAsync(name, value, object = this, defaults = object) {}
   },
   validations() {
     return { vdata: this.ValidationRules__ };
   },
+  created() {
+    this.blockedUpdates = {};
+    const debouncedValuesQueue = [];
+    const setDebouncedValues = debounce(() => {
+      debouncedValuesQueue.forEach((args) => {
+        this.setValue(...args);
+      });
+    }, 210);
+    this.setValueDebounced = (...args) => {
+      debouncedValuesQueue.push(args);
+      setDebouncedValues();
+    };
+    this.setValueAsync = (name, value, object = this, defaults = object) =>
+      Promise.resolve().then(() => {
+        this.setValue(name, value, object, defaults);
+      });
+  }
 };
