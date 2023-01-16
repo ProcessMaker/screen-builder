@@ -400,6 +400,9 @@ export default {
       return warnings;
     },
   },
+  created() {
+    this.updateDataInput = debounce(this.updateDataInput, 1000);
+  },
   mounted() {
     this.countElements = debounce(this.countElements, 2000);
     if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
@@ -422,10 +425,9 @@ export default {
   },
   methods: {
     ...mapMutations("globalErrorsModule", { setStoreMode: "setMode" }),
-    // eslint-disable-next-line func-names
-    updateDataInput: debounce(function () {
+    updateDataInput() {
       this.updateDataInputNow();
-    }, 1000),
+    },
     updateDataInputNow() {
       if (this.previewInputValid) {
         // Copy data over
