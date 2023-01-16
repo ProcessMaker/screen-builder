@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   props: {
     value: Array,
@@ -27,7 +29,7 @@ export default {
     error: String,
   },
   methods: {
-    add() {
+    async add() {
       this.value.push({});
     },
     remove() {

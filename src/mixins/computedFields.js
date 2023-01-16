@@ -1,10 +1,8 @@
-import { isEqual } from 'lodash';
-import { Parser } from 'expr-eval';
+import { Parser } from "expr-eval";
 
 export default {
   methods: {
     evaluateExpression(expression, type) {
-      const self = this;
       let value = null;
 
       try {
@@ -12,22 +10,16 @@ export default {
         // vdata (external variables)in this way the event is not
         // executed again when the variable is update
 
-        const data = new Proxy({}, {
-          get(data, name) {
-            if (self[name] === undefined || !isEqual(self[name], self.vdata[name])) {
-              return self.vdata[name];
-            } else {
-              return self[name];
-            }
-          },
-          set() {
-            throw 'You are not allowed to set properties from inside an expression';
-          },
+        const data = this.getDataReference(null, () => {
+          throw new Error(
+            "You are not allowed to set properties from inside an expression"
+          );
         });
 
-        if (type === 'expression') {
+        if (type === "expression") {
           value = Parser.evaluate(expression, data);
         } else {
+          // eslint-disable-next-line no-new-func
           value = new Function(expression).bind(data)();
         }
 
@@ -36,10 +28,9 @@ export default {
         }
 
         return value;
-
       } catch (e) {
-        e;
+        console.warn("There was a problem evaluating the expression", e);
       }
-    },
-  },
+    }
+  }
 };
