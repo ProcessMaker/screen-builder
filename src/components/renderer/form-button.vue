@@ -8,17 +8,13 @@
 
 <script>
 import Mustache from 'mustache';
+import { mapActions, mapState } from "vuex";
 import { getValidPath } from '@/mixins';
-import { mapState } from 'vuex';
+
 
 export default {
   mixins: [getValidPath],
   props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
-  watch: {
-    valid(valid) {
-      this.isInvalid = !valid;
-    }
-  },
   computed: {
     ...mapState('globalErrorsModule', ['valid']),
     classList() {
@@ -26,7 +22,7 @@ export default {
       return {
         btn: true,
         ['btn-' + variant]: true,
-        disabled: this.event === 'submit' && this.isInvalid,
+        disabled: this.event === 'submit' && !this.valid
       };
     },
     options() {
@@ -49,11 +45,6 @@ export default {
       };
     },
   },
-  data() {
-    return {
-      isInvalid: false,
-    };
-  },
   methods: {
     setValue(parent, name, value) {
       if (parent) {
@@ -64,7 +55,7 @@ export default {
         }
       }
     },
-    click() {
+    async click() {
       if (this.event === 'script') {
         const trueValue = this.fieldValue || '1';
         const value = (this.value == trueValue) ? null : trueValue;
