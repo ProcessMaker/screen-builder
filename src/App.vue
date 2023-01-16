@@ -218,6 +218,7 @@ import VueFormRenderer from './components/vue-form-renderer.vue';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
 import { cloneDeep, debounce } from 'lodash';
+import { mapMutations } from 'vuex';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -420,6 +421,7 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
+    ...mapMutations("globalErrorsModule", { setStoreMode: "setMode" }),
     // eslint-disable-next-line func-names
     updateDataInput: debounce(function () {
       this.updateDataInputNow();
@@ -456,6 +458,7 @@ export default {
       } else {
         this.$refs.builder.refreshContent();
       }
+      this.setStoreMode(this.mode);
       this.mode = mode;
     },
     loadFromLocalStorage() {

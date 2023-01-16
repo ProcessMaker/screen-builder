@@ -1,4 +1,5 @@
 import { debounce } from "lodash";
+import { findRootScreen } from "../../mixins/DataReference";
 
 const namespaced = true;
 
@@ -30,8 +31,15 @@ function countErrors(obj) {
   return errors;
 }
 
-const updateValidationRules = async (mainScreen, commit) => {
-  await mainScreen.loadValidationRules();
+const updateValidationRules = async (screen, commit) => {
+  const mainScreen = findRootScreen(screen);
+  try {
+    await mainScreen.loadValidationRules();
+  } catch (error) {
+    if (this.getMode === "preview") {
+      console.warn("There was a problem rendering the screen", error);
+    }
+  }
   const validate = mainScreen.$v;
   // update the global error state used by submit buttons
   if (validate) {
@@ -56,14 +64,17 @@ const updateValidationRules = async (mainScreen, commit) => {
     });
   }
 };
+
 const updateValidationRulesDebounced = debounce(updateValidationRules, 1000);
 
 const globalErrorsModule = {
   namespaced,
   state: () => {
     return {
+      locked: false,
       valid: true,
-      message: ""
+      message: "",
+      mode: ""
     };
   },
   getters: {
@@ -72,11 +83,17 @@ const globalErrorsModule = {
     },
     getErrorMessage(state) {
       return state.message;
+    },
+    getMode(state) {
+      return state.mode;
     }
   },
   mutations: {
     basic(state, payload) {
       state[payload.key] = payload.value;
+    },
+    setMode(state, mode) {
+      state.mode = mode;
     }
   },
   actions: {
@@ -88,7 +105,7 @@ const globalErrorsModule = {
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
-    }
+    },
   }
 };
 

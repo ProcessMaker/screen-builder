@@ -18,7 +18,9 @@ export default {
   },
   computed: {
     imageUrl() {
-      return get(this.validationData, this.variableName || this.imageName);
+      if (this.mode !== 'editor') {
+        return get(this.getScreenDataReference(), this.variableName || this.imageName);
+      }
     },
   },
 };
