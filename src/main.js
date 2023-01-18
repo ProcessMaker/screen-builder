@@ -4,17 +4,19 @@ import App from './App.vue';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import i18next from 'i18next';
 import VueI18Next from '@panter/vue-i18next';
-import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+import '@processmaker/vue-form-elements/dist/style.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import axios from 'axios';
 import { cacheAdapterEnhancer } from 'axios-extensions';
 import TestComponents from '../tests/components';
+import 'bootstrap';
 import BootstrapVue from 'bootstrap-vue';
-import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import Multiselect from "@processmaker/vue-multiselect";
 import LRUCache from 'lru-cache';
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
+import VueFormElements from '@processmaker/vue-form-elements';
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
@@ -27,6 +29,7 @@ i18next.init({lng: 'en'});
 Vue.mixin({i18n: new VueI18Next(i18next)});
 Vue.use(Vuex);
 Vue.use(ScreenBuilder);
+Vue.use(VueFormElements);
 Vue.component('Multiselect', Multiselect);
 
 // Stub for standalone. Real one is in core.

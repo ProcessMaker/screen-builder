@@ -1,4 +1,4 @@
-const Validator = require('validatorjs');
+import Validator from '@chantouchsek/validatorjs';
 import moment from 'moment-timezone';
 
 Validator.register('custom-same', function(val, req) {

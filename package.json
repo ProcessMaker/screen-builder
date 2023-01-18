@@ -2,8 +2,10 @@
   "name": "@processmaker/screen-builder",
   "version": "2.60.4",
   "scripts": {
+    "dev": "vite",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vite build",
+    "preview": "vite preview",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "build-bundle": "vue-cli-service build --target lib --name vue-form-builder ./src/components/index.js",
@@ -12,22 +14,31 @@
     "run-cypress": "TZ=UTC nyc cypress run",
     "test": "vue-cli-service test:unit"
   },
-  "main": "./dist/vue-form-builder.common.js",
+  "type": "module",
+  "main": "./dist/vue-form-builder.umd.js",
+  "module": "./dist/vue-form-builder.es.js",
+  "exports": {
+    ".": {
+      "import": {
+        "import": "./dist/vue-form-builder.es.js",
+        "require": "./dist/vue-form-builder.umd.js"
+      }
+    }
+  },
   "files": [
-    "dist/*",
-    "src/*",
-    "public/*",
-    "*.json",
-    "*.js"
+    "dist"
   ],
   "dependencies": {
+    "@chantouchsek/validatorjs": "^1.1.5",
     "axios-extensions": "^2.0.3",
     "lodash": "^4.17.21",
     "lru-cache": "^7.14.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.27",
+    "monaco-editor": "^0.34.0",
     "scrollparent": "^2.0.1",
     "vue-loader": "^15.9.2",
+    "vue-monaco": "^1.2.2",
     "vue-simple-uploader": "^0.7.4",
     "vue-the-mask": "^0.11.1",
     "vuelidate": "^0.7.5"
@@ -67,17 +78,17 @@
     "i18next": "^15.0.8",
     "identity-obj-proxy": "^3.0.0",
     "inputmask": "^5.0.7",
-    "monaco-editor-webpack-plugin": "~1.7.0",
     "mustache": "^3.0.1",
     "nyc": "^15.1.0",
     "prettier": "2.7.1",
     "sass": "^1.53.0",
     "sass-loader": "^10.3.1",
     "v-calendar": "^0.9.7",
-    "validatorjs": "^3.14.2",
+    "vite": "^4.0.4",
+    "vite-plugin-monaco-editor": "^1.1.0",
+    "vite-plugin-vue2": "^2.0.3",
     "vue": "^2.6.12",
     "vue-deepset": "^0.6.3",
-    "vue-monaco": "^0.3.1",
     "vue-template-compiler": "^2.6.14",
     "vue-uniq-ids": "^1.0.0",
     "vue-upload-component": "^2.8.14",
