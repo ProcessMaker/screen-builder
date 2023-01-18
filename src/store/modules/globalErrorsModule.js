@@ -36,9 +36,7 @@ const updateValidationRules = async (screen, commit) => {
   try {
     await mainScreen.loadValidationRules();
   } catch (error) {
-    if (this.getMode === "preview") {
-      console.warn("There was a problem rendering the screen", error);
-    }
+    console.warn("There was a problem rendering the screen", error);
   }
   const validate = mainScreen.$v;
   // update the global error state used by submit buttons
