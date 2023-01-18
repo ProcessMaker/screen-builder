@@ -2,13 +2,15 @@
  * Gets the screen parent or null if don't have
  * @returns {object|null}
  */
-function findScreenOwner(control) {
+function findScreenOwner(control, lastScreenContentIfNull = false) {
   let owner = control;
   let level = 1;
+  let lastScreenContent = null;
   while (owner) {
     const isScreen = owner.$options.name === "ScreenContent";
     const isNested = owner.$options.name === "FormNestedScreen";
     if (isScreen) {
+      lastScreenContent = owner;
       level--;
     }
     if (isNested) {
@@ -19,7 +21,7 @@ function findScreenOwner(control) {
     }
     owner = owner.$parent;
   }
-  return null;
+  return lastScreenContentIfNull ? lastScreenContent : null;
 }
 /**
  * Wrap the data of a control using a Proxy
@@ -89,14 +91,5 @@ export default {
  * @returns {object|null}
  */
 export function findRootScreen(element) {
-  let owner = findScreenOwner(element);
-  while (owner) {
-    const screenOwner = findScreenOwner(owner);
-    if (screenOwner) {
-      owner = screenOwner;
-    } else {
-      return owner;
-    }
-  }
-  return element;
+  return findScreenOwner(element, true) || element;
 }
