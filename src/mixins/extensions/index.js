@@ -1,7 +1,19 @@
+import { camelCase, upperFirst } from "lodash";
+
 const mixins = [];
-const modules = require.context('./', true, /\.js$/i);
-modules.keys().map(key => {
-  if (key !== './index.js') mixins.push(modules(key).default);
+const modules = import.meta.globEager("./*.js");
+
+Object.entries(modules).forEach(([path, m]) => {
+  const mixingName = upperFirst(
+    camelCase(
+      path
+        .split("/")
+        .pop()
+        .replace(/\.\w+$/, "")
+    )
+  );
+
+  mixins.push(m.default);
 });
 
 export default mixins;

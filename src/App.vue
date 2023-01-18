@@ -209,7 +209,6 @@
 </template>
 
 <script>
-require('bootstrap');
 import ComputedProperties from './components/computed-properties.vue';
 import WatchersPopup from './components/watchers-popup.vue';
 import CustomCss from './components/custom-css.vue';
@@ -224,7 +223,10 @@ import { mapMutations } from 'vuex';
 import controlConfig from './form-builder-controls';
 import globalProperties from './global-properties';
 
-import Validator from 'validatorjs';
+import Validator from '@chantouchsek/validatorjs';
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap-vue/dist/bootstrap-vue.min.css';
 
 // To include another language in the Validator with variable processmaker
 let globalObject = typeof window === 'undefined'
@@ -579,8 +581,6 @@ export default {
 </script>
 
 <style lang="scss">
-    @import "~bootstrap/dist/css/bootstrap";
-    @import '~bootstrap-vue/dist/bootstrap-vue';
 
     $validation-panel-bottom: 3.5rem;
     $validation-panel-right: 0;

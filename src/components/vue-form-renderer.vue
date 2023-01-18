@@ -15,8 +15,8 @@ import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 
-const csstree = require('css-tree');
-const Scrollparent = require('scrollparent');
+import * as csstree from "css-tree";
+import * as Scrollparent from "scrollparent";
 
 export default {
   name: 'VueFormRenderer',

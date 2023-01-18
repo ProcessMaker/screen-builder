@@ -1,4 +1,5 @@
 export default {
+  name: 'FocusErrorsMixin',
   data() {
     return {
       errorsToFocus: [],

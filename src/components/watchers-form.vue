@@ -275,6 +275,7 @@ const globalObject = typeof window === 'undefined'
   : window;
 
 export default {
+  name: 'WatchersForm',
   mixins: [FocusErrors],
   components: {
     FormInput,
