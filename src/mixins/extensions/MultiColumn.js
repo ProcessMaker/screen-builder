@@ -4,16 +4,7 @@ export default {
       properties.class = this.elementCssClass(element);
       properties.ref = 'container';
       properties.selected = 'selected';
-      //properties['v-model'] = "element.items";
-      //@submit="submit"
-      properties[':config'] = JSON.stringify(element.config);
-      //:ancestor-screens="ancestorScreens"
       properties.name = element.config && element.config.name !== undefined ? element.config.name : null;
-      //@pageNavigate="pageNavigate"
-      //v-bind="element.config"
-      //:is="element.component"
-      properties[':form-config'] = '$parent && $parent.definition.config';
-      //:mode="mode"
     },
     loadMultiColumnItems({ element, node, screen, definition, formIndex }) {
       element.items.forEach((col, index) => {
