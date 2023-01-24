@@ -19,44 +19,17 @@ import { getValidPath } from "@/mixins";
 
 export default {
   mixins: [getValidPath],
-  props: {
-    variant: {
-      type: String,
-      default: "primary"
-    },
-    label: {
-      type: String,
-      default: "New Submit"
-    },
-    event: {
-      type: String,
-      default: "submit"
-    },
-    eventData: {
-      type: Object,
-      default: null
-    },
-    name: {
-      type: String,
-      default: null
-    },
-    fieldValue: {
-      type: String,
-      default: "1"
-    },
-    value: {
-      type: String,
-      default: "1"
-    },
-    tooltip: {
-      type: Object,
-      default: null
-    },
-    transientData: {
-      type: Object,
-      default: null
-    }
-  },
+  props: [
+    "variant",
+    "label",
+    "event",
+    "eventData",
+    "name",
+    "fieldValue",
+    "value",
+    "tooltip",
+    "transientData"
+  ],
   data() {
     return {
       ariaLabel: this.$attrs["aria-label"],
