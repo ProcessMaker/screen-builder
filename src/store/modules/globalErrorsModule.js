@@ -32,13 +32,17 @@ function countErrors(obj) {
 }
 
 const updateValidationRules = async (screen, commit) => {
-  const mainScreen = findRootScreen(screen);
+  const rootScreen = findRootScreen(screen);
+  if (rootScreen !== screen) {
+    // refresh nested screen validation rules
+    await screen.loadValidationRules();
+  }
   try {
-    await mainScreen.loadValidationRules();
+    await rootScreen.loadValidationRules();
   } catch (error) {
     console.warn("There was a problem rendering the screen", error);
   }
-  const validate = mainScreen.$v;
+  const validate = rootScreen.$v;
   // update the global error state used by submit buttons
   if (validate) {
     let errors = 0;
@@ -50,7 +54,7 @@ const updateValidationRules = async (screen, commit) => {
         errors === 1
           ? "There is a validation error in your form."
           : "There are {{items}} validation errors in your form.";
-      message = mainScreen.$t(message, { items: errors });
+      message = rootScreen.$t(message, { items: errors });
     }
     commit("basic", {
       key: "valid",
