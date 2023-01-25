@@ -222,7 +222,7 @@ export default {
         for (const attr of parsedName) {
           let setValue;
           let index = parsedName.indexOf(attr);
-          let isLastElement = index === parsedName.length - 1
+          let isLastElement = index === parsedName.length - 1;
 
           const originalValue = get(object, attr);
 
