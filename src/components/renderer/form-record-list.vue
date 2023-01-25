@@ -40,20 +40,34 @@
             }}</span>
           </template>
           <template v-else-if="isImage(field, item)">
-            <img :src="mustache(field.key, item)" style="record-list-image">
+            <img :src="mustache(field.key, item)" style="record-list-image" />
           </template>
           <template v-else>
             {{ formatIfDate(mustache(field.key, item)) }}
           </template>
         </template>
-        <template #cell(__actions)="{index,item}">
+        <template #cell(__actions)="{ index, item }">
           <div class="actions">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-              <button @click="showEditForm(index, item.row_id)" class="btn btn-primary" :title="$t('Edit')" data-cy="edit-row">
-                <i class="fas fa-edit"/>
+            <div
+              class="btn-group btn-group-sm"
+              role="group"
+              aria-label="Actions"
+            >
+              <button
+                class="btn btn-primary"
+                :title="$t('Edit')"
+                data-cy="edit-row"
+                @click="showEditForm(index, item.row_id)"
+              >
+                <i class="fas fa-edit" />
               </button>
-              <button @click="showDeleteConfirmation(index, item.row_id)" class="btn btn-danger" :title="$t('Delete')" data-cy="remove-row">
-                <i class="fas fa-trash-alt"/>
+              <button
+                class="btn btn-danger"
+                :title="$t('Delete')"
+                data-cy="remove-row"
+                @click="showDeleteConfirmation(index, item.row_id)"
+              >
+                <i class="fas fa-trash-alt" />
               </button>
             </div>
           </div>
@@ -61,8 +75,8 @@
       </b-table>
       <b-pagination
         v-if="tableData.total > perPage"
-        data-cy="table-pagination"
         v-model="currentPage"
+        data-cy="table-pagination"
         :total-rows="tableData.total"
         :per-page="perPage"
         :aria-label="$t('Pagination')"
@@ -72,17 +86,17 @@
     </template>
 
     <b-modal
-      :static="true"
-      @ok="handleOk"
-      @hidden="addItem = initFormValues"
-      size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
+      :static="true"
+      size="lg"
       :ok-title="$t('Ok')"
       :cancel-title="$t('Cancel')"
-      :title="$t('Add')"
       header-close-content="&times;"
+      :title="$t('Add')"
       data-cy="modal-add"
+      @ok="handleOk"
+      @hidden="addItem = initFormValues"
       @shown="emitShownEvent"
     >
       <vue-form-renderer
@@ -100,55 +114,55 @@
       />
     </b-modal>
     <b-modal
-      :static="true"
-      @ok="edit"
-      size="lg"
       v-if="editable && !selfReferenced"
       ref="editModal"
+      :static="true"
+      size="lg"
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
       :title="$t('Edit Record')"
       header-close-content="&times;"
       data-cy="modal-edit"
+      @ok="edit"
       @shown="emitShownEvent"
     >
       <vue-form-renderer
-        :page="0"
         ref="editRenderer"
+        :key="editFormVersion"
         v-model="editItem"
+        :page="0"
         :config="popupConfig"
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
         debug-context="Record List Edit"
         :_parent="validationData"
-        :key="editFormVersion"
         @update="updateRowDataNamePrefix"
       />
     </b-modal>
     <b-modal
-      @ok="remove"
-      size="lg"
       v-if="editable && !selfReferenced"
       ref="deleteModal"
+      size="lg"
       :ok-title="$t('Delete')"
       :cancel-title="$t('Cancel')"
       :title="$t('Delete Record')"
       header-close-content="&times;"
       data-cy="modal-remove"
+      @ok="remove"
     >
-      <p>{{ $t('Are you sure you want to remove this record?') }}</p>
+      <p>{{ $t("Are you sure you want to remove this record?") }}</p>
     </b-modal>
     <b-modal
-      @ok="hideInformation"
-      size="sm"
       v-if="editable && !selfReferenced"
       ref="infoModal"
+      size="sm"
       :ok-title="$t('OK')"
       :title="$t('Information form')"
       header-close-content="&times;"
       ok-only
       data-cy="modal-not-assigned"
+      @ok="hideInformation"
     >
       <p>{{ $t("The form to be displayed is not assigned.") }}</p>
     </b-modal>
@@ -320,21 +334,23 @@ export default {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
     emitShownEvent() {
-      window.ProcessMaker.EventBus.$emit('modal-shown');
+      window.ProcessMaker.EventBus.$emit("modal-shown");
     },
     formatIfDate(string) {
       return dateUtils.formatIfDate(string);
     },
     isImage(field, item) {
       const content = _.get(item, field.key);
-      return typeof content === 'string' && content.substr(0,11) === 'data:image/';
+      return (
+        typeof content === "string" && content.substr(0, 11) === "data:image/"
+      );
     },
     isFiledownload(field) {
-      return field.key === '__filedownload';
+      return field.key === "__filedownload";
     },
     setUploadDataNamePrefix(index = null) {
       this.currentRowIndex = index;
-      let  rowId = null;
+      let rowId = null;
       if (index !== null  && this.editItem) {
         rowId = this.editItem.row_id;
       }
