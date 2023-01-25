@@ -5,18 +5,23 @@
         <h4>{{ label }}</h4>
       </div>
       <div class="col text-right">
-        <button class="btn btn-primary" v-if="editable && !selfReferenced" @click="showAddForm" data-cy="add-row">
-          {{ $t('Add') }}
+        <button
+          v-if="editable && !selfReferenced"
+          class="btn btn-primary"
+          data-cy="add-row"
+          @click="showAddForm"
+        >
+          {{ $t("Add") }}
         </button>
       </div>
     </div>
     <div v-if="!value">
-      {{ $t('This record list is empty or contains no data.') }}
+      {{ $t("This record list is empty or contains no data.") }}
     </div>
     <template v-else>
       <b-table
-        :per-page="perPage"
         ref="vuetable"
+        :per-page="perPage"
         :data-manager="dataManager"
         :fields="tableFields"
         :items="tableData.data"
@@ -28,9 +33,11 @@
         :current-page="currentPage"
         data-cy="table"
       >
-        <template #cell()="{index,field,item}">
+        <template #cell()="{ index, field, item }">
           <template v-if="isFiledownload(field, item)">
-            <span @click="downloadFile(item, field.key, index)" href="#">{{ mustache(field.key, item) }}</span>
+            <span href="#" @click="downloadFile(item, field.key, index)">{{
+              mustache(field.key, item)
+            }}</span>
           </template>
           <template v-else-if="isImage(field, item)">
             <img :src="mustache(field.key, item)" style="record-list-image">
@@ -143,36 +150,52 @@
       ok-only
       data-cy="modal-not-assigned"
     >
-      <p>{{ $t('The form to be displayed is not assigned.') }}</p>
+      <p>{{ $t("The form to be displayed is not assigned.") }}</p>
     </b-modal>
     <div v-if="editable && selfReferenced" class="alert alert-danger">
-      {{ $t('The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records.') }}
+      {{
+        $t(
+          `The Record List control is not allowed to reference other controls on its own page
+          to add or edit records. Specify a secondary page with controls to enter records.`
+        )
+      }}
     </div>
   </div>
 </template>
 
-
 <script>
-import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import _ from 'lodash';
-import { dateUtils } from '@processmaker/vue-form-elements';
-import { mapActions, mapState } from "vuex";
+import _ from "lodash";
+import { dateUtils } from "@processmaker/vue-form-elements";
+import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 
 const jsonOptionsActionsColumn = {
-  key: '__actions',
-  label: 'Actions',
-  thClass: 'text-right',
-  tdClass: 'text-right',
+  key: "__actions",
+  label: "Actions",
+  thClass: "text-right",
+  tdClass: "text-right"
 };
 
 export default {
   mixins: [mustacheEvaluation],
-  props: ['name', 'label', 'fields', 'value', 'editable', '_config', 'form', 'validationData', 'formConfig', 'formComputed', 'formWatchers', '_perPage'],
+  props: [
+    "name",
+    "label",
+    "fields",
+    "value",
+    "editable",
+    "_config",
+    "form",
+    "validationData",
+    "formConfig",
+    "formComputed",
+    "formWatchers",
+    "_perPage"
+  ],
   data() {
     return {
       editFormVersion: 0,
-      single: '',
-      plural: '',
+      single: "",
+      plural: "",
       addItem: {},
       editItem: {},
       editIndex: null,
@@ -182,28 +205,23 @@ export default {
       perPage: 5,
       lastPage: 1,
       css: {
-        tableClass: 'table table-hover table-responsive text-break mb-0 d-table',
-        loadingClass: 'loading',
-        detailRowClass: 'vuetable-detail-row',
-        handleIcon: 'grey sidebar icon',
-        sortableIcon: 'fas fa-sort',
-        ascendingIcon: 'fas fa-sort-up',
-        descendingIcon: 'fas fa-sort-down',
-        ascendingClass: 'ascending',
-        descendingClass: 'descending',
+        tableClass:
+          "table table-hover table-responsive text-break mb-0 d-table",
+        loadingClass: "loading",
+        detailRowClass: "vuetable-detail-row",
+        handleIcon: "grey sidebar icon",
+        sortableIcon: "fas fa-sort",
+        ascendingIcon: "fas fa-sort-up",
+        descendingIcon: "fas fa-sort-down",
+        ascendingClass: "ascending",
+        descendingClass: "descending",
         renderIcon(classes) {
-          return `<i class="${classes.join(' ')}"></i>`;
-        },
+          return `<i class="${classes.join(" ")}"></i>`;
+        }
       },
       initFormValues: {},
-      currentRowIndex: null,
+      currentRowIndex: null
     };
-  },
-  mounted() {
-    if (this._perPage) {
-      this.perPage = this._perPage;
-    }
-    this.updateRowDataNamePrefix = _.debounce(this.updateRowDataNamePrefix, 100);
   },
   computed: {
     popupConfig() {
@@ -211,39 +229,42 @@ export default {
       config[this.form] = this.formConfig[this.form];
       return config;
     },
-    debug() {
-      return {
-        perPageSelectEnabled: this.perPageSelectEnabled,
-        perPageSelectEnabled2: this.$refs.pagination && this.$refs.pagination.perPageSelectEnabled,
-      };
-    },
-    parentObj() {
-      let parent = this.$parent;
-      while ('transientData' in parent.$props) {
-        parent = parent.$parent;
-      }
-      return parent;
-    },
+    // debug() {
+    //   return {
+    //     perPageSelectEnabled: this.perPageSelectEnabled,
+    //     perPageSelectEnabled2:
+    //       this.$refs.pagination && this.$refs.pagination.perPageSelectEnabled
+    //   };
+    // },
+    // parentObj() {
+    //   let parent = this.$parent;
+    //   while ("transientData" in parent.$props) {
+    //     parent = parent.$parent;
+    //   }
+    //   return parent;
+    // },
     dataManager() {
       if (this.$refs.vuetable) {
-        let pagination = this.$refs.vuetable.makePagination(this.value.length);
+        const pagination = this.$refs.vuetable.makePagination(
+          this.value.length
+        );
         return {
           pagination,
           data: this.value.slice(pagination.from - 1, pagination.to),
         };
       } else {
         // eslint-disable-next-line no-console
-        console.log('refs vuetable not exists');
+        console.error("refs vuetable not exists");
+        return null;
       }
-
     },
     tableData() {
       const value = this.value || [];
-      let from = this.paginatorPage - 1;
+      const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
 
-      let data = {
+      const data = {
         total: value.length,
         per_page: this.perPage,
         current_page: this.paginatorPage,
@@ -253,7 +274,7 @@ export default {
         from,
         to: value.length,
         data: value,
-        lastSortConfig: false,
+        lastSortConfig: false
       };
       return data;
     },
@@ -270,18 +291,30 @@ export default {
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
     selfReferenced() {
       return this.form && this.form === this.$parent.currentPage;
-    },
+    }
   },
+
   watch: {
-    'tableData.total': {
+    "tableData.total": {
       deep: true,
       handler(total) {
-        let totalPages = Math.ceil(total / this.perPage);
-        this.currentPage = (this.currentPage > totalPages ? totalPages : this.currentPage);
-        this.currentPage = (this.currentPage == 0 ? 1 : this.currentPage);
-      },
-    },
+        const totalPages = Math.ceil(total / this.perPage);
+        this.currentPage =
+          this.currentPage > totalPages ? totalPages : this.currentPage;
+        this.currentPage = this.currentPage === 0 ? 1 : this.currentPage;
+      }
+    }
   },
+  mounted() {
+    if (this._perPage) {
+      this.perPage = this._perPage;
+    }
+    this.updateRowDataNamePrefix = _.debounce(
+      this.updateRowDataNamePrefix,
+      100
+    );
+  },
+
   methods: {
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
@@ -472,7 +505,9 @@ export default {
     remove() {
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
-      let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
+      console.log("remove");
+      console.log(this.tableData);
+      const data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
       let recordData = this.deleteIndex;
       // Remove item from data array
       _.remove(data, {
