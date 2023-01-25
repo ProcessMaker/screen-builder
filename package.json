@@ -14,7 +14,6 @@
     "run-cypress": "TZ=UTC nyc cypress run",
     "test": "vue-cli-service test:unit"
   },
-  "type": "module",
   "main": "./dist/vue-form-builder.umd.js",
   "module": "./dist/vue-form-builder.es.js",
   "exports": {

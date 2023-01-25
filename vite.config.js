@@ -4,7 +4,7 @@ import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import {resolve} from "path";
 
 const libraryName = "VueFormBuilder";
-const monacoLanguages = ["javascript", "typescript", "css", "json"];
+const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
 const monacoPrefix = `monaco-editor/esm/vs`;
 
 // https://vitejs.dev/config/
@@ -23,6 +23,7 @@ export default defineConfig({
   },
   plugins: [
     createVuePlugin(),
+    monacoEditorPlugin({languageWorkers: monacoLanguages})
   ],
   resolve: {
     alias: [
