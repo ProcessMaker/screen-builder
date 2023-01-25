@@ -222,7 +222,7 @@ export default {
         for (const attr of parsedName) {
           let setValue;
           let index = parsedName.indexOf(attr);
-          let isLastElement = index === parsedName.length - 1;
+          let isLastElement = index === parsedName.length - 1
 
           const originalValue = get(object, attr);
 
@@ -246,11 +246,9 @@ export default {
             return;
           }
 
-          this.$set(
-            object,
-            attr,
-            setValue,
-          );
+          if (object instanceof Object) {
+            this.$set(object, attr, setValue);
+          }
 
           object = get(object, attr);
           defaults = get(defaults, attr);
