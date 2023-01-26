@@ -22,9 +22,8 @@
       <b-table
         ref="vuetable"
         :per-page="perPage"
-        :data-manager="dataManager"
         :fields="tableFields"
-        :items="tableData.data"
+        :items="value"
         :sort-compare-options="{ numeric: false }"
         :sort-null-last="true"
         sort-icon-left
@@ -74,10 +73,10 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="tableData.total > perPage"
+        v-if="value.length > perPage"
         v-model="currentPage"
         data-cy="table-pagination"
-        :total-rows="tableData.total"
+        :total-rows="rows"
         :per-page="perPage"
         :aria-label="$t('Pagination')"
         aria-controls="vuetable"
@@ -100,15 +99,15 @@
       @shown="emitShownEvent"
     >
       <vue-form-renderer
-        :page="0"
         ref="addRenderer"
+        :key="Array.isArray(value) ? value.length : 0"
         v-model="addItem"
+        :page="0"
         :config="popupConfig"
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
         debug-context="Record List Add"
-        :key="Array.isArray(value) ? value.length : 0"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
       />
@@ -218,6 +217,7 @@ export default {
       perPageSelectEnabled: false,
       perPage: 5,
       lastPage: 1,
+      tableFields: [],
       css: {
         tableClass:
           "table table-hover table-responsive text-break mb-0 d-table",
@@ -243,64 +243,8 @@ export default {
       config[this.form] = this.formConfig[this.form];
       return config;
     },
-    // debug() {
-    //   return {
-    //     perPageSelectEnabled: this.perPageSelectEnabled,
-    //     perPageSelectEnabled2:
-    //       this.$refs.pagination && this.$refs.pagination.perPageSelectEnabled
-    //   };
-    // },
-    // parentObj() {
-    //   let parent = this.$parent;
-    //   while ("transientData" in parent.$props) {
-    //     parent = parent.$parent;
-    //   }
-    //   return parent;
-    // },
-    dataManager() {
-      if (this.$refs.vuetable) {
-        const pagination = this.$refs.vuetable.makePagination(
-          this.value.length
-        );
-        return {
-          pagination,
-          data: this.value.slice(pagination.from - 1, pagination.to),
-        };
-      } else {
-        // eslint-disable-next-line no-console
-        console.error("refs vuetable not exists");
-        return null;
-      }
-    },
-    tableData() {
-      const value = this.value || [];
-      const from = this.paginatorPage - 1;
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.lastPage = Math.ceil(value.length / this.perPage);
-
-      const data = {
-        total: value.length,
-        per_page: this.perPage,
-        current_page: this.paginatorPage,
-        last_page: this.lastPage,
-        next_page_url: null,
-        prev_page_url: null,
-        from,
-        to: value.length,
-        data: value,
-        lastSortConfig: false
-      };
-      return data;
-    },
-    // The fields used for our vue table
-    tableFields() {
-      const fields = this.getTableFieldsFromDataSource();
-
-      if (this.editable && !this.selfReferenced) {
-        fields.push(jsonOptionsActionsColumn);
-      }
-
-      return fields;
+    rows() {
+      return this.value.length;
     },
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
     selfReferenced() {
@@ -308,17 +252,6 @@ export default {
     }
   },
 
-  watch: {
-    "tableData.total": {
-      deep: true,
-      handler(total) {
-        const totalPages = Math.ceil(total / this.perPage);
-        this.currentPage =
-          this.currentPage > totalPages ? totalPages : this.currentPage;
-        this.currentPage = this.currentPage === 0 ? 1 : this.currentPage;
-      }
-    }
-  },
   mounted() {
     if (this._perPage) {
       this.perPage = this._perPage;
@@ -327,56 +260,103 @@ export default {
       this.updateRowDataNamePrefix,
       100
     );
+    // Initialize the tableFiels propertie to customize the table columns headings
+    this.tableFields = this.getTableFields();
   },
 
   methods: {
+    /**
+     * Gets the customized table columns headings
+     * @returns {array}
+     */
+    getTableFields() {
+      const fields = this.getTableFieldsFromDataSource();
+
+      if (this.editable && !this.selfReferenced) {
+        fields.push(jsonOptionsActionsColumn);
+      }
+      return fields;
+    },
+    /**
+     * Update row name prefix handler
+     */
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
+    /**
+     * Emits the shown event, to open the modal
+     */
     emitShownEvent() {
       window.ProcessMaker.EventBus.$emit("modal-shown");
     },
+    /**
+     * Format the received string to a date, validating if the string is a datetime type
+     * @param {string} string
+     * @returns {object}
+     */
     formatIfDate(string) {
       return dateUtils.formatIfDate(string);
     },
+    /**
+     * Check if the field is an image type
+     * @param {object} field has a key property
+     * @param {number} item
+     * @returns {boolean}
+     */
     isImage(field, item) {
       const content = _.get(item, field.key);
       return (
         typeof content === "string" && content.substr(0, 11) === "data:image/"
       );
     },
+    /**
+     * Check if the file can be downloaded
+     * @param {object} field
+     * @returns {boolean}
+     */
     isFiledownload(field) {
       return field.key === "__filedownload";
     },
+    /**
+     * Sets the upload name prefix, fires the set-upload-data-name event
+     * @param {number} index
+     */
     setUploadDataNamePrefix(index = null) {
       this.currentRowIndex = index;
       let rowId = null;
-      if (index !== null  && this.editItem) {
+      if (index !== null && this.editItem) {
         rowId = this.editItem.row_id;
-      }
-      else {
-        if (this.addItem) {
-          rowId = this.addItem.row_id;
-        }
+      } else if (this.addItem) {
+        rowId = this.addItem.row_id;
       }
 
-      this.$root.$emit('set-upload-data-name', this, index, rowId);
+      this.$root.$emit("set-upload-data-name", this, index, rowId);
     },
+    /**
+     * Prepare the table header settings
+     * @returns {object}
+     */
     getTableFieldsFromDataSource() {
-      const {jsonData, key, value, dataName} = this.fields;
-
+      const { jsonData, key, value, dataName } = this.fields;
       const convertToVuetableFormat = (option) => {
-        //let slot = '__filedownload';
         return {
-          key: option[key || 'value'],
+          key: option[key || "value"],
           sortable: true,
-          label: option[value || 'content'],
-          tdClass: 'table-column',
+          label: option[value || "content"],
+          tdClass: "table-column"
         };
       };
 
-      return this.getValidFieldData(jsonData, dataName).map(convertToVuetableFormat);
+      return this.getValidFieldData(jsonData, dataName).map(
+        convertToVuetableFormat
+      );
     },
+    /**
+     * Gets all valid fields data array
+     * @param {*} jsonData
+     * @param {*} dataName
+     * @returns {array}
+     */
     getValidFieldData(jsonData, dataName) {
       let validationData = this.validationData[dataName];
 
@@ -388,24 +368,23 @@ export default {
         }
       }
 
-      return Array.isArray(validationData)
-        ? validationData
-        : [];
+      return Array.isArray(validationData) ? validationData : [];
     },
+    /**
+     * Hides information modal
+     */
     hideInformation() {
       this.$refs.infoModal.hide();
     },
-    onPaginationData(paginationData) {
-      this.$refs.pagination.setPaginationData(paginationData);
-    },
-    onChangePerPage(perPage) {
-      this.perPage = parseInt(perPage);
-    },
+    /**
+     * On cahnge page handler
+     * @param {number} page
+     */
     onChangePage(page) {
-      if (page == 'next') {
-        this.paginatorPage = this.paginatorPage + 1;
-      } else if (page == 'prev') {
-        this.paginatorPage = this.paginatorPage - 1;
+      if (page === "next") {
+        this.paginatorPage += 1;
+      } else if (page === "prev") {
+        this.paginatorPage -= 1;
       } else {
         this.paginatorPage = page;
       }
@@ -416,10 +395,17 @@ export default {
         this.paginatorPage = this.lastPage;
       }
     },
+    /**
+     * Displays the edit row modal
+     * @param {number} index
+     * @param {number} rowId
+     */
     showEditForm(index, rowId) {
-      let pageIndex = ((this.currentPage-1) * this.perPage) + index;
+      const pageIndex = (this.currentPage - 1) * this.perPage + index;
       // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(JSON.stringify(_.find(this.tableData.data, {'row_id': rowId})));
+      this.editItem = JSON.parse(
+        JSON.stringify(_.find(this.value, { row_id: rowId }))
+      );
       this.editIndex = pageIndex;
       // rebuild the edit screen to avoid
       this.editFormVersion++;
@@ -428,26 +414,36 @@ export default {
         this.$refs.editModal.show();
       });
     },
+    /**
+     * On edit handler, the user confirm the edited form
+     * @param {*} event
+     */
     edit(event) {
-      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
+      if (
+        this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid
+      ) {
         event.preventDefault();
         return;
       }
 
       // Edit the item in our model and emit change
-      let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
-      var index = _.findIndex(data, {'row_id': this.editItem.row_id});
+      const data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      const index = _.findIndex(data, { row_id: this.editItem.row_id });
       data[index] = JSON.parse(JSON.stringify(this.editItem));
 
       // Remove the parent object
       delete data[index]._parent;
 
       // Emit the newly updated data model
-      this.$emit('input', data);
+      this.$emit("input", data);
     },
+    /**
+     * Dispays add form modal.
+     */
     showAddForm() {
-      const uniqueId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      this.$set(this.addItem, 'row_id', uniqueId);
+      const uniqueId =
+        Math.random().toString(36).substring(2) + Date.now().toString(36);
+      this.$set(this.addItem, "row_id", uniqueId);
       this.setUploadDataNamePrefix();
       if (!this.form) {
         this.$refs.infoModal.show();
@@ -457,25 +453,32 @@ export default {
       this.$refs.addModal.show();
 
       // eslint-disable-next-line no-unused-vars
-      let {_parent, ...result} = this.addItem;
+      const { _parent, ...result } = this.addItem;
       this.initFormValues = _.cloneDeep(result);
     },
+    /**
+     * On ok handler, the user confirm the add form
+     * @param {*} bvModalEvt
+     */
     async handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
+      if (
+        this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid
+      ) {
         return;
       }
 
       // Add the item to our model and emit change
-      // @todo Also check that value is an array type, if not, reset it to an array
-      let data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
-      const item = JSON.parse(JSON.stringify({...this.addItem, _parent: undefined }));
+      const data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      const item = JSON.parse(
+        JSON.stringify({ ...this.addItem, _parent: undefined })
+      );
       delete item._parent;
       data[data.length] = item;
 
       // Emit the newly updated data model
-      this.$emit('input', data);
+      this.$emit("input", data);
 
       // Reset our add item
       this.addItem = {};
@@ -484,62 +487,90 @@ export default {
         this.$refs.addModal.hide();
       });
     },
+    /**
+     * Dispays delet confirmation modal.
+     * @param {number} index 
+     * @param {number} rowId 
+     */
     showDeleteConfirmation(index, rowId) {
-      this.deleteIndex = _.find(this.tableData.data, {'row_id': rowId});
+      this.deleteIndex = _.find(this.value, { row_id: rowId });
       this.$refs.deleteModal.show();
     },
+    /**
+     * Download file handler
+     * @param {object} rowData
+     * @param {object} rowField
+     * @param {number} rowIndex
+     */
     downloadFile(rowData, rowField, rowIndex) {
-      let requestId = this.$root.task.request_data._request.id;
-      let name = this.name + '.' + rowIndex + '.' + rowField;
+      const requestId = this.$root.task.request_data._request.id;
+      const name = `${this.name}.${rowIndex}.${rowField}`;
 
       window.ProcessMaker.apiClient
-        .get('requests/' + requestId + '/files?name=' + name)
-        .then(response => {
-          let respData = response.data;
+        .get(`requests/${requestId}/files?name=${name}`)
+        .then((response) => {
+          const respData = response.data;
           if (respData && respData.data && respData.data.length) {
-            let file = respData.data[0];
+            const file = respData.data[0];
             this.downloadRecordListFile(file, requestId);
           }
         });
     },
+    /**
+     * Download a file by id
+     * @param {object} file
+     * @param {number} requestId
+     */
     downloadRecordListFile(file, requestId) {
       window.ProcessMaker.apiClient({
-        baseURL: '/',
-        url: '/request/' + requestId + '/files/' + file.id,
-        method: 'GET',
-        responseType: 'blob', // important
-      }).then(response => {
-        //axios needs to be told to open the file
+        baseURL: "/",
+        url: `/request/${requestId}/files/${file.id}`,
+        method: "GET",
+        responseType: "blob" // important
+      }).then((response) => {
+        // axios needs to be told to open the file
         const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        link.setAttribute('download', file.file_name);
+        link.setAttribute("download", file.file_name);
         document.body.appendChild(link);
         link.click();
       });
     },
+    /**
+     * Update the current page property, in order to display the right page
+     */
+    updateCurrentPage() {
+      const total = this.value.length - 1;
+      const totalPages = Math.ceil(total / this.perPage);
+      this.currentPage =
+        this.currentPage > totalPages ? totalPages : this.currentPage;
+      this.currentPage = this.currentPage === 0 ? 1 : this.currentPage;
+    },
+    /**
+     * Remove a row handler, emits the remove-record event,
+     * update the table data and update the pagination curen page property
+     */
     remove() {
       // Add the item to our model and emit change
-      // @todo Also check that value is an array type, if not, reset it to an array
-      console.log("remove");
-      console.log(this.tableData);
-      const data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
-      let recordData = this.deleteIndex;
+      const data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      const recordData = this.deleteIndex;
       // Remove item from data array
       _.remove(data, {
-        'row_id': this.deleteIndex.row_id,
+        row_id: this.deleteIndex.row_id
       });
       // Emit the newly updated data model
-      this.$emit('input', data);
-      this.$root.$emit('removed-record', this, recordData);
-    },
-  },
+      this.$emit("input", data);
+      this.$root.$emit("removed-record", this, recordData);
+      // update the selected page
+      this.updateCurrentPage();
+    }
+  }
 };
 </script>
 
 <style>
-  .table td.table-column {
-    max-width: 300px;
-  }
+.table td.table-column {
+  max-width: 300px;
+}
 </style>
-
