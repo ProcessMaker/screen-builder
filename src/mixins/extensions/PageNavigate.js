@@ -1,7 +1,5 @@
 export default {
   methods: {
-    /* istanbul ignore next */
-    pageNavigate() {},
     pageNavigationProperties({ properties }) {
       properties["@page-navigate"] = "pageNavigate";
       properties[":validate"] = "$v";
