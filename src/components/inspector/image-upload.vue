@@ -6,7 +6,8 @@
       name="avatar"
       class="btn btn-sm btn-primary"
       v-model="files"
-      @input-file="editSave"
+      @input-filter="inputFilter"
+      @input-file="inputFile"
       ref="upload"
     >
       {{ $t('Upload') }}
@@ -37,15 +38,52 @@ export default {
     },
   },
   methods: {
-    editSave(fileObject) {
-      let reader = new FileReader();
-      reader.readAsDataURL(fileObject.file);
-      reader.addEventListener('load', () => {
-        let name = fileObject.file.name.split('.');
+    // editSave(fileObject) {
+    //   let reader = new FileReader();
+    //   reader.readAsDataURL(fileObject.file);
+    //   reader.addEventListener('load', () => {
+    //     let name = fileObject.file.name.split('.');
+    //     this.owner.name = escape(name[0]);
+    //     this.$emit('input', reader.result);
+    //   }, false);
+    // },
+    /**
+     * File changed handler
+     * @param  Object|undefined newFile Read only
+     * @return undefined
+     */
+    inputFile: function (newFile) {
+      if(newFile) {
+        let name = newFile.file.name.split('.');
         this.owner.name = escape(name[0]);
-        this.$emit('input', reader.result);
-      }, false);
+        this.$emit('input', newFile.blob);
+      }
+      
     },
+
+    /* Pretreatment of the input file
+     * @param  Object|undefined newFile Read and write
+     * @param  Object|undefined oldFile Read only
+     * @param  Function prevent Prevent changing
+     * @return undefined
+     */
+    inputFilter: function (newFile, oldFile, prevent) {
+      if (newFile && !oldFile) {
+        // Filter non-image file
+        if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
+          return prevent();
+        }
+      }
+
+      // Create a blob field
+      newFile.blob = ''
+      let URL = window.URL || window.webkitURL
+      if (URL && URL.createObjectURL) {
+        newFile.blob = URL.createObjectURL(newFile.file)
+        console.log("created blob")
+        console.log(newFile.blob);
+      }
+    }
   },
 };
 </script>
