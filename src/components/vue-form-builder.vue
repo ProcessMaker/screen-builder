@@ -312,7 +312,6 @@ import draggable from 'vuedraggable';
 import HasColorProperty from '../mixins/HasColorProperty';
 import * as renderer from './renderer';
 import * as inspector from './inspector';
-import '@processmaker/vue-form-elements/dist/style.css';
 import accordions from './accordions';
 import { keyNameProperty } from '../form-control-common-properties';
 import VariableNameGenerator from '@/components/VariableNameGenerator';

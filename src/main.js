@@ -4,7 +4,6 @@ import App from './App.vue';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import i18next from 'i18next';
 import VueI18Next from '@panter/vue-i18next';
-import '@processmaker/vue-form-elements/dist/style.css';
 import Vuex from 'vuex';
 import ScreenBuilder from '@/components';
 import axios from 'axios';
