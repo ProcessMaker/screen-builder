@@ -5,19 +5,9 @@ import {resolve} from "path";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
-const monacoPrefix = `monaco-editor/esm/vs`;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  optimizeDeps: {
-    include: [
-      `${monacoPrefix}/language/json/json.worker`,
-      `${monacoPrefix}/language/css/css.worker`,
-      `${monacoPrefix}/language/html/html.worker`,
-      `${monacoPrefix}/language/typescript/ts.worker`,
-      `${monacoPrefix}/editor/editor.worker`
-    ]
-  },
   define: {
     "process.env": {}
   },
