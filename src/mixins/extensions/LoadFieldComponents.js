@@ -27,6 +27,20 @@ export default {
         }
       });
     },
+    createObjectURL(base64image) {
+      console.log(base64image);
+
+      const binaryData = atob(base64image.split(",")[1]);
+      const binaryArray = new Uint8Array(binaryData.length);
+      for (let i = 0; i < binaryData.length; i++) {
+        binaryArray[i] = binaryData.charCodeAt(i);
+      }
+      console.log("hola");
+      console.log(base64image.split(",")[0]);
+      const blob = new Blob([binaryArray], { type: "image/jpeg" });
+      console.log(blob);
+      return URL.createObjectURL(blob);
+    },
     loadFieldProperties({
       properties,
       element,
@@ -43,7 +57,12 @@ export default {
         if (componentName === "FormImage") {
           this.registerVariable(element.config.variableName, element);
           delete properties.image;
-          properties[":image"] = this.byRef(element.config.image);
+          console.log(element.config.image);
+          console.log(element);
+          
+          const imageObject = this.createObjectURL(element.config.image);
+          console.log(imageObject);
+          properties[":image"] = this.byRef(imageObject);
         } else if (this.validVariableName(element.config.name)) {
           this.registerVariable(element.config.name, element);
           // v-model are not assigned directly to the field name, to prevent invalid references like:
@@ -55,11 +74,19 @@ export default {
             componentName === "FormTextArea" ||
             componentName === "FormInput"
           ) {
-            properties["@input"] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
-            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@input"
+            ] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@change"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           } else {
-            properties["@input"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@input"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@change"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           }
           // Process the FormSelectList@reset event
           properties[
@@ -100,8 +127,8 @@ export default {
       properties[":readonly"] = isCalcProp || element.config.readonly;
       properties[":disabled"] = isCalcProp || element.config.disabled;
       // Events
-      properties['@submit'] = 'submitForm';
-    },
+      properties["@submit"] = "submitForm";
+    }
   },
   mounted() {
     this.extensions.push({
