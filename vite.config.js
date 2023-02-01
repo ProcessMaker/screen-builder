@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import { createVuePlugin } from "vite-plugin-vue2";
 import monacoEditorPlugin from "vite-plugin-monaco-editor";
-import {resolve} from "path";
+import { resolve } from "path";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
@@ -13,7 +13,7 @@ export default defineConfig({
   },
   plugins: [
     createVuePlugin(),
-    monacoEditorPlugin({languageWorkers: monacoLanguages})
+    monacoEditorPlugin({ languageWorkers: monacoLanguages })
   ],
   resolve: {
     alias: [
@@ -47,6 +47,11 @@ export default defineConfig({
           moment: "moment"
         }
       }
+    }
+  },
+  server: {
+    watch: {
+      ignored: ["coverage"]
     }
   }
 });
