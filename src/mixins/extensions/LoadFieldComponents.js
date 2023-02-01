@@ -28,17 +28,12 @@ export default {
       });
     },
     createObjectURL(base64image) {
-      console.log(base64image);
-
       const binaryData = atob(base64image.split(",")[1]);
       const binaryArray = new Uint8Array(binaryData.length);
       for (let i = 0; i < binaryData.length; i++) {
         binaryArray[i] = binaryData.charCodeAt(i);
       }
-      console.log("hola");
-      console.log(base64image.split(",")[0]);
       const blob = new Blob([binaryArray], { type: "image/jpeg" });
-      console.log(blob);
       return URL.createObjectURL(blob);
     },
     loadFieldProperties({
@@ -57,12 +52,30 @@ export default {
         if (componentName === "FormImage") {
           this.registerVariable(element.config.variableName, element);
           delete properties.image;
-          console.log(element.config.image);
-          console.log(element);
-          
-          const imageObject = this.createObjectURL(element.config.image);
-          console.log(imageObject);
-          properties[":image"] = this.byRef(imageObject);
+
+          if (
+            !this.$store.getters["blobImagesModule/allBlobImages"][
+              element.config.name
+            ]
+          ) {
+            // this.$store.dispatch("blobImagesModule/addBlobImages", {
+            //   key: element.config.name,
+            //   blobImage: this.createObjectURL(element.config.image)
+            // });
+           
+            this.$store.dispatch(
+              "blobImagesModule/addBlobImages",
+              element.config
+            );
+            console.log( this.$store.getters["blobImagesModule/allBlobImages"][
+              element.config.name
+            ]);
+          }
+          const blobImage =
+            this.$store.getters["blobImagesModule/allBlobImages"][
+              element.config.name
+            ];
+          properties[":image"] = this.byRef(blobImage);
         } else if (this.validVariableName(element.config.name)) {
           this.registerVariable(element.config.name, element);
           // v-model are not assigned directly to the field name, to prevent invalid references like:
@@ -134,6 +147,7 @@ export default {
     this.extensions.push({
       onloadproperties(params) {
         if (!params.element.container) {
+          this.addProp(params.screen, "blobImages", {});
           this.loadFormPopups(params);
           this.loadFieldProperties(params);
         }

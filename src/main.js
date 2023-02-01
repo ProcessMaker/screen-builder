@@ -15,6 +15,7 @@ import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
 import LRUCache from 'lru-cache';
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
+import blobImagesModule from "@/store/modules/blobImagesModule";
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
@@ -35,7 +36,8 @@ Vue.component('required', { template: '<div class="text-right"><small>* = Requir
 const store = new Vuex.Store({
   modules: {
     globalErrorsModule,
-    undoRedoModule
+    undoRedoModule,
+    blobImagesModule
   }
 });
 
