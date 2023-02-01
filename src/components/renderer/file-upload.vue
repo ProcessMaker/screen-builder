@@ -94,17 +94,6 @@ import _ from "lodash";
 // Create the mixin
 const uniqIdsMixin = createUniqIdsMixin();
 
-// vue-simple-uploader tries to call these after the component has
-// been destroyed since it does it in nextTick(). It has no effect
-// on functionality because a new copy is created.
-// TODO: Why is this component being recreated when used in a loop?
-const ignoreErrors = [
-  "Cannot read property 'assignBrowse' of null",
-  "Cannot read property 'assignDrop' of null",
-  "Cannot read properties of null (reading 'assignBrowse')",
-  "Cannot read properties of null (reading 'assignDrop')"
-];
-
 export default {
   components: uploader,
   mixins: [uniqIdsMixin],
