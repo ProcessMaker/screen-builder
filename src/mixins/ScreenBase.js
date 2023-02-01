@@ -246,11 +246,9 @@ export default {
             return;
           }
 
-          this.$set(
-            object,
-            attr,
-            setValue,
-          );
+          if (object instanceof Object) {
+            this.$set(object, attr, setValue);
+          }
 
           object = get(object, attr);
           defaults = get(defaults, attr);
