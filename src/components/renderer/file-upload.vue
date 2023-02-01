@@ -86,7 +86,6 @@
 </template>
 
 <script>
-// eslint-disable no-param-reassign
 import { createUniqIdsMixin } from "vue-uniq-ids";
 import uploader from "vue-simple-uploader";
 import _ from "lodash";
