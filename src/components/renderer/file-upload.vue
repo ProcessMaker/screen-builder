@@ -97,21 +97,57 @@ const uniqIdsMixin = createUniqIdsMixin();
 export default {
   components: uploader,
   mixins: [uniqIdsMixin],
-  props: [
-    "label",
-    "error",
-    "helper",
-    "name",
-    "value",
-    "controlClass",
-    "endpoint",
-    "accept",
-    "validation",
-    "parent",
-    "config",
-    "multipleUpload",
-    "ariaLabel"
-  ],
+  props: {
+    label: {
+      type: String,
+      default: ""
+    },
+    error: {
+      type: String,
+      default: ""
+    },
+    helper: {
+      type: String,
+      default: ""
+    },
+    name: {
+      type: String,
+      default: ""
+    },
+    value: {
+      type: null,
+      default: null
+    },
+    controlClass: {
+      type: String,
+      default: ""
+    },
+    endpoint: {
+      type: String,
+      default: ""
+    },
+    accept: {
+      type: String,
+      default: ""
+    },
+    validation: {
+      type: String,
+      default: ""
+    },
+    parent: {
+      type: null,
+      default: null
+    },
+    config: {
+      type: Object,
+      default: null
+    },
+    multipleUpload: Boolean,
+    ariaLabel: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       uploaderId: 1,
