@@ -33,7 +33,6 @@
       </svg>
       {{ $t("Loading...") }}
     </div>
-    screen-renderer
     <component
       :is="component"
       ref="component"
