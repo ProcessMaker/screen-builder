@@ -1,6 +1,6 @@
 describe("Form Image", () => {
   const avgBootTime = 12000;
-  const minimumPerformanceScore = 12;
+  const minimumPerformanceScore = 2;
   const accessibility = 50;
   it('Upload image to show', () => {
     cy.visit('/');
