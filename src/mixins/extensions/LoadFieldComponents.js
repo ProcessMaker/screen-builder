@@ -139,7 +139,6 @@ export default {
     this.extensions.push({
       onloadproperties(params) {
         if (!params.element.container) {
-          this.addProp(params.screen, "blobImages", {});
           this.loadFormPopups(params);
           this.loadFieldProperties(params);
         }

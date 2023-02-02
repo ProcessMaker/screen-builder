@@ -46,7 +46,6 @@ export default {
         component: '',
         errors: [],
       },
-      // blobImages: {}
     };
   },
   methods: {
@@ -323,7 +322,7 @@ export default {
         });
         // Build data
         const hiddenVars = ["currentPage__"];
-        const dataCode = `let value;const data = {}; const test = "screen test";
+        const dataCode = `let value;const data = {};
           ${Object.keys(component.data)
             .map((key) => {
               const { code, variable } = component.data[key];
