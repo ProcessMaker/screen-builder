@@ -58,19 +58,9 @@ export default {
               element.config.name
             ]
           ) {
-            // this.$store.dispatch("blobImagesModule/addBlobImages", {
-            //   key: element.config.name,
-            //   blobImage: this.createObjectURL(element.config.image)
-            // });
-
             this.$store.dispatch(
               "blobImagesModule/addBlobImages",
               element.config
-            );
-            console.log(
-              this.$store.getters["blobImagesModule/allBlobImages"][
-                element.config.name
-              ]
             );
           }
           const blobImage =
