@@ -38,15 +38,22 @@ export default {
   },
   methods: {
     editSave(fileObject) {
-      let reader = new FileReader();
-      reader.readAsDataURL(fileObject.file);
-      reader.addEventListener('load', () => {
-        let name = fileObject.file.name.split('.');
-        this.owner.name = escape(name[0]);
-        this.$emit('input', reader.result);
-      }, false);
-    },
-  },
+      if (fileObject) {
+        this.$store.dispatch("blobImagesModule/removeBlobImages");
+        const reader = new FileReader();
+        reader.readAsDataURL(fileObject.file);
+        reader.addEventListener(
+          "load",
+          () => {
+            const name = fileObject.file.name.split(".");
+            this.owner.name = escape(name[0]);
+            this.$emit("input", reader.result);
+          },
+          false
+        );
+      }
+    }
+  }
 };
 </script>
 
