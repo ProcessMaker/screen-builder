@@ -1,8 +1,9 @@
 <template>
   <div :class="containerClass">
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
-    form-renderer
-    <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" :current-page="currentPage" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
+    <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition"
+      :current-page="currentPage" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors"
+      :test-screen-definition="testScreenDefinition || false" class="p-0" />
   </div>
 </template>
 
@@ -59,7 +60,7 @@ export default {
             if (definition) {
               const separators = definition.format.match(/[.,]/g);
               if (separators.length === 0) separators.push('', '.');
-              else if (separators.length === 1) separators.push(separators[0] === '.' ? ',': '.');
+              else if (separators.length === 1) separators.push(separators[0] === '.' ? ',' : '.');
               options.digits = (definition.format.split(separators[1])[1] || '').length;
               options.radixPoint = separators[1];
               options.groupSeparator = separators[0];
@@ -68,7 +69,7 @@ export default {
             }
             return Inputmask.format(value, options);
           };
-          return function(text) {
+          return function (text) {
             const params = JSON.parse(`[${text}]`);
             return format(_.get(this, params[0]), params[1]);
           };
@@ -86,7 +87,7 @@ export default {
       deep: true,
       handler(config) {
         this.definition.config = config;
-        this.$nextTick(() => {this.registerCustomFunctions();});
+        this.$nextTick(() => { this.registerCustomFunctions(); });
       },
     },
     data: {
@@ -113,15 +114,18 @@ export default {
     },
   },
   created() {
-    this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+    this.parseCss = _.debounce(this.parseCss, 500, { leading: true });
   },
   mounted() {
     this.parseCss();
     this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
-      window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
+      window.ProcessMaker.EventBus.$emit("screen-renderer-init", this);
     }
     this.scrollable = Scrollparent(this.$el);
+  },
+  unmounted() {
+    this.$store.dispatch("blobImagesModule/removeBlobImages");
   },
   methods: {
     ...mapActions("globalErrorsModule", ["validate"]),
@@ -174,7 +178,7 @@ export default {
       }
       return _.size(this.errors) === 0;
     },
-    registerCustomFunctions(node=this) {
+    registerCustomFunctions(node = this) {
       if (node.registerCustomFunction instanceof Function) {
         Object.keys(this.customFunctions).forEach(key => {
           node.registerCustomFunction(key, this.customFunctions[key]);
@@ -197,18 +201,18 @@ export default {
           },
         });
         let i = 0;
-        csstree.walk(ast, function(node, item, list) {
+        csstree.walk(ast, function (node, item, list) {
           if (node.type === 'Atrule' && list) {
             throw 'CSS \'At-Rules\' (starting with @) are not allowed.';
           }
           if (
             node.type.match(/^.+Selector$/) &&
-              node.name !== containerSelector &&
-              list
+            node.name !== containerSelector &&
+            list
           ) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
-              list.prependData({type: 'WhiteSpace', loc: null, value: ' '});
+              list.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
               list.prependData({
                 type: 'TypeSelector',
                 loc: null,
@@ -236,6 +240,6 @@ export default {
     setCurrentPage(page) {
       this.$refs.renderer.setCurrentPage(page);
     },
-  },
+  }
 };
 </script>
