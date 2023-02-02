@@ -31,12 +31,16 @@ function countErrors(obj) {
   return errors;
 }
 
-const updateValidationRules = async (screen, commit) => {
-  const rootScreen = findRootScreen(screen);
-  if (rootScreen !== screen) {
-    // refresh nested screen validation rules
-    await screen.loadValidationRules();
-  }
+const updateValidationRules = async (screens, commit) => {
+  const rootScreen = findRootScreen(screens[0]);
+  const awaitLoad = [];
+  screens.forEach((screen) => {
+    if (rootScreen !== screen) {
+      // refresh nested screen validation rules
+      awaitLoad.push(screen.loadValidationRules());
+    }
+  });
+  await Promise.all(awaitLoad);
   try {
     await rootScreen.loadValidationRules();
   } catch (error) {
@@ -67,7 +71,15 @@ const updateValidationRules = async (screen, commit) => {
   }
 };
 
-const updateValidationRulesDebounced = debounce(updateValidationRules, 1000);
+const updateValidationRulesDebounced = debounce(updateValidationRules, 500);
+
+const screensToValidate = [];
+const queueUpdateValidationRules = (mainScreen, commit) => {
+  if (!screensToValidate.includes(mainScreen)) {
+    screensToValidate.push(mainScreen);
+  }
+  updateValidationRulesDebounced(screensToValidate, commit);
+};
 
 const globalErrorsModule = {
   namespaced,
@@ -100,14 +112,14 @@ const globalErrorsModule = {
   },
   actions: {
     validate({ commit }, mainScreen) {
-      updateValidationRulesDebounced(mainScreen, commit);
+      queueUpdateValidationRules(mainScreen, commit);
     },
     async validateNow({ commit }, mainScreen) {
-      await updateValidationRules(mainScreen, commit);
+      await updateValidationRules([mainScreen], commit);
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
-    },
+    }
   }
 };
 
