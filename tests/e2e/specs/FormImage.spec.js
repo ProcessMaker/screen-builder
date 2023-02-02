@@ -93,7 +93,7 @@ describe("Form Image", () => {
       });
   });
   it("Image performace test", () => {
-    const maximumScreenRenderTime = 0;
+    const maximumScreenRenderTime = 4000;
     cy.visit("/?scenario=RenderScreenWithLoopImages");
     const customThresholds = {
       performance: minimumPerformanceScore,
