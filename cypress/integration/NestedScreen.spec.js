@@ -87,9 +87,9 @@ describe('Nested screen', () => {
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview] input[name="firstname"]').type('Alan');
     cy.get('[data-cy=preview] input[name="lastname"]').type('Turing');
-    cy.get('[data-cy=preview-data-content]').should((a) => {
-      const person = JSON.parse(a.text().split('{...}').join(''));
-      expect(person).to.eql({ firstname: 'Alan', lastname: 'Turing' });
+    cy.assertPreviewData({
+      firstname: "Alan",
+      lastname: "Turing"
     });
     cy.get('[data-cy=mode-editor]').click();
   });

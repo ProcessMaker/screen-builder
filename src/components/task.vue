@@ -8,13 +8,6 @@
     <template v-if="screen">
       <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
         <div v-if="renderComponent === 'task-screen'">
-          <div v-if="$store.getters['globalErrorsModule/isValidScreen'] === false" class="alert alert-danger mt-3">
-            <i class="fas fa-exclamation-circle"/>
-            {{ $store.getters['globalErrorsModule/getErrorMessage'] }}
-            <button type="button" class="close" aria-label="Close" @click="$store.dispatch('globalErrorsModule/close')">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
           <vue-form-renderer
             ref="renderer"
             v-model="requestData"
@@ -250,7 +243,7 @@ export default {
             this.task = response.data;
             this.checkTaskStatus();
             if (window.PM4ConfigOverrides.getScreenEndpoint && window.PM4ConfigOverrides.getScreenEndpoint.includes('tasks/')) {
-              const screenPath = window.PM4ConfigOverrides.getScreenEndpoint.split('/');              
+              const screenPath = window.PM4ConfigOverrides.getScreenEndpoint.split('/');
               screenPath[1] = this.task.id;
               window.PM4ConfigOverrides.getScreenEndpoint = screenPath.join('/');
             }

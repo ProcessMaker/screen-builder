@@ -3,13 +3,6 @@
     <b-col cols="12">
       <b-tabs>
         <b-tab active title="WebEntry">
-          <div v-if="$store.getters['globalErrorsModule/isValidScreen'] === false" class="alert alert-danger mt-3">
-            <i class="fas fa-exclamation-circle"/>
-            {{ $store.getters['globalErrorsModule/getErrorMessage'] }}
-            <button type="button" class="close" aria-label="Close" @click="$store.dispatch('globalErrorsModule/close')">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
           <vue-form-renderer
             v-model="data"
             v-bind:config="task.screen.config"

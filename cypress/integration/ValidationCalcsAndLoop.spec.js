@@ -76,22 +76,18 @@ describe('Validation Calcs properties and loop', () => {
     cy.get(':nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1) > :nth-child(1) > .form-group > [data-cy=screen-field-color]').type('green');
 
     // Check final result
-    cy.get('#screen-builder-container').then((div) => {
-      const data = div[0].__vue__.previewData;
-      expect(data).to.eql({
-        'form_checkbox_1': true,
-        'loop_1':[
-          {
-            'decription': 'Color is :red',
-            'color': 'red',
-          },
-          {
-            'decription': 'Color is :green',
-            'color': 'green',
-          },
-        ],
-      });
+    cy.assertPreviewData({
+      form_checkbox_1: true,
+      loop_1: [
+        {
+          decription: "Color is :red",
+          color: "red"
+        },
+        {
+          decription: "Color is :green",
+          color: "green"
+        }
+      ]
     });
   });
-
 });

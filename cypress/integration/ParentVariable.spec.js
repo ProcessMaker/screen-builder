@@ -9,23 +9,20 @@ describe('_parent variable', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-select_hijo"]').selectOption('aaaa');
     cy.get('[data-cy=preview-content] [data-cy="screen-field-input_hijo"]').clear().type('test');
 
-    cy.get('#screen-builder-container').then((div) => {
-      const data = div[0].__vue__.previewData;
-      expect(data).to.eql({
-        'select_padre': [
-          {
-            'value': 'a',
-            'content': 'aaaa',
-          },
-        ],
-        'loop_1': [
-          {
-            'input_hijo': 'test',
-            'select_hijo': 'a',
-          },
-        ],
-        'form_record_list_1': null,
-      });
+    cy.assertPreviewData({
+      select_padre: [
+        {
+          value: "a",
+          content: "aaaa"
+        }
+      ],
+      loop_1: [
+        {
+          input_hijo: "test",
+          select_hijo: "a"
+        }
+      ],
+      form_record_list_1: null
     });
   });
 
@@ -40,29 +37,24 @@ describe('_parent variable', () => {
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-form_select_list_1"]').selectOption('aaaa');
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
 
-    cy.get('#screen-builder-container').then((div) => {
-      const data = div[0].__vue__.previewData;
-      const record_row_id = data.form_record_list_1[0].row_id;
-      expect(data).to.eql({
-        'select_padre': [
-          {
-            'value': 'a',
-            'content': 'aaaa',
-          },
-        ],
-        'loop_1': [
-          {
-            'input_hijo': '',
-            'select_hijo': null,
-          },
-        ],
-        'form_record_list_1': [
-          {
-            'form_select_list_1': 'a',
-            'row_id': record_row_id,
-          },
-        ],
-      });
+    cy.assertPreviewData({
+      select_padre: [
+        {
+          value: "a",
+          content: "aaaa"
+        }
+      ],
+      loop_1: [
+        {
+          input_hijo: "",
+          select_hijo: null
+        }
+      ],
+      form_record_list_1: [
+        {
+          form_select_list_1: "a"
+        }
+      ]
     });
   });
 });
