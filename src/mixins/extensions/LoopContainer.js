@@ -1,5 +1,3 @@
-import LoopControl from '../../mixins/LoopControl';
-
 export default {
   props: {
     configRef: null,
@@ -12,7 +10,7 @@ export default {
   },
   methods: {
     loadFormLoopProperties({ properties, element }) {
-      this.registerVariable(element.config.settings.varname, {});
+      this.registerVariable(element.config.settings.varname, element);
       this.loops.push({ variable: element.config.settings.varname, element, properties });
     },
     loadFormLoopItems({ element, node, definition }) {
@@ -36,7 +34,7 @@ export default {
 
       // Add nested component inside loop
       const child = this.createComponent('ScreenRenderer', {
-        ':definition': this.byValue(nested),
+        ':definition': this.byRef(nested),
         ':value': 'loopRow',
         ':loop-context': `'${loopContext}.' + index`,
         ':_parent': 'getValidationData()',
@@ -46,7 +44,7 @@ export default {
       });
       const addLoopRow = this.createComponent('AddLoopRow', {
         ':value': element.config.settings.varname,
-        ':config': this.byValue(element.config),
+        ':config': this.byRef(element.config),
         ':error': `${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`,
       });
       loop.appendChild(child);
@@ -75,13 +73,7 @@ export default {
         if (params.element.container && params.componentName === 'FormLoop') {
           this.loadFormLoopItems(params);
         }
-      },
-      onbuild({ screen }) {
-        screen.mixins.push(LoopControl);
-        this.loops.forEach(({variable, element}) => {
-          this.addMounted(screen, `this.initLoopVariable(${JSON.stringify(variable)}, ${JSON.stringify(element.config)});`);
-        });
-      },
+      }
     });
-  },
+  }
 };

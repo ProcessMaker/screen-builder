@@ -67,6 +67,7 @@
           :class="displayBuilder ? 'd-flex' : 'd-none'"
           :screen="screen"
           title="Default"
+          :render-controls="displayBuilder"
         >
           <default-loading-spinner/>
         </vue-form-builder>
@@ -74,17 +75,11 @@
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
           <b-col class="overflow-auto h-100" data-cy="preview-content">
-            <div v-if="$store.getters['globalErrorsModule/isValidScreen'] === false" class="alert alert-danger mt-3">
-              <i class="fas fa-exclamation-circle"/>
-              {{ $store.getters['globalErrorsModule/getErrorMessage'] }}
-              <button type="button" class="close" aria-label="Close" @click="$store.dispatch('globalErrorsModule/close')">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
             <vue-form-renderer ref="renderer"
               :key="rendererKey"
               v-model="previewData"
               @submit="previewSubmit"
+              @update="updateDataPreview"
               :mode="mode"
               :config="preview.config"
               :computed="preview.computed"
@@ -97,7 +92,7 @@
 
           <b-col class="overflow-hidden h-100 preview-inspector p-0">
             <b-card no-body class="p-0 h-100 rounded-0 border-top-0 border-right-0 border-bottom-0">
-              <b-card-body class="p-0 overflow-auto">
+              <b-card-body class="p-0">
                 <b-button variant="outline"
                   class="text-left card-header d-flex align-items-center w-100 shadow-none"
                   @click="showDataInput = !showDataInput"
@@ -108,7 +103,14 @@
                 </b-button>
 
                 <b-collapse v-model="showDataInput" id="showDataInput">
-                  <monaco-editor :options="monacoOptions" class="data-collapse" v-model="previewInput" language="json" data-cy="preview-data-input"/>
+                  <monaco-editor
+                    v-model="previewInput"
+                    :options="monacoOptions"
+                    class="data-collapse"
+                    language="json"
+                    data-cy="preview-data-input"
+                    @change="updateDataInput"
+                  />
                 </b-collapse>
 
                 <b-button variant="outline"
@@ -122,7 +124,13 @@
                 </b-button>
 
                 <b-collapse v-model="showDataPreview" id="showDataPreview" data-cy="preview-data-content" class="mt-2">
-                  <vue-json-pretty :data="previewData" class="p-2 data-collapse"/>
+                  <monaco-editor
+                    v-model="previewDataStringify"
+                    :options="monacoOptions"
+                    class="editor"
+                    language="json"
+                    @editorDidMount="monacoMounted"
+                  />
                 </b-collapse>
 
               </b-card-body>
@@ -207,11 +215,10 @@ import WatchersPopup from './components/watchers-popup.vue';
 import CustomCss from './components/custom-css.vue';
 import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
-import VueJsonPretty from 'vue-json-pretty';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
 import { cloneDeep, debounce } from 'lodash';
-import 'vue-json-pretty/lib/styles.css';
+import { mapMutations } from 'vuex';
 
 // Bring in our initial set of controls
 import controlConfig from './form-builder-controls';
@@ -262,6 +269,7 @@ export default {
   mixins: [canOpenJsonFile],
   data() {
     return {
+      previewDataStringify: "",
       numberOfElements: 0,
       preview: {
         config: [
@@ -308,7 +316,9 @@ export default {
       monacoOptions: {
         automaticLayout: true,
         lineNumbers: 'off',
-        minimap: false,
+        minimap: {
+          enabled: false
+        }
       },
     };
   },
@@ -317,19 +327,8 @@ export default {
     CustomCss,
     VueFormBuilder,
     VueFormRenderer,
-    VueJsonPretty,
     MonacoEditor,
     WatchersPopup,
-  },
-  watch: {
-    previewInput() {
-      if (this.previewInputValid) {
-        // Copy data over
-        this.previewData = JSON.parse(this.previewInput);
-      } else {
-        this.previewData = {};
-      }
-    },
   },
   computed: {
     previewInputValid() {
@@ -383,7 +382,10 @@ export default {
       const warnings = [];
       // Check if screen has watchers that use scripts
       const watchersWithScripts = this.watchers
-        .filter(watcher => watcher.script.id.substr(0, 7) === 'script-').length;
+        ? this.watchers.filter(
+            (watcher) => watcher.script.id.substr(0, 7) === "script-"
+          ).length
+        : 0;
       if (watchersWithScripts > 0) {
         warnings.push({
           message: this.$t('Using watchers with Scripts can slow the performance of your screen.'),
@@ -419,24 +421,45 @@ export default {
     this.loadFromLocalStorage();
   },
   methods: {
+    ...mapMutations("globalErrorsModule", { setStoreMode: "setMode" }),
+    // eslint-disable-next-line func-names
+    updateDataInput: debounce(function () {
+      this.updateDataInputNow();
+    }, 1000),
+    updateDataInputNow() {
+      if (this.previewInputValid) {
+        // Copy data over
+        this.previewData = JSON.parse(this.previewInput);
+        this.updateDataPreview();
+      }
+    },
+    // eslint-disable-next-line func-names
+    updateDataPreview: debounce(function () {
+      this.previewDataStringify = JSON.stringify(this.previewData, null, 2);
+    }, 1000),
+    monacoMounted(editor) {
+      this.editor = editor;
+      this.editor.updateOptions({ readOnly: true });
+    },
     countElements() {
       this.$refs.renderer.countElements(this.config).then(allElements => {
         this.numberOfElements = allElements.length;
       });
     },
     changeMode(mode) {
-      this.mode = mode;
       this.previewData = this.previewInputValid ? JSON.parse(this.previewInput) : {};
-      this.rendererKey++;
-      if (mode == 'preview') {
+      if (mode === "preview") {
         this.$dataProvider.flushScreenCache();
         this.preview.config = cloneDeep(this.config);
         this.preview.computed = cloneDeep(this.computed);
         this.preview.customCSS = cloneDeep(this.customCSS);
         this.preview.watchers = cloneDeep(this.watchers);
+        this.rendererKey++;
       } else {
         this.$refs.builder.refreshContent();
       }
+      this.setStoreMode(this.mode);
+      this.mode = mode;
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
@@ -458,7 +481,7 @@ export default {
       if (customCSS) {
         this.customCSS = customCSS;
       }
-      
+
       if (computed) {
         this.computed = JSON.parse(computed);
       }
@@ -611,8 +634,11 @@ export default {
     .modal-backdrop {
       opacity: 0.5;
     }
-    
+
     .form-group--error {
       animation: none;
+    }
+    .editor {
+      height: 30em;
     }
 </style>

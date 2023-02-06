@@ -3,7 +3,7 @@ describe('Rich Text control', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormHtmlViewer]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
-    cy.get('[data-cy=inspector-content]').clear().type('<p>Hello {{ name }}</p>', {parseSpecialCharSequences: false});
+    cy.get('[data-cy=inspector-content]').focus().clear().type('<p>Hello {{ name }}</p>', {parseSpecialCharSequences: false});
     cy.get('[data-cy=mode-preview]').click();
     cy.setPreviewDataInput('{"name":"World"}');
     cy.get('[data-cy=preview-content]').should('contain.html', '<p>Hello World</p>');
@@ -13,7 +13,7 @@ describe('Rich Text control', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormHtmlViewer]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
-    cy.get('[data-cy=inspector-content]').clear().type('{{ name }}', {parseSpecialCharSequences: false});
+    cy.get('[data-cy=inspector-content]').focus().clear().type('{{ name }}', {parseSpecialCharSequences: false});
     cy.get('[data-cy=inspector-renderVarHtml]').click();
     cy.get('[data-cy=mode-preview]').click();
     cy.setPreviewDataInput('{"name":"<p>Hello <b>World</b></p>"}');

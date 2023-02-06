@@ -22,6 +22,11 @@ import FileDownload from './renderer/file-download.vue';
 import FormMaskedInput from './renderer/form-masked-input';
 import DefaultLoadingSpinner from './utils/default-loading-spinner';
 import DataProvider from '../DataProvider';
+import { cacheAdapterEnhancer } from "axios-extensions";
+import LRUCache from "lru-cache";
+import Vuex from "vuex";
+import globalErrorsModule from "@/store/modules/globalErrorsModule";
+import undoRedoModule from "@/store/modules/undoRedoModule";
 
 const rendererComponents = {
   ...renderer,
@@ -37,6 +42,22 @@ export {
   FormBuilderControls,
   Task,
 };
+
+/**
+ * Gets the screen parent or null if don't have
+ * @returns {object|null}
+ */
+ function findScreenOwner(control) {
+  let owner = control.$parent;
+  while (owner) {
+    const isScreen = owner.$options.name === "ScreenContent";
+    if (isScreen) {
+      return owner;
+    }
+    owner = owner.$parent;
+  }
+  return null;
+}
 
 // Export our Vue plugin as our default
 export default {
@@ -72,5 +93,40 @@ export default {
 
     Vue.component('FormMaskedInput', FormMaskedInput);
     Vue.use(DataProvider);
-  },
+
+    Vue.use(Vuex);
+    const store = new Vuex.Store({
+      modules: {
+        globalErrorsModule,
+        // @todo Improve how to load this module, it is used only in the form builder, not used in the form renderer.
+        undoRedoModule
+      }
+    });
+    Vue.mixin({ store });
+
+    //Helper to access data reference.
+    Vue.mixin({ methods:{ getScreenDataReference(customProperties = null, setter = null) {
+      const control = this;
+      const screen = findScreenOwner(control);
+      return screen.getDataReference(customProperties, setter);
+    }}});
+  }
 };
+
+/**
+ * Initialize the axios cache adapter
+ *
+ * @param {Object} apiClient
+ * @param {Object} screenConfig
+ */
+export function initializeScreenCache(apiClient, screenConfig) {
+  apiClient.defaults.adapter = cacheAdapterEnhancer(
+    apiClient.defaults.adapter,
+    screenConfig.cacheEnabled,
+    "useCache",
+    new LRUCache({
+      ttl: screenConfig.cacheTimeout,
+      max: 100
+    })
+  );
+}

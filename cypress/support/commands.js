@@ -1,19 +1,39 @@
 import '@4tw/cypress-drag-drop';
 import { set } from 'lodash';
 import 'cypress-wait-until';
+import "cypress-audit/commands";
 
 Cypress.Commands.add('setPreviewDataInput', (input) => {
-  cy.get('#screen-builder-container').then((div) => {
+  cy.get('#screen-builder-container').then(async (div) => {
     div[0].__vue__.previewInput = typeof input === 'string' ? input : JSON.stringify(input);
+    div[0].__vue__.updateDataInputNow();
   });
 });
 
-Cypress.Commands.add('assertPreviewData', (expectedData) => {
-  cy.get('#screen-builder-container').then((div) => {
-    const data = div[0].__vue__.previewData;
-    expect(JSON.stringify(data)).to.eql(JSON.stringify(expectedData));
-  });
-});
+Cypress.Commands.add(
+  "assertPreviewData",
+  (expectedData, removeRowIds = true) => {
+    cy.wait(500);
+    cy.get("#screen-builder-container").then((div) => {
+      const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
+      // recursively remove row_id from data
+      if (removeRowIds) {
+        const removeRowId = (obj) => {
+          if (obj && typeof obj === "object") {
+            if (Array.isArray(obj)) {
+              obj.forEach(removeRowId);
+            } else {
+              delete obj.row_id;
+              Object.values(obj).forEach(removeRowId);
+            }
+          }
+        };
+        removeRowId(data);
+      }
+      expect(JSON.stringify(data)).to.eql(JSON.stringify(expectedData));
+    });
+  }
+);
 
 Cypress.Commands.add('setMultiselect', (selector, text, index = 0) => {
   cy.get(`${selector}`).click();
@@ -188,3 +208,11 @@ Cypress.Commands.add('unselectOption', { prevSubject: true }, (subject, option) 
   cy.get(subject).click();
   cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
 });
+
+Cypress.Commands.add('shouldNotHaveValidationErrors', (name, index = 0) => {
+  cy.get(`[data-cy=preview-content] [data-cy=${name}]`).eq(index).should('not.have.class', 'is-invalid');
+})
+
+Cypress.Commands.add('shouldHaveValidationErrors', (name, index = 0) => {
+  cy.get(`[data-cy=preview-content] [data-cy=${name}]`).eq(index).should('have.class', 'is-invalid');
+})

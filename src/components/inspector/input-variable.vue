@@ -1,7 +1,7 @@
 <template>
   <b-input-group>
     <b-form-input v-bind="$attrs" v-model="localValue" @focus="focus" @input="input" @blur="blur" @change="change"/>
-    <template v-slot:append>
+    <template v-if="suggestVariables" v-slot:append>
       <b-dropdown
         ref="dropdown"
         text="(x)"
@@ -33,6 +33,8 @@ export default {
   },
   data() {
     return {
+      // disable suggestions when typing because performance issues when there are many variables in a large screen
+      suggestVariables: false,
       localValue: this.value || '',
       open: false,
     };

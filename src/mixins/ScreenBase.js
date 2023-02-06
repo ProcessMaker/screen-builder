@@ -1,10 +1,17 @@
-import { get, isEqual, set } from 'lodash';
+import { get, isEqual, set, debounce } from 'lodash';
 import Mustache from 'mustache';
+import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
+import DataReference from "./DataReference";
+import computedFields from "./computedFields";
+import { findRootScreen } from "./DataReference";
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
+const parentReference = [];
 
 export default {
+  name: "ScreenContent",
+  mixins: [DataReference, computedFields],
   schema: [
     function() {
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
@@ -38,11 +45,17 @@ export default {
     },
   },
   computed: {
+    ...mapState("globalErrorsModule", {
+      valid__: "valid",
+      message__: "message",
+      locked__: "locked",
+    }),
     references__() {
       return this.$parent && this.$parent.references__;
     },
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["validateNow"]),
     getDataAccordingToFieldLevel(dataWithParent, level) {
       if (level === 0 || !dataWithParent) {
         return dataWithParent;
@@ -51,13 +64,34 @@ export default {
     },
     addReferenceToParents(data) {
       if (!data) {
-        return;
+        return undefined;
       }
       const parent = this.addReferenceToParents(this.findParent(data));
-      return {
-        _parent: parent,
-        ...data,
-      };
+      return new Proxy(
+        {},
+        {
+          get: (target, name) => {
+            if (name === "_parent" && parent) {
+              return parent;
+            }
+            if (name in target) {
+              return target[name];
+            }
+            return data[name];
+          },
+          has: (target, name) => {
+            if (name === "_parent") {
+              return parent !== undefined;
+            }
+            return data[name] !== undefined || target[name] !== undefined;
+          },
+          // ValidationRules mixin uses this to set the value of some custom fields like "today" date
+          set: (target, name, value) => {
+            target[name] = value;
+            return true;
+          }
+        }
+      );
     },
     findParent(child, data = this.vdata, parent = this._parent) {
 
@@ -103,27 +137,28 @@ export default {
     },
     mustache(text) {
       try {
-        const data = Object.assign({_parent: this._parent}, this.vdata);
+        const data = this.getDataReference();
         return text && Mustache.render(text, data);
       } catch (e) {
         return 'MUSTACHE: ' + e.message;
       }
     },
-    submitForm() {
-      if (this.$v.$invalid) {
-        //if the form is not valid the data is not emitted
+    async submitForm() {
+      await this.validateNow(findRootScreen(this));
+      console.log(this.valid__, this.message__);
+      if (!this.valid__) {
+        window.ProcessMaker.alert(this.message__, "danger");
+        // if the form is not valid the data is not emitted
         return;
       }
       this.$emit('submit', this.vdata);
     },
+    resetValue(safeDotName, variableName) {
+      this.setValue(safeDotName, null);
+      this.updateScreenDataNow(safeDotName, variableName);
+    },
     getValidationData() {
-      const screen = this;
-      return new Proxy(this.vdata || {}, {
-        get(target, name) {
-          if (name in target) return target[name];
-          if (name === '_parent') return screen._parent === undefined ? this._parent : screen._parent;
-        },
-      });
+      return this.vdata;
     },
     initialValue(component, dataFormat, config) {
       let value = null;
@@ -139,8 +174,43 @@ export default {
         value = [];
       } else if (component === 'FormSelectList' && !config.options.allowMultiSelect) {
         value = null;
+      } else if (component === "FormLoop") {
+        value = this.emptyLoopValue(config);
       }
       return value;
+    },
+    emptyLoopValue(config) {
+      if (config.settings.type === "existing") {
+        return [];
+      }
+      const times = Number(config.settings.times);
+      const loopVariable = [];
+      for (let i = 0; i < times; i++) {
+        loopVariable.push({});
+      }
+      return loopVariable;
+    },
+    updateScreenData(safeDotName, variable) {
+      this[`${safeDotName}_was_filled__`] = true;
+      this.blockUpdate(safeDotName, 210);
+      this.setValueDebounced(variable, this[safeDotName], this.vdata);
+    },
+    updateScreenDataNow(safeDotName, variable) {
+      this[`${safeDotName}_was_filled__`] = true;
+      this.setValue(variable, this[safeDotName], this.vdata);
+      this.unblockUpdate(safeDotName);
+    },
+    blockUpdate(safeDotName, time) {
+      this.blockedUpdates[safeDotName] = new Date().getTime() + time;
+    },
+    unblockUpdate(safeDotName) {
+      this.blockUpdate(safeDotName, 0);
+    },
+    canUpdate(safeDotName) {
+      return (
+        !this.blockedUpdates[safeDotName] ||
+        this.blockedUpdates[safeDotName] < new Date().getTime()
+      );
     },
     getValue(name, object = this) {
       return object ? get(object, name) : undefined;
@@ -176,16 +246,40 @@ export default {
             return;
           }
 
-          this.$set(
-            object,
-            attr,
-            setValue,
-          );
+          if (object instanceof Object) {
+            this.$set(object, attr, setValue);
+          }
 
           object = get(object, attr);
           defaults = get(defaults, attr);
         }
       }
+    },
+    addNonDefinedComputedAttributes(value, key, owner = null) {
+      if (value instanceof Array) {
+        value.forEach((item, index) => {
+          this.addNonDefinedComputedAttributes(item, index, value);
+        });
+      } else if (value instanceof Object) {
+        Object.keys(value).forEach((k) => {
+          this.addNonDefinedComputedAttributes(value[k], k, value);
+        });
+      } else if (
+        owner &&
+        owner instanceof Object &&
+        !(value instanceof Array)
+      ) {
+        // check if value is reactive using getOwnPropertyDescriptor
+        const descriptor = Object.getOwnPropertyDescriptor(owner, key);
+        const isReactive = descriptor && descriptor.get;
+        if (!isReactive) {
+          // remove static value
+          delete owner[key];
+          // add reactive value
+          this.$set(owner, key, value);
+        }
+      }
+      return value;
     },
     validationMessage(validation) {
       const message = [];
@@ -207,8 +301,26 @@ export default {
     setCurrentPage(page) {
       this.currentPage__ = page;
     },
+    setValueAsync(name, value, object = this, defaults = object) {}
   },
   validations() {
     return { vdata: this.ValidationRules__ };
   },
+  created() {
+    this.blockedUpdates = {};
+    const debouncedValuesQueue = [];
+    const setDebouncedValues = debounce(() => {
+      debouncedValuesQueue.forEach((args) => {
+        this.setValue(...args);
+      });
+    }, 210);
+    this.setValueDebounced = (...args) => {
+      debouncedValuesQueue.push(args);
+      setDebouncedValues();
+    };
+    this.setValueAsync = (name, value, object = this, defaults = object) =>
+      Promise.resolve().then(() => {
+        this.setValue(name, value, object, defaults);
+      });
+  }
 };
