@@ -35,8 +35,8 @@ describe('Complex screen', () => {
 
   beforeEach(() => {
     cy.loadFromJson('complex_screen.json');
-    cy.intercept('GET', '/api/1.0/requests/1/files?name=page1', JSON.stringify({data: files.page1}));
-    cy.intercept('GET', '/api/1.0/requests/1/files?name=page2', JSON.stringify({data: files.page2}));
+    cy.intercept('GET', '/api/1.0/requests/1/files?id=1', JSON.stringify({data: files.page1}));
+    cy.intercept('GET', '/api/1.0/requests/1/files?id=2', JSON.stringify({data: files.page2}));
   });
 
   it('Fill page 1', () => {
