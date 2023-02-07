@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Screens from "../e2e/fixtures/FOUR-6788_screen_performance_2.json";
+import Screens from "../../cypress/fixtures/FOUR-6788_screen_performance_2.json";
 
 export default {
   data() {
