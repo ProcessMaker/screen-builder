@@ -73,38 +73,17 @@ export default {
         this.$root.$children[0].mode === "preview" && !window.exampleScreens,
       isReadOnly: this.$attrs.readonly ? this.$attrs.readonly : false,
       fileDataName:
-        this.prefix + this.name + (this.rowId ? `.${this.rowId}` : "")
+        this.prefix + this.name + (this.rowId ? `.${this.rowId}` : ""),
+      requestData: {
+        _parent: { ...this.$parent._parent },
+        ...this.transientData
+      }
     };
   },
   computed: {
     donwloadingNotAvailable() {
       return !this.collection && !this.requestId;
     },
-    // inPreviewMode() {
-    //   return true;
-    // debugger;
-    // return (
-    //   this.$root.$children[0].mode === "preview" && !window.exampleScreens
-    // );
-    // },
-    // messageForPreview() {
-
-    //   return this.$t("Download button for {{fileName}} will appear here. asdfasdf", {
-    //     fileName: this.name
-    //   });
-    // },
-    // messageForNotAvailable() {
-    //   return this.$t("Downloading files is not available.");
-    // },
-    // mode() {
-    //   return this.$root.$children[0].mode;
-    // },
-    // isReadOnly() {
-    //   return this.$attrs.readonly ? this.$attrs.readonly : false;
-    // },
-    // fileDataName() {
-    //   return this.prefix + this.name + (this.rowId ? `.${this.rowId}` : "");
-    // },
     requestId() {
       const requestIdNode = document.head.querySelector(
         'meta[name="request-id"]'
@@ -116,9 +95,6 @@ export default {
         'meta[name="collection-id"]'
       );
       return collectionIdNode ? collectionIdNode.content : false;
-    },
-    requestData() {
-      return { _parent: { ...this.$parent._parent }, ...this.transientData };
     }
   },
   watch: {
@@ -127,9 +103,6 @@ export default {
         this.setFilesInfo();
       },
       deep: true
-    },
-    fileDataName() {
-      this.setFilesInfo();
     }
   },
   mounted() {
@@ -149,19 +122,6 @@ export default {
     },
     requestEndpoint(file) {
       let { endpoint } = this;
-
-      // if (
-      //   _.has(window, "PM4ConfigOverrides.useDefaultUrlDownload") &&
-      //   window.PM4ConfigOverrides.useDefaultUrlDownload
-      // ) {
-      //   // Use default endpoint when coming from a package.
-      //   return `../files/${file.id}/contents`;
-      // }
-
-      // if (_.has(window, "PM4ConfigOverrides.getFileEndpoint")) {
-      //   endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-      //   return `${endpoint}/${file.id}`;
-      // }
       if (
         window.PM4ConfigOverrides &&
         window.PM4ConfigOverrides.useDefaultUrlDownload
@@ -235,7 +195,6 @@ export default {
       }
     },
     setFilesInfoFromRequest() {
-      debugger;
       const fileId = this.value
         ? this.value
         : _.get(this.requestData, this.fileDataName, null);
