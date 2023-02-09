@@ -25,13 +25,13 @@ describe("screen error nested calc", () => {
 
     // Check the data of the screen
     cy.assertPreviewData({
-      result: "new value to parent",
       parentInput: "new value to parent",
       form_record_list_1: [
         {
           result: "new value to parent"
         }
-      ]
+      ],
+      result: "new value to parent",
     });
   });
 });
