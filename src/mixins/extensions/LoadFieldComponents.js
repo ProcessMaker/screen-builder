@@ -28,13 +28,31 @@ export default {
       });
     },
     createObjectURL(base64image) {
-      const binaryData = atob(base64image.split(",")[1]);
-      const binaryArray = new Uint8Array(binaryData.length);
-      for (let i = 0; i < binaryData.length; i++) {
-        binaryArray[i] = binaryData.charCodeAt(i);
+      if (base64image) {
+        const binaryData = atob(base64image.split(",")[1]);
+        const binaryArray = new Uint8Array(binaryData.length);
+        for (let i = 0; i < binaryData.length; i++) {
+          binaryArray[i] = binaryData.charCodeAt(i);
+        }
+        const blob = new Blob([binaryArray], { type: "image/jpeg" });
+        return URL.createObjectURL(blob);
       }
-      const blob = new Blob([binaryArray], { type: "image/jpeg" });
-      return URL.createObjectURL(blob);
+      return false;
+    },
+    getBlobImageObject(element) {
+      const allBlobImages =
+        this.$store.getters["blobImagesModule/allBlobImages"];
+      let blobImage = allBlobImages.find((item) => {
+        return item.image === element.config.image;
+      });
+      if (!blobImage) {
+        blobImage = {
+          image: element.config.image,
+          blob: this.createObjectURL(element.config.image)
+        };
+        this.$store.dispatch("blobImagesModule/addBlobImages", blobImage);
+      }
+      return blobImage.blob;
     },
     loadFieldProperties({
       properties,
@@ -52,22 +70,7 @@ export default {
         if (componentName === "FormImage") {
           this.registerVariable(element.config.variableName, element);
           delete properties.image;
-
-          if (
-            !this.$store.getters["blobImagesModule/allBlobImages"][
-              element.config.name
-            ]
-          ) {
-            this.$store.dispatch(
-              "blobImagesModule/addBlobImages",
-              element.config
-            );
-          }
-          const blobImage =
-            this.$store.getters["blobImagesModule/allBlobImages"][
-              element.config.name
-            ];
-          properties[":image"] = this.byRef(blobImage);
+          properties[":image"] = this.byRef(this.getBlobImageObject(element));
         } else if (this.validVariableName(element.config.name)) {
           this.registerVariable(element.config.name, element);
           // v-model are not assigned directly to the field name, to prevent invalid references like:
