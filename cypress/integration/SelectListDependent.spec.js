@@ -360,50 +360,48 @@ describe('select list mustache', () => {
     }];
 
     let addresses = [];
-    cy.intercept({
-      method: 'POST',
-      url: '/api/1.0/requests/data_sources/5',
-      onRequest: ({ xhr, request }) => {
-        switch (request.body.config.outboundConfig[0].value) {
-          case 'data.city_id=1':
-            addresses = LaPazAddresses;
-            break;
-          case 'data.city_id=2':
-            addresses = SantaCruzAddresses;
-            break;
-          case 'data.city_id=3':
-            addresses = LasVegasAddresses;
-            break;
-          case 'data.city_id=4':
-            addresses = AshevilleAddresses;
-            break;
-          default:
-            addresses = [];
-        }
-        const response = {
-          'data': addresses,
-          'meta': {
-            'filter': '',
-            'sort_by': '',
-            'sort_order': '',
-            'count': addresses.length,
-            'total_pages': 1,
-            'current_page': 1,
-            'from': 1,
-            'last_page': 1,
-            'path': '/api/1.0/collections/5/records',
-            'per_page': 9223372036854775807,
-            'to': addresses.length,
-            'total': addresses.length,
-          },
-        };
-        xhr.setRequestHeader(
-          'X-Cypress-Response',
-          '"response":' + JSON.stringify(response) + '}',
-        );
-      },
-      response: '{"status": 200',
-    });
+    cy.intercept('POST', '/api/1.0/requests/data_sources/5', (req) => {
+      switch (req.body.config.outboundConfig[0].value) {
+        case 'data.city_id=1':
+          addresses = LaPazAddresses;
+          break;
+        case 'data.city_id=2':
+          addresses = SantaCruzAddresses;
+          break;
+        case 'data.city_id=3':
+          addresses = LasVegasAddresses;
+          break;
+        case 'data.city_id=4':
+          addresses = AshevilleAddresses;
+          break;
+        default:
+          addresses = [];
+      }
+      const response = {
+        'data': addresses,
+        'meta': {
+          'filter': '',
+          'sort_by': '',
+          'sort_order': '',
+          'count': addresses.length,
+          'total_pages': 1,
+          'current_page': 1,
+          'from': 1,
+          'last_page': 1,
+          'path': '/api/1.0/collections/5/records',
+          'per_page': 9223372036854775807,
+          'to': addresses.length,
+          'total': addresses.length,
+        },
+      };
+      req.reply({
+        headers: {
+          'X-Cypress-Response': `"response":${JSON.stringify(response)}}`
+        },
+        statusCode: 200,
+        body: { response }
+      })
+    })
   });
 
   it('Verify Load values in multiselect list mustache + collection', () => {
