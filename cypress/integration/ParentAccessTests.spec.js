@@ -1,6 +1,5 @@
 describe("Test access to _parent", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 
@@ -41,22 +40,22 @@ describe("Test access to _parent", () => {
       parentInput: "value in parent",
       loop_1: [
         {
-          parentInput: "value in parent",
           loop_1: [
             {
               form_input_1: "value in parent:value in loop"
             }
-          ]
+          ],
+          parentInput: "value in parent"
         }
       ],
       form_record_list_1: [
         {
-          parentInput: "value in parent",
           loop_1: [
             {
               form_input_1: "value in parent:value in record list + loop"
             }
-          ]
+          ],
+          parentInput: "value in parent"
         }
       ]
     });
