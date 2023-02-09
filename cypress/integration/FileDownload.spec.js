@@ -157,7 +157,7 @@ function uploadMultiFile() {
       file_name: 'file1.jpeg',
       name: 'file1',
     }
-  ).as('getFileInfo');
+  ).as('getFileInfoFile1');
 }
 
 function findTheFile(fileName) {
