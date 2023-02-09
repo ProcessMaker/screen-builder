@@ -1,6 +1,5 @@
 describe('Select List default Value', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

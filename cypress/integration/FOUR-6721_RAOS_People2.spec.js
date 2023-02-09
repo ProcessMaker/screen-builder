@@ -290,9 +290,8 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
   };
 
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/38",
       JSON.stringify({
@@ -316,7 +315,7 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
         }
       })
     ).as("DataSourceOne");
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/22",
       JSON.stringify({

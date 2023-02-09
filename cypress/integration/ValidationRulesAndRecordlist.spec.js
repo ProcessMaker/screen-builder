@@ -2,7 +2,6 @@ import moment from 'moment';
 
 describe('Validation Rules And Recordlist', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 
