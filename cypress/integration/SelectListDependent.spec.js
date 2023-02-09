@@ -360,7 +360,7 @@ describe('select list mustache', () => {
     }];
 
     let addresses = [];
-    cy.route({
+    cy.intercept({
       method: 'POST',
       url: '/api/1.0/requests/data_sources/5',
       onRequest: ({ xhr, request }) => {

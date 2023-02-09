@@ -1,7 +1,6 @@
 
 describe('Validation Default value', () => {
   beforeEach(() => {
-    cy.server();
     cy.visit('/');
   });
 

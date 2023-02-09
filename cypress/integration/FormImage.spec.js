@@ -32,7 +32,6 @@ describe('Form Image', () => {
   });
 
   it('Image by variable and load signature', () => {
-    cy.server();
     cy.visit('/');
     cy.loadFromJson("screen_parent_signature.json", 0);
 

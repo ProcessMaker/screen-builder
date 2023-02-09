@@ -6,8 +6,7 @@ describe('Select List Cache', () => {
     win.document.head.appendChild(meta);
   }
   beforeEach(() => {
-    cy.server();
-    cy.route(
+    cy.intercept(
       'GET',
       '/api/1.0/requests/data_sources/3/resources/ListAll/data**',
       JSON.stringify({
