@@ -80,8 +80,8 @@ describe('Validation Calcs properties and loop', () => {
       form_checkbox_1: true,
       loop_1: [
         {
-          decription: "Color is :red",
-          color: "red"
+          color: "red",
+          decription: "Color is :red"
         },
         {
           decription: "Color is :green",
