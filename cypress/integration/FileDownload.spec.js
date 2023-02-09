@@ -1,5 +1,9 @@
+import { validateImage } from "../support/utils";
+
+const downloadsFolder = Cypress.config('downloadsFolder');
+
 describe('File Download', () => {
-  beforeEach(() => {
+  beforeEach(function () {
     cy.visit('/');
     cy.window().then(win => {
       // Add request-id header
@@ -24,31 +28,28 @@ describe('File Download', () => {
     cy.get('[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains('avatar.jpeg');
   });
 
-  it('Can download a single file', () => {
+  it('Can download a single file', function () {
     uploadSingleFile();
     // Mock file download
-    cy.intercept('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
+    cy.intercept('/api/1.0/files/1/contents', {fixture: 'avatar.jpeg'}).as('download');
 
     // A standard file is downloadable
     cy.get('.row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
-    cy.wait("@download").then(async (xhr) => {
-      const content = await xhr.response.body.text();
-      expect(content).to.equal("avatar.jpeg");
+    cy.wait("@download").then(() => {
+      findTheFile("avatar.jpeg");
     });
 
     // A Loop file is downloadable
     cy.get('[icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
-    cy.wait("@download").then(async (xhr) => {
-      const content = await xhr.response.body.text();
-      expect(content).to.equal("avatar.jpeg");
+    cy.wait("@download").then(() => {
+      findTheFile("avatar.jpeg");
     });
 
     // A Record List file is downloadable
     cy.get('[data-cy=add-row]').click();
     cy.get('[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').eq(0).click();
-    cy.wait("@download").then(async (xhr) => {
-      const content = await xhr.response.body.text();
-      expect(content).to.equal("avatar.jpeg");
+    cy.wait("@download").then(() => {
+      findTheFile("avatar.jpeg");
     });
   });
 
@@ -68,24 +69,22 @@ describe('File Download', () => {
   it('Can download multiple files', () => {
     uploadMultiFile();
     // Mock the first file download
-    cy.intercept('/api/1.0/files/1/contents', 'avatar.jpeg').as('download');
+    cy.intercept('/api/1.0/files/1/contents', {fixture: 'avatar.jpeg'}).as('download');
     // Mock the second file download
-    cy.intercept('/api/1.0/files/2/contents', 'file1.jpeg').as('download');
+    cy.intercept('/api/1.0/files/2/contents', {fixture: 'file1.jpeg'}).as('downloadFile1');
     cy.wait(1000);
     // The first file should be downloaded
     cy.get('.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn')
       .click();
-    cy.wait('@download').then(async (xhr) => {
-      const content = await xhr.response.body.text();
-      expect(content).to.equal("avatar.jpeg");
+    cy.wait("@download").then(() => {
+      findTheFile("avatar.jpeg");
     });
 
     // The second file should be downloaded
     cy.get('.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="2-file1"] > .btn')
       .click();
-    cy.wait("@download").then(async (xhr) => {
-      const content = await xhr.response.body.text();
-      expect(content).to.equal("file1.jpeg");
+    cy.wait("@downloadFile1").then(() => {
+      findTheFile("file1.jpeg");
     });
 
     // Assert Record List multiple files are downloadable
@@ -94,18 +93,16 @@ describe('File Download', () => {
     cy.get('[data-cy=screen-renderer] > :nth-child(1) > [name="record_page"] > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn')
       .eq(0)
       .click();
-    cy.wait("@download").then(async (xhr) => {
-      const content = await xhr.response.body.text();
-      expect(content).to.equal("avatar.jpeg");
+    cy.wait("@download").then(() => {
+      findTheFile("avatar.jpeg");
     });
 
     // The second file should be downloaded
     cy.get('[data-cy=screen-renderer] > :nth-child(1) > [name="record_page"] > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="2-file1"] > .btn')
       .eq(0)
       .click();
-    cy.wait("@download").then(async (xhr) => {
-      const content = await xhr.response.body.text();
-      expect(content).to.equal("file1.jpeg");
+    cy.wait("@downloadFile1").then(() => {
+      findTheFile("file1.jpeg");
     });
   });
 });
@@ -161,4 +158,16 @@ function uploadMultiFile() {
       name: 'file1',
     }
   ).as('getFileInfo');
+}
+
+function findTheFile(fileName) {
+  cy.log('**find the image**')
+  const mask = `${downloadsFolder}/*.jpeg`
+
+  cy.task('findFiles', mask).then((foundImage) => {
+    expect(foundImage).to.be.a('string')
+    cy.log(`found image ${foundImage}`)
+    cy.log('**confirm downloaded image**')
+    validateImage(fileName)
+  })
 }
