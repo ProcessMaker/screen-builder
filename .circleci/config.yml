@@ -38,7 +38,7 @@ jobs:
         command: circleci tests glob "cypress/integration/**/*.js" | circleci tests split > /tmp/tests-to-run
     - run:
         name: run tests
-        command: TZ=UTC start-server-and-test 'vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint --mode e2e' http://localhost:8080/ 'cypress run --headless --browser chrome --spec $(cat /tmp/tests-to-run)'
+        command: npm run test:ci
     - run:
         name: preparate coverage
         command: mkdir coverage-test && mv .nyc_output/out.json coverage-test/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
