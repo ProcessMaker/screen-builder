@@ -175,7 +175,7 @@ describe('Watchers', () => {
     cy.get('[data-cy="watchers-watcher-variable"] input').clear().type('form_input_1');
     cy.get('[data-cy="watchers-watcher-variable"]').should('contain.text', 'No elements found.');
     cy.get('[data-cy="watchers-button-save"]').click();
-    cy.get('#watcherConfig').should('contain.text', 'The Variable to Watch field is required');
+    cy.get('#watcherConfig').should('contain.text', 'The Variable to Watch * field is required');
   });
   it('Test synchronous watcher', () => {
     // Mock script response
