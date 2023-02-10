@@ -405,7 +405,7 @@ describe('Watchers', () => {
       ],
     });
   });
-  it.only('Focuses the first field that has an error', () => {
+  it('Focuses the first field that has an error', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy="topbar-watchers"]').click();
