@@ -2,209 +2,31 @@
   <b-row class="h-100 m-0">
     <!-- Controls -->
     <b-col class="overflow-hidden h-100 p-0 controls-column">
-   
       <!-- Here sidebar -->
       <BuilderSidebar
         :controls="controls"
         :render-controls="renderControls"
         :collator="collator"
+        :config="config"
       />
     </b-col>
 
     <!-- Renderer -->
     <b-col
       id="screen-container"
-      class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2"
+      class="
+        overflow-auto
+        mh-100
+        ml-4
+        mr-4
+        p-0
+        d-flex
+        flex-column
+        position-relative
+        pt-2
+      "
     >
-    Here renderer side
-      <!-- <b-input-group size="sm" class="bg-white mt-3">
-        <b-form-select
-          v-if="showToolbar"
-          v-model="currentPage"
-          class="form-control"
-          data-cy="toolbar-page"
-        >
-          <option v-for="(data, page) in config" :key="page" :value="page">
-            {{ data.name }}
-          </option>
-        </b-form-select>
-
-        <div v-if="showToolbar">
-          <b-button
-            size="sm"
-            variant="secondary"
-            class="ml-1"
-            :title="$t('Edit Page Title')"
-            data-cy="toolbar-edit"
-            @click="openEditPageModal(currentPage)"
-          >
-            <i class="far fa-edit" />
-          </b-button>
-
-          <b-button
-            size="sm"
-            variant="danger"
-            class="ml-1"
-            :title="$t('Delete Page')"
-            :disabled="!displayDelete"
-            data-cy="toolbar-remove"
-            @click="confirmDelete()"
-          >
-            <i class="far fa-trash-alt" />
-          </b-button>
-
-          <b-button
-            v-b-modal.addPageModal
-            size="sm"
-            variant="secondary"
-            class="ml-1 mr-1"
-            :title="$t('Add New Page')"
-            data-cy="toolbar-add"
-            @click="originalPageName = null"
-          >
-            <i class="fas fa-plus" />
-          </b-button>
-        </div>
-
-        <b-button-group size="sm" class="ml-1 ml-auto">
-          <b-button :disabled="!canUndo" data-cy="toolbar-undo" @click="undo">{{
-            $t("Undo")
-          }}</b-button>
-          <b-button :disabled="!canRedo" data-cy="toolbar-redo" @click="redo">{{
-            $t("Redo")
-          }}</b-button>
-        </b-button-group>
-
-        <hr class="w-100" />
-      </b-input-group>
-
-      <div
-        v-if="isCurrentPageEmpty"
-        data-cy="screen-drop-zone"
-        class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4"
-      >
-        {{ $t("Drag an element here") }}
-      </div>
-
-      <draggable
-        v-if="renderControls"
-        :key="editorContentKey"
-        data-cy="editor-content"
-        class="h-100"
-        ghost-class="form-control-ghost"
-        :value="config[currentPage].items"
-        v-bind="{
-          group: { name: 'controls' },
-          swapThreshold: 0.5
-        }"
-        @input="updateConfig"
-      >
-        <div
-          v-for="(element, index) in config[currentPage].items"
-          :key="index"
-          class="control-item mt-4 mb-4"
-          :class="{
-            selected: selected === element,
-            hasError: hasError(element)
-          }"
-          :selector="element.config.customCssSelector"
-          @click="inspect(element)"
-        >
-          <div
-            v-if="element.container"
-            data-cy="screen-element-container"
-            class="card"
-            @click="inspect(element)"
-          >
-            <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-            >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
-              <i
-                v-if="element.config.icon"
-                :class="element.config.icon"
-                class="mr-2 ml-1"
-              />
-              {{ element.config.name || element.label || $t("Field Name") }}
-              <div class="ml-auto">
-                <button
-                  class="btn btn-sm btn-secondary mr-2"
-                  :title="$t('Copy Control')"
-                  @click="duplicateItem(index)"
-                >
-                  <i class="fas fa-copy text-light" />
-                </button>
-                <button
-                  class="btn btn-sm btn-danger"
-                  :title="$t('Delete Control')"
-                  @click="deleteItem(index)"
-                >
-                  <i class="far fa-trash-alt text-light" />
-                </button>
-              </div>
-            </div>
-            <component
-              :is="element['editor-component']"
-              v-model="element.items"
-              :validation-errors="validationErrors"
-              class="card-body"
-              :class="elementCssClass(element)"
-              :selected="selected"
-              :config="element.config"
-              @inspect="inspect"
-              @update-state="updateState"
-            />
-          </div>
-
-          <div v-else class="card" data-cy="screen-element-container">
-            <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-            >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
-              <i
-                v-if="element.config.icon"
-                :class="element.config.icon"
-                class="mr-2 ml-1"
-              />
-              {{ element.config.name || $t("Variable Name") }}
-              <div class="ml-auto">
-                <button
-                  class="btn btn-sm btn-secondary mr-2"
-                  :title="$t('Copy Control')"
-                  @click="duplicateItem(index)"
-                >
-                  <i class="fas fa-copy text-light" />
-                </button>
-                <button
-                  class="btn btn-sm btn-danger"
-                  :title="$t('Delete Control')"
-                  @click="deleteItem(index)"
-                >
-                  <i class="far fa-trash-alt text-light" />
-                </button>
-              </div>
-            </div>
-            <component
-              v-bind="element.config"
-              :is="element['editor-component']"
-              :tabindex="element.config.interactive ? 0 : -1"
-              class="card-body m-0 pb-4 pt-4"
-              :class="[
-                elementCssClass(element),
-                { 'prevent-interaction': !element.config.interactive }
-              ]"
-              @input="
-                element.config.interactive
-                  ? (element.config.content = $event)
-                  : null
-              "
-              @focusout.native="updateState"
-            />
-          </div>
-        </div>
-      </draggable> -->
+      <BuilderBody :config="config" />
     </b-col>
 
     <!-- Inspector -->
@@ -222,7 +44,16 @@
               v-if="getInspectorFields(accordion).length > 0"
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
-              class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+              class="
+                text-left
+                card-header
+                d-flex
+                align-items-center
+                w-100
+                outline-0
+                text-capitalize
+                shadow-none
+              "
               :data-cy="`accordion-${accordionName(accordion).replace(
                 ' ',
                 ''
@@ -359,7 +190,7 @@ import * as inspector from "./inspector";
 import accordions from "./accordions";
 import { keyNameProperty } from "../form-control-common-properties";
 // eslint-disable-next-line import/no-unresolved, import/extensions
-// import VariableNameGenerator from "@/components/VariableNameGenerator";
+import VariableNameGenerator from "@/components/VariableNameGenerator";
 // eslint-disable-next-line import/no-unresolved, import/extensions
 import testing from "@/mixins/testing";
 // eslint-disable-next-line import/no-unresolved, import/extensions
@@ -373,6 +204,7 @@ import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import { formTypes } from "@/global-properties";
 
 import BuilderSidebar from "./screenBuilder/builder-sidebar";
+import BuilderBody from "./screenBuilder/builder-body";
 // eslint-disable-next-line import/no-extraneous-dependencies
 const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
@@ -405,16 +237,17 @@ Validator.register(
   "Columns must add to 12"
 );
 
-// const defaultConfig = [
-//   {
-//     name: "Default",
-//     items: []
-//   }
-// ];
+const defaultConfig = [
+  {
+    name: "Default",
+    items: []
+  }
+];
 
 export default {
   components: {
     BuilderSidebar,
+    BuilderBody,
     draggable,
     FormInput,
     FormSelectList,
@@ -457,14 +290,14 @@ export default {
     }
   },
   data() {
-    // const config = this.initialConfig || defaultConfig;
-    // this.migrateConfig(config);
-    // const generator = new VariableNameGenerator();
-    // const variables = generator.GetVariableNames(config);
+    const config = this.initialConfig || defaultConfig;
+    this.migrateConfig(config);
+    const generator = new VariableNameGenerator();
+    const variables = generator.GetVariableNames(config);
 
-    // if (this.title && config[0].name === "Default") {
-    //   config[0].name = this.title;
-    // }
+    if (this.title && config[0].name === "Default") {
+      config[0].name = this.title;
+    }
 
     return {
       currentPage: 0,
@@ -478,7 +311,7 @@ export default {
       editPageIndex: null,
       editPageName: "",
       originalPageName: null,
-      // config,
+      config,
       confirmMessage: "",
       pageDelete: 0,
       translated: [],
@@ -518,18 +351,18 @@ export default {
         .sort((a, b) => {
           return this.collator.compare(a.label, b.label);
         });
-    },
-    isCurrentPageEmpty() {
-      return this.config[this.currentPage].items.length === 0;
-    },
-    showToolbar() {
-      return this.screenType === formTypes.form;
     }
+    // isCurrentPageEmpty() {
+    //   return this.config[this.currentPage].items.length === 0;
+    // },
+    // showToolbar() {
+    //   return this.screenType === formTypes.form;
+    // }
   },
   watch: {
     config: {
       handler() {
-        this.checkForCaptchaInLoops();
+        // this.checkForCaptchaInLoops();
         this.$emit("change", this.config);
       },
       deep: true
@@ -631,106 +464,106 @@ export default {
       this.accordions.forEach((panel) => (panel.open = false));
       accordion.open = true;
     },
-    // migrateConfig(config = this.config) {
-    //   config.forEach((page) => this.replaceFormText(page.items));
-    //   config.forEach((page) => this.migrateFormSubmit(page.items));
-    //   config.forEach((page) => this.updateFieldNameValidation(page.items));
-    //   config.forEach((page) =>
-    //     this.removeDataVariableFromNestedScreens(page.items)
-    //   );
-    // },
-    // updateFieldNameValidation(items) {
-    //   items.forEach((item) => {
-    //     if (item.inspector) {
-    //       item.inspector.forEach((inspector) => {
-    //         if (
-    //           inspector.field === "name" &&
-    //           "validation" in inspector.config &&
-    //           inspector.config.name !== "DataVariable" &&
-    //           item.component !== "FileUpload" &&
-    //           item.component !== "FormButton"
-    //         ) {
-    //           inspector.config.validation = keyNameProperty.config.validation;
-    //         }
-    //       });
-    //     }
-    //     if (item.items instanceof Array) {
-    //       this.replaceFormText(item.items);
-    //     }
-    //   });
-    // },
-    // removeDataVariableFromNestedScreens(items) {
-    //   items.forEach((item) => {
-    //     if (item.inspector) {
-    //       const hasDataVariable = item.inspector.find(
-    //         (inspector) => inspector.config.name === "DataVariable"
-    //       );
-    //       item.inspector = item.inspector.filter(
-    //         (inspector) => inspector.config.name !== "DataVariable"
-    //       );
-    //       if (hasDataVariable) {
-    //         delete item.config.name;
-    //       }
-    //     }
-    //   });
-    // },
-    // replaceFormText(items) {
-    //   items.forEach((item) => {
-    //     if (item.component === "FormText") {
-    //       item.component = "FormHtmlEditor";
-    //       item["editor-component"] = "FormHtmlEditor";
-    //       const style =
-    //         (item.config.fontSize
-    //           ? "font-size: " + item.config.fontSize + ";"
-    //           : "") +
-    //         (item.config.fontWeight
-    //           ? "font-weight: " + item.config.fontWeight + ";"
-    //           : "") +
-    //         (item.config.textAlign
-    //           ? "text-align: " + item.config.textAlign + ";"
-    //           : "");
-    //       item.config = {
-    //         content:
-    //           '<div style="' + style + '">' + item.config.label + "</div>",
-    //         interactive: true
-    //       };
-    //     }
-    //     if (item.items instanceof Array) {
-    //       this.replaceFormText(item.items);
-    //     }
-    //   });
-    // },
-    // migrateFormSubmit(items) {
-    //   items.forEach((item) => {
-    //     if (item["editor-control"] !== "FormSubmit") {
-    //       item["editor-control"] = item["editor-component"];
-    //     }
+    migrateConfig(config = this.config) {
+      config.forEach((page) => this.replaceFormText(page.items));
+      config.forEach((page) => this.migrateFormSubmit(page.items));
+      config.forEach((page) => this.updateFieldNameValidation(page.items));
+      config.forEach((page) =>
+        this.removeDataVariableFromNestedScreens(page.items)
+      );
+    },
+    updateFieldNameValidation(items) {
+      items.forEach((item) => {
+        if (item.inspector) {
+          item.inspector.forEach((inspector) => {
+            if (
+              inspector.field === "name" &&
+              "validation" in inspector.config &&
+              inspector.config.name !== "DataVariable" &&
+              item.component !== "FileUpload" &&
+              item.component !== "FormButton"
+            ) {
+              inspector.config.validation = keyNameProperty.config.validation;
+            }
+          });
+        }
+        if (item.items instanceof Array) {
+          this.replaceFormText(item.items);
+        }
+      });
+    },
+    removeDataVariableFromNestedScreens(items) {
+      items.forEach((item) => {
+        if (item.inspector) {
+          const hasDataVariable = item.inspector.find(
+            (inspector) => inspector.config.name === "DataVariable"
+          );
+          item.inspector = item.inspector.filter(
+            (inspector) => inspector.config.name !== "DataVariable"
+          );
+          if (hasDataVariable) {
+            delete item.config.name;
+          }
+        }
+      });
+    },
+    replaceFormText(items) {
+      items.forEach((item) => {
+        if (item.component === "FormText") {
+          item.component = "FormHtmlEditor";
+          item["editor-component"] = "FormHtmlEditor";
+          const style =
+            (item.config.fontSize
+              ? "font-size: " + item.config.fontSize + ";"
+              : "") +
+            (item.config.fontWeight
+              ? "font-weight: " + item.config.fontWeight + ";"
+              : "") +
+            (item.config.textAlign
+              ? "text-align: " + item.config.textAlign + ";"
+              : "");
+          item.config = {
+            content:
+              '<div style="' + style + '">' + item.config.label + "</div>",
+            interactive: true
+          };
+        }
+        if (item.items instanceof Array) {
+          this.replaceFormText(item.items);
+        }
+      });
+    },
+    migrateFormSubmit(items) {
+      items.forEach((item) => {
+        if (item["editor-control"] !== "FormSubmit") {
+          item["editor-control"] = item["editor-component"];
+        }
 
-    //     if (item.config.event === "submit") {
-    //       if (item["editor-component"] === "FormNestedScreen") {
-    //         // Old nested screens erroneously had an event key. Remove it here
-    //         // and set the editor-control back to FormNestedScreen.
-    //         delete item.config.event;
-    //         item["editor-control"] = "FormNestedScreen";
-    //         item.config.name = "Nested Screen";
-    //       } else {
-    //         if (item["editor-control"] !== "FormImage") {
-    //           item["editor-control"] = "FormSubmit";
-    //         }
-    //       }
-    //     }
-    //     if (item.config.event === "pageNavigate") {
-    //       item["editor-control"] = "PageNavigation";
-    //     }
-    //     if (
-    //       item.items instanceof Array &&
-    //       item.component === "FormMultiColumn"
-    //     ) {
-    //       item["editor-control"] = "FormMultiColumn";
-    //       item.items.forEach((column) => this.migrateFormSubmit(column));
-    //     }
-    //   });
-    // },
+        if (item.config.event === "submit") {
+          if (item["editor-component"] === "FormNestedScreen") {
+            // Old nested screens erroneously had an event key. Remove it here
+            // and set the editor-control back to FormNestedScreen.
+            delete item.config.event;
+            item["editor-control"] = "FormNestedScreen";
+            item.config.name = "Nested Screen";
+          } else {
+            if (item["editor-control"] !== "FormImage") {
+              item["editor-control"] = "FormSubmit";
+            }
+          }
+        }
+        if (item.config.event === "pageNavigate") {
+          item["editor-control"] = "PageNavigation";
+        }
+        if (
+          item.items instanceof Array &&
+          item.component === "FormMultiColumn"
+        ) {
+          item["editor-control"] = "FormMultiColumn";
+          item.items.forEach((column) => this.migrateFormSubmit(column));
+        }
+      });
+    },
     getAllAccordionizedFields() {
       if (this._allAccordionizedFields) {
         return this._allAccordionizedFields;
@@ -1013,10 +846,10 @@ export default {
     this.initiateLanguageSupport();
   },
   mounted() {
-    this.checkForCaptchaInLoops();
-    this.$root.$on("nested-screen-updated", () => {
-      this.checkForCaptchaInLoops();
-    });
+    // this.checkForCaptchaInLoops();
+    // this.$root.$on("nested-screen-updated", () => {
+    //   this.checkForCaptchaInLoops();
+    // });
   }
 };
 </script>
