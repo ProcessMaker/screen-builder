@@ -26,11 +26,14 @@
         pt-2
       "
     >
-      <BuilderBody 
+      <BuilderBody
+        :controls="controls"
         :config="config"
         :render-controls="renderControls"
         :validation-errors="validationErrors"
         @setElementCssClass="setElementCssClass"
+        :accordions="accordions"
+        :screen-type="screenType"
       />
     </b-col>
 
@@ -39,7 +42,7 @@
       v-if="renderControls"
       class="overflow-hidden h-100 p-0 inspector-column"
     >
-      <b-card
+      <!-- <b-card
         no-body
         class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
@@ -106,7 +109,7 @@
             </b-collapse>
           </template>
         </b-card-body>
-      </b-card>
+      </b-card> -->
     </b-col>
 
     <!-- Modals -->
@@ -337,26 +340,26 @@ export default {
     builder() {
       return this;
     },
-    canUndo() {
-      return this.$store.getters["undoRedoModule/canUndo"];
-    },
-    canRedo() {
-      return this.$store.getters["undoRedoModule/canRedo"];
-    },
-    displayDelete() {
-      return this.config.length > 1;
-    },
-    filteredControls() {
-      return this.controls
-        .filter((control) => {
-          return control.label
-            .toLowerCase()
-            .includes(this.filterQuery.toLowerCase());
-        })
-        .sort((a, b) => {
-          return this.collator.compare(a.label, b.label);
-        });
-    }
+    // canUndo() {
+    //   return this.$store.getters["undoRedoModule/canUndo"];
+    // },
+    // canRedo() {
+    //   return this.$store.getters["undoRedoModule/canRedo"];
+    // },
+    // displayDelete() {
+    //   return this.config.length > 1;
+    // },
+    // filteredControls() {
+    //   return this.controls
+    //     .filter((control) => {
+    //       return control.label
+    //         .toLowerCase()
+    //         .includes(this.filterQuery.toLowerCase());
+    //     })
+    //     .sort((a, b) => {
+    //       return this.collator.compare(a.label, b.label);
+    //     });
+    // }
     // isCurrentPageEmpty() {
     //   return this.config[this.currentPage].items.length === 0;
     // },
@@ -569,23 +572,23 @@ export default {
         }
       });
     },
-    getAllAccordionizedFields() {
-      if (this._allAccordionizedFields) {
-        return this._allAccordionizedFields;
-      }
-      this._allAccordionizedFields = this.accordions.flatMap((accordion) => {
-        return accordion.fields.map((fieldName) => {
-          if (typeof fieldName === "string") {
-            return fieldName;
-          }
-          return fieldName.name;
-        });
-      });
-      return this._allAccordionizedFields;
-    },
-    knownField(field) {
-      return this.getAllAccordionizedFields().includes(field);
-    },
+    // getAllAccordionizedFields() {
+    //   if (this._allAccordionizedFields) {
+    //     return this._allAccordionizedFields;
+    //   }
+    //   this._allAccordionizedFields = this.accordions.flatMap((accordion) => {
+    //     return accordion.fields.map((fieldName) => {
+    //       if (typeof fieldName === "string") {
+    //         return fieldName;
+    //       }
+    //       return fieldName.name;
+    //     });
+    //   });
+    //   return this._allAccordionizedFields;
+    // },
+    // knownField(field) {
+    //   return this.getAllAccordionizedFields().includes(field);
+    // },
     // getInspectorFields(accordion) {
     //   if (!this.inspection.inspector) {
     //     return [];
@@ -629,37 +632,37 @@ export default {
     //     return false;
     //   });
     // },
-    getInspectorFields(accordion) {
-      if (!this.inspection.inspector) {
-        return [];
-      }
+    // getInspectorFields(accordion) {
+    //   if (!this.inspection.inspector) {
+    //     return [];
+    //   }
 
-      const accordionFields = accordion.fields
-        .filter((field) => {
-          if (typeof field !== "string") {
-            const { component } = this.inspection;
-            const { showFor, hideFor } = field;
+    //   const accordionFields = accordion.fields
+    //     .filter((field) => {
+    //       if (typeof field !== "string") {
+    //         const { component } = this.inspection;
+    //         const { showFor, hideFor } = field;
 
-            return showFor === component || hideFor !== component;
-          }
+    //         return showFor === component || hideFor !== component;
+    //       }
 
-          return true;
-        })
-        .map((field) => (typeof field !== "string" ? field.name : field));
+    //       return true;
+    //     })
+    //     .map((field) => (typeof field !== "string" ? field.name : field));
 
-      const control = this.controls.find(
-        (item) => item["editor-control"] === this.inspection["editor-control"]
-      ) ||
-        this.controls.find(
-          (item) => item.component === this.inspection.component
-        ) || { inspector: [] };
+    //   const control = this.controls.find(
+    //     (item) => item["editor-control"] === this.inspection["editor-control"]
+    //   ) ||
+    //     this.controls.find(
+    //       (item) => item.component === this.inspection.component
+    //     ) || { inspector: [] };
 
-      return control.inspector.filter(
-        (input) =>
-          accordionFields.includes(input.field) ||
-          (!this.knownField(input.field) && accordion.name === "Configuration")
-      );
-    },
+    //   return control.inspector.filter(
+    //     (input) =>
+    //       accordionFields.includes(input.field) ||
+    //       (!this.knownField(input.field) && accordion.name === "Configuration")
+    //   );
+    // },
     // updateState() {
     //   this.$store.dispatch("undoRedoModule/pushState", {
     //     config: JSON.stringify(this.config),

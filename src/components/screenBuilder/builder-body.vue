@@ -221,7 +221,19 @@ export default {
     validationErrors: {
       type: Array,
       default: null
-    }
+    },
+    accordions:{
+      type: Array,
+      default: null
+    },
+    controls:{
+      type: Array,
+      default: null
+    },
+    screenType: {
+      type: String,
+      default: formTypes.form,
+    },
     //   collator: {
     //     type: Intl.Collator,
     //     default: null
@@ -246,7 +258,11 @@ export default {
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
+      debugger;
       return this.screenType === formTypes.form;
+    },
+    displayDelete() {
+      return this.config.length > 1;
     },
   
   },
@@ -286,7 +302,67 @@ export default {
     },
     elementCssClass(element) {
       this.$emit("setElementCssClass",element)
-    }
+    },
+    inspect(element = {}) {
+      this.inspection = element;
+      this.selected = element;
+      const defaultAccordion = this.accordions.find(
+        (accordion) => this.getInspectorFields(accordion).length > 0
+      );
+      if (defaultAccordion) {
+        // this.openAccordion(defaultAccordion);
+        console.log("open acordion");
+      }
+    },
+    getInspectorFields(accordion) {
+      if (!this.inspection.inspector) {
+        return [];
+      }
+
+      const accordionFields = accordion.fields
+        .filter((field) => {
+          if (typeof field !== "string") {
+            const { component } = this.inspection;
+            const { showFor, hideFor } = field;
+
+            return showFor === component || hideFor !== component;
+          }
+
+          return true;
+        })
+        .map((field) => (typeof field !== "string" ? field.name : field));
+
+      const control = this.controls.find(
+        (item) => item["editor-control"] === this.inspection["editor-control"]
+      ) ||
+        this.controls.find(
+          (item) => item.component === this.inspection.component
+        ) || { inspector: [] };
+
+      return control.inspector.filter(
+        (input) =>
+          accordionFields.includes(input.field) ||
+          (!this.knownField(input.field) && accordion.name === "Configuration")
+      );
+    },
+    getAllAccordionizedFields() {
+      if (this._allAccordionizedFields) {
+        return this._allAccordionizedFields;
+      }
+      this._allAccordionizedFields = this.accordions.flatMap((accordion) => {
+        return accordion.fields.map((fieldName) => {
+          if (typeof fieldName === "string") {
+            return fieldName;
+          }
+          return fieldName.name;
+        });
+      });
+      return this._allAccordionizedFields;
+    },
+    knownField(field) {
+      return this.getAllAccordionizedFields().includes(field);
+    },
+    
   }
 };
 </script>
