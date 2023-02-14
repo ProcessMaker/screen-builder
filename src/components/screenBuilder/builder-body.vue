@@ -79,7 +79,7 @@
       {{ $t("Drag an element here") }}
     </div>
 
-    <!-- <draggable
+    <draggable
       v-if="renderControls"
       :key="editorContentKey"
       data-cy="editor-content"
@@ -197,26 +197,31 @@
           />
         </div>
       </div>
-    </draggable> -->
+    </draggable>
   </div>
 </template>
 
 <script>
 import { formTypes } from "@/global-properties";
+import draggable from "vuedraggable"
 export default {
   name: "BuilderBody",
   components: {
-    // draggable
+    draggable
   },
   props: {
     config: {
       type: Array,
       default: null
+    },
+    renderControls: {
+      type: Boolean,
+      default: true
+    },
+    validationErrors: {
+      type: Array,
+      default: null
     }
-    //   renderControls: {
-    //     type: Boolean,
-    //     default: true
-    //   },
     //   collator: {
     //     type: Intl.Collator,
     //     default: null
@@ -224,7 +229,9 @@ export default {
   },
   data() {
     return {
-      currentPage: 0
+      currentPage: 0,
+      editorContentKey: 0,
+      selected: null,
     };
   },
   computed: {
@@ -235,12 +242,13 @@ export default {
       return this.$store.getters["undoRedoModule/canRedo"];
     },
     isCurrentPageEmpty() {
-      debugger;
+      // debugger;
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
       return this.screenType === formTypes.form;
-    }
+    },
+  
   },
   methods: {
     undo() {
@@ -262,6 +270,22 @@ export default {
       this.currentPage = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
+    },
+    updateState() {
+      this.$store.dispatch("undoRedoModule/pushState", {
+        config: JSON.stringify(this.config),
+        currentPage: this.currentPage
+      });
+    },
+    updateConfig(items) {
+      this.config[this.currentPage].items = items;
+      this.updateState();
+    },
+    hasError(element) {
+      return this.validationErrors.some(({ item }) => item === element);
+    },
+    elementCssClass(element) {
+      this.$emit("setElementCssClass",element)
     }
   }
 };

@@ -26,7 +26,12 @@
         pt-2
       "
     >
-      <BuilderBody :config="config" />
+      <BuilderBody 
+        :config="config"
+        :render-controls="renderControls"
+        :validation-errors="validationErrors"
+        @setElementCssClass="setElementCssClass"
+      />
     </b-col>
 
     <!-- Inspector -->
@@ -655,12 +660,12 @@ export default {
           (!this.knownField(input.field) && accordion.name === "Configuration")
       );
     },
-    updateState() {
-      this.$store.dispatch("undoRedoModule/pushState", {
-        config: JSON.stringify(this.config),
-        currentPage: this.currentPage
-      });
-    },
+    // updateState() {
+    //   this.$store.dispatch("undoRedoModule/pushState", {
+    //     config: JSON.stringify(this.config),
+    //     currentPage: this.currentPage
+    //   });
+    // },
     undo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/undo");
@@ -681,10 +686,10 @@ export default {
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
-    updateConfig(items) {
-      this.config[this.currentPage].items = items;
-      this.updateState();
-    },
+    // updateConfig(items) {
+    //   this.config[this.currentPage].items = items;
+    //   this.updateState();
+    // },
     hasError(element) {
       return this.validationErrors.some(({ item }) => item === element);
     },
@@ -826,6 +831,9 @@ export default {
         this.language = document.documentElement.lang;
       }
       this.collator = Intl.Collator(this.language);
+    },
+    setElementCssClass(element){
+      this.elementCssClass(element);
     }
   },
   created() {
