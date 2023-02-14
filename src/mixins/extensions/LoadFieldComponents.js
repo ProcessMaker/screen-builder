@@ -27,6 +27,20 @@ export default {
         }
       });
     },
+    /**
+     * Get MIME type of the encoded code data if there are not type return null
+     * @param {string} base64String
+     * @returns {string|null}
+     */
+    getBase64MimeType(base64String) {
+      const matches = base64String.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+      return matches && matches.length > 1 ? matches[1] : null;
+    },
+    /**
+     * Create a Blob object from a base 64 string
+     * @param {string} base64image 
+     * @returns {object|null}
+     */
     createObjectURL(base64image) {
       if (base64image) {
         const binaryData = atob(base64image.split(",")[1]);
@@ -34,7 +48,9 @@ export default {
         for (let i = 0; i < binaryData.length; i++) {
           binaryArray[i] = binaryData.charCodeAt(i);
         }
-        const blob = new Blob([binaryArray], { type: "image/jpeg" });
+        const blob = new Blob([binaryArray], {
+          type: this.getBase64MimeType(base64image)
+        });
         return URL.createObjectURL(blob);
       }
       return false;
