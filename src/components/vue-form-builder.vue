@@ -42,74 +42,10 @@
       v-if="renderControls"
       class="overflow-hidden h-100 p-0 inspector-column"
     >
-      <!-- <b-card
-        no-body
-        class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
-      >
-        <b-card-body class="p-0 h-100 overflow-auto">
-          <template v-for="accordion in accordions">
-            <b-button
-              v-if="getInspectorFields(accordion).length > 0"
-              :key="`${accordionName(accordion)}-button`"
-              variant="outline"
-              class="
-                text-left
-                card-header
-                d-flex
-                align-items-center
-                w-100
-                outline-0
-                text-capitalize
-                shadow-none
-              "
-              :data-cy="`accordion-${accordionName(accordion).replace(
-                ' ',
-                ''
-              )}`"
-              :accordion-name="`accordion-${accordionName(accordion).replace(
-                ' ',
-                ''
-              )}`"
-              :is-open="accordion.open ? '1' : '0'"
-              @click="toggleAccordion(accordion)"
-            >
-              <i class="fas fa-cog mr-2" />
-              {{ $t(accordionName(accordion)) }}
-              <i
-                class="fas fa-angle-down ml-auto"
-                :class="{ 'fas fa-angle-right': !accordion.open }"
-              />
-            </b-button>
-            <b-collapse
-              :id="accordionName(accordion)"
-              :key="`${accordionName(accordion)}-collapse`"
-              v-model="accordion.open"
-            >
-              <component
-                :is="item.type"
-                v-for="(item, index) in getInspectorFields(accordion)"
-                :key="index"
-                v-bind="item.config"
-                v-model="inspection.config[item.field]"
-                :data-cy="'inspector-' + (item.field || item.config.name)"
-                :field-name="item.field"
-                :field-accordion="`accordion-${accordionName(accordion).replace(
-                  ' ',
-                  ''
-                )}`"
-                :builder="builder"
-                :form-config="config"
-                :screen-type="screenType"
-                :current-page="currentPage"
-                :selected-control="selected"
-                class="border-bottom m-0 p-4"
-                @focusout.native="updateState"
-                @setName="inspection.config.name = $event"
-              />
-            </b-collapse>
-          </template>
-        </b-card-body>
-      </b-card> -->
+      <BuilderInspector
+        :accordions="accordions"
+      />
+     
     </b-col>
 
     <!-- Modals -->
@@ -213,6 +149,7 @@ import { formTypes } from "@/global-properties";
 
 import BuilderSidebar from "./screenBuilder/builder-sidebar";
 import BuilderBody from "./screenBuilder/builder-body";
+import BuilderInspector from "./screenBuilder/builder-inspector";
 // eslint-disable-next-line import/no-extraneous-dependencies
 const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
@@ -256,6 +193,7 @@ export default {
   components: {
     BuilderSidebar,
     BuilderBody,
+    BuilderInspector,
     draggable,
     FormInput,
     FormSelectList,

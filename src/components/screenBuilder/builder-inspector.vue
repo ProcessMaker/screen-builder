@@ -3,50 +3,74 @@
     no-body
     class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
   >
-    <b-input-group size="sm">
-      <b-input-group-prepend>
-        <b-input-group-text
-          class="filter-icon border-left-0 border-top-0 rounded-0"
-        >
-          <i class="fas fa-filter" />
-        </b-input-group-text>
-      </b-input-group-prepend>
-
-      <b-form-input
-        v-model="filterQuery"
-        class="border-top-0 border-right-0 rounded-0"
-        type="text"
-        :placeholder="$t('Filter Controls')"
-      />
-    </b-input-group>
-
-    <b-card-body no-body class="p-0 overflow-auto">
-      <draggable
-        v-if="renderControls"
-        id="controls"
-        v-model="filteredControls"
-        data-cy="controls"
-        v-bind="{
-          sort: false,
-          group: { name: 'controls', pull: 'clone', put: false }
-        }"
-        :clone="cloneControl"
-        class="controls list-group w-auto list-group-flush"
+     <b-card
+        no-body
+        class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
-        <b-list-group-item
-          v-for="(element, index) in filteredControls"
-          :key="index"
-          :data-cy="'controls-' + element.component"
-        >
-          <i v-if="element.config.icon" :class="element.config.icon" />
-          {{ $t(element.label) }}
-        </b-list-group-item>
-
-        <li v-if="!filteredControls.length" class="list-group-item">
-          <slot />
-        </li>
-      </draggable>
-    </b-card-body>
+        <b-card-body class="p-0 h-100 overflow-auto">
+          <template v-for="accordion in accordions">
+            <b-button
+              v-if="getInspectorFields(accordion).length > 0"
+              :key="`${accordionName(accordion)}-button`"
+              variant="outline"
+              class="
+                text-left
+                card-header
+                d-flex
+                align-items-center
+                w-100
+                outline-0
+                text-capitalize
+                shadow-none
+              "
+              :data-cy="`accordion-${accordionName(accordion).replace(
+                ' ',
+                ''
+              )}`"
+              :accordion-name="`accordion-${accordionName(accordion).replace(
+                ' ',
+                ''
+              )}`"
+              :is-open="accordion.open ? '1' : '0'"
+              @click="toggleAccordion(accordion)"
+            >
+              <i class="fas fa-cog mr-2" />
+              {{ $t(accordionName(accordion)) }}
+              <i
+                class="fas fa-angle-down ml-auto"
+                :class="{ 'fas fa-angle-right': !accordion.open }"
+              />
+            </b-button>
+            <b-collapse
+              :id="accordionName(accordion)"
+              :key="`${accordionName(accordion)}-collapse`"
+              v-model="accordion.open"
+            >
+              <component
+                :is="item.type"
+                v-for="(item, index) in getInspectorFields(accordion)"
+                :key="index"
+                v-bind="item.config"
+                v-model="inspection.config[item.field]"
+                :data-cy="'inspector-' + (item.field || item.config.name)"
+                :field-name="item.field"
+                :field-accordion="`accordion-${accordionName(accordion).replace(
+                  ' ',
+                  ''
+                )}`"
+                :builder="builder"
+                :form-config="config"
+                :screen-type="screenType"
+                :current-page="currentPage"
+                :selected-control="selected"
+                class="border-bottom m-0 p-4"
+                @focusout.native="updateState"
+                @setName="inspection.config.name = $event"
+              />
+            </b-collapse>
+          </template>
+        </b-card-body>
+      </b-card>
   </b-card>
 </template>
 
@@ -70,18 +94,10 @@ export default {
     draggable
   },
   props: {
-    controls: {
+    accordions:{
       type: Array,
       default: null
     },
-    renderControls: {
-      type: Boolean,
-      default: true
-    },
-    collator: {
-      type: Intl.Collator,
-      default: null
-    }
   },
   data() {
     const config = this.initialConfig || defaultConfig;
