@@ -32,6 +32,7 @@
         :render-controls="renderControls"
         :validation-errors="validationErrors"
         @setElementCssClass="setElementCssClass"
+        @deleteItem="deleteItem"
         :accordions="accordions"
         :screen-type="screenType"
       />
@@ -42,9 +43,9 @@
       v-if="renderControls"
       class="overflow-hidden h-100 p-0 inspector-column"
     >
-      <BuilderInspector
+      <!-- <BuilderInspector
         :accordions="accordions"
-      />
+      /> -->
      
     </b-col>
 
@@ -194,17 +195,17 @@ export default {
     BuilderSidebar,
     BuilderBody,
     BuilderInspector,
-    draggable,
+    // draggable,
     FormInput,
-    FormSelectList,
-    FormCheckbox,
-    FormTextArea,
-    FormDatePicker,
-    FormHtmlEditor,
-    FormHtmlViewer,
-    RequiredCheckbox,
-    MultipleUploadsCheckbox,
-    defaultValueEditor,
+    // FormSelectList,
+    // FormCheckbox,
+    // FormTextArea,
+    // FormDatePicker,
+    // FormHtmlEditor,
+    // FormHtmlViewer,
+    // RequiredCheckbox,
+    // MultipleUploadsCheckbox,
+    // defaultValueEditor,
     ...inspector,
     ...renderer
   },

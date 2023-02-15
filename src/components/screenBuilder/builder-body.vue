@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <!-- Renderer -->
+  <b-col
+    id="screen-container"
+    class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2"
+  >
     <b-input-group size="sm" class="bg-white mt-3">
       <b-form-select
         v-if="showToolbar"
@@ -64,17 +68,7 @@
     <div
       v-if="isCurrentPageEmpty"
       data-cy="screen-drop-zone"
-      class="
-        w-100
-        d-flex
-        justify-content-center
-        align-items-center
-        drag-placeholder
-        text-center
-        position-absolute
-        rounded
-        mt-4
-      "
+      class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4"
     >
       {{ $t("Drag an element here") }}
     </div>
@@ -198,17 +192,20 @@
         </div>
       </div>
     </draggable>
-  </div>
+  </b-col>
 </template>
 
 <script>
 import { formTypes } from "@/global-properties";
-import draggable from "vuedraggable"
+import draggable from "vuedraggable";
+import { inspectorFields } from "@/mixins";
+
 export default {
   name: "BuilderBody",
   components: {
     draggable
   },
+  mixins: [inspectorFields],
   props: {
     config: {
       type: Array,
@@ -222,18 +219,18 @@ export default {
       type: Array,
       default: null
     },
-    accordions:{
+    accordions: {
       type: Array,
       default: null
     },
-    controls:{
+    controls: {
       type: Array,
       default: null
     },
     screenType: {
       type: String,
-      default: formTypes.form,
-    },
+      default: formTypes.form
+    }
     //   collator: {
     //     type: Intl.Collator,
     //     default: null
@@ -243,7 +240,7 @@ export default {
     return {
       currentPage: 0,
       editorContentKey: 0,
-      selected: null,
+      selected: null
     };
   },
   computed: {
@@ -263,8 +260,7 @@ export default {
     },
     displayDelete() {
       return this.config.length > 1;
-    },
-  
+    }
   },
   methods: {
     undo() {
@@ -301,7 +297,7 @@ export default {
       return this.validationErrors.some(({ item }) => item === element);
     },
     elementCssClass(element) {
-      this.$emit("setElementCssClass",element)
+      this.$emit("setElementCssClass", element);
     },
     inspect(element = {}) {
       this.inspection = element;
@@ -314,37 +310,37 @@ export default {
         console.log("open acordion");
       }
     },
-    getInspectorFields(accordion) {
-      if (!this.inspection.inspector) {
-        return [];
-      }
+    // getInspectorFields(accordion) {
+    //   if (!this.inspection.inspector) {
+    //     return [];
+    //   }
 
-      const accordionFields = accordion.fields
-        .filter((field) => {
-          if (typeof field !== "string") {
-            const { component } = this.inspection;
-            const { showFor, hideFor } = field;
+    //   const accordionFields = accordion.fields
+    //     .filter((field) => {
+    //       if (typeof field !== "string") {
+    //         const { component } = this.inspection;
+    //         const { showFor, hideFor } = field;
 
-            return showFor === component || hideFor !== component;
-          }
+    //         return showFor === component || hideFor !== component;
+    //       }
 
-          return true;
-        })
-        .map((field) => (typeof field !== "string" ? field.name : field));
+    //       return true;
+    //     })
+    //     .map((field) => (typeof field !== "string" ? field.name : field));
 
-      const control = this.controls.find(
-        (item) => item["editor-control"] === this.inspection["editor-control"]
-      ) ||
-        this.controls.find(
-          (item) => item.component === this.inspection.component
-        ) || { inspector: [] };
+    //   const control = this.controls.find(
+    //     (item) => item["editor-control"] === this.inspection["editor-control"]
+    //   ) ||
+    //     this.controls.find(
+    //       (item) => item.component === this.inspection.component
+    //     ) || { inspector: [] };
 
-      return control.inspector.filter(
-        (input) =>
-          accordionFields.includes(input.field) ||
-          (!this.knownField(input.field) && accordion.name === "Configuration")
-      );
-    },
+    //   return control.inspector.filter(
+    //     (input) =>
+    //       accordionFields.includes(input.field) ||
+    //       (!this.knownField(input.field) && accordion.name === "Configuration")
+    //   );
+    // },
     getAllAccordionizedFields() {
       if (this._allAccordionizedFields) {
         return this._allAccordionizedFields;
@@ -359,10 +355,12 @@ export default {
       });
       return this._allAccordionizedFields;
     },
-    knownField(field) {
-      return this.getAllAccordionizedFields().includes(field);
-    },
-    
+    deleteItem(index) {
+      this.$emit("deleteItem", index);
+    }
+    // knownField(field) {
+    //   return this.getAllAccordionizedFields().includes(field);
+    // },
   }
 };
 </script>

@@ -1,9 +1,13 @@
 <template>
-  <b-card
-    no-body
-    class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
+  <b-col
+    v-if="renderControls"
+    class="overflow-hidden h-100 p-0 inspector-column"
   >
-     <b-card
+    <b-card
+      no-body
+      class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
+    >
+      <b-card
         no-body
         class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
@@ -13,16 +17,7 @@
               v-if="getInspectorFields(accordion).length > 0"
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
-              class="
-                text-left
-                card-header
-                d-flex
-                align-items-center
-                w-100
-                outline-0
-                text-capitalize
-                shadow-none
-              "
+              class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
               :data-cy="`accordion-${accordionName(accordion).replace(
                 ' ',
                 ''
@@ -71,7 +66,8 @@
           </template>
         </b-card-body>
       </b-card>
-  </b-card>
+    </b-card>
+  </b-col>
 </template>
 
 <script>
@@ -79,7 +75,7 @@ import _ from "lodash";
 import draggable from "vuedraggable";
 import { keyNameProperty } from "../../form-control-common-properties";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
-
+import { inspectorFields } from "@/mixins";
 
 const defaultConfig = [
   {
@@ -93,11 +89,12 @@ export default {
   components: {
     draggable
   },
+  mixins: [inspectorFields],
   props: {
-    accordions:{
+    accordions: {
       type: Array,
       default: null
-    },
+    }
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -273,7 +270,7 @@ export default {
           }
         }
       });
-    },
+    }
   }
 };
 </script>
