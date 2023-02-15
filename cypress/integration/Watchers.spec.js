@@ -187,7 +187,7 @@ describe('Watchers', () => {
 
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'top'});
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=inspector-name]').clear().type('user.name');
 
@@ -212,7 +212,7 @@ describe('Watchers', () => {
     cy.get('#watchers-synchronous').should('be.visible');
     // wait for watcher execution
     cy.wait(2000);
-    cy.get('#watchers-synchronous').should('not.be.visible');
+    cy.get('#watchers-synchronous').should('not.exist');
     cy.assertPreviewData({
       form_input_2: 'name',
       user: {
@@ -230,7 +230,7 @@ describe('Watchers', () => {
 
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'top'});
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=inspector-name]').clear().type('user.name');
 
@@ -251,7 +251,7 @@ describe('Watchers', () => {
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=form_input_2]').clear().type('name');
     // Assertion: Watcher popup is not displayed
-    cy.get('#watchers-synchronous').should('not.be.visible');
+    cy.get('#watchers-synchronous').should('not.exist');
     // wait for watcher execution
     cy.wait(3000);
     cy.assertPreviewData({
@@ -263,19 +263,17 @@ describe('Watchers', () => {
   });
   it('Test error in synchronous watcher', () => {
     // Mock script response
-    cy.intercept({
-      method: 'POST',
-      url: '/api/1.0/scripts/execute/1',
-      response: JSON.stringify({
+    cy.intercept('POST', '/api/1.0/scripts/execute/1', {
+      body: JSON.stringify({
         exception: 'Exception',
         message: 'Test exception response',
       }),
-      status: 403,
+      statusCode: 403
     });
 
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', {position: 'top'});
     cy.get('[data-cy=screen-element-container]').eq(1).click();
     cy.get('[data-cy=inspector-name]').clear().type('user.name');
 
@@ -360,7 +358,7 @@ describe('Watchers', () => {
     cy.get('#watchers-synchronous').should('be.visible');
     // wait for watcher execution
     cy.wait(2000);
-    cy.get('#watchers-synchronous').should('not.be.visible');
+    cy.get('#watchers-synchronous').should('not.exist');
     cy.wait(2000);
 
     // Assertion: Check listValues was loaded
