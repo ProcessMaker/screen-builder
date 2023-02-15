@@ -10,6 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = {
   runtimeCompiler: true,
+  lintOnSave: false,
   transpileDependencies: ['vuetable-2'],
   configureWebpack: {
     plugins,

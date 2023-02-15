@@ -4,6 +4,8 @@
       <b-tabs>
         <b-tab active title="Form">
           <task
+            :user-id="task.user.id"
+            :initial-request-id="task.process_request.id"
             :initial-task-id="task.id"
             v-model="data"
             @submit="submit"
@@ -88,6 +90,7 @@ export default {
         completed_at: moment().toISOString(),
         due_at: moment().add(1, 'day').toISOString(),
         user: {
+          id: 1,
           avatar: '',
           fullname: 'Assigned User',
         },
