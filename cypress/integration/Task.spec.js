@@ -165,6 +165,7 @@ describe('Task component', () => {
         due_at: moment().add(1, 'day').toISOString(),
         status: 'ACTIVE',
         user: {
+          id: 1,
           avatar: '',
           fullname: 'Assigned User',
         },
@@ -207,53 +208,106 @@ describe('Task component', () => {
     });
     cy.wait(2000);
     cy.get('.form-group').find('button').click();
-    /* TODO This call is failing with a 404 . Debug on the why. I could trace that the line 221, user_id was being sent
-     * as null. Omitting the error for now
-     */
-    cy.on('uncaught:exception', () => {
-      // return false to prevent the error from
-      // failing this test
-      return false
-    })
     cy.intercept('PUT', 'http://localhost:8080/api/1.0/tasks/1').then(function() {
       cy.get('@windowAlert').should('have.been.calledOnce')
         .and('have.been.calledWith', 'Task Completed Successfully')
         .then(function() {
+          const completedBodyRequest = {
+            id: 1,
+            advanceStatus: 'completed',
+            component: 'task-screen',
+            created_at: moment().toISOString(),
+            completed_at: moment().toISOString(),
+            due_at: moment().add(1, 'day').toISOString(),
+            status: 'CLOSED',
+            allow_interstitial: true,
+            interstitial_screen: InterstitialScreen.screens[0],
+            user: {
+              avatar: '',
+              fullname: 'Assigned User',
+            },
+            data: [
+              {
+                id: 1,
+                user_id: 1,
+                process_id: 1,
+                process_request_id: 1,
+                subprocess_request_id: null,
+                element_id: "node_4",
+                element_type: "task",
+                element_name: "Form Task",
+                status: "ACTIVE",
+                element_index: 0,
+                subprocess_start_event_id: null,
+                completed_at: null,
+                due_at: "2023-02-18T17:54:15+00:00",
+                due_notified: 0,
+                initiated_at: null,
+                riskchanges_at: "2023-02-17T19:54:15+00:00",
+                created_at: "2023-02-15T17:54:15+00:00",
+                updated_at: "2023-02-15T17:54:15+00:00",
+                version_id: 3,
+                version_type: "ProcessMaker\\Models\\ScreenVersion",
+                advanceStatus: "open",
+                process_request: {
+                  id: 1,
+                  process_id: 1,
+                  process_collaboration_id: null,
+                  user_id: 1,
+                  parent_request_id: null,
+                  participant_id: null,
+                  callable_id: "ProcessId",
+                  status: "ACTIVE",
+                  name: "simple",
+                  errors: null,
+                  completed_at: null,
+                  initiated_at: "2023-02-15T17:53:45+00:00",
+                  created_at: "2023-02-15T17:53:45+00:00",
+                  updated_at: "2023-02-15T17:54:15+00:00",
+                  process_version_id: 7,
+                  signal_events: []
+                },
+                user: {
+                  id: 1,
+                  email: "admin@processmaker.com",
+                  firstname: "Admin",
+                  lastname: "User",
+                  username: "admin",
+                  status: "ACTIVE",
+                  meta: null,
+                  is_administrator: true,
+                  active_at: "2023-02-15T17:54:05+00:00",
+                  created_at: "2023-02-10T14:03:26+00:00",
+                  updated_at: "2023-02-10T14:03:26+00:00",
+                  manager_id: null,
+                  fullname: "Admin User",
+                  avatar: ""
+                }
+              }
+            ],
+            screen: Screens.screens[0],
+            process_request: {
+              id: 1,
+              status: 'CLOSED',
+              user: {
+                avatar: '',
+                fullname: 'Requester User',
+              },
+            },
+            process: {
+              id: 1,
+              name: 'Process Name',
+            },
+            request_data: {
+              firstname: 'John',
+              lastname: 'Doe',
+            },
+          }
+          cy.intercept('GET', '/api/1.0/tasks**', { body: completedBodyRequest });
           cy.intercept(
             'GET',
             'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested',
-            {
-              id: 1,
-              advanceStatus: 'completed',
-              component: 'task-screen',
-              created_at: moment().toISOString(),
-              completed_at: moment().toISOString(),
-              due_at: moment().add(1, 'day').toISOString(),
-              status: 'CLOSED',
-              allow_interstitial: true,
-              interstitial_screen: InterstitialScreen.screens[0],
-              user: {
-                avatar: '',
-                fullname: 'Assigned User',
-              },
-              screen: Screens.screens[0],
-              process_request: {
-                id: 1,
-                status: 'CLOSED',
-                user: {
-                  avatar: '',
-                  fullname: 'Requester User',
-                },
-              },
-              process: {
-                id: 1,
-                name: 'Process Name',
-              },
-              request_data: {
-                firstname: 'John',
-                lastname: 'Doe',
-              },
-            }
+            {body: completedBodyRequest}
           );
           cy.reload();
         });
