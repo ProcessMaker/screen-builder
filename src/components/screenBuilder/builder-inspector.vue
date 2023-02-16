@@ -71,24 +71,41 @@
 </template>
 
 <script>
-import _ from "lodash";
-import draggable from "vuedraggable";
-import { keyNameProperty } from "../../form-control-common-properties";
-import VariableNameGenerator from "@/components/VariableNameGenerator";
+import {
+  FormInput,
+  FormSelectList,
+  FormTextArea,
+  FormCheckbox,
+  FormDatePicker,
+  FormHtmlEditor,
+  FormHtmlViewer
+} from "@processmaker/vue-form-elements";
+import * as renderer from "../renderer";
+import * as inspector from "../inspector";
 import { inspectorFields } from "@/mixins";
 import { formTypes } from "@/global-properties";
+// import defaultValueEditor from "./inspector/default-value-editor";
+import RequiredCheckbox from "../utils/multiple-uploads-checkbox.vue";
+import MultipleUploadsCheckbox from "../utils/multiple-uploads-checkbox";
+import defaultValueEditor from "../inspector/default-value-editor";
 
-const defaultConfig = [
-  {
-    name: "Default",
-    items: []
-  }
-];
+//
 
 export default {
   name: "BuilderInspector",
   components: {
-    draggable
+    FormInput,
+    FormSelectList,
+    FormCheckbox,
+    FormTextArea,
+    FormDatePicker,
+    FormHtmlEditor,
+    FormHtmlViewer,
+    RequiredCheckbox,
+    MultipleUploadsCheckbox,
+    defaultValueEditor,
+    ...inspector,
+    ...renderer
   },
   mixins: [inspectorFields],
   props: {
@@ -104,10 +121,10 @@ export default {
       type: Boolean,
       default: true
     },
-    inspection: {
-      type: Object,
-      default: null
-    },
+    // inspection: {
+    //   type: Object,
+    //   default: null
+    // },
     config: {
       type: Array,
       default: null
@@ -126,7 +143,9 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      inspection: {}
+    };
   },
   computed: {
     builder() {
@@ -144,6 +163,18 @@ export default {
         });
     }
   },
+  watch: {
+    selected(item) {
+       console.log("was selected");
+       console.log(item);
+      const defaultAccordion = this.accordions.find(
+        (accordion) => this.getInspectorFields(accordion).length > 0
+      );
+      if (defaultAccordion) {
+        this.openAccordion(defaultAccordion);
+      }
+    }
+  },
   methods: {
     accordionName(accordion) {
       return accordion.name instanceof Function
@@ -159,7 +190,7 @@ export default {
     openAccordion(accordion) {
       this.accordions.forEach((panel) => (panel.open = false));
       accordion.open = true;
-    },
+    }
   }
 };
 </script>

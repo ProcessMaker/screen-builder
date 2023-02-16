@@ -33,7 +33,6 @@
         :config="config"
         :accordions="accordions"
         :render-controls="renderControls"
-        :inspection="inspection"
         :screen-type="screenType"
         :current-page="currentPage"
         :selected="selected"
@@ -108,20 +107,20 @@
 
 <script>
 // eslint-disable-next-line import/no-extraneous-dependencies
-import draggable from "vuedraggable";
-import {
-  FormInput,
-  FormSelectList,
-  FormTextArea,
-  FormCheckbox,
-  FormDatePicker,
-  FormHtmlEditor,
-  FormHtmlViewer
-} from "@processmaker/vue-form-elements";
+// import draggable from "vuedraggable";
+// import {
+//   FormInput,
+//   FormSelectList,
+//   FormTextArea,
+//   FormCheckbox,
+//   FormDatePicker,
+//   FormHtmlEditor,
+//   FormHtmlViewer
+// } from "@processmaker/vue-form-elements";
 import _ from "lodash";
 import HasColorProperty from "../mixins/HasColorProperty";
-import * as renderer from "./renderer";
-import * as inspector from "./inspector";
+// import * as renderer from "./renderer";
+// import * as inspector from "./inspector";
 // import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import accordions from "./accordions";
 import { keyNameProperty } from "../form-control-common-properties";
@@ -130,11 +129,11 @@ import VariableNameGenerator from "@/components/VariableNameGenerator";
 // eslint-disable-next-line import/no-unresolved, import/extensions
 import testing from "@/mixins/testing";
 // eslint-disable-next-line import/no-unresolved, import/extensions
-import defaultValueEditor from "./inspector/default-value-editor";
+// import defaultValueEditor from "./inspector/default-value-editor";
 // eslint-disable-next-line import/no-unresolved, import/extensions
-import RequiredCheckbox from "./utils/required-checkbox";
+// import RequiredCheckbox from "./utils/required-checkbox";
 // eslint-disable-next-line import/no-unresolved, import/extensions
-import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
+// import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 // eslint-disable-next-line import/no-unresolved, import/extensions
 import { formTypes } from "@/global-properties";
@@ -187,9 +186,9 @@ export default {
   components: {
     BuilderSidebar,
     BuilderBody,
-    BuilderInspector,
+    BuilderInspector
     // draggable,
-    FormInput,
+    // FormInput,
     // FormSelectList,
     // FormCheckbox,
     // FormTextArea,
@@ -199,8 +198,8 @@ export default {
     // RequiredCheckbox,
     // MultipleUploadsCheckbox,
     // defaultValueEditor,
-    ...inspector,
-    ...renderer
+    // ...inspector,
+    // ...renderer
   },
   mixins: [HasColorProperty, testing, inspectorFields],
   props: {
@@ -243,7 +242,7 @@ export default {
       currentPage: 0,
       selected: null,
       display: "editor",
-      inspection: {},
+      // inspection: {},
       // Blank at start, assume the parent component will call addControl for each control
       controls: [],
       pageAddModal: false,
@@ -260,7 +259,7 @@ export default {
       showDesign: false,
       // filterQuery: "",
       accordions,
-      // variables,
+      variables,
       // generator,
       variablesTree: [],
       language: "en",
@@ -310,24 +309,24 @@ export default {
     currentPage() {
       this.inspect();
     },
-    inspection(e) {
-      if (this.translated.includes(e)) {
-        // already translated, don't translate again!
-        return;
-      }
-      for (var i in e.inspector) {
-        e.inspector[i].config.label = this.$t(e.inspector[i].config.label);
-        e.inspector[i].config.helper = this.$t(e.inspector[i].config.helper);
-        if (e.inspector[i].config.options) {
-          for (let io in e.inspector[i].config.options) {
-            e.inspector[i].config.options[io].content = this.$t(
-              e.inspector[i].config.options[io].content
-            );
-          }
-        }
-      }
-      this.translated.push(e);
-    }
+    // inspection(e) {
+    //   if (this.translated.includes(e)) {
+    //     // already translated, don't translate again!
+    //     return;
+    //   }
+    //   for (var i in e.inspector) {
+    //     e.inspector[i].config.label = this.$t(e.inspector[i].config.label);
+    //     e.inspector[i].config.helper = this.$t(e.inspector[i].config.helper);
+    //     if (e.inspector[i].config.options) {
+    //       for (let io in e.inspector[i].config.options) {
+    //         e.inspector[i].config.options[io].content = this.$t(
+    //           e.inspector[i].config.options[io].content
+    //         );
+    //       }
+    //     }
+    //   }
+    //   this.translated.push(e);
+    // }
   },
   methods: {
     refreshContent() {
@@ -394,16 +393,16 @@ export default {
     //     ? accordion.name(this.inspection)
     //     : accordion.name;
     // },
-    toggleAccordion(accordion) {
-      this.accordions.forEach((panel) =>
-        panel !== accordion ? (panel.open = false) : null
-      );
-      accordion.open = !accordion.open;
-    },
-    openAccordion(accordion) {
-      this.accordions.forEach((panel) => (panel.open = false));
-      accordion.open = true;
-    },
+    // toggleAccordion(accordion) {
+    //   this.accordions.forEach((panel) =>
+    //     panel !== accordion ? (panel.open = false) : null
+    //   );
+    //   accordion.open = !accordion.open;
+    // },
+    // openAccordion(accordion) {
+    //   this.accordions.forEach((panel) => (panel.open = false));
+    //   accordion.open = true;
+    // },
     migrateConfig(config = this.config) {
       config.forEach((page) => this.replaceFormText(page.items));
       config.forEach((page) => this.migrateFormSubmit(page.items));
@@ -623,7 +622,7 @@ export default {
     deleteItem(index) {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
-      this.inspection.inspector.splice(0, this.inspection.inspector.length);
+      // this.inspection.inspector.splice(0, this.inspection.inspector.length);
       this.updateState();
     },
     duplicateItem(index) {
@@ -662,14 +661,14 @@ export default {
       });
     },
     inspect(element = {}) {
-      this.inspection = element;
-      // this.selected = element;
-      const defaultAccordion = this.accordions.find(
-        (accordion) => this.getInspectorFields(accordion).length > 0
-      );
-      if (defaultAccordion) {
-        this.openAccordion(defaultAccordion);
-      }
+      // this.inspection = element;
+      this.selected = element;
+      // const defaultAccordion = this.accordions.find(
+      //   (accordion) => this.getInspectorFields(accordion).length > 0
+      // );
+      // if (defaultAccordion) {
+      //   this.openAccordion(defaultAccordion);
+      // }
     },
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
@@ -746,10 +745,10 @@ export default {
     this.initiateLanguageSupport();
   },
   mounted() {
-    // this.checkForCaptchaInLoops();
-    // this.$root.$on("nested-screen-updated", () => {
-    //   this.checkForCaptchaInLoops();
-    // });
+    this.checkForCaptchaInLoops();
+    this.$root.$on("nested-screen-updated", () => {
+      this.checkForCaptchaInLoops();
+    });
   }
 };
 </script>
