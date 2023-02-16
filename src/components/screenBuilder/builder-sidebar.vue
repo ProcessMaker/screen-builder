@@ -85,10 +85,8 @@ export default {
     }
   },
   data() {
-
     const generator = new VariableNameGenerator();
     const variables = generator.GetVariableNames(this.config);
-
     return {
       filterQuery: "",
       generator,

@@ -198,14 +198,12 @@
 <script>
 import { formTypes } from "@/global-properties";
 import draggable from "vuedraggable";
-import { inspectorFields } from "@/mixins";
 
 export default {
   name: "BuilderBody",
   components: {
     draggable
   },
-  mixins: [inspectorFields],
   props: {
     config: {
       type: Array,
@@ -300,67 +298,129 @@ export default {
       this.$emit("setElementCssClass", element);
     },
     inspect(element = {}) {
-      this.inspection = element;
+
       this.selected = element;
-      const defaultAccordion = this.accordions.find(
-        (accordion) => this.getInspectorFields(accordion).length > 0
-      );
-      if (defaultAccordion) {
-        // this.openAccordion(defaultAccordion);
-        console.log("open acordion");
-      }
+     
+      this.$emit("inspect", element);
     },
-    // getInspectorFields(accordion) {
-    //   if (!this.inspection.inspector) {
-    //     return [];
-    //   }
-
-    //   const accordionFields = accordion.fields
-    //     .filter((field) => {
-    //       if (typeof field !== "string") {
-    //         const { component } = this.inspection;
-    //         const { showFor, hideFor } = field;
-
-    //         return showFor === component || hideFor !== component;
-    //       }
-
-    //       return true;
-    //     })
-    //     .map((field) => (typeof field !== "string" ? field.name : field));
-
-    //   const control = this.controls.find(
-    //     (item) => item["editor-control"] === this.inspection["editor-control"]
-    //   ) ||
-    //     this.controls.find(
-    //       (item) => item.component === this.inspection.component
-    //     ) || { inspector: [] };
-
-    //   return control.inspector.filter(
-    //     (input) =>
-    //       accordionFields.includes(input.field) ||
-    //       (!this.knownField(input.field) && accordion.name === "Configuration")
-    //   );
-    // },
-    getAllAccordionizedFields() {
-      if (this._allAccordionizedFields) {
-        return this._allAccordionizedFields;
-      }
-      this._allAccordionizedFields = this.accordions.flatMap((accordion) => {
-        return accordion.fields.map((fieldName) => {
-          if (typeof fieldName === "string") {
-            return fieldName;
-          }
-          return fieldName.name;
-        });
-      });
-      return this._allAccordionizedFields;
-    },
+  
     deleteItem(index) {
       this.$emit("deleteItem", index);
     }
-    // knownField(field) {
-    //   return this.getAllAccordionizedFields().includes(field);
-    // },
   }
 };
 </script>
+
+<style>
+.prevent-interaction {
+  pointer-events: none;
+}
+</style>
+
+<style lang="scss" scoped>
+$header-bg: #f7f7f7;
+$side-bar-font-size: 0.875rem;
+
+.control-icon {
+  width: 30px;
+  font-size: 20px;
+
+  img {
+    height: 20px;
+  }
+}
+
+.control-item {
+  .delete {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: none;
+  }
+
+  &:hover {
+    cursor: move;
+  }
+
+  &.selected {
+    border-radius: 5px;
+    cursor: move;
+  }
+
+  &:not(.selected) .card {
+    border: none;
+  }
+}
+
+.hasError {
+  border: 1px solid red;
+  border-radius: 0.25rem;
+
+  .form-element-header {
+    border-bottom: 1px solid red;
+    color: red;
+  }
+}
+
+.inspector-header {
+  background: $header-bg;
+}
+
+.validation-panel {
+  background: $header-bg;
+  height: 10rem;
+  width: 21.35rem;
+  bottom: 3rem;
+}
+
+.validation__message {
+  text-decoration: none;
+
+  &:hover {
+    background: rgba(51, 151, 225, 0.3);
+  }
+}
+
+.controls-header {
+  border-bottom: none;
+}
+
+.header-bg {
+  background: $header-bg;
+}
+
+.controls {
+  cursor: move;
+  user-select: none;
+  font-size: $side-bar-font-size;
+}
+
+.header-button {
+  height: 38px;
+  width: 38px;
+}
+
+.filter-icon {
+  background-color: #e9ecef;
+}
+
+.controls-column {
+  max-width: 185px;
+}
+
+.inspector-column {
+  max-width: 265px;
+  font-size: $side-bar-font-size;
+}
+
+.form-control-ghost {
+  margin-bottom: 0;
+  border-radius: 0.25rem;
+}
+
+.drag-placeholder {
+  height: 8rem;
+  top: 4rem;
+  border: 1px dashed rgba(0, 0, 0, 0.125);
+}
+</style>

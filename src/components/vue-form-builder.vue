@@ -1,7 +1,7 @@
 <template>
   <b-row class="h-100 m-0">
     <!-- Controls -->
-    <b-col class="overflow-hidden h-100 p-0 controls-column">
+    
       <!-- Here sidebar -->
       <BuilderSidebar
         :controls="controls"
@@ -9,23 +9,9 @@
         :collator="collator"
         :config="config"
       />
-    </b-col>
 
-    <!-- Renderer -->
-    <b-col
-      id="screen-container"
-      class="
-        overflow-auto
-        mh-100
-        ml-4
-        mr-4
-        p-0
-        d-flex
-        flex-column
-        position-relative
-        pt-2
-      "
-    >
+
+  
       <BuilderBody
         :controls="controls"
         :config="config"
@@ -33,22 +19,27 @@
         :validation-errors="validationErrors"
         @setElementCssClass="setElementCssClass"
         @deleteItem="deleteItem"
+        @inspect="inspect"
         :accordions="accordions"
         :screen-type="screenType"
+
       />
-    </b-col>
+  
 
     <!-- Inspector -->
-    <b-col
-      v-if="renderControls"
-      class="overflow-hidden h-100 p-0 inspector-column"
-    >
-      <!-- <BuilderInspector
+    
+      <BuilderInspector
+        :controls="controls"
+        :config="config"
         :accordions="accordions"
-      /> -->
+        :render-controls="renderControls"
+        :inspection="inspection"
+        :screen-type="screenType"
+        :current-page="currentPage"
+        :selected="selected"
+      />
      
-    </b-col>
-
+   
     <!-- Modals -->
     <b-modal
       id="addPageModal"
@@ -148,6 +139,8 @@ import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 // eslint-disable-next-line import/no-unresolved, import/extensions
 import { formTypes } from "@/global-properties";
 
+import { inspectorFields } from "@/mixins";
+
 import BuilderSidebar from "./screenBuilder/builder-sidebar";
 import BuilderBody from "./screenBuilder/builder-body";
 import BuilderInspector from "./screenBuilder/builder-inspector";
@@ -209,7 +202,7 @@ export default {
     ...inspector,
     ...renderer
   },
-  mixins: [HasColorProperty, testing],
+  mixins: [HasColorProperty, testing, inspectorFields],
   props: {
     renderControls: {
       type: Boolean,
@@ -272,7 +265,7 @@ export default {
       variablesTree: [],
       language: "en",
       collator: null,
-      editorContentKey: 0
+      editorContentKey: 0,
     };
   },
   computed: {
@@ -396,11 +389,11 @@ export default {
         this.$refs.treeOfVariables.getVariablesTree(definition);
       this.$refs.treeOfVariables.getVariablesTree({ config: [] });
     },
-    accordionName(accordion) {
-      return accordion.name instanceof Function
-        ? accordion.name(this.inspection)
-        : accordion.name;
-    },
+    // accordionName(accordion) {
+    //   return accordion.name instanceof Function
+    //     ? accordion.name(this.inspection)
+    //     : accordion.name;
+    // },
     toggleAccordion(accordion) {
       this.accordions.forEach((panel) =>
         panel !== accordion ? (panel.open = false) : null
@@ -534,49 +527,6 @@ export default {
     //   }
 
     //   const accordionFields = accordion.fields
-    //     .filter(field => {
-    //       if (typeof field !== 'string') {
-    //         const component = this.inspection.component;
-    //         const { showFor, hideFor } = field;
-
-    //         if (showFor) {
-    //           return showFor === component;
-    //         }
-
-    //         if (hideFor) {
-    //           return hideFor !== component;
-    //         }
-    //       }
-
-    //       return true;
-    //     })
-    //     .map(field => {
-    //       if (typeof field !== 'string') {
-    //         return field.name;
-    //       }
-
-    //       return field;
-    //     });
-    //   const control = this.controls.find(control => control['editor-control'] === this.inspection['editor-control'])
-    //     || this.controls.find(control => control.component === this.inspection.component)
-    //     || {inspector:[]};
-    //   return control.inspector.filter(input => {
-    //     if (accordionFields.includes(input.field)) {
-    //       return true;
-    //     } else if (!this.knownField(input.field) && accordion.name === 'Configuration') {
-    //       // If it's not a known inspector field from accordion.js and this is the
-    //       // configuration accordion, then add it here
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-    // },
-    // getInspectorFields(accordion) {
-    //   if (!this.inspection.inspector) {
-    //     return [];
-    //   }
-
-    //   const accordionFields = accordion.fields
     //     .filter((field) => {
     //       if (typeof field !== "string") {
     //         const { component } = this.inspection;
@@ -602,12 +552,12 @@ export default {
     //       (!this.knownField(input.field) && accordion.name === "Configuration")
     //   );
     // },
-    // updateState() {
-    //   this.$store.dispatch("undoRedoModule/pushState", {
-    //     config: JSON.stringify(this.config),
-    //     currentPage: this.currentPage
-    //   });
-    // },
+    updateState() {
+      this.$store.dispatch("undoRedoModule/pushState", {
+        config: JSON.stringify(this.config),
+        currentPage: this.currentPage
+      });
+    },
     undo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/undo");
@@ -628,10 +578,10 @@ export default {
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
-    // updateConfig(items) {
-    //   this.config[this.currentPage].items = items;
-    //   this.updateState();
-    // },
+    updateConfig(items) {
+      this.config[this.currentPage].items = items;
+      this.updateState();
+    },
     hasError(element) {
       return this.validationErrors.some(({ item }) => item === element);
     },
@@ -713,7 +663,7 @@ export default {
     },
     inspect(element = {}) {
       this.inspection = element;
-      this.selected = element;
+      // this.selected = element;
       const defaultAccordion = this.accordions.find(
         (accordion) => this.getInspectorFields(accordion).length > 0
       );

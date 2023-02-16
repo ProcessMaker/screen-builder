@@ -33,6 +33,20 @@ export default {
     },
     knownField(field) {
       return this.getAllAccordionizedFields().includes(field);
+    },
+    getAllAccordionizedFields() {
+      if (this._allAccordionizedFields) {
+        return this._allAccordionizedFields;
+      }
+      this._allAccordionizedFields = this.accordions.flatMap((accordion) => {
+        return accordion.fields.map((fieldName) => {
+          if (typeof fieldName === "string") {
+            return fieldName;
+          }
+          return fieldName.name;
+        });
+      });
+      return this._allAccordionizedFields;
     }
   }
 };
