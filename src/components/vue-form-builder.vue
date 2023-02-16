@@ -581,9 +581,9 @@ export default {
       this.config[this.currentPage].items = items;
       this.updateState();
     },
-    hasError(element) {
-      return this.validationErrors.some(({ item }) => item === element);
-    },
+    // hasError(element) {
+    //   return this.validationErrors.some(({ item }) => item === element);
+    // },
     focusInspector(validation) {
       this.showConfiguration = true;
       this.currentPage = this.config.indexOf(validation.page);
@@ -623,6 +623,7 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
       // this.inspection.inspector.splice(0, this.inspection.inspector.length);
+      // this.selected = null;
       this.updateState();
     },
     duplicateItem(index) {
@@ -794,15 +795,15 @@ $side-bar-font-size: 0.875rem;
   }
 }
 
-.hasError {
-  border: 1px solid red;
-  border-radius: 0.25rem;
+// .hasError {
+//   border: 1px solid red;
+//   border-radius: 0.25rem;
 
-  .form-element-header {
-    border-bottom: 1px solid red;
-    color: red;
-  }
-}
+//   .form-element-header {
+//     border-bottom: 1px solid red;
+//     color: red;
+//   }
+// }
 
 .inspector-header {
   background: $header-bg;

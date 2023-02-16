@@ -165,8 +165,6 @@ export default {
   },
   watch: {
     selected(item) {
-       console.log("was selected");
-       console.log(item);
       this.inspection = item;
       const defaultAccordion = this.accordions.find(
         (accordion) => this.getInspectorFields(accordion).length > 0
