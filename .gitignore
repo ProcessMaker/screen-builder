@@ -3,7 +3,8 @@ node_modules
 /dist
 .nyc_output/
 coverage/
-tests/e2e/screenshots/
+cypress/screenshots/
+cypress/downloads/
 
 # local env files
 .env.local
