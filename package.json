@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite",
     "serve": "vue-cli-service serve",
-    "build": "vite build",
+    "build": "INSTRUMENT_BUILD=true vite build",
     "preview": "vite preview",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
@@ -13,7 +13,7 @@
     "open-cypress": "TZ=UTC nyc cypress open",
     "run-cypress": "TZ=UTC nyc cypress run",
     "test": "vue-cli-service test:unit",
-    "test:ci": "start-server-and-test 'vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint --mode e2e' http://localhost:8080/ 'cypress run --headless --browser chrome --spec $(cat /tmp/tests-to-run)'"
+    "test:ci": "start-server-and-test 'vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint --mode e2e' http://localhost:8080/ 'nyc cypress run --headless --browser chrome --spec $(cat /tmp/tests-to-run)'"
   },
   "main": "./dist/vue-form-builder.umd.js",
   "module": "./dist/vue-form-builder.es.js",
@@ -87,6 +87,7 @@
     "start-server-and-test": "^1.15.3",
     "v-calendar": "^0.9.7",
     "vite": "^4.0.4",
+    "vite-plugin-istanbul": "^4.0.0",
     "vite-plugin-monaco-editor": "^1.1.0",
     "vite-plugin-vue2": "^2.0.3",
     "vue": "^2.6.12",
