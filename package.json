@@ -13,7 +13,7 @@
     "open-cypress": "TZ=UTC nyc cypress open",
     "run-cypress": "TZ=UTC nyc cypress run",
     "test": "vue-cli-service test:unit",
-    "test:ci": "start-server-and-test 'vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint --mode e2e' http://localhost:8080/ 'nyc cypress run --headless --browser chrome --spec $(cat /tmp/tests-to-run)'"
+    "test:ci": "start-server-and-test 'vite dev' http://localhost:5173/ 'nyc cypress run --headless --browser chrome --spec $(cat /tmp/tests-to-run)'"
   },
   "main": "./dist/vue-form-builder.umd.js",
   "module": "./dist/vue-form-builder.es.js",
