@@ -36,7 +36,7 @@
     />
 
     <!-- Modals -->
-    <b-modal
+    <!-- <b-modal
       id="addPageModal"
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
@@ -59,7 +59,7 @@
         required
         aria-required="true"
       />
-    </b-modal>
+    </b-modal> -->
 
     <!-- <b-modal
       ref="editPageModal"
@@ -84,7 +84,7 @@
       />
     </b-modal> -->
 
-    <b-modal
+    <!-- <b-modal
       ref="confirm"
       :title="$t('Caution!')"
       :ok-title="$t('Delete')"
@@ -97,7 +97,7 @@
     >
       <p>{{ confirmMessage }}</p>
       <div slot="modal-ok">{{ $t("Delete") }}</div>
-    </b-modal>
+    </b-modal> -->
   </b-row>
 </template>
 
@@ -602,17 +602,17 @@ export default {
         });
       });
     },
-    confirmDelete() {
-      this.confirmMessage = this.$t(
-        "Are you sure you want to delete {{item}}?",
-        { item: this.config[this.currentPage].name }
-      );
-      this.pageDelete = this.currentPage;
-      this.$refs.confirm.show();
-    },
-    hideConfirmModal() {
-      this.$refs.confirm.hide();
-    },
+    // confirmDelete() {
+    //   this.confirmMessage = this.$t(
+    //     "Are you sure you want to delete {{item}}?",
+    //     { item: this.config[this.currentPage].name }
+    //   );
+    //   this.pageDelete = this.currentPage;
+    //   this.$refs.confirm.show();
+    // },
+    // hideConfirmModal() {
+    //   this.$refs.confirm.hide();
+    // },
     addControl(control) {
       this.controls.push(control);
     },
@@ -620,7 +620,7 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
       // this.inspection.inspector.splice(0, this.inspection.inspector.length);
-      this.updateState();
+      // this.updateState();
     },
     duplicateItem(index) {
       const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
@@ -638,25 +638,25 @@ export default {
     //   }
     //   this.config[this.editPageIndex].name = this.editPageName;
     // },
-    addPage(e) {
-      if (this.$refs.addPageInput.validator.errorCount) {
-        e.preventDefault();
-        return;
-      }
-      this.config.push({ name: this.addPageName, items: [] });
-      this.currentPage = this.config.length - 1;
-      this.addPageName = "";
-      this.updateState();
-    },
-    deletePage() {
-      this.config.splice(this.pageDelete, 1);
-      this.currentPage = this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0;
-      this.$store.dispatch("undoRedoModule/pushState", {
-        config: JSON.stringify(this.config),
-        currentPage: this.currentPage,
-        deletedPage: true
-      });
-    },
+    // addPage(e) {
+    //   if (this.$refs.addPageInput.validator.errorCount) {
+    //     e.preventDefault();
+    //     return;
+    //   }
+    //   this.config.push({ name: this.addPageName, items: [] });
+    //   this.currentPage = this.config.length - 1;
+    //   this.addPageName = "";
+    //   this.updateState();
+    // },
+    // deletePage() {
+    //   this.config.splice(this.pageDelete, 1);
+    //   this.currentPage = this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0;
+    //   this.$store.dispatch("undoRedoModule/pushState", {
+    //     config: JSON.stringify(this.config),
+    //     currentPage: this.currentPage,
+    //     deletedPage: true
+    //   });
+    // },
     inspect(element = {}) {
       // this.inspection = element;
       console.log("inspect");
@@ -726,16 +726,16 @@ export default {
     }
   },
   created() {
-    Validator.register(
-      "unique-page-name",
-      (value) => {
-        const pageNames = this.config
-          .map((config) => config.name)
-          .filter((name) => name !== this.originalPageName);
-        return !pageNames.includes(value);
-      },
-      this.$t("Must be unique")
-    );
+    // Validator.register(
+    //   "unique-page-name",
+    //   (value) => {
+    //     const pageNames = this.config
+    //       .map((config) => config.name)
+    //       .filter((name) => name !== this.originalPageName);
+    //     return !pageNames.includes(value);
+    //   },
+    //   this.$t("Must be unique")
+    // );
     this.$store.dispatch("undoRedoModule/pushState", {
       config: JSON.stringify(this.config),
       currentPage: this.currentPage

@@ -150,17 +150,6 @@ export default {
   computed: {
     builder() {
       return this;
-    },
-    filteredControls() {
-      return this.controls
-        .filter((control) => {
-          return control.label
-            .toLowerCase()
-            .includes(this.filterQuery.toLowerCase());
-        })
-        .sort((a, b) => {
-          return this.collator.compare(a.label, b.label);
-        });
     }
   },
   watch: {

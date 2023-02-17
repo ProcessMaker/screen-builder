@@ -214,12 +214,53 @@
         aria-required="true"
       />
     </b-modal>
+    <b-modal
+      id="addPageModal"
+      :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
+      cancel-variant="btn btn-outline-secondary"
+      ok-variant="btn btn-secondary ml-2"
+      :title="$t('Add New Page')"
+      header-close-content="&times;"
+      data-cy="add-page-modal"
+      @ok="addPage"
+    >
+      <required />
+      <form-input
+        ref="addPageInput"
+        v-model="addPageName"
+        :name="$t('Page Name')"
+        :label="$t('Page Name') + ' *'"
+        :helper="$t('The name of the new page to add')"
+        validation="unique-page-name|required"
+        data-cy="add-page-name"
+        required
+        aria-required="true"
+      />
+    </b-modal>
+    <b-modal
+      ref="confirm"
+      :title="$t('Caution!')"
+      :ok-title="$t('Delete')"
+      :cancel-title="$t('Cancel')"
+      cancel-variant="btn btn-outline-secondary"
+      ok-variant="btn btn-secondary ml-2"
+      header-close-content="&times;"
+      @ok="deletePage"
+      @cancel="hideConfirmModal"
+    >
+      <p>{{ confirmMessage }}</p>
+      <div slot="modal-ok">{{ $t("Delete") }}</div>
+    </b-modal>
   </b-col>
 </template>
 
 <script>
+import _ from "lodash";
 import { formTypes } from "@/global-properties";
 import draggable from "vuedraggable";
+
+const Validator = require("validatorjs");
 
 export default {
   name: "BuilderBody",
@@ -263,7 +304,9 @@ export default {
       selected: null,
       editPageName: "",
       editPageIndex: null,
-      originalPageName: null
+      originalPageName: null,
+      addPageName: "",
+      confirmMessage: ""
     };
   },
   computed: {
@@ -284,6 +327,18 @@ export default {
     displayDelete() {
       return this.config.length > 1;
     }
+  },
+  created() {
+    Validator.register(
+      'unique-page-name',
+      value => {
+        const pageNames = this.config
+          .map(config => config.name)
+          .filter(name => name !== this.originalPageName);
+        return !pageNames.includes(value);
+      },
+      this.$t('Must be unique')
+    );
   },
   methods: {
     undo() {
@@ -328,8 +383,12 @@ export default {
      
       this.$emit("inspect", element);
     },
-  
+    duplicateItem(index) {
+      const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+      this.config[this.currentPage].items.push(duplicate);
+    },
     deleteItem(index) {
+      // this.inspection.inspector.splice(0, this.inspection.inspector.length);
       this.$emit("deleteItem", index);
     },
     editPage(e) {
@@ -339,11 +398,41 @@ export default {
       }
       this.config[this.editPageIndex].name = this.editPageName;
     },
+    addPage(e) {
+      if (this.$refs.addPageInput.validator.errorCount) {
+        e.preventDefault();
+        return;
+      }
+      this.config.push({ name: this.addPageName, items: [] });
+      this.currentPage = this.config.length - 1;
+      this.addPageName = "";
+      this.updateState();
+    },
     openEditPageModal(index) {
       this.editPageIndex = index;
       this.editPageName = this.originalPageName = this.config[index].name;
       this.$refs.editPageModal.show();
     },
+    deletePage() {
+      this.config.splice(this.pageDelete, 1);
+      this.currentPage = this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0;
+      this.$store.dispatch("undoRedoModule/pushState", {
+        config: JSON.stringify(this.config),
+        currentPage: this.currentPage,
+        deletedPage: true
+      });
+    },
+    confirmDelete() {
+      this.confirmMessage = this.$t(
+        "Are you sure you want to delete {{item}}?",
+        { item: this.config[this.currentPage].name }
+      );
+      this.pageDelete = this.currentPage;
+      this.$refs.confirm.show();
+    },
+    hideConfirmModal() {
+      this.$refs.confirm.hide();
+    }
   }
 };
 </script>
