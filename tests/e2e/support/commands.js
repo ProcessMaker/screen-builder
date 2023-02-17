@@ -180,29 +180,9 @@ Cypress.Commands.add('pickYesterday', { prevSubject: true }, (subject) => {
 });
 
 Cypress.Commands.add("pickTomorrow", { prevSubject: true }, (subject) => {
-  // Click the input element to open the calendar
-  cy.get(subject).find("input").click();
-
-  // Find the "today" element and get its index
-  cy.get(subject)
-    .find(".day.today")
-    .should("exist")
-    .invoke("index")
-    .then((index) => {
-      // If today is the last day of the week, select the first day of the next week
-      if (index === 6) {
-        cy.get(subject)
-          .find(".day.today")
-          .parent()
-          .next()
-          .find(".day")
-          .first()
-          .click();
-      } else {
-        // Otherwise, select the next day
-        cy.get(subject).find(".day.today").next().click();
-      }
-    });
+  const tomorrow = moment().add(1, "days").format('YYYY-M-D');
+  cy.get(subject).find('input').click();
+  cy.get(subject).find(`[data-id="${tomorrow}"]`).click();
 });
 
 Cypress.Commands.add('pickTodayWithTime', { prevSubject: true }, (subject, hour, minute, period='AM') => {
