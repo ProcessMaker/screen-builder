@@ -192,6 +192,28 @@
         </div>
       </div>
     </draggable>
+    <b-modal
+      ref="editPageModal"
+      :title="$t('Edit Page Title')"
+      :ok-title="$t('Save')"
+      :cancel-title="$t('Cancel')"
+      cancel-variant="btn btn-outline-secondary"
+      ok-variant="btn btn-secondary ml-2"
+      header-close-content="&times;"
+      @ok="editPage"
+    >
+      <required />
+      <form-input
+        ref="editPageInput"
+        v-model="editPageName"
+        :name="$t('Page Name')"
+        :label="$t('Page Name') + ' *'"
+        :helper="$t('The new name of the page')"
+        validation="unique-page-name|required"
+        required
+        aria-required="true"
+      />
+    </b-modal>
   </b-col>
 </template>
 
@@ -238,7 +260,10 @@ export default {
     return {
       currentPage: 0,
       editorContentKey: 0,
-      selected: null
+      selected: null,
+      editPageName: "",
+      editPageIndex: null,
+      originalPageName: null
     };
   },
   computed: {
@@ -306,7 +331,19 @@ export default {
   
     deleteItem(index) {
       this.$emit("deleteItem", index);
-    }
+    },
+    editPage(e) {
+      if (this.$refs.editPageInput.validator.errorCount) {
+        e.preventDefault();
+        return;
+      }
+      this.config[this.editPageIndex].name = this.editPageName;
+    },
+    openEditPageModal(index) {
+      this.editPageIndex = index;
+      this.editPageName = this.originalPageName = this.config[index].name;
+      this.$refs.editPageModal.show();
+    },
   }
 };
 </script>

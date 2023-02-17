@@ -1,44 +1,40 @@
 <template>
   <b-row class="h-100 m-0">
     <!-- Controls -->
-    
-      <!-- Here sidebar -->
-      <BuilderSidebar
-        :controls="controls"
-        :render-controls="renderControls"
-        :collator="collator"
-        :config="config"
-      />
 
+    <!-- Here sidebar -->
+    <BuilderSidebar
+      :controls="controls"
+      :render-controls="renderControls"
+      :collator="collator"
+      :config="config"
+    />
 
-  
-      <BuilderBody
-        :controls="controls"
-        :config="config"
-        :render-controls="renderControls"
-        :validation-errors="validationErrors"
-        @setElementCssClass="setElementCssClass"
-        @deleteItem="deleteItem"
-        @inspect="inspect"
-        :accordions="accordions"
-        :screen-type="screenType"
-
-      />
-  
+    <BuilderBody
+      :controls="controls"
+      :config="config"
+      :render-controls="renderControls"
+      :validation-errors="validationErrors"
+      @setElementCssClass="setElementCssClass"
+      @deleteItem="deleteItem"
+      @inspect="inspect"
+      :accordions="accordions"
+      :screen-type="screenType"
+    />
 
     <!-- Inspector -->
-    
-      <BuilderInspector
-        :controls="controls"
-        :config="config"
-        :accordions="accordions"
-        :render-controls="renderControls"
-        :screen-type="screenType"
-        :current-page="currentPage"
-        :selected="selected"
-      />
-     
-   
+
+    <BuilderInspector
+      :controls="controls"
+      :config="config"
+      :accordions="accordions"
+      :render-controls="renderControls"
+      :screen-type="screenType"
+      :current-page="currentPage"
+      :selected="selected"
+      @updateState="updateState"
+    />
+
     <!-- Modals -->
     <b-modal
       id="addPageModal"
@@ -65,7 +61,7 @@
       />
     </b-modal>
 
-    <b-modal
+    <!-- <b-modal
       ref="editPageModal"
       :title="$t('Edit Page Title')"
       :ok-title="$t('Save')"
@@ -86,7 +82,7 @@
         required
         aria-required="true"
       />
-    </b-modal>
+    </b-modal> -->
 
     <b-modal
       ref="confirm"
@@ -247,9 +243,9 @@ export default {
       controls: [],
       pageAddModal: false,
       addPageName: "",
-      editPageIndex: null,
-      editPageName: "",
-      originalPageName: null,
+      // editPageIndex: null,
+      // editPageName: "",
+      // originalPageName: null,
       config,
       confirmMessage: "",
       pageDelete: 0,
@@ -264,13 +260,13 @@ export default {
       variablesTree: [],
       language: "en",
       collator: null,
-      editorContentKey: 0,
+      editorContentKey: 0
     };
   },
   computed: {
     builder() {
       return this;
-    },
+    }
     // canUndo() {
     //   return this.$store.getters["undoRedoModule/canUndo"];
     // },
@@ -301,14 +297,14 @@ export default {
   watch: {
     config: {
       handler() {
-        // this.checkForCaptchaInLoops();
+        this.checkForCaptchaInLoops();
         this.$emit("change", this.config);
       },
       deep: true
     },
     currentPage() {
       this.inspect();
-    },
+    }
     // inspection(e) {
     //   if (this.translated.includes(e)) {
     //     // already translated, don't translate again!
@@ -339,7 +335,7 @@ export default {
     },
     checkForCaptcha(items, insideLoop = false, nestedScreen = null) {
       items.forEach((item) => {
-        if (!item.items && item.component == "Captcha" && insideLoop) {
+        if (!item.items && item.component === "Captcha" && insideLoop) {
           if (nestedScreen && nestedScreen.config.screen) {
             this.$root.$emit("remove-nested", nestedScreen.config.screen);
             nestedScreen.config.screen = null;
@@ -552,6 +548,7 @@ export default {
     //   );
     // },
     updateState() {
+      console.log("updateState");
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage
@@ -623,25 +620,24 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
       // this.inspection.inspector.splice(0, this.inspection.inspector.length);
-      // this.selected = null;
       this.updateState();
     },
     duplicateItem(index) {
       const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
       this.config[this.currentPage].items.push(duplicate);
     },
-    openEditPageModal(index) {
-      this.editPageIndex = index;
-      this.editPageName = this.originalPageName = this.config[index].name;
-      this.$refs.editPageModal.show();
-    },
-    editPage(e) {
-      if (this.$refs.editPageInput.validator.errorCount) {
-        e.preventDefault();
-        return;
-      }
-      this.config[this.editPageIndex].name = this.editPageName;
-    },
+    // openEditPageModal(index) {
+    //   this.editPageIndex = index;
+    //   this.editPageName = this.originalPageName = this.config[index].name;
+    //   this.$refs.editPageModal.show();
+    // },
+    // editPage(e) {
+    //   if (this.$refs.editPageInput.validator.errorCount) {
+    //     e.preventDefault();
+    //     return;
+    //   }
+    //   this.config[this.editPageIndex].name = this.editPageName;
+    // },
     addPage(e) {
       if (this.$refs.addPageInput.validator.errorCount) {
         e.preventDefault();
@@ -663,6 +659,7 @@ export default {
     },
     inspect(element = {}) {
       // this.inspection = element;
+      console.log("inspect");
       this.selected = element;
       // const defaultAccordion = this.accordions.find(
       //   (accordion) => this.getInspectorFields(accordion).length > 0
@@ -724,7 +721,7 @@ export default {
       }
       this.collator = Intl.Collator(this.language);
     },
-    setElementCssClass(element){
+    setElementCssClass(element) {
       this.elementCssClass(element);
     }
   },

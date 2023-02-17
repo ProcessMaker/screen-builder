@@ -165,6 +165,8 @@ export default {
   },
   watch: {
     selected(item) {
+      console.log("slected");
+      console.log(item);
       this.inspection = item;
       const defaultAccordion = this.accordions.find(
         (accordion) => this.getInspectorFields(accordion).length > 0
@@ -189,6 +191,9 @@ export default {
     openAccordion(accordion) {
       this.accordions.forEach((panel) => (panel.open = false));
       accordion.open = true;
+    },
+    updateState() {
+      this.$emit("updateState");
     }
   }
 };
