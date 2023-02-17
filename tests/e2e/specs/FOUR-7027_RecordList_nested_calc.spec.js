@@ -25,19 +25,14 @@ describe("screen error nested calc", () => {
     ).click();
 
     // Check the data of the screen
-    cy.get("#screen-builder-container").then((div) => {
-      const data = div[0].__vue__.previewData;
-      const recordRowId = data.form_record_list_1[0].row_id;
-      expect(data).to.eql({
-        result: "new value to parent",
-        parentInput: "new value to parent",
-        form_record_list_1: [
-          {
-            result: "new value to parent",
-            row_id: recordRowId
-          }
-        ]
-      });
+    cy.assertPreviewData({
+      result: "new value to parent",
+      parentInput: "new value to parent",
+      form_record_list_1: [
+        {
+          result: "new value to parent"
+        }
+      ]
     });
   });
 });
