@@ -11,12 +11,30 @@ Cypress.Commands.add('setPreviewDataInput', (input) => {
   });
 });
 
-Cypress.Commands.add('assertPreviewData', (expectedData) => {
-  cy.get('#screen-builder-container').then((div) => {
-    const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
-    expect(data).to.eql(expectedData);
-  });
-});
+Cypress.Commands.add(
+  "assertPreviewData",
+  (expectedData, removeRowIds = true) => {
+    cy.wait(500);
+    cy.get("#screen-builder-container").then((div) => {
+      const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
+      // recursively remove row_id from data
+      if (removeRowIds) {
+        const removeRowId = (obj) => {
+          if (obj && typeof obj === "object") {
+            if (Array.isArray(obj)) {
+              obj.forEach(removeRowId);
+            } else {
+              delete obj.row_id;
+              Object.values(obj).forEach(removeRowId);
+            }
+          }
+        };
+        removeRowId(data);
+      }
+      expect(data).to.eql(expectedData);
+    });
+  }
+);
 
 Cypress.Commands.add('setMultiselect', (selector, text, index = 0) => {
   cy.get(`${selector}`).click();
@@ -161,10 +179,30 @@ Cypress.Commands.add('pickYesterday', { prevSubject: true }, (subject) => {
   cy.get(subject).find(`[data-id="${yesterday}"]`).click();
 });
 
-Cypress.Commands.add('pickTomorrow', { prevSubject: true }, (subject) => {
-  const tomorrow = moment().add(1, "days").format('YYYY-M-D');
-  cy.get(subject).find('input').click();
-  cy.get(subject).find(`[data-id="${tomorrow}"]`).click();
+Cypress.Commands.add("pickTomorrow", { prevSubject: true }, (subject) => {
+  // Click the input element to open the calendar
+  cy.get(subject).find("input").click();
+
+  // Find the "today" element and get its index
+  cy.get(subject)
+    .find(".day.today")
+    .should("exist")
+    .invoke("index")
+    .then((index) => {
+      // If today is the last day of the week, select the first day of the next week
+      if (index === 6) {
+        cy.get(subject)
+          .find(".day.today")
+          .parent()
+          .next()
+          .find(".day")
+          .first()
+          .click();
+      } else {
+        // Otherwise, select the next day
+        cy.get(subject).find(".day.today").next().click();
+      }
+    });
 });
 
 Cypress.Commands.add('pickTodayWithTime', { prevSubject: true }, (subject, hour, minute, period='AM') => {
