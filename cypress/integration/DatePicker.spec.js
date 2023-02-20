@@ -174,8 +174,8 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({
-      form_date_picker_1: moment(date).toISOString(),
       form_date_picker_2: moment(dateSame).toISOString(),
+      form_date_picker_1: moment(date).toISOString()
     });
   });
 });
