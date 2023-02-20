@@ -30,6 +30,12 @@ describe("RAOS 1.0.0 Account Opening Customer Form", () => {
 
     // check that ONLY requireInitialDepositOther property was initialized in accounts variable
     cy.assertPreviewData({
+      additionalAccounts: [
+        {
+          productType: "Checking"
+        }
+      ],
+      fundingMethod: "Transfer from Existing Quaint Oak Account",
       accounts: [
         {
           product: "Checking",
@@ -38,12 +44,6 @@ describe("RAOS 1.0.0 Account Opening Customer Form", () => {
         }
       ],
       showFundingAccountLoop: true,
-      additionalAccounts: [
-        {
-          productType: "Checking"
-        }
-      ],
-      fundingMethod: "Transfer from Existing Quaint Oak Account",
       externalBank: "",
       externalAccountType: null,
       externalAccountName: "",
