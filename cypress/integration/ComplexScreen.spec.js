@@ -53,7 +53,7 @@ describe('Complex screen', () => {
 
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').pickToday();
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').pickTodayWithTime('8', '15', 'AM');
 
     cy.get('[data-cy=preview-content] [name=form_input_2]').eq(0).clear().type('input in loop 1');
     cy.get('[data-cy=preview-content] [name=form_input_2]').eq(1).clear().type('input in loop 2');
@@ -131,7 +131,7 @@ describe('Complex screen', () => {
 
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_4"]').selectOption('foo');
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_7"]').pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_7"]').pickTodayWithTime('8', '15', 'AM');
 
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_3] [data-cy=add-row]').click();
     cy.get('[data-cy=modal-not-assigned] button.btn-primary').click();
@@ -140,7 +140,7 @@ describe('Complex screen', () => {
 
     cy.get('[data-cy=preview-content] [name=form_checkbox_4]').click();
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_8"]').pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_8"]').pickTodayWithTime('8', '15', 'AM');
 
     cy.get('[data-cy=preview-content] [name=form_input_6]').eq(0).clear().type('input 6 in loop 1');
     cy.get('[data-cy=preview-content] [name=form_input_6]').eq(1).clear().type('input 6 in loop 2');
@@ -152,7 +152,7 @@ describe('Complex screen', () => {
 
     cy.get('[data-cy=preview-content] [name=form_text_area_3]').type('form text area 3');
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_6"]').pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_6"]').pickTodayWithTime('8', '15', 'AM');
 
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_3"]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_select_list_3"]').should('contain.text', 'No Data Available');
@@ -230,7 +230,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('8', '15', 'AM');
 
     // fill grid
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
@@ -252,7 +252,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('8', '15', 'AM');
 
     // fill grid
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
@@ -274,7 +274,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('8', '15', 'AM');
 
     // fill grid
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
@@ -299,7 +299,7 @@ describe('Complex screen', () => {
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [name=form_checkbox_2]').eq(loop).click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_3"]').eq(loop).pickToday();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('08', '15', 'AM');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_4"]').eq(loop).pickTodayWithTime('8', '15', 'AM');
 
     // fill grid
     cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_2] [data-cy=add-row]').eq(loop).click();
