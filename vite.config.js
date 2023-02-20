@@ -10,7 +10,7 @@ const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
-    "process.env": {}
+    "process.env.NODE_ENV": process.env.NODE_ENV
   },
   plugins: [
     createVuePlugin(),
@@ -24,7 +24,8 @@ export default defineConfig({
        * npm run build.
        * More details below.
        */
-      requireEnv: false,
+      requireEnv: true,
+      checkProd: true,
       /**
        * If forceBuildInstrument is set to true, this will add coverage instrumentation to the
        * built dist files and allow the reporter to collect coverage from the (built files).
@@ -57,6 +58,8 @@ export default defineConfig({
     extensions: [".js", ".mjs", ".vue", ".json"]
   },
   build: {
+    cssCodeSplit: false,
+    sourcemap: "hidden",
     lib: {
       entry: resolve(__dirname, "src/components/index.js"),
       name: libraryName,
