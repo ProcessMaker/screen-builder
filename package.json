@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite",
     "serve": "vue-cli-service serve",
-    "build": "INSTRUMENT_BUILD=true vite build",
+    "build": "INSTRUMENT_BUILD=true VITE_COVERAGE=false vite build",
     "preview": "vite preview",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
