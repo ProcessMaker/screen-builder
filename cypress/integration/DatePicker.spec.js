@@ -87,8 +87,8 @@ describe('Date Picker', () => {
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
-    cy.get('[data-cy=screen-element-container]').last().click();
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'top'});
+    cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=accordion-Configuration]').click();
     cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
@@ -99,8 +99,8 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({
-      form_date_picker_1: moment(date).format('YYYY-MM-DD'),
       form_date_picker_2: null,
+      form_date_picker_1: moment(date).format('YYYY-MM-DD')
     });
   });
 
@@ -112,8 +112,8 @@ describe('Date Picker', () => {
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
-    cy.get('[data-cy=screen-element-container]').last().click();
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'top'});
+    cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=accordion-Configuration]').click();
     cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
@@ -124,8 +124,8 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({
-      form_date_picker_1: moment(date).format('YYYY-MM-DD'),
       form_date_picker_2: moment(dateSame).format('YYYY-MM-DD'),
+      form_date_picker_1: moment(date).format('YYYY-MM-DD')
     });
   });
 
@@ -137,8 +137,8 @@ describe('Date Picker', () => {
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
-    cy.get('[data-cy=screen-element-container]').last().click();
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'top'});
+    cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=accordion-Configuration]').click();
     cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
@@ -149,8 +149,8 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({
-      form_date_picker_1: moment(date).toISOString(),
       form_date_picker_2: null,
+      form_date_picker_1: moment(date).toISOString()
     });
   });
 
@@ -162,7 +162,7 @@ describe('Date Picker', () => {
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', {position: 'bottom'});
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
-    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'bottom'});
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', {position: 'top'});
     cy.get('[data-cy=screen-element-container]').first().click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=accordion-Configuration]').click();
