@@ -121,10 +121,6 @@ export default {
       type: Boolean,
       default: true
     },
-    // inspection: {
-    //   type: Object,
-    //   default: null
-    // },
     config: {
       type: Array,
       default: null
@@ -154,8 +150,6 @@ export default {
   },
   watch: {
     selected(item) {
-      console.log("slected");
-      console.log(item);
       this.inspection = item;
       const defaultAccordion = this.accordions.find(
         (accordion) => this.getInspectorFields(accordion).length > 0
@@ -166,21 +160,46 @@ export default {
     }
   },
   methods: {
+    /**
+     * Gets the accordion name
+     * @param {*} accordion
+     */
     accordionName(accordion) {
+      // Returns the result of calling the "name" function with the argument "this.inspection".
+      // If it is not a function, it returns the value of the "name" property.
       return accordion.name instanceof Function
         ? accordion.name(this.inspection)
         : accordion.name;
     },
+    /**
+     * Toggles an accordion open or closed.
+     * Takes in an accordion as parameter.
+     * @param {array} accordion
+     */
     toggleAccordion(accordion) {
-      this.accordions.forEach((panel) =>
-        panel !== accordion ? (panel.open = false) : null
-      );
+      // Sets all of them to false except for the one passed in as a parameter.
+      this.accordions.forEach((panel) => {
+        if (panel !== accordion) {
+          panel.open = false;
+        }
+      });
+      // sets the open property of the accordion passed in as a parameter to its opposite (true if false, false if true).
       accordion.open = !accordion.open;
     },
+    /**
+     * Open an accordion.
+     * Takes in an accordion as parameter.
+     * @param {array} accordion
+     */
     openAccordion(accordion) {
+      // loops throught all accodions and sets the open property of each panel to false.
       this.accordions.forEach((panel) => (panel.open = false));
+      // sets the open property of the passed in accordion to true, thus opening it.
       accordion.open = true;
     },
+    /**
+     * Fire emits an event called "updateState".
+     */
     updateState() {
       this.$emit("updateState");
     }

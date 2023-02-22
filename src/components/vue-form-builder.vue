@@ -113,7 +113,7 @@
 //   FormHtmlEditor,
 //   FormHtmlViewer
 // } from "@processmaker/vue-form-elements";
-import _ from "lodash";
+// import _ from "lodash";
 import HasColorProperty from "../mixins/HasColorProperty";
 // import * as renderer from "./renderer";
 // import * as inspector from "./inspector";
@@ -341,7 +341,8 @@ export default {
             nestedScreen.config.screen = null;
             globalObject.ProcessMaker.alert(
               this.$t(
-                "You are trying to place a nested screen within CAPTCHA elements inside a loop. CAPTCHA controls cannot be placed within a Loop control."
+                `You are trying to place a nested screen within CAPTCHA elements inside a loop. 
+                CAPTCHA controls cannot be placed within a Loop control.`
               ),
               "danger"
             );
@@ -359,12 +360,12 @@ export default {
           this.checkForCaptcha(item.items, true, nestedScreen);
         }
         if (
-          item.component == "FormNestedScreen" &&
+          item.component === "FormNestedScreen" &&
           item.config.screen &&
           window.nestedScreens
         ) {
-          let nestedScreenItems =
-            window.nestedScreens["id_" + item.config.screen];
+          const nestedScreenItems =
+            window.nestedScreens[`id_${item.config.screen}`];
           if (nestedScreenItems) {
             nestedScreenItems.forEach((nestedScreenPage) => {
               this.checkForCaptcha(nestedScreenPage.items, insideLoop, item);
@@ -620,12 +621,12 @@ export default {
       // Remove the item from the array in currentPage
       this.config[this.currentPage].items.splice(index, 1);
       // this.inspection.inspector.splice(0, this.inspection.inspector.length);
-      // this.updateState();
+      this.updateState();
     },
-    duplicateItem(index) {
-      const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
-      this.config[this.currentPage].items.push(duplicate);
-    },
+    // duplicateItem(index) {
+    //   const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+    //   this.config[this.currentPage].items.push(duplicate);
+    // },
     // openEditPageModal(index) {
     //   this.editPageIndex = index;
     //   this.editPageName = this.originalPageName = this.config[index].name;
@@ -658,8 +659,6 @@ export default {
     //   });
     // },
     inspect(element = {}) {
-      // this.inspection = element;
-      console.log("inspect");
       this.selected = element;
       // const defaultAccordion = this.accordions.find(
       //   (accordion) => this.getInspectorFields(accordion).length > 0
