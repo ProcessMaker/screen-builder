@@ -291,17 +291,17 @@ export default {
     screenType: {
       type: String,
       default: formTypes.form
+    },
+    selected: {
+      type: Object,
+      default: null
     }
-    //   collator: {
-    //     type: Intl.Collator,
-    //     default: null
-    //   }
   },
   data() {
     return {
       currentPage: 0,
       editorContentKey: 0,
-      selected: null,
+      // selected: null,
       editPageName: "",
       editPageIndex: null,
       originalPageName: null,
@@ -379,7 +379,6 @@ export default {
     },
     inspect(element = {}) {
 
-      this.selected = element;
      
       this.$emit("inspect", element);
     },

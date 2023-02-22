@@ -154,6 +154,7 @@ export default {
       const defaultAccordion = this.accordions.find(
         (accordion) => this.getInspectorFields(accordion).length > 0
       );
+      console.log(defaultAccordion);
       if (defaultAccordion) {
         this.openAccordion(defaultAccordion);
       }

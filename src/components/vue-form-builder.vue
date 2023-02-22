@@ -20,6 +20,7 @@
       @inspect="inspect"
       :accordions="accordions"
       :screen-type="screenType"
+      :selected="selected"
     />
 
     <!-- Inspector -->
