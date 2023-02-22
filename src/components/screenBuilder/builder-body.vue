@@ -378,8 +378,6 @@ export default {
       this.$emit("setElementCssClass", element);
     },
     inspect(element = {}) {
-
-     
       this.$emit("inspect", element);
     },
     duplicateItem(index) {

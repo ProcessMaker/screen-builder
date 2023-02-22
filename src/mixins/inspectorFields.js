@@ -11,7 +11,10 @@ export default {
             const { component } = this.inspection;
             const { showFor, hideFor } = field;
 
-            return showFor === component || hideFor !== component;
+            if (showFor) return showFor === component;
+            if (hideFor) return hideFor !== component;
+
+            return true;
           }
 
           return true;
