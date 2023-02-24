@@ -1,31 +1,35 @@
+import computedFields from '../computedFields';
+
 export default {
   methods: {
-    /**
-     * Implements computed fields like this:
-     *
-     * calcProperty() {
-     *   let value = this.evaluateExpression('return formula();', 'javascript');
-     *   value = this.addNonDefinedComputedAttributes(value);
-     *   this.setValueAsync("calcProperty", value, this.vdata);
-     * }
-     */
     computedFields(screen, definition) {
-      // For each computed field defined
-      definition.computed.forEach((computed) => {
-        const formula = JSON.stringify(computed.formula);
-        const type = JSON.stringify(computed.type);
-        const name = JSON.stringify(computed.property);
-        const safeDotName = this.safeDotName(computed.property);
-        const code = `
-        let value = this.evaluateExpression(${formula}, ${type});
-        value = this.addNonDefinedComputedAttributes(value);
-        this.setValue(${name}, value, this.vdata);
-        return value;`;
-        this.addComputed(screen, safeDotName, code, "");
-        // required to enable reactivity of computed field
-        this.addWatch(screen, safeDotName, "");
-      });
-    }
+      // Add computed fields
+      screen.mixins.push(computedFields);
+
+      for (const computed of definition.computed) {
+        screen.computed[computed.property] = {
+          get: (() => {
+            const formula = JSON.stringify(computed.formula);
+            const type = JSON.stringify(computed.type);
+
+            return new Function(`return this.evaluateExpression(${formula}, ${type});`);
+          })(),
+          set() {
+            // Do nothing (as it's not allowed)
+          },
+        };
+
+        this.addWatch(
+          screen,
+          computed.property,
+          `this.setValue(${JSON.stringify(computed.property)}, value, this.vdata);`
+        );
+
+        this.addMounted(screen, `
+          this.setValue(${JSON.stringify(computed.property)}, this.getValue(${JSON.stringify(computed.property)}), this.vdata, this);
+        `);
+      }
+    },
   },
   mounted() {
     this.extensions.push({
@@ -33,7 +37,7 @@ export default {
         if (definition.computed) {
           this.computedFields(screen, definition);
         }
-      }
+      },
     });
-  }
+  },
 };

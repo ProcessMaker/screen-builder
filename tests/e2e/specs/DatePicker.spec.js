@@ -41,7 +41,7 @@ describe('Date Picker', () => {
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .selectable.today').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .day.today').click();
     const today = new Date();
     today.setUTCHours(0);
     today.setUTCMinutes(0);
@@ -59,17 +59,21 @@ describe('Date Picker', () => {
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Datetime');
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .selectable.today').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpHoursInput').type("8");
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpMinutesInput').type("{moveToEnd}15");
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdp12HourToggleBtn').then(toggle => {
-      if (toggle.is('.vdp12HourToggleBtn')){
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .day.today').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] [data-action="togglePicker"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] [data-action="showHours"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] [data-action="selectHour"]:contains(08)').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] [data-action="showMinutes"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] [data-action="selectMinute"]:contains(15)').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] [data-action="togglePeriod"]').then(toggle => {
+      if (toggle.is(':contains(PM)')){
         cy.get(toggle).click();
       }
     });
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] [data-action="close"]').click();
 
     const today = new Date();
-    today.setUTCHours(20);
+    today.setUTCHours(8);
     today.setUTCMinutes(15);
     today.setUTCSeconds(0);
     today.setUTCMilliseconds(0);
@@ -95,7 +99,7 @@ describe('Date Picker', () => {
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').type(date);
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').type(dateBefore);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="close"]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({
@@ -118,9 +122,9 @@ describe('Date Picker', () => {
     cy.get('[data-cy=accordion-Configuration]').click();
     cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
     cy.get('[data-cy=mode-preview]').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').type(date);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').type(dateSame);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="close"]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({
@@ -143,9 +147,9 @@ describe('Date Picker', () => {
     cy.get('[data-cy=accordion-Configuration]').click();
     cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
     cy.get('[data-cy=mode-preview]').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateBefore);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').type(date);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').type(dateBefore);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="close"]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({
@@ -168,9 +172,9 @@ describe('Date Picker', () => {
     cy.get('[data-cy=accordion-Configuration]').click();
     cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
     cy.get('[data-cy=mode-preview]').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').type(date);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').type(dateSame);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] [data-action="close"]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
 
     cy.assertPreviewData({

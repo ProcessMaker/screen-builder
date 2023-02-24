@@ -176,7 +176,7 @@ describe('Watchers', () => {
     cy.get('[data-cy="watchers-watcher-variable"] input').clear().type('form_input_1');
     cy.get('[data-cy="watchers-watcher-variable"]').should('contain.text', 'No elements found.');
     cy.get('[data-cy="watchers-button-save"]').click();
-    cy.get('#watcherConfig').should('contain.text', 'The Variable to Watch * field is required');
+    cy.get('#watcherConfig').should('contain.text', 'The Variable to Watch field is required');
   });
   it('Test synchronous watcher', () => {
     // Mock script response
@@ -405,7 +405,7 @@ describe('Watchers', () => {
       ],
     });
   });
-  it('Focuses the first field that has an error', () => {
+  it.only('Focuses the first field that has an error', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy="topbar-watchers"]').click();

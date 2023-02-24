@@ -153,7 +153,7 @@ describe('Computed fields', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     // Assertion: Check the form_date_picker_1 is read only
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input').should('have.attr', 'readonly');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input').should('have.attr', 'disabled');
     // Assertion: Check the form_date_picker_1 is always 1
     cy.assertPreviewData({
       form_date_picker_1: '1',

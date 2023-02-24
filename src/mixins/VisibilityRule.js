@@ -1,15 +1,14 @@
-import { Parser } from "expr-eval";
+import { Parser } from 'expr-eval';
 
 export default {
   methods: {
     visibilityRuleIsVisible(rule) {
       try {
-        const dataWithParent = this.getDataReference();
-        const isVisible = Boolean(Parser.evaluate(rule, dataWithParent));
+        const isVisible = Boolean(Parser.evaluate(rule, this.getDataReference()));
         return isVisible;
       } catch (e) {
         return false;
       }
-    }
-  }
+    },
+  },
 };
