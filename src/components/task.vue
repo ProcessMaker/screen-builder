@@ -235,7 +235,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -332,7 +332,7 @@ export default {
             this.nodeId = task.element_id;
           
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
-            this.$emit('completed', this.parentRequest);
+            this.$emit('completed', this.getAllowedRequestId());
           }
         });
     },
@@ -384,8 +384,21 @@ export default {
     activityAssigned() {
       // This may no longer be needed
     },
-    processCompleted() {
+     processCompleted() {
+      let requestId;
       if (this.parentRequest) {
+        requestId = this.getAllowedRequestId();
+        this.$emit('completed', requestId);
+      }
+      if (requestId !== this.requestId) {
+        this.$emit('completed', this.requestId);
+      }
+    },
+    getAllowedRequestId() {
+      const permissions = this.task.user_request_permission || [];
+      const permission = permissions.find(item => item.process_request_id === this.parentRequest)
+      const allowed = permission && permission.allowed;
+      return allowed ? this.parentRequest : this.requestId
         this.$emit('completed', this.parentRequest);
       } else {
         this.$emit('completed', this.requestId);

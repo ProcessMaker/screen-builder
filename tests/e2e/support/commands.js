@@ -2,6 +2,7 @@ import '@4tw/cypress-drag-drop';
 import { set } from 'lodash';
 import 'cypress-wait-until';
 import "cypress-audit/commands";
+import moment from "moment";
 
 Cypress.Commands.add('setPreviewDataInput', (input) => {
   cy.get('#screen-builder-container').then(async (div) => {
@@ -10,12 +11,30 @@ Cypress.Commands.add('setPreviewDataInput', (input) => {
   });
 });
 
-Cypress.Commands.add('assertPreviewData', (expectedData) => {
-  cy.get('#screen-builder-container').then((div) => {
-    const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
-    expect(data).to.eql(expectedData);
-  });
-});
+Cypress.Commands.add(
+  "assertPreviewData",
+  (expectedData, removeRowIds = true) => {
+    cy.wait(500);
+    cy.get("#screen-builder-container").then((div) => {
+      const data = JSON.parse(JSON.stringify(div[0].__vue__.previewData));
+      // recursively remove row_id from data
+      if (removeRowIds) {
+        const removeRowId = (obj) => {
+          if (obj && typeof obj === "object") {
+            if (Array.isArray(obj)) {
+              obj.forEach(removeRowId);
+            } else {
+              delete obj.row_id;
+              Object.values(obj).forEach(removeRowId);
+            }
+          }
+        };
+        removeRowId(data);
+      }
+      expect(data).to.eql(expectedData);
+    });
+  }
+);
 
 Cypress.Commands.add('setMultiselect', (selector, text, index = 0) => {
   cy.get(`${selector}`).click();
@@ -151,33 +170,33 @@ Cypress.Commands.add('mockComponent', (componentName) => {
 
 Cypress.Commands.add('pickToday', { prevSubject: true }, (subject) => {
   cy.get(subject).find('input').click();
-  cy.get(subject).find('.day.today').click();
+  cy.get(subject).find('.selectable.today').click();
 });
 
 Cypress.Commands.add('pickYesterday', { prevSubject: true }, (subject) => {
+  const yesterday = moment().subtract(1, "days").format('YYYY-M-D');
   cy.get(subject).find('input').click();
-  cy.get(subject).find('.day.today').prev().click();
+  cy.get(subject).find(`[data-id="${yesterday}"]`).click();
 });
 
-Cypress.Commands.add('pickTomorrow', { prevSubject: true }, (subject) => {
+Cypress.Commands.add("pickTomorrow", { prevSubject: true }, (subject) => {
+  const tomorrow = moment().add(1, "days").format('YYYY-M-D');
   cy.get(subject).find('input').click();
-  cy.get(subject).find('.day.today').next().click();
+  cy.get(subject).find(`[data-id="${tomorrow}"]`).click();
 });
 
 Cypress.Commands.add('pickTodayWithTime', { prevSubject: true }, (subject, hour, minute, period='AM') => {
   cy.get(subject).find('input').click();
-  cy.get(subject).find('.day.today').click();
-  cy.get(subject).find('[data-action="togglePicker"]').click();
-  cy.get(subject).find('[data-action="showHours"]').click();
-  cy.get(subject).find(`[data-action="selectHour"]:contains(${hour})`).click();
-  cy.get(subject).find('[data-action="showMinutes"]').click();
-  cy.get(subject).find(`[data-action="selectMinute"]:contains(${minute})`).click();
-  cy.get(subject).find('[data-action="togglePeriod"]').then(toggle => {
-    if (!toggle.is(`:contains(${period})`)) {
+  cy.get(subject).find('.selectable.today').click();
+  cy.get(subject).find(`.vdpHoursInput`).type(`${hour}`);
+  cy.get(subject).find('.vdpMinutesInput').type(`{moveToEnd}${minute}`);
+  cy.get(subject).find('.vdp12HourToggleBtn').then(toggle => {
+    if (toggle.is('.vdp12HourToggleBtn') && !cy.get(".vdp12HourToggleBtn").contains("AM")){
       cy.get(toggle).click();
     }
   });
-  cy.get(subject).find('[data-action="close"]').click();
+  // Ability to escape the datepicker since there's no close command
+  cy.get('body').type("{esc}")
 });
 
 Cypress.Commands.add('selectOption', { prevSubject: true }, (subject, option) => {
