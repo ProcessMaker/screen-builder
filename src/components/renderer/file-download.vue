@@ -202,10 +202,7 @@ export default {
         if (fileInfo) {
           this.filesInfo.push(fileInfo);
         } else {
-          window.ProcessMaker.alert(
-            this.$t('File ID does not exist'),
-            'danger'
-          );
+          console.log(this.$t('File ID does not exist'));
         }
       });
     },
