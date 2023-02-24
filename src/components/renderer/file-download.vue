@@ -114,6 +114,9 @@ export default {
 
       if (_.has(window, 'PM4ConfigOverrides.useDefaultUrlDownload') && window.PM4ConfigOverrides.useDefaultUrlDownload) {
         // Use default endpoint when coming from a package.
+        if (this.requestId) {
+          return `requests/${this.requestId}/files/${file.id}/contents`;
+        }
         return `../files/${file.id}/contents`;
       }
 
