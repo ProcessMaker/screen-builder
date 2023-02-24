@@ -88,15 +88,17 @@ describe('Validation Rules', () => {
 
     // same
     cy.get(
-      '[data-cy=preview-content] [data-cy=screen-field-form_date_picker_1]'
+      '[data-cy=preview-content] [data-cy=screen-field-form_date_picker_1] > .form-control'
     )
+      .parent()
       .should('contain.text', 'Must be equal or before today');
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
     ).pickToday();
     cy.get(
-      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] > .form-control'
     )
+      .parent()
       .should('not.contain.text', 'Must be equal or before today');
 
     //submit form valid

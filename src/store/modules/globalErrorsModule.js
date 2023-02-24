@@ -31,22 +31,16 @@ function countErrors(obj) {
   return errors;
 }
 
-const updateValidationRules = async (screens, commit) => {
-  const rootScreen = findRootScreen(screens[0]);
-  const awaitLoad = [];
-  screens.forEach((screen) => {
-    if (rootScreen !== screen) {
-      // refresh nested screen validation rules
-      awaitLoad.push(screen.loadValidationRules());
-    }
-  });
-  await Promise.all(awaitLoad);
+const updateValidationRules = async (screen, commit) => {
+  const mainScreen = findRootScreen(screen);
   try {
-    await rootScreen.loadValidationRules();
+    await mainScreen.loadValidationRules();
   } catch (error) {
-    console.warn("There was a problem rendering the screen", error);
+    if (this.getMode === "preview") {
+      console.warn("There was a problem rendering the screen", error);
+    }
   }
-  const validate = rootScreen.$v;
+  const validate = mainScreen.$v;
   // update the global error state used by submit buttons
   if (validate) {
     let errors = 0;
@@ -58,7 +52,7 @@ const updateValidationRules = async (screens, commit) => {
         errors === 1
           ? "There is a validation error in your form."
           : "There are {{items}} validation errors in your form.";
-      message = rootScreen.$t(message, { items: errors });
+      message = mainScreen.$t(message, { items: errors });
     }
     commit("basic", {
       key: "valid",
@@ -71,21 +65,12 @@ const updateValidationRules = async (screens, commit) => {
   }
 };
 
-const updateValidationRulesDebounced = debounce(updateValidationRules, 500);
-
-const screensToValidate = [];
-const queueUpdateValidationRules = (mainScreen, commit) => {
-  if (!screensToValidate.includes(mainScreen)) {
-    screensToValidate.push(mainScreen);
-  }
-  updateValidationRulesDebounced(screensToValidate, commit);
-};
+const updateValidationRulesDebounced = debounce(updateValidationRules, 1000);
 
 const globalErrorsModule = {
   namespaced,
   state: () => {
     return {
-      locked: false,
       valid: true,
       message: "",
       mode: ""
@@ -112,14 +97,14 @@ const globalErrorsModule = {
   },
   actions: {
     validate({ commit }, mainScreen) {
-      queueUpdateValidationRules(mainScreen, commit);
+      updateValidationRulesDebounced(mainScreen, commit);
     },
     async validateNow({ commit }, mainScreen) {
-      await updateValidationRules([mainScreen], commit);
+      await updateValidationRules(mainScreen, commit);
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
-    }
+    },
   }
 };
 

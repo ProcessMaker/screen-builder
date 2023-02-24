@@ -156,7 +156,7 @@
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
 import { dateUtils } from '@processmaker/vue-form-elements';
-import { mapActions, mapState } from "vuex";
+//import ScreenRenderer from '../screen-renderer.vue';
 
 const jsonOptionsActionsColumn = {
   key: '__actions',
@@ -411,7 +411,7 @@ export default {
       let {_parent, ...result} = this.addItem;
       this.initFormValues = _.cloneDeep(result);
     },
-    async handleOk(bvModalEvt) {
+    handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {

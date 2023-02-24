@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 const broadcastEvent = '.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated';
 
-const debounce_time = 500;
+const debounce_time = 1000;
 
 export default {
   data() {
@@ -69,7 +69,7 @@ export default {
       }).then((response) => {
         // If watcher has an output variable and is a script
         if (watcher.output_variable && (watcher.script_key || '').length === 0) {
-          this.setValue(watcher.output_variable, response, this.vdata);
+          this.setValue(watcher.output_variable, response);
         }
 
         //update mapped values
@@ -80,7 +80,7 @@ export default {
           if (typeof this.getValue(`${map.key}_was_filled__`) !== 'undefined') {
             // If the variable already exist it must be set as filled and updated
             this.setValue(`${map.key}_was_filled__`, true);
-            this.setValue(map.key, response[map.key], this.vdata);
+            this.setValue(map.key, response[map.key]);
           }
           else {
             // If it is a new variable, the value  is set directly

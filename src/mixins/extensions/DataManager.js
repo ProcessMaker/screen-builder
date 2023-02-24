@@ -1,54 +1,28 @@
+import _ from 'lodash';
+
 export default {
   methods: {
     dataFields(screen, definition) {
-      const localVariables = this.variables.filter(
-        (v) => !this.isComputedVariable(v.name, definition)
-      );
-      localVariables.forEach((v) => {
-        const { component } = v.element;
-        const dataFormat = v.config.dataFormat || null;
-        const safeDotName = this.safeDotName(v.name);
-        this.addData(
-          screen,
-          safeDotName,
-          `
+      this.variables.filter(v => (!v.name.startsWith('_parent') && !v.name.includes('._parent.') && !this.isComputedVariable(v.name, definition)))
+        .forEach(v => {
+          let component = _.get(v, 'element.component');
+          let dataFormat = _.get(v, 'config.dataFormat', null);
+          this.addData(screen, v.name, `
             this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
             this.getValue(${JSON.stringify(v.name)}, data) || 
-            this.initialValue(
-              '${component}',
-              '${dataFormat}',
-              ${JSON.stringify(v.config)})
-          `,
-          v.name
-        );
-        this.addWatch(
-          screen,
-          `vdata.${v.name}`,
-          `if (this.canUpdate("${safeDotName}")) {
-            this.${safeDotName} = value;
-          }`
-        );
-      });
-      this.addProp(screen, "vdata", null);
+            this.initialValue('${component}', '${dataFormat}', ${JSON.stringify(v.config)})
+          `);
+          this.addWatch(screen, v.name, `this.setValue(${JSON.stringify(v.name)}, value, this.vdata);this.setValue(${JSON.stringify(v.name)}, value, this.schema);`);
+          this.addWatch(screen, `vdata.${v.name}`, `this.setValue(${JSON.stringify(v.name)}, value, this);`);
+        });
+      screen.props.vdata = null;
     },
-    /**
-     * Replace `.` by `_DOT_` in a variable name
-     * @param {string} name
-     * @returns {string}
-     */
-    safeDotName(name) {
-      // if starts with _parent returns as is
-      if (name.startsWith("_parent")) {
-        return name;
-      }
-      return name.replace(/\./g, "_DOT_");
-    }
   },
   mounted() {
     this.extensions.push({
       onbuild({ screen, definition }) {
         this.dataFields(screen, definition);
-      }
+      },
     });
-  }
+  },
 };

@@ -1,3 +1,5 @@
+import LoopControl from '../../mixins/LoopControl';
+
 export default {
   props: {
     configRef: null,
@@ -10,7 +12,7 @@ export default {
   },
   methods: {
     loadFormLoopProperties({ properties, element }) {
-      this.registerVariable(element.config.settings.varname, element);
+      this.registerVariable(element.config.settings.varname, {});
       this.loops.push({ variable: element.config.settings.varname, element, properties });
     },
     loadFormLoopItems({ element, node, definition }) {
@@ -73,7 +75,13 @@ export default {
         if (params.element.container && params.componentName === 'FormLoop') {
           this.loadFormLoopItems(params);
         }
-      }
+      },
+      onbuild({ screen }) {
+        screen.mixins.push(LoopControl);
+        this.loops.forEach(({variable, element}) => {
+          this.addMounted(screen, `this.initLoopVariable(${JSON.stringify(variable)}, ${JSON.stringify(element.config)});`);
+        });
+      },
     });
-  }
+  },
 };

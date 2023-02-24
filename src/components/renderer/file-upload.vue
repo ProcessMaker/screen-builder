@@ -111,12 +111,6 @@ export default {
     this.setPrefix();
     if (this.$refs['uploader']) {
       this.$refs['uploader'].$forceUpdate();
-      // Re-upload stored files; 
-      // Files disappear when navigating between pages with the Page Navigation component
-      if (this.files.length > 0) {
-        this.$refs.uploader.uploader.addFiles(this.files);
-        this.uploading = false;
-      }
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
@@ -294,7 +288,6 @@ export default {
       files: [],
       nativeFiles: {},
       uploading: false,
-      invalidFile: false,
     };
   },
   methods: {
@@ -457,14 +450,6 @@ export default {
         file.ignored = true;
         return false;
       }
-      if (file.fileType === undefined) {
-        const existingFile = this.files.find(el => {
-          if (el.name === file.name) {
-            return el.fileType;
-          }
-        });
-        file.fileType = existingFile.fileType;
-      }
 
       if (this.filesAccept) {
         file.ignored = true;
@@ -472,8 +457,6 @@ export default {
           file.ignored = false;
         }
         if (file.ignored) {
-          this.invalidFile = true;
-          this.uploading = false;
           window.ProcessMaker.alert(this.$t('File not allowed.'), 'danger');
           return false;
         }
@@ -510,9 +493,6 @@ export default {
           id,
           file_name: name,
           mime_type: rootFile.fileType,
-          // additional properties needed when re-uploading files to the uploader component
-          name: name,
-          fileType: rootFile.fileType,
         };
 
         this.$set(this.nativeFiles, id, rootFile);
@@ -541,11 +521,6 @@ export default {
       return null;
     },
     start() {
-      // Prevent the upload from being started when the file is invalid.
-      if (this.invalidFile) {
-        return;
-      }
-
       this.uploading = true;
       if (this.parentRecordList(this) === null) {
         this.row_id = null;

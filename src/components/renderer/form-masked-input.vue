@@ -11,7 +11,6 @@
       class="form-control"
       :class="classList"
       type="text"
-      @change="onChange"
     />
     <input v-else
       v-model="localValue"
@@ -22,7 +21,6 @@
       :class="classList"
       :type="dataType"
       :maxlength="maxlength"
-      @change="onChange"
     >
     <template v-if="validator && validator.errorCount">
       <div class="invalid-feedback" v-for="(errors, index) in validator.errors.all()" :key="index">
@@ -43,7 +41,6 @@ import { TheMask } from 'vue-the-mask';
 import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import moment from 'moment';
-import debounce from "lodash/debounce";
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -213,9 +210,6 @@ export default {
     }
   },
   methods: {
-    onChange() {
-      this.$emit("change", this.convertToData(this.localValue));
-    },
     getUserConfig() {
       return (window.ProcessMaker && window.ProcessMaker.user) || {};
     },

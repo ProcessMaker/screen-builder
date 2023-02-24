@@ -400,10 +400,6 @@ export default {
       return warnings;
     },
   },
-  created() {
-    this.updateDataInput = debounce(this.updateDataInput, 1000);
-    this.updateDataPreview = debounce(this.updateDataPreview, 1000);
-  },
   mounted() {
     this.countElements = debounce(this.countElements, 2000);
     if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
@@ -426,9 +422,10 @@ export default {
   },
   methods: {
     ...mapMutations("globalErrorsModule", { setStoreMode: "setMode" }),
-    updateDataInput() {
+    // eslint-disable-next-line func-names
+    updateDataInput: debounce(function () {
       this.updateDataInputNow();
-    },
+    }, 1000),
     updateDataInputNow() {
       if (this.previewInputValid) {
         // Copy data over
@@ -436,9 +433,10 @@ export default {
         this.updateDataPreview();
       }
     },
-    updateDataPreview() {
+    // eslint-disable-next-line func-names
+    updateDataPreview: debounce(function () {
       this.previewDataStringify = JSON.stringify(this.previewData, null, 2);
-    },
+    }, 1000),
     monacoMounted(editor) {
       this.editor = editor;
       this.editor.updateOptions({ readOnly: true });

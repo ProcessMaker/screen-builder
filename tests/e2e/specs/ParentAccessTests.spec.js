@@ -12,8 +12,7 @@ describe("Test access to _parent", () => {
     cy.get("[data-cy=preview-content] [name='parentInput']")
       .eq(0)
       .clear()
-      .type("value in parent")
-      .blur();
+      .type("value in parent");
 
     cy.get("[data-cy=preview-content] [name='form_input_1']")
       .eq(0)
@@ -27,9 +26,7 @@ describe("Test access to _parent", () => {
     // Type in form_input_1 inside record list
     cy.get(
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_1]"
-    )
-      .type(":value in record list + loop")
-      .blur();
+    ).type(":value in record list + loop");
 
     // Click OK button to insert the row
     cy.get(
@@ -37,28 +34,33 @@ describe("Test access to _parent", () => {
     ).click();
 
     // Check the data of the screen
-    cy.assertPreviewData({
-      parentInput: "value in parent",
-      loop_1: [
-        {
-          parentInput: "value in parent",
-          loop_1: [
-            {
-              form_input_1: "value in parent:value in loop"
-            }
-          ]
-        }
-      ],
-      form_record_list_1: [
-        {
-          parentInput: "value in parent",
-          loop_1: [
-            {
-              form_input_1: "value in parent:value in record list + loop"
-            }
-          ]
-        }
-      ]
+    cy.get("#screen-builder-container").then((div) => {
+      const data = div[0].__vue__.previewData;
+      const recordRowId = data.form_record_list_1[0].row_id;
+      expect(data).to.eql({
+        parentInput: "value in parent",
+        loop_1: [
+          {
+            parentInput: "value in parent",
+            loop_1: [
+              {
+                form_input_1: "value in parent:value in loop"
+              }
+            ]
+          }
+        ],
+        form_record_list_1: [
+          {
+            parentInput: "value in parent",
+            loop_1: [
+              {
+                form_input_1: "value in parent:value in record list + loop"
+              }
+            ],
+            row_id: recordRowId
+          }
+        ]
+      });
     });
   });
 });

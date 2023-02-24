@@ -1,8 +1,9 @@
-import _ from "lodash";
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
 import ValidationsFactory from '../ValidationsFactory';
+import { mapGetters } from 'vuex';
+import _, { isEqual } from 'lodash';
 
 let screenRenderer;
 
@@ -184,26 +185,12 @@ export default {
       return reference;
     },
     loadItems(items, component, screen, definition, formIndex) {
-      items.forEach((element) => {
+      items.forEach(element => {
         const componentName = element[this.nodeNameProperty];
         const nodeName = this.alias[componentName] || componentName;
         const properties = { ...element.config };
         // Extensions.onloadproperties
-        this.extensions.forEach(
-          (ext) =>
-            ext.onloadproperties instanceof Function &&
-            ext.onloadproperties.bind(this)({
-              properties,
-              element,
-              component,
-              items,
-              nodeName,
-              componentName,
-              screen,
-              definition,
-              formIndex
-            })
-        );
+        this.extensions.forEach((ext) => ext.onloadproperties instanceof Function && ext.onloadproperties.bind(this)({ properties, element, component, items, nodeName, componentName, screen, definition , formIndex}));
         // Create component
         const node = this.createComponent(nodeName, properties);
         // Create wrapper
@@ -305,7 +292,6 @@ export default {
           props: {},
           computed: {},
           methods: {},
-          created: [],
           data: {},
           watch: {},
           mounted: [],
@@ -321,27 +307,7 @@ export default {
           ext.onbuild instanceof Function ? ext.onbuild.bind(this)({ screen: component, definition }) : null;
         });
         // Build data
-        const hiddenVars = ["currentPage__"];
-        const dataCode = `let value;const data = {};
-          ${Object.keys(component.data)
-            .map((key) => {
-              const { code, variable } = component.data[key];
-              return `value = ${code};
-                data.${this.safeDotName(key)} = value;
-                ${
-                  !variable ||
-                  hiddenVars.includes(variable) ||
-                  variable.endsWith("__")
-                    ? ""
-                    : `this.setValue(${JSON.stringify(
-                        variable
-                      )}, value, this.vdata);`
-                }`;
-            })
-            .join("\n")};
-            return data;`;
-        // eslint-disable-next-line no-new-func
-        component.data = new Function(dataCode);
+        component.data = new Function('const data = {};' + Object.keys(component.data).map(key => `this.setValue(${JSON.stringify(key)}, ${component.data[key]}, data);`).join('\n') + 'return data;');
         // Build watchers
         Object.keys(component.watch).forEach((key) => {
           const watch = { deep: true };
@@ -351,8 +317,6 @@ export default {
         });
         // Add validation rules
         this.addValidationRulesLoader(component, definition);
-        // Build mounted
-        component.created = new Function(component.created.join('\n'));
         // Build mounted
         component.mounted = new Function(component.mounted.join('\n'));
         return component;
@@ -368,19 +332,8 @@ export default {
         };
       }
     },
-    addProp(screen, name, value) {
-      screen.props[name] = value;
-    },
-    addData(screen, name, code, variable = null) {
-      screen.data[name] = { code, variable };
-    },
-    addComputed(screen, name, getterCode, setterCode) {
-      screen.computed[name] = {
-        // eslint-disable-next-line no-new-func
-        get: new Function(getterCode),
-        // eslint-disable-next-line no-new-func
-        set: new Function("value", setterCode)
-      };
+    addData(screen, name, code) {
+      screen.data[name] = code;
     },
     addWatch(screen, name, code, options = {}) {
       if (screen.watch[name]) {
@@ -391,9 +344,6 @@ export default {
     },
     addMounted(screen, code) {
       screen.mounted.push(code);
-    },
-    addCreated(screen, code) {
-      screen.created.push(code);
     },
     addEvent(properties, event, code) {
       properties[`@${event}`] = code;

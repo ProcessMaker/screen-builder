@@ -162,7 +162,7 @@ describe('Loop control', () => {
       .then(() => expect(alert).to.equal(false));  
 
     // Add data to input field
-    cy.get(':nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1) > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar').blur();
+    cy.get(':nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1) > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar');
 
     // Ensure form can be submitted
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
@@ -214,7 +214,7 @@ describe('Loop control', () => {
       .then(() => expect(alert).to.equal(false));
 
     // Add data to input field
-    cy.get(':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [name="loop_2"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar').blur();
+    cy.get(':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [name="loop_2"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar');
 
     // Ensure form can be submitted
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
@@ -302,7 +302,7 @@ describe('Loop control', () => {
       .then(() => expect(alert).to.equal(false));
 
     // Add data to input field
-    cy.get(':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [data-cy="screen-field-Nested Screen"] > [data-cy=screen-renderer] > :nth-child(1) > .page > [selector="first-name"] > .form-group > [data-cy=screen-field-firstname]').clear().type('foobar').blur();
+    cy.get(':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [data-cy="screen-field-Nested Screen"] > [data-cy=screen-renderer] > :nth-child(1) > .page > [selector="first-name"] > .form-group > [data-cy=screen-field-firstname]').clear().type('foobar');
 
     // Ensure form can be submitted
     cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
