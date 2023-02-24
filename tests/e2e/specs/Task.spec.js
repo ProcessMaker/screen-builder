@@ -54,6 +54,7 @@ describe('Task component', () => {
           id: 1,
           name: 'Process Name',
         },
+        user_request_permission: [{ process_request_id: 1, allowed: true }]
       }
     );
 
@@ -113,6 +114,7 @@ describe('Task component', () => {
           firstname: 'John',
           lastname: 'Doe',
         },
+        user_request_permission: [{ process_request_id: 1, allowed: true }]
       }
     );
 

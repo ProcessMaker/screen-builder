@@ -45,6 +45,11 @@ export default {
       // Not somewhere we can download anything (like web entry start event)
       return;
     }
+
+    if (this.collection && this.value) {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.value.file_name = this.value.name;
+    }
     this.setFilesInfo();
   },
   watch: {
@@ -114,6 +119,9 @@ export default {
 
       if (_.has(window, 'PM4ConfigOverrides.useDefaultUrlDownload') && window.PM4ConfigOverrides.useDefaultUrlDownload) {
         // Use default endpoint when coming from a package.
+        if (this.requestId) {
+          return `requests/${this.requestId}/files/${file.id}/contents`;
+        }
         return `../files/${file.id}/contents`;
       }
 
@@ -202,10 +210,7 @@ export default {
         if (fileInfo) {
           this.filesInfo.push(fileInfo);
         } else {
-          window.ProcessMaker.alert(
-            this.$t('File ID does not exist'),
-            'danger'
-          );
+          console.log(this.$t('File ID does not exist'));
         }
       });
     },
