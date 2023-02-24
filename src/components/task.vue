@@ -208,12 +208,7 @@ export default {
       return screenType.toLowerCase() + '-screen';
     },
     parentRequest() {
-      if (!_.get(this.task, 'can_view_parent_request', false)) {
-        return null;
-      } else {
-        return _.get(this.task, 'process_request.parent_request_id', null);
-      }
-
+      return _.get(this.task, 'process_request.parent_request_id', null);
     },
   },
   methods: {
@@ -330,7 +325,6 @@ export default {
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
-          
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
           }
@@ -384,7 +378,7 @@ export default {
     activityAssigned() {
       // This may no longer be needed
     },
-     processCompleted() {
+    processCompleted() {
       let requestId;
       if (this.parentRequest) {
         requestId = this.getAllowedRequestId();
@@ -399,10 +393,6 @@ export default {
       const permission = permissions.find(item => item.process_request_id === this.parentRequest)
       const allowed = permission && permission.allowed;
       return allowed ? this.parentRequest : this.requestId
-        this.$emit('completed', this.parentRequest);
-      } else {
-        this.$emit('completed', this.requestId);
-      }
     },
     processUpdated: _.debounce(function(data) {
       if (
