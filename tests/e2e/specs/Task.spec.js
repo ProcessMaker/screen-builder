@@ -29,7 +29,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -85,7 +85,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -145,7 +145,7 @@ describe('Task component', () => {
         .then(function() {
           cy.route(
             'GET',
-            'http://localhost:8080/api/1.0/tasks/1?include=*',
+            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
             {
               id: 1,
               advanceStatus: 'completed',
@@ -162,7 +162,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -220,7 +220,7 @@ describe('Task component', () => {
         .then(function() {
           cy.route(
             'GET',
-            'http://localhost:8080/api/1.0/tasks/1?include=*',
+            'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
             {
               id: 1,
               advanceStatus: 'completed',
@@ -264,7 +264,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -329,7 +329,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -358,7 +358,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask1
       );
 
@@ -384,7 +384,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask2['taskId']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask2['taskId']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask2
       );
 
@@ -404,7 +404,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -434,7 +434,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask1
       );
 
@@ -453,7 +453,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask2['taskId']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask2['taskId']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask2
       );
 
@@ -474,7 +474,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -503,7 +503,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask1
       );
 
@@ -528,7 +528,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask2['taskId']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask2['taskId']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask2
       );
 
@@ -548,7 +548,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -577,7 +577,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask1
       );
 
@@ -597,7 +597,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -626,7 +626,7 @@ describe('Task component', () => {
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask1
       );
 
@@ -652,7 +652,7 @@ describe('Task component', () => {
     cy.server();
     cy.route(
       'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
+      'http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
       {
         id: 1,
         advanceStatus: 'open',
@@ -663,7 +663,7 @@ describe('Task component', () => {
           status: 'ACTIVE',
           parent_request_id: 1,
         },
-        can_view_parent_request: true,
+        user_request_permission: [{ process_request_id: 2, allowed: true }]
       }
     );
 
@@ -681,11 +681,11 @@ describe('Task component', () => {
         'screen': SingleScreen.screens[0],
         'allow_interstitial': true,
         'interstitial_screen': InterstitialScreen.screens[0],
-        'can_view_parent_request': true,
+         user_request_permission: [{ process_request_id: 3, allowed: true }, { process_request_id: 2, allowed: true }]
       };
 
       getTask(
-        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=*',
+        'http://localhost:8080/api/1.0/tasks/'+responseDataTask1['id']+'?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission',
         responseDataTask1
       );
 
@@ -696,76 +696,6 @@ describe('Task component', () => {
     });
 
     cy.url().should('eq', 'http://localhost:8080/requests/3');
-  });
-
-
-  it('When user can view parent, redirect to parent request page.', () => {
-    cy.server();
-    cy.route(
-      'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
-      {
-        id: 1,
-        status: 'COMPLETED',
-        component: 'task-screen',
-        screen: SingleScreen.screens[0],
-        process_request: {
-          id: 3,
-          status: 'COMPLETED',
-          parent_request_id: 2,
-        },
-        can_view_parent_request: true,
-      }
-    );
-
-    cy.route(
-      'GET',
-      'http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1',
-        {
-          data: []
-        }
-    );
-
-    cy.visit('/?scenario=TaskRedirect', {});
-    cy.url().should('eq', 'http://localhost:8080/requests/2');
-  });
-
-  it('When user can NOT view parent, redirect to subprocess request page.', () => {
-    cy.server();
-    cy.route(
-      'GET',
-      'http://localhost:8080/api/1.0/tasks/1?include=*',
-      {
-        id: 1,
-        status: 'CLOSED',
-        component: 'task-screen',
-        screen: SingleScreen.screens[0],
-        process_request: {
-          id: 1,
-          status: 'COMPLETED',
-          parent_request_id: 2,
-        },
-        can_view_parent_request: false,
-      }
-    );
-
-    cy.route(
-      'GET',
-      'http://localhost:8080/api/1.0/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1',
-        {
-          data: []
-        }
-    ).as('LoadTasks');
-    cy.visit('/?scenario=TaskRedirect', {});
-
-    cy.wait('@LoadTasks').then(() => {
-      cy.socketEvent('ProcessMaker\\Events\\ProcessCompleted', {
-        requestId: 1,
-        // event: 'ACTIVITY_COMPLETED',
-      });
-      
-    });
-    cy.url().should('eq', 'http://localhost:8080/requests/1');
   });
 });
 
@@ -785,10 +715,8 @@ function getTask(url, responseData) {
         id: 1,
         parent_request_id: responseData['parent_request_id'],
         status: responseData['status'],
-        process_request_parent: responseData['status'],
       },
-      process_request_parent: {'status': 'CLOSED'},
-      can_view_parent_request: true,
+      user_request_permission: responseData['user_request_permission']
     }
   );
 }
@@ -814,7 +742,6 @@ function getTasks(url, responseData = null) {
               id: 1,
               status: responseData['status'],
             },
-            can_view_parent_request: true,
           },
         ],
       }
