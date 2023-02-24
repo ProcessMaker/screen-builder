@@ -400,8 +400,6 @@ export default {
       const allowed = permission && permission.allowed;
       return allowed ? this.parentRequest : this.requestId
         this.$emit('completed', this.parentRequest);
-      } else {
-        this.$emit('completed', this.requestId);
       }
     },
     processUpdated: _.debounce(function(data) {
