@@ -344,9 +344,10 @@ export default {
     undo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/undo");
-      this.config = JSON.parse(
-        this.$store.getters["undoRedoModule/currentState"].config
-      );
+      // this.config = JSON.parse(
+      //   this.$store.getters["undoRedoModule/currentState"].config
+      // );
+      this.$emit("setUpdatedConfig");
       this.currentPage = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
@@ -354,9 +355,10 @@ export default {
     redo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/redo");
-      this.config = JSON.parse(
-        this.$store.getters["undoRedoModule/currentState"].config
-      );
+      // this.config = JSON.parse(
+      //   this.$store.getters["undoRedoModule/currentState"].config
+      // );
+      this.$emit("setUpdatedConfig");
       this.currentPage = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );

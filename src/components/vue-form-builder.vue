@@ -18,6 +18,7 @@
       @setElementCssClass="setElementCssClass"
       @deleteItem="deleteItem"
       @inspect="inspect"
+      @setUpdatedConfig="setUpdatedConfig"
       :accordions="accordions"
       :screen-type="screenType"
       :selected="selected"
@@ -557,24 +558,24 @@ export default {
       });
     },
     undo() {
-      this.inspect();
-      this.$store.dispatch("undoRedoModule/undo");
+      // this.inspect();
+      // this.$store.dispatch("undoRedoModule/undo");
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
-      this.currentPage = JSON.parse(
-        this.$store.getters["undoRedoModule/currentState"].currentPage
-      );
+      // this.currentPage = JSON.parse(
+      //   this.$store.getters["undoRedoModule/currentState"].currentPage
+      // );
     },
-    redo() {
-      this.inspect();
-      this.$store.dispatch("undoRedoModule/redo");
+    setUpdatedConfig() {
+      // this.inspect();
+      // this.$store.dispatch("undoRedoModule/redo");
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
-      this.currentPage = JSON.parse(
-        this.$store.getters["undoRedoModule/currentState"].currentPage
-      );
+      // this.currentPage = JSON.parse(
+      //   this.$store.getters["undoRedoModule/currentState"].currentPage
+      // );
     },
     updateConfig(items) {
       this.config[this.currentPage].items = items;
