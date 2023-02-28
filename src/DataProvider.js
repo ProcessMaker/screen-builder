@@ -215,5 +215,21 @@ export default {
 
   download(url) {
     return this.apiInstance().get(url, { responseType: "blob" });
-  }
+  },
+
+  getCollections()
+  {
+    return this.get("/collections");
+  },
+
+  getCollectionFields(collectionId)
+  {
+    return this.get(`/collections/${collectionId}/columns`);
+  },
+
+  getCollectionRecords(collectionId, options)
+  {
+    // Needs PMConfigOverrides for anynymous webentry
+    return this.get(`/collections/${collectionId}/records`, options);
+  },
 };
