@@ -27,6 +27,49 @@ export default {
         }
       });
     },
+    /**
+     * Get MIME type of the encoded code data if there are not type return null
+     * @param {string} base64String
+     * @returns {string|null}
+     */
+    getBase64MimeType(base64String) {
+      const matches = base64String.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+      return matches && matches.length > 1 ? matches[1] : null;
+    },
+    /**
+     * Create a Blob object from a base 64 string
+     * @param {string} base64image 
+     * @returns {object|null}
+     */
+    createObjectURL(base64image) {
+      if (base64image) {
+        const binaryData = atob(base64image.split(",")[1]);
+        const binaryArray = new Uint8Array(binaryData.length);
+        for (let i = 0; i < binaryData.length; i++) {
+          binaryArray[i] = binaryData.charCodeAt(i);
+        }
+        const blob = new Blob([binaryArray], {
+          type: this.getBase64MimeType(base64image)
+        });
+        return URL.createObjectURL(blob);
+      }
+      return false;
+    },
+    getBlobImageObject(element) {
+      const allBlobImages =
+        this.$store.getters["blobImagesModule/allBlobImages"];
+      let blobImage = allBlobImages.find((item) => {
+        return item.image === element.config.image;
+      });
+      if (!blobImage) {
+        blobImage = {
+          image: element.config.image,
+          blob: this.createObjectURL(element.config.image)
+        };
+        this.$store.dispatch("blobImagesModule/addBlobImages", blobImage);
+      }
+      return blobImage.blob;
+    },
     loadFieldProperties({
       properties,
       element,
@@ -43,7 +86,7 @@ export default {
         if (componentName === "FormImage") {
           this.registerVariable(element.config.variableName, element);
           delete properties.image;
-          properties[":image"] = this.byRef(element.config.image);
+          properties[":image"] = this.byRef(this.getBlobImageObject(element));
         } else if (this.validVariableName(element.config.name)) {
           this.registerVariable(element.config.name, element);
           // v-model are not assigned directly to the field name, to prevent invalid references like:
@@ -55,11 +98,19 @@ export default {
             componentName === "FormTextArea" ||
             componentName === "FormInput"
           ) {
-            properties["@input"] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
-            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@input"
+            ] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@change"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           } else {
-            properties["@input"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@input"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@change"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           }
           // Process the FormSelectList@reset event
           properties[
@@ -100,8 +151,8 @@ export default {
       properties[":readonly"] = isCalcProp || element.config.readonly;
       properties[":disabled"] = isCalcProp || element.config.disabled;
       // Events
-      properties['@submit'] = 'submitForm';
-    },
+      properties["@submit"] = "submitForm";
+    }
   },
   mounted() {
     this.extensions.push({

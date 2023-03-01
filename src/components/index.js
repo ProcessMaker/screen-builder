@@ -27,6 +27,7 @@ import LRUCache from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
+import blobImagesModule from "@/store/modules/blobImagesModule";
 
 const rendererComponents = {
   ...renderer,
@@ -99,7 +100,8 @@ export default {
       modules: {
         globalErrorsModule,
         // @todo Improve how to load this module, it is used only in the form builder, not used in the form renderer.
-        undoRedoModule
+        undoRedoModule,
+        blobImagesModule
       }
     });
     Vue.mixin({ store });
