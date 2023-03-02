@@ -50,6 +50,11 @@ export default {
   watch: {
     value:{
       handler(value) {
+
+        if (!value) {
+          return;
+        }
+
         this.collectionId = value.collectionId;
         this.labelField = value.labelField;
         this.valueField = value.valueField;
@@ -105,7 +110,7 @@ export default {
       }
 
       this.$dataProvider
-        .getCollectionFields(this.options.collectionId)
+        .getCollectionFields(this.collectionId)
         .then((response) => {
           this.fields = [
             { value: null, text: this.$t("Select a field") },
