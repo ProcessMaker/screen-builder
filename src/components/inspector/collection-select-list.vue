@@ -92,7 +92,6 @@ export default {
       this.$dataProvider
         .getCollections()
         .then((response) => {
-          console.log(response);
           this.collections = [
             { value: null, text: this.$t("Select a collection") },
             ...response.data.data.map((collection) => {

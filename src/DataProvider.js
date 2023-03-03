@@ -3,6 +3,7 @@ import axios from "axios";
 import { has, get } from "lodash";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import LRUCache from "lru-cache";
+import i18next from 'i18next';
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
@@ -219,11 +220,21 @@ export default {
   },
 
   getCollections() {
-    return this.get("/collections");
+    return this.get("/collections").catch((error) => {
+      if (error.response && error.response.status === 404) {
+        throw new Error(i18next.t("Collections package not installed"));
+      }
+      throw error;
+    });
   },
 
   getCollectionFields(collectionId) {
-    return this.get(`/collections/${collectionId}/columns`);
+    return this.get(`/collections/${collectionId}/columns`).catch((error) => {
+      if (error.response && error.response.status === 404) {
+        throw new Error(i18next.t("Collection id not found"));
+      }
+      throw error;
+    })
   },
 
   getCollectionRecords(collectionId, options) {
@@ -237,11 +248,17 @@ export default {
       const data = response ? response.data : null;
       this.setRecordCache(key, data);
       if (!data) {
-        throw new Error("No data returned");
+        throw new Error(i18next.t("No data returned"));
       }
       return data;
+    }).catch((error) => {
+      if (error.response && error.response.status === 404) {
+        const data = { data: [] };
+        this.setRecordCache(key, data);
+        return data;
+      }
+      throw error;
     });
-
   },
 
   getRecordCache(key) {
