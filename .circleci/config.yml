@@ -59,7 +59,7 @@ jobs:
       #     name: tests unit
       #     command: npm test
       - run: sudo mv ~/project /root/
-      - run: sudp mkdir -p /root/project/coverage-test && chmod 777 /root/project/coverage-test
+      - run: sudo mkdir -p /root/project/coverage-test && sudo chmod 777 /root/project/coverage-test
       - restore_cache:
           keys:
             - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
