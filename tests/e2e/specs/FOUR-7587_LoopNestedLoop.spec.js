@@ -1,4 +1,4 @@
-describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
+describe("FOUR-7587 Loop Nested Loop", () => {
   // initial data to test the screen
   const initialData = {
     businesses: [
