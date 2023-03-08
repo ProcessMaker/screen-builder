@@ -1,51 +1,59 @@
 export default {
   props: {
     configRef: null,
-    loopContext: null,
+    loopContext: null
   },
   data() {
     return {
-      loops: [],
+      loops: []
     };
   },
   methods: {
     loadFormLoopProperties({ properties, element }) {
       this.registerVariable(element.config.settings.varname, element);
-      this.loops.push({ variable: element.config.settings.varname, element, properties });
+      this.loops.push({
+        variable: element.config.settings.varname,
+        element,
+        properties
+      });
     },
     loadFormLoopItems({ element, node, definition }) {
-      const loop = this.createComponent('div', {
-        'v-for': `(loopRow, index) in ${element.config.settings.varname}`,
+      const loop = this.createComponent("div", {
+        "v-for": `(loopRow, index) in ${element.config.settings.varname}`
       });
       const nested = {
         config: [
           {
-            items: element.items,
-          },
+            items: element.items
+          }
         ],
-        watchers: definition.watchers,
+        watchers: definition.watchers
       };
 
-      let loopContext = '';
+      let loopContext = "";
       if (this.loopContext) {
-        loopContext = this.loopContext + '.';
+        loopContext = `${this.loopContext}.`;
       }
       loopContext += element.config.settings.varname;
 
       // Add nested component inside loop
-      const child = this.createComponent('ScreenRenderer', {
-        ':definition': this.byRef(nested),
-        ':value': 'loopRow',
-        ':loop-context': `'${loopContext}.' + index`,
-        ':_parent': 'getValidationData()',
-        ':components': this.byRef(this.components),
-        ':config-ref': this.byRef(this.configRef || definition.config),
-        '@submit': 'submitForm',
+      const child = this.createComponent("ScreenRenderer", {
+        ":definition": this.byRef(nested),
+        ":value": "loopRow",
+        ":loop-context": `'${loopContext}.' + index`,
+        ":_parent": "getValidationData()",
+        ":components": this.byRef(this.components),
+        ":config-ref": this.byRef(this.configRef || definition.config),
+        "@submit": "submitForm"
       });
-      const addLoopRow = this.createComponent('AddLoopRow', {
-        ':value': element.config.settings.varname,
-        ':config': this.byRef(element.config),
-        ':error': `${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`,
+      const addLoopRow = this.createComponent("AddLoopRow", {
+        ":value": element.config.settings.varname,
+        ":config": this.byRef(element.config),
+        ":error": `${this.checkVariableExists(
+          `$v.vdata.${element.config.name}`
+        )} && validationMessage($v.vdata.${element.config.name})
+        || ${this.checkVariableExists(`$v.schema.${element.config.name}`)}
+        && validationMessage($v.schema.${element.config.name})`
       });
       loop.appendChild(child);
       node.appendChild(loop);
@@ -53,24 +61,24 @@ export default {
       // Register nested component as Array
       this.registerNestedVariable(
         element.config.settings.varname,
-        element.config.settings.varname + '.index.',
+        `${element.config.settings.varname}.index.`,
         nested
       );
-    },
+    }
   },
   mounted() {
-    this.alias['FormLoop'] = 'div';
+    this.alias.FormLoop = "div";
     this.extensions.push({
       beforeload() {
         this.loops.splice(0);
       },
       onloadproperties(params) {
-        if (params.element.container && params.componentName === 'FormLoop') {
+        if (params.element.container && params.componentName === "FormLoop") {
           this.loadFormLoopProperties(params);
         }
       },
       onloaditems(params) {
-        if (params.element.container && params.componentName === 'FormLoop') {
+        if (params.element.container && params.componentName === "FormLoop") {
           this.loadFormLoopItems(params);
         }
       }
