@@ -18,8 +18,9 @@ export default {
       });
     },
     loadFormLoopItems({ element, node, definition }) {
+      const safeDotName = this.safeDotName(element.config.settings.varname);
       const loop = this.createComponent("div", {
-        "v-for": `(loopRow, index) in ${element.config.settings.varname}`
+        "v-for": `(loopRow, index) in ${safeDotName}`
       });
       const nested = {
         config: [
@@ -47,7 +48,7 @@ export default {
         "@submit": "submitForm"
       });
       const addLoopRow = this.createComponent("AddLoopRow", {
-        ":value": element.config.settings.varname,
+        ":value": safeDotName,
         ":config": this.byRef(element.config),
         ":error": `${this.checkVariableExists(
           `$v.vdata.${element.config.name}`
