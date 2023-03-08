@@ -58,7 +58,7 @@ jobs:
       # - run:
       #     name: tests unit
       #     command: npm test
-      - run: mkdir coverage-test
+      - run: mkdir coverage-test && chmod 777 coverage-test
       - restore_cache:
           keys:
             - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
