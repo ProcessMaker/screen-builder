@@ -137,8 +137,7 @@ describe('Date Picker', () => {
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
+    cy.get('[data-cy=preview-content]').click();
 
     cy.assertPreviewData({
       form_date_picker_1: moment(date).format('YYYY-MM-DD'),
@@ -187,8 +186,7 @@ describe('Date Picker', () => {
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
+    cy.get('[data-cy=preview-content]').click();
 
     cy.assertPreviewData({
       form_date_picker_1: moment(date).toISOString(),
