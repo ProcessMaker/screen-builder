@@ -228,6 +228,18 @@ describe('Date Picker', () => {
       form_date_picker_2: null
     });
   });
+  it('Date Time Picker should have the class .datePicker applied in design mode', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container] .vdpComponent')
+      .should('have.class', 'datePicker');
+  });
 
-
+  it('Date Time Picker should have the class .datePicker applied in preview mode', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] .vdpComponent')
+      .should('have.class', 'datePicker');
+  });
 });
