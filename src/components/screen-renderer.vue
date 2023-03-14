@@ -62,6 +62,14 @@ export default {
   name: "ScreenRenderer",
   components: { WatchersSynchronous, ScreenRendererError },
   mixins: [Json2Vue, CurrentPageProperty],
+  props: {
+    // property used to pass the context of the screen used as prefix for the file upload component
+    // e.g. `multi_instance_var.1` or `loop_var.1`
+    loopContext: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       currentDefinition: null,
