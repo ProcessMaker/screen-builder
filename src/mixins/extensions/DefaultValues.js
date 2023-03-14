@@ -28,9 +28,14 @@ export default {
       const safeDotName = this.safeDotName(name);
       const defaultComputedName = `default_${safeDotName}__`;
       this.addData(screen, `${name}_was_filled__`, `!!this.getValue(${JSON.stringify(name)}, this.vdata) || !!this.getValue(${JSON.stringify(name)}, data)`);
-      this.addMounted(screen, `if (!this.${name}) {
-        this.tryFormField(${JSON.stringify(name)}, () => {this.${this.dot2bracket(name)} = ${value};});
-      }`);
+      this.addMounted(
+        screen, 
+        `if (!this.${safeDotName}) {
+            this.tryFormField(${JSON.stringify(name)}, () => {
+            this.${safeDotName} = ${value};
+            this.setValue(${JSON.stringify(name)}, ${value}, this.vdata, this);});
+        }`
+      );
       screen.computed[defaultComputedName] = {
         get: new Function(`return this.tryFormField(${JSON.stringify(name)}, () => ${value});`),
         set() {},
