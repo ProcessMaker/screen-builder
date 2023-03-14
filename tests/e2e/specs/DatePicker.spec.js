@@ -78,6 +78,26 @@ describe('Date Picker', () => {
       form_date_picker_1: today.toISOString(),
     });
   });
+  it('Date time picker should update the helper text', () => {
+    const helperTextFirstChange = 'Testing helper text';
+    const helperTextSecondChange = 'Testing helper text 2';
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=accordion-Configuration]').click();
+    cy.get('[data-cy=inspector-helper]').type(helperTextFirstChange);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=screen-field-form_date_picker_1]').should('contain.text', helperTextFirstChange);
+    cy.get('[data-cy=mode-editor]').click();
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.get('[data-cy=accordion-Configuration]').click();
+    cy.get('[data-cy=inspector-helper]').clear().type(helperTextSecondChange);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=screen-field-form_date_picker_1]').should('contain.text', helperTextSecondChange);
+  });
 
   it('Date picker with minDate less than first datepicker should return null data', () => {
     const date = moment(new Date()).format('MM/DD/YYYY');
