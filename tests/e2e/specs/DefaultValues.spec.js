@@ -11,6 +11,56 @@ describe('Default values', () => {
       form_input_1: 'initial value',
     });
   });
+  
+  it('Text Input Default value if the variable has the next format "people.firstName"', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');   
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=inspector-name]').clear().type('people.firstName');
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-defaultValue-basicValue]').clear().type('initial value');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name="people.firstName"]').should('have.value', 'initial value');
+    cy.assertPreviewData({
+      people:{
+        firstName: 'initial value'
+      }
+    });
+  });
+
+  it('Select List- Default if the variable has the next format "numbers.int"', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.get('[data-cy=inspector-name]').clear().type('number.int');
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-data-sources]').select('Provide Values');
+    cy.get('[data-cy=inspector-add-option]').click();
+    cy.get('[data-cy=inspector-option-value]').type('one');
+    cy.get('[data-cy=inspector-option-content]').type('one');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('[data-cy=inspector-add-option]').click();
+    cy.get('[data-cy=inspector-option-value]').type('two');
+    cy.get('[data-cy=inspector-option-content]').type('two');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('[data-cy=inspector-add-option]').click();
+    cy.get('[data-cy=inspector-option-value]').type('three');
+    cy.get('[data-cy=inspector-option-content]').type('three');
+    cy.get('[data-cy=inspector-option-cancel]').click();
+    cy.get('[data-cy=inspector-add-option]').click();
+    cy.get('[data-cy=inspector-option-value]').type('four');
+    cy.get('[data-cy=inspector-option-content]').type('four');
+    cy.get('[data-cy=inspector-option-save]').click();
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-defaultValue-basicValue]').clear().type('two');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.assertPreviewData({
+      number: {
+        int: "two"
+      }
+    });
+  });
+
   it('Javascript default value', () => {
     cy.visit('/');
     cy.setPreviewDataInput({name: 'world'});
