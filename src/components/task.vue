@@ -16,6 +16,7 @@
             :custom-css="screen.custom_css"
             :watchers="screen.watchers"
             :key="refreshScreen"
+            :loop-context="loopContext"
             @update="onUpdate"
             @submit="submit"
           />
@@ -74,6 +75,7 @@ export default {
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
+    initialLoopContext: { type: String, default: "" }
   },
   data() {
     return {
@@ -230,7 +232,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -256,6 +258,7 @@ export default {
     prepareTask() {
       this.resetScreenState();
       this.requestData = _.get(this.task, 'request_data', {});
+      this.loopContext = _.get(this.task, "loop_context", "");
       this.refreshScreen++;
 
       this.$emit('task-updated', this.task);
@@ -497,6 +500,7 @@ export default {
     this.processId = this.initialProcessId;
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
+    this.loopContext = this.initialLoopContext;
   },
   destroyed() {
     this.unsubscribeSocketListeners();
