@@ -99,6 +99,23 @@ describe('Date Picker', () => {
     cy.get('[data-cy=screen-field-form_date_picker_1]').should('contain.text', helperTextSecondChange);
   });
 
+  it('Date picker with default value should show the default value on input and data', () => {
+    const date = moment(new Date()).subtract(2, 'days').format('MM/DD/YYYY');
+
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-defaultValue-basicValue]').clear().type(date);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').should('be', date);
+    cy.assertPreviewData({
+      form_date_picker_1: moment(date).format('YYYY-MM-DD'),
+    });
+  });
+
   it('Date picker with minDate less than first datepicker should return null data', () => {
     const date = moment(new Date()).format('MM/DD/YYYY');
     const dateBefore = moment(new Date()).subtract(1, 'days').format('MM/DD/YYYY');
@@ -142,8 +159,6 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
     cy.get('[data-cy=preview-content]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
     cy.get('[data-cy=preview-content]').click();
 
     cy.assertPreviewData({
@@ -195,8 +210,6 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
     cy.get('[data-cy=preview-content]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
     cy.get('[data-cy=preview-content]').click();
     cy.assertPreviewData({
       form_date_picker_1: moment(date).toISOString(),
