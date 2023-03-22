@@ -99,6 +99,23 @@ describe('Date Picker', () => {
     cy.get('[data-cy=screen-field-form_date_picker_1]').should('contain.text', helperTextSecondChange);
   });
 
+  it('Date picker with default value should show the default value on input and data', () => {
+    const date = moment(new Date()).subtract(2, 'days').format('MM/DD/YYYY');
+
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-defaultValue-basicValue]').clear().type(date);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').should('be', date);
+    cy.assertPreviewData({
+      form_date_picker_1: moment(date).format('YYYY-MM-DD'),
+    });
+  });
+
   it('Date picker with minDate less than first datepicker should return null data', () => {
     const date = moment(new Date()).format('MM/DD/YYYY');
     const dateBefore = moment(new Date()).subtract(1, 'days').format('MM/DD/YYYY');
@@ -124,8 +141,33 @@ describe('Date Picker', () => {
       form_date_picker_2: null,
     });
   });
+  it('Date picker with maxDate greater than first datepicker should return null data', () => {
+    const date = moment(new Date()).format('MM/DD/YYYY');
+    const dateAfter = moment(new Date()).add(1, 'days').format('MM/DD/YYYY');
 
-  it('Date picker with minDate equal than first datepicker should return the current date', () => {
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=accordion-Configuration]').click();
+    cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]').type(date);
+    cy.get('[data-cy=preview-content]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').type(dateAfter);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
+
+    cy.assertPreviewData({
+      form_date_picker_1: moment(date).format('YYYY-MM-DD'),
+      form_date_picker_2: null,
+    });
+  });
+
+  it('Date picker with minDate equal or less than first datepicker should return the current date', () => {
     const date = moment(new Date()).format('MM/DD/YYYY');
     const dateSame = moment(new Date()).format('MM/DD/YYYY');
 
@@ -142,13 +184,57 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
     cy.get('[data-cy=preview-content]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
     cy.get('[data-cy=preview-content]').click();
 
     cy.assertPreviewData({
       form_date_picker_1: moment(date).format('YYYY-MM-DD'),
       form_date_picker_2: moment(dateSame).format('YYYY-MM-DD'),
+    });
+  });
+  it('Date picker with maxDate equal or greater than first datepicker should return the current date', () => {
+    const date = moment(new Date()).format('MM/DD/YYYY');
+    const dateSame = moment(new Date()).format('MM/DD/YYYY');
+
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=accordion-Configuration]').click();
+    cy.get('[data-cy=inspector-minDate]').clear().type('{{}{{}form_date_picker_1{}}{}}');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
+    cy.get('[data-cy=preview-content]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
+    cy.get('[data-cy=preview-content]').click();
+
+    cy.assertPreviewData({
+      form_date_picker_1: moment(date).format('YYYY-MM-DD'),
+      form_date_picker_2: moment(dateSame).format('YYYY-MM-DD'),
+    });
+  });
+
+  it('Date picker with minDate and maxDate should show the value in Data Preview', () => {
+    const date = moment(new Date()).format('MM/DD/YYYY');
+    const minDate = moment(new Date()).subtract('5', 'days').format('MM/DD/YYYY');
+    const maxDate = moment(new Date()).add('5', 'days').format('MM/DD/YYYY');
+
+    cy.visit('/');
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=screen-element-container]').first().click();
+    cy.get('[data-cy=accordion-Configuration]').click();
+    cy.get('[data-cy=inspector-minDate]').clear().type(minDate);
+    cy.get('[data-cy=inspector-maxDate]').clear().type(maxDate);
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
+    cy.get('[data-cy=preview-content]').click();
+
+    cy.assertPreviewData({
+      form_date_picker_1: moment(date).format('YYYY-MM-DD')
     });
   });
 
@@ -195,8 +281,6 @@ describe('Date Picker', () => {
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date);
     cy.get('[data-cy=preview-content]').click();
     cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').type(dateSame);
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent').click();
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input').click();
     cy.get('[data-cy=preview-content]').click();
     cy.assertPreviewData({
       form_date_picker_1: moment(date).toISOString(),
