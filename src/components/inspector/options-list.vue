@@ -229,7 +229,7 @@
         :ai-enabled="true"
         :placeholder="$t('PMQL')"
         @submit="onNLQConversion"
-        @pmqlchange="onPmqlChange">
+        @pmqlchange="onDebouncedPmqlChange">
       </pmql-input>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
@@ -237,6 +237,7 @@
 </template>
 
 <script>
+import { debounce } from "lodash";
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
@@ -431,6 +432,11 @@ export default {
         valueTypeReturned: this.valueTypeReturned,
       };
     },
+  },
+  created() {
+    this.onDebouncedPmqlChange = debounce((pmql) => {
+      this.onPmqlChange(pmql);
+    }, 1500);
   },
   mounted() {
     this.dataSource = this.options.dataSource;
