@@ -220,9 +220,17 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
-      <label for="pmql-query">{{ $t('PMQL') }}</label>
-      <mustache-helper/>
-      <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
+      <pmql-input
+        :search-type="'collections'"
+        class="mb-1"
+        :input-label="'PMQL'"
+        :value="pmqlQuery"
+        :condensed="true"
+        :ai-enabled="true"
+        :placeholder="$t('PMQL')"
+        @submit="onNLQConversion"
+        @pmqlchange="onPmqlChange">
+      </pmql-input>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
   </div>
@@ -239,7 +247,7 @@ export default {
   components: {
     draggable,
     MonacoEditor,
-    MustacheHelper,
+    MustacheHelper
   },
   props: ['options', 'selectedControl'],
   model: {
@@ -581,7 +589,13 @@ export default {
     closePopup() {
       this.showPopup = false;
     },
-  },
+    onNLQConversion(pmql) {
+      this.pmqlQuery = pmql;
+    },
+    onPmqlChange(pmql) {
+      this.pmqlQuery = pmql;
+    }
+  }
 };
 </script>
 
