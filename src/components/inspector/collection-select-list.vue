@@ -30,14 +30,64 @@
         data-cy="inspector-collection-value"
       />
     </div>
+
+    <div class="mt-3" v-if="fields.length > 1">
+      <label for="pmql">{{ $t("PMQL") }}</label>
+      <mustache-helper />
+      <b-form-textarea
+        id="pmql"
+        rows="4"
+        v-model="pmql"
+        data-cy="inspector-collection-pmql"
+      />
+      <small class="form-text text-muted">{{
+        $t("Add a PMQL query to filter the result list. Use `data` as prefix")
+      }}</small>
+    </div>
+
+    <div class="mt-3" v-if="fields.length > 1">
+      <form-checkbox
+        :label="$t('This is a Dependent list')"
+        v-model="isDependent"
+        helper=""
+        data-cy="inspector-collection-isDependent"
+      />
+    </div>
+
+    <div class="mt-3" v-if="fields.length > 1 && isDependent">
+      <screen-variable-selector
+        :name="$t('Variable to Watch')"
+        :label="$t('Variable to Watch') + ' *'"
+        v-model="dependentField"
+        :validation="isDependent ? 'required' : ''"
+        :helper="$t('Select the variable to watch on this screen or type any request variable name')"
+        data-cy="inspector-collection-dependentField"
+      />
+    </div>
+    
   </div>
 </template>
 
 <script>
-import _ from 'lodash';
+import _ from "lodash";
+import MustacheHelper from "./mustache-helper";
+import ScreenVariableSelector from '../screen-variable-selector.vue';
+
+const CONFIG_FIELDS = [
+  "collectionId",
+  "labelField",
+  "valueField",
+  "pmql",
+  "isDependent",
+  "dependentField"
+];
 
 export default {
-  props: ['value'],
+  props: ["value"],
+  components: {
+    MustacheHelper,
+    ScreenVariableSelector,
+  },
   data() {
     return {
       collections: [],
@@ -45,21 +95,20 @@ export default {
       collectionId: null,
       labelField: null,
       valueField: null,
+      pmql: "",
+      isDependent: false,
+      dependentField: null
     };
   },
   watch: {
-    value:{
+    value: {
       handler(value) {
-
         if (!value) {
           return;
         }
-
-        this.collectionId = value.collectionId;
-        this.labelField = value.labelField;
-        this.valueField = value.valueField;
+        CONFIG_FIELDS.forEach(field => this[field] = value[field]);
       },
-      immediate: true,
+      immediate: true
     },
     collectionId: {
       handler() {
@@ -69,18 +118,14 @@ export default {
     options: {
       handler() {
         console.log("options changed", this.options);
-        this.$emit('input', this.options);
+        this.$emit("input", this.options);
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   computed: {
     options() {
-      return {
-        collectionId: this.collectionId,
-        labelField: this.labelField,
-        valueField: this.valueField,
-      };
+      return Object.fromEntries(CONFIG_FIELDS.map(field => [field, this[field]]));
     }
   },
   methods: {
@@ -89,19 +134,17 @@ export default {
       this.valueField = null;
     },
     getCollections() {
-      this.$dataProvider
-        .getCollections()
-        .then((response) => {
-          this.collections = [
-            { value: null, text: this.$t("Select a collection") },
-            ...response.data.data.map((collection) => {
-              return {
-                text: collection.name,
-                value: collection.id
-              };
-            })
-          ];
-        });
+      this.$dataProvider.getCollections().then((response) => {
+        this.collections = [
+          { value: null, text: this.$t("Select a collection") },
+          ...response.data.data.map((collection) => {
+            return {
+              text: collection.name,
+              value: collection.id
+            };
+          })
+        ];
+      });
     },
     getFields() {
       if (!this.collectionId) {
@@ -113,7 +156,7 @@ export default {
         .then((response) => {
           this.fields = [
             { value: null, text: this.$t("Select a field") },
-            { value: 'id', text: this.$t("Collection Record ID") },
+            { value: "id", text: this.$t("Collection Record ID") },
             ...response.data.data.map((field) => {
               return {
                 text: field.label,
@@ -122,7 +165,7 @@ export default {
             })
           ];
         });
-    },
+    }
   },
   mounted() {
     this.getCollections();
