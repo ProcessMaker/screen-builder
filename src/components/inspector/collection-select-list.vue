@@ -115,6 +115,12 @@ export default {
         this.getFields();
       }
     },
+    dependentField(to, from) {
+      console.log("to", to, "from", from);
+      if (!this.pmql.trim() || this.pmql === this.makePrefill(from)) {
+        this.pmql = this.makePrefill(to);
+      }
+    },
     options: {
       handler() {
         console.log("options changed", this.options);
@@ -129,6 +135,9 @@ export default {
     }
   },
   methods: {
+    makePrefill(field) {
+      return `data.${field} = "{{ ${field} }}"`;
+    },
     resetFields() {
       this.labelField = null;
       this.valueField = null;
