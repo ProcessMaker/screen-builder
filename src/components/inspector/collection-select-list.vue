@@ -116,14 +116,13 @@ export default {
       }
     },
     dependentField(to, from) {
-      console.log("to", to, "from", from);
-      if (!this.pmql.trim() || this.pmql === this.makePrefill(from)) {
-        this.pmql = this.makePrefill(to);
-      }
+      // console.log("to", to, "from", from);
+      // if (!this.pmql.trim() || this.pmql === this.makePrefill(from)) {
+      //   this.pmql = this.makePrefill(to);
+      // }
     },
     options: {
       handler() {
-        console.log("options changed", this.options);
         this.$emit("input", this.options);
       },
       deep: true
@@ -135,9 +134,9 @@ export default {
     }
   },
   methods: {
-    makePrefill(field) {
-      return `data.${field} = "{{ ${field} }}"`;
-    },
+    // makePrefill(field) {
+    //   return `data.${field} = "{{ ${field} }}"`;
+    // },
     resetFields() {
       this.labelField = null;
       this.valueField = null;
