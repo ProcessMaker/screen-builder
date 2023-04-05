@@ -1,4 +1,4 @@
-describe('select list mustache', () => {
+describe('select list dependent collection', () => {
   beforeEach(() => {
     cy.server();
     cy.visit('/');
