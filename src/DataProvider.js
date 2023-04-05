@@ -9,7 +9,6 @@ const FIVE_MINUTES = 1000 * 60 * 5;
 
 export default {
   screensCache: [],
-  collectionRecordCache: {},
   cachedScreenPromises: [],
 
   install(Vue) {
@@ -238,15 +237,10 @@ export default {
   },
 
   getCollectionRecords(collectionId, options) {
-    const key = collectionId.toString() + JSON.stringify(options);
-    const cacheHit = this.getRecordCache(key);
-    if (cacheHit) {
-      return Promise.resolve(cacheHit);
-    }
+    options.useCache = window.ProcessMaker.screen.cacheEnabled;
 
     return this.get(`/collections/${collectionId}/records` + this.authQueryString(), options).then((response) => {
       const data = response ? response.data : null;
-      this.setRecordCache(key, data);
       if (!data) {
         throw new Error(i18next.t("No data returned"));
       }
@@ -254,39 +248,9 @@ export default {
     }).catch((error) => {
       if (error.response && error.response.status === 404) {
         const data = { data: [] };
-        this.setRecordCache(key, data);
         return data;
       }
       throw error;
     });
   },
-
-  getRecordCache(key) {
-    const hashKey = this.hashKey(key);
-    if (hashKey in this.collectionRecordCache) {
-      return this.collectionRecordCache[hashKey].data;
-    }
-    return null;
-  },
-
-  hashKey(key) {
-    return Array.from(key).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0);
-  },
-
-  setRecordCache(key, data) {
-      const hashKey = this.hashKey(key);
-      this.collectionRecordCache[hashKey] = {
-        time: Date.now(),
-        data
-      };
-
-      const maxCacheSize = 10;
-      if (Object.keys(this.collectionRecordCache).length > maxCacheSize) {
-        // Remove oldest records
-        const entries = Object.entries(this.collectionRecordCache);
-        entries.sort((a, b) => b[1].time - a[1].time);
-        entries.length = maxCacheSize;
-        this.collectionRecordCache = Object.fromEntries(entries);
-      }
-  }
 };
