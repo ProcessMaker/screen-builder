@@ -8,8 +8,8 @@ describe('select list mustache', () => {
       '/api/1.0/collections',
       JSON.stringify({
         'data': [
-          { 'id': 88, 'name': 'Collection 1', },
-          { 'id': 99, 'name': 'Collection 2', },
+          { 'id': 88, 'name': 'States', },
+          { 'id': 99, 'name': 'Cities', },
         ],
       })
     );
@@ -19,8 +19,19 @@ describe('select list mustache', () => {
       '/api/1.0/collections/88/columns',
       JSON.stringify({
         'data': [
-          { 'label': 'Name', 'field': 'data.name' },
-          { 'label': 'Address', 'field': 'data.address' },
+          { 'label': 'name', 'field': 'data.name' },
+          { 'label': 'code', 'field': 'data.code' },
+        ],
+      })
+    );
+    
+    cy.route(
+      'GET',
+      '/api/1.0/collections/99/columns',
+      JSON.stringify({
+        'data': [
+          { 'label': 'city', 'field': 'data.city' },
+          { 'label': 'state', 'field': 'data.state' },
         ],
       })
     );
@@ -30,24 +41,13 @@ describe('select list mustache', () => {
       '/api/1.0/collections/88/records*',
       JSON.stringify({
         'data': [
-          { id: 123, data: { name: 'Someone', address: '123 test st.' } },
-          { id: 456, data: { name: 'Another', address: '123 fake st.' } },
-        ],
-      })
-    );
-    
-    cy.route(
-      'GET',
-      '/api/1.0/collections/3/records*',
-      JSON.stringify({
-        'data': [
           { id: 123, data: { name: 'California', code: 'CA' } },
           { id: 456, data: { name: 'Nevada', code: 'NV' } },
         ],
       })
     );
     
-    cy.route('GET', /collections\/4\/records.*NV/,
+    cy.route('GET', /collections\/99\/records.*NV/,
       JSON.stringify({
         data: [
           { id: 123, data: { city: 'Las Vegas' } },
@@ -57,7 +57,8 @@ describe('select list mustache', () => {
       })
     );
     
-    cy.route('GET', /collections\/4\/records.*NV.*(Henderson|789)/,
+    // load individual record
+    cy.route('GET', /collections\/99\/records.*NV.*(Henderson|789)/,
       JSON.stringify({
         data: [
           { id: 789, data: { city: 'Henderson' } },
@@ -66,7 +67,7 @@ describe('select list mustache', () => {
       })
     );
     
-    cy.route('GET', /collections\/4\/records.*3344/,
+    cy.route('GET', /collections\/99\/records.*3344/,
       JSON.stringify({
         data: [],
         meta: { total: 0 }
@@ -80,14 +81,14 @@ describe('select list mustache', () => {
     cy.get('[data-cy=accordion-DataSource]').click();
 
     cy.get('[data-cy=inspector-data-sources]').select('Collection');
-    cy.get('[data-cy=inspector-collection]').select('Collection 1');
-    cy.get('[data-cy=inspector-collection-label]').select('Name');
+    cy.get('[data-cy=inspector-collection]').select('States');
+    cy.get('[data-cy=inspector-collection-label]').select('name');
     cy.get('[data-cy=inspector-collection-value]').select('Collection Record ID');
     
     cy.get('[data-cy=mode-preview]').click();
     
     // Select a valid option
-    cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption('Another');
+    cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption('Nevada');
 
     // Assert value is set correctly
     cy.assertPreviewData({
@@ -95,7 +96,7 @@ describe('select list mustache', () => {
     });
   });
 
-  it.only('Without dependent list option checked', () => {
+  it('Without dependent list option checked', () => {
     cy.loadFromJson('select_list_dependent_collection.json', 0);
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy="screen-field-state"]').selectOption('Nevada');
@@ -107,7 +108,7 @@ describe('select list mustache', () => {
       form_select_list_2: null
     });
 
-    // Without depenedent list option checked, this makes a backend call
+    // Without dependent list option checked, this makes a backend call
     cy.get('[data-cy="screen-field-id_gt_than"]').type('44');
 
     cy.assertPreviewData({
@@ -118,13 +119,67 @@ describe('select list mustache', () => {
     });
   });
 
+  const checkDependentListOption = () => {
+    cy.get('[data-cy=screen-element-container]').eq(1).click();
+    cy.get('[data-cy=accordion-DataSource]').click();
+    cy.get('[data-cy=inspector-collection-isDependent]').click();
+  }
+
   it('With dependent list option checked', () => {
+    cy.loadFromJson('select_list_dependent_collection.json', 0);
+    checkDependentListOption();
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy="screen-field-state"]').selectOption('Nevada');
+    cy.get('[data-cy="screen-field-city"]').selectOption('Henderson');
+    cy.assertPreviewData({
+      state: 'NV',
+      city: 789,
+      id_gt_than: '33',
+      form_select_list_2: null
+    });
+
+    // With the dependent option checked, this should not make a backend call
+    cy.get('[data-cy="screen-field-id_gt_than"]').type('44');
+
+    cy.assertPreviewData({
+      state: 'NV',
+      city: 789, // Value does not change since changing id_gt_than should not trigger an update
+      id_gt_than: 3344,
+      form_select_list_2: null
+    });
   });
 
-  it('With city and set set', () => {
-    cy.setPreviewDataInput({
-      'city': 123,
-      'state': 456,
+  describe('with city and state set', () => {
+    const setup = () => {
+      cy.loadFromJson('select_list_dependent_collection.json', 0);
+      cy.setPreviewDataInput({
+        'city': 789,
+        'state': 'NV',
+      });
+      
+    };
+
+    const assert = () => {
+      cy.get('[data-cy=mode-preview]').click();
+      cy.get('[data-cy="screen-field-city"] .multiselect__single').should('have.text', 'Henderson');
+      cy.assertPreviewData({
+        state: 'NV',
+        city: 789,
+        id_gt_than: '33',
+        form_select_list_2: null
+      });
+    }
+
+    it("without dependent checked, sets the correct city in the select list", () => {
+      setup();
+      assert();
+    });
+
+    it("with dependent checked, sets the correct city in the select list", () => {
+      setup();
+      checkDependentListOption();
+      assert();
     });
   });
 });
