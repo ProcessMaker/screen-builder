@@ -236,7 +236,7 @@ export default {
     })
   },
 
-  getCollectionRecords(collectionId, options) {
+  getCollectionRecords(collectionId, options, nonce = null) {
     options.useCache = window.ProcessMaker.screen.cacheEnabled;
 
     return this.get(`/collections/${collectionId}/records` + this.authQueryString(), options).then((response) => {
@@ -244,11 +244,11 @@ export default {
       if (!data) {
         throw new Error(i18next.t("No data returned"));
       }
-      return data;
+      return [data, nonce];
     }).catch((error) => {
       if (error.response && error.response.status === 404) {
         const data = { data: [] };
-        return data;
+        return [data, nonce];
       }
       throw error;
     });
