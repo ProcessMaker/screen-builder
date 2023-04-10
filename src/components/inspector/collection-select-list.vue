@@ -45,26 +45,6 @@
       }}</small>
     </div>
 
-    <div class="mt-3" v-if="fields.length > 1">
-      <form-checkbox
-        :label="$t('This is a Dependent list')"
-        v-model="isDependent"
-        helper=""
-        data-cy="inspector-collection-isDependent"
-      />
-    </div>
-
-    <div class="mt-3" v-if="fields.length > 1 && isDependent">
-      <screen-variable-selector
-        :name="$t('Variable to Watch')"
-        :label="$t('Variable to Watch') + ' *'"
-        v-model="dependentField"
-        :validation="isDependent ? 'required' : ''"
-        :helper="$t('Select the variable to watch on this screen or type any request variable name')"
-        data-cy="inspector-collection-dependentField"
-      />
-    </div>
-    
   </div>
 </template>
 
@@ -78,8 +58,6 @@ const CONFIG_FIELDS = [
   "labelField",
   "valueField",
   "pmql",
-  "isDependent",
-  "dependentField"
 ];
 
 export default {
@@ -96,8 +74,6 @@ export default {
       labelField: null,
       valueField: null,
       pmql: "",
-      isDependent: false,
-      dependentField: null
     };
   },
   watch: {
@@ -115,12 +91,6 @@ export default {
         this.getFields();
       }
     },
-    dependentField(to, from) {
-      // console.log("to", to, "from", from);
-      // if (!this.pmql.trim() || this.pmql === this.makePrefill(from)) {
-      //   this.pmql = this.makePrefill(to);
-      // }
-    },
     options: {
       handler() {
         this.$emit("input", this.options);
@@ -134,9 +104,6 @@ export default {
     }
   },
   methods: {
-    // makePrefill(field) {
-    //   return `data.${field} = "{{ ${field} }}"`;
-    // },
     resetFields() {
       this.labelField = null;
       this.valueField = null;

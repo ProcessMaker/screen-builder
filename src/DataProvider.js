@@ -219,7 +219,7 @@ export default {
   },
 
   getCollections() {
-    return this.get("/collections").catch((error) => {
+    return this.get("/collections?per_page=1000").catch((error) => {
       if (error.response && error.response.status === 404) {
         throw new Error(i18next.t("Collections package not installed"));
       }
@@ -228,7 +228,7 @@ export default {
   },
 
   getCollectionFields(collectionId) {
-    return this.get(`/collections/${collectionId}/columns`).catch((error) => {
+    return this.get(`/collections/${collectionId}/columns?per_page=1000`).catch((error) => {
       if (error.response && error.response.status === 404) {
         throw new Error(i18next.t("Collection id not found"));
       }
