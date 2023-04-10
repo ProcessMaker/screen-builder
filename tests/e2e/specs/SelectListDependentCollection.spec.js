@@ -108,43 +108,12 @@ describe('select list dependent collection', () => {
       form_select_list_2: null
     });
 
-    // Without dependent list option checked, this makes a backend call
+    // Updating a value referenced with mustache in the PMQL should trigger a backend call
     cy.get('[data-cy="screen-field-id_gt_than"]').type('44');
 
     cy.assertPreviewData({
       state: 'NV',
       city: null, // Reset value since it's not in the results
-      id_gt_than: 3344,
-      form_select_list_2: null
-    });
-  });
-
-  const checkDependentListOption = () => {
-    cy.get('[data-cy=screen-element-container]').eq(1).click();
-    cy.get('[data-cy=accordion-DataSource]').click();
-    cy.get('[data-cy=inspector-collection-isDependent]').click();
-  }
-
-  it('With dependent list option checked', () => {
-    cy.loadFromJson('select_list_dependent_collection.json', 0);
-    checkDependentListOption();
-
-    cy.get('[data-cy=mode-preview]').click();
-    cy.get('[data-cy="screen-field-state"]').selectOption('Nevada');
-    cy.get('[data-cy="screen-field-city"]').selectOption('Henderson');
-    cy.assertPreviewData({
-      state: 'NV',
-      city: 789,
-      id_gt_than: '33',
-      form_select_list_2: null
-    });
-
-    // With the dependent option checked, this should not make a backend call
-    cy.get('[data-cy="screen-field-id_gt_than"]').type('44');
-
-    cy.assertPreviewData({
-      state: 'NV',
-      city: 789, // Value does not change since changing id_gt_than should not trigger an update
       id_gt_than: 3344,
       form_select_list_2: null
     });
