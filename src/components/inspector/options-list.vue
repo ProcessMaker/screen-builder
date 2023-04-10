@@ -220,15 +220,24 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
-      <label for="pmql-query">{{ $t('PMQL') }}</label>
-      <mustache-helper/>
-      <b-form-textarea id="json-data" rows="4" v-model="pmqlQuery"/>
+      <pmql-input
+        :search-type="'collections'"
+        class="mb-1"
+        :input-label="'PMQL'"
+        :value="pmqlQuery"
+        :condensed="true"
+        :ai-enabled="true"
+        :placeholder="$t('PMQL')"
+        @submit="onNLQConversion"
+        @pmqlchange="onDebouncedPmqlChange">
+      </pmql-input>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
   </div>
 </template>
 
 <script>
+import { debounce } from "lodash";
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
@@ -239,7 +248,7 @@ export default {
   components: {
     draggable,
     MonacoEditor,
-    MustacheHelper,
+    MustacheHelper
   },
   props: ['options', 'selectedControl'],
   model: {
@@ -424,6 +433,11 @@ export default {
       };
     },
   },
+  created() {
+    this.onDebouncedPmqlChange = debounce((pmql) => {
+      this.onPmqlChange(pmql);
+    }, 1500);
+  },
   mounted() {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
@@ -581,7 +595,13 @@ export default {
     closePopup() {
       this.showPopup = false;
     },
-  },
+    onNLQConversion(pmql) {
+      this.pmqlQuery = pmql;
+    },
+    onPmqlChange(pmql) {
+      this.pmqlQuery = pmql;
+    }
+  }
 };
 </script>
 
