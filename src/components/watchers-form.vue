@@ -24,24 +24,6 @@
               aria-required="true"
             />
 
-            <!-- <form-multi-select
-              :name="$t('Variable to Watch')"
-              :label="$t('Variable to Watch') + ' *'"
-              :options="variables"
-              :taggable="true"
-              v-model="config.watching"
-              :placeholder="$t('None')"
-              :multiple="false"
-              :show-labels="false"
-              :internal-search="true"
-              :validation="ruleWatcherVariable"
-              :helper="$t('Select the variable to watch on this screen or type any request variable name')"
-              @open="loadVariables"
-              @tag="addTag"
-              :tag-placeholder="$t('Press enter to use this variable')"
-              data-cy="watchers-watcher-variable"
-              ref="watching"
-            /> -->
             <screen-variable-selector
               :name="$t('Variable to Watch')"
               :label="$t('Variable to Watch') + ' *'"
