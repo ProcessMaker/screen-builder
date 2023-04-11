@@ -129,6 +129,10 @@
       <b-form-input id="value" v-model="value" placeholder="Request Variable Property" @change="valueChanged" data-cy="inspector-options-label" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that displays to the user on the screen.') }}</small>
     </div>
+    
+    <div v-if="dataSource === dataSourceValues.collection">
+      <collection-select-list v-model="collectionOptions"></collection-select-list>
+    </div>
 
     <div v-if="showRenderAs">
       <div class="row mb-3">
@@ -181,9 +185,11 @@
       </button>
     </div>
 
-    <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
-    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
-    <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
+    <div v-if="showTypeOfValueReturned">
+      <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
+      <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
+      <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
+    </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <div v-if="valueTypeReturned === 'single'">
@@ -243,12 +249,14 @@ import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
 import MustacheHelper from './mustache-helper';
 import _ from 'lodash';
+import CollectionSelectList from './collection-select-list';
 
 export default {
   components: {
     draggable,
     MonacoEditor,
-    MustacheHelper
+    MustacheHelper,
+    CollectionSelectList,
   },
   props: ['options', 'selectedControl'],
   model: {
@@ -266,6 +274,7 @@ export default {
       key: null,
       value: null,
       dataName: '',
+      collectionOptions: null,
       selectedDataSource: '',
       dataSourcesList: [],
       selectedEndPoint: '',
@@ -336,13 +345,22 @@ export default {
         case 'dataConnector':
           this.jsonData = '';
           this.dataName = '';
+          this.collectionOptions = null;
           this.getDataSourceList();
           break;
         case 'dataObject':
           this.jsonData = '';
           this.selectedDataSource = '';
+          this.collectionOptions = null;
           break;
         case 'provideData':
+          this.dataName = '';
+          this.selectedDataSource = '';
+          this.collectionOptions = null;
+          break;
+        case 'collection':
+          this.showRenderAs = false;
+          this.jsonData = '';
           this.dataName = '';
           this.selectedDataSource = '';
           break;
@@ -371,6 +389,9 @@ export default {
     },
   },
   computed: {
+    showTypeOfValueReturned() {
+      return this.dataSource !== dataSourceValues.collection
+    },
     endPointList() {
       return _.get(this.endpoints, this.selectedDataSource, []);
     },
@@ -413,6 +434,7 @@ export default {
         dataSource: this.dataSource,
         jsonData: this.jsonData,
         dataName: this.dataName,
+        collectionOptions: this.collectionOptions,
         selectedDataSource: this.selectedDataSource,
         selectedEndPoint: this.selectedEndPoint,
         key: this.key,
@@ -442,6 +464,7 @@ export default {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
+    this.collectionOptions = this.options.collectionOptions;
     this.selectedDataSource = this.options.selectedDataSource,
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.key = this.options.key;
