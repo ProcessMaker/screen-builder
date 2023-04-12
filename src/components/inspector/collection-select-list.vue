@@ -45,6 +45,15 @@
       }}</small>
     </div>
 
+    <div class="mt-3" v-if="fields.length > 1">
+      <form-checkbox
+        :label="$t('Return unique values')"
+        v-model="unique"
+        helper=""
+        data-cy="inspector-collection-isDependent"
+      />
+    </div>
+
   </div>
 </template>
 
@@ -58,6 +67,7 @@ const CONFIG_FIELDS = [
   "labelField",
   "valueField",
   "pmql",
+  "unique",
 ];
 
 export default {
@@ -74,6 +84,7 @@ export default {
       labelField: null,
       valueField: null,
       pmql: "",
+      unique: false,
     };
   },
   watch: {
