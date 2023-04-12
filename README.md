@@ -32,3 +32,5 @@ npm test
 # Open Cypress to run the end-to-end (e2e) test suite
 npm run open-cypress
 ```
+
+.
