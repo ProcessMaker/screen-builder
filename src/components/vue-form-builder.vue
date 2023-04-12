@@ -702,6 +702,7 @@ export default {
     },
     updateState() {
       this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage});
+      window.ProcessMaker.EventBus.$emit('screen-change');
     },
     undo() {
       this.inspect();
