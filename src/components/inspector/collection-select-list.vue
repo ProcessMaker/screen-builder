@@ -47,9 +47,9 @@
 
     <div class="mt-3" v-if="fields.length > 1">
       <form-checkbox
-        :label="$t('Remove duplicate labels')"
+        :label="$t('Ignore duplicates in list')"
         v-model="unique"
-        helper=""
+        :helper="$t('Select to show only distinct list entries if labels are repeated. Only the first value will be used if duplicate labels have different values.')"
         data-cy="inspector-collection-isDependent"
       />
     </div>
