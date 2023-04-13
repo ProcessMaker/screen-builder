@@ -47,7 +47,7 @@
 
     <div class="mt-3" v-if="fields.length > 1">
       <form-checkbox
-        :label="$t('Return unique values')"
+        :label="$t('Remove duplicate labels')"
         v-model="unique"
         helper=""
         data-cy="inspector-collection-isDependent"
