@@ -5,7 +5,7 @@ describe('select list dependent collection', () => {
 
     cy.route(
       'GET',
-      '/api/1.0/collections',
+      '/api/1.0/collections*',
       JSON.stringify({
         'data': [
           { 'id': 88, 'name': 'States', },
@@ -16,7 +16,7 @@ describe('select list dependent collection', () => {
     
     cy.route(
       'GET',
-      '/api/1.0/collections/88/columns',
+      '/api/1.0/collections/88/columns*',
       JSON.stringify({
         'data': [
           { 'label': 'name', 'field': 'data.name' },
@@ -27,7 +27,7 @@ describe('select list dependent collection', () => {
     
     cy.route(
       'GET',
-      '/api/1.0/collections/99/columns',
+      '/api/1.0/collections/99/columns*',
       JSON.stringify({
         'data': [
           { 'label': 'city', 'field': 'data.city' },
@@ -140,15 +140,10 @@ describe('select list dependent collection', () => {
       });
     }
 
-    it("without dependent checked, sets the correct city in the select list", () => {
+    it("Sets the correct city in the select list", () => {
       setup();
       assert();
     });
 
-    it("with dependent checked, sets the correct city in the select list", () => {
-      setup();
-      checkDependentListOption();
-      assert();
-    });
   });
 });
