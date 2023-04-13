@@ -35,6 +35,7 @@
       <pmql-input
           :search-type="'collections_w_mustaches'"
           class="mb-1"
+          data-cy="inspector-collection-pmql"
           :input-label="'PMQL'"
           :value="pmql"
           :condensed="true"
