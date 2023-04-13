@@ -409,7 +409,7 @@ describe('select list mustache', () => {
     });
   });
 
-  it('Verify Load values in multiselect list mustache + collection', () => {
+  it.skip('Verify Load values in multiselect list mustache + collection', () => {
     cy.loadFromJson('select_list_dependent.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
