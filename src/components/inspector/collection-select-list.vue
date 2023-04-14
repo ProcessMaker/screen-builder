@@ -37,12 +37,10 @@
           class="mb-1"
           data-cy="inspector-collection-pmql"
           :input-label="'PMQL'"
-          :value="pmql"
+          v-model="pmql"
           :condensed="true"
           :ai-enabled="true"
-          :placeholder="$t('PMQL')"
-          @submit="onNLQConversion"
-          @pmqlchange="onDebouncedPmqlChange">
+          :placeholder="$t('PMQL')">
         </pmql-input>
         <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
