@@ -230,12 +230,10 @@
         :search-type="'collections'"
         class="mb-1"
         :input-label="'PMQL'"
-        :value="pmqlQuery"
+        v-model="pmqlQuery"
         :condensed="true"
         :ai-enabled="true"
-        :placeholder="$t('PMQL')"
-        @submit="onNLQConversion"
-        @pmqlchange="onDebouncedPmqlChange">
+        :placeholder="$t('PMQL')">
       </pmql-input>
       <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
