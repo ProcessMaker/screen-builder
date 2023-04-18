@@ -32,17 +32,17 @@
     </div>
 
     <div class="mt-3" v-if="fields.length > 1">
-      <label for="pmql">{{ $t("PMQL") }}</label>
-      <mustache-helper />
-      <b-form-textarea
-        id="pmql"
-        rows="4"
-        v-model="pmql"
-        data-cy="inspector-collection-pmql"
-      />
-      <small class="form-text text-muted">{{
-        $t("Add a PMQL query to filter the result list. Use `data` as prefix")
-      }}</small>
+      <pmql-input
+          :search-type="'collections_w_mustaches'"
+          class="mb-1"
+          data-cy="inspector-collection-pmql"
+          :input-label="'PMQL'"
+          v-model="pmql"
+          :condensed="true"
+          :ai-enabled="true"
+          :placeholder="$t('PMQL')">
+        </pmql-input>
+        <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
     </div>
 
     <div class="mt-3" v-if="fields.length > 1">
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { debounce } from "lodash";
 import _ from "lodash";
 import MustacheHelper from "./mustache-helper";
 import ScreenVariableSelector from '../screen-variable-selector.vue';
@@ -109,6 +110,11 @@ export default {
       deep: true
     }
   },
+  created() {
+    this.onDebouncedPmqlChange = debounce((pmql) => {
+      this.onPmqlChange(pmql);
+    }, 1000);
+  },
   computed: {
     options() {
       return Object.fromEntries(CONFIG_FIELDS.map(field => [field, this[field]]));
@@ -151,6 +157,12 @@ export default {
             })
           ];
         });
+    },
+    onNLQConversion(pmql) {
+      this.pmql = pmql;
+    },
+    onPmqlChange(pmql) {
+      this.pmql = pmql;
     }
   },
   mounted() {
