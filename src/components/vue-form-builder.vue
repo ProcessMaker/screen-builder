@@ -943,6 +943,7 @@ export default {
         return;
       }
       this.config[this.editPageIndex].name = this.editPageName;
+      this.updateState();
     },
     addPage(e) {
       if (this.$refs.addPageInput.validator.errorCount) {
