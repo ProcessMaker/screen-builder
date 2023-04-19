@@ -856,7 +856,6 @@ export default {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage
       });
-      window.ProcessMaker.EventBus.$emit("screen-change");
     },
     undo() {
       this.inspect();
