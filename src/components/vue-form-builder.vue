@@ -288,12 +288,12 @@
               v-model="accordion.open"
             >
               <component
+                :is="item.type"
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :key="index"
-                :is="item.type"
+                v-model="inspection.config[item.field]"
                 :data-cy="'inspector-' + (item.field || item.config.name)"
                 v-bind="item.config"
-                v-model="inspection.config[item.field]"
                 :field-name="item.field"
                 :field-accordion="`accordion-${accordionName(accordion).replace(
                   ' ',
@@ -306,6 +306,7 @@
                 :selected-control="selected"
                 class="border-bottom m-0 p-4"
                 @focusout.native="updateState"
+                @update-state="updateState"
                 @setName="inspection.config.name = $event"
               />
             </b-collapse>
