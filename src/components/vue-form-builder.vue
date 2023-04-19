@@ -2,17 +2,22 @@
   <b-row class="h-100 m-0">
     <!-- Controls -->
     <b-col class="overflow-hidden h-100 p-0 controls-column">
-      <b-card no-body class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0">
+      <b-card
+        no-body
+        class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
+      >
         <b-input-group size="sm">
           <b-input-group-prepend>
-            <b-input-group-text class="filter-icon border-left-0 border-top-0 rounded-0">
-              <i class="fas fa-filter"/>
+            <b-input-group-text
+              class="filter-icon border-left-0 border-top-0 rounded-0"
+            >
+              <i class="fas fa-filter" />
             </b-input-group-text>
           </b-input-group-prepend>
 
           <b-form-input
-            class="border-top-0 border-right-0 rounded-0"
             v-model="filterQuery"
+            class="border-top-0 border-right-0 rounded-0"
             type="text"
             :placeholder="$t('Filter Controls')"
           />
@@ -24,17 +29,24 @@
             id="controls"
             v-model="filteredControls"
             data-cy="controls"
-            v-bind="{sort: false, group: {name: 'controls', pull: 'clone', put: false}}"
+            v-bind="{
+              sort: false,
+              group: { name: 'controls', pull: 'clone', put: false }
+            }"
             :clone="cloneControl"
             class="controls list-group w-auto list-group-flush"
           >
-            <b-list-group-item v-for="(element, index) in filteredControls" :key="index" :data-cy="'controls-' + element.component">
-              <i v-if="element.config.icon" :class="element.config.icon"/>
+            <b-list-group-item
+              v-for="(element, index) in filteredControls"
+              :key="index"
+              :data-cy="'controls-' + element.component"
+            >
+              <i v-if="element.config.icon" :class="element.config.icon" />
               {{ $t(element.label) }}
             </b-list-group-item>
 
             <li v-if="!filteredControls.length" class="list-group-item">
-              <slot/>
+              <slot />
             </li>
           </draggable>
         </b-card-body>
@@ -42,10 +54,20 @@
     </b-col>
 
     <!-- Renderer -->
-    <b-col id="screen-container" class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2">
+    <b-col
+      id="screen-container"
+      class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2"
+    >
       <b-input-group size="sm" class="bg-white mt-3">
-        <b-form-select v-if="showToolbar" v-model="currentPage" class="form-control" data-cy="toolbar-page">
-          <option v-for="(data, page) in config" :key="page" :value="page">{{ data.name }}</option>
+        <b-form-select
+          v-if="showToolbar"
+          v-model="currentPage"
+          class="form-control"
+          data-cy="toolbar-page"
+        >
+          <option v-for="(data, page) in config" :key="page" :value="page">
+            {{ data.name }}
+          </option>
         </b-form-select>
 
         <div v-if="showToolbar">
@@ -54,10 +76,10 @@
             variant="secondary"
             class="ml-1"
             :title="$t('Edit Page Title')"
-            @click="openEditPageModal(currentPage)"
             data-cy="toolbar-edit"
+            @click="openEditPageModal(currentPage)"
           >
-            <i class="far fa-edit"/>
+            <i class="far fa-edit" />
           </b-button>
 
           <b-button
@@ -65,95 +87,114 @@
             variant="danger"
             class="ml-1"
             :title="$t('Delete Page')"
-            @click="confirmDelete()"
             :disabled="!displayDelete"
             data-cy="toolbar-remove"
+            @click="confirmDelete()"
           >
-            <i class="far fa-trash-alt"/>
+            <i class="far fa-trash-alt" />
           </b-button>
 
           <b-button
+            v-b-modal.addPageModal
             size="sm"
             variant="secondary"
             class="ml-1 mr-1"
-            @click="originalPageName=null"
             :title="$t('Add New Page')"
-            v-b-modal.addPageModal
             data-cy="toolbar-add"
+            @click="originalPageName = null"
           >
-            <i class="fas fa-plus"/>
+            <i class="fas fa-plus" />
           </b-button>
         </div>
 
         <b-button-group size="sm" class="ml-1 ml-auto">
-          <b-button @click="undo" :disabled="!canUndo" data-cy="toolbar-undo">{{ $t('Undo') }}</b-button>
-          <b-button @click="redo" :disabled="!canRedo" data-cy="toolbar-redo">{{ $t('Redo') }}</b-button>
+          <b-button :disabled="!canUndo" data-cy="toolbar-undo" @click="undo">{{
+            $t("Undo")
+          }}</b-button>
+          <b-button :disabled="!canRedo" data-cy="toolbar-redo" @click="redo">{{
+            $t("Redo")
+          }}</b-button>
         </b-button-group>
 
-        <hr class="w-100">
+        <hr class="w-100" />
       </b-input-group>
 
-
-      <div v-if="isCurrentPageEmpty" data-cy="screen-drop-zone"  class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4">
-        {{ $t('Drag an element here') }}
+      <div
+        v-if="isCurrentPageEmpty"
+        data-cy="screen-drop-zone"
+        class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4"
+      >
+        {{ $t("Drag an element here") }}
       </div>
 
       <draggable
         v-if="renderControls"
+        :key="editorContentKey"
         data-cy="editor-content"
         class="h-100"
         ghost-class="form-control-ghost"
         :value="config[currentPage].items"
-        :key="editorContentKey"
-        @input="updateConfig"
         v-bind="{
-          group: {name: 'controls'},
+          group: { name: 'controls' },
           swapThreshold: 0.5
         }"
+        @input="updateConfig"
       >
         <div
-          class="control-item mt-4 mb-4"
-          :class="{selected: selected === element, hasError: hasError(element)}"
-          v-for="(element,index) in config[currentPage].items"
+          v-for="(element, index) in config[currentPage].items"
           :key="index"
-          @click="inspect(element)"
+          class="control-item mt-4 mb-4"
+          :class="{
+            selected: selected === element,
+            hasError: hasError(element)
+          }"
           :selector="element.config.customCssSelector"
+          @click="inspect(element)"
         >
-          <div v-if="element.container" @click="inspect(element)" class="card" data-cy="screen-element-container">
+          <div
+            v-if="element.container"
+            class="card"
+            data-cy="screen-element-container"
+            @click="inspect(element)"
+          >
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
             >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-              {{ element.config.name || element.label || $t('Field Name') }}
+              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
+              <i
+                v-if="element.config.icon"
+                :class="element.config.icon"
+                class="mr-2 ml-1"
+              />
+              {{ element.config.name || element.label || $t("Field Name") }}
               <div class="ml-auto">
                 <button
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
                 >
-                  <i class="fas fa-copy text-light"/>
+                  <i class="fas fa-copy text-light" />
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
                   :title="$t('Delete Control')"
                   @click="deleteItem(index)"
                 >
-                  <i class="far fa-trash-alt text-light"/>
+                  <i class="far fa-trash-alt text-light" />
                 </button>
               </div>
             </div>
             <component
-              :validationErrors="validationErrors"
+              :is="element['editor-component']"
+              v-model="element.items"
+              :validation-errors="validationErrors"
               class="card-body"
               :class="elementCssClass(element)"
+              :selected="selected"
+              :config="element.config"
               @inspect="inspect"
               @update-state="updateState"
-              :selected="selected"
-              v-model="element.items"
-              :config="element.config"
-              :is="element['editor-component']"
             />
           </div>
 
@@ -162,33 +203,44 @@
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
             >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
-              <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
-              {{ element.config.name || $t('Variable Name') }}
+              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
+              <i
+                v-if="element.config.icon"
+                :class="element.config.icon"
+                class="mr-2 ml-1"
+              />
+              {{ element.config.name || $t("Variable Name") }}
               <div class="ml-auto">
                 <button
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
                 >
-                  <i class="fas fa-copy text-light"/>
+                  <i class="fas fa-copy text-light" />
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
                   :title="$t('Delete Control')"
                   @click="deleteItem(index)"
                 >
-                  <i class="far fa-trash-alt text-light"/>
+                  <i class="far fa-trash-alt text-light" />
                 </button>
               </div>
             </div>
             <component
-              :tabindex="element.config.interactive ? 0 : -1"
-              class="card-body m-0 pb-4 pt-4"
-              :class="[elementCssClass(element), { 'prevent-interaction': !element.config.interactive }]"
               v-bind="element.config"
               :is="element['editor-component']"
-              @input="element.config.interactive ? element.config.content = $event : null"
+              :tabindex="element.config.interactive ? 0 : -1"
+              class="card-body m-0 pb-4 pt-4"
+              :class="[
+                elementCssClass(element),
+                { 'prevent-interaction': !element.config.interactive }
+              ]"
+              @input="
+                element.config.interactive
+                  ? (element.config.content = $event)
+                  : null
+              "
               @focusout.native="updateState"
             />
           </div>
@@ -201,42 +253,58 @@
       v-if="renderControls"
       class="overflow-hidden h-100 p-0 inspector-column"
     >
-      <b-card no-body class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0">
+      <b-card
+        no-body
+        class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
+      >
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              :key="`${accordionName(accordion)}-button`"
               v-if="getInspectorFields(accordion).length > 0"
+              :key="`${accordionName(accordion)}-button`"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-              @click="toggleAccordion(accordion)"
-              :data-cy="`accordion-${ accordionName(accordion).replace(' ', '') }`"
-              :accordion-name="`accordion-${ accordionName(accordion).replace(' ', '') }`"
+              :data-cy="`accordion-${accordionName(accordion).replace(
+                ' ',
+                ''
+              )}`"
+              :accordion-name="`accordion-${accordionName(accordion).replace(
+                ' ',
+                ''
+              )}`"
               :is-open="accordion.open ? '1' : '0'"
+              @click="toggleAccordion(accordion)"
             >
-              <i class="fas fa-cog mr-2"/>
+              <i class="fas fa-cog mr-2" />
               {{ $t(accordionName(accordion)) }}
               <i
                 class="fas fa-angle-down ml-auto"
-                :class="{ 'fas fa-angle-right' : !accordion.open }"
+                :class="{ 'fas fa-angle-right': !accordion.open }"
               />
             </b-button>
-            <b-collapse :key="`${accordionName(accordion)}-collapse`" :id="accordionName(accordion)" v-model="accordion.open">
+            <b-collapse
+              :id="accordionName(accordion)"
+              :key="`${accordionName(accordion)}-collapse`"
+              v-model="accordion.open"
+            >
               <component
                 v-for="(item, index) in getInspectorFields(accordion)"
-                :data-cy="'inspector-' + (item.field || item.config.name)"
-                :field-name="item.field"
-                :field-accordion="`accordion-${ accordionName(accordion).replace(' ', '') }`"
-                :builder="builder"
-                :formConfig="config"
-                :screenType="screenType"
-                :currentPage="currentPage"
                 :key="index"
                 :is="item.type"
-                :selectedControl="selected"
-                class="border-bottom m-0 p-4"
+                :data-cy="'inspector-' + (item.field || item.config.name)"
                 v-bind="item.config"
                 v-model="inspection.config[item.field]"
+                :field-name="item.field"
+                :field-accordion="`accordion-${accordionName(accordion).replace(
+                  ' ',
+                  ''
+                )}`"
+                :builder="builder"
+                :form-config="config"
+                :screen-type="screenType"
+                :current-page="currentPage"
+                :selected-control="selected"
+                class="border-bottom m-0 p-4"
                 @focusout.native="updateState"
                 @setName="inspection.config.name = $event"
               />
@@ -247,8 +315,8 @@
     </b-col>
 
     <!-- Modals -->
-    <b-modal id="addPageModal"
-      @ok="addPage"
+    <b-modal
+      id="addPageModal"
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
@@ -256,75 +324,96 @@
       :title="$t('Add New Page')"
       header-close-content="&times;"
       data-cy="add-page-modal"
+      @ok="addPage"
     >
       <required />
-      <form-input v-model="addPageName"
+      <form-input
+        ref="addPageInput"
+        v-model="addPageName"
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The name of the new page to add')"
         validation="unique-page-name|required"
-        ref="addPageInput"
         data-cy="add-page-name"
         required
         aria-required="true"
       />
     </b-modal>
 
-    <b-modal ref="editPageModal"
-      @ok="editPage"
+    <b-modal
+      ref="editPageModal"
       :title="$t('Edit Page Title')"
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
       header-close-content="&times;"
+      @ok="editPage"
     >
       <required />
-      <form-input v-model="editPageName"
+      <form-input
+        ref="editPageInput"
+        v-model="editPageName"
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The new name of the page')"
         validation="unique-page-name|required"
-        ref="editPageInput"
         required
         aria-required="true"
       />
     </b-modal>
 
-    <b-modal ref="confirm"
+    <b-modal
+      ref="confirm"
       :title="$t('Caution!')"
       :ok-title="$t('Delete')"
       :cancel-title="$t('Cancel')"
-      @ok="deletePage"
-      @cancel="hideConfirmModal"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
       header-close-content="&times;"
+      @ok="deletePage"
+      @cancel="hideConfirmModal"
     >
       <p>{{ confirmMessage }}</p>
-      <div slot="modal-ok">{{ $t('Delete') }}</div>
+      <div slot="modal-ok">{{ $t("Delete") }}</div>
     </b-modal>
   </b-row>
 </template>
 
 <script>
-import draggable from 'vuedraggable';
-import HasColorProperty from '../mixins/HasColorProperty';
-import * as renderer from './renderer';
-import * as inspector from './inspector';
-import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
-import accordions from './accordions';
-import { keyNameProperty } from '../form-control-common-properties';
-import VariableNameGenerator from '@/components/VariableNameGenerator';
-import testing from '@/mixins/testing';
+import draggable from "vuedraggable";
+import _ from "lodash";
+import {
+  FormInput,
+  FormSelectList,
+  FormTextArea,
+  FormCheckbox,
+  FormDatePicker,
+  FormHtmlEditor,
+  FormHtmlViewer
+} from "@processmaker/vue-form-elements";
+import HasColorProperty from "../mixins/HasColorProperty";
+import * as renderer from "./renderer";
+import * as inspector from "./inspector";
+import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
+import accordions from "./accordions";
+import { keyNameProperty } from "../form-control-common-properties";
+import VariableNameGenerator from "@/components/VariableNameGenerator";
+import testing from "@/mixins/testing";
+import defaultValueEditor from "./inspector/default-value-editor";
+import RequiredCheckbox from "./utils/required-checkbox";
+import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
+import { formTypes } from "@/global-properties";
 
-let Validator = require('validatorjs');
+const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
-let globalObject = typeof window === 'undefined'
-  ? global
-  : window;
+const globalObject = typeof window === "undefined" ? global : window;
 
-if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.ProcessMaker.user.lang) {
+if (
+  globalObject.ProcessMaker &&
+  globalObject.ProcessMaker.user &&
+  globalObject.ProcessMaker.user.lang
+) {
   Validator.useLang(globalObject.ProcessMaker.user.lang);
 }
 
@@ -333,10 +422,10 @@ if (globalObject.ProcessMaker && globalObject.ProcessMaker.user && globalObject.
 // Should also probably be converted to a mixin. These changes would then
 // require modifications to to App.vue and PM4 Core implementations
 Validator.register(
-  'columns-adds-to-12',
-  value => {
+  "columns-adds-to-12",
+  (value) => {
     const sum = value.reduce((total, options) => {
-      return total + parseInt(options['content']);
+      return total + parseInt(options.content);
     }, 0);
 
     if (sum === 12) {
@@ -344,56 +433,17 @@ Validator.register(
     }
     return false;
   },
-  'Columns must add to 12'
+  "Columns must add to 12"
 );
 
-import {
-  FormInput,
-  FormSelectList,
-  FormTextArea,
-  FormCheckbox,
-  FormDatePicker,
-  FormHtmlEditor,
-  FormHtmlViewer,
-} from '@processmaker/vue-form-elements';
-import defaultValueEditor from "./inspector/default-value-editor";
-
-import RequiredCheckbox from './utils/required-checkbox';
-import MultipleUploadsCheckbox from './utils/multiple-uploads-checkbox';
-
-import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
-import { formTypes } from '@/global-properties';
-import _ from 'lodash';
-
-const defaultConfig = [{
-  name: 'Default',
-  items: [],
-}];
+const defaultConfig = [
+  {
+    name: "Default",
+    items: []
+  }
+];
 
 export default {
-  props: {
-    renderControls: {
-      type: Boolean,
-      default: true
-    },
-    validationErrors: {
-      type: Array,
-    },
-    initialConfig: {
-      type: Array,
-    },
-    title: {
-      type: String,
-    },
-    screenType: {
-      type: String,
-      default: formTypes.form,
-    },
-    screen: {
-      type: Object,
-    },
-  },
-  mixins: [HasColorProperty, testing],
   components: {
     draggable,
     FormInput,
@@ -407,45 +457,68 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer,
+    ...renderer
+  },
+  mixins: [HasColorProperty, testing],
+  props: {
+    renderControls: {
+      type: Boolean,
+      default: true
+    },
+    validationErrors: {
+      type: Array
+    },
+    initialConfig: {
+      type: Array
+    },
+    title: {
+      type: String
+    },
+    screenType: {
+      type: String,
+      default: formTypes.form
+    },
+    screen: {
+      type: Object
+    }
   },
   data() {
     const config = this.initialConfig || defaultConfig;
     this.migrateConfig(config);
     const generator = new VariableNameGenerator();
-    let variables = generator.GetVariableNames(config);
+    const variables = generator.GetVariableNames(config);
 
-    if (this.title && config[0].name === 'Default') {
+    if (this.title && config[0].name === "Default") {
       config[0].name = this.title;
     }
 
     return {
       currentPage: 0,
       selected: null,
-      display: 'editor',
+      display: "editor",
       inspection: {},
       // Blank at start, assume the parent component will call addControl for each control
       controls: [],
       pageAddModal: false,
-      addPageName: '',
+      addPageName: "",
       editPageIndex: null,
-      editPageName: '',
+      editPageName: "",
       originalPageName: null,
       config,
-      confirmMessage: '',
+      confirmMessage: "",
       pageDelete: 0,
       translated: [],
       showAssignment: false,
       showVariable: false,
       showDesign: false,
-      filterQuery: '',
+      filterQuery: "",
       accordions,
       variables,
       generator,
       variablesTree: [],
-      language: 'en',
+      language: "en",
       collator: null,
-      editorContentKey: 0,
+      editorContentKey: 0
     };
   },
   computed: {
@@ -453,37 +526,39 @@ export default {
       return this;
     },
     canUndo() {
-      return this.$store.getters['undoRedoModule/canUndo'];
+      return this.$store.getters["undoRedoModule/canUndo"];
     },
     canRedo() {
-      return this.$store.getters['undoRedoModule/canRedo'];
+      return this.$store.getters["undoRedoModule/canRedo"];
     },
     displayDelete() {
       return this.config.length > 1;
     },
     filteredControls() {
-      return this.controls.filter(control => {
-        return control.label
-          .toLowerCase()
-          .includes(this.filterQuery.toLowerCase());
-      }).sort((a, b) => {
-        return this.collator.compare(a.label, b.label);
-      });
+      return this.controls
+        .filter((control) => {
+          return control.label
+            .toLowerCase()
+            .includes(this.filterQuery.toLowerCase());
+        })
+        .sort((a, b) => {
+          return this.collator.compare(a.label, b.label);
+        });
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
       return this.screenType === formTypes.form;
-    },
+    }
   },
   watch: {
     config: {
       handler() {
         this.checkForCaptchaInLoops();
-        this.$emit('change', this.config);
+        this.$emit("change", this.config);
       },
-      deep: true,
+      deep: true
     },
     currentPage() {
       this.inspect();
@@ -493,11 +568,11 @@ export default {
         // already translated, don't translate again!
         return;
       }
-      for (var i in e.inspector) {
+      for (const i in e.inspector) {
         e.inspector[i].config.label = this.$t(e.inspector[i].config.label);
         e.inspector[i].config.helper = this.$t(e.inspector[i].config.helper);
         if (e.inspector[i].config.options) {
-          for (var io in e.inspector[i].config.options) {
+          for (const io in e.inspector[i].config.options) {
             e.inspector[i].config.options[io].content = this.$t(
               e.inspector[i].config.options[io].content
             );
@@ -505,36 +580,75 @@ export default {
         }
       }
       this.translated.push(e);
-    },
+    }
+  },
+  created() {
+    Validator.register(
+      "unique-page-name",
+      (value) => {
+        const pageNames = this.config
+          .map((config) => config.name)
+          .filter((name) => name !== this.originalPageName);
+        return !pageNames.includes(value);
+      },
+      this.$t("Must be unique")
+    );
+    this.$store.dispatch("undoRedoModule/pushState", {
+      config: JSON.stringify(this.config),
+      currentPage: this.currentPage
+    });
+    this.initiateLanguageSupport();
+  },
+  mounted() {
+    this.checkForCaptchaInLoops();
+    this.$root.$on("nested-screen-updated", () => {
+      this.checkForCaptchaInLoops();
+    });
   },
   methods: {
     refreshContent() {
       this.editorContentKey++;
     },
     checkForCaptchaInLoops() {
-      this.config.forEach(page => {
+      this.config.forEach((page) => {
         this.checkForCaptcha(page.items);
       });
     },
     checkForCaptcha(items, insideLoop = false, nestedScreen = null) {
-      items.forEach(item => {
-        if (!item.items && item.component == 'Captcha' && insideLoop) {
+      items.forEach((item) => {
+        if (!item.items && item.component == "Captcha" && insideLoop) {
           if (nestedScreen && nestedScreen.config.screen) {
-            this.$root.$emit('remove-nested', nestedScreen.config.screen);
+            this.$root.$emit("remove-nested", nestedScreen.config.screen);
             nestedScreen.config.screen = null;
-            globalObject.ProcessMaker.alert(this.$t('You are trying to place a nested screen within CAPTCHA elements inside a loop. CAPTCHA controls cannot be placed within a Loop control.'), 'danger');
+            globalObject.ProcessMaker.alert(
+              this.$t(
+                // eslint-disable-next-line max-len
+                "You are trying to place a nested screen within CAPTCHA elements inside a loop. CAPTCHA controls cannot be placed within a Loop control."
+              ),
+              "danger"
+            );
           } else {
             items.splice(items.indexOf(item), 1);
-            globalObject.ProcessMaker.alert(this.$t('CAPTCHA controls cannot be placed within a Loop control.'), 'danger');
+            globalObject.ProcessMaker.alert(
+              this.$t(
+                "CAPTCHA controls cannot be placed within a Loop control."
+              ),
+              "danger"
+            );
           }
         }
         if (item.items) {
           this.checkForCaptcha(item.items, true, nestedScreen);
         }
-        if (item.component == 'FormNestedScreen' && item.config.screen && window.nestedScreens) {
-          let nestedScreenItems = window.nestedScreens['id_' + item.config.screen];
+        if (
+          item.component === "FormNestedScreen" &&
+          item.config.screen &&
+          window.nestedScreens
+        ) {
+          const nestedScreenItems =
+            window.nestedScreens[`id_${item.config.screen}`];
           if (nestedScreenItems) {
-            nestedScreenItems.forEach(nestedScreenPage => {
+            nestedScreenItems.forEach((nestedScreenPage) => {
               this.checkForCaptcha(nestedScreenPage.items, insideLoop, item);
             });
           }
@@ -543,36 +657,53 @@ export default {
     },
     loadVariablesTree() {
       const definition = {
-        config : this.$parent.config,
-        computed : this.$parent.computed,
-        customCSS : this.$parent.customCSS,
-        watchers : this.$parent.watchers,
+        config: this.$parent.config,
+        computed: this.$parent.computed,
+        customCSS: this.$parent.customCSS,
+        watchers: this.$parent.watchers
       };
-      this.variablesTree = this.$refs.treeOfVariables.getVariablesTree(definition);
-      this.$refs.treeOfVariables.getVariablesTree({config: []});
+      this.variablesTree =
+        this.$refs.treeOfVariables.getVariablesTree(definition);
+      this.$refs.treeOfVariables.getVariablesTree({ config: [] });
     },
     accordionName(accordion) {
-      return accordion.name instanceof Function ? accordion.name(this.inspection) : accordion.name;
+      return accordion.name instanceof Function
+        ? accordion.name(this.inspection)
+        : accordion.name;
     },
     toggleAccordion(accordion) {
-      this.accordions.forEach(panel => panel !== accordion ? panel.open = false : null);
+      this.accordions.forEach((panel) => {
+        if (panel !== accordion) {
+          panel.open = false;
+        }
+      });
       accordion.open = !accordion.open;
     },
     openAccordion(accordion) {
-      this.accordions.forEach(panel => panel.open = false);
+      this.accordions.forEach((panel) => {
+        panel.open = false;
+      });
       accordion.open = true;
     },
     migrateConfig(config = this.config) {
-      config.forEach(page => this.replaceFormText(page.items));
-      config.forEach(page => this.migrateFormSubmit(page.items));
-      config.forEach(page => this.updateFieldNameValidation(page.items));
-      config.forEach(page => this.removeDataVariableFromNestedScreens(page.items));
+      config.forEach((page) => this.replaceFormText(page.items));
+      config.forEach((page) => this.migrateFormSubmit(page.items));
+      config.forEach((page) => this.updateFieldNameValidation(page.items));
+      config.forEach((page) =>
+        this.removeDataVariableFromNestedScreens(page.items)
+      );
     },
     updateFieldNameValidation(items) {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (item.inspector) {
           item.inspector.forEach((inspector) => {
-            if (inspector.field === 'name' && 'validation' in inspector.config && inspector.config.name !== 'DataVariable' && item.component !== 'FileUpload' && item.component !== 'FormButton') {
+            if (
+              inspector.field === "name" &&
+              "validation" in inspector.config &&
+              inspector.config.name !== "DataVariable" &&
+              item.component !== "FileUpload" &&
+              item.component !== "FormButton"
+            ) {
               inspector.config.validation = keyNameProperty.config.validation;
             }
           });
@@ -583,10 +714,14 @@ export default {
       });
     },
     removeDataVariableFromNestedScreens(items) {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (item.inspector) {
-          const hasDataVariable = item.inspector.find(inspector => inspector.config.name === 'DataVariable');
-          item.inspector = item.inspector.filter(inspector => inspector.config.name !== 'DataVariable');
+          const hasDataVariable = item.inspector.find(
+            (inspector) => inspector.config.name === "DataVariable"
+          );
+          item.inspector = item.inspector.filter(
+            (inspector) => inspector.config.name !== "DataVariable"
+          );
           if (hasDataVariable) {
             delete item.config.name;
           }
@@ -594,17 +729,24 @@ export default {
       });
     },
     replaceFormText(items) {
-      items.forEach(item => {
-        if (item.component === 'FormText') {
-          item.component = 'FormHtmlEditor';
-          item['editor-component'] = 'FormHtmlEditor';
+      items.forEach((item) => {
+        if (item.component === "FormText") {
+          item.component = "FormHtmlEditor";
+          item["editor-component"] = "FormHtmlEditor";
           const style =
-            (item.config.fontSize ? 'font-size: ' + item.config.fontSize + ';' : '') +
-            (item.config.fontWeight ? 'font-weight: ' + item.config.fontWeight + ';' : '') +
-            (item.config.textAlign ? 'text-align: ' + item.config.textAlign + ';' : '');
+            (item.config.fontSize
+              ? `font-size: ${item.config.fontSize};`
+              : "") +
+            (item.config.fontWeight
+              ? `font-weight: ${item.config.fontWeight};`
+              : "") +
+            (item.config.textAlign
+              ? `text-align: ${item.config.textAlign};`
+              : "");
           item.config = {
-            content: '<div style="' + style + '">' + item.config.label + '</div>',
-            interactive: true,
+            content:
+              "<div style=\"" + style + "\">" + item.config.label + "</div>",
+            interactive: true
           };
         }
         if (item.items instanceof Array) {
@@ -613,30 +755,31 @@ export default {
       });
     },
     migrateFormSubmit(items) {
-      items.forEach(item => {
-        if (item['editor-control'] !== 'FormSubmit') {
-          item['editor-control'] = item['editor-component'];
+      items.forEach((item) => {
+        if (item["editor-control"] !== "FormSubmit") {
+          item["editor-control"] = item["editor-component"];
         }
 
-        if (item.config.event === 'submit') {
-          if (item['editor-component'] === 'FormNestedScreen') {
+        if (item.config.event === "submit") {
+          if (item["editor-component"] === "FormNestedScreen") {
             // Old nested screens erroneously had an event key. Remove it here
             // and set the editor-control back to FormNestedScreen.
             delete item.config.event;
-            item['editor-control'] = 'FormNestedScreen';
-            item.config.name = 'Nested Screen';
-          } else {
-            if (item['editor-control'] !== 'FormImage') {
-              item['editor-control'] = 'FormSubmit';
-            }
+            item["editor-control"] = "FormNestedScreen";
+            item.config.name = "Nested Screen";
+          } else if (item["editor-control"] !== "FormImage") {
+            item["editor-control"] = "FormSubmit";
           }
         }
-        if (item.config.event === 'pageNavigate') {
-          item['editor-control'] = 'PageNavigation';
+        if (item.config.event === "pageNavigate") {
+          item["editor-control"] = "PageNavigation";
         }
-        if (item.items instanceof Array && item.component === 'FormMultiColumn') {
-          item['editor-control'] = 'FormMultiColumn';
-          item.items.forEach(column => this.migrateFormSubmit(column));
+        if (
+          item.items instanceof Array &&
+          item.component === "FormMultiColumn"
+        ) {
+          item["editor-control"] = "FormMultiColumn";
+          item.items.forEach((column) => this.migrateFormSubmit(column));
         }
       });
     },
@@ -644,9 +787,9 @@ export default {
       if (this._allAccordionizedFields) {
         return this._allAccordionizedFields;
       }
-      this._allAccordionizedFields = this.accordions.flatMap(accordion => {
-        return accordion.fields.map(fieldName => {
-          if (typeof fieldName === 'string') {
+      this._allAccordionizedFields = this.accordions.flatMap((accordion) => {
+        return accordion.fields.map((fieldName) => {
+          if (typeof fieldName === "string") {
             return fieldName;
           }
           return fieldName.name;
@@ -663,9 +806,9 @@ export default {
       }
 
       const accordionFields = accordion.fields
-        .filter(field => {
-          if (typeof field !== 'string') {
-            const component = this.inspection.component;
+        .filter((field) => {
+          if (typeof field !== "string") {
+            const { component } = this.inspection;
             const { showFor, hideFor } = field;
 
             if (showFor) {
@@ -679,20 +822,28 @@ export default {
 
           return true;
         })
-        .map(field => {
-          if (typeof field !== 'string') {
+        .map((field) => {
+          if (typeof field !== "string") {
             return field.name;
           }
 
           return field;
         });
-      const control = this.controls.find(control => control['editor-control'] === this.inspection['editor-control'])
-        || this.controls.find(control => control.component === this.inspection.component)
-        || {inspector:[]};
-      return control.inspector.filter(input => {
+      const control = this.controls.find(
+        (control) =>
+          control["editor-control"] === this.inspection["editor-control"]
+      ) ||
+        this.controls.find(
+          (control) => control.component === this.inspection.component
+        ) || { inspector: [] };
+      return control.inspector.filter((input) => {
         if (accordionFields.includes(input.field)) {
           return true;
-        } else if (!this.knownField(input.field) && accordion.name === 'Configuration') {
+        }
+        if (
+          !this.knownField(input.field) &&
+          accordion.name === "Configuration"
+        ) {
           // If it's not a known inspector field from accordion.js and this is the
           // configuration accordion, then add it here
           return true;
@@ -701,20 +852,31 @@ export default {
       });
     },
     updateState() {
-      this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage});
-      window.ProcessMaker.EventBus.$emit('screen-change');
+      this.$store.dispatch("undoRedoModule/pushState", {
+        config: JSON.stringify(this.config),
+        currentPage: this.currentPage
+      });
+      window.ProcessMaker.EventBus.$emit("screen-change");
     },
     undo() {
       this.inspect();
-      this.$store.dispatch('undoRedoModule/undo');
-      this.config = JSON.parse(this.$store.getters['undoRedoModule/currentState'].config);
-      this.currentPage = JSON.parse(this.$store.getters['undoRedoModule/currentState'].currentPage);
+      this.$store.dispatch("undoRedoModule/undo");
+      this.config = JSON.parse(
+        this.$store.getters["undoRedoModule/currentState"].config
+      );
+      this.currentPage = JSON.parse(
+        this.$store.getters["undoRedoModule/currentState"].currentPage
+      );
     },
     redo() {
       this.inspect();
-      this.$store.dispatch('undoRedoModule/redo');
-      this.config = JSON.parse(this.$store.getters['undoRedoModule/currentState'].config);
-      this.currentPage = JSON.parse(this.$store.getters['undoRedoModule/currentState'].currentPage);
+      this.$store.dispatch("undoRedoModule/redo");
+      this.config = JSON.parse(
+        this.$store.getters["undoRedoModule/currentState"].config
+      );
+      this.currentPage = JSON.parse(
+        this.$store.getters["undoRedoModule/currentState"].currentPage
+      );
     },
     updateConfig(items) {
       this.config[this.currentPage].items = items;
@@ -729,17 +891,26 @@ export default {
       this.$nextTick(() => {
         this.inspect(validation.item);
         this.$nextTick(() => {
-          const field = this.$el.querySelector(`[field-name="${validation.field}"]`);
+          const field = this.$el.querySelector(
+            `[field-name="${validation.field}"]`
+          );
           if (field) {
-            const accordion = this.$el.querySelector(`[accordion-name="${field.getAttribute('field-accordion')}"]`);
-            accordion && accordion.getAttribute('is-open') === '0' && accordion.click();
+            const accordion = this.$el.querySelector(
+              `[accordion-name="${field.getAttribute("field-accordion")}"]`
+            );
+            accordion &&
+              accordion.getAttribute("is-open") === "0" &&
+              accordion.click();
             field.focus instanceof Function && field.focus();
           }
         });
       });
     },
     confirmDelete() {
-      this.confirmMessage = this.$t('Are you sure you want to delete {{item}}?', {item: this.config[this.currentPage].name});
+      this.confirmMessage = this.$t(
+        "Are you sure you want to delete {{item}}?",
+        { item: this.config[this.currentPage].name }
+      );
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
@@ -761,7 +932,9 @@ export default {
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
-      this.editPageName = this.originalPageName = this.config[index].name;
+      const pageName = this.config[index].name;
+      this.originalPageName = pageName;
+      this.editPageName = pageName;
       this.$refs.editPageModal.show();
     },
     editPage(e) {
@@ -778,18 +951,24 @@ export default {
       }
       this.config.push({ name: this.addPageName, items: [] });
       this.currentPage = this.config.length - 1;
-      this.addPageName = '';
+      this.addPageName = "";
       this.updateState();
     },
     deletePage() {
       this.config.splice(this.pageDelete, 1);
-      this.currentPage = (this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0);
-      this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage, 'deletedPage': true});
+      this.currentPage = this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0;
+      this.$store.dispatch("undoRedoModule/pushState", {
+        config: JSON.stringify(this.config),
+        currentPage: this.currentPage,
+        deletedPage: true
+      });
     },
     inspect(element = {}) {
       this.inspection = element;
       this.selected = element;
-      const defaultAccordion = this.accordions.find(accordion => this.getInspectorFields(accordion).length > 0);
+      const defaultAccordion = this.accordions.find(
+        (accordion) => this.getInspectorFields(accordion).length > 0
+      );
       if (defaultAccordion) {
         this.openAccordion(defaultAccordion);
       }
@@ -797,22 +976,22 @@ export default {
     // Cloning the control will ensure the config is not a copy of the observable but a plain javascript object
     // This will ensure each control in the editor has it's own config and it's not shared
     cloneControl(control) {
-      let copy = {
+      const copy = {
         config: JSON.parse(JSON.stringify(control.config)),
         inspector: JSON.parse(JSON.stringify(control.inspector)),
         component: control.component,
-        'editor-component': control['editor-component'],
-        'editor-control': control['editor-control'],
+        "editor-component": control["editor-component"],
+        "editor-control": control["editor-control"],
         label: control.label,
-        value: control.value,
+        value: control.value
       };
-      if (control.component === 'FormDatePicker' && copy.config.phrases) {
+      if (control.component === "FormDatePicker" && copy.config.phrases) {
         copy.config.phrases.ok = this.$t(copy.config.phrases.ok);
         copy.config.phrases.cancel = this.$t(copy.config.phrases.cancel);
       }
       copy.config.label = this.$t(copy.config.label);
       if (Array.isArray(copy.config.options)) {
-        for (var io in copy.config.options) {
+        for (const io in copy.config.options) {
           copy.config.options[io].content = this.$t(
             copy.config.options[io].content
           );
@@ -821,14 +1000,20 @@ export default {
 
       // If it's a container, let's add an items property, with the default of items in the control
       if (control.container) {
-        copy['items'] = JSON.parse(JSON.stringify(control.items));
+        copy.items = JSON.parse(JSON.stringify(control.items));
         copy.container = true;
       }
 
-      //Generate Variable Name
-      if (control.inspector.indexOf(keyNameProperty) !== -1 || control.component === 'FormLoop') {
-        [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control'] ? copy['editor-control'] :  copy['component']);
-        if (_.has(copy, 'config.settings.varname')) {
+      // Generate Variable Name
+      if (
+        control.inspector.indexOf(keyNameProperty) !== -1 ||
+        control.component === "FormLoop"
+      ) {
+        [this.variables, copy.config.name] = this.generator.generate(
+          this.config,
+          copy["editor-control"] ? copy["editor-control"] : copy.component
+        );
+        if (_.has(copy, "config.settings.varname")) {
           copy.config.settings.varname = copy.config.name;
         }
       }
@@ -840,28 +1025,8 @@ export default {
         this.language = document.documentElement.lang;
       }
       this.collator = Intl.Collator(this.language);
-    },
-  },
-  created() {
-    Validator.register(
-      'unique-page-name',
-      value => {
-        const pageNames = this.config
-          .map(config => config.name)
-          .filter(name => name !== this.originalPageName);
-        return !pageNames.includes(value);
-      },
-      this.$t('Must be unique')
-    );
-    this.$store.dispatch('undoRedoModule/pushState', {'config': JSON.stringify(this.config), 'currentPage': this.currentPage});
-    this.initiateLanguageSupport();
-  },
-  mounted() {
-    this.checkForCaptchaInLoops();
-    this.$root.$on('nested-screen-updated', () => {
-      this.checkForCaptchaInLoops();
-    });
-  },
+    }
+  }
 };
 </script>
 
@@ -870,7 +1035,6 @@ export default {
   pointer-events: none;
 }
 </style>
-
 
 <style lang="scss" scoped>
 $header-bg: #f7f7f7;
