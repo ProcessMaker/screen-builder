@@ -44,15 +44,21 @@ export default {
   },
   computed: {
     hasColor() {
-      return !!this.value;
+      return Boolean(this.value);
     }
   },
   methods: {
+    emitChanges(value) {
+      this.$emit("input", value);
+      this.$emit("update-state");
+    },
     checkColor() {
-      this.hasColor ? this.$emit("input", "") : null;
+      if (this.hasColor) {
+        this.emitChanges("");
+      }
     },
     selectColor(color) {
-      this.$emit("input", color);
+      this.emitChanges(color);
     },
     parsedColor(color) {
       return color.split("-")[1];
