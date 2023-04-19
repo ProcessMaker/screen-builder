@@ -38,6 +38,11 @@ const undoRedoModule = {
       state.stack.push(newState);
     }
   },
+  methods: {
+    emitChanges() {
+      window.ProcessMaker.EventBus.$emit("screen-change");
+    }
+  },
   actions: {
     pushState({ state, getters, commit }, newState) {
       if (newState.config === getters.currentState) {
@@ -46,6 +51,7 @@ const undoRedoModule = {
 
       commit("setState", newState);
       commit("setPosition", state.stack.length - 1);
+      undoRedoModule.methods.emitChanges();
     },
     undo({ state, getters, commit }) {
       if (!getters.canUndo) {
@@ -53,6 +59,7 @@ const undoRedoModule = {
       }
 
       commit("setPosition", state.position - 1);
+      undoRedoModule.methods.emitChanges();
     },
     redo({ state, getters, commit }) {
       if (!getters.canRedo) {
@@ -60,6 +67,7 @@ const undoRedoModule = {
       }
 
       commit("setPosition", state.position + 1);
+      undoRedoModule.methods.emitChanges();
     }
   }
 };
