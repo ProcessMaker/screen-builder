@@ -154,7 +154,7 @@ export default {
     },
     resetValue(safeDotName, variableName) {
       this.setValue(safeDotName, null);
-      this.updateScreenDataNow(safeDotName, variableName);
+      this.updateScreenDataNow(safeDotName, variableName, false);
     },
     getValidationData() {
       return this.vdata;
@@ -194,8 +194,10 @@ export default {
       this.blockUpdate(safeDotName, 210);
       this.setValueDebounced(variable, this[safeDotName], this.vdata);
     },
-    updateScreenDataNow(safeDotName, variable) {
-      this[`${safeDotName}_was_filled__`] = true;
+    updateScreenDataNow(safeDotName, variable, setWasFilled = true) {
+      if (setWasFilled) {
+        this[`${safeDotName}_was_filled__`] = true;
+      }
       this.setValue(variable, this[safeDotName], this.vdata);
       this.unblockUpdate(safeDotName);
     },
