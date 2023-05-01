@@ -55,7 +55,8 @@
 </template>
 
 <script>
-import _ from 'lodash';
+
+import { debounce, get } from "lodash-es";
 
 const defaultBeforeLoadTask = () => {
   return new Promise((resolve) => {
@@ -178,8 +179,8 @@ export default {
         if (this.screen.type === 'CONVERSATIONAL') {
           this.renderComponent = 'ConversationalForm';
         } else {
-          const isInterstitial = _.get(this.screen, '_interstitial', false);
-          let component = _.get(this, 'task.component', 'task-screen');
+          const isInterstitial = get(this.screen, '_interstitial', false);
+          let component = get(this, 'task.component', 'task-screen');
           if (component === null || isInterstitial) {
             component = 'task-screen';
           }
@@ -208,7 +209,7 @@ export default {
       return screenType.toLowerCase() + '-screen';
     },
     parentRequest() {
-      return _.get(this.task, 'process_request.parent_request_id', null);
+      return get(this.task, 'process_request.parent_request_id', null);
     },
   },
   methods: {
@@ -255,7 +256,7 @@ export default {
     },
     prepareTask() {
       this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
+      this.requestData = get(this.task, 'request_data', {});
       this.refreshScreen++;
 
       this.$emit('task-updated', this.task);
@@ -384,7 +385,7 @@ export default {
       }
       this.$emit('completed', this.requestId);
     },
-    processUpdated: _.debounce(function(data) {
+    processUpdated: debounce(function(data) {
       if (
         data.event === 'ACTIVITY_COMPLETED' ||
         data.event === 'ACTIVITY_ACTIVATED'

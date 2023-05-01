@@ -154,9 +154,8 @@
 
 <script>
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import _ from 'lodash';
 import { formatIfDate as dateUtilsFormatIfDate } from '@processmaker/vue-form-elements';
-import { mapActions, mapState } from "vuex";
+import { cloneDeep, debounce, find, findIndex, get, remove } from "lodash-es";
 
 const jsonOptionsActionsColumn = {
   key: '__actions',
@@ -203,7 +202,7 @@ export default {
     if (this._perPage) {
       this.perPage = this._perPage;
     }
-    this.updateRowDataNamePrefix = _.debounce(this.updateRowDataNamePrefix, 100);
+    this.updateRowDataNamePrefix = debounce(this.updateRowDataNamePrefix, 100);
   },
   computed: {
     popupConfig() {
@@ -293,7 +292,7 @@ export default {
       return dateUtilsFormatIfDate(string);
     },
     isImage(field, item) {
-      const content = _.get(item, field.key);
+      const content = get(item, field.key);
       return typeof content === 'string' && content.substr(0,11) === 'data:image/';
     },
     isFiledownload(field) {
@@ -370,7 +369,7 @@ export default {
     showEditForm(index, rowId) {
       let pageIndex = ((this.currentPage-1) * this.perPage) + index;
       // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(JSON.stringify(_.find(this.tableData.data, {'row_id': rowId})));
+      this.editItem = JSON.parse(JSON.stringify(find(this.tableData.data, {'row_id': rowId})));
       this.editIndex = pageIndex;
       // rebuild the edit screen to avoid
       this.editFormVersion++;
@@ -387,7 +386,7 @@ export default {
 
       // Edit the item in our model and emit change
       let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
-      var index = _.findIndex(data, {'row_id': this.editItem.row_id});
+      var index = findIndex(data, {'row_id': this.editItem.row_id});
       data[index] = JSON.parse(JSON.stringify(this.editItem));
 
       // Remove the parent object
@@ -409,7 +408,7 @@ export default {
 
       // eslint-disable-next-line no-unused-vars
       let {_parent, ...result} = this.addItem;
-      this.initFormValues = _.cloneDeep(result);
+      this.initFormValues = cloneDeep(result);
     },
     async handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
@@ -436,7 +435,7 @@ export default {
       });
     },
     showDeleteConfirmation(index, rowId) {
-      this.deleteIndex = _.find(this.tableData.data, {'row_id': rowId});
+      this.deleteIndex = find(this.tableData.data, {'row_id': rowId});
       this.$refs.deleteModal.show();
     },
     downloadFile(rowData, rowField, rowIndex) {
@@ -475,7 +474,7 @@ export default {
       let data = this.tableData.data ? JSON.parse(JSON.stringify(this.tableData.data)) : [];
       let recordData = this.deleteIndex;
       // Remove item from data array
-      _.remove(data, {
+      remove(data, {
         'row_id': this.deleteIndex.row_id,
       });
       // Emit the newly updated data model

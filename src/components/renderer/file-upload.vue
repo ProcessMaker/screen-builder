@@ -73,7 +73,7 @@
 <script>
 import { createUniqIdsMixin } from 'vue-uniq-ids';
 import uploader from 'vue-simple-uploader';
-import _ from 'lodash';
+import { get, isEqual, set } from "lodash-es";
 
 // Create the mixin
 const uniqIdsMixin = createUniqIdsMixin();
@@ -113,7 +113,7 @@ export default {
       this.$refs['uploader'].$forceUpdate();
     }
 
-    this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
+    this.disabled = get(window, 'ProcessMaker.isSelfService', false);
   },
   errorCaptured(err) {
     if (ignoreErrors.includes(err.message)) {
@@ -125,7 +125,7 @@ export default {
       if (!this.value) {
         return [];
       }
-      return _.get(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, []).filter(file => {
+      return get(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, []).filter(file => {
         // Filter any requestFiles that don't exist in this component's value. This can happen if
         // a file is uploaded but the task is not saved.
         if (this.multipleUpload) {
@@ -295,7 +295,7 @@ export default {
       return this.$refs['uploader'];
     },
     setFiles() {
-      if (_.isEqual(this.filesData, this.files)) {
+      if (isEqual(this.filesData, this.files)) {
         return;
       }
       this.files = this.filesData;
@@ -319,7 +319,7 @@ export default {
       });
     },
     setRequestFiles() {
-      _.set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
+      set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
       this.$emit('input', this.valueToSend());
     },
     valueToSend() {

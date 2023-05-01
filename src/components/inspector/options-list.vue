@@ -233,7 +233,7 @@ import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
 import MustacheHelper from './mustache-helper';
-import _ from 'lodash';
+import { get } from "lodash-es";
 
 export default {
   components: {
@@ -363,7 +363,7 @@ export default {
   },
   computed: {
     endPointList() {
-      return _.get(this.endpoints, this.selectedDataSource, []);
+      return get(this.endpoints, this.selectedDataSource, []);
     },
     dataSourceTypes() {
       if (typeof this.options.allowMultiSelect === 'undefined') {

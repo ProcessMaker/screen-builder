@@ -3,6 +3,7 @@ import { createVuePlugin } from "vite-plugin-vue2";
 import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { resolve } from "path";
 import istanbul from "vite-plugin-istanbul";
+import { esbuildCommonjs, viteCommonjs } from "@originjs/vite-plugin-commonjs";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
@@ -10,7 +11,7 @@ const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
-    "process.env.NODE_ENV": process.env.NODE_ENV
+    "process.env": import.meta.env
   },
   plugins: [
     createVuePlugin(),
@@ -42,24 +43,34 @@ export default defineConfig({
        * dist/built files for production do not include coverage instrumentation code.
        */
       forceBuildInstrument: Boolean(process.env.INSTRUMENT_BUILD)
-    })
+    }),
+    viteCommonjs()
   ],
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [esbuildCommonjs(["scrollparent"])]
+    }
+  },
   resolve: {
     alias: [
       {
         find: "@",
-        replacement: resolve(__dirname, "src")
+        replacement: resolve(__dirname, "./src")
       },
       {
         find: "vue",
-        replacement: resolve(__dirname, "node_modules/vue/dist/vue.esm.js")
+        replacement: resolve(__dirname, "./node_modules/vue/dist/vue.esm.js")
+      },
+      {
+        find: "axios/lib",
+        replacement: resolve(__dirname, "./node_modules/axios/lib")
       }
     ],
     extensions: [".js", ".mjs", ".vue", ".json"]
   },
   build: {
     cssCodeSplit: false,
-    sourcemap: "hidden",
+    // sourcemap: "hidden",
     lib: {
       entry: resolve(__dirname, "src/components/index.js"),
       name: libraryName,

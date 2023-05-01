@@ -28,7 +28,8 @@
 
 
 <script>
-import _ from  'lodash';
+
+import { get, has } from "lodash-es";
 
 export default {
   inheritAttrs: false,
@@ -112,12 +113,12 @@ export default {
     requestEndpoint(file) {
       let endpoint = this.endpoint;
 
-      if (_.has(window, 'PM4ConfigOverrides.useDefaultUrlDownload') && window.PM4ConfigOverrides.useDefaultUrlDownload) {
+      if (has(window, 'PM4ConfigOverrides.useDefaultUrlDownload') && window.PM4ConfigOverrides.useDefaultUrlDownload) {
         // Use default endpoint when coming from a package.
         return `../files/${file.id}/contents`;
       }
 
-      if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+      if (has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
         return `${endpoint}/${file.id}`;
       }
@@ -177,11 +178,11 @@ export default {
       }
     },
     setFilesInfoFromRequest() { 
-      const fileId = this.value ? this.value : _.get(this.requestData, this.fileDataName, null);
+      const fileId = this.value ? this.value : get(this.requestData, this.fileDataName, null);
       let endpoint = this.endpoint;
       
       if (this.requestFiles) {
-        this.filesInfo.push(_.get(this.requestFiles, this.fileDataName, null));
+        this.filesInfo.push(get(this.requestFiles, this.fileDataName, null));
         return;
       }
       
@@ -191,14 +192,14 @@ export default {
       
       if (!endpoint) {
         endpoint = 'requests/' + this.requestId + '/files?id=' + fileId;
-        if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
+        if (has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
           endpoint = window.PM4ConfigOverrides.getFileEndpoint;
           endpoint += '/' + fileId;
         }
       }
 
       this.$dataProvider.get(endpoint).then(response => {
-        const fileInfo = response.data.data ? _.get(response, 'data.data.0', null) : _.get(response, 'data', null);
+        const fileInfo = response.data.data ? get(response, 'data.data.0', null) : get(response, 'data', null);
         if (fileInfo) {
           this.filesInfo.push(fileInfo);
         } else {
@@ -210,7 +211,7 @@ export default {
       });
     },
     setFilesInfoFromCollectionValue() {
-      const files = this.value ? this.value : _.get(this.requestData, this.fileDataName);
+      const files = this.value ? this.value : get(this.requestData, this.fileDataName);
       if (!this.value && !files) {
         this.filesInfo = [];
         return;

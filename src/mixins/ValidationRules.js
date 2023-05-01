@@ -1,6 +1,6 @@
 import { helpers } from 'vuelidate/lib/validators';
 import moment from 'moment';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 import {
   minLength,

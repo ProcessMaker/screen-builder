@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 export default {
   props: ['id', 'image', 'width', 'height', 'name', 'renderImage', 'variableName', 'validationData', 'imageName'],

@@ -1,6 +1,6 @@
 import { validators } from './mixins/ValidationRules';
 import DataProvider from './DataProvider';
-import { get, set, merge } from 'lodash';
+import { get, set, merge } from 'lodash-es';
 import { Parser } from 'expr-eval';
 
 let globalObject = typeof window === 'undefined'

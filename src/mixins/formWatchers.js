@@ -1,8 +1,6 @@
 /* istanbul ignore file */
 import Mustache from 'mustache';
-import isEqual from 'lodash/isEqual';
-import get from 'lodash/get';
-import debounce from 'lodash/debounce';
+import { isEqual, get, debounce } from "lodash-es";
 
 const globalObject = typeof window === 'undefined'
   ? global

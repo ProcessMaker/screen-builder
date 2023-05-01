@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import './CustomValidationRules';
 
 import Validator from '@chantouchsek/validatorjs';
+import { get } from "lodash-es";
 
 export function ValidatorFactory(config, data) {
   const validate = {};
@@ -47,7 +47,7 @@ export function ValidatorFactory(config, data) {
       }
 
       if (item.component === 'FormNestedScreen') {
-        const nestedScreen = _.get(window, 'nestedScreens.id_' + item.config.screen);
+        const nestedScreen = get(window, 'nestedScreens.id_' + item.config.screen);
         if (nestedScreen) {
           validate.getDataAndRules(nestedScreen);
         }

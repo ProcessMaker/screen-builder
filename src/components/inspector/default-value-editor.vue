@@ -24,7 +24,7 @@
 
 <script>
 import MonacoEditor from 'vue-monaco';
-import _ from 'lodash';
+import { isEqual } from "lodash-es";
 
 export default {
   props: ['value', 'helper'],
@@ -51,7 +51,7 @@ export default {
   watch: {
     value: {
       handler() {
-        if (_.isEqual(this.configValue, this.value)) {
+        if (isEqual(this.configValue, this.value)) {
           return;
         }
                 

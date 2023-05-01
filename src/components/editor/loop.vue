@@ -98,7 +98,6 @@
 import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
-import _ from 'lodash';
 import {
   FormInput,
   FormSelectList,
@@ -108,6 +107,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer,
 } from '@processmaker/vue-form-elements';
+import { cloneDeep } from "lodash-es";
 
 export default {
   name: 'Loop',
@@ -154,7 +154,7 @@ export default {
       this.$emit('update-state');
     },
     duplicateItem(index) {
-      const duplicate = _.cloneDeep(this.items[index]);
+      const duplicate = cloneDeep(this.items[index]);
       this.items.push(duplicate);
       this.$emit('update-state');
     },
