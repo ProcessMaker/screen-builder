@@ -1,4 +1,4 @@
-import { camelCase, upperFirst } from "lodash";
+import { camelCase, upperFirst } from "lodash-es";
 
 const mixins = [];
 const modules = import.meta.globEager("./*.js");

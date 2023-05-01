@@ -267,8 +267,7 @@ import MonacoEditor from 'vue-monaco';
 import DataMapping from './inspector/data-mapping';
 import OutboundConfig from './inspector/outbound-config';
 import FocusErrors from '../mixins/focusErrors';
-
-import _ from 'lodash';
+import { uniqueId } from "lodash-es";
 
 const globalObject = typeof window === 'undefined'
   ? global
@@ -600,7 +599,7 @@ export default {
         }
 
         if (!this.config.uid) {
-          this.config.uid = _.uniqueId(new Date().getTime());
+          this.config.uid = uniqueId(new Date().getTime());
         }
 
         this.save();

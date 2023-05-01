@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import _ from 'lodash';
+
+import { get } from "lodash-es";
 
 export default {
   inheritAttrs: false,
@@ -132,7 +133,7 @@ export default {
   },
   computed: {
     buttonType() {
-      return _.get(this.$attrs, 'selectedControl.config.event');
+      return get(this.$attrs, 'selectedControl.config.event');
     },
   },
   watch: {

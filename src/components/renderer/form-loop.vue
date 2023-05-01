@@ -32,7 +32,7 @@
 
 <script>
 import Mustache from 'mustache';
-import _ from 'lodash';
+import { cloneDeep, get, isEqual, omit } from "lodash-es";
 
 export default {
   name: 'FormLoop',
@@ -86,7 +86,7 @@ export default {
       }
 
       if (this.config.settings.type === 'existing') {
-        const itemsFromData = _.get(this.transientData, this.name, null);
+        const itemsFromData = get(this.transientData, this.name, null);
         if (!itemsFromData) {
           return [];
         }
@@ -117,10 +117,10 @@ export default {
   watch: {
     transientData: {
       handler() {
-        this.transientDataCopy = _.cloneDeep(this.transientData);
+        this.transientDataCopy = cloneDeep(this.transientData);
         this.$delete(this.transientDataCopy, this.name);
 
-        const data = _.get(this, 'transientData.' + this.name, null);
+        const data = get(this, 'transientData.' + this.name, null);
         if (data && Array.isArray(data)) {
           this.matrix = data;
         } else {
@@ -138,10 +138,10 @@ export default {
     },
     matrix: {
       handler() {
-        if (_.isEqual(this.$parent.transientData[this.name], this.matrix)) {
+        if (isEqual(this.$parent.transientData[this.name], this.matrix)) {
           return;
         }
-        this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
+        this.$set(this.$parent.transientData, this.name, cloneDeep(this.matrix));
       },
       deep: true,
     },
@@ -188,7 +188,7 @@ export default {
       );
     },
     setMatrixValue(i, v) {
-      let item = _.omit(v, '_parent');
+      let item = omit(v, '_parent');
       this.registerParentVariableChanges(v);
       this.$set(this.matrix, i, item);
       this.setChagnedParentVariables();
@@ -196,7 +196,7 @@ export default {
     registerParentVariableChanges(obj) {
       if (obj._parent) {
         Object.keys(obj._parent).forEach(parentKey => {
-          if (!_.isEqual(this.transientDataCopy[parentKey], obj._parent[parentKey])) {
+          if (!isEqual(this.transientDataCopy[parentKey], obj._parent[parentKey])) {
             this.parentObjectChanges.push({key: parentKey, value: obj._parent[parentKey]});
           }
         });
@@ -209,12 +209,12 @@ export default {
       this.parentObjectChanges = [];
     },
     getMatrixValue(i) {
-      let val = _.cloneDeep(this.matrix[i]);
+      let val = cloneDeep(this.matrix[i]);
       if (!val) {
         val = {};
       }
       
-      val._parent = _.cloneDeep(this.transientDataCopy);
+      val._parent = cloneDeep(this.transientDataCopy);
       return val;
     },
     setupMatrix() {
@@ -234,7 +234,7 @@ export default {
     },
   },
   mounted() {
-    this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
+    this.$set(this.$parent.transientData, this.name, cloneDeep(this.matrix));
   },
 };
 </script>

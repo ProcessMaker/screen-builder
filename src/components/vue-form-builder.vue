@@ -360,7 +360,7 @@ import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from './utils/required-checkbox';
 import MultipleUploadsCheckbox from './utils/multiple-uploads-checkbox';
 import { formTypes } from '@/global-properties';
-import _ from 'lodash';
+import { cloneDeep, has } from "lodash-es";
 
 const defaultConfig = [{
   name: 'Default',
@@ -752,7 +752,7 @@ export default {
       this.updateState();
     },
     duplicateItem(index) {
-      const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+      const duplicate = cloneDeep(this.config[this.currentPage].items[index]);
       this.config[this.currentPage].items.push(duplicate);
     },
     openEditPageModal(index) {
@@ -824,7 +824,7 @@ export default {
       //Generate Variable Name
       if (control.inspector.indexOf(keyNameProperty) !== -1 || control.component === 'FormLoop') {
         [this.variables, copy.config.name] = this.generator.generate(this.config, copy['editor-control'] ? copy['editor-control'] :  copy['component']);
-        if (_.has(copy, 'config.settings.varname')) {
+        if (has(copy, 'config.settings.varname')) {
           copy.config.settings.varname = copy.config.name;
         }
       }

@@ -1,4 +1,4 @@
-import { get, isEqual, set, debounce } from 'lodash';
+import { get, isEqual, set, debounce } from 'lodash-es';
 import Mustache from 'mustache';
 import { mapActions, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';

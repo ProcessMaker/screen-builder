@@ -1,5 +1,4 @@
-import { get } from 'lodash';
-import debounce from 'lodash/debounce';
+import { get, debounce } from 'lodash-es';
 
 export default {
   props: {

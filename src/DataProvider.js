@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import axios from "axios";
-import { has, get } from "lodash";
+import { has, get } from "lodash-es";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import LRUCache from "lru-cache";
 

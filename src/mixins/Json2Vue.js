@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { get, indexOf } from "lodash-es";
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
@@ -247,7 +247,7 @@ export default {
       if (!this.validVariableName(name)) {
         return;
       }
-      const config = _.get(element, 'config', {});
+      const config = get(element, 'config', {});
       const find = this.variables.find(v => v.name === name);
       if (!find) {
         this.variables.push({ name, config, element });

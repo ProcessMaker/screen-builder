@@ -1,5 +1,5 @@
 import Mustache from 'mustache';
-import _ from 'lodash';
+import { get } from "lodash-es";
 
 const broadcastEvent = '.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated';
 
@@ -42,7 +42,7 @@ export default {
 
         if (watcher.script_key) {
           // Data Source
-          const requestId = _.get(this.vdata, '_request.id', null);
+          const requestId = get(this.vdata, '_request.id', null);
           const params = { config: JSON.parse(config), data: this.vdata };
           
           this.$dataProvider.postDataSource(scriptId, requestId, params).then(response => {
@@ -94,7 +94,7 @@ export default {
         }
         return response;
       }).catch(error => {
-        const message = _.get(error, 'response.data.message', error.message);
+        const message = get(error, 'response.data.message', error.message);
         if (watcher.synchronous) {
           this.$parent.$refs.watchersSynchronous.error(message);
         } else {

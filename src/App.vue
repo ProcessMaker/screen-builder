@@ -216,7 +216,7 @@ import VueFormBuilder from './components/vue-form-builder.vue';
 import VueFormRenderer from './components/vue-form-renderer.vue';
 import MonacoEditor from 'vue-monaco';
 import canOpenJsonFile from './mixins/canOpenJsonFile';
-import { cloneDeep, debounce } from 'lodash';
+import { cloneDeep, debounce } from 'lodash-es';
 import { mapMutations } from 'vuex';
 
 // Bring in our initial set of controls

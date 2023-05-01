@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { multiselectApi } from '@/mixins';
 import { formTypes } from '@/global-properties';
 

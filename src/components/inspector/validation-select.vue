@@ -92,8 +92,8 @@
 
 <script>
 import { FormInput } from '@processmaker/vue-form-elements';
-import _ from 'lodash';
 import InputVariable from '../inspector/input-variable';
+import { cloneDeep, isEqual, unescape } from "lodash-es";
 
 export default {
   props: ['label', 'value', 'helper', 'name', 'builder', 'selectedControl', 'formConfig'],
@@ -346,7 +346,7 @@ export default {
       this.optionError = '';
     },
     saveRule() {
-      const option = _.cloneDeep(this.selectedOption);
+      const option = cloneDeep(this.selectedOption);
       this.rules.push(option);
       this.hideCard();
       this.selectedOption = '';
@@ -354,7 +354,7 @@ export default {
     confirmDelete(index) {
       this.removeIndex = index;
       this.showDeleteConfirmCard = true;
-      this.confirmMessage = _.unescape(this.$t(
+      this.confirmMessage = unescape(this.$t(
         'Are you sure you want to delete the "{{item}}" rule?',
         {item: this.rules[index].content}
       ));
@@ -397,7 +397,7 @@ export default {
     onCancel(rule, index) {
       const content = this.formatRuleContentAsId(rule.content);
       if (this.cloneRules && this.cloneRules[index]) {
-        if (!_.isEqual(rule, this.cloneRules[index])) {
+        if (!isEqual(rule, this.cloneRules[index])) {
           Object.assign(this.rules[index], JSON.parse(JSON.stringify(this.cloneRules[index])));
         }
       } else {

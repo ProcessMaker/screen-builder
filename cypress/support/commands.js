@@ -1,5 +1,5 @@
 import '@4tw/cypress-drag-drop';
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import 'cypress-wait-until';
 import "@cypress-audit/lighthouse/commands";
 import moment from "moment";
