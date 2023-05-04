@@ -92,7 +92,7 @@ describe('select list dependent collection', () => {
 
     // Assert value is set correctly
     cy.assertPreviewData({
-      'form_select_list_1': 456
+      'form_select_list_1': '456'
     });
   });
 
@@ -103,7 +103,7 @@ describe('select list dependent collection', () => {
     cy.get('[data-cy="screen-field-city"]').selectOption('Henderson');
     cy.assertPreviewData({
       state: 'NV',
-      city: 789,
+      city: '789',
       id_gt_than: '33',
       form_select_list_2: null
     });
@@ -123,7 +123,7 @@ describe('select list dependent collection', () => {
     const setup = () => {
       cy.loadFromJson('select_list_dependent_collection.json', 0);
       cy.setPreviewDataInput({
-        'city': 789,
+        'city': '789',
         'state': 'NV',
       });
       
@@ -134,7 +134,7 @@ describe('select list dependent collection', () => {
       cy.get('[data-cy="screen-field-city"] .multiselect__single').should('have.text', 'Henderson');
       cy.assertPreviewData({
         state: 'NV',
-        city: 789,
+        city: '789',
         id_gt_than: '33',
         form_select_list_2: null
       });
