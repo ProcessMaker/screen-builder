@@ -11,6 +11,7 @@ class Validations {
   firstPage = 0;
   data = {};
   insideLoop = false;
+  pagesValidated = [];
   constructor(element, options) {
     this.element = element;
     Object.assign(this, options);
@@ -64,10 +65,10 @@ class ScreenValidations extends Validations {
   async addValidations(validations) {
     // add validations for page 1
     if (this.element.config[this.firstPage]) {
-      this.element.pagesValidated = [this.firstPage];
+      this.pagesValidated = [this.firstPage];
       const screenValidations = ValidationsFactory(this.element.config[this.firstPage].items, { screen: this.element, data: this.data });
       await screenValidations.addValidations(validations);
-      delete this.element.pagesValidated;
+      this.pagesValidated = [];
     }
   }
 }
@@ -192,8 +193,8 @@ class PageNavigateValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    if (this.screen.pagesValidated && !this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
-      this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
+    if (this.pagesValidated.length > 0 && !this.pagesValidated.includes(parseInt(this.element.config.eventData))) {
+      this.pagesValidated.push(parseInt(this.element.config.eventData));
       if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
         await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
       }
