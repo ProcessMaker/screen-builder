@@ -425,12 +425,13 @@ export default {
             try {
               if (screenComponent.$v) {
                 screenComponent.$v.$touch();
-                resolve();
               }
             } catch (error) {
               if (this.getMode() === "preview") {
                 console.warn("There was a problem rendering the screen", error);
               }
+            } finally {
+              resolve();
             }
           });
         });
