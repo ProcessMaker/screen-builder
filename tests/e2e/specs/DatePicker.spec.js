@@ -332,6 +332,36 @@ describe('Date Picker', () => {
       form_date_picker_2: null
     });
   });
+  it.only("Date picker with Required validation shouldn't allow the user to submit the date if empty", () => {
+    const date = moment(new Date()).format('MM/DD/YYYY');
+
+    cy.visit('/');
+
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=add-rule]').click();
+    cy.setMultiselect('[data-cy=select-rule]', 'Required');
+    cy.get('[data-cy=save-rule]').click();
+    cy.get('[data-cy=controls-FormButton]').last().drag('[data-cy=screen-element-container]', 'bottom');
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('.invalid-feedback').contains('Field is required');
+    cy.get('.vdpComponent input').should('have.class', 'is-invalid');
+    cy.get('.btn-primary').should('have.class', 'disabled');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').type(date+"{enter}");
+    cy.get('[data-cy=preview-content]').click();
+    cy.wait(500);
+    cy.get('.btn-primary').should('not.have.class', 'disabled');
+    cy.get('.vdpClearInput').click();
+    cy.wait(500);
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent').should('not.contain.value', date);
+    cy.get('.vdpComponent input').should('have.class', 'is-invalid');
+    cy.get('.btn-primary').should('have.class', 'disabled');
+    cy.assertPreviewData({
+      form_date_picker_1:  "",
+    });
+  })
   it('Date Time Picker should have the class .datePicker applied in design mode', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
