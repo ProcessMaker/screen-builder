@@ -541,11 +541,12 @@ export default {
       return null;
     },
     start() {
-      this.uploading = true;
       // Prevent the upload from being started when the file is invalid.
       if (this.invalidFile) {
         return;
       }
+
+      this.uploading = true;
       if (this.parentRecordList(this) === null) {
         this.row_id = null;
       }
