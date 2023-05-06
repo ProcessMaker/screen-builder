@@ -14,6 +14,7 @@
       @file-removed="removed"
       @file-success="fileUploaded"
       @file-added="addFile"
+      :autoStart="autoStart"
       :class="{'was-validated': required}"
     >
       <uploader-unsupport/>
@@ -295,6 +296,7 @@ export default {
       nativeFiles: {},
       uploading: false,
       invalidFile: false,
+      autoStart: true,
     };
   },
   methods: {
@@ -475,6 +477,7 @@ export default {
           this.invalidFile = true;
           this.uploading = false;
           window.ProcessMaker.alert(this.$t('File not allowed.'), 'danger');
+          this.reloadExistingFiles();
           return false;
         }
       }
@@ -580,6 +583,20 @@ export default {
           : null;
       }
     },
+    reloadExistingFiles() {
+      let existingFiles = null;
+      if (this.filesFromGlobalRequestFiles) {
+        existingFiles = this.filesFromGlobalRequestFiles;
+      } else if(this.filesFromCollection) {
+        existingFiles = this.filesFromCollection;
+      }
+      if (existingFiles) {
+          this.$refs.uploader.uploader.files = existingFiles;
+          // TODO: When updating the uploader files it throws an error as it is trying to reupload the files. 
+          console.log(this.$refs.uploader);
+        }
+        
+    }
   },
 };
 </script>
