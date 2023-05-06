@@ -169,6 +169,7 @@ export default {
       if (this.disabled) {
         attrs.disabled = true;
       }
+      attrs.accept = this.attrs.accept;
       return attrs;
     },
     required() {
