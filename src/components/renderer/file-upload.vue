@@ -14,7 +14,6 @@
       @file-removed="removed"
       @file-success="fileUploaded"
       @file-added="addFile"
-      :autoStart="autoStart"
       :class="{'was-validated': required}"
     >
       <uploader-unsupport/>
@@ -296,7 +295,6 @@ export default {
       nativeFiles: {},
       uploading: false,
       invalidFile: false,
-      autoStart: true,
     };
   },
   methods: {
