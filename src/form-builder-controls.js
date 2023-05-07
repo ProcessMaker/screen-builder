@@ -8,7 +8,7 @@ import FormMaskedInput from './components/renderer/form-masked-input';
 import FormNestedScreen from './components/renderer/form-nested-screen';
 import FileUpload from './components/renderer/file-upload';
 import FileDownload from './components/renderer/file-download';
-import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
+import { DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty } from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
@@ -16,6 +16,9 @@ import {
   FormCheckbox,
   FormDatePicker,
   FormHtmlEditor,
+  BFormCollapse,
+  BFormDropdown,
+  BFormModal,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 
@@ -183,9 +186,9 @@ export default [
         label: 'New Select List',
         placeholder: '',
         validation: '',
-        dataSourceUrl:'',
-        dataSourceEndpoint:'',
-        rootElement:'response',
+        dataSourceUrl: '',
+        dataSourceEndpoint: '',
+        rootElement: 'response',
         options: {
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
@@ -196,8 +199,8 @@ export default [
           allowMultiSelect: false,
           selectedOptions: [],
           optionsList: [],
-          key:'value',
-          value:'content',
+          key: 'value',
+          value: 'content',
           valueTypeReturned: 'single',
         },
         helper: null,
@@ -707,6 +710,124 @@ export default [
           helper: 'The name of the Download',
         },
       },
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormCollapse,
+    rendererBinding: 'BFormCollapse',
+    builderComponent: BFormCollapse,
+    builderBinding: 'BFormCollapse',
+    control: {
+      label: 'BFormCollapse',
+      component: 'BFormCollapse',
+      'editor-component': 'BFormCollapse',
+      'editor-control': 'BFormCollapse',
+      config: {
+        label: '',
+        icon: 'fas',
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The text to display',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Name',
+            helper: 'The name of the Control',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Helper Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          }
+        },
+        {
+          type: 'ValidationSelect',
+          field: 'validation',
+          config: {
+            label: 'Validation Rules',
+            helper: 'The validation rules needed for this field',
+          },
+        }
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormDropdown,
+    rendererBinding: 'BFormDropdown',
+    builderComponent: BFormDropdown,
+    builderBinding: 'BFormDropdown',
+    control: {
+      label: 'BFormDropdown',
+      component: 'BFormDropdown',
+      'editor-component': 'BFormDropdown',
+      'editor-control': 'BFormDropdown',
+      config: {
+        label: 'dropdown label',
+        icon: 'fas',
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The text to display',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Name',
+            helper: 'The name of the Control',
+          },
+        },
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormModal,
+    rendererBinding: 'BFormModal',
+    builderComponent: BFormModal,
+    builderBinding: 'BFormModal',
+    control: {
+      label: 'BFormModal',
+      component: 'BFormModal',
+      'editor-component': 'BFormModal',
+      'editor-control': 'BFormModal',
+      config: {
+        label: 'modal label',
+        icon: 'fas',
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The text to display',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Name',
+            helper: 'The name of the Control',
+          },
+        },
       ],
     },
   },
