@@ -19,6 +19,8 @@ import {
   BFormCollapse,
   BFormDropdown,
   BFormModal,
+  BFormComponent,
+  BWrapperComponent,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 
@@ -725,7 +727,7 @@ export default [
       'editor-control': 'BFormCollapse',
       config: {
         label: '',
-        icon: 'fas',
+        icon: 'fas fa-window-maximize',
       },
       inspector: [
         {
@@ -775,7 +777,7 @@ export default [
       'editor-control': 'BFormDropdown',
       config: {
         label: 'dropdown label',
-        icon: 'fas',
+        icon: 'fas fa-window-maximize',
       },
       inspector: [
         {
@@ -809,7 +811,7 @@ export default [
       'editor-control': 'BFormModal',
       config: {
         label: 'modal label',
-        icon: 'fas',
+        icon: 'fas fa-window-maximize',
       },
       inspector: [
         {
@@ -826,6 +828,107 @@ export default [
           config: {
             label: 'Name',
             helper: 'The name of the Control',
+          },
+        },
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormComponent,
+    rendererBinding: 'BFormComponent',
+    builderComponent: BFormComponent,
+    builderBinding: 'BFormComponent',
+    control: {
+      label: 'Bootstrap Component',
+      component: 'BFormComponent',
+      'editor-component': 'BFormComponent',
+      'editor-control': 'BFormComponent',
+      config: {
+        bootstrapComponent: 'b-form-tags',
+        bootstrapConfig: '{}',
+        label: 'New Bootstrap Component',
+        icon: 'fas fa-folder-open',
+      },
+      inspector: [
+        keyNameProperty,
+        labelProperty,
+        {
+          type: 'FormMultiselect',
+          field: 'bootstrapComponent',
+          config: {
+            icon: 'fas',
+            label: 'Bootstrap vue component',
+            validation: 'required',
+            options: [
+              { value: 'b-form-tags', content: 'Tags' },
+              { value: 'b-form-spinbutton', content: 'Spinbutton' },
+              { value: 'b-form-rating', content: 'Rating' },
+            ],
+          },
+        },
+        {
+          type: 'FormTextArea',
+          field: 'bootstrapConfig',
+          config: {
+            rows: 5,
+            label: 'Config',
+            helper: 'Properties in JSON format. See https://bootstrap-vue.org/docs/components',
+            value: '{}',
+          },
+        },
+      ],
+    },
+  },
+  {
+    rendererComponent: BWrapperComponent,
+    rendererBinding: 'BWrapperComponent',
+    builderComponent: BWrapperComponent,
+    builderBinding: 'BWrapperComponent',
+    control: {
+      label: 'Bootstrap Wrapper',
+      component: 'BWrapperComponent',
+      'editor-component': 'BWrapperComponent',
+      'editor-control': 'BWrapperComponent',
+      config: {
+        bootstrapComponent: 'b-modal',
+        bootstrapConfig: '{}',
+        label: 'New Bootstrap Component',
+        icon: 'fas fa-folder-open',
+        name: '',
+        form: '',
+      },
+      inspector: [
+        keyNameProperty,
+        labelProperty,
+        {
+          type: 'FormMultiselect',
+          field: 'bootstrapComponent',
+          config: {
+            icon: 'fas',
+            label: 'Bootstrap vue component',
+            validation: 'required',
+            options: [
+              { value: 'b-modal', content: 'Modal' },
+              { value: 'b-collapse', content: 'Collapse' },
+            ],
+          },
+        },
+        {
+          type: 'PageSelect',
+          field: 'form',
+          config: {
+            label: 'Page',
+            helper: 'The page to use inside the component',
+          },
+        },
+        {
+          type: 'FormTextArea',
+          field: 'bootstrapConfig',
+          config: {
+            rows: 5,
+            label: 'Config',
+            helper: 'Properties in JSON format. See https://bootstrap-vue.org/docs/components',
+            value: '{}',
           },
         },
       ],
