@@ -32,6 +32,7 @@ export default {
     return {
       ValidationRules__: {},
       hiddenFields__: [],
+      hasSubmitted__: false,
     };
   },
   props: {
@@ -52,6 +53,14 @@ export default {
     }),
     references__() {
       return this.$parent && this.$parent.references__;
+    },
+    hasSubmitted: {
+      get() {
+        return this.getRootScreen().hasSubmitted__;
+      },
+      set(value) {
+        this.getRootScreen().hasSubmitted__ = value;
+      }
     },
   },
   methods: {
@@ -145,6 +154,7 @@ export default {
     },
     async submitForm() {
       await this.validateNow(findRootScreen(this));
+      this.hasSubmitted = true;
       if (!this.valid__) {
         window.ProcessMaker.alert(this.message__, "danger");
         // if the form is not valid the data is not emitted
@@ -295,6 +305,23 @@ export default {
         }
       });
       return message.join('.\n');
+    },
+    hasRequiredRule(setting) {
+      if ('required' in setting) {
+        return true;
+
+      } else if ('requiredIf' in setting) {
+        const variable = get(setting, '$params.requiredIf.variable');
+        const expected = get(setting, '$params.requiredIf.expected');
+        return get(this, variable) === expected;
+
+      } else if ('requiredUnless' in setting) {
+        const variable = get(setting, '$params.requiredUnless.variable');
+        const expected = get(setting, '$params.requiredUnless.expected');
+        return get(this, variable) !== expected;
+
+      }
+      return false;
     },
     getCurrentPage() {
       return this.currentPage__;

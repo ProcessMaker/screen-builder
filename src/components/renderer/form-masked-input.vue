@@ -70,6 +70,7 @@ export default {
     'value',
     'label',
     'error',
+    'required',
     'helper',
     'name',
     'controlClass',

@@ -17,8 +17,14 @@ export default {
               console.error("Invalid variable name");
             }
           } else {
-            properties[':class'] = `{ 'form-group--error': ${this.checkVariableExists('$v.vdata.' + element.config.name)} && $v.vdata.${element.config.name}.$invalid || ${this.checkVariableExists('$v.schema.' + element.config.name)} && $v.schema.${element.config.name}.$invalid }`;
-            properties[':error'] = `${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`;
+
+            const vdataVariableExists = this.checkVariableExists('$v.vdata.' + element.config.name);
+            const schemaVariableExists = this.checkVariableExists('$v.schema.' + element.config.name);
+            const isInvalid = `${vdataVariableExists} && $v.vdata.${element.config.name}.$invalid || ${schemaVariableExists} && $v.schema.${element.config.name}.$invalid`
+
+            properties[':class'] = `{ 'form-group--error': hasSubmitted && ${isInvalid} }`;
+            properties[':error'] = `hasSubmitted && ${vdataVariableExists} && validationMessage($v.vdata.${element.config.name}) || ${schemaVariableExists} && validationMessage($v.schema.${element.config.name})`;
+            properties[':required'] = `${vdataVariableExists} && hasRequiredRule($v.vdata.${element.config.name})`;
           }
         }
       },

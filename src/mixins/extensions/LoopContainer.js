@@ -50,7 +50,7 @@ export default {
       const addLoopRow = this.createComponent("AddLoopRow", {
         ":value": safeDotName,
         ":config": this.byRef(element.config),
-        ":error": `${this.checkVariableExists(
+        ":error": `hasSubmitted && ${this.checkVariableExists(
           `$v.vdata.${element.config.name}`
         )} && validationMessage($v.vdata.${element.config.name})
         || ${this.checkVariableExists(`$v.schema.${element.config.name}`)}
