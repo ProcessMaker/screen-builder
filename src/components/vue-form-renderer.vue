@@ -135,7 +135,7 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validate"]),
+    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
