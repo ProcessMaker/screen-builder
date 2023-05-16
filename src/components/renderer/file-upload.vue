@@ -60,7 +60,7 @@
           </ul>
         </template>
       </uploader-list>
-      <div class="invalid-feedback" :class="{'d-block': required && !value}">
+      <div class="invalid-feedback" :class="{'d-block': error && !value}">
         {{ $t('Field is required') }}
       </div>
     </uploader>
@@ -74,7 +74,7 @@
 import { createUniqIdsMixin } from 'vue-uniq-ids';
 import uploader from 'vue-simple-uploader';
 import _ from 'lodash';
-import RequiredAsterisk from '@processmaker/vue-form-elements/src/components/common/RequiredAsterisk';
+import { RequiredAsterisk } from '@processmaker/vue-form-elements';
 
 // Create the mixin
 const uniqIdsMixin = createUniqIdsMixin();
@@ -91,10 +91,7 @@ const ignoreErrors = [
 ];
 
 export default {
-  components: {
-    uploader,
-    RequiredAsterisk
-  },
+  components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
   props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload'],
   updated() {

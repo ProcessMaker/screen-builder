@@ -44,7 +44,7 @@ import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import moment from 'moment';
 import debounce from "lodash/debounce";
-import RequiredAsterisk from '@processmaker/vue-form-elements/src/components/common/RequiredAsterisk';
+import { RequiredAsterisk } from '@processmaker/vue-form-elements';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
