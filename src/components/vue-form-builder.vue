@@ -1007,9 +1007,8 @@ export default {
 
       // Generate Variable Name
       if (
-        control.inspector.indexOf(keyNameProperty) !== -1 ||
-        control.component === "FormLoop"
-      ) {
+        _.findIndex(control.inspector, keyNameProperty) !== -1 ||
+        control.component === "FormLoop") {
         [this.variables, copy.config.name] = this.generator.generate(
           this.config,
           copy["editor-control"] ? copy["editor-control"] : copy.component
