@@ -83,16 +83,28 @@ class FormNestedScreenValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    const definition = await this.loadScreen(this.element.config.screen);
+    const nestedScreen = await this.loadNestedScreen(this.element.config.screen);
+    //const definition = await this.loadScreen(this.element.config.screen);
+    const definition = nestedScreen.config;
     let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
-
-    if (Array.isArray(definition)) {
-      for(var i = 0; i < definition.length; i++) {
-        if (definition[i].items) {
-          await ValidationsFactory(definition[i].items, { screen: this.screen, data: this.data, parentVisibilityRule }).addValidations(validations);
-        }
-      }
+    if (definition && definition[0] && definition[0].items) {
+      await ValidationsFactory(definition[0].items, { screen: nestedScreen, data: this.data, parentVisibilityRule }).addValidations(validations);
     }
+  }
+
+  async loadNestedScreen(id) {
+    if (!id) {
+      return null;
+    }
+    if (!globalObject['nestedScreens']) {
+      globalObject['nestedScreens'] = {};
+    }
+    if (globalObject.nestedScreens['id_' + id]) {
+      return {config: globalObject.nestedScreens['id_' + id]};
+    }
+    const response = await DataProvider.getScreen(id);
+    globalObject.nestedScreens['id_' + id] = response.data.config;
+    return {config: response.data};
   }
 
   async loadScreen(id) {
