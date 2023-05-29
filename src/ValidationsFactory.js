@@ -84,7 +84,6 @@ class FormNestedScreenValidations extends Validations {
       return;
     }
     const nestedScreen = await this.loadNestedScreen(this.element.config.screen);
-    //const definition = await this.loadScreen(this.element.config.screen);
     const definition = nestedScreen.config;
     let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
     if (definition && definition[0] && definition[0].items) {
