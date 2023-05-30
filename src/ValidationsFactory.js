@@ -84,10 +84,12 @@ class FormNestedScreenValidations extends Validations {
       return;
     }
     const nestedScreen = await this.loadNestedScreen(this.element.config.screen);
-    const definition = nestedScreen.config;
-    let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
-    if (definition && definition[0] && definition[0].items) {
-      await ValidationsFactory(definition[0].items, { screen: nestedScreen, data: this.data, parentVisibilityRule }).addValidations(validations);
+    if (nestedScreen && nestedScreen.config) {
+      const definition = nestedScreen.config;
+      let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
+      if (definition && definition[0] && definition[0].items) {
+        await ValidationsFactory(definition[0].items, { screen: nestedScreen, data: this.data, parentVisibilityRule }).addValidations(validations);
+      }
     }
   }
 
@@ -210,9 +212,12 @@ class PageNavigateValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    if (pagesValidated.length > 0 && !pagesValidated.includes(parseInt(this.element.config.eventData))) {
-      pagesValidated.push(parseInt(this.element.config.eventData));
-      if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
+    const screenNumber = this.element.config.eventData;
+    const screenName = this.screen.config[screenNumber]?.name ?? 'Empty Screen';
+    const screenPageId = `${screenName}-${screenNumber}`;
+    if (pagesValidated.length > 0 && !pagesValidated.includes(screenPageId)) {
+      if (this.screen.config[screenNumber] && this.screen.config[screenNumber].items) {
+        pagesValidated.push(screenPageId);
         await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
       }
     }
@@ -253,7 +258,6 @@ class FormElementValidations extends Validations {
         let validationFn = validators[rule];
         if (!validationFn) {
           // eslint-disable-next-line no-console
-          console.error(`Undefined validation rule "${rule}"`);
           return;
         }
         if (validation.configs instanceof Array) {
@@ -301,7 +305,6 @@ class FormElementValidations extends Validations {
       let validationFn = validators[validationConfig];
       if (!validationFn) {
         // eslint-disable-next-line no-console
-        console.error(`Undefined validation rule "${validationConfig}"`);
         return;
       }
       fieldValidation[validationConfig] = function(...props) {
