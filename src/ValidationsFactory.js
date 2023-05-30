@@ -213,7 +213,10 @@ class PageNavigateValidations extends Validations {
       return;
     }
     const screenNumber = this.element.config.eventData;
-    const screenName = this.screen.config[screenNumber]?.name ?? 'Empty Screen';
+    let screenName = 'Empty Screen';
+    if (this.screen.config[screenNumber] && this.screen.config[screenNumber].name) {
+      screenName = this.screen.config[screenNumber].name;
+    }
     const screenPageId = `${screenName}-${screenNumber}`;
     if (pagesValidated.length > 0 && !pagesValidated.includes(screenPageId)) {
       if (this.screen.config[screenNumber] && this.screen.config[screenNumber].items) {
