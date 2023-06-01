@@ -4,6 +4,7 @@ describe('Validation Rules', () => {
   beforeEach(() => {
     cy.server();
     cy.visit('/');
+    cy.showValidationOnLoad();
   });
 
   it('Invalid default values', () => {
