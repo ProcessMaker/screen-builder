@@ -2,6 +2,7 @@ describe('Validation Rules', () => {
   beforeEach(() => {
     cy.server();
     cy.visit('/');
+    cy.showValidationOnLoad();
   });
 
   it('Variable name object and rules', () => {

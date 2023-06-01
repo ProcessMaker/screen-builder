@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-uni-for="name">{{ label }}</label>
+    <required-asterisk /><label v-uni-for="name">{{ label }}</label>
     <b-card v-if="inPreviewMode" class="mb-2">
       {{ $t('File uploads are unavailable in preview mode.') }}
     </b-card>
@@ -60,7 +60,7 @@
           </ul>
         </template>
       </uploader-list>
-      <div class="invalid-feedback" :class="{'d-block': required && !value}">
+      <div class="invalid-feedback" :class="{'d-block': error && !value}">
         {{ $t('Field is required') }}
       </div>
     </uploader>
@@ -74,6 +74,7 @@
 import { createUniqIdsMixin } from 'vue-uniq-ids';
 import uploader from 'vue-simple-uploader';
 import _ from 'lodash';
+import { RequiredAsterisk } from '@processmaker/vue-form-elements';
 
 // Create the mixin
 const uniqIdsMixin = createUniqIdsMixin();
@@ -90,7 +91,7 @@ const ignoreErrors = [
 ];
 
 export default {
-  components: uploader,
+  components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
   props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload'],
   updated() {

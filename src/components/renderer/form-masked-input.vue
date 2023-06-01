@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <label v-uni-for="name">{{ label }}</label>
+    <required-asterisk /><label v-uni-for="name">{{ label }}</label>
     <component
       v-if="componentType!=='input'"
       :is="componentType"
@@ -44,6 +44,7 @@ import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form
 import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
 import moment from 'moment';
 import debounce from "lodash/debounce";
+import { RequiredAsterisk } from '@processmaker/vue-form-elements';
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
@@ -63,12 +64,13 @@ const componentTypesConfigs = {
 
 export default {
   inheritAttrs: false,
-  components: { TheMask, Inputmasked },
+  components: { TheMask, Inputmasked, RequiredAsterisk },
   mixins: [ uniqIdsMixin, ValidationMixin ],
   props: [
     'value',
     'label',
     'error',
+    // 'required',
     'helper',
     'name',
     'controlClass',
