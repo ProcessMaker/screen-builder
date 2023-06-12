@@ -70,11 +70,7 @@ describe('Date Picker', () => {
       }
     });
 
-    const today = new Date();
-    today.setUTCHours(20);
-    today.setUTCMinutes(15);
-    today.setUTCSeconds(0);
-    today.setUTCMilliseconds(0);
+    const today = moment.utc({hour: 8, minute: 15});
 
     cy.assertPreviewData({
       form_date_picker_1: today.toISOString(),
