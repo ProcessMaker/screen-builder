@@ -4,7 +4,7 @@
       <label>{{ label }}</label>
 
       <b-form-checkbox
-        :checked="value.showForDesktop"
+        v-model="settings.showForDesktop"
         @change="emitChanges"
         switch
       >
@@ -12,7 +12,7 @@
       </b-form-checkbox>
 
       <b-form-checkbox
-        :checked="settings.showForMobile"
+        v-model="settings.showForMobile"
         @change="emitChanges"
         switch
       >
@@ -48,7 +48,6 @@ export default {
   },
   methods: {
     emitChanges() {
-      console.log('emit changes');
       this.$emit("input", this.value);
       this.$emit("update-state");
     },
