@@ -4,18 +4,16 @@
       <label>{{ label }}</label>
 
       <b-form-checkbox
-        v-model="settings.showForDesktop"
-        :value="true"
-        :unchecked-value="false"
+        :checked="value.showForDesktop"
+        @change="emitChanges"
         switch
       >
         {{ $t("Show for Desktop") }}
       </b-form-checkbox>
 
       <b-form-checkbox
-        v-model="settings.showForMobile"
-        :value="true"
-        :unchecked-value="false"
+        :checked="settings.showForMobile"
+        @change="emitChanges"
         switch
       >
         {{ $t("Show for Mobile") }}
@@ -28,9 +26,17 @@
 export default {
   props: {
     label: String,
-    value: String,
+    value: Object,
     helper: String,
     options: Object,
+  },
+  watch: {
+    value: {
+      handler() {
+        this.settings = this.value;
+      },
+      immediate: true,
+    },
   },
   data() {
     return {
@@ -40,17 +46,10 @@ export default {
       }
     };
   },
-  watch: {
-    settings: {
-      handler() {
-        this.emitChanges();
-      },
-      deep: true
-    },
-  },
   methods: {
     emitChanges() {
-      this.$emit("input", this.settings);
+      console.log('emit changes');
+      this.$emit("input", this.value);
       this.$emit("update-state");
     },
   }
