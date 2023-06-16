@@ -26,8 +26,13 @@
 
 <script>
 export default {
-  components: {},
-  props: ["label", "value", "helper", "options"],
+  // props: ["label", "value", "helper", "options"],
+  props: {
+    label: String,
+    value: String,
+    helper: String,
+    options: Object,
+  },
   data() {
     return {
       settings: {
