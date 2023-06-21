@@ -217,3 +217,9 @@ Cypress.Commands.add('shouldNotHaveValidationErrors', (name, index = 0) => {
 Cypress.Commands.add('shouldHaveValidationErrors', (name, index = 0) => {
   cy.get(`[data-cy=preview-content] [data-cy=${name}]`).eq(index).should('have.class', 'is-invalid');
 })
+
+Cypress.Commands.add('showValidationOnLoad', () => {
+  cy.window().then((win) => {
+    win.vueInstance.$children[0].$refs.renderer.showValidationOnLoad(true);
+  });
+})

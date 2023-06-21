@@ -11,6 +11,7 @@
       :show-errors="showErrors"
       :test-screen-definition="testScreenDefinition || false"
       class="p-0"
+      :loop-context="loopContext"
       @submit="submit"
     />
   </div>
@@ -149,7 +150,7 @@ export default {
     this.scrollable = ScrollParent(this.$el);
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validate"]),
+    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },

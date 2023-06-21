@@ -2,6 +2,7 @@
 describe('Validation Rules (Advanced test)', () => {
   beforeEach(() => {
     cy.visit('/');
+    cy.showValidationOnLoad();
   });
 
   it('Verify all validation rules within loops', () => {

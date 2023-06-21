@@ -1,6 +1,7 @@
 describe('Validate nested variable', () => {
   beforeEach(() => {
     cy.visit('/');
+    cy.showValidationOnLoad();
   });
 
   it('Verify validations with nested variable user.properties.form_input_1', () => {

@@ -52,13 +52,15 @@ jobs:
   cypress/report:
     docker:
     - image: cimg/node:16.15
+      user: root
     steps:
       - attach_workspace:
           at: ~/
       # - run:
       #     name: tests unit
       #     command: npm test
-      - run: mkdir coverage-test
+      #- run: sudo mv ~/project /root/
+      - run: sudo mkdir -p /root/project/coverage-test #&& sudo chmod -R 777 /root/
       - restore_cache:
           keys:
             - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json

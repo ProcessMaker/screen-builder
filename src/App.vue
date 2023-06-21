@@ -459,6 +459,7 @@ export default {
         this.preview.customCSS = cloneDeep(this.customCSS);
         this.preview.watchers = cloneDeep(this.watchers);
         this.rendererKey++;
+        this.$refs.renderer.hasSubmitted(false);
       } else {
         this.$refs.builder.refreshContent();
       }

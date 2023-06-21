@@ -264,13 +264,13 @@ if (scenario) {
     // eslint-disable-next-line no-console
     console.error(`Not found tests/components/${scenario}.vue`);
   } else {
-    new Vue({
+    window.vueInstance = new Vue({
       store,
       render: h => h(TestComponents[scenario]),
     }).$mount('#app');
   }
 } else {
-  new Vue({
+  window.vueInstance = new Vue({
     store,
     render: h => h(App),
   }).$mount('#app');
