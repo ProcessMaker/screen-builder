@@ -1,7 +1,19 @@
 <template>
   <div :class="containerClass">
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
-    <screen-renderer ref="renderer" :value="data" :_parent="_parent" :definition="definition" :current-page="currentPage" @submit="submit" data-cy="screen-renderer" :show-errors="showErrors" :test-screen-definition="testScreenDefinition || false" class="p-0"/>
+    <screen-renderer
+      ref="renderer"
+      :value="data"
+      :_parent="_parent"
+      :definition="definition"
+      :current-page="currentPage"
+      data-cy="screen-renderer"
+      :show-errors="showErrors"
+      :test-screen-definition="testScreenDefinition || false"
+      class="p-0"
+      :loop-context="loopContext"
+      @submit="submit"
+    />
   </div>
 </template>
 
@@ -123,7 +135,7 @@ export default {
     this.scrollable = Scrollparent(this.$el);
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validate"]),
+    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },

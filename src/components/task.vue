@@ -16,6 +16,7 @@
             :custom-css="screen.custom_css"
             :watchers="screen.watchers"
             :key="refreshScreen"
+            :loop-context="loopContext"
             @update="onUpdate"
             @submit="submit"
           />
@@ -56,6 +57,7 @@
 
 <script>
 import _ from 'lodash';
+import simpleErrorMessage from './SimpleErrorMessage.vue';
 
 const defaultBeforeLoadTask = () => {
   return new Promise((resolve) => {
@@ -64,6 +66,9 @@ const defaultBeforeLoadTask = () => {
 };
 
 export default {
+  components:{
+    simpleErrorMessage
+  },
   props: {
     initialTaskId: { type: Number, default: null },
     initialScreenId: { type: Number, default: null },
@@ -74,6 +79,7 @@ export default {
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
+    initialLoopContext: { type: String, default: "" }
   },
   data() {
     return {
@@ -212,6 +218,9 @@ export default {
     },
   },
   methods: {
+    showSimpleErrorMessage() {
+      this.renderComponent = 'simpleErrorMessage';
+    },
     loadScreen(id) {
       let query = '?include=nested';
       if (this.requestId) {
@@ -230,7 +239,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,bpmnTagName,interstitial,definition,nested`;
+      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -256,6 +265,7 @@ export default {
     prepareTask() {
       this.resetScreenState();
       this.requestData = _.get(this.task, 'request_data', {});
+      this.loopContext = _.get(this.task, "loop_context", "");
       this.refreshScreen++;
 
       this.$emit('task-updated', this.task);
@@ -326,7 +336,7 @@ export default {
             this.taskId = task.id;
             this.nodeId = task.element_id;
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
-            this.$emit('completed', this.parentRequest);
+            this.$emit('completed', this.getAllowedRequestId());
           }
         });
     },
@@ -379,10 +389,20 @@ export default {
       // This may no longer be needed
     },
     processCompleted() {
+      let requestId;
       if (this.parentRequest) {
-        this.$emit('completed', this.parentRequest);
+        requestId = this.getAllowedRequestId();
+        this.$emit('completed', requestId);
       }
-      this.$emit('completed', this.requestId);
+      if (requestId !== this.requestId) {
+        this.$emit('completed', this.requestId);
+      }
+    },
+    getAllowedRequestId() {
+      const permissions = this.task.user_request_permission || [];
+      const permission = permissions.find(item => item.process_request_id === this.parentRequest)
+      const allowed = permission && permission.allowed;
+      return allowed ? this.parentRequest : this.requestId
     },
     processUpdated: _.debounce(function(data) {
       if (
@@ -487,6 +507,7 @@ export default {
     this.processId = this.initialProcessId;
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
+    this.loopContext = this.initialLoopContext;
   },
   destroyed() {
     this.unsubscribeSocketListeners();

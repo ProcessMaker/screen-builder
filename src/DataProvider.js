@@ -3,6 +3,7 @@ import axios from "axios";
 import { has, get } from "lodash";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import LRUCache from "lru-cache";
+import i18next from 'i18next';
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
@@ -215,5 +216,41 @@ export default {
 
   download(url) {
     return this.apiInstance().get(url, { responseType: "blob" });
-  }
+  },
+
+  getCollections() {
+    return this.get("/collections?per_page=1000").catch((error) => {
+      if (error.response && error.response.status === 404) {
+        throw new Error(i18next.t("Collections package not installed"));
+      }
+      throw error;
+    });
+  },
+
+  getCollectionFields(collectionId) {
+    return this.get(`/collections/${collectionId}/columns?per_page=1000`).catch((error) => {
+      if (error.response && error.response.status === 404) {
+        throw new Error(i18next.t("Collection id not found"));
+      }
+      throw error;
+    })
+  },
+
+  getCollectionRecords(collectionId, options, nonce = null) {
+    options.useCache = window.ProcessMaker.screen.cacheEnabled;
+
+    return this.get(`/collections/${collectionId}/records` + this.authQueryString(), options).then((response) => {
+      const data = response ? response.data : null;
+      if (!data) {
+        throw new Error(i18next.t("No data returned"));
+      }
+      return [data, nonce];
+    }).catch((error) => {
+      if (error.response && error.response.status === 404) {
+        const data = { data: [] };
+        return [data, nonce];
+      }
+      throw error;
+    });
+  },
 };

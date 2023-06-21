@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-uni-for="name">{{ label }}</label>
+    <required-asterisk /><label v-uni-for="name">{{ label }}</label>
     <b-card v-if="inPreviewMode" class="mb-2">
       {{ $t('File uploads are unavailable in preview mode.') }}
     </b-card>
@@ -60,7 +60,7 @@
           </ul>
         </template>
       </uploader-list>
-      <div class="invalid-feedback" :class="{'d-block': required && !value}">
+      <div class="invalid-feedback" :class="{'d-block': error && !value}">
         {{ $t('Field is required') }}
       </div>
     </uploader>
@@ -74,6 +74,7 @@
 import { createUniqIdsMixin } from 'vue-uniq-ids';
 import uploader from 'vue-simple-uploader';
 import _ from 'lodash';
+import { RequiredAsterisk } from '@processmaker/vue-form-elements';
 
 // Create the mixin
 const uniqIdsMixin = createUniqIdsMixin();
@@ -90,7 +91,7 @@ const ignoreErrors = [
 ];
 
 export default {
-  components: uploader,
+  components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
   props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload'],
   updated() {
@@ -111,6 +112,12 @@ export default {
     this.setPrefix();
     if (this.$refs['uploader']) {
       this.$refs['uploader'].$forceUpdate();
+      // Re-upload stored files; 
+      // Files disappear when navigating between pages with the Page Navigation component
+      if (this.files.length > 0) {
+        this.$refs.uploader.uploader.addFiles(this.files);
+        this.uploading = false;
+      }
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
@@ -163,6 +170,7 @@ export default {
       if (this.disabled) {
         attrs.disabled = true;
       }
+      attrs.accept = this.attrs.accept;
       return attrs;
     },
     required() {
@@ -288,6 +296,7 @@ export default {
       files: [],
       nativeFiles: {},
       uploading: false,
+      invalidFile: false,
     };
   },
   methods: {
@@ -450,6 +459,14 @@ export default {
         file.ignored = true;
         return false;
       }
+      if (file.fileType === undefined) {
+        const existingFile = this.files.find(el => {
+          if (el.name === file.name) {
+            return el.fileType;
+          }
+        });
+        file.fileType = existingFile.fileType;
+      }
 
       if (this.filesAccept) {
         file.ignored = true;
@@ -457,6 +474,8 @@ export default {
           file.ignored = false;
         }
         if (file.ignored) {
+          this.invalidFile = true;
+          this.uploading = false;
           window.ProcessMaker.alert(this.$t('File not allowed.'), 'danger');
           return false;
         }
@@ -493,6 +512,9 @@ export default {
           id,
           file_name: name,
           mime_type: rootFile.fileType,
+          // additional properties needed when re-uploading files to the uploader component
+          name: name,
+          fileType: rootFile.fileType,
         };
 
         this.$set(this.nativeFiles, id, rootFile);
@@ -521,6 +543,11 @@ export default {
       return null;
     },
     start() {
+      // Prevent the upload from being started when the file is invalid.
+      if (this.invalidFile) {
+        return;
+      }
+
       this.uploading = true;
       if (this.parentRecordList(this) === null) {
         this.row_id = null;
