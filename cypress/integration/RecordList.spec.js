@@ -4,6 +4,7 @@ describe('Record list', () => {
 
   beforeEach(() => {
     cy.visit('/');
+    cy.showValidationOnLoad();
     cy.window().then(win => {
       // Add request-id header
       const requestIdMeta = window.document.createElement('meta');

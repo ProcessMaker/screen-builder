@@ -1,6 +1,7 @@
 describe("FOUR-7257 validations", () => {
   beforeEach(() => {
     cy.visit("/");
+    cy.showValidationOnLoad();
   });
 
   it("Verify FOUR-7257 has validations", () => {

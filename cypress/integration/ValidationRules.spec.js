@@ -3,6 +3,7 @@ import moment from 'moment';
 describe('Validation Rules', () => {
   beforeEach(() => {
     cy.visit('/');
+    cy.showValidationOnLoad();
   });
 
   it('Invalid default values', () => {

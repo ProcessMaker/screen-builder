@@ -88,7 +88,9 @@ const globalErrorsModule = {
       locked: false,
       valid: true,
       message: "",
-      mode: ""
+      mode: "",
+      submitted: false,
+      showValidationOnLoad: false,
     };
   },
   getters: {
@@ -100,6 +102,9 @@ const globalErrorsModule = {
     },
     getMode(state) {
       return state.mode;
+    },
+    showValidationErrors(state) {
+      return state.showValidationOnLoad || state.submitted;
     }
   },
   mutations: {
@@ -119,6 +124,12 @@ const globalErrorsModule = {
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
+    },
+    hasSubmitted({ commit }, value) {
+      commit("basic", { key: "submitted", value });
+    },
+    showValidationOnLoad({ commit }, value) {
+      commit("basic", { key: "showValidationOnLoad", value });
     }
   }
 };

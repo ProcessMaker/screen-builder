@@ -262,6 +262,7 @@ describe('Loop control', () => {
     }));
 
     cy.visit('/');
+    cy.showValidationOnLoad();
     let alert = false;
     cy.on('window:alert', msg => alert = msg);
 
