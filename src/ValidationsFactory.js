@@ -6,6 +6,8 @@ import { Parser } from 'expr-eval';
 let globalObject = typeof window === 'undefined'
   ? global
   : window;
+
+let pagesValidated = [];
 class Validations {
   screen = null;
   firstPage = 0;
@@ -64,10 +66,10 @@ class ScreenValidations extends Validations {
   async addValidations(validations) {
     // add validations for page 1
     if (this.element.config[this.firstPage]) {
-      this.element.pagesValidated = [this.firstPage];
+      pagesValidated = [this.firstPage];
       const screenValidations = ValidationsFactory(this.element.config[this.firstPage].items, { screen: this.element, data: this.data });
       await screenValidations.addValidations(validations);
-      delete this.element.pagesValidated;
+      pagesValidated = [];
     }
   }
 }
@@ -81,11 +83,29 @@ class FormNestedScreenValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    const definition = await this.loadScreen(this.element.config.screen);
-    let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
-    if (definition && definition[0] && definition[0].items) {
-      await ValidationsFactory(definition[0].items, { screen: this.screen, data: this.data, parentVisibilityRule }).addValidations(validations);
+    const nestedScreen = await this.loadNestedScreen(this.element.config.screen);
+    if (nestedScreen && nestedScreen.config) {
+      const definition = nestedScreen.config;
+      let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
+      if (definition && definition[0] && definition[0].items) {
+        await ValidationsFactory(definition[0].items, { screen: nestedScreen, data: this.data, parentVisibilityRule }).addValidations(validations);
+      }
     }
+  }
+
+  async loadNestedScreen(id) {
+    if (!id) {
+      return null;
+    }
+    if (!globalObject['nestedScreens']) {
+      globalObject['nestedScreens'] = {};
+    }
+    if (globalObject.nestedScreens['id_' + id]) {
+      return {config: globalObject.nestedScreens['id_' + id]};
+    }
+    const response = await DataProvider.getScreen(id);
+    globalObject.nestedScreens['id_' + id] = response.data.config;
+    return {config: response.data};
   }
 
   async loadScreen(id) {
@@ -192,9 +212,15 @@ class PageNavigateValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    if (this.screen.pagesValidated && !this.screen.pagesValidated.includes(parseInt(this.element.config.eventData))) {
-      this.screen.pagesValidated.push(parseInt(this.element.config.eventData));
-      if (this.screen.config[this.element.config.eventData] && this.screen.config[this.element.config.eventData].items) {
+    const screenNumber = this.element.config.eventData;
+    let screenName = 'Empty Screen';
+    if (this.screen.config[screenNumber] && this.screen.config[screenNumber].name) {
+      screenName = this.screen.config[screenNumber].name;
+    }
+    const screenPageId = `${screenName}-${screenNumber}`;
+    if (pagesValidated.length > 0 && !pagesValidated.includes(screenPageId)) {
+      if (this.screen.config[screenNumber] && this.screen.config[screenNumber].items) {
+        pagesValidated.push(screenPageId);
         await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
       }
     }
@@ -235,7 +261,6 @@ class FormElementValidations extends Validations {
         let validationFn = validators[rule];
         if (!validationFn) {
           // eslint-disable-next-line no-console
-          console.error(`Undefined validation rule "${rule}"`);
           return;
         }
         if (validation.configs instanceof Array) {
@@ -283,7 +308,6 @@ class FormElementValidations extends Validations {
       let validationFn = validators[validationConfig];
       if (!validationFn) {
         // eslint-disable-next-line no-console
-        console.error(`Undefined validation rule "${validationConfig}"`);
         return;
       }
       fieldValidation[validationConfig] = function(...props) {

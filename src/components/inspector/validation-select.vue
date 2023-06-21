@@ -87,11 +87,14 @@
       </div>
     </div>
     <small class="form-text text-muted">{{ helper }}</small>
+    <div class="mt-4 required-checkbox">
+      <form-checkbox v-model="requiredCheckbox" :label="$t('Make Required')" />
+    </div>
   </div>
 </template>
 
 <script>
-import { FormInput } from '@processmaker/vue-form-elements';
+import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
 import _ from 'lodash';
 import InputVariable from '../inspector/input-variable';
 
@@ -100,6 +103,7 @@ export default {
   components: {
     FormInput,
     InputVariable,
+    FormCheckbox,
   },
   data() {
     return {
@@ -295,6 +299,18 @@ export default {
       
       return false;
     },
+    requiredCheckbox: {
+      get() {
+        return this.rules.some(item => item.value === 'required');
+      },
+      set(value) {
+        if (value) {
+          this.rules.push(this.options.find(item => item.value === 'required'));
+        } else {
+          this.rules = this.rules.filter(item => item.value !== 'required');
+        }
+      }
+    }
   },
   watch: {
     rules: {
@@ -427,5 +443,8 @@ export default {
 <style lang="scss" scoped>
 .card-body {
   padding: 0;
+}
+.required-checkbox .form-group {
+  margin-bottom: 0;
 }
 </style>

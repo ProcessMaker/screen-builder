@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="typo__label">{{ label }}</label>
+    <required-asterisk /><label class="typo__label">{{ label }}</label>
     <multiselect
       v-bind="$attrs"
       v-on="$listeners"
@@ -28,10 +28,13 @@
 </template>
 
 <script>
-import { ValidationMixin } from "@processmaker/vue-form-elements"
+import { ValidationMixin, RequiredAsterisk } from "@processmaker/vue-form-elements";
 
 export default {
   inheritAttrs: false,
+  components: {
+    RequiredAsterisk,
+  },
   mixins: [ValidationMixin],
   props: [
     'label',
