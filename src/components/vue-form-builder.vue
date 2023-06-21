@@ -396,7 +396,6 @@ import {
 import HasColorProperty from "../mixins/HasColorProperty";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
-import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import accordions from "./accordions";
 import { keyNameProperty } from "@/form-control-common-properties";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
