@@ -1,5 +1,5 @@
 <template>
-  <div :class="containerClass">
+  <div :class="[containerClass, containerDeviceClass]" :style="cssMobile">
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer
       ref="renderer"
@@ -26,6 +26,7 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
+import { MOBILE_WIDTH, MOBILE_HEIGHT } from '../deviceConstants';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -34,16 +35,26 @@ export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
   mixins: [CurrentPageProperty],
-  props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
     event: 'update',
   },
-  computed: {
-    containerClass() {
-      return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
-    },
-  },
+  props: [
+    'config',
+    'data',
+    '_parent',
+    'page',
+    'computed',
+    'customCss',
+    'mode',
+    'watchers',
+    'isLoop',
+    'ancestorScreens',
+    'loopContext',
+    'showErrors',
+    'testScreenDefinition',
+    'deviceScreen',
+  ],
   data() {
     return {
       definition: {
@@ -87,6 +98,25 @@ export default {
       },
       scrollable: null,
     };
+  },
+  computed: {
+    containerClass() {
+      return this.parentScreen ? `screen-${this.parentScreen}` : 'custom-css-scope';
+    },
+    cssMobile() {
+      const { devicePixelRatio } = window;
+      const deviceDensity = devicePixelRatio === undefined ? 1 : devicePixelRatio;
+
+      const width = Math.floor(deviceDensity * MOBILE_WIDTH);
+
+      return {
+        '--mobile-width': width,
+        '--mobile-height': MOBILE_HEIGHT,
+      };
+    },
+    containerDeviceClass() {
+      return this.deviceScreen === 'mobile' ? 'container-mobile' : 'container-desktop';
+    },
   },
   watch: {
     customCss(customCss) {
@@ -247,3 +277,19 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.container-desktop {
+  width: 100%;
+}
+
+.container-mobile {
+  width: calc(var(--mobile-width) * 1px);
+  height: calc(var(--mobile-height) * 1px) !important;
+  margin: 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scale: 0.9;
+}
+</style>
