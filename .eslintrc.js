@@ -20,13 +20,13 @@ module.exports = {
   plugins: ["vue", "prettier"],
 
   rules: {
-    "prettier/prettier": ["error", { trailingComma: "none" }],
+    "prettier/prettier": ["error", { trailingComma: "all" }],
     "no-unexpected-multiline": "error",
     "no-param-reassign": 1,
     eqeqeq: "error",
-    "max-len": ["error", { code: 140, ignoreUrls: true }],
-    "comma-dangle": ["error", "never"],
-    quotes: ["error", "double", { allowTemplateLiterals: true }],
+    "max-len": ["error", { code: 120, ignoreUrls: true }],
+    'comma-dangle': ['error', 'always-multiline'],
+    quotes: ["error", "single", { allowTemplateLiterals: true }],
     "import/no-extraneous-dependencies": "warn",
     "consistent-return": "warn",
     "no-plusplus": 0,
