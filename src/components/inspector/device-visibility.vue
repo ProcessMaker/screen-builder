@@ -26,7 +26,12 @@
 export default {
   props: {
     label: String,
-    value: Object,
+    value: {
+      type: Object,
+      default: () => {
+        return { showForDesktop: true, showForMobile: true };
+      }
+    },
     helper: String,
     options: Object,
   },
