@@ -52,7 +52,7 @@ export default {
         computed: this.computed,
         customCss: this.customCss,
         watchers: this.watchers,
-        isMobile: false
+        isMobile: false,
       },
       formSubmitErrorClass: '',
       // watcher URLs
