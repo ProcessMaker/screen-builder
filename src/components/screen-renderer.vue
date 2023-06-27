@@ -39,7 +39,6 @@
       :vdata="value"
       :_parent="_parent"
       :_initial-page="currentPage"
-      :isMobile="isMobile"
       @submit="submit"
       @asyncWatcherTriggered="onAsyncWatcherOn"
       @asyncWatcherCompleted="onAsyncWatcherOff"
