@@ -20,7 +20,6 @@ module.exports = {
   plugins: ["vue", "prettier"],
 
   rules: {
-    "prettier/prettier": ["error", { trailingComma: "all" }],
     "no-unexpected-multiline": "error",
     "no-param-reassign": 1,
     eqeqeq: "error",

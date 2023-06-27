@@ -5,7 +5,24 @@
       <b-card-header>
         <b-row>
           <b-col>
-            <b-button-group size="sm pr-1">
+            <b-button-group size="sm pr-2">
+              <b-button
+                :variant="displayBuilder ? 'secondary' : 'outline-secondary'"
+                data-cy="mode-editor"
+                @click="changeMode('editor')"
+              >
+                <i class="fas fa-drafting-compass pr-1" />{{ $t('Design') }}
+              </b-button>
+              <b-button
+                :variant="!displayBuilder ? 'secondary' : 'outline-secondary'"
+                data-cy="mode-preview"
+                @click="changeMode('preview')"
+              >
+                <i class="fas fa-cogs pr-1" />{{ $t('Preview') }}
+              </b-button>
+            </b-button-group>
+
+            <b-button-group size="sm">
               <b-button
                 :variant="deviceScreen === 'desktop' ? 'secondary' : 'outline-secondary'"
                 data-cy="device-screen-desktop-button"
@@ -19,15 +36,6 @@
                 @click="changeDeviceScreen('mobile')"
               >
                 <i class="fas fa-mobile" />
-              </b-button>
-            </b-button-group>
-
-            <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('editor')" data-cy="mode-editor">
-                <i class="fas fa-drafting-compass pr-1"/>{{ $t('Design') }}
-              </b-button>
-              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('preview')" data-cy="mode-preview">
-                <i class="fas fa-cogs pr-1"/>{{ $t('Preview') }}
               </b-button>
             </b-button-group>
           </b-col>
@@ -91,7 +99,7 @@
 
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
-          <b-col class="overflow-auto h-100" data-cy="preview-content">
+          <b-col class="d-flex overflow-auto h-100" data-cy="preview-content">
             <vue-form-renderer
               ref="renderer"
               :key="rendererKey"
