@@ -22,7 +22,7 @@ export default {
     },
     checkIfIsMobile(){
       const renderer = document.getElementById("vue-form-renderer");
-      this.isMobile = renderer.offsetWidth < MAX_MOBILE_WIDTH;
+      this.isMobile = renderer && renderer.offsetWidth < MAX_MOBILE_WIDTH;
     }
   },
 };
