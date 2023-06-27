@@ -75,6 +75,7 @@
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
           <b-col class="overflow-auto h-100" data-cy="preview-content">
+          {{ $device.mobile }}
             <vue-form-renderer ref="renderer"
               :key="rendererKey"
               v-model="previewData"

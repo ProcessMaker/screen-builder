@@ -15,6 +15,9 @@ import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
 import LRUCache from 'lru-cache';
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
+import DeviceDetector from "./plugins/DeviceDetector.js";
+// add deviceDetector plugin
+Vue.use(DeviceDetector);
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
