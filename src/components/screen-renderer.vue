@@ -69,10 +69,6 @@ export default {
       type: String,
       default: ""
     },
-    isMobile: {
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {
