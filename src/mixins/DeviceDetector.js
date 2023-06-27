@@ -12,7 +12,9 @@ export default {
     window.removeEventListener("resize", this.resizeHandler);
   },
   mounted() {
-    this.checkIfIsMobile();
+    this.$nextTick(() => {
+      this.checkIfIsMobile();
+    });
   },
   methods: {
     resizeHandler() {
