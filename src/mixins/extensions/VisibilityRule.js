@@ -3,9 +3,7 @@ import VisibilityRule from '../VisibilityRule';
 export default {
   mounted() {
     this.extensions.push({
-      onloaditems({ element, wrapper, definition }) {
-        // TODO remove log
-        console.log('element:', definition.isMobile);
+      onloaditems({ element, wrapper }) {
         if (element.config.conditionalHide) {
           wrapper.setAttribute(
             'v-show',
