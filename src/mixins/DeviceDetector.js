@@ -1,10 +1,5 @@
 const MAX_MOBILE_WIDTH = 480;
 export default {
-  data() {
-    return {
-      isMobile: false, 
-    }
-  },
   created() {
     window.addEventListener("resize", this.resizeHandler);
   },
@@ -22,7 +17,9 @@ export default {
     },
     checkIfIsMobile(){
       const renderer = document.getElementById("vue-form-renderer");
-      this.isMobile = renderer && renderer.offsetWidth < MAX_MOBILE_WIDTH;
+      if ( this.definition) {
+        this.definition.isMobile = renderer && renderer.offsetWidth < MAX_MOBILE_WIDTH;
+      }
     }
   },
 };

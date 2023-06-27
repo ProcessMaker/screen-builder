@@ -7,7 +7,6 @@
       :_parent="_parent"
       :definition="definition"
       :current-page="currentPage"
-      :isMobile="isMobile"
       data-cy="screen-renderer"
       :show-errors="showErrors"
       :test-screen-definition="testScreenDefinition || false"
@@ -53,6 +52,7 @@ export default {
         computed: this.computed,
         customCss: this.customCss,
         watchers: this.watchers,
+        isMobile: false
       },
       formSubmitErrorClass: '',
       // watcher URLs
