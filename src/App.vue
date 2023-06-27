@@ -422,7 +422,7 @@ export default {
       );
     });
 
-    this.loadFromLocalStorage();
+    this.loadFromLocalStorage()
   },
   methods: {
     ...mapMutations("globalErrorsModule", { setStoreMode: "setMode" }),
