@@ -3,7 +3,7 @@ export default {
   created() {
     window.addEventListener("resize", this.resizeHandler);
   },
-  destroyed()  {
+  destroyed() {
     window.removeEventListener("resize", this.resizeHandler);
   },
   mounted() {
@@ -15,11 +15,12 @@ export default {
     resizeHandler() {
       this.checkIfIsMobile();
     },
-    checkIfIsMobile(){
+    checkIfIsMobile() {
       const renderer = document.getElementById("vue-form-renderer");
-      if ( this.definition) {
-        this.definition.isMobile = renderer && renderer.offsetWidth < MAX_MOBILE_WIDTH;
+      if (this.definition) {
+        this.definition.isMobile =
+          renderer && renderer.offsetWidth < MAX_MOBILE_WIDTH;
       }
     }
-  },
+  }
 };
