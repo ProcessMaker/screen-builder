@@ -1,5 +1,5 @@
 <template>
-  <div :class="containerClass">
+  <div :class="containerClass" id="vue-form-renderer">
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer
       ref="renderer"
@@ -7,6 +7,7 @@
       :_parent="_parent"
       :definition="definition"
       :current-page="currentPage"
+      :isMobile="isMobile"
       data-cy="screen-renderer"
       :show-errors="showErrors"
       :test-screen-definition="testScreenDefinition || false"
@@ -26,6 +27,7 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
+import DeviceDetector from '../mixins/DeviceDetector';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -33,7 +35,7 @@ const Scrollparent = require('scrollparent');
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
-  mixins: [CurrentPageProperty],
+  mixins: [CurrentPageProperty, DeviceDetector],
   props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',

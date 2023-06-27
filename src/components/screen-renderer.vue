@@ -39,6 +39,7 @@
       :vdata="value"
       :_parent="_parent"
       :_initial-page="currentPage"
+      :isMobile="isMobile"
       @submit="submit"
       @asyncWatcherTriggered="onAsyncWatcherOn"
       @asyncWatcherCompleted="onAsyncWatcherOff"
@@ -68,6 +69,10 @@ export default {
     loopContext: {
       type: String,
       default: ""
+    },
+    isMobile: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
