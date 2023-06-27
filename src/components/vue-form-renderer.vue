@@ -26,10 +26,11 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
-import { MAX_MOBILE_WIDTH } from '../deviceConstants';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
+
+const MAX_MOBILE_WIDTH = 480;
 
 export default {
   name: 'VueFormRenderer',
@@ -104,13 +105,8 @@ export default {
       return this.parentScreen ? `screen-${this.parentScreen}` : 'custom-css-scope';
     },
     cssDevice() {
-      const { devicePixelRatio } = window;
-      const deviceDensity = devicePixelRatio === undefined ? 1 : devicePixelRatio;
-
-      const width = Math.floor(deviceDensity * MAX_MOBILE_WIDTH);
-
       return {
-        '--mobile-width': width,
+        '--mobile-width': MAX_MOBILE_WIDTH,
       };
     },
     containerDeviceClass() {
