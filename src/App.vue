@@ -22,7 +22,7 @@
               </b-button>
             </b-button-group>
 
-            <b-button-group size="sm">
+            <b-button-group v-show="displayPreview" size="sm">
               <b-button
                 :variant="deviceScreen === 'desktop' ? 'secondary' : 'outline-secondary'"
                 data-cy="device-screen-desktop-button"
