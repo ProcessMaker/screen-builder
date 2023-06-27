@@ -42,6 +42,11 @@
               :data-cy="'controls-' + element.component"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
+              <inline-svg v-if="element.config.svg"
+                :src="element.config.svg"
+                :width="129"
+                :height="21"
+              ></inline-svg>
               {{ $t(element.label) }}
             </b-list-group-item>
 
@@ -405,6 +410,7 @@ import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
+import InlineSvg from 'vue-inline-svg';
 
 const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
@@ -458,7 +464,8 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer
+    ...renderer,
+    InlineSvg
   },
   mixins: [HasColorProperty, testing],
   props: {
