@@ -23,7 +23,7 @@ module.exports = {
     "no-unexpected-multiline": "error",
     "no-param-reassign": 1,
     eqeqeq: "error",
-    "max-len": ["error", { code: 120, ignoreUrls: true }],
+    "max-len": ["error", { code: 140, ignoreUrls: true }],
     'comma-dangle': ['error', 'always-multiline'],
     quotes: ["error", "single", { allowTemplateLiterals: true }],
     "import/no-extraneous-dependencies": "warn",
