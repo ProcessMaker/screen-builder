@@ -233,7 +233,6 @@ describe('Device Visiblility Inspector', () => {
         // read the value of the `content` CSS property
         const contentValue = before.getPropertyValue('background-color');
         // the returned value will have double quotes around it, but this is correct
-        debugger;
         expect(contentValue).to.eq('rgb(255, 255, 255)');
       })
       .then(($lis) => {
