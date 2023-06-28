@@ -42,11 +42,13 @@
               :data-cy="'controls-' + element.component"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
-              <inline-svg v-if="element.config.svg"
+              {{ element.config.svg }}
+              <!-- <inline-svg v-if="element.config.svg"
                 :src="element.config.svg"
                 :width="129"
                 :height="21"
-              ></inline-svg>
+              ></inline-svg> -->
+              <inline-svg v-if="element.config.svg" :src="element.config.svg" />
               {{ $t(element.label) }}
             </b-list-group-item>
 
