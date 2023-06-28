@@ -209,9 +209,6 @@ export default {
         });
         let i = 0;
         csstree.walk(ast, function(node, item, list) {
-          if (node.type === 'Atrule' && list) {
-            throw 'CSS \'At-Rules\' (starting with @) are not allowed.';
-          }
           if (
             node.type.match(/^.+Selector$/) &&
               node.name !== containerSelector &&
