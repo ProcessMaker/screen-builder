@@ -3,10 +3,6 @@ import { Parser } from "expr-eval";
 export default {
   methods: {
     visibilityRuleIsVisible(rule, name, deviceVisibility) {
-      // const isMobile = window.ProcessMaker && window.ProcessMaker.isMobile
-      //   ? window.Processmaker.isMobile
-      //   : false;
-
       const visibility = deviceVisibility || {showForDesktop: true, showForMobile: true, isMobile: false};
       const visibleInDevice =
         (visibility.isMobile && visibility.showForMobile) ||

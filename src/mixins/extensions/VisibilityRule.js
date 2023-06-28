@@ -4,8 +4,6 @@ export default {
   mounted() {
     this.extensions.push({
       onloaditems({ element, wrapper, definition }) {
-        console.log('element:', element, definition.isMobile);
-
         const visibility = element.config.deviceVisibility || { showForDesktop: true, showForMobile: true }
         const restrictDeviceVisibility = !visibility.showForDesktop || !visibility.showForMobile;
 
