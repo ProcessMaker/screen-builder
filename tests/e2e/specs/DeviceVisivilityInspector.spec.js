@@ -194,7 +194,6 @@ describe('Device Visiblility Inspector', () => {
         // get Window reference from element
         const win = control.children('label')[0].ownerDocument.defaultView;
         // use getComputedStyle to read the pseudo selector
-        console.log(control.children('label')[0]);
         const before = win.getComputedStyle(control.children('label')[0], 'before');
         // read the value of the `content` CSS property
         const contentValue = before.getPropertyValue('background-color');
@@ -230,7 +229,6 @@ describe('Device Visiblility Inspector', () => {
         // get Window reference from element
         const win = control.children('label')[0].ownerDocument.defaultView;
         // use getComputedStyle to read the pseudo selector
-        console.log(control.children('label')[0]);
         const before = win.getComputedStyle(control.children('label')[0], 'before');
         // read the value of the `content` CSS property
         const contentValue = before.getPropertyValue('background-color');
