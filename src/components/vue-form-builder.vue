@@ -1036,6 +1036,10 @@ export default {
 .prevent-interaction {
   pointer-events: none;
 }
+
+.svg-icon > svg {
+  height: 14px;
+}
 </style>
 
 <style lang="scss" scoped>
@@ -1143,8 +1147,5 @@ $side-bar-font-size: 0.875rem;
   height: 8rem;
   top: 4rem;
   border: 1px dashed rgba(0, 0, 0, 0.125);
-}
-.svg-icon > svg {
-  height: 14px;
 }
 </style>
