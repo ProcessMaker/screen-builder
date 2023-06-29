@@ -42,7 +42,7 @@
               :data-cy="'controls-' + element.component"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
-              <vue-inline-svg v-if="element.config.svg" :src="parseSvg(element.config.icon)" />
+              <span v-html="element.config.svg" height="14px"></span>
               {{ $t(element.label) }}
             </b-list-group-item>
 
@@ -406,7 +406,6 @@ import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
-import VueInlineSvg from 'vue-inline-svg';
 
 const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
@@ -1030,13 +1029,6 @@ export default {
       }
       this.collator = Intl.Collator(this.language);
     },
-    parseSvg(svgString) {
-      console.log('SVG', svg);
-      let parser = new DOMParser();
-      const svg = parser.parseFromString(svgString, "image/svg+xml");
-      console.log('SVG', svg);
-      return svg;
-    }
   }
 };
 </script>
