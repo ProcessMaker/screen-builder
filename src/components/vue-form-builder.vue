@@ -42,7 +42,7 @@
               :data-cy="'controls-' + element.component"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
-              <span v-html="element.config.svg" height="14px"></span>
+              <span v-html="element.config.svg" class="svg-icon"></span>
               {{ $t(element.label) }}
             </b-list-group-item>
 
@@ -460,7 +460,6 @@ export default {
     defaultValueEditor,
     ...inspector,
     ...renderer,
-    VueInlineSvg
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -1144,5 +1143,8 @@ $side-bar-font-size: 0.875rem;
   height: 8rem;
   top: 4rem;
   border: 1px dashed rgba(0, 0, 0, 0.125);
+}
+.svg-icon > svg {
+  height: 14px;
 }
 </style>
