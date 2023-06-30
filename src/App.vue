@@ -492,7 +492,9 @@ export default {
     },
     changeDeviceScreen(deviceScreen) {
       this.deviceScreen = deviceScreen;
-      window.dispatchEvent(new Event('resize'));
+      this.$nextTick(() => {
+        this.$refs.renderer.checkIfIsMobile();
+      });
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
