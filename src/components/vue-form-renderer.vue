@@ -32,6 +32,8 @@ import { MAX_MOBILE_WIDTH } from '../mixins/DeviceDetector';
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
 
+const MAX_MOBILE_WIDTH = 480;
+
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
