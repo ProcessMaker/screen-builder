@@ -16,13 +16,11 @@ export default {
       this.checkIfIsMobile();
     },
     checkIfIsMobile() {
-      window.setTimeout(() => {
-        const renderer = document.getElementById("vue-form-renderer");
-        if (this.definition) {
-          this.definition.isMobile =
-            renderer && renderer.offsetWidth <= MAX_MOBILE_WIDTH;
-        }
-      }, 50);
+      const renderer = document.getElementById("vue-form-renderer");
+      if (this.definition) {
+        this.definition.isMobile =
+          renderer && renderer.offsetWidth <= MAX_MOBILE_WIDTH;
+      }
     }
   }
 };
