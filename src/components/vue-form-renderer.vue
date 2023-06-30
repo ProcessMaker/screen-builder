@@ -1,5 +1,5 @@
 <template>
-  <div :class="containerClass" id="vue-form-renderer">
+  <div :class="[containerClass, containerDeviceClass]" :style="cssDevice" id="vue-form-renderer">
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer
       ref="renderer"
@@ -31,20 +31,32 @@ import DeviceDetector from '../mixins/DeviceDetector';
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
 
+const MAX_MOBILE_WIDTH = 480;
+
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
   mixins: [CurrentPageProperty, DeviceDetector],
-  props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
   model: {
     prop: 'data',
     event: 'update',
   },
-  computed: {
-    containerClass() {
-      return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
-    },
-  },
+  props: [
+    'config',
+    'data',
+    '_parent',
+    'page',
+    'computed',
+    'customCss',
+    'mode',
+    'watchers',
+    'isLoop',
+    'ancestorScreens',
+    'loopContext',
+    'showErrors',
+    'testScreenDefinition',
+    'deviceScreen',
+  ],
   data() {
     return {
       definition: {
@@ -89,6 +101,19 @@ export default {
       },
       scrollable: null,
     };
+  },
+  computed: {
+    containerClass() {
+      return this.parentScreen ? `screen-${this.parentScreen}` : 'custom-css-scope';
+    },
+    cssDevice() {
+      return {
+        '--mobile-width': MAX_MOBILE_WIDTH,
+      };
+    },
+    containerDeviceClass() {
+      return this.deviceScreen === 'mobile' ? 'container-mobile' : 'container-desktop';
+    },
   },
   watch: {
     customCss(customCss) {
@@ -211,9 +236,6 @@ export default {
         });
         let i = 0;
         csstree.walk(ast, function(node, item, list) {
-          if (node.type === 'Atrule' && list) {
-            throw 'CSS \'At-Rules\' (starting with @) are not allowed.';
-          }
           if (
             node.type.match(/^.+Selector$/) &&
               node.name !== containerSelector &&
@@ -252,3 +274,17 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.container-desktop {
+  width: 100%;
+}
+
+.container-mobile {
+  width: calc(var(--mobile-width) * 1px);
+  margin: 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+</style>
