@@ -27,11 +27,10 @@ import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 import DeviceDetector from '../mixins/DeviceDetector';
+import { MAX_MOBILE_WIDTH } from '../mixins/DeviceDetector';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
-
-const MAX_MOBILE_WIDTH = 480;
 
 export default {
   name: 'VueFormRenderer',

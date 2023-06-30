@@ -1,4 +1,4 @@
-const MAX_MOBILE_WIDTH = 480;
+export const MAX_MOBILE_WIDTH = 480;
 export default {
   created() {
     window.addEventListener("resize", this.resizeHandler);
