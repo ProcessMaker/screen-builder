@@ -37,11 +37,7 @@ const MAX_MOBILE_WIDTH = 480;
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
-<<<<<<< HEAD
-  mixins: [CurrentPageProperty],
-=======
   mixins: [CurrentPageProperty, DeviceDetector],
->>>>>>> origin/summer-2023-3
   model: {
     prop: 'data',
     event: 'update',
