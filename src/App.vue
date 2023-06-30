@@ -492,6 +492,9 @@ export default {
     },
     changeDeviceScreen(deviceScreen) {
       this.deviceScreen = deviceScreen;
+      this.$nextTick(() => {
+        this.$refs.renderer.checkIfIsMobile();
+      });
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');

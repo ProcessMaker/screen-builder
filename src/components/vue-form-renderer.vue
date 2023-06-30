@@ -1,5 +1,5 @@
 <template>
-  <div :class="[containerClass, containerDeviceClass]" :style="cssDevice">
+  <div :class="[containerClass, containerDeviceClass]" :style="cssDevice" id="vue-form-renderer">
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer
       ref="renderer"
@@ -26,16 +26,16 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
+import DeviceDetector from '../mixins/DeviceDetector';
+import { MAX_MOBILE_WIDTH } from '../mixins/DeviceDetector';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
 
-const MAX_MOBILE_WIDTH = 480;
-
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
-  mixins: [CurrentPageProperty],
+  mixins: [CurrentPageProperty, DeviceDetector],
   model: {
     prop: 'data',
     event: 'update',
@@ -63,6 +63,7 @@ export default {
         computed: this.computed,
         customCss: this.customCss,
         watchers: this.watchers,
+        isMobile: false,
       },
       formSubmitErrorClass: '',
       // watcher URLs
