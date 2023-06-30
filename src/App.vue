@@ -492,6 +492,7 @@ export default {
     },
     changeDeviceScreen(deviceScreen) {
       this.deviceScreen = deviceScreen;
+      window.dispatchEvent(new Event('resize'));
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
