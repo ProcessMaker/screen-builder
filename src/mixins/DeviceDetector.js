@@ -19,7 +19,6 @@ export default {
       window.setTimeout(() => {
         const renderer = document.getElementById("vue-form-renderer");
         if (this.definition) {
-          console.log('ancho', renderer.offsetWidth);
           this.definition.isMobile =
             renderer && renderer.offsetWidth <= MAX_MOBILE_WIDTH;
         }
