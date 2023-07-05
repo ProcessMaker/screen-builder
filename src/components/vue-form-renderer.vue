@@ -153,7 +153,6 @@ export default {
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
   },
   mounted() {
-    console.log('montando....');
     this.parseCss();
     this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
