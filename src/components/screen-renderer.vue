@@ -68,7 +68,7 @@ export default {
     loopContext: {
       type: String,
       default: ""
-    }
+    },
   },
   data() {
     return {

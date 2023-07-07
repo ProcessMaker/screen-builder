@@ -1,5 +1,10 @@
 <template>
-  <div :class="containerClass">
+  <div
+    id="vue-form-renderer"
+    :class="[containerClass, containerDeviceClass]"
+    :style="cssDevice"
+    data-cy="screen-renderer-container"
+  >
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer
       ref="renderer"
@@ -26,6 +31,8 @@ import Inputmask from 'inputmask';
 import { getItemsFromConfig } from '../itemProcessingUtils';
 import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
+import DeviceDetector from '../mixins/DeviceDetector';
+import { MAX_MOBILE_WIDTH } from '../mixins/DeviceDetector';
 
 const csstree = require('css-tree');
 const Scrollparent = require('scrollparent');
@@ -33,17 +40,27 @@ const Scrollparent = require('scrollparent');
 export default {
   name: 'VueFormRenderer',
   components: { CustomCssOutput },
-  mixins: [CurrentPageProperty],
-  props: ['config', 'data', '_parent', 'page', 'computed', 'customCss', 'mode', 'watchers', 'isLoop', 'ancestorScreens', 'loopContext', 'showErrors', 'testScreenDefinition'],
+  mixins: [CurrentPageProperty, DeviceDetector],
   model: {
     prop: 'data',
     event: 'update',
   },
-  computed: {
-    containerClass() {
-      return this.parentScreen ? 'screen-' + this.parentScreen : 'custom-css-scope';
-    },
-  },
+  props: [
+    'config',
+    'data',
+    '_parent',
+    'page',
+    'computed',
+    'customCss',
+    'mode',
+    'watchers',
+    'isLoop',
+    'ancestorScreens',
+    'loopContext',
+    'showErrors',
+    'testScreenDefinition',
+    'deviceScreen',
+  ],
   data() {
     return {
       definition: {
@@ -51,6 +68,7 @@ export default {
         computed: this.computed,
         customCss: this.customCss,
         watchers: this.watchers,
+        isMobile: false,
       },
       formSubmitErrorClass: '',
       // watcher URLs
@@ -87,6 +105,19 @@ export default {
       },
       scrollable: null,
     };
+  },
+  computed: {
+    containerClass() {
+      return this.parentScreen ? `screen-${this.parentScreen}` : 'custom-css-scope';
+    },
+    cssDevice() {
+      return {
+        '--mobile-width': MAX_MOBILE_WIDTH,
+      };
+    },
+    containerDeviceClass() {
+      return this.deviceScreen === 'mobile' ? 'container-mobile' : 'container-desktop';
+    },
   },
   watch: {
     customCss(customCss) {
@@ -209,9 +240,6 @@ export default {
         });
         let i = 0;
         csstree.walk(ast, function(node, item, list) {
-          if (node.type === 'Atrule' && list) {
-            throw 'CSS \'At-Rules\' (starting with @) are not allowed.';
-          }
           if (
             node.type.match(/^.+Selector$/) &&
               node.name !== containerSelector &&
@@ -250,3 +278,17 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.container-desktop {
+  width: 100%;
+}
+
+.container-mobile {
+  width: calc(var(--mobile-width) * 1px);
+  margin: 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+</style>
