@@ -3,7 +3,6 @@ import { Parser } from "expr-eval";
 export default {
   methods: {
     visibilityRuleIsVisible(rule, name, deviceVisibility) {
-      debugger;
       const visibility = deviceVisibility || {showForDesktop: true, showForMobile: true, isMobile: false};
       const visibleInDevice =
         (visibility.isMobile && visibility.showForMobile) ||
