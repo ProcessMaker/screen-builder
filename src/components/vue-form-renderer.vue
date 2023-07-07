@@ -1,5 +1,10 @@
 <template>
-  <div :class="[containerClass, containerDeviceClass]" :style="cssDevice" id="vue-form-renderer">
+  <div
+    id="vue-form-renderer"
+    :class="[containerClass, containerDeviceClass]"
+    :style="cssDevice"
+    data-cy="screen-renderer-container"
+  >
     <custom-css-output>{{ customCssWrapped }}</custom-css-output>
     <screen-renderer
       ref="renderer"
