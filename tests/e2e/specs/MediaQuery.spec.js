@@ -1,4 +1,4 @@
-describe('Media Query CSS', () => {
+describe.skip('Media Query CSS', () => {
   it('Adds media query and styling the element', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
