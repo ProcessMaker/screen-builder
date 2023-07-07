@@ -5,12 +5,37 @@
       <b-card-header>
         <b-row>
           <b-col>
-            <b-button-group size="sm">
-              <b-button :variant="displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('editor')" data-cy="mode-editor">
-                <i class="fas fa-drafting-compass pr-1"/>{{ $t('Design') }}
+            <b-button-group size="sm pr-2">
+              <b-button
+                :variant="displayBuilder ? 'secondary' : 'outline-secondary'"
+                data-cy="mode-editor"
+                @click="changeMode('editor')"
+              >
+                <i class="fas fa-drafting-compass pr-1" />{{ $t('Design') }}
               </b-button>
-              <b-button :variant="!displayBuilder? 'secondary' : 'outline-secondary'" @click="changeMode('preview')" data-cy="mode-preview">
-                <i class="fas fa-cogs pr-1"/>{{ $t('Preview') }}
+              <b-button
+                :variant="!displayBuilder ? 'secondary' : 'outline-secondary'"
+                data-cy="mode-preview"
+                @click="changeMode('preview')"
+              >
+                <i class="fas fa-cogs pr-1" />{{ $t('Preview') }}
+              </b-button>
+            </b-button-group>
+
+            <b-button-group v-show="displayPreview" size="sm">
+              <b-button
+                :variant="deviceScreen === 'desktop' ? 'secondary' : 'outline-secondary'"
+                data-cy="device-screen-desktop-button"
+                @click="changeDeviceScreen('desktop')"
+              >
+                <i class="fas fa-desktop" />
+              </b-button>
+              <b-button
+                :variant="deviceScreen === 'mobile' ? 'secondary' : 'outline-secondary'"
+                data-cy="device-screen-mobile-button"
+                @click="changeDeviceScreen('mobile')"
+              >
+                <i class="fas fa-mobile" />
               </b-button>
             </b-button-group>
           </b-col>
@@ -74,19 +99,21 @@
 
         <!-- Preview -->
         <b-row class="h-100 m-0" id="preview" v-show="displayPreview" data-cy="preview">
-          <b-col class="overflow-auto h-100" data-cy="preview-content">
-            <vue-form-renderer ref="renderer"
+          <b-col class="d-flex overflow-auto h-100" data-cy="preview-content">
+            <vue-form-renderer
+              ref="renderer"
               :key="rendererKey"
               v-model="previewData"
-              @submit="previewSubmit"
-              @update="updateDataPreview"
               :mode="mode"
               :config="preview.config"
               :computed="preview.computed"
               :custom-css="preview.customCSS"
               :watchers="preview.watchers"
-              v-on:css-errors="cssErrors = $event"
               :show-errors="true"
+              :device-screen="deviceScreen"
+              @css-errors="cssErrors = $event"
+              @submit="previewSubmit"
+              @update="updateDataPreview"
             />
           </b-col>
 
@@ -132,12 +159,10 @@
                     @editorDidMount="monacoMounted"
                   />
                 </b-collapse>
-
               </b-card-body>
             </b-card>
           </b-col>
         </b-row>
-
       </b-card-body>
 
       <!-- Card Footer -->
@@ -294,6 +319,7 @@ export default {
         },
       },
       mode: 'editor',
+      deviceScreen: 'desktop',
       // Computed properties
       computed: [],
       // Watchers
@@ -463,6 +489,12 @@ export default {
       }
       this.setStoreMode(this.mode);
       this.mode = mode;
+    },
+    changeDeviceScreen(deviceScreen) {
+      this.deviceScreen = deviceScreen;
+      this.$nextTick(() => {
+        this.$refs.renderer.checkIfIsMobile();
+      });
     },
     loadFromLocalStorage() {
       const savedConfig = localStorage.getItem('savedConfig');
