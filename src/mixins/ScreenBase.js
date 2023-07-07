@@ -49,6 +49,7 @@ export default {
       valid__: "valid",
       message__: "message",
       locked__: "locked",
+      disableSubmit__: "disableSubmit",
     }),
     ...mapGetters("globalErrorsModule", ["showValidationErrors"]),
     references__() {
@@ -56,7 +57,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validateNow", "hasSubmitted"]),
+    ...mapActions("globalErrorsModule", ["validateNow", "hasSubmitted", 'disableSubmit']),
     getDataAccordingToFieldLevel(dataWithParent, level) {
       if (level === 0 || !dataWithParent) {
         return dataWithParent;
@@ -147,8 +148,10 @@ export default {
     async submitForm() {
       await this.validateNow(findRootScreen(this));
       this.hasSubmitted(true);
-      if (!this.valid__) {
-        window.ProcessMaker.alert(this.message__, "danger");
+      if (!this.valid__ || this.disableSubmit__) {
+        if (this.message__) {
+          window.ProcessMaker.alert(this.message__, "danger");
+        }
         // if the form is not valid the data is not emitted
         return;
       }
