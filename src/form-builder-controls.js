@@ -8,7 +8,7 @@ import FormMaskedInput from './components/renderer/form-masked-input';
 import FormNestedScreen from './components/renderer/form-nested-screen';
 import FileUpload from './components/renderer/file-upload';
 import FileDownload from './components/renderer/file-download';
-import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
+import { DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty } from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
@@ -16,6 +16,11 @@ import {
   FormCheckbox,
   FormDatePicker,
   FormHtmlEditor,
+  BFormCollapse,
+  BFormDropdown,
+  BFormModal,
+  BFormComponent,
+  BWrapperComponent,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 
@@ -183,9 +188,9 @@ export default [
         label: 'New Select List',
         placeholder: '',
         validation: '',
-        dataSourceUrl:'',
-        dataSourceEndpoint:'',
-        rootElement:'response',
+        dataSourceUrl: '',
+        dataSourceEndpoint: '',
+        rootElement: 'response',
         options: {
           showRenderAs: true,
           dataSource: dataSourceValues.provideData,
@@ -196,8 +201,8 @@ export default [
           allowMultiSelect: false,
           selectedOptions: [],
           optionsList: [],
-          key:'value',
-          value:'content',
+          key: 'value',
+          value: 'content',
           valueTypeReturned: 'single',
         },
         helper: null,
@@ -707,6 +712,225 @@ export default [
           helper: 'The name of the Download',
         },
       },
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormCollapse,
+    rendererBinding: 'BFormCollapse',
+    builderComponent: BFormCollapse,
+    builderBinding: 'BFormCollapse',
+    control: {
+      label: 'BFormCollapse',
+      component: 'BFormCollapse',
+      'editor-component': 'BFormCollapse',
+      'editor-control': 'BFormCollapse',
+      config: {
+        label: '',
+        icon: 'fas fa-window-maximize',
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The text to display',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Name',
+            helper: 'The name of the Control',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'helper',
+          config: {
+            label: 'Helper Text',
+            helper: 'Help text is meant to provide additional guidance on the field\'s value',
+          }
+        },
+        {
+          type: 'ValidationSelect',
+          field: 'validation',
+          config: {
+            label: 'Validation Rules',
+            helper: 'The validation rules needed for this field',
+          },
+        }
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormDropdown,
+    rendererBinding: 'BFormDropdown',
+    builderComponent: BFormDropdown,
+    builderBinding: 'BFormDropdown',
+    control: {
+      label: 'BFormDropdown',
+      component: 'BFormDropdown',
+      'editor-component': 'BFormDropdown',
+      'editor-control': 'BFormDropdown',
+      config: {
+        label: 'dropdown label',
+        icon: 'fas fa-window-maximize',
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The text to display',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Name',
+            helper: 'The name of the Control',
+          },
+        },
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormModal,
+    rendererBinding: 'BFormModal',
+    builderComponent: BFormModal,
+    builderBinding: 'BFormModal',
+    control: {
+      label: 'BFormModal',
+      component: 'BFormModal',
+      'editor-component': 'BFormModal',
+      'editor-control': 'BFormModal',
+      config: {
+        label: 'modal label',
+        icon: 'fas fa-window-maximize',
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The text to display',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Name',
+            helper: 'The name of the Control',
+          },
+        },
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormComponent,
+    rendererBinding: 'BFormComponent',
+    builderComponent: BFormComponent,
+    builderBinding: 'BFormComponent',
+    control: {
+      label: 'Bootstrap Component',
+      component: 'BFormComponent',
+      'editor-component': 'BFormComponent',
+      'editor-control': 'BFormComponent',
+      config: {
+        bootstrapComponent: 'b-form-tags',
+        bootstrapConfig: '{}',
+        label: 'New Bootstrap Component',
+        icon: 'fas fa-folder-open',
+      },
+      inspector: [
+        keyNameProperty,
+        labelProperty,
+        {
+          type: 'FormMultiselect',
+          field: 'bootstrapComponent',
+          config: {
+            icon: 'fas',
+            label: 'Bootstrap vue component',
+            validation: 'required',
+            options: [
+              { value: 'b-form-tags', content: 'Tags' },
+              { value: 'b-form-spinbutton', content: 'Spinbutton' },
+              { value: 'b-form-rating', content: 'Rating' },
+            ],
+          },
+        },
+        {
+          type: 'FormTextArea',
+          field: 'bootstrapConfig',
+          config: {
+            rows: 5,
+            label: 'Config',
+            helper: 'Properties in JSON format. See https://bootstrap-vue.org/docs/components',
+            value: '{}',
+          },
+        },
+      ],
+    },
+  },
+  {
+    rendererComponent: BWrapperComponent,
+    rendererBinding: 'BWrapperComponent',
+    builderComponent: BWrapperComponent,
+    builderBinding: 'BWrapperComponent',
+    control: {
+      label: 'Bootstrap Wrapper',
+      component: 'BWrapperComponent',
+      'editor-component': 'BWrapperComponent',
+      'editor-control': 'BWrapperComponent',
+      config: {
+        bootstrapComponent: 'b-modal',
+        bootstrapConfig: '{}',
+        label: 'New Bootstrap Component',
+        icon: 'fas fa-folder-open',
+        name: '',
+        form: '',
+      },
+      inspector: [
+        keyNameProperty,
+        labelProperty,
+        {
+          type: 'FormMultiselect',
+          field: 'bootstrapComponent',
+          config: {
+            icon: 'fas',
+            label: 'Bootstrap vue component',
+            validation: 'required',
+            options: [
+              { value: 'b-modal', content: 'Modal' },
+              { value: 'b-collapse', content: 'Collapse' },
+            ],
+          },
+        },
+        {
+          type: 'PageSelect',
+          field: 'form',
+          config: {
+            label: 'Page',
+            helper: 'The page to use inside the component',
+          },
+        },
+        {
+          type: 'FormTextArea',
+          field: 'bootstrapConfig',
+          config: {
+            rows: 5,
+            label: 'Config',
+            helper: 'Properties in JSON format. See https://bootstrap-vue.org/docs/components',
+            value: '{}',
+          },
+        },
       ],
     },
   },
