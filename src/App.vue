@@ -27,6 +27,8 @@
                 :variant="deviceScreen === 'desktop' ? 'secondary' : 'outline-secondary'"
                 data-cy="device-screen-desktop-button"
                 @click="changeDeviceScreen('desktop')"
+                v-b-tooltip.hover
+                :title="$t('Desktop')"
               >
                 <i class="fas fa-desktop" />
               </b-button>
@@ -34,6 +36,8 @@
                 :variant="deviceScreen === 'mobile' ? 'secondary' : 'outline-secondary'"
                 data-cy="device-screen-mobile-button"
                 @click="changeDeviceScreen('mobile')"
+                v-b-tooltip.hover
+                :title="$t('Mobile')"
               >
                 <i class="fas fa-mobile" />
               </b-button>
