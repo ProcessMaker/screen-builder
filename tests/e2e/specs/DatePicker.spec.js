@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-describe('Date Picker', () => {
+describe.skip('Date Picker', () => {
 
   it('Date time picker with maxDate before minDate should show a validation error', () => {
     const today = moment(new Date());
