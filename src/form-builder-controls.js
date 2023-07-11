@@ -739,9 +739,10 @@ export default [
             label: 'Bootstrap vue component',
             validation: 'required',
             options: [
-              { value: 'b-form-tags', content: 'Tags' },
-              { value: 'b-form-spinbutton', content: 'Spinbutton' },
               { value: 'b-form-rating', content: 'Rating' },
+              { value: 'b-form-spinbutton', content: 'Spinbutton' },
+              { value: 'b-form-tags', content: 'Tags' },
+              { value: 'b-form-timepicker', content: 'Timepicker' },
             ],
           },
         },
