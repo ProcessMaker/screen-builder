@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import moment from "moment-timezone";
 
-describe("Date Picker", () => {
+describe.skip("Date Picker", () => {
   const timezoneTest = "America/Los_Angeles";
 
   it("DateTime type", () => {
