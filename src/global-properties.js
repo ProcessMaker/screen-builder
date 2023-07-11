@@ -15,6 +15,14 @@ export default [
         },
       },
       {
+        type: 'DeviceVisibility',
+        field: 'deviceVisibility',
+        config: {
+          label: 'Device Visibility',
+          helper: 'This control is hidden until this expression is true',
+        },
+      },
+      {
         type: 'FormInput',
         field: 'customFormatter',
         config: {

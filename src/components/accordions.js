@@ -51,7 +51,7 @@ export default [
   },
   {
     name: 'Advanced',
-    fields: ['conditionalHide', 'customCssSelector', 'defaultValue',
+    fields: ['conditionalHide', 'deviceVisibility', 'customCssSelector', 'defaultValue', 'showForDesktop',
       {name: 'customFormatter', showFor: 'FormInput'},
       {name: 'ariaLabel', showFor: 'FormInput'},
       {name: 'ariaLabel', showFor: 'FormSelectList'},
