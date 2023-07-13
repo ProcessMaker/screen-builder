@@ -791,8 +791,11 @@ export default [
             label: 'Bootstrap vue component',
             validation: 'required',
             options: [
-              { value: 'b-modal', content: 'Modal' },
+              { value: 'b-alert', content: 'Alert' },
+              { value: 'b-card', content: 'Card' },
               { value: 'b-collapse', content: 'Collapse' },
+              { value: 'b-jumbotron', content: 'Jumbotron' },
+              { value: 'b-modal', content: 'Modal' },
             ],
           },
         },
