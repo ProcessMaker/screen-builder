@@ -759,6 +759,7 @@ export default [
             value: '{}',
           },
         },
+        validationRulesProperty,
       ],
     },
   },
