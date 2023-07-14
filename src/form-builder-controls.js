@@ -726,7 +726,7 @@ export default [
         bootstrapComponent: 'b-form-tags',
         bootstrapConfig: '{}',
         label: 'New Bootstrap Component',
-        icon: 'fas fa-folder-open',
+        icon: 'fas fa-plug',
       },
       inspector: [
         keyNameProperty,
@@ -776,8 +776,8 @@ export default [
       config: {
         bootstrapComponent: 'b-modal',
         bootstrapConfig: '{}',
-        label: 'New Bootstrap Component',
-        icon: 'fas fa-folder-open',
+        label: 'New Bootstrap Wrapper',
+        icon: 'fas fa-window-maximize',
         name: '',
         form: '',
       },
