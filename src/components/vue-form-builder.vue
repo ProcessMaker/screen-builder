@@ -537,15 +537,30 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      return this.controls
-        .filter((control) => {
-          return control.label
-            .toLowerCase()
-            .includes(this.filterQuery.toLowerCase());
-        })
-        .sort((a, b) => {
-          return this.collator.compare(a.label, b.label);
-        });
+      const { controls, filterQuery, collator } = this;
+
+      const excludedLabels = ['bootstrap', 'bootstrap wrapper'];
+
+      const filtered = controls.filter(control =>
+        control.label.toLowerCase().includes(filterQuery.toLowerCase())
+      );
+
+      const sorted = filtered.sort((a, b) => {
+        const labelA = a.label.toLowerCase();
+        const labelB = b.label.toLowerCase();
+
+        if (excludedLabels.includes(labelA) && excludedLabels.includes(labelB)) {
+          return 0;
+        } else if (excludedLabels.includes(labelA)) {
+          return 1;
+        } else if (excludedLabels.includes(labelB)) {
+          return -1;
+        }
+
+        return collator.compare(labelA, labelB);
+      });
+
+      return sorted;
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
