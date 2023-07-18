@@ -718,7 +718,7 @@ export default [
     builderComponent: BFormComponent,
     builderBinding: 'BFormComponent',
     control: {
-      label: 'Bootstrap Component',
+      label: 'Bootstrap',
       component: 'BFormComponent',
       'editor-component': 'BFormComponent',
       'editor-control': 'BFormComponent',
@@ -726,7 +726,7 @@ export default [
         bootstrapComponent: 'b-form-tags',
         bootstrapConfig: '{}',
         label: 'New Bootstrap Component',
-        icon: 'fas fa-plug',
+        icon: 'fab fa-bootstrap',
       },
       inspector: [
         keyNameProperty,
@@ -776,8 +776,8 @@ export default [
       config: {
         bootstrapComponent: 'b-modal',
         bootstrapConfig: '{}',
-        label: 'New Bootstrap Wrapper',
-        icon: 'fas fa-window-maximize',
+        label: 'New Bootstrap Component',
+        icon: 'fab fa-bootstrap',
         name: '',
         form: '',
       },
