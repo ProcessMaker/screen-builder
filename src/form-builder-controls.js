@@ -776,7 +776,7 @@ export default [
       config: {
         bootstrapComponent: 'b-modal',
         bootstrapConfig: '{}',
-        label: 'New Bootstrap Component',
+        label: 'New Bootstrap Wrapper',
         icon: 'fab fa-bootstrap',
         name: '',
         form: '',
