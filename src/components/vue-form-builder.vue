@@ -42,6 +42,7 @@
               :data-cy="'controls-' + element.component"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
+              <span v-html="element.config.svg" class="svg-icon"></span>
               {{ $t(element.label) }}
             </b-list-group-item>
 
@@ -458,7 +459,7 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer
+    ...renderer,
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -551,7 +552,8 @@ export default {
     },
     showToolbar() {
       return this.screenType === formTypes.form;
-    }
+    },
+    
   },
   watch: {
     config: {
@@ -1007,9 +1009,8 @@ export default {
 
       // Generate Variable Name
       if (
-        control.inspector.indexOf(keyNameProperty) !== -1 ||
-        control.component === "FormLoop"
-      ) {
+        _.findIndex(control.inspector, keyNameProperty) !== -1 ||
+        control.component === "FormLoop") {
         [this.variables, copy.config.name] = this.generator.generate(
           this.config,
           copy["editor-control"] ? copy["editor-control"] : copy.component
@@ -1026,7 +1027,7 @@ export default {
         this.language = document.documentElement.lang;
       }
       this.collator = Intl.Collator(this.language);
-    }
+    },
   }
 };
 </script>
@@ -1034,6 +1035,10 @@ export default {
 <style>
 .prevent-interaction {
   pointer-events: none;
+}
+
+.svg-icon > svg {
+  height: 14px;
 }
 </style>
 

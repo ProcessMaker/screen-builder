@@ -71,6 +71,11 @@ const updateValidationRules = async (screens, commit) => {
   }
 };
 
+const disableSubmitOnPhotoVideoUpload = async (commit, payload) => {
+  commit('basic', {key: 'valid', value: !payload.value});
+  commit('disableSubmit', {key: 'disableSubmit', value: payload.value});
+};
+
 const updateValidationRulesDebounced = debounce(updateValidationRules, 500);
 
 const screensToValidate = [];
@@ -88,7 +93,10 @@ const globalErrorsModule = {
       locked: false,
       valid: true,
       message: "",
-      mode: ""
+      mode: "",
+      submitted: false,
+      showValidationOnLoad: false,
+      disableSubmit: false
     };
   },
   getters: {
@@ -100,6 +108,9 @@ const globalErrorsModule = {
     },
     getMode(state) {
       return state.mode;
+    },
+    showValidationErrors(state) {
+      return state.showValidationOnLoad || state.submitted;
     }
   },
   mutations: {
@@ -108,6 +119,10 @@ const globalErrorsModule = {
     },
     setMode(state, mode) {
       state.mode = mode;
+    },
+    disableSubmit(state, payload) {
+      state['disableSubmit'] = payload.value;
+      state['message'] = payload.message;
     }
   },
   actions: {
@@ -119,6 +134,15 @@ const globalErrorsModule = {
     },
     close({ commit }) {
       commit("basic", { key: "valid", value: true });
+    },
+    hasSubmitted({ commit }, value) {
+      commit("basic", { key: "submitted", value });
+    },
+    showValidationOnLoad({ commit }, value) {
+      commit("basic", { key: "showValidationOnLoad", value });
+    },
+    async disableSubmitOnPhotoVideoUpload({commit}, payload) {
+      await disableSubmitOnPhotoVideoUpload(commit, payload);
     }
   }
 };

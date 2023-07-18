@@ -57,6 +57,7 @@
 
 <script>
 import _ from 'lodash';
+import simpleErrorMessage from './SimpleErrorMessage.vue';
 
 const defaultBeforeLoadTask = () => {
   return new Promise((resolve) => {
@@ -65,6 +66,9 @@ const defaultBeforeLoadTask = () => {
 };
 
 export default {
+  components:{
+    simpleErrorMessage
+  },
   props: {
     initialTaskId: { type: Number, default: null },
     initialScreenId: { type: Number, default: null },
@@ -214,6 +218,9 @@ export default {
     },
   },
   methods: {
+    showSimpleErrorMessage() {
+      this.renderComponent = 'simpleErrorMessage';
+    },
     loadScreen(id) {
       let query = '?include=nested';
       if (this.requestId) {
