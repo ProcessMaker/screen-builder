@@ -1,4 +1,5 @@
 import Tooltip from './components/inspector/tooltip';
+import DeviceVisibility from './components/inspector/device-visibility';
 
 export const bgcolorProperty = {
   type: 'ColorSelect',
@@ -252,5 +253,13 @@ export const tooltipProperty = {
   field: 'tooltip',
   config: {
     label: 'Tooltip ',
+  },
+};
+
+export const deviceVisibilityProperty = {
+  type: DeviceVisibility,
+  field: 'deviceVisibility',
+  config: {
+    label: 'Device Visibility ',
   },
 };

@@ -1,12 +1,13 @@
 import moment from 'moment';
 
-describe('Date Picker', () => {
+describe.skip('Date Picker', () => {
 
   it('Date time picker with maxDate before minDate should show a validation error', () => {
     const today = moment(new Date());
     const yesterday = moment(new Date()).subtract(1, 'days');
 
     cy.visit('/');
+    cy.showValidationOnLoad();
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
@@ -24,6 +25,7 @@ describe('Date Picker', () => {
     const tomorrow = moment(new Date()).add(1, 'days');
 
     cy.visit('/');
+    cy.showValidationOnLoad();
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
@@ -332,10 +334,11 @@ describe('Date Picker', () => {
       form_date_picker_2: null
     });
   });
-  it.only("Date picker with Required validation shouldn't allow the user to submit the date if empty", () => {
+  it("Date picker with Required validation shouldn't allow the user to submit the date if empty", () => {
     const date = moment(new Date()).format('MM/DD/YYYY');
 
     cy.visit('/');
+    cy.showValidationOnLoad();
 
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();

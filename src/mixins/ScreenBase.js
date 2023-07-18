@@ -1,6 +1,6 @@
 import { get, isEqual, set, debounce } from 'lodash';
 import Mustache from 'mustache';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 import DataReference from "./DataReference";
 import computedFields from "./computedFields";
@@ -49,13 +49,15 @@ export default {
       valid__: "valid",
       message__: "message",
       locked__: "locked",
+      disableSubmit__: "disableSubmit",
     }),
+    ...mapGetters("globalErrorsModule", ["showValidationErrors"]),
     references__() {
       return this.$parent && this.$parent.references__;
     },
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validateNow"]),
+    ...mapActions("globalErrorsModule", ["validateNow", "hasSubmitted", 'disableSubmit']),
     getDataAccordingToFieldLevel(dataWithParent, level) {
       if (level === 0 || !dataWithParent) {
         return dataWithParent;
@@ -145,8 +147,11 @@ export default {
     },
     async submitForm() {
       await this.validateNow(findRootScreen(this));
-      if (!this.valid__) {
-        window.ProcessMaker.alert(this.message__, "danger");
+      this.hasSubmitted(true);
+      if (!this.valid__ || this.disableSubmit__) {
+        if (this.message__) {
+          window.ProcessMaker.alert(this.message__, "danger");
+        }
         // if the form is not valid the data is not emitted
         return;
       }
