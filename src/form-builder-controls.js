@@ -718,7 +718,7 @@ export default [
     builderComponent: BFormComponent,
     builderBinding: 'BFormComponent',
     control: {
-      label: 'Bootstrap',
+      label: 'Bootstrap Component',
       component: 'BFormComponent',
       'editor-component': 'BFormComponent',
       'editor-control': 'BFormComponent',
