@@ -537,15 +537,25 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      return this.controls
-        .filter((control) => {
-          return control.label
-            .toLowerCase()
-            .includes(this.filterQuery.toLowerCase());
-        })
-        .sort((a, b) => {
-          return this.collator.compare(a.label, b.label);
-        });
+      const excludedLabels = ["Bootstrap Wrapper", "Bootstrap Component"];
+
+      const filtered = this.controls.filter((control) => {
+        return control.label.toLowerCase().includes(this.filterQuery.toLowerCase());
+      });
+
+      const excluded = filtered.filter((control) => {
+        return excludedLabels.includes(control.label);
+      });
+
+      const included = filtered.filter((control) => {
+        return !excludedLabels.includes(control.label);
+      });
+
+      const sorted = included.sort((a, b) => {
+        return this.collator.compare(a.label, b.label);
+      });
+
+      return [...sorted, ...excluded];
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
