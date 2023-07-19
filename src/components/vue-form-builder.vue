@@ -537,30 +537,25 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      const { controls, filterQuery, collator } = this;
+      const excludedLabels = ["Bootstrap Wrapper", "Bootstrap"];
 
-      const excludedLabels = ['bootstrap', 'bootstrap wrapper'];
-
-      const filtered = controls.filter(control =>
-        control.label.toLowerCase().includes(filterQuery.toLowerCase())
-      );
-
-      const sorted = filtered.sort((a, b) => {
-        const labelA = a.label.toLowerCase();
-        const labelB = b.label.toLowerCase();
-
-        if (excludedLabels.includes(labelA) && excludedLabels.includes(labelB)) {
-          return 0;
-        } else if (excludedLabels.includes(labelA)) {
-          return 1;
-        } else if (excludedLabels.includes(labelB)) {
-          return -1;
-        }
-
-        return collator.compare(labelA, labelB);
+      const filtered = this.controls.filter((control) => {
+        return control.label.toLowerCase().includes(this.filterQuery.toLowerCase());
       });
 
-      return sorted;
+      const excluded = filtered.filter((control) => {
+        return excludedLabels.includes(control.label);
+      });
+
+      const included = filtered.filter((control) => {
+        return !excludedLabels.includes(control.label);
+      });
+
+      const sorted = included.sort((a, b) => {
+        return this.collator.compare(a.label, b.label);
+      });
+
+      return [...sorted, ...excluded];
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
