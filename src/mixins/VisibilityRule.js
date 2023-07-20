@@ -16,7 +16,7 @@ export default {
         }
         return visibleInDevice;
       } catch (e) {
-        return true;
+        return visibleInDevice;
       }
     }
   }

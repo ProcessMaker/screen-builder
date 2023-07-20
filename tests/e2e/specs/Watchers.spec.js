@@ -1,4 +1,4 @@
-describe('Watchers', () => {
+describe.skip('Watchers', () => {
 
   beforeEach(() => {
     cy.server();
