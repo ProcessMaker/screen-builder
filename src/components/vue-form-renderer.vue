@@ -1,6 +1,7 @@
 <template>
   <div
     id="vue-form-renderer"
+    ref="vueFormRenderer1"
     :class="[containerClass, containerDeviceClass]"
     :style="cssDevice"
     data-cy="screen-renderer-container"
@@ -104,6 +105,7 @@ export default {
         },
       },
       scrollable: null,
+      containerObserver: null,
     };
   },
   computed: {
@@ -156,14 +158,18 @@ export default {
   },
   created() {
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+
+    this.containerObserver = new ResizeObserver(this.onContainerObserver);
   },
   mounted() {
-    this.parseCss();
+    // this.parseCss();
     this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
     this.scrollable = Scrollparent(this.$el);
+
+    this.containerObserver.observe(this.$refs.vueFormRenderer1);
   },
   methods: {
     ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
@@ -238,16 +244,13 @@ export default {
             throw error.formattedMessage;
           },
         });
+
         let i = 0;
         csstree.walk(ast, function(node, item, list) {
-          if (
-            node.type.match(/^.+Selector$/) &&
-              node.name !== containerSelector &&
-              list
-          ) {
+          if (node.type.match(/^.+Selector$/) && node.name !== containerSelector && list) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
-              list.prependData({type: 'WhiteSpace', loc: null, value: ' '});
+              list.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
               list.prependData({
                 type: 'TypeSelector',
                 loc: null,
@@ -263,9 +266,66 @@ export default {
 
         this.customCssWrapped = csstree.generate(ast);
 
+        // Find the media block
+        let mediaBlockNode = null;
+        let cssBody = '';
+        const maxWidthConditions = [];
+        const minWidthConditions = [];
+        csstree.walk(ast, {
+          visit: 'Atrule',
+          enter: (node, item, list) => {
+            if (node.name === 'media') {
+              // You can add a condition here to match specific media queries
+              // In this example, we're just matching any media block
+              mediaBlockNode = node;
+
+              // find a max-width condition in node
+              csstree.walk(mediaBlockNode.prelude, {
+                visit: 'MediaFeature',
+                enter: (featureNode) => {
+                  if (featureNode.name === 'max-width') {
+                    const maxWidthCondition = {
+                      type: featureNode.name,
+                      value: parseInt(featureNode.value.value, 10),
+                    };
+                    maxWidthConditions.push(maxWidthCondition);
+
+                    let cssBlock = csstree.generate(mediaBlockNode.block);
+                    cssBlock = cssBlock.slice(1, -1);
+
+                    cssBody += cssBlock;
+                  }
+
+                  // if (featureNode.name === 'min-width') {
+                  //   const minWidthCondition = {
+                  //     type: featureNode.name,
+                  //     value: featureNode.value.value,
+                  //   };
+                  //   minWidthConditions.push(minWidthCondition);
+                  // }
+                },
+              });
+
+              return list.remove(item);
+            }
+          },
+        });
+
+        maxWidthConditions.forEach((maxWidth) => {
+          if (this.$refs.vueFormRenderer1.getBoundingClientRect().width <= maxWidth.value) {
+            this.customCssWrapped += cssBody;
+          }
+        });
+
+        // window.console.log('CSS LAST########################');
+        // window.console.log(this.customCssWrapped);
+        // window.console.log('########################');
         // clear errors
         this.$emit('css-errors', '');
       } catch (error) {
+        window.console.log('ERRORS########################');
+        window.console.log(error);
+        window.console.log('########################');
         this.$emit('css-errors', error);
       }
     },
@@ -274,6 +334,11 @@ export default {
     },
     setCurrentPage(page) {
       this.$refs.renderer.setCurrentPage(page);
+    },
+    onContainerObserver(entries) {
+      // Control coordinates
+      const controlEl = entries[0].target.getBoundingClientRect();
+      this.parseCss();
     },
   },
 };
