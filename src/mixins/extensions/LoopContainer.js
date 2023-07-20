@@ -28,7 +28,7 @@ export default {
             items: element.items
           }
         ],
-        watchers: definition.watchersa,
+        watchers: definition.watchers,
         isMobile: definition.isMobile
       };
 
