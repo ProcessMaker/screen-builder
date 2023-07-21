@@ -11,6 +11,7 @@ describe('Media Query CSS', () => {
     cy.get('[data-cy=save-button]').click();
     //preview
     cy.get('[data-cy=mode-preview]').click();
+    cy.wait(1000);
     //if the resilt contains the custom css name selector
     cy.get('.page').should('contain.html', '<div selector="new_input_css">');
     // background color blue
