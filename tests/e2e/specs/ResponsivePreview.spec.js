@@ -23,7 +23,13 @@ describe('Responsive Preview test', () => {
     cy.get(desktopButtonSelector).should('not.be.visible');
     cy.get(mobileButtonSelector).should('not.be.visible');
   });
-
+  it('Buttons should have title attributes', () => {
+    // Preview button
+    cy.get(modePreviewSelector).click();
+    // Device buttons 
+    cy.get(desktopButtonSelector).should('be.visible').should('have.attr', 'title');
+    cy.get(mobileButtonSelector).should('be.visible').should('have.attr', 'title');
+  });
   it('should render the device screen buttons when clicking on mode preview', () => {
     // Preview button
     cy.get(modePreviewSelector).click();
