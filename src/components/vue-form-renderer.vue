@@ -236,7 +236,8 @@ export default {
       this.$emit('submit', this.data);
     },
     parseCss() {
-      const containerSelector = '.' + this.containerClass;
+      const containerSelector = `.${this.containerClass}`;
+
       try {
         const ast = csstree.parse(this.customCss, {
           onParseError(error) {
@@ -259,73 +260,63 @@ export default {
             }
           }
           if (i > 5000) {
-            throw 'CSS is too big';
+            throw Error('CSS is too long');
           }
-          i = i + 1;
+
+          i += 1;
         });
 
-        this.customCssWrapped = csstree.generate(ast);
-
         // Find the media block
-        let mediaBlockNode = null;
-        let cssBody = '';
-        const maxWidthConditions = [];
-        const minWidthConditions = [];
+        const mediaConditions = [];
         csstree.walk(ast, {
           visit: 'Atrule',
           enter: (node, item, list) => {
-            if (node.name === 'media') {
-              // You can add a condition here to match specific media queries
-              // In this example, we're just matching any media block
-              mediaBlockNode = node;
+            if (!item.prev && node.name === 'media') {
+              const mediaCondition = {
+                minWidth: 0,
+                maxWidth: 0,
+                rules: [],
+              };
 
-              // find a max-width condition in node
-              csstree.walk(mediaBlockNode.prelude, {
+              csstree.walk(node.prelude, {
                 visit: 'MediaFeature',
                 enter: (featureNode) => {
-                  if (featureNode.name === 'max-width') {
-                    const maxWidthCondition = {
-                      type: featureNode.name,
-                      value: parseInt(featureNode.value.value, 10),
-                    };
-                    maxWidthConditions.push(maxWidthCondition);
+                  if (['min-width', 'max-width'].includes(featureNode.name)) {
+                    mediaCondition[_.camelCase(featureNode.name)] = parseInt(featureNode.value.value, 10);
 
-                    let cssBlock = csstree.generate(mediaBlockNode.block);
-                    cssBlock = cssBlock.slice(1, -1);
+                    if (mediaCondition.rules.length === 0) {
+                      csstree.walk(node.block, {
+                        visit: 'Rule',
+                        enter: (ruleNode) => {
+                          const rule = csstree.generate(ruleNode);
 
-                    cssBody += cssBlock;
+                          mediaCondition.rules.push(rule);
+                        },
+                      });
+                    }
+
+                    mediaConditions.push(mediaCondition);
                   }
-
-                  // if (featureNode.name === 'min-width') {
-                  //   const minWidthCondition = {
-                  //     type: featureNode.name,
-                  //     value: featureNode.value.value,
-                  //   };
-                  //   minWidthConditions.push(minWidthCondition);
-                  // }
                 },
               });
 
-              return list.remove(item);
+              list.remove(item);
             }
           },
         });
 
-        maxWidthConditions.forEach((maxWidth) => {
-          if (this.$refs.vueFormRenderer1.getBoundingClientRect().width <= maxWidth.value) {
-            this.customCssWrapped += cssBody;
+        this.customCssWrapped = csstree.generate(ast);
+
+        mediaConditions.forEach((condition) => {
+          const { width: currentWidth } = this.$refs.vueFormRenderer1.getBoundingClientRect();
+
+          if (currentWidth >= condition.minWidth && currentWidth <= condition.maxWidth) {
+            this.customCssWrapped += condition.rules.join(' ');
           }
         });
 
-        // window.console.log('CSS LAST########################');
-        // window.console.log(this.customCssWrapped);
-        // window.console.log('########################');
-        // clear errors
         this.$emit('css-errors', '');
       } catch (error) {
-        window.console.log('ERRORS########################');
-        window.console.log(error);
-        window.console.log('########################');
         this.$emit('css-errors', error);
       }
     },
