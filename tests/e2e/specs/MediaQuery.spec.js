@@ -1,4 +1,4 @@
-describe.skip('Media Query CSS', () => {
+describe('Media Query CSS', () => {
   it('Adds media query and styling the element', () => {
     cy.visit('/');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
@@ -11,19 +11,20 @@ describe.skip('Media Query CSS', () => {
     cy.get('[data-cy=save-button]').click();
     //preview
     cy.get('[data-cy=mode-preview]').click();
+    cy.wait(1000);
     //if the resilt contains the custom css name selector
     cy.get('.page').should('contain.html', '<div selector="new_input_css">');
-    // backround color blue
+    // background color blue
     cy.wait(400);
     // update the viewport size
     cy.viewport(700, 800);
     cy.get('[selector=new_input_css]').should('have.css', 'background-color').and('eq','rgb(0, 0, 255)');
-    // backround color red
+    // background color red
     cy.wait(100);
     // update the viewport size
     cy.viewport(1000, 800);
     cy.get('[selector=new_input_css]').should('have.css', 'background-color').and('eq','rgb(255, 0, 0)');
-    // backround color green
+    // background color green
     cy.wait(100);
     // update the viewport size
     cy.viewport(1500, 800);
