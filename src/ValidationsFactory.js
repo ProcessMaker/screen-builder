@@ -36,6 +36,14 @@ class Validations {
    */
   isVisible() {
     // Disable validations if field is hidden
+    const visibleInDevice =
+      this.element.visibleInDevice === null || this.element.visibleInDevice === undefined
+        ? true
+        : this.element.visibleInDevice;
+    if (!visibleInDevice) {
+      return false;
+    }
+
     let visible = true;
     if (this.element.config.conditionalHide) {
       try {
@@ -177,13 +185,13 @@ class FormLoopValidations extends Validations {
     });
 
     if (Object.keys(siblingValidations).length != 0) {
-      // Update the loop validations with its siblings. 
+      // Update the loop validations with its siblings.
       const loopValidations = get(validations, this.element.config.name);
       if (loopValidations.hasOwnProperty('$each')) {
-        merge(loopValidations['$each'], siblingValidations);    
+        merge(loopValidations['$each'], siblingValidations);
       }
       set(validations[this.element.config.name]['$each'], loopValidations);
-    } 
+    }
   }
   camelCase(name) {
     return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
@@ -249,6 +257,9 @@ class FormElementValidations extends Validations {
     const conditionalHide = this.element.config.conditionalHide;
     const parentVisibilityRule = this.parentVisibilityRule;
     const insideLoop = this.insideLoop || false;
+    const deviceConfig = this.element.config.deviceVisibility
+      ? this.element.config.deviceVisibility
+      : { showForDesktop: true, showForMobile: true };
 
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
@@ -280,7 +291,7 @@ class FormElementValidations extends Validations {
             const parentDataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level + nextParentLevel);
             let isParentVisible = true;
             try {
-              isParentVisible = !!Parser.evaluate(parentVisibilityRule, parentDataWithParent);              
+              isParentVisible = !!Parser.evaluate(parentVisibilityRule, parentDataWithParent);
             } catch (error) {
               isParentVisible = false;
             }
@@ -289,6 +300,21 @@ class FormElementValidations extends Validations {
               return true;
             }
           }
+
+          // Check Device Visibility
+          let visibleInDevice = true;
+          try {
+            const isMobileScreen = this.$root.$children[0].$refs.renderer.definition.isMobile;
+            visibleInDevice =
+              (isMobileScreen && deviceConfig.showForMobile) ||
+              (!isMobileScreen && deviceConfig.showForDesktop);
+          } catch (error) {
+            visibleInDevice = true;
+          }
+          if (!visibleInDevice) {
+            return true;
+          }
+
           // Check Field Visibility
           let visible = true;
           if (conditionalHide) {
