@@ -1,7 +1,7 @@
 <template>
   <div
     id="vue-form-renderer"
-    ref="vueFormRenderer1"
+    ref="formRendererContainer"
     :class="[containerClass, containerDeviceClass]"
     :style="cssDevice"
     data-cy="screen-renderer-container"
@@ -162,14 +162,13 @@ export default {
     this.containerObserver = new ResizeObserver(this.onContainerObserver);
   },
   mounted() {
-    // this.parseCss();
     this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
     this.scrollable = Scrollparent(this.$el);
 
-    this.containerObserver.observe(this.$refs.vueFormRenderer1);
+    this.containerObserver.observe(this.$refs.formRendererContainer);
   },
   methods: {
     ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
@@ -308,7 +307,7 @@ export default {
         this.customCssWrapped = csstree.generate(ast);
 
         mediaConditions.forEach((condition) => {
-          const { width: currentWidth } = this.$refs.vueFormRenderer1.getBoundingClientRect();
+          const { width: currentWidth } = this.$refs.formRendererContainer.getBoundingClientRect();
 
           if (currentWidth >= condition.minWidth && currentWidth <= condition.maxWidth) {
             this.customCssWrapped += condition.rules.join(' ');
