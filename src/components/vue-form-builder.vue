@@ -555,7 +555,14 @@ export default {
         return this.collator.compare(a.label, b.label);
       });
 
-      return [...sorted, ...excluded];
+      return [...sorted, ...excluded].sort((a, b) => {
+        const textA = a.label.toLowerCase();
+        const textB = b.label.toLowerCase();
+        if (textA < textB) {
+          return -1;
+        }
+        return textA > textB ? 1 : 0;
+      });
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
