@@ -385,27 +385,24 @@
 <script>
 import draggable from "vuedraggable";
 import _ from "lodash";
-import {
-  FormInput,
-  FormSelectList,
-  FormTextArea,
-  FormCheckbox,
-  FormDatePicker,
-  FormHtmlEditor,
-  FormHtmlViewer
-} from "@processmaker/vue-form-elements";
 import HasColorProperty from "../mixins/HasColorProperty";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
-import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import accordions from "./accordions";
-import { keyNameProperty } from "../form-control-common-properties";
+import { keyNameProperty } from "@/form-control-common-properties";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
 import testing from "@/mixins/testing";
 import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
+import FormInput from "@/components/FormInput.vue";
+import FormSelectList from "@/components/FormSelectList.vue";
+import FormCheckbox from "@/components/FormCheckbox.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
+import FormDatePicker from "@/components/FormDatePicker.vue";
+import FormHtmlEditor from "@/components/FormHtmlEditor.vue";
+import FormHtmlViewer from "@/components/FormHtmlViewer.vue";
 
 const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
@@ -446,6 +443,7 @@ const defaultConfig = [
 ];
 
 export default {
+  name: 'VueFormBuilder',
   components: {
     draggable,
     FormInput,

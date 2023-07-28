@@ -248,12 +248,6 @@
 </template>
 
 <script>
-import {
-  FormInput,
-  FormTextArea,
-  FormMultiSelect,
-  FormCheckbox,
-} from '@processmaker/vue-form-elements';
 import MonacoEditor from 'vue-monaco';
 import DataMapping from './inspector/data-mapping';
 import OutboundConfig from './inspector/outbound-config';
@@ -261,6 +255,10 @@ import FocusErrors from '../mixins/focusErrors';
 import ScreenVariableSelector from './screen-variable-selector'
 
 import _ from 'lodash';
+import FormInput from "@/components/FormInput.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
+import FormMultiSelect from "@/components/FormMultiSelect.vue";
+import FormCheckbox from "@/components/FormCheckbox.vue";
 
 const globalObject = typeof window === 'undefined'
   ? global

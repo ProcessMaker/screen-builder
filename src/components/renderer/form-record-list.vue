@@ -155,8 +155,7 @@
 <script>
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
 import _ from 'lodash';
-import { dateUtils } from '@processmaker/vue-form-elements';
-import { mapActions, mapState } from "vuex";
+import {formatIfDate} from "@/dateUtils";
 
 const jsonOptionsActionsColumn = {
   key: '__actions',
@@ -290,7 +289,7 @@ export default {
       window.ProcessMaker.EventBus.$emit('modal-shown');
     },
     formatIfDate(string) {
-      return dateUtils.formatIfDate(string);
+      return formatIfDate(string);
     },
     isImage(field, item) {
       const content = _.get(item, field.key);

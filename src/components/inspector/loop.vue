@@ -38,7 +38,8 @@
 </template>
 
 <script>
-import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
+import FormInput from "@/components/FormInput.vue";
+import FormCheckbox from "@/components/FormCheckbox.vue";
 
 export default {
   props: ['value', 'screenType'],

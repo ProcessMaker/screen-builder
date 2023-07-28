@@ -1,132 +1,107 @@
-// Import our components
-import VueFormBuilder from './vue-form-builder';
-import VueFormRenderer from './vue-form-renderer';
-import * as renderer from './renderer';
-import FormMultiColumn from './renderer/form-multi-column';
-import * as inspector from './inspector';
-import FormBuilderControls from '../form-builder-controls';
-import Task from './task';
-import Loop from './editor/loop';
-import MultiColumn from './editor/multi-column';
-import FormLoop from './renderer/form-loop';
-import NewFormMultiColumn from './renderer/new-form-multi-column';
-import FormNestedScreen from './renderer/form-nested-screen';
-import ScreenRenderer from './screen-renderer';
-import AddLoopRow from './renderer/add-loop-row';
-import FormRecordList from './renderer/form-record-list';
-import FormImage from './renderer/form-image';
-import VueFormElements from '@processmaker/vue-form-elements';
-import FormButton from './renderer/form-button';
-import FileUpload from './renderer/file-upload.vue';
-import FileDownload from './renderer/file-download.vue';
-import FormMaskedInput from './renderer/form-masked-input';
-import DefaultLoadingSpinner from './utils/default-loading-spinner';
-import DataProvider from '../DataProvider';
-import { cacheAdapterEnhancer } from "axios-extensions";
-import LRUCache from "lru-cache";
-import Vuex from "vuex";
-import globalErrorsModule from "@/store/modules/globalErrorsModule";
-import undoRedoModule from "@/store/modules/undoRedoModule";
-
-const rendererComponents = {
-  ...renderer,
+import { DisplayErrors, RequiredAsterisk } from "@/components/common";
+import { Loop, MultiColumn } from "@/components/editor";
+import {
+  BFormComponent,
+  BWrapperComponent
+} from "@/components/FormBootstrapVueComponents";
+import {
+  CheckboxView,
+  MultiSelectView,
+  OptionboxView
+} from "@/components/FormSelectList";
+import {
+  CollectionSelectList,
+  ColorSelect,
+  ColumnSetup,
+  ContainerColumns,
+  DataMapping,
+  DefaultValueEditor,
+  DeviceVisibility,
+  EditOption,
+  FormMultiselect,
+  ImageUpload,
+  ImageVariable,
+  InputVariable,
+  LoopInspector,
+  MustacheHelper,
+  OptionsList,
+  OutboundConfig,
+  PageSelect,
+  ScreenSelector,
+  SelectDataTypeMask,
+  Tooltip,
+  ValidationSelect
+} from "@/components/inspector";
+import {
+  AddLoopRow,
+  FileDownload,
+  FileUpload,
+  FormButton,
+  FormImage,
+  FormInputMasked,
+  FormLoop,
+  FormMaskedInput,
   FormMultiColumn,
-};
+  FormNestedScreen,
+  FormRecordList,
+  FormRecordListStatic,
+  FormText,
+  NewFormMultiColumn,
+  ScreenRendererError
+} from "@/components/renderer";
+import {
+  DefaultLoadingSpinner,
+  MultipleUploadsCheckbox,
+  RequiredCheckbox
+} from "@/components/utils";
 
-// Export our named exports
 export {
-  VueFormBuilder,
-  VueFormRenderer,
-  inspector,
-  rendererComponents as renderer,
-  FormBuilderControls,
-  Task,
+  DisplayErrors,
+  RequiredAsterisk,
+  Loop,
+  MultiColumn,
+  BFormComponent,
+  BWrapperComponent,
+  CheckboxView,
+  MultiSelectView,
+  OptionboxView,
+  CollectionSelectList,
+  ColorSelect,
+  ColumnSetup,
+  ContainerColumns,
+  DataMapping,
+  DefaultValueEditor,
+  DeviceVisibility,
+  EditOption,
+  FormMultiselect,
+  ImageUpload,
+  ImageVariable,
+  InputVariable,
+  LoopInspector,
+  MustacheHelper,
+  OptionsList,
+  OutboundConfig,
+  PageSelect,
+  ScreenSelector,
+  SelectDataTypeMask,
+  Tooltip,
+  ValidationSelect,
+  AddLoopRow,
+  FileDownload,
+  FileUpload,
+  FormButton,
+  FormImage,
+  FormInputMasked,
+  FormLoop,
+  FormMaskedInput,
+  FormMultiColumn,
+  FormNestedScreen,
+  FormRecordList,
+  FormRecordListStatic,
+  FormText,
+  NewFormMultiColumn,
+  ScreenRendererError,
+  DefaultLoadingSpinner,
+  MultipleUploadsCheckbox,
+  RequiredCheckbox
 };
-
-/**
- * Gets the screen parent or null if don't have
- * @returns {object|null}
- */
- function findScreenOwner(control) {
-  let owner = control.$parent;
-  while (owner) {
-    const isScreen = owner.$options.name === "ScreenContent";
-    if (isScreen) {
-      return owner;
-    }
-    owner = owner.$parent;
-  }
-  return null;
-}
-
-// Export our Vue plugin as our default
-export default {
-  install(Vue) {
-    // First check to see if we're already installed
-    /* istanbul ignore next */
-    if (Vue._processMakerVueFormBuilderInstalled) {
-      return;
-    }
-
-    // Boolean flag to see if we're already installed
-    Vue._processMakerVueFormBuilderInstalled = true;
-
-    // Register the builder and renderer
-    Vue.component('AddLoopRow', AddLoopRow);
-    Vue.component('FormImage', FormImage);
-    Vue.component('FormLoop', FormLoop);
-    Vue.component('FormMultiColumn', FormMultiColumn);
-    Vue.component('FormNestedScreen', FormNestedScreen);
-    Vue.component('FormRecordList', FormRecordList);
-    Vue.component('Loop', Loop);
-    Vue.component('MultiColumn', MultiColumn);
-    Vue.component('NewFormMultiColumn', NewFormMultiColumn);
-    Vue.component('ScreenRenderer', ScreenRenderer);
-    Vue.component('task', Task);
-    Vue.component('vue-form-builder', VueFormBuilder);
-    Vue.component('vue-form-renderer', VueFormRenderer);
-    Vue.component('default-loading-spinner', DefaultLoadingSpinner);
-    Vue.use(VueFormElements);
-    Vue.component('FormButton', FormButton);
-    Vue.component('FileUpload', FileUpload);
-    Vue.component('FileDownload', FileDownload);
-
-    Vue.component('FormMaskedInput', FormMaskedInput);
-    Vue.use(DataProvider);
-
-    Vue.use(Vuex);
-    const store = new Vuex.Store({
-      modules: {
-        globalErrorsModule,
-        // @todo Improve how to load this module, it is used only in the form builder, not used in the form renderer.
-        undoRedoModule
-      }
-    });
-    Vue.mixin({ store });
-
-    //Helper to access data reference.
-    Vue.mixin({ methods:{ getScreenDataReference(customProperties = null, setter = null) {
-      const control = this;
-      const screen = findScreenOwner(control);
-      return screen.getDataReference(customProperties, setter);
-    }}});
-  }
-};
-
-/**
- * Initialize the axios cache adapter
- *
- * @param {Object} apiClient
- * @param {Object} screenConfig
- */
-export function initializeScreenCache(apiClient, screenConfig) {
-  apiClient.defaults.adapter = cacheAdapterEnhancer(
-    apiClient.defaults.adapter,
-    screenConfig.cacheEnabled,
-    "useCache",
-    new LRUCache({
-      ttl: screenConfig.cacheTimeout,
-      max: 100
-    })
-  );
-}

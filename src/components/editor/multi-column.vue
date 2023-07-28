@@ -107,16 +107,14 @@ import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
 import _ from 'lodash';
+import FormInput from '@/components/FormInput.vue';
+import FormSelectList from '@/components/FormSelectList.vue';
+import FormCheckbox from "@/components/FormCheckbox.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
+import FormDatePicker from "@/components/FormDatePicker.vue";
+import FormHtmlEditor from "@/components/FormHtmlEditor.vue";
+import FormHtmlViewer from "@/components/FormHtmlViewer.vue";
 
-import {
-  FormInput,
-  FormSelectList,
-  FormTextArea,
-  FormCheckbox,
-  FormDatePicker,
-  FormHtmlEditor,
-  FormHtmlViewer,
-} from '@processmaker/vue-form-elements';
 const defaultColumnWidth = 1;
 
 export default {

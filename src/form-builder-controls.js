@@ -1,24 +1,14 @@
-import FormText from './components/renderer/form-text';
-import FormButton from './components/renderer/form-button';
-import FormMultiColumn from './components/renderer/form-multi-column';
-import FormLoop from './components/renderer/form-loop';
-import FormRecordList from './components/renderer/form-record-list';
-import FormImage from './components/renderer/form-image';
-import FormMaskedInput from './components/renderer/form-masked-input';
-import FormNestedScreen from './components/renderer/form-nested-screen';
-import FileUpload from './components/renderer/file-upload';
-import FileDownload from './components/renderer/file-download';
+import FormText from './components/renderer/form-text.vue';
+import FormButton from './components/renderer/form-button.vue';
+import FormMultiColumn from './components/renderer/form-multi-column.vue';
+import FormLoop from './components/renderer/form-loop.vue';
+import FormRecordList from './components/renderer/form-record-list.vue';
+import FormImage from './components/renderer/form-image.vue';
+import FormMaskedInput from './components/renderer/form-masked-input.vue';
+import FormNestedScreen from './components/renderer/form-nested-screen.vue';
+import FileUpload from './components/renderer/file-upload.vue';
+import FileDownload from './components/renderer/file-download.vue';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
-import {
-  FormInput,
-  FormTextArea,
-  FormSelectList,
-  FormCheckbox,
-  FormDatePicker,
-  FormHtmlEditor,
-  BFormComponent,
-  BWrapperComponent,
-} from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 
 import {
@@ -39,6 +29,14 @@ import {
   buttonTypeEvent,
   tooltipProperty,
 } from './form-control-common-properties';
+import FormHtmlEditor from "@/components/FormHtmlEditor.vue";
+import FormInput from "@/components/FormInput.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
+import FormSelectList from "@/components/FormSelectList.vue";
+import FormCheckbox from "@/components/FormCheckbox.vue";
+import FormDatePicker from "@/components/FormDatePicker.vue";
+import BWrapperComponent from "@/components/FormBootstrapVueComponents/BWrapperComponent.vue";
+import BFormComponent from "@/components/FormBootstrapVueComponents/BFormComponent.vue";
 
 export default [
   {

@@ -23,7 +23,7 @@
 
 <script>
 import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import { dateUtils } from '@processmaker/vue-form-elements';
+import {formatIfDate} from "@/dateUtils";
 
 export default {
   name: 'FormRecordListStatic',
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     formatIfDate(string) {
-      return dateUtils.formatIfDate(string);
+      return formatIfDate(string);
     },
   },
 };

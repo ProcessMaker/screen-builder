@@ -48,17 +48,12 @@ import draggable from 'vuedraggable';
 import * as renderer from '@/components/renderer';
 import { HasColorProperty, shouldElementBeVisible, getValidPath } from '@/mixins';
 import FormMaskedInput from '@/components/renderer/form-masked-input';
-
-import {
-  // eslint-disable-next-line no-unused-vars
-  FormInput,
-  FormSelectList,
-  FormTextArea,
-  FormCheckbox,
-  FormDatePicker,
-  FormHtmlEditor,
-  FormHtmlViewer,
-} from '@processmaker/vue-form-elements';
+import FormSelectList from "@/components/FormSelectList.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
+import FormCheckbox from "@/components/FormCheckbox.vue";
+import FormDatePicker from "@/components/FormDatePicker.vue";
+import FormHtmlEditor from "@/components/FormHtmlEditor.vue";
+import FormHtmlViewer from "@/components/FormHtmlViewer.vue";
 
 const defaultColumnWidth = 1;
 

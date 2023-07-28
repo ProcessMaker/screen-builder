@@ -21,9 +21,7 @@
 
 <script>
 
-import {
-  FormMultiSelect,
-} from '@processmaker/vue-form-elements';
+import FormMultiSelect from '@/components/FormMultiSelect.vue';
 
 export default {
   props: ["name", "label", "value", "helper", "validation", "dataCy"],

@@ -10,6 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = {
   runtimeCompiler: true,
+  lintOnSave: process.env.NODE_ENV === 'production',
   transpileDependencies: ['vuetable-2'],
   configureWebpack: {
     plugins,
@@ -19,11 +20,6 @@ module.exports = {
         'node_modules',
       ],
       symlinks: false,
-      alias: {
-        '@processmaker/vue-form-elements$': process.env.NODE_ENV === 'development'
-          ? '@processmaker/vue-form-elements/src/components'
-          : '@processmaker/vue-form-elements',
-      },
     },
     externals: process.env.NODE_ENV === 'production' ? [
       'vue-monaco',

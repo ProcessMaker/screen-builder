@@ -27,6 +27,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.27",
     "scrollparent": "^2.0.1",
+    "vue-date-pick": "^1.5.1",
     "vue-loader": "^15.9.2",
     "vue-simple-uploader": "^0.7.4",
     "vue-the-mask": "^0.11.1",

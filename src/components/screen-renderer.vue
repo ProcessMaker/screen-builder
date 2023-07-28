@@ -55,8 +55,8 @@
 import { cloneDeep, isEmpty, isEqual } from "lodash";
 import Json2Vue from "../mixins/Json2Vue";
 import CurrentPageProperty from "../mixins/CurrentPageProperty";
-import WatchersSynchronous from "@/components/watchers-synchronous";
-import ScreenRendererError from "../components/renderer/screen-renderer-error";
+import WatchersSynchronous from "@/components/watchers-synchronous.vue";
+import ScreenRendererError from "@/components/renderer/screen-renderer-error.vue";
 
 export default {
   name: "ScreenRenderer",

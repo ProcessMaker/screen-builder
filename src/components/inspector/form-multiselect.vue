@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
-import { RequiredAsterisk } from '@processmaker/vue-form-elements';
+import ValidationMixin from '@/mixins/validation';
+import RequiredAsterisk from '@/components/common/RequiredAsterisk.vue';
 
 export default {
   inheritAttrs: false,

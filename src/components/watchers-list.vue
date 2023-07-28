@@ -55,7 +55,8 @@
 
 <script>
 import BasicSearch from './basic-search';
-import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
+import FormInput from "@/components/FormInput.vue";
+import FormTextArea from "@/components/FormTextArea.vue";
 
 export default {
   components: {

@@ -94,9 +94,10 @@
 </template>
 
 <script>
-import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
 import _ from 'lodash';
 import InputVariable from '../inspector/input-variable';
+import FormInput from "@/components/FormInput.vue";
+import FormCheckbox from "@/components/FormCheckbox.vue";
 
 export default {
   props: ['label', 'value', 'helper', 'name', 'builder', 'selectedControl', 'formConfig'],

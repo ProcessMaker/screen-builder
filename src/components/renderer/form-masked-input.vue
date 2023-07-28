@@ -38,13 +38,13 @@
 
 <script>
 import { createUniqIdsMixin } from 'vue-uniq-ids';
-import Inputmasked from './form-input-masked';
+import Inputmasked from './form-input-masked.vue';
 import { TheMask } from 'vue-the-mask';
-import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
-import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
+import { getUserDateFormat, getUserDateTimeFormat } from '@/dateUtils';
+import ValidationMixin from '@/mixins/validation';
 import moment from 'moment';
 import debounce from "lodash/debounce";
-import { RequiredAsterisk } from '@processmaker/vue-form-elements';
+import RequiredAsterisk from "@/components/common/RequiredAsterisk.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
