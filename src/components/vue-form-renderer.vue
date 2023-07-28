@@ -273,7 +273,7 @@ export default {
             if (!item.prev && node.name === 'media') {
               const mediaCondition = {
                 minWidth: 0,
-                maxWidth: 0,
+                maxWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
                 rules: [],
               };
 
