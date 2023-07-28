@@ -67,21 +67,19 @@ export function goToDesigner() {
 
 /**
  * This method is responsible to wait until elemnt is visible
- * @param type: type of selector, this could be "selector, xpath"
  * @param selector: selector of element like: ([data.cy="id2"])
  * @param maxAttempts: # to try , 10 by default
  * @param attempts: it is not change
  * @return nothing returns
  */
-export function waitUntilElementIsVisible(type, selector, maxAttempts=10, attempts=0){
+export function waitUntilElementIsVisible(selector, maxAttempts=10, attempts=0){
   if (attempts > maxAttempts) {
     throw new Error("Timed out waiting for report to be generated");
   }
-  cy.xpath('//body')
-    .then($body => {
+  cy.wait(500);
+  cy.get('body').then($body => {
       if ($body.find(selector).length <= 0) {
-        cy.wait(3000);
-        this.waitUntilElementIsVisible(type, selector, maxAttempts, attempts+1);
+        waitUntilElementIsVisible(selector, maxAttempts, attempts+1);
       }
-    });
+   });
 }
