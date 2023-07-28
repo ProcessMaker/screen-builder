@@ -55,6 +55,20 @@ describe('Date Picker', () => {
       form_date_picker_1: moment().format('YYYY-MM-DD'),
     });
   });
+  it("Date type with readOnly as true shouldn't be able to clear the date" , () => {
+    cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
+    cy.get('[data-cy=screen-element-container]').click();
+    cy.setMultiselect('[data-cy=inspector-dataFormat]', 'Date');
+    cy.get('[data-cy=inspector-disabled]').click();
+    cy.get('[data-cy=accordion-Advanced]').click();
+    cy.get('[data-cy=inspector-defaultValue-js]').click();
+    cy.setVueComponentValue('[data-cy=inspector-defaultValue-jsValue]', 'return new Date();');
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] vdpClearInput').should('not.exist');
+    cy.assertPreviewData({
+      form_date_picker_1: moment().format('YYYY-MM-DD'),
+    });
+  });
   it('DateTime type', () => {
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
