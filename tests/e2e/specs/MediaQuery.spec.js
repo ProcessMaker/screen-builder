@@ -1,5 +1,8 @@
-
-const sizes = [[700, 800], [1000, 800], [1500, 768]];
+const sizes = [
+  [700, 800],
+  [1000, 800],
+  [1200, 768],
+];
 const backgroundColor = ['rgb(0, 0, 255)', 'rgb(255, 0, 0)', 'rgb(0, 128, 0)'];
 
 describe('Media Query CSS', () => {
@@ -13,10 +16,31 @@ describe('Media Query CSS', () => {
     cy.get('[data-cy=topbar-css]').click();
     cy.wait(500);
     // write the media query in the custom css panel
-    cy.get('#custom-css').type('@media (max-width: 800px) {div[selector=\'new_input_css\'] {background-color: blue;}} @media (min-width: 800px) and (max-width: 1280px) {div[selector=\'new_input_css\'] {background-color: red;}} @media (min-width: 1280px) {div[selector=\'new_input_css\'] {background-color: green;}}', {parseSpecialCharSequences: false} );
+    cy.get('#custom-css').type(
+      `@media (max-width: 480px) {
+      div[selector="new_input_css"] {
+        background-color: blue;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 810px) {
+      div[selector="new_input_css"] {
+        background-color: red;
+      }
+    }
+
+    @media (min-width: 811px) {
+      div[selector="new_input_css"] {
+        background-color: green;
+      }
+    }
+  `,
+      { parseSpecialCharSequences: false },
+    );
+
     cy.wait(500);
     cy.get('[data-cy=save-button]').click();
-    //preview
+    // preview
     cy.get('[data-cy=mode-preview]').click();
   });
 
@@ -29,7 +53,9 @@ describe('Media Query CSS', () => {
       } else {
         cy.viewport(size);
       }
-      cy.get('[selector=new_input_css]').should('have.css', 'background-color').and('eq',backgroundColor[index]);
+
+      cy.wait(300);
+      cy.get('[selector=new_input_css]').should('have.css', 'background-color').and('eq', backgroundColor[index]);
     });
   });
 });

@@ -1,6 +1,7 @@
 <template>
   <div
     id="vue-form-renderer"
+    ref="formRendererContainer"
     :class="[containerClass, containerDeviceClass]"
     :style="cssDevice"
     data-cy="screen-renderer-container"
@@ -104,6 +105,7 @@ export default {
         },
       },
       scrollable: null,
+      containerObserver: null,
     };
   },
   computed: {
@@ -156,14 +158,17 @@ export default {
   },
   created() {
     this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+
+    this.containerObserver = new ResizeObserver(this.onContainerObserver);
   },
   mounted() {
-    this.parseCss();
     this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
       window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
     }
     this.scrollable = Scrollparent(this.$el);
+
+    this.containerObserver.observe(this.$refs.formRendererContainer);
   },
   methods: {
     ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
@@ -230,7 +235,8 @@ export default {
       this.$emit('submit', this.data);
     },
     parseCss() {
-      const containerSelector = '.' + this.containerClass;
+      const containerSelector = `.${this.containerClass}`;
+
       try {
         const ast = csstree.parse(this.customCss, {
           onParseError(error) {
@@ -238,16 +244,13 @@ export default {
             throw error.formattedMessage;
           },
         });
+
         let i = 0;
         csstree.walk(ast, function(node, item, list) {
-          if (
-            node.type.match(/^.+Selector$/) &&
-              node.name !== containerSelector &&
-              list
-          ) {
+          if (node.type.match(/^.+Selector$/) && node.name !== containerSelector && list) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
-              list.prependData({type: 'WhiteSpace', loc: null, value: ' '});
+              list.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
               list.prependData({
                 type: 'TypeSelector',
                 loc: null,
@@ -256,14 +259,61 @@ export default {
             }
           }
           if (i > 5000) {
-            throw 'CSS is too big';
+            throw Error('CSS is too long');
           }
-          i = i + 1;
+
+          i += 1;
+        });
+
+        // Find the media block
+        const mediaConditions = [];
+        csstree.walk(ast, {
+          visit: 'Atrule',
+          enter: (node, item, list) => {
+            if (!item.prev && node.name === 'media') {
+              const mediaCondition = {
+                minWidth: 0,
+                maxWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+                rules: [],
+              };
+
+              csstree.walk(node.prelude, {
+                visit: 'MediaFeature',
+                enter: (featureNode) => {
+                  if (['min-width', 'max-width'].includes(featureNode.name)) {
+                    mediaCondition[_.camelCase(featureNode.name)] = parseInt(featureNode.value.value, 10);
+
+                    if (mediaCondition.rules.length === 0) {
+                      csstree.walk(node.block, {
+                        visit: 'Rule',
+                        enter: (ruleNode) => {
+                          const rule = csstree.generate(ruleNode);
+
+                          mediaCondition.rules.push(rule);
+                        },
+                      });
+                    }
+
+                    mediaConditions.push(mediaCondition);
+                  }
+                },
+              });
+
+              list.remove(item);
+            }
+          },
         });
 
         this.customCssWrapped = csstree.generate(ast);
 
-        // clear errors
+        mediaConditions.forEach((condition) => {
+          const { width: currentWidth } = this.$refs.formRendererContainer.getBoundingClientRect();
+
+          if (currentWidth >= condition.minWidth && currentWidth <= condition.maxWidth) {
+            this.customCssWrapped += condition.rules.join(' ');
+          }
+        });
+
         this.$emit('css-errors', '');
       } catch (error) {
         this.$emit('css-errors', error);
@@ -274,6 +324,11 @@ export default {
     },
     setCurrentPage(page) {
       this.$refs.renderer.setCurrentPage(page);
+    },
+    onContainerObserver(entries) {
+      // Control coordinates
+      const controlEl = entries[0].target.getBoundingClientRect();
+      this.parseCss();
     },
   },
 };
