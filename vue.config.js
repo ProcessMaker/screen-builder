@@ -33,6 +33,9 @@ module.exports = {
       'i18next',
       '@panter/vue-i18next',
       'validatorjs',
+      'lodash',
+      'moment',
+      'moment-timezone'
     ] : [],
   },
 };

@@ -1,25 +1,8 @@
 // Import our components
-import VueFormBuilder from './components/vue-form-builder';
-import VueFormRenderer from './components/vue-form-renderer';
 import * as renderer from './components/renderer';
-import FormMultiColumn from './components/renderer/form-multi-column';
 import * as inspector from './components/inspector';
+import * as components from './components';
 import FormBuilderControls from './form-builder-controls';
-import Task from './components/task';
-import Loop from './components/editor/loop';
-import MultiColumn from './components/editor/multi-column';
-import FormLoop from './components/renderer/form-loop';
-import NewFormMultiColumn from './components/renderer/new-form-multi-column';
-import FormNestedScreen from './components/renderer/form-nested-screen';
-import ScreenRenderer from './components/screen-renderer';
-import AddLoopRow from './components/renderer/add-loop-row';
-import FormRecordList from './components/renderer/form-record-list';
-import FormImage from './components/renderer/form-image';
-import FormButton from './components/renderer/form-button';
-import FileUpload from './components/renderer/file-upload.vue';
-import FileDownload from './components/renderer/file-download.vue';
-import FormMaskedInput from './components/renderer/form-masked-input';
-import DefaultLoadingSpinner from './components/utils/default-loading-spinner';
 import DataProvider from './DataProvider';
 import { cacheAdapterEnhancer } from "axios-extensions";
 import LRUCache from "lru-cache";
@@ -27,19 +10,11 @@ import Vuex from "vuex";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 
-const rendererComponents = {
-  ...renderer,
-  FormMultiColumn,
-};
-
 // Export our named exports
 export {
-  VueFormBuilder,
-  VueFormRenderer,
   inspector,
-  rendererComponents as renderer,
+  renderer,
   FormBuilderControls,
-  Task,
 };
 
 /**
@@ -70,26 +45,15 @@ export default {
     // Boolean flag to see if we're already installed
     Vue._processMakerVueFormBuilderInstalled = true;
 
-    // Register the builder and renderer
-    Vue.component('AddLoopRow', AddLoopRow);
-    Vue.component('FormImage', FormImage);
-    Vue.component('FormLoop', FormLoop);
-    Vue.component('FormMultiColumn', FormMultiColumn);
-    Vue.component('FormNestedScreen', FormNestedScreen);
-    Vue.component('FormRecordList', FormRecordList);
-    Vue.component('Loop', Loop);
-    Vue.component('MultiColumn', MultiColumn);
-    Vue.component('NewFormMultiColumn', NewFormMultiColumn);
-    Vue.component('ScreenRenderer', ScreenRenderer);
-    Vue.component('task', Task);
-    Vue.component('vue-form-builder', VueFormBuilder);
-    Vue.component('vue-form-renderer', VueFormRenderer);
-    Vue.component('default-loading-spinner', DefaultLoadingSpinner);
-    Vue.component('FormButton', FormButton);
-    Vue.component('FileUpload', FileUpload);
-    Vue.component('FileDownload', FileDownload);
-
-    Vue.component('FormMaskedInput', FormMaskedInput);
+    for (const key in components) {
+      Vue.component(key, components[key]);
+    }
+    for (const key in renderer) {
+      Vue.component(key, renderer[key]);
+    }
+    for (const key in inspector) {
+      Vue.component(key, inspector[key]);
+    }
     Vue.use(DataProvider);
 
     Vue.use(Vuex);
@@ -110,6 +74,8 @@ export default {
         }}});
   }
 };
+
+export * from './components';
 
 /**
  * Initialize the axios cache adapter

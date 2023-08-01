@@ -1,3 +1,5 @@
-export { default as CheckboxView } from "./CheckboxView.vue";
-export { default as MultiSelectView } from "./MultiSelectView.vue";
-export { default as OptionboxView } from "./OptionboxView.vue";
+import CheckboxView from "./CheckboxView.vue";
+import MultiSelectView from "./MultiSelectView.vue";
+import OptionboxView from "./OptionboxView.vue";
+
+export { CheckboxView, MultiSelectView, OptionboxView };

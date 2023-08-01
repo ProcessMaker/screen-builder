@@ -1,2 +1,4 @@
-export { default as Loop } from "./loop.vue";
-export { default as MultiColumn } from "./multi-column.vue";
+import Loop from "./loop.vue";
+import MultiColumn from "./multi-column.vue";
+
+export { Loop, MultiColumn };

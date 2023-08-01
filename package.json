@@ -6,7 +6,7 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name vue-form-builder ./src/components/index.js",
+    "build-bundle": "vue-cli-service build --target lib --name vue-form-builder ./src/index.js",
     "lint-fix": "vue-cli-service lint",
     "open-cypress": "TZ=UTC nyc cypress open",
     "run-cypress": "TZ=UTC nyc cypress run",

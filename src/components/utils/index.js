@@ -1,3 +1,5 @@
-export { default as DefaultLoadingSpinner } from "./default-loading-spinner.vue";
-export { default as MultipleUploadsCheckbox } from "./multiple-uploads-checkbox.vue";
-export { default as RequiredCheckbox } from "./required-checkbox.vue";
+import DefaultLoadingSpinner from "./default-loading-spinner.vue";
+import MultipleUploadsCheckbox from "./multiple-uploads-checkbox.vue";
+import RequiredCheckbox from "./required-checkbox.vue";
+
+export { DefaultLoadingSpinner, MultipleUploadsCheckbox, RequiredCheckbox };

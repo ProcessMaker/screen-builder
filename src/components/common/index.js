@@ -1,2 +1,4 @@
-export { default as DisplayErrors } from "./DisplayErrors.vue";
-export { default as RequiredAsterisk } from "./RequiredAsterisk.vue";
+import DisplayErrors from "./DisplayErrors.vue";
+import RequiredAsterisk from "./RequiredAsterisk.vue";
+
+export { DisplayErrors, RequiredAsterisk };

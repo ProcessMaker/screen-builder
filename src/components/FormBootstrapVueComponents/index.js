@@ -1,2 +1,4 @@
-export { default as BFormComponent } from "./BFormComponent.vue";
-export { default as BWrapperComponent } from "./BWrapperComponent.vue";
+import BFormComponent from "./BFormComponent.vue";
+import BWrapperComponent from "./BWrapperComponent.vue";
+
+export { BFormComponent, BWrapperComponent };
