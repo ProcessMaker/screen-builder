@@ -39,6 +39,8 @@ describe("Date Picker", () => {
       }
     });
 
+    cy.wait(500);
+
     const todayDateChanged = `${moment().format("YYYY-MM-DD")}T20:15:00`;
     const today = moment.tz(todayDateChanged, timezoneTest);
 
