@@ -2,7 +2,7 @@
 import axios from "axios";
 import { has, get } from "lodash";
 import { cacheAdapterEnhancer } from "axios-extensions";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import i18next from 'i18next';
 
 const FIVE_MINUTES = 1000 * 60 * 5;

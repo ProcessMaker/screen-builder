@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import { createVuePlugin } from "vite-plugin-vue2";
 import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { resolve } from "path";
+import {viteCommonjs} from "@originjs/vite-plugin-commonjs";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
@@ -13,7 +14,8 @@ export default defineConfig({
   },
   plugins: [
     createVuePlugin(),
-    monacoEditorPlugin({ languageWorkers: monacoLanguages })
+    monacoEditorPlugin({ languageWorkers: monacoLanguages }),
+    viteCommonjs()
   ],
   resolve: {
     alias: [
@@ -34,17 +36,19 @@ export default defineConfig({
       name: libraryName,
       fileName: (format) => `vue-form-builder.${format}.js`
     },
+    sourcemap: 'hidden',
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue", "moment"],
+      external: ["vue", "moment", "moment-timezone"],
       output: {
         exports: "named",
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           vue: "Vue",
-          moment: "moment"
+          moment: "moment",
+          "moment-timezone": "moment-timezone"
         }
       }
     }
