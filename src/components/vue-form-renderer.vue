@@ -28,7 +28,7 @@ import { ValidatorFactory } from '../factories/ValidatorFactory';
 import CurrentPageProperty from '../mixins/CurrentPageProperty';
 
 import * as csstree from "css-tree";
-import * as Scrollparent from "scrollparent";
+import Scrollparent from "scrollparent";
 
 export default {
   name: 'VueFormRenderer',

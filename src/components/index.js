@@ -23,7 +23,7 @@ import FormMaskedInput from './renderer/form-masked-input';
 import DefaultLoadingSpinner from './utils/default-loading-spinner';
 import DataProvider from '../DataProvider';
 import { cacheAdapterEnhancer } from "axios-extensions";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
