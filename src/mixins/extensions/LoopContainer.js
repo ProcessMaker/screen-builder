@@ -28,7 +28,8 @@ export default {
             items: element.items
           }
         ],
-        watchers: definition.watchers
+        watchers: definition.watchers,
+        isMobile: definition.isMobile
       };
 
       let loopContext = "";

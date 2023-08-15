@@ -1,7 +1,7 @@
 <template>
     <div class="simple-error-message-main">
         <p>
-            <i class="fas fa-exclamation-triangle simple-error-message-icon"></i>
+            <img src="../assets/icons/ErrorMessage.svg" class="simple-error-message-icon"/>
         </p>
         <p>
             <span class="simple-error-message-title"> {{ $t(title) }} </span>
@@ -31,7 +31,6 @@ export default {
 .simple-error-message-icon {
     color: var(--warning);
     font-size: 144px;
-    margin-top: 25px;
 }
 .simple-error-message-title {
     font-size: 24px;

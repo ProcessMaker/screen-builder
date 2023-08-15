@@ -1,15 +1,17 @@
 /* eslint-disable no-param-reassign */
 import moment from "moment-timezone";
+const timezoneTest = "America/Los_Angeles";
+moment.tz.setDefault(timezoneTest);
 
 describe("Date Picker", () => {
-  const timezoneTest = "America/Los_Angeles";
-
-  it("DateTime type", () => {
+  beforeEach(() => {
     cy.visit("/");
     cy.window().then((win) => {
       win.ProcessMaker.user.timezone = timezoneTest;
     });
+  });
 
+  it("DateTime type", () => {
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
       "bottom"
@@ -36,6 +38,8 @@ describe("Date Picker", () => {
         cy.get(toggle).click();
       }
     });
+
+    cy.wait(500);
 
     const todayDateChanged = `${moment().format("YYYY-MM-DD")}T20:15:00`;
     const today = moment.tz(todayDateChanged, timezoneTest);

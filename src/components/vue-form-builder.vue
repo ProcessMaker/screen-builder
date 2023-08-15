@@ -42,6 +42,7 @@
               :data-cy="'controls-' + element.component"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
+              <span v-html="element.config.svg" class="svg-icon"></span>
               {{ $t(element.label) }}
             </b-list-group-item>
 
@@ -443,6 +444,21 @@ const defaultConfig = [{
 }];
 
 export default {
+  components: {
+    draggable,
+    FormInput,
+    FormSelectList,
+    FormCheckbox,
+    FormTextArea,
+    FormDatePicker,
+    FormHtmlEditor,
+    FormHtmlViewer,
+    RequiredCheckbox,
+    MultipleUploadsCheckbox,
+    defaultValueEditor,
+    ...inspector,
+    ...renderer
+  },
   mixins: [HasColorProperty, testing],
   props: {
     renderControls: {
@@ -465,21 +481,6 @@ export default {
     screen: {
       type: Object
     }
-  },
-  components: {
-    draggable,
-    FormInput,
-    FormSelectList,
-    FormCheckbox,
-    FormTextArea,
-    FormDatePicker,
-    FormHtmlEditor,
-    FormHtmlViewer,
-    RequiredCheckbox,
-    MultipleUploadsCheckbox,
-    defaultValueEditor,
-    ...inspector,
-    ...renderer,
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -534,22 +535,40 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      return this.controls
-        .filter((control) => {
-          return control.label
-            .toLowerCase()
-            .includes(this.filterQuery.toLowerCase());
-        })
-        .sort((a, b) => {
-          return this.collator.compare(a.label, b.label);
-        });
+      const excludedLabels = ["Bootstrap Wrapper", "Bootstrap Component"];
+
+      const filtered = this.controls.filter((control) => {
+        return control.label.toLowerCase().includes(this.filterQuery.toLowerCase());
+      });
+
+      const excluded = filtered.filter((control) => {
+        return excludedLabels.includes(control.label);
+      });
+
+      const included = filtered.filter((control) => {
+        return !excludedLabels.includes(control.label);
+      });
+
+      const sorted = included.sort((a, b) => {
+        return this.collator.compare(a.label, b.label);
+      });
+
+      return [...sorted, ...excluded].sort((a, b) => {
+        const textA = a.label.toLowerCase();
+        const textB = b.label.toLowerCase();
+        if (textA < textB) {
+          return -1;
+        }
+        return textA > textB ? 1 : 0;
+      });
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
       return this.screenType === formTypes.form;
-    }
+    },
+
   },
   watch: {
     config: {
@@ -1023,7 +1042,7 @@ export default {
         this.language = document.documentElement.lang;
       }
       this.collator = Intl.Collator(this.language);
-    }
+    },
   }
 };
 </script>
@@ -1031,6 +1050,10 @@ export default {
 <style>
 .prevent-interaction {
   pointer-events: none;
+}
+
+.svg-icon > svg {
+  height: 14px;
 }
 </style>
 
