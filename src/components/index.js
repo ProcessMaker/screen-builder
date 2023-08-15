@@ -16,6 +16,7 @@ import AddLoopRow from './renderer/add-loop-row';
 import FormRecordList from './renderer/form-record-list';
 import FormImage from './renderer/form-image';
 import VueFormElements from '@processmaker/vue-form-elements';
+import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import FormButton from './renderer/form-button';
 import FileUpload from './renderer/file-upload.vue';
 import FileDownload from './renderer/file-download.vue';

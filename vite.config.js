@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import { createVuePlugin } from "vite-plugin-vue2";
 import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { resolve } from "path";
-import {viteCommonjs} from "@originjs/vite-plugin-commonjs";
+import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
@@ -36,7 +36,7 @@ export default defineConfig({
       name: libraryName,
       fileName: (format) => `vue-form-builder.${format}.js`
     },
-    sourcemap: 'hidden',
+    sourcemap: "hidden",
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library

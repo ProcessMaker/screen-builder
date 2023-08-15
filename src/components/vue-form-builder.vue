@@ -393,6 +393,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer
 } from "@processmaker/vue-form-elements";
+import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import HasColorProperty from "../mixins/HasColorProperty";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
