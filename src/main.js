@@ -12,7 +12,7 @@ import TestComponents from '../tests/components';
 import 'bootstrap';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from "@processmaker/vue-multiselect";
-import LRUCache from 'lru-cache';
+import { LRUCache } from "lru-cache";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 import VueFormElements from '@processmaker/vue-form-elements';
