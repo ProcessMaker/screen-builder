@@ -329,7 +329,7 @@ export default {
       try {
         const currentConf = JSON.parse(this.config.script_configuration);
         const newConf = JSON.parse(value);
-        this.config.script_configuration = JSON.stringify({...currentConf, ...newConf});
+        this.config.script_configuration = JSON.stringify({...currentConf, ...newConf}, null, '\t');
       } catch {
         // Invalid json will get caught by the validator
       }

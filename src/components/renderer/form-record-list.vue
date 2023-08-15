@@ -67,7 +67,7 @@
     <b-modal
       :static="true"
       @ok="handleOk"
-      @hidden="addItem = initFormValues"
+      @hidden="handleHideAddModal"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="addModal"
@@ -95,6 +95,7 @@
     <b-modal
       :static="true"
       @ok="edit"
+      @hidden="$refs.addRenderer.hasSubmitted(false)"
       size="lg"
       v-if="editable && !selfReferenced"
       ref="editModal"
@@ -380,6 +381,7 @@ export default {
       });
     },
     edit(event) {
+      this.$refs.addRenderer.hasSubmitted(true);
       if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         event.preventDefault();
         return;
@@ -411,7 +413,12 @@ export default {
       let {_parent, ...result} = this.addItem;
       this.initFormValues = _.cloneDeep(result);
     },
+    handleHideAddModal() {
+      this.addItem = this.initFormValues;
+      this.$refs.addRenderer.hasSubmitted(false);
+    },
     async handleOk(bvModalEvt) {
+      this.$refs.addRenderer.hasSubmitted(true);
       bvModalEvt.preventDefault();
 
       if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {

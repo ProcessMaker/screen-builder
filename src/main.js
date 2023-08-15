@@ -10,7 +10,7 @@ import axios from 'axios';
 import { cacheAdapterEnhancer } from 'axios-extensions';
 import TestComponents from '../tests/components';
 import 'bootstrap';
-import BootstrapVue from 'bootstrap-vue';
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue';
 import Multiselect from "@processmaker/vue-multiselect";
 import { LRUCache } from "lru-cache";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
@@ -18,6 +18,7 @@ import undoRedoModule from "@/store/modules/undoRedoModule";
 import VueFormElements from '@processmaker/vue-form-elements';
 
 Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
 Vue.config.productionTip = false;
 
 // Allow strings to be wrapped in $t(...) for translating

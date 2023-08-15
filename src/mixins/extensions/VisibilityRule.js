@@ -3,12 +3,21 @@ import VisibilityRule from '../VisibilityRule';
 export default {
   mounted() {
     this.extensions.push({
-      onloaditems({ element, wrapper }) {
-        if (element.config.conditionalHide) {
+      onloaditems({ element, wrapper, definition }) {
+        const visibility = element.config.deviceVisibility || { showForDesktop: true, showForMobile: true }
+        const restrictDeviceVisibility = !visibility.showForDesktop || !visibility.showForMobile;
+
+
+        element.visibleInDevice =
+          (definition.isMobile && visibility.showForMobile) ||
+          (!definition.isMobile && visibility.showForDesktop);
+
+        if (element.config.conditionalHide || restrictDeviceVisibility) {
+          const deviceVisibility = JSON.stringify( { ...visibility, isMobile: definition.isMobile } );
           wrapper.setAttribute(
             'v-show',
             `visibilityRuleIsVisible(${JSON.stringify(element.config.conditionalHide)}, 
-            ${JSON.stringify(element.config.name)})`
+            ${JSON.stringify(element.config.name)}, ${deviceVisibility})`
           );
         }
       },
