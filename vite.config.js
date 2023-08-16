@@ -40,15 +40,17 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue", "moment", "moment-timezone"],
+      external: ["vue", "moment", "moment-timezone", "lodash", /^@processmaker\/(?!processmaker-bpmn-moddle).+$/],
       output: {
         exports: "named",
+        assetFileNames: `vue-form-builder.[ext]`,
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           vue: "Vue",
           moment: "moment",
-          "moment-timezone": "moment-timezone"
+          "moment-timezone": "moment-timezone",
+          lodash: "lodash"
         }
       }
     }
