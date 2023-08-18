@@ -40,7 +40,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue", "moment", "moment-timezone", "lodash", /^@processmaker\/(?!processmaker-bpmn-moddle).+$/],
+      external: ["vue", "moment", "moment-timezone", "lodash"],
       output: {
         exports: "named",
         assetFileNames: `vue-form-builder.[ext]`,
