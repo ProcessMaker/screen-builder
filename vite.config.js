@@ -14,7 +14,8 @@ export default defineConfig({
   },
   plugins: [
     createVuePlugin(),
-    monacoEditorPlugin({ languageWorkers: monacoLanguages }),
+    // https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21
+    monacoEditorPlugin.default({ languageWorkers: monacoLanguages }),
     viteCommonjs()
   ],
   resolve: {
@@ -36,7 +37,6 @@ export default defineConfig({
       name: libraryName,
       fileName: (format) => `vue-form-builder.${format}.js`
     },
-    sourcemap: "hidden",
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
