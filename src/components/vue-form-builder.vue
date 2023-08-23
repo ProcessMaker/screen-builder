@@ -1055,7 +1055,6 @@ export default {
 }
 
 .svg-icon > svg {
-  height: 14px;
 }
 </style>
 
