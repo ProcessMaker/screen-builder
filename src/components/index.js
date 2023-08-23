@@ -75,6 +75,7 @@ export * from "./inspector";
 export * from "./renderer";
 export * as Currencies from "../currency.json";
 export * from "./utils";
+export * from "./editor";
 
 /**
  * Gets the screen parent or null if don't have
