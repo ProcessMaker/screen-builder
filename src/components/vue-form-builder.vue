@@ -40,6 +40,7 @@
               v-for="(element, index) in filteredControls"
               :key="index"
               :data-cy="'controls-' + element.component"
+              :class="{ 'ai-control': element.component === 'AiSection'}"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
               <span v-html="element.config.svg" class="svg-icon"></span>
@@ -154,7 +155,8 @@
         >
           <div
             v-if="element.container"
-            class="card"
+            class="card container-lement"
+            :class="{ 'ai-section-card': isAiSection(element) }"
             data-cy="screen-element-container"
             @click="inspect(element)"
           >
@@ -168,9 +170,23 @@
                 :class="element.config.icon"
                 class="mr-2 ml-1"
               />
+              <span
+                v-if="element.config.svg"
+                v-html="element.config.svg"
+                class="svg-icon mr-2 ml-1"
+              ></span>
               {{ element.config.name || element.label || $t("Field Name") }}
               <div class="ml-auto">
                 <button
+                  v-if="isAiSection(element)"
+                  class="btn btn-sm btn-primary mr-2"
+                  :title="$t('Apply Changes')"
+                  @click="applyAiChanges(index)"
+                >
+                  {{ $t("Apply Changes") }}
+                </button>
+                <button
+                v-if="!isAiSection(element)"
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
@@ -1045,6 +1061,9 @@ export default {
       }
       this.collator = Intl.Collator(this.language);
     },
+    isAiSection(element) {
+      return element.component === "AiSection";
+    }
   }
 };
 </script>
@@ -1055,7 +1074,7 @@ export default {
 }
 
 .svg-icon > svg {
-  height: 14px;
+
 }
 </style>
 
@@ -1164,5 +1183,17 @@ $side-bar-font-size: 0.875rem;
   height: 8rem;
   top: 4rem;
   border: 1px dashed rgba(0, 0, 0, 0.125);
+}
+
+.ai-section-card {
+  border-color: #8AB8FF;
+}
+
+.ai-section-card .card-header {
+  background: #CBDFFF;
+}
+
+.ai-control {
+  background: #FFF4D3;
 }
 </style>
