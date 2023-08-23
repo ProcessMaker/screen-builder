@@ -1,37 +1,52 @@
 // Import our components
-import VueFormBuilder from './vue-form-builder';
-import VueFormRenderer from './vue-form-renderer';
-import * as renderer from './renderer';
-import FormMultiColumn from './renderer/form-multi-column';
-import * as inspector from './inspector';
-import FormBuilderControls from '../form-builder-controls';
-import Task from './task';
-import Loop from './editor/loop';
-import MultiColumn from './editor/multi-column';
-import FormLoop from './renderer/form-loop';
-import NewFormMultiColumn from './renderer/new-form-multi-column';
-import FormNestedScreen from './renderer/form-nested-screen';
-import ScreenRenderer from './screen-renderer';
-import AddLoopRow from './renderer/add-loop-row';
-import FormRecordList from './renderer/form-record-list';
-import FormImage from './renderer/form-image';
-import VueFormElements from '@processmaker/vue-form-elements';
-import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
-import FormButton from './renderer/form-button';
-import FileUpload from './renderer/file-upload.vue';
-import FileDownload from './renderer/file-download.vue';
-import FormMaskedInput from './renderer/form-masked-input';
-import DefaultLoadingSpinner from './utils/default-loading-spinner';
-import DataProvider from '../DataProvider';
+import VueFormBuilder from "./vue-form-builder";
+import VueFormRenderer from "./vue-form-renderer";
+import * as renderer from "./renderer";
+import FormMultiColumn from "./renderer/form-multi-column";
+import * as inspector from "./inspector";
+import FormBuilderControls from "../form-builder-controls";
+import Task from "./task";
+import Loop from "./editor/loop";
+import MultiColumn from "./editor/multi-column";
+import FormLoop from "./renderer/form-loop";
+import NewFormMultiColumn from "./renderer/new-form-multi-column";
+import FormNestedScreen from "./renderer/form-nested-screen";
+import ScreenRenderer from "./screen-renderer";
+import AddLoopRow from "./renderer/add-loop-row";
+import FormRecordList from "./renderer/form-record-list";
+import FormImage from "./renderer/form-image";
+import VueFormElements from "@processmaker/vue-form-elements";
+import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
+import FormButton from "./renderer/form-button";
+import FileUpload from "./renderer/file-upload.vue";
+import FileDownload from "./renderer/file-download.vue";
+import FormMaskedInput from "./renderer/form-masked-input";
+import DefaultLoadingSpinner from "./utils/default-loading-spinner";
+import DataProvider from "../DataProvider";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import { LRUCache } from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
+import BasicSearch from "./basic-search.vue";
+import ComputedProperties from "./computed-properties.vue";
+import CustomCSS from "./custom-css.vue";
+import WatchersForm from "./watchers-form.vue";
+import WatchersList from "./watchers-list.vue";
+import WatchersPopup from "./watchers-popup.vue";
+import WatchersSynchronous from "./watchers-synchronous.vue";
+import globalProperties from "@/global-properties.js";
+import {
+  DataFormatProperty,
+  DataTypeBooleanProperty,
+  DataTypeDateTimeProperty,
+  DataTypeProperty,
+  DataTypeWithoutDateProperty
+} from "../VariableDataTypeProperties.js";
 
 const rendererComponents = {
   ...renderer,
-  FormMultiColumn,
+  FormMultiColumn
 };
 
 // Export our named exports
@@ -42,7 +57,24 @@ export {
   rendererComponents as renderer,
   FormBuilderControls,
   Task,
+  BasicSearch,
+  ComputedProperties,
+  CustomCSS,
+  WatchersForm,
+  WatchersList,
+  WatchersPopup,
+  WatchersSynchronous,
+  globalProperties,
+  DataTypeProperty,
+  DataTypeWithoutDateProperty,
+  DataTypeBooleanProperty,
+  DataTypeDateTimeProperty,
+  DataFormatProperty
 };
+export * from "./inspector";
+export * from "./renderer";
+export * as Currencies from "../currency.json";
+export * from "./utils";
 
 /**
  * Gets the screen parent or null if don't have
