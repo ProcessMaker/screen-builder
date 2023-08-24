@@ -1055,6 +1055,7 @@ export default {
 }
 
 .svg-icon > svg {
+  margin-bottom: 3px;
 }
 </style>
 
