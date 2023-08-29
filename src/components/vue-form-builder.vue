@@ -648,6 +648,9 @@ export default {
     this.$root.$on("nested-screen-updated", () => {
       this.checkForCaptchaInLoops();
     });
+    this.$root.$on("ai-form-generated", (formItems) => {
+      this.previewAiChanges(formItems);
+    });
   },
   methods: {
     refreshContent() {
@@ -1074,6 +1077,12 @@ export default {
     },
     aiPreview() {
       return true;
+    },
+    previewAiChanges(formItems) {
+      console.log(formItems);
+      console.log(JSON.parse(JSON.stringify(formItems)));
+      this.selected.items = JSON.parse(JSON.stringify(formItems));
+      console.log(this.selected.items);
     }
   }
 };
