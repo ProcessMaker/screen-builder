@@ -1,12 +1,11 @@
 import Validator from "@chantouchsek/validatorjs";
 import moment from "moment-timezone";
 
-Object.assign(
-  Validator.register,
-  ("custom-same",
+Validator.register(
+  "custom-same",
   function (val, req) {
     let val1;
-    let val2 = val;
+    const val2 = val;
     if (!req.includes(".")) {
       val1 = this.validator._flattenObject(this.validator.input)[req];
     } else {
@@ -19,12 +18,11 @@ Object.assign(
 
     return false;
   },
-  "The :attribute and :custom-same fields must match.")
+  "The :attribute and :custom-same fields must match."
 );
 
-Object.assign(
-  Validator.register,
-  ("after",
+Validator.register(
+  "after",
   function (date, params) {
     // checks if incoming 'params' is a date or a key reference.
     const inputDate = moment(date).toISOString();
@@ -32,12 +30,11 @@ Object.assign(
 
     return inputDate > afterDate;
   },
-  "The :attribute must be after :after.")
+  "The :attribute must be after :after."
 );
 
-Object.assign(
-  Validator.register,
-  ("after_or_equal",
+Validator.register(
+  "after_or_equal",
   function (date, params) {
     // checks if incoming 'params' is a date or a key reference.
     const inputDate = moment(date).toISOString();
@@ -45,12 +42,11 @@ Object.assign(
 
     return inputDate >= equalOrAfterDate;
   },
-  "The :attribute must be equal or after :after_or_equal.")
+  "The :attribute must be equal or after :after_or_equal."
 );
 
-Object.assign(
-  Validator.register,
-  ("before",
+Validator.register(
+  "before",
   function (date, params) {
     // checks if incoming 'params' is a date or a key reference.
     const inputDate = moment(date).toISOString();
@@ -58,12 +54,11 @@ Object.assign(
 
     return inputDate < beforeDate;
   },
-  "The :attribute must be before :before.")
+  "The :attribute must be before :before."
 );
 
-Object.assign(
-  Validator.register,
-  ("before_or_equal",
+Validator.register(
+  "before_or_equal",
   function (date, params) {
     // checks if incoming 'params' is a date or a key reference.
     const inputDate = moment(date).toISOString();
@@ -71,12 +66,11 @@ Object.assign(
 
     return inputDate <= beforeDate;
   },
-  "The :attribute must be equal or before :before_or_equal.")
+  "The :attribute must be equal or before :before_or_equal."
 );
 
-Object.assign(
-  Validator.register,
-  ("custom_date",
+Validator.register(
+  "custom_date",
   function (date) {
     let format = "MM/DD/YYYY";
     if (
@@ -90,8 +84,8 @@ Object.assign(
       );
     }
 
-    let checkDate = moment(date, [format, moment.ISO_8601], true);
+    const checkDate = moment(date, [format, moment.ISO_8601], true);
     return checkDate.isValid();
   },
-  "The :attribute must be a valid date.")
+  "The :attribute must be a valid date."
 );

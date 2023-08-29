@@ -423,7 +423,7 @@ if (
 // to Validator.registerAsync() in order to get the $t translator.
 // Should also probably be converted to a mixin. These changes would then
 // require modifications to to App.vue and PM4 Core implementations
-Object.assign(Validator.register, (
+Validator.register(
     "columns-adds-to-12",
         (value) => {
           const sum = value.reduce((total, options) => {
@@ -436,7 +436,7 @@ Object.assign(Validator.register, (
           return false;
         },
         "Columns must add to 12"
-));
+);
 
 const defaultConfig = [{
   name: 'Default',
