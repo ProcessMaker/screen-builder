@@ -6,7 +6,7 @@ export { default as FormImage } from "./form-image.vue";
 export { default as FormInputMasked } from "./form-masked-input.vue";
 export { default as FormLoop } from "./form-loop.vue";
 export { default as FormMaskedInput } from "./form-masked-input.vue";
-export { default as FormMultiColumn } from "./form-multi-column.vue";
+// export { default as FormMultiColumn } from "./form-multi-column.vue";
 export { default as FormNestedScreen } from "./form-nested-screen.vue";
 export { default as FormRecordList } from "./form-record-list.vue";
 export { default as FormRecordListStatic } from "./form-record-list-static.vue";
