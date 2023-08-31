@@ -215,6 +215,7 @@
               :class="elementCssClass(element)"
               :selected="selected"
               :config="element.config"
+              :ai-element="element"
               @inspect="inspect"
               @update-state="updateState"
             />
