@@ -90,8 +90,7 @@
                     v-bind="element.config"
                     :config="element.config"
                     @input="element.config.interactive ? element.config.content = $event : null"
-                    :is="element['editor-component']"
-                  />
+                    :is="element['editor-component']"/>
                 </div>
               </div>
             </div>
