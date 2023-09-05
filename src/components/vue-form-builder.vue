@@ -168,6 +168,7 @@
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
+              :class="{ 'pulse': isAiSection(element) }"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted" />
               <i
@@ -183,15 +184,15 @@
               {{ element.config.name || element.label || $t("Field Name") }}
               <div class="ml-auto">
                 <button
-                  v-if="isAiSection(element) && aiPreview()"
+                  v-if="isAiSection(element) && aiPreview(element)"
                   class="btn btn-sm btn-primary mr-2"
                   :title="$t('Apply Changes')"
-                  @click="applyAiChanges(index)"
+                  @click="applyAiChanges(element)"
                 >
                   {{ $t("Apply Changes") }}
                 </button>
                 <button
-                v-if="!(isAiSection(element) && aiPreview())"
+                v-if="!(isAiSection(element) && aiPreview(element))"
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
@@ -652,6 +653,9 @@ export default {
     this.$root.$on("ai-form-generated", (formItems) => {
       this.previewAiChanges(formItems);
     });
+    this.$root.$on("apply-ai-changes", (element) => {
+      this.applyAiChanges(element);
+    });
   },
   methods: {
     refreshContent() {
@@ -1076,14 +1080,36 @@ export default {
     isAiSection(element) {
       return element.component === "AiSection";
     },
-    aiPreview() {
-      return true;
+    aiPreview(element) {
+      return element.items && element.items[0] && element.items[0].length;
     },
     previewAiChanges(formItems) {
-      console.log(formItems);
-      console.log(JSON.parse(JSON.stringify(formItems)));
       this.selected.items = JSON.parse(JSON.stringify(formItems));
-      console.log(this.selected.items);
+    },
+    applyAiChanges(element) {
+      element.component = "FormMultiColumn";
+      element.label = "Multicolumn / Table";
+      element["editor-control"] = "MultiColumn";
+      element["editor-component"] = "MultiColumn";
+      element.inspector = [
+        {
+          type: "ContainerColumns",
+          field: "options",
+          config: {
+            label: "Column Width",
+            validation: "columns-adds-to-12"
+          }
+        }
+      ];
+      element.config = {
+        icon: "fas fa-table",
+        options: [
+          {
+            value: "1",
+            content: "12"
+          }
+        ]
+      };
     }
   }
 };
@@ -1214,5 +1240,18 @@ $side-bar-font-size: 0.875rem;
 
 .ai-control {
   background: #FFF4D3;
+}
+
+.pulse {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0px rgb(28 114 194 / 50%);
+  }
+  100% {
+    box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
+  }
 }
 </style>

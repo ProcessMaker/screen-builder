@@ -16,12 +16,22 @@
         <div
         v-if="selected === element"
         class="card-header form-element-header d-flex align-items-center border rounded"
+        :class="{ 'pulse': isAiSection(element) }"
         >
         <i class="fas fa-arrows-alt-v mr-1 text-muted"/>
         <i v-if="element.config.icon" :class="element.config.icon" class="mr-2 ml-1"/>
         {{ element.config.name || $t('Variable Name') }}
         <div class="ml-auto">
           <button
+            v-if="isAiSection(element) && aiPreview(element)"
+            class="btn btn-sm btn-primary mr-2"
+            :title="$t('Apply Changes')"
+            @click="applyAiChanges(element)"
+          >
+            {{ $t("Apply Changes") }}
+          </button>
+          <button
+          v-if="!(isAiSection(element) && aiPreview(element))"
           class="btn btn-sm btn-secondary mr-2"
           :title="$t('Copy Control')"
           @click="duplicateItem(index)"
@@ -160,6 +170,12 @@ export default {
     },
     isAiSection(element) {
       return element.component === "AiSection";
+    },
+    aiPreview(element) {
+      return element.items && element.items[0] && element.items[0].length;
+    },
+    applyAiChanges(element) {
+      this.$root.$emit("apply-ai-changes", element);
     }
   }
 };
@@ -223,5 +239,17 @@ export default {
 
 .ai-section-card .card-header {
   background: #cbdfff;
+}
+.pulse {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0px rgb(28 114 194 / 50%);
+  }
+  100% {
+    box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
+  }
 }
 </style>
