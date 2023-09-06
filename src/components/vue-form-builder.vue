@@ -168,7 +168,7 @@
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
-              :class="{ 'pulse': isAiSection(element) }"
+              :class="{ 'pulse': isAiSection(element) && aiPreview(element) }"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted" />
               <i
