@@ -21,13 +21,13 @@
 <script>
 export default {
   props: {
-    initialTitle: String,
+    initialTitle: String
   },
   data() {
     return {
-      title: this.initialTitle || "Custom Control",
+      title: this.initialTitle || "Custom Control"
     };
-  },
+  }
 };
 </script>
 
