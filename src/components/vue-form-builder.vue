@@ -58,7 +58,7 @@
     <!-- Renderer -->
     <b-col
       id="screen-container"
-      class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2"
+      class="overflow-auto mh-100 p-0 px-4 d-flex flex-column position-relative pt-2"
     >
       <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select
