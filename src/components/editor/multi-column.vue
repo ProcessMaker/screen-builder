@@ -20,7 +20,7 @@
           <div v-if="element.container" @click.stop="inspect(element)">
             <div
             class="m-2 card border-0"
-            :class="{ 'ai-section-card': isAiSection(element) }"
+            :class="{ 'ai-section-card': isAiSection(element) && selected === element}"
             >
             <div
             v-if="selected === element"
@@ -60,6 +60,7 @@
       :validationErrors="validationErrors"
       class="mb-3 mr-3 ml-3"
       :selected="selected"
+      :ai-element="element"
       @inspect="inspect"
       @update-state="$emit('update-state')"
       v-model="element.items"
@@ -265,7 +266,7 @@ export default {
   }
 }
 .ai-section-card {
-  border-color: #8ab8ff;
+  border: 1px solid #8ab8ff !important;
 }
 
 .ai-section-card .card-header {
