@@ -6,12 +6,12 @@
       >
         <h4>{{ title }}</h4>
         <div>
-          <i class="fas fa-search"></i>
+          <i class="fas fa-search" />
         </div>
       </div>
       <div class="card-body">
         <div class="text-center">
-          <i class="far fa-list-alt fa-5x"></i>
+          <i class="far fa-list-alt fa-5x" />
         </div>
       </div>
     </div>
@@ -20,13 +20,16 @@
 
 <script>
 export default {
-  props: {
-    initialTitle: String
-  },
   data() {
     return {
-      title: this.initialTitle || "Custom Control"
+      title: this.$t("Custom Control") // Default Control Title
     };
+  },
+  created() {
+    window.ProcessMaker.EventBus.$on("option-selected", (option) => {
+      // Title is updated when event is received
+      this.title = option;
+    });
   }
 };
 </script>

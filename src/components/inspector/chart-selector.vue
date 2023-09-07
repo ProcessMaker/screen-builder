@@ -1,13 +1,12 @@
 <template>
   <div>
-    <label class="typo__label">Select Chart Type</label>
+    <label class="typo__label">{{ $t('Select Chart Type') }}</label>
     <multiselect
       v-model="selectedOption"
-      :options="options"
-      placeholder="Select an option"
+      :placeholder="$t('Select option')"
       label="title"
-      @input="selectOption"
-    ></multiselect>
+      :options="options"
+    />
   </div>
 </template>
 
@@ -17,11 +16,17 @@ export default {
     return {
       selectedOption: null,
       options: [
-        { title: "My Tasks" },
-        { title: "My Requests" },
-        { title: "Start a new Request" }
+        { title: this.$t("My Tasks") },
+        { title: this.$t("My Requests") },
+        { title: this.$t("Start new Request") }
       ]
     };
+  },
+  watch: {
+    selectedOption(newValue) {
+      // when Multiselect option is selected, an event is emmited to notify my-custom-chart component
+      window.ProcessMaker.EventBus.$emit("option-selected", newValue.title);
+    }
   }
 };
 </script>
