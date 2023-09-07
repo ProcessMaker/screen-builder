@@ -1,15 +1,3 @@
-import FormText from './components/renderer/form-text';
-import FormButton from './components/renderer/form-button';
-import FormMultiColumn from './components/renderer/form-multi-column';
-import FormLoop from './components/renderer/form-loop';
-import FormRecordList from './components/renderer/form-record-list';
-import FormImage from './components/renderer/form-image';
-import FormMaskedInput from './components/renderer/form-masked-input';
-import FormNestedScreen from './components/renderer/form-nested-screen';
-import FormMyCustomChart from './components/renderer/form-my-custom-chart';
-import FileUpload from './components/renderer/file-upload';
-import FileDownload from './components/renderer/file-download';
-import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
   FormTextArea,
@@ -18,9 +6,26 @@ import {
   FormDatePicker,
   FormHtmlEditor,
   BFormComponent,
-  BWrapperComponent,
-} from '@processmaker/vue-form-elements';
-import { dataSourceValues } from '@/components/inspector/data-source-types';
+  BWrapperComponent
+} from "@processmaker/vue-form-elements";
+import FormText from "./components/renderer/form-text";
+import FormButton from "./components/renderer/form-button";
+import FormMultiColumn from "./components/renderer/form-multi-column";
+import FormLoop from "./components/renderer/form-loop";
+import FormRecordList from "./components/renderer/form-record-list";
+import FormImage from "./components/renderer/form-image";
+import FormMaskedInput from "./components/renderer/form-masked-input";
+import FormNestedScreen from "./components/renderer/form-nested-screen";
+import FormMyCustomChart from "./components/renderer/form-my-custom-chart";
+import ChartSelector from "./components/inspector/chart-selector";
+import FileUpload from "./components/renderer/file-upload";
+import FileDownload from "./components/renderer/file-download";
+import {
+  DataTypeProperty,
+  DataFormatProperty,
+  DataTypeDateTimeProperty
+} from "./VariableDataTypeProperties";
+import { dataSourceValues } from "@/components/inspector/data-source-types";
 
 import {
   bgcolorProperty,
@@ -38,8 +43,8 @@ import {
   disabledProperty,
   defaultValueProperty,
   buttonTypeEvent,
-  tooltipProperty,
-} from './form-control-common-properties';
+  tooltipProperty
+} from "./form-control-common-properties";
 
 export default [
   {
@@ -579,9 +584,7 @@ export default [
             name: "Variable Name",
             helper:
               "A variable name is a symbolic name to reference information.",
-            validation:
-              "regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|not_in:" +
-              javascriptReservedKeywords
+            validation: `regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|not_in:${javascriptReservedKeywords}`
           }
         },
         buttonTypeEvent,
@@ -840,17 +843,12 @@ export default [
         label: "Label Custom Chart",
         icon: "far fa-chart-bar",
         variant: "primary",
-        name: "Custom Control Chart",
-        value: null
+        name: "Custom Control Chart"
       },
       inspector: [
         {
           type: "ChartSelector",
-          field: "screen",
-          config: {
-            label: "Custom Chart",
-            name: "SelectChart"
-          }
+          field: "screen"
         }
       ]
     }
