@@ -17,7 +17,6 @@ import FormImage from "./components/renderer/form-image";
 import FormMaskedInput from "./components/renderer/form-masked-input";
 import FormNestedScreen from "./components/renderer/form-nested-screen";
 import FormMyCustomChart from "./components/renderer/form-my-custom-chart";
-import ChartSelector from "./components/inspector/chart-selector";
 import FileUpload from "./components/renderer/file-upload";
 import FileDownload from "./components/renderer/file-download";
 import {
