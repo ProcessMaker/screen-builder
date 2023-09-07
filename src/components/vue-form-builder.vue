@@ -650,11 +650,14 @@ export default {
     this.$root.$on("nested-screen-updated", () => {
       this.checkForCaptchaInLoops();
     });
-    this.$root.$on("ai-form-generated", (formItems) => {
-      this.previewAiChanges(formItems);
+    this.$root.$on("ai-form-generated", (formItems, nonce) => {
+      this.previewAiChanges(element, formItems, nonce);
     });
     this.$root.$on("apply-ai-changes", (element) => {
       this.applyAiChanges(element);
+    });
+    this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
+      this.updateProgress(progress, nonce);
     });
   },
   methods: {
@@ -1083,8 +1086,25 @@ export default {
     aiPreview(element) {
       return element.items && element.items[0] && element.items[0].length;
     },
-    previewAiChanges(formItems) {
-      this.selected.items = JSON.parse(JSON.stringify(formItems));
+    previewAiChanges(element, formItems, nonce) {
+      console.log("previewAiChanges");
+      console.log(formItems, nonce);
+      this.config.forEach((page, pageKey) => {
+        page.items.forEach((item, itemKey) => {
+          if (
+            item.component === "AiSection" &&
+            nonce === item.config.aiConfig.nonce
+          ) {
+            console.log("preview changes");
+            console.log(nonce, item.config.aiConfig.nonce);
+            console.log(JSON.parse(JSON.stringify(formItems)));
+            console.log(item);
+            
+            this.$set(item, "items", JSON.parse(JSON.stringify(formItems)));
+          }
+        });
+      });
+      // this.selected.items = JSON.parse(JSON.stringify(formItems));
     },
     applyAiChanges(element) {
       element.component = "FormMultiColumn";
@@ -1110,6 +1130,23 @@ export default {
           }
         ]
       };
+    },
+    updateProgress(progress, nonce) {
+      console.log("ai-form-progress-updated");
+      this.config.forEach((page) => {
+        page.items.forEach((item) => {
+          if (
+            item.component === "AiSection" &&
+            nonce === item.config.aiConfig.nonce
+          ) {
+            console.log(item.config.aiConfig.nonce, nonce);
+            
+            console.log("AI PROGRESS UPDATED", progress, nonce);
+            // item.config.aiConfig.progress = progress;
+            this.$set(item.config.aiConfig, "progress", progress);
+          }
+        });
+      });
     }
   }
 };
