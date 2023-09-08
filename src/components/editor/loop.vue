@@ -140,6 +140,14 @@ export default {
       items: [],
     };
   },
+  mounted() {
+    this.$root.$on("ai-form-generated", (formItems, nonce) => {
+      this.previewAiChanges(formItems, nonce);
+    });
+    this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
+      this.updateProgress(progress, nonce);
+    });
+  },
   watch: {
     value: {
       handler() {
@@ -177,6 +185,26 @@ export default {
     },
     applyAiChanges(element) {
       this.$root.$emit("apply-ai-changes", element);
+    },
+    previewAiChanges(formItems, nonce) {
+      this.value.forEach((item) => {
+        if (
+          item.component === "AiSection" &&
+          nonce === item.config.aiConfig.nonce
+        ) {
+          this.$set(item, "items", JSON.parse(JSON.stringify(formItems)));
+        }
+      });
+    },
+    updateProgress(progress, nonce) {
+      this.value.forEach((item) => {
+        if (
+          item.component === "AiSection" &&
+          nonce === item.config.aiConfig.nonce
+        ) {
+          this.$set(item.config.aiConfig, "progress", progress);
+        }
+      });
     }
   }
 };
