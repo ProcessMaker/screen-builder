@@ -124,7 +124,7 @@
       <div
         v-if="isCurrentPageEmpty"
         data-cy="screen-drop-zone"
-        class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
+        class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
       >
         <span class="mb-3" v-html="dragElementIcon"></span>
         <h3>{{ $t("Place your controls here!") }}</h3>
@@ -1084,7 +1084,7 @@ export default {
       return element.component === "AiSection";
     },
     aiPreview(element) {
-      return element.items && element.items[0] && element.items[0].length;
+      return element.items?.[0]?.length;
     },
     previewAiChanges(element, formItems, nonce) {
       this.config.forEach((page, pageKey) => {
@@ -1097,7 +1097,6 @@ export default {
           }
         });
       });
-      // this.selected.items = JSON.parse(JSON.stringify(formItems));
     },
     applyAiChanges(element) {
       element.component = "FormMultiColumn";
@@ -1253,6 +1252,7 @@ $side-bar-font-size: 0.875rem;
 
 .drag-placeholder {
   height: calc(100% - 2rem);
+  width: calc(100% - 2rem);
 }
 
 .ai-section-card {
