@@ -209,7 +209,7 @@ export default {
       return element.component === "AiSection";
     },
     aiPreview(element) {
-      return element.items?.[0]?.length;
+      return element.items && element.items[0] && element.items[0].length;
     },
     applyAiChanges(element) {
       this.$root.$emit("apply-ai-changes", element);
