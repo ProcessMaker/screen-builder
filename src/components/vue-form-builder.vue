@@ -651,7 +651,7 @@ export default {
       this.checkForCaptchaInLoops();
     });
     this.$root.$on("ai-form-generated", (formItems, nonce) => {
-      this.previewAiChanges(element, formItems, nonce);
+      this.previewAiChanges(formItems, nonce);
     });
     this.$root.$on("apply-ai-changes", (element) => {
       this.applyAiChanges(element);
@@ -1086,7 +1086,7 @@ export default {
     aiPreview(element) {
       return element.items && element.items[0] && element.items[0].length;
     },
-    previewAiChanges(element, formItems, nonce) {
+    previewAiChanges(formItems, nonce) {
       this.config.forEach((page, pageKey) => {
         page.items.forEach((item, itemKey) => {
           if (
