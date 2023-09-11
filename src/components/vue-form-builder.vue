@@ -1251,10 +1251,10 @@ $side-bar-font-size: 0.875rem;
 }
 
 .drag-placeholder {
-  height: calc(100% - 2rem);
   width: calc(100% - 2rem);
+  height: calc(100% - 6rem);
+  top: 4rem;
 }
-
 .ai-section-card {
   border-color: #8AB8FF;
 }
