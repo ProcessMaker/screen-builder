@@ -78,7 +78,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-conditionalHide]').clear().type('name != "foo"');
 
     // Add submit button
-    cy.get('[data-cy=controls] > :nth-child(14)').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormButton]').contains('Submit Button').drag('[data-cy=screen-element-container]', 'bottom');
 
     cy.setPreviewDataInput('{"loop_1":[{"name": "foo"}]}');
 
@@ -148,7 +148,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=save-rule]').click();
 
     // Add submit button
-    cy.get('[data-cy=controls] > :nth-child(14)').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormButton]').contains('Submit Button').drag('[data-cy=screen-element-container]', 'bottom');
 
     // Set preview data
     cy.setPreviewDataInput('{"loop_1":[{"name": "bar"}, {"name": "foo"}]}');
@@ -165,7 +165,7 @@ describe('Loop control', () => {
     cy.get(':nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1) > :nth-child(1) > .form-group > [data-cy=screen-field-form_input_1]').clear().type('foobar').blur();
 
     // Ensure form can be submitted
-    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+    cy.get('.form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal('Preview Form was Submitted'));
   });
@@ -200,7 +200,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=save-rule]').click();
 
     // Add submit button
-    cy.get('[data-cy=controls] > :nth-child(14)').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormButton]').contains('Submit Button').drag('[data-cy=screen-element-container]', 'bottom');
 
     // Set preview data
     cy.setPreviewDataInput('{"loop_1":[{"name": "bar"}, {"name": "foo"}]}');
@@ -284,7 +284,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-conditionalHide]').clear().type('name != "foo"');
 
     // Add submit button
-    cy.get('[data-cy=controls] > :nth-child(14)').drag('[data-cy=screen-element-container]', 'bottom');
+    cy.get('[data-cy=controls-FormButton]').contains('Submit Button').drag('[data-cy=screen-element-container]', 'bottom');
 
     // Set preview data
     cy.setPreviewDataInput('{"loop_1":[{"name": "bar"}, {"name": "foo"}]}');

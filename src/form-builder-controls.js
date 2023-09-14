@@ -16,6 +16,8 @@ import {
   FormCheckbox,
   FormDatePicker,
   FormHtmlEditor,
+  BFormComponent,
+  BWrapperComponent,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 
@@ -707,6 +709,115 @@ export default [
           helper: 'The name of the Download',
         },
       },
+      ],
+    },
+  },
+  {
+    rendererComponent: BFormComponent,
+    rendererBinding: 'BFormComponent',
+    builderComponent: BFormComponent,
+    builderBinding: 'BFormComponent',
+    control: {
+      label: 'Bootstrap Component',
+      component: 'BFormComponent',
+      'editor-component': 'BFormComponent',
+      'editor-control': 'BFormComponent',
+      config: {
+        bootstrapComponent: 'b-form-tags',
+        bootstrapConfig: '{}',
+        label: 'New Bootstrap Component',
+        icon: 'fab fa-bootstrap',
+      },
+      inspector: [
+        keyNameProperty,
+        labelProperty,
+        {
+          type: 'FormMultiselect',
+          field: 'bootstrapComponent',
+          config: {
+            icon: 'fas',
+            label: 'Bootstrap vue component',
+            validation: 'required',
+            options: [
+              { value: 'b-embed', content: 'Embed' },
+              { value: 'b-img', content: 'Image' },
+              { value: 'b-form-rating', content: 'Form Rating' },
+              { value: 'b-form-spinbutton', content: 'Form Spinbutton' },
+              { value: 'b-form-tags', content: 'Form Tags' },
+              { value: 'b-form-timepicker', content: 'Form Timepicker' },
+              { value: 'b-table', content: 'Table' },
+            ],
+          },
+        },
+        {
+          type: 'FormTextArea',
+          field: 'bootstrapConfig',
+          config: {
+            rows: 5,
+            label: 'Config',
+            helper: 'Properties in JSON format. See https://bootstrap-vue.org/docs/components',
+            value: '{}',
+          },
+        },
+        validationRulesProperty,
+      ],
+    },
+  },
+  {
+    rendererComponent: BWrapperComponent,
+    rendererBinding: 'BWrapperComponent',
+    builderComponent: BWrapperComponent,
+    builderBinding: 'BWrapperComponent',
+    control: {
+      label: 'Bootstrap Wrapper',
+      component: 'BWrapperComponent',
+      'editor-component': 'BWrapperComponent',
+      'editor-control': 'BWrapperComponent',
+      config: {
+        bootstrapComponent: 'b-modal',
+        bootstrapConfig: '{}',
+        label: 'New Bootstrap Wrapper',
+        icon: 'fab fa-bootstrap',
+        name: '',
+        form: '',
+      },
+      inspector: [
+        keyNameProperty,
+        labelProperty,
+        {
+          type: 'FormMultiselect',
+          field: 'bootstrapComponent',
+          config: {
+            icon: 'fas',
+            label: 'Bootstrap vue component',
+            validation: 'required',
+            options: [
+              { value: 'b-alert', content: 'Alert' },
+              { value: 'b-card', content: 'Card' },
+              { value: 'b-collapse', content: 'Collapse' },
+              { value: 'b-jumbotron', content: 'Jumbotron' },
+              { value: 'b-modal', content: 'Modal' },
+            ],
+          },
+        },
+        {
+          type: 'PageSelect',
+          field: 'form',
+          config: {
+            label: 'Page',
+            helper: 'The page to use inside the component',
+          },
+        },
+        {
+          type: 'FormTextArea',
+          field: 'bootstrapConfig',
+          config: {
+            rows: 5,
+            label: 'Config',
+            helper: 'Properties in JSON format. See https://bootstrap-vue.org/docs/components',
+            value: '{}',
+          },
+        },
       ],
     },
   },

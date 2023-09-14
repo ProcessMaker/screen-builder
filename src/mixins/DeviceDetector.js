@@ -17,7 +17,8 @@ export default {
     },
     checkIfIsMobile() {
       const renderer = document.getElementById("vue-form-renderer");
-      if (this.definition) {
+      const isModelerInspector = this.data && this.data.$type && this.data.$type.startsWith("bpmn:");
+      if (this.definition && !isModelerInspector) {
         this.definition.isMobile =
           renderer && renderer.offsetWidth <= MAX_MOBILE_WIDTH;
       }
