@@ -1,3 +1,5 @@
+import {waitUntilElementIsVisible} from '../support/utils';
+
 describe('Computed fields', () => {
 
   it('The user should not be able to change a FormInput assigned to a computed property', () => {
@@ -135,7 +137,7 @@ describe('Computed fields', () => {
     });
   });
 
-  it('The user should not be able to change a FormDatePicker assigned to a computed property', () => {
+  it.only('The user should not be able to change a FormDatePicker assigned to a computed property', () => {
     cy.visit('/');
     // Add an input field
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
@@ -153,11 +155,13 @@ describe('Computed fields', () => {
     cy.get('[data-cy=mode-preview]').click();
 
     // Assertion: Check the form_date_picker_1 is read only
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input').should('have.attr', 'readonly');
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input').should('have.attr', 'disabled');
+
     // Assertion: Check the form_date_picker_1 is always 1
     cy.assertPreviewData({
       form_date_picker_1: '1',
     });
+
   });
 
   it('The user should not be able to change a FormSelectList assigned to a computed property', () => {

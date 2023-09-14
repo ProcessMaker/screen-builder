@@ -40,6 +40,7 @@
               v-for="(element, index) in filteredControls"
               :key="index"
               :data-cy="'controls-' + element.component"
+              :class="{ 'ai-control': element.component === 'AiSection'}"
             >
               <i v-if="element.config.icon" :class="element.config.icon" />
               <span v-html="element.config.svg" class="svg-icon"></span>
@@ -57,7 +58,7 @@
     <!-- Renderer -->
     <b-col
       id="screen-container"
-      class="overflow-auto mh-100 ml-4 mr-4 p-0 d-flex flex-column position-relative pt-2"
+      class="overflow-auto mh-100 p-0 px-4 d-flex flex-column position-relative pt-2"
     >
       <b-input-group size="sm" class="bg-white mt-3">
         <b-form-select
@@ -123,9 +124,14 @@
       <div
         v-if="isCurrentPageEmpty"
         data-cy="screen-drop-zone"
-        class="w-100 d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4"
+        class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
       >
-        {{ $t("Drag an element here") }}
+        <span class="mb-3" v-html="dragElementIcon"></span>
+        <h3>{{ $t("Place your controls here!") }}</h3>
+        <p>
+          {{ $t("To start building a Screen, drag and drop the Controls of the left panel here.") }}
+        </p>
+        <!-- {{ $t("Drag an element here") }} -->
       </div>
 
       <draggable
@@ -154,13 +160,15 @@
         >
           <div
             v-if="element.container"
-            class="card"
+            class="card container-lement"
+            :class="{ 'ai-section-card': isAiSection(element) }"
             data-cy="screen-element-container"
             @click="inspect(element)"
           >
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
+              :class="{ 'pulse': isAiSection(element) && aiPreview(element) }"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted" />
               <i
@@ -168,9 +176,23 @@
                 :class="element.config.icon"
                 class="mr-2 ml-1"
               />
+              <span
+                v-if="element.config.svg"
+                v-html="element.config.svg"
+                class="svg-icon mr-2 ml-1"
+              ></span>
               {{ element.config.name || element.label || $t("Field Name") }}
               <div class="ml-auto">
                 <button
+                  v-if="isAiSection(element) && aiPreview(element)"
+                  class="btn btn-sm btn-primary mr-2"
+                  :title="$t('Apply Changes')"
+                  @click="applyAiChanges(element)"
+                >
+                  {{ $t("Apply Changes") }}
+                </button>
+                <button
+                v-if="!(isAiSection(element) && aiPreview(element))"
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
@@ -194,6 +216,7 @@
               :class="elementCssClass(element)"
               :selected="selected"
               :config="element.config"
+              :ai-element="element"
               @inspect="inspect"
               @update-state="updateState"
             />
@@ -495,6 +518,9 @@ export default {
     }
 
     return {
+      dragElementIcon: `<svg width="81" height="107" viewBox="0 0 81 107" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z" fill="#699CFF"/>
+      </svg>`,
       currentPage: 0,
       selected: null,
       display: "editor",
@@ -537,15 +563,32 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      return this.controls
-        .filter((control) => {
-          return control.label
-            .toLowerCase()
-            .includes(this.filterQuery.toLowerCase());
-        })
-        .sort((a, b) => {
-          return this.collator.compare(a.label, b.label);
-        });
+      const excludedLabels = ["Bootstrap Wrapper", "Bootstrap Component"];
+
+      const filtered = this.controls.filter((control) => {
+        return control.label.toLowerCase().includes(this.filterQuery.toLowerCase());
+      });
+
+      const excluded = filtered.filter((control) => {
+        return excludedLabels.includes(control.label);
+      });
+
+      const included = filtered.filter((control) => {
+        return !excludedLabels.includes(control.label);
+      });
+
+      const sorted = included.sort((a, b) => {
+        return this.collator.compare(a.label, b.label);
+      });
+
+      return [...sorted, ...excluded].sort((a, b) => {
+        const textA = a.label.toLowerCase();
+        const textB = b.label.toLowerCase();
+        if (textA < textB) {
+          return -1;
+        }
+        return textA > textB ? 1 : 0;
+      });
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
@@ -606,6 +649,15 @@ export default {
     this.checkForCaptchaInLoops();
     this.$root.$on("nested-screen-updated", () => {
       this.checkForCaptchaInLoops();
+    });
+    this.$root.$on("ai-form-generated", (formItems, nonce) => {
+      this.previewAiChanges(formItems, nonce);
+    });
+    this.$root.$on("apply-ai-changes", (element) => {
+      this.applyAiChanges(element);
+    });
+    this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
+      this.updateProgress(progress, nonce);
     });
   },
   methods: {
@@ -1028,6 +1080,61 @@ export default {
       }
       this.collator = Intl.Collator(this.language);
     },
+    isAiSection(element) {
+      return element.component === "AiSection";
+    },
+    aiPreview(element) {
+      return element.items && element.items[0] && element.items[0].length;
+    },
+    previewAiChanges(formItems, nonce) {
+      this.config.forEach((page, pageKey) => {
+        page.items.forEach((item, itemKey) => {
+          if (
+            item.component === "AiSection" &&
+            nonce === item.config.aiConfig.nonce
+          ) {
+            this.$set(item, "items", JSON.parse(JSON.stringify(formItems)));
+          }
+        });
+      });
+    },
+    applyAiChanges(element) {
+      element.component = "FormMultiColumn";
+      element.label = "Multicolumn / Table";
+      element["editor-control"] = "MultiColumn";
+      element["editor-component"] = "MultiColumn";
+      element.inspector = [
+        {
+          type: "ContainerColumns",
+          field: "options",
+          config: {
+            label: "Column Width",
+            validation: "columns-adds-to-12"
+          }
+        }
+      ];
+      element.config = {
+        icon: "fas fa-table",
+        options: [
+          {
+            value: "1",
+            content: "12"
+          }
+        ]
+      };
+    },
+    updateProgress(progress, nonce) {
+      this.config.forEach((page) => {
+        page.items.forEach((item) => {
+          if (
+            item.component === "AiSection" &&
+            nonce === item.config.aiConfig.nonce
+          ) {
+            this.$set(item.config.aiConfig, "progress", progress);
+          }
+        });
+      });
+    }
   }
 };
 </script>
@@ -1038,7 +1145,7 @@ export default {
 }
 
 .svg-icon > svg {
-  height: 14px;
+  margin-bottom: 3px;
 }
 </style>
 
@@ -1144,8 +1251,32 @@ $side-bar-font-size: 0.875rem;
 }
 
 .drag-placeholder {
-  height: 8rem;
+  width: calc(100% - 2rem);
+  height: calc(100% - 6rem);
   top: 4rem;
-  border: 1px dashed rgba(0, 0, 0, 0.125);
+}
+.ai-section-card {
+  border-color: #8AB8FF;
+}
+
+.ai-section-card .card-header {
+  background: #CBDFFF;
+}
+
+.ai-control {
+  background: #FFF4D3;
+}
+
+.pulse {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0px rgb(28 114 194 / 50%);
+  }
+  100% {
+    box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
+  }
 }
 </style>

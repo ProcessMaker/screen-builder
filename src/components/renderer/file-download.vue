@@ -208,7 +208,11 @@ export default {
       this.$dataProvider.get(endpoint).then(response => {
         const fileInfo = response.data.data ? _.get(response, 'data.data.0', null) : _.get(response, 'data', null);
         if (fileInfo) {
-          this.filesInfo.push(fileInfo);
+          if (typeof this.value === 'number' && this.filesInfo.length > 0) {
+            this.filesInfo[0] = fileInfo;
+          } else {
+            this.filesInfo.push(fileInfo);
+          }
         } else {
           console.log(this.$t('File ID does not exist'));
         }

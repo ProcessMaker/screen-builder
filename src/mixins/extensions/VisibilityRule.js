@@ -7,6 +7,11 @@ export default {
         const visibility = element.config.deviceVisibility || { showForDesktop: true, showForMobile: true }
         const restrictDeviceVisibility = !visibility.showForDesktop || !visibility.showForMobile;
 
+
+        element.visibleInDevice =
+          (definition.isMobile && visibility.showForMobile) ||
+          (!definition.isMobile && visibility.showForDesktop);
+
         if (element.config.conditionalHide || restrictDeviceVisibility) {
           const deviceVisibility = JSON.stringify( { ...visibility, isMobile: definition.isMobile } );
           wrapper.setAttribute(
