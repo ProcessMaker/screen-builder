@@ -583,6 +583,12 @@ export default [
             validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|not_in:' + javascriptReservedKeywords,
 
           },
+          type: 'FormCheckbox',
+          field: 'loading',
+          config: {
+            label: 'Loading Button',
+            helper: 'Loading Button',
+          },          
         },
         buttonTypeEvent,
         tooltipProperty,
