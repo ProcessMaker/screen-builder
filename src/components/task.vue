@@ -98,6 +98,7 @@ export default {
       hasErrors: false,
       refreshScreen: 0,
       redirecting: null,
+      loadingButton: false
     };
   },
   watch: {
@@ -175,6 +176,9 @@ export default {
     },
     screen: {
       handler() {
+        console.log(this.screen.config);
+        this.findSubmitButtonConfigs(this.screen.config);
+        console.log(this.loadingButton);
         if (!this.screen) {
           return;
         }
@@ -303,6 +307,10 @@ export default {
       if (this.task.process_request.status === 'COMPLETED') {
         this.loadNextAssignedTask(parentRequestId);
 
+      } else if (this.loadingButton) {
+        this.loadNextAssignedTask(parentRequestId);
+        console.log("flag closetask");
+
       } else if (this.task.allow_interstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
@@ -377,7 +385,7 @@ export default {
         this.disabled = false;
       });
 
-      if (this.task && this.task.allow_interstitial) {
+      if (this.task && this.task.allow_interstitial && !this.loadingButton) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
@@ -499,6 +507,16 @@ export default {
       if (requestIdNode) {
         requestIdNode.setAttribute('content', this.requestId);
       }
+    },
+    findSubmitButtonConfigs(items) {
+      items.forEach((item) => {
+        if (item.component === "FormButton" && item.config.event === "submit") {
+          this.loadingButton = item.config.loading;
+        }
+        if (item.items && item.items.length > 0) {
+          this.findSubmitButtonConfigs(item.items);
+        }
+      });
     },
   },
   mounted() {
