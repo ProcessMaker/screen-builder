@@ -505,7 +505,10 @@ export default {
     },
     screen: {
       type: Object
-    }
+    },
+    processId: {
+      default: 0,
+    },
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -626,6 +629,15 @@ export default {
         }
       }
       this.translated.push(e);
+    },
+    controls() {
+      if (
+        this.processId !== 0 &&
+        this.processId !== undefined &&
+        !this.config[this.currentPage].items.length
+      ) {
+        this.addDefaultAiControl();
+      }
     }
   },
   created() {
@@ -1134,6 +1146,17 @@ export default {
           }
         });
       });
+    },
+    addDefaultAiControl() {
+      const aiControl = this.builder.controls.find((control) => {
+        return control.component === "AiSection";
+      });
+      const clone = this.cloneControl(aiControl);
+      clone.config.aiConfig.autofocus = true;
+
+      this.config[this.currentPage].items.push(clone);
+      this.updateState();
+      this.inspect(clone);
     }
   }
 };
