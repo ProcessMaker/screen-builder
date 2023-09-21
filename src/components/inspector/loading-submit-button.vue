@@ -8,7 +8,6 @@
       class="mb-3"
       :options="options.map((option) => option.value)"
       :custom-label="getLabelFromValue"
-
     />
     <small v-if="helper" class="form-text text-muted">{{ $t("Choose whether the button should submit the form") }}</small>
 
@@ -18,15 +17,13 @@
         v-model="loading"
         :toggle="false"
         :helper="$t('Loading Submit Button')"
-
       />
 
-      <label class="typo__label">{{ $t("Loading Label") }}</label>
       <form-input
         v-model="loadingLabel"
         type="text"
         class="mb-3"
-
+        :label="$t('Loading Label')"
       />
     </div>
   </div>
