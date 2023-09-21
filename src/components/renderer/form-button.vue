@@ -1,7 +1,16 @@
 <template>
-  <div class="form-group"  style="overflow-x: hidden">
-    <button v-b-tooltip="options" @click="click" :class="classList" :name="name" :aria-label="$attrs['aria-label']" :tabindex="$attrs['tabindex']">
-      {{ label }}
+  <div class="form-group" style="overflow-x: hidden">
+    <button
+      v-b-tooltip="options"
+      @click="click"
+      :class="classList"
+      :name="name"
+      :aria-label="$attrs['aria-label']"
+      :tabindex="$attrs['tabindex']"
+      :disabled="showSpinner"
+    >
+      <b-spinner v-if="showSpinner" small></b-spinner>
+      {{ showSpinner ? loadingLabel : label }}
     </button>
   </div>
 </template>
@@ -11,10 +20,14 @@ import Mustache from 'mustache';
 import { mapActions, mapState } from "vuex";
 import { getValidPath } from '@/mixins';
 
-
 export default {
   mixins: [getValidPath],
-  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData'],
+  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData', 'loading', 'loadingLabel'],
+  data() {
+    return {
+      showSpinner: false
+    };
+  },
   computed: {
     ...mapState('globalErrorsModule', ['valid']),
     classList() {
@@ -65,9 +78,12 @@ export default {
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
       if (this.event === 'submit') {
+        if (this.loading) {
+          this.showSpinner = true;
+        }
         this.$emit('input', this.fieldValue);
-        this.$nextTick(()=>{
-          this.$emit('submit', this.eventData);
+        this.$nextTick(() => {
+          this.$emit('submit', this.eventData, this.loading);
         });
         return;
       }
