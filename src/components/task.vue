@@ -79,7 +79,8 @@ export default {
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
-    initialLoopContext: { type: String, default: "" }
+    initialLoopContext: { type: String, default: "" },
+    loading: { type: Number, default: null }
   },
   data() {
     return {
@@ -176,9 +177,6 @@ export default {
     },
     screen: {
       handler() {
-        console.log(this.screen.config);
-        this.findSubmitButtonConfigs(this.screen.config);
-        console.log(this.loadingButton);
         if (!this.screen) {
           return;
         }
@@ -309,7 +307,6 @@ export default {
 
       } else if (this.loadingButton) {
         this.loadNextAssignedTask(parentRequestId);
-        console.log("flag closetask");
 
       } else if (this.task.allow_interstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
@@ -370,7 +367,7 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    submit(formData = null) {
+    submit(formData = null, loading = false) {
       //single click
       if (this.disabled) {
         return;
@@ -379,6 +376,10 @@ export default {
 
       if (formData) {
         this.onUpdate(Object.assign({}, this.requestData, formData));
+      }
+
+      if (loading) {
+        this.loadingButton = true;
       }
       this.$emit('submit', this.task);
       this.$nextTick(() => {
@@ -508,16 +509,7 @@ export default {
         requestIdNode.setAttribute('content', this.requestId);
       }
     },
-    findSubmitButtonConfigs(items) {
-      items.forEach((item) => {
-        if (item.component === "FormButton" && item.config.event === "submit") {
-          this.loadingButton = item.config.loading;
-        }
-        if (item.items && item.items.length > 0) {
-          this.findSubmitButtonConfigs(item.items);
-        }
-      });
-    },
+
   },
   mounted() {
     this.screenId = this.initialScreenId;
