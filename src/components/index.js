@@ -11,6 +11,7 @@ import MultiColumn from './editor/multi-column';
 import FormLoop from './renderer/form-loop';
 import NewFormMultiColumn from './renderer/new-form-multi-column';
 import FormNestedScreen from './renderer/form-nested-screen';
+import FormMyCustomChart from './renderer/form-my-custom-chart';
 import ScreenRenderer from './screen-renderer';
 import AddLoopRow from './renderer/add-loop-row';
 import FormRecordList from './renderer/form-record-list';
@@ -76,6 +77,7 @@ export default {
     Vue.component('FormImage', FormImage);
     Vue.component('FormLoop', FormLoop);
     Vue.component('FormMultiColumn', FormMultiColumn);
+    Vue.component('FormMyCustomChart', FormMyCustomChart);
     Vue.component('FormNestedScreen', FormNestedScreen);
     Vue.component('FormRecordList', FormRecordList);
     Vue.component('Loop', Loop);

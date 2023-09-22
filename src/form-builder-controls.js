@@ -6,6 +6,7 @@ import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
 import FormNestedScreen from './components/renderer/form-nested-screen';
+import FormMyCustomChart from "./components/renderer/form-my-custom-chart";
 import FileUpload from './components/renderer/file-upload';
 import FileDownload from './components/renderer/file-download';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
@@ -821,4 +822,28 @@ export default [
       ],
     },
   },
+  {
+    editorComponent: FormMyCustomChart,
+    editorBinding: "FormMyCustomChart",
+    rendererComponent: FormMyCustomChart,
+    rendererBinding: "FormMyCustomChart",
+    control: {
+      label: "Custom Control",
+      component: "FormMyCustomChart",
+      "editor-component": "FormMyCustomChart",
+      "editor-control": "FormMyCustomChart",
+      config: {
+        label: "Label Custom Chart",
+        icon: "far fa-chart-bar",
+        variant: "primary",
+        name: "Custom Control Chart"
+      },
+      inspector: [
+        {
+          type: "ChartSelector",
+          field: "screen"
+        }
+      ]
+    }
+  }
 ];

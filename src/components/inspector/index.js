@@ -7,6 +7,7 @@ export { default as ColumnSetup } from './column-setup';
 export { default as PageSelect } from './page-select';
 export { default as ValidationSelect } from './validation-select';
 export { default as ScreenSelector } from './screen-selector';
+export { default as ChartSelector } from './chart-selector';
 export { default as LoopInspector } from './loop';
 export { default as ImageVariable } from './image-variable.vue';
 export { default as InputVariable } from './input-variable.vue';
