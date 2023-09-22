@@ -381,7 +381,7 @@ export default {
       if (loading) {
         this.loadingButton = true;
       }
-      this.$emit('submit', this.task);
+      this.$emit('submit', this.task, loading);
       this.$nextTick(() => {
         this.disabled = false;
       });
