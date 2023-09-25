@@ -10,7 +10,7 @@
       :disabled="showSpinner"
     >
       <b-spinner v-if="showSpinner" small></b-spinner>
-      {{ showSpinner ? loadingLabel : label }}
+      {{ showSpinner ? (!loadingLabel ? 'Loading...': loadingLabel) : label }}
     </button>
   </div>
 </template>
