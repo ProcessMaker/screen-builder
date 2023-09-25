@@ -37,7 +37,13 @@ export default [
     open: false,
   },
   {
-    name: (control) => control.component === 'FormRecordList' ? 'Columns' : 'Data Source',
+    name(control) {
+      if (control.component === "AiSection") {
+        return "AI Section";
+      }
+
+      return control.component === "FormRecordList" ? "Columns" : "Data Source";
+    },
     fields: [
       'fields',
       { name: 'options', hideFor: 'FormMultiColumn' },
