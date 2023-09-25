@@ -265,10 +265,15 @@ export default {
       });
     },
     prepareTask() {
-      this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
-      this.loopContext = _.get(this.task, "loop_context", "");
-      this.refreshScreen++;
+      // If the immediate task status is completed and we are waiting with a loading button,
+      // do not reset the screen because that would stop displaying the loading spinner
+      // before the next task is ready.
+      if (!this.loadingButton || this.task.status === 'ACTIVE') {
+        this.resetScreenState();
+        this.requestData = _.get(this.task, 'request_data', {});
+        this.loopContext = _.get(this.task, "loop_context", "");
+        this.refreshScreen++;
+      }
 
       this.$emit('task-updated', this.task);
 
@@ -280,6 +285,8 @@ export default {
       }
     },
     resetScreenState() {
+      this.loadingButton = false;
+      this.disabled = false;
       if (this.$refs.renderer && this.$refs.renderer.$children[0]) {
         this.$refs.renderer.$children[0].currentPage = 0;
       }
@@ -384,9 +391,6 @@ export default {
         this.loadingButton = false;
       }
       this.$emit('submit', this.task, loading);
-      this.$nextTick(() => {
-        this.disabled = false;
-      });
 
       if (this.task && this.task.allow_interstitial && !this.loadingButton) {
         this.task.interstitial_screen['_interstitial'] = true;
