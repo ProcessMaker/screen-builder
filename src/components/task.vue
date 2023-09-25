@@ -380,6 +380,8 @@ export default {
 
       if (loading) {
         this.loadingButton = true;
+      } else {
+        this.loadingButton = false;
       }
       this.$emit('submit', this.task, loading);
       this.$nextTick(() => {

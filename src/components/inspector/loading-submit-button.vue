@@ -69,19 +69,36 @@ export default {
     },
   },
   watch: {
-    value() {
-      if (this.value == undefined) {
-        this.loading = false;
-        this.loadingLabel = null;
-      } else {
-        this.event = this.value;
-        this.loading = false;
-        this.loadingLabel = 'Loading...';
-      }
-    },
     event() {
       this.$emit('input', this.event);
     },
+    loading() {
+      if (this.loading == undefined) {
+        this.loading = false;
+        this.loadingLabel = 'Loading...'
+        this.$emit('input', this.event);
+      }
+    },
+    loadingLabel() {
+      if (this.loadingLabel == undefined) {
+        this.loading = false;
+        this.loadingLabel = 'Loading...'
+        this.$emit('input', this.event);
+      }
+    },
+    value() {
+      this.event = this.value;
+      this.$emit('input', this.event);
+    }
+  },
+  mounted() {
+
+    if (this.loading == undefined) {
+      this.loading = false;
+      this.loadingLabel = 'Loading...'
+      this.$emit('input', this.event);
+    }
+
   },
   methods: {
     getLabelFromValue(value) {
@@ -90,6 +107,7 @@ export default {
       );
       return selectedOption ? selectedOption.content : null;
     },
-  }
+  },
+
 };
 </script>
