@@ -1,5 +1,5 @@
 <template>
-  <div v-if="event === 'submit'" style="border: 0">
+  <div v-if="event === 'submit'" style="border-style: none !important;">
     <div>
       <form-checkbox
         :label="$t('Loading Submit Button')"
@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       event: "",
-      loading: false,
+      loading: null
     };
   },
   computed: {
@@ -30,9 +30,7 @@ export default {
       this.$emit('input', this.loading);
     },
     value() {
-      if (typeof(this.value) === "undefined") {
-        this.loading = false;
-      }
+      this.loading = this.value;
     },
     "selectedControl.config.event": function (newVal) {
       this.event = newVal;
@@ -40,6 +38,7 @@ export default {
   },
   mounted() {
     this.event = this.selectedControl.config.event;
+    this.loading = this.value;
   }
 };
 </script>
