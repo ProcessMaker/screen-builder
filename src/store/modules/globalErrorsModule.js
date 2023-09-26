@@ -126,6 +126,9 @@ const globalErrorsModule = {
     }
   },
   actions: {
+    restartValidation() {
+      screensToValidate.length = 0;
+    },
     validate({ commit }, mainScreen) {
       queueUpdateValidationRules(mainScreen, commit);
     },
