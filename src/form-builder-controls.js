@@ -38,7 +38,8 @@ import {
   defaultValueProperty,
   buttonTypeEvent,
   tooltipProperty,
-  LoadingSubmitButtonProperty
+  LoadingSubmitButtonProperty,
+  LabelSubmitButtonProperty
 } from './form-control-common-properties';
 
 export default [
@@ -585,7 +586,9 @@ export default [
 
           },         
         },
+        buttonTypeEvent,
         LoadingSubmitButtonProperty,
+        LabelSubmitButtonProperty,
         tooltipProperty,
         {
           type: 'FormInput',

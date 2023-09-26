@@ -266,8 +266,18 @@ export const deviceVisibilityProperty = {
 
 export const LoadingSubmitButtonProperty = {
   type: 'LoadingSubmitButton',
-  field: 'event',
+  field: 'loading',
   config: {
-    label: 'Type ',
+    label: 'Loading Submit Button',
+    helper: 'Loading Submit Button',
+  },
+};
+
+export const LabelSubmitButtonProperty = {
+  type: 'LabelSubmitButton',
+  field: 'loadingLabel',
+  config: {
+    label: 'Loading Submit Button Label',
+    helper: 'Loading Submit Button Label',
   },
 };
