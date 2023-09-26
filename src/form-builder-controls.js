@@ -561,6 +561,7 @@ export default [
         label: 'New Submit',
         variant: 'primary',
         event: 'submit',
+        loadingLabel: 'loading',
         defaultSubmit: true,
         name: null,
         fieldValue: null,
