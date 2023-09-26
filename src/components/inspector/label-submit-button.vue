@@ -1,46 +1,44 @@
 <template>
     <div v-if="event === 'submit'" style="border: 0">
-      <div>
+    <div>
         <form-input
           v-model="loadingLabel"
           type="text"
           class="mb-3"
           :label="$t('Loading Label')"
         />
-      </div>
     </div>
-  </template>
+  </div>
+</template>
   
-  <script>
-  export default {
-    props: ['value', 'selectedControl'],
-    data() {
-      return {
-        event: "",
-        loadingLabel: "Loading...",
-      };
-    },
-    computed: {
-      mode() {
-        return this.$root.$children[0].mode;
+<script>
+export default {
+  props: ["value", "selectedControl"],
+  data() {
+    return {
+      event: "",
+    };
+  },
+  computed: {
+    loadingLabel: {
+      get() {
+        return this.selectedControl.config.loadingLabel;
+      },
+      set(value) {
+        this.selectedControl.config.loadingLabel = value;
       },
     },
-    watch: {
-      loadingLabel() {
-        this.$emit('input', this.loadingLabel);
-      },
-      value() {
-        if (typeof(this.value) === "undefined") {
-        this.loadingLabel = "Loading...";
-      }
-      },
-      "selectedControl.config.event": function (newVal) {
-        this.event = newVal;
-      }
+    mode() {
+      return this.$root.$children[0].mode;
     },
-    mounted() {
-      this.event = this.selectedControl.config.event;
+  },
+  watch: {
+    "selectedControl.config.loadingLabel": function (newVal) {
+      this.loadingLabel = newVal;
     }
-  };
-  </script>
-  
+  },
+  mounted() {
+    this.event = this.selectedControl.config.event;
+  }
+};
+</script>
