@@ -127,9 +127,9 @@
         class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
       >
         <span class="mb-3" v-html="dragElementIcon"></span>
-        <h3>{{ $t("Place your controls here!") }}</h3>
+        <h3>{{ $t("Place your controls here.") }}</h3>
         <p>
-          {{ $t("To start building a Screen, drag and drop the Controls of the left panel here.") }}
+          {{ $t("To begin creating a screen, drag and drop items from the Controls Menu on the left.") }}
         </p>
         <!-- {{ $t("Drag an element here") }} -->
       </div>
@@ -505,7 +505,10 @@ export default {
     },
     screen: {
       type: Object
-    }
+    },
+    processId: {
+      default: 0,
+    },
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -626,6 +629,15 @@ export default {
         }
       }
       this.translated.push(e);
+    },
+    controls() {
+      if (
+        this.processId !== 0 &&
+        this.processId !== undefined &&
+        !this.config[this.currentPage].items.length
+      ) {
+        this.addDefaultAiControl();
+      }
     }
   },
   created() {
@@ -1134,6 +1146,19 @@ export default {
           }
         });
       });
+    },
+    addDefaultAiControl() {
+      const aiControl = this.builder.controls.find((control) => {
+        return control.component === "AiSection";
+      });
+      const clone = this.cloneControl(aiControl);
+      clone.config.aiConfig.autofocus = true;
+      clone.config.aiConfig.screenTitle = this.screen.title;
+      clone.config.aiConfig.screenDescription = this.screen.description;
+
+      this.config[this.currentPage].items.push(clone);
+      this.updateState();
+      this.inspect(clone);
     }
   }
 };
