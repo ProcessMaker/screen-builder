@@ -27,6 +27,7 @@ import LRUCache from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
+import FormListTable from './renderer/form-list-table';
 
 const rendererComponents = {
   ...renderer,
@@ -95,6 +96,7 @@ export default {
     Vue.use(DataProvider);
 
     Vue.use(Vuex);
+    Vue.component('FormListTable', FormListTable);
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,
