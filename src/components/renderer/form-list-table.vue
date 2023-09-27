@@ -60,70 +60,25 @@ export default {
       this.fields = [];
       if (option === "My Tasks") {
         this.callAPI("/tasks");
-        let field = [
-          {
-            name: "created_at",
-            title: "Created At"
-          },
-          {
-            name: "due_at",
-            title: "Due At"
-          },
-          {
-            name: "element_name",
-            title: "Element Name"
-          }
-        ];
-        this.fields.push(field);
       }
 
       if (option === "My Requests") {
         this.callAPI("/requests");
-        let field = [
-          {
-            name: "created_at",
-            title: "Created At Request"
-          },
-          {
-            name: "due_at",
-            title: "Due At Request"
-          },
-          {
-            name: "element_name",
-            title: "Element Name Request"
-          }
-        ];
-        this.fields.push(field);
       }
 
       if (option === "Start new Request") {
         this.callAPI("/requests");
-        let field = [
-          {
-            name: "created_at",
-            title: "Created new Request"
-          },
-          {
-            name: "due_at",
-            title: "Due new Request"
-          },
-          {
-            name: "element_name",
-            title: "Element new Request"
-          }
-        ];
-        this.fields.push(field);
       }
       /*
-        This is needed because fields in vuetable2 are not reactive
+        This code is needed because fields in vuetable2 are not reactive
         TO-DO: Vuetable component should be imported from CORE to use normalizeFields
         import datatableMixin from "../../components/common/mixins/datatable";
         Uncomment code below when import is done
-      */
 
-      // this.$nextTick(() => {
-      //   this.$refs.vuetable.normalizeFields();
-      // });
+        this.$nextTick(() => {
+         this.$refs.vuetable.normalizeFields();
+        });
+      */
     }
   }
 };
