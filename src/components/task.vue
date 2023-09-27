@@ -167,6 +167,9 @@ export default {
         this.taskId = this.task.id;
         this.nodeId = this.task.element_id;
         this.listenForParentChanges();
+        if (this.task.process_request.status === 'COMPLETED') {
+          this.$emit('completed', this.task.process_request.id);
+        }
       },
     },
 
