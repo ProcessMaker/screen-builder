@@ -19,10 +19,8 @@
   "module": "./dist/vue-form-builder.es.js",
   "exports": {
     ".": {
-      "import": {
-        "import": "./dist/vue-form-builder.es.js",
-        "require": "./dist/vue-form-builder.umd.js"
-      }
+      "import": "./dist/vue-form-builder.es.js",
+      "require": "./dist/vue-form-builder.umd.js"
     },
     "./dist/vue-form-builder.css": {
       "import": "./dist/vue-form-builder.css",
