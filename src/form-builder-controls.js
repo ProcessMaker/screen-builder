@@ -38,6 +38,8 @@ import {
   defaultValueProperty,
   buttonTypeEvent,
   tooltipProperty,
+  LoadingSubmitButtonProperty,
+  LabelSubmitButtonProperty
 } from './form-control-common-properties';
 
 export default [
@@ -559,6 +561,8 @@ export default [
         label: 'New Submit',
         variant: 'primary',
         event: 'submit',
+        loading: false,
+        loadingLabel: 'Loading...',
         defaultSubmit: true,
         name: null,
         fieldValue: null,
@@ -582,9 +586,11 @@ export default [
             helper: 'A variable name is a symbolic name to reference information.',
             validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|not_in:' + javascriptReservedKeywords,
 
-          },
+          },         
         },
         buttonTypeEvent,
+        LoadingSubmitButtonProperty,
+        LabelSubmitButtonProperty,
         tooltipProperty,
         {
           type: 'FormInput',
