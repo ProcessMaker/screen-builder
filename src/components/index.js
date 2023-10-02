@@ -28,6 +28,7 @@ import Vuex from "vuex";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 import FormListTable from './renderer/form-list-table';
+import FormAnalyticsChart from './renderer/form-analytics-chart';
 
 const rendererComponents = {
   ...renderer,
@@ -91,7 +92,7 @@ export default {
     Vue.component('FormButton', FormButton);
     Vue.component('FileUpload', FileUpload);
     Vue.component('FileDownload', FileDownload);
-
+    Vue.component('FormAnalyticsChart', FormAnalyticsChart);
     Vue.component('FormMaskedInput', FormMaskedInput);
     Vue.use(DataProvider);
 

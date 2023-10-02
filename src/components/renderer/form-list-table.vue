@@ -19,6 +19,7 @@
 
 <script>
 export default {
+  props: ["listOption"],
   data() {
     return {
       title: this.$t("List Table"),
@@ -40,11 +41,15 @@ export default {
       tableData: []
     };
   },
-  created() {
-    window.ProcessMaker.EventBus.$on("option-selected", (option) => {
-      this.title = option;
+  watch: {
+    listOption(){
+      this.title = this.listOption;
       this.populateFields(this.title);
-    });
+    }
+  },
+  mounted() {
+    this.title = this.listOption;
+    this.populateFields(this.title);
   },
   methods: {
     callAPI(url) {
@@ -58,15 +63,15 @@ export default {
     },
     populateFields(option) {
       this.fields = [];
-      if (option === "My Tasks") {
+      if (option === this.$t("My Tasks")) {
         this.callAPI("/tasks");
       }
 
-      if (option === "My Requests") {
+      if (option === this.$t("My Requests")) {
         this.callAPI("/requests");
       }
 
-      if (option === "Start new Request") {
+      if (option === this.$t("Start new Request")) {
         this.callAPI("/requests");
       }
       /*
