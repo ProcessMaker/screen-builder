@@ -5,9 +5,6 @@
         class="card-header d-flex justify-content-between align-items-center"
       >
         <h4>{{ title }}</h4>
-        <div>
-          <i class="fas fa-search" />
-        </div>
       </div>
       <div>
         <div class="d-flex flex-wrap p-2">
