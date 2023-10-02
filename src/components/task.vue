@@ -539,7 +539,6 @@ export default {
       this.$parent.task.interstitial_screen
     ) {
       // if interstitial screen exists, show it
-      console.log(this.$parent.task.interstitial_screen);
       this.screen = this.$parent.task.interstitial_screen;
     }
   },
