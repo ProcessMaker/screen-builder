@@ -37,7 +37,7 @@ export default {
     fetchChartData() {
       try {
         ProcessMaker.apiClient
-          .get(`analytics-reporting-custom/analytics-reporting-all`)
+          .get(`analytics-reporting-all`)
           .then((response) => {
             this.formattedOptions = response.data.data.map((item) => ({
               name: item.name,
