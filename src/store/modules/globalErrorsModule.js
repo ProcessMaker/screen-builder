@@ -32,6 +32,11 @@ function countErrors(obj) {
 }
 
 const updateValidationRules = async (screens, commit) => {
+  if (screens.length === 0) {
+    // When validation was restarted, the screens array is empty
+    // and we don't need to do anything
+    return;
+  }
   const rootScreen = findRootScreen(screens[0]);
   const awaitLoad = [];
   screens.forEach((screen) => {
