@@ -150,9 +150,19 @@ export default {
   data() {
     return {
       items: [],
+      cancelledJobs: []
     };
   },
   mounted() {
+    if (
+      !localStorage.getItem("cancelledJobs") ||
+      localStorage.getItem("cancelledJobs") === "null"
+    ) {
+      this.cancelledJobs = [];
+    } else {
+      this.cancelledJobs = JSON.parse(localStorage.getItem("cancelledJobs"));
+    }
+
     this.$root.$on("ai-form-generated", (formItems, nonce) => {
       this.previewAiChanges(formItems, nonce);
     });
@@ -241,6 +251,9 @@ export default {
             item.component === "AiSection" &&
             nonce === item.config.aiConfig.nonce
           ) {
+            if (this.cancelledJobs.some((element) => element === nonce)) {
+              return;
+            }
             this.$set(item.config.aiConfig, "progress", progress);
           }
         });
