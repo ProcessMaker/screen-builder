@@ -9,6 +9,7 @@ import FormNestedScreen from './components/renderer/form-nested-screen';
 import FileUpload from './components/renderer/file-upload';
 import FileDownload from './components/renderer/file-download';
 import FormListTable from './components/renderer/form-list-table';
+import FormAnalyticsChart from "./components/renderer/form-analytics-chart";
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -841,15 +842,50 @@ export default [
       config: {
         label: "List Table",
         icon: "fas fa-list",
-        variant: "primary",
+        variant: "primary"
       },
       inspector: [
         {
-          type: "ListSelector",
-          field: "screen",
+          type: "FormMultiselect",
+          field: "listOption",
           config: {
-            label: 'List Table',
-          },
+            icon: "fas fa-list",
+            label: "List Table",
+            options: [
+              { value: "My Tasks", content: "My Tasks" },
+              { value: "My Requests", content: "My Requests" },
+              {
+                value: "Start new Request",
+                content: "Start new Request"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    editorComponent: FormAnalyticsChart,
+    editorBinding: "FormAnalyticsChart",
+    rendererComponent: FormAnalyticsChart,
+    rendererBinding: "FormAnalyticsChart",
+    control: {
+      label: "Analytics Chart",
+      component: "FormAnalyticsChart",
+      "editor-component": "FormAnalyticsChart",
+      "editor-control": "FormAnalyticsChart",
+      config: {
+        label: "Analytics Chart",
+        icon: "fas fa-chart-area",
+        variant: "primary"
+      },
+      inspector: [
+        {
+          type: "AnalyticsSelector",
+          field: "listChartOption",
+          config: {
+            label: "Chart"
+          }
         }
       ]
     }
