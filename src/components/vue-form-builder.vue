@@ -549,7 +549,8 @@ export default {
       variablesTree: [],
       language: "en",
       collator: null,
-      editorContentKey: 0
+      editorContentKey: 0,
+      cancelledJobs: []
     };
   },
   computed: {
@@ -658,7 +659,17 @@ export default {
     this.initiateLanguageSupport();
   },
   mounted() {
+    if (
+      !localStorage.getItem("cancelledJobs") ||
+      localStorage.getItem("cancelledJobs") === "null"
+    ) {
+      this.cancelledJobs = [];
+    } else {
+      this.cancelledJobs = JSON.parse(localStorage.getItem("cancelledJobs"));
+    }
+
     this.checkForCaptchaInLoops();
+
     this.$root.$on("nested-screen-updated", () => {
       this.checkForCaptchaInLoops();
     });
@@ -1142,6 +1153,9 @@ export default {
             item.component === "AiSection" &&
             nonce === item.config.aiConfig.nonce
           ) {
+            if (this.cancelledJobs.some((element) => element === nonce)) {
+              return;
+            }
             this.$set(item.config.aiConfig, "progress", progress);
           }
         });
