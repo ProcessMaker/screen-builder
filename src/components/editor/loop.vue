@@ -110,6 +110,8 @@ import draggable from 'vuedraggable';
 import { HasColorProperty } from '@/mixins';
 import * as renderer from '@/components/renderer';
 import _ from 'lodash';
+import { getCancelledJobs } from '@/components/utils.js'
+
 import {
   FormInput,
   FormSelectList,
@@ -142,14 +144,7 @@ export default {
     };
   },
   mounted() {
-    if (
-      !localStorage.getItem("cancelledJobs") ||
-      localStorage.getItem("cancelledJobs") === "null"
-    ) {
-      this.cancelledJobs = [];
-    } else {
-      this.cancelledJobs = JSON.parse(localStorage.getItem("cancelledJobs"));
-    }
+    this.cancelledJobs = getCancelledJobs();
     this.$root.$on("ai-form-generated", (formItems, nonce) => {
       this.previewAiChanges(formItems, nonce);
     });

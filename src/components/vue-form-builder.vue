@@ -429,6 +429,7 @@ import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
+import { getCancelledJobs } from './utils.js'
 
 const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
@@ -659,14 +660,7 @@ export default {
     this.initiateLanguageSupport();
   },
   mounted() {
-    if (
-      !localStorage.getItem("cancelledJobs") ||
-      localStorage.getItem("cancelledJobs") === "null"
-    ) {
-      this.cancelledJobs = [];
-    } else {
-      this.cancelledJobs = JSON.parse(localStorage.getItem("cancelledJobs"));
-    }
+    this.cancelledJobs = getCancelledJobs();
 
     this.checkForCaptchaInLoops();
 
