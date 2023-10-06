@@ -296,6 +296,7 @@ export default {
       this.disabled = false;
       if (this.$refs.renderer && this.$refs.renderer.$children[0]) {
         this.$refs.renderer.$children[0].currentPage = 0;
+        this.$refs.renderer.restartValidation();
       }
     },
     checkTaskStatus() {
