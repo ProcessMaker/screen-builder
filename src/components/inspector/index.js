@@ -12,3 +12,5 @@ export { default as ImageVariable } from './image-variable.vue';
 export { default as InputVariable } from './input-variable.vue';
 export { default as Tooltip } from './tooltip';
 export { default as DeviceVisibility } from './device-visibility';
+export { default as LoadingSubmitButton } from './loading-submit-button';
+export { default as LabelSubmitButton } from './label-submit-button';
