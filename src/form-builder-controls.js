@@ -8,6 +8,8 @@ import FormMaskedInput from './components/renderer/form-masked-input';
 import FormNestedScreen from './components/renderer/form-nested-screen';
 import FileUpload from './components/renderer/file-upload';
 import FileDownload from './components/renderer/file-download';
+import FormListTable from './components/renderer/form-list-table';
+import FormAnalyticsChart from "./components/renderer/form-analytics-chart";
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -827,4 +829,65 @@ export default [
       ],
     },
   },
+  {
+    editorComponent: FormListTable,
+    editorBinding: "FormListTable",
+    rendererComponent: FormListTable,
+    rendererBinding: "FormListTable",
+    control: {
+      label: "List Table",
+      component: "FormListTable",
+      "editor-component": "FormListTable",
+      "editor-control": "FormListTable",
+      config: {
+        label: "List Table",
+        icon: "fas fa-list",
+        variant: "primary"
+      },
+      inspector: [
+        {
+          type: "FormMultiselect",
+          field: "listOption",
+          config: {
+            icon: "fas fa-list",
+            label: "List Table",
+            options: [
+              { value: "My Tasks", content: "My Tasks" },
+              { value: "My Requests", content: "My Requests" },
+              {
+                value: "Start new Request",
+                content: "Start new Request"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    editorComponent: FormAnalyticsChart,
+    editorBinding: "FormAnalyticsChart",
+    rendererComponent: FormAnalyticsChart,
+    rendererBinding: "FormAnalyticsChart",
+    control: {
+      label: "Analytics Chart",
+      component: "FormAnalyticsChart",
+      "editor-component": "FormAnalyticsChart",
+      "editor-control": "FormAnalyticsChart",
+      config: {
+        label: "Analytics Chart",
+        icon: "fas fa-chart-area",
+        variant: "primary"
+      },
+      inspector: [
+        {
+          type: "AnalyticsSelector",
+          field: "listChartOption",
+          config: {
+            label: "Chart"
+          }
+        }
+      ]
+    }
+  }
 ];
