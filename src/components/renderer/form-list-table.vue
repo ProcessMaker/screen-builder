@@ -79,7 +79,6 @@ export default {
       }
     },
     populateFields(option) {
-      debugger;
       this.fields = [];
       if (option === this.$t("My Tasks")) {
         this.callAPI("/tasks");
@@ -92,32 +91,6 @@ export default {
       if (option === this.$t("Start new Request")) {
         this.callAPI("/start_processes");
       }
-      /* this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
-      }); */
-    },
-    getColumns() {
-      const columns = [
-        {
-          label: "Task",
-          field: "task",
-          sortable: true,
-          default: true
-        },
-        {
-          label: "Request",
-          field: "request",
-          sortable: true,
-          default: true
-        },
-        {
-          label: "Due",
-          field: "due_at",
-          sortable: true,
-          default: true
-        }
-      ];
-      return columns;
     }
   }
 };

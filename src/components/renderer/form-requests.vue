@@ -135,17 +135,6 @@ export default {
         title: () => this.$t("Status")
       });
 
-      /* this.fields.push({
-        name: "__slot:dueDate",
-        field: "dueDate",
-        title: () => this.$t("Due")
-      });
-
-      this.fields.push({
-        name: "__slot:preview",
-        title: ""
-      }); */
-
       this.fields.push({
         name: "__slot:actions",
         title: ""
@@ -179,9 +168,6 @@ export default {
           label = "In Progress";
       }
       return { color, label };
-      /* return `<i class="fas fa-circle text-${color}"></i> <span>${this.$t(
-        label
-      )}</span>`; */
     },
     openRequest(data, index) {
       return `/requests/${data.id}`;
