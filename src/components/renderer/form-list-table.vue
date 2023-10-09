@@ -28,10 +28,9 @@
 <script>
 import FormTasks from "./form-tasks.vue";
 import FormRequests from "./form-requests.vue";
-import FormNewRequest from "./form-new-request.vue";
 
 export default {
-  components: { FormTasks, FormRequests, FormNewRequest },
+  components: { FormTasks, FormRequests },
   mixins: [],
   props: ["listOption"],
   data() {
@@ -61,12 +60,12 @@ export default {
   watch: {
     listOption() {
       this.title = this.listOption;
-      this.populateFields(this.title);
+      // this.populateFields(this.title);
     }
   },
   mounted() {
     this.title = this.listOption;
-    this.populateFields(this.title);
+    // this.populateFields(this.title);
   },
   methods: {
     callAPI(url) {
