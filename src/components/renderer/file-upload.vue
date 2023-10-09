@@ -112,7 +112,7 @@ export default {
     this.setPrefix();
     if (this.$refs['uploader']) {
       this.$refs['uploader'].$forceUpdate();
-      // Re-upload stored files; 
+      // Re-upload stored files;
       // Files disappear when navigating between pages with the Page Navigation component
       if (this.files.length > 0) {
         this.$refs.uploader.uploader.addFiles(this.files);
@@ -476,7 +476,7 @@ export default {
         if (file.ignored) {
           this.invalidFile = true;
           this.uploading = false;
-          window.ProcessMaker.alert(this.$t('File not allowed.'), 'danger');
+          window.ProcessMaker.alert(this.$t('This file type is not accepted.'), 'danger');
           return false;
         }
       }
