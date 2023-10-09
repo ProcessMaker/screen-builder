@@ -45,8 +45,21 @@ module.exports = {
         "**/__tests__/*.{j,t}s?(x)",
         "**/tests/unit/**/*.spec.{j,t}s?(x)"
       ],
+      plugins: ["jest"],
       env: {
-        jest: true
+        "jest/globals": true,
+        node: true
+      }
+    },
+    {
+      files: ["**/__tests__/*.{j,t}s?(x)", "**/tests/e2e/**/*.spec.{j,t}s?(x)"],
+      plugins: ["cypress"],
+      env: {
+        mocha: true,
+        "cypress/globals": true
+      },
+      rules: {
+        strict: "off"
       }
     }
   ]
