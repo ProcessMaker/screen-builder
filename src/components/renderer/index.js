@@ -6,3 +6,5 @@ export { default as FormText } from './form-text';
 export { default as FormNestedScreen } from './form-nested-screen';
 export { default as FormListTable } from './form-list-table';
 export { default as FormAnalyticsChart } from './form-analytics-chart';
+export { default as FormRequests } from "./form-requests.vue";
+export { default as FormTasks } from "./form-tasks.vue";
