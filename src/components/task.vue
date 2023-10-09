@@ -164,9 +164,16 @@ export default {
 
     task: {
       handler() {
+        if (!this.screen) {
+          // if no current screen show the interstitial screen if exists
+          this.screen = this.task && this.task.interstitial_screen;
+        }
         this.taskId = this.task.id;
         this.nodeId = this.task.element_id;
         this.listenForParentChanges();
+        if (this.task.process_request.status === 'COMPLETED') {
+          this.$emit('completed', this.task.process_request.id);
+        }
       },
     },
 
@@ -289,6 +296,7 @@ export default {
       this.disabled = false;
       if (this.$refs.renderer && this.$refs.renderer.$children[0]) {
         this.$refs.renderer.$children[0].currentPage = 0;
+        this.$refs.renderer.restartValidation();
       }
     },
     checkTaskStatus() {
@@ -525,6 +533,15 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
+    if (
+      this.$parent.task &&
+      !this.$parent.task.screen &&
+      this.$parent.task.allow_interstitial &&
+      this.$parent.task.interstitial_screen
+    ) {
+      // if interstitial screen exists, show it
+      this.screen = this.$parent.task.interstitial_screen;
+    }
   },
   destroyed() {
     this.unsubscribeSocketListeners();

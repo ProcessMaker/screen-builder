@@ -171,7 +171,7 @@ export default {
     this.containerObserver.observe(this.$refs.formRendererContainer);
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
+    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad", "restartValidation"]),
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
