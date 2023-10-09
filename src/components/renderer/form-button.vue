@@ -78,7 +78,7 @@ export default {
         this.setValue(this.$parent, this.name, this.fieldValue);
       }
       if (this.event === 'submit') {
-        if (this.loading) {
+        if (this.loading && this.valid) {
           this.showSpinner = true;
         }
         this.$emit('input', this.fieldValue);
