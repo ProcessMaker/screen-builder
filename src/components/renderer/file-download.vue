@@ -127,7 +127,7 @@ export default {
 
       if (_.has(window, 'PM4ConfigOverrides.getFileEndpoint')) {
         endpoint = window.PM4ConfigOverrides.getFileEndpoint;
-        return `${endpoint}/${file.id}`;
+        return `${endpoint}/${file.id}/contents`;
       }
 
       return `/files/${file.id}/contents`;
