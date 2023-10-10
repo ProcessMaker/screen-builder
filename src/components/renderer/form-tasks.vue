@@ -37,6 +37,7 @@ export default {
   mixins: [uniqIdsMixin],
   data() {
     return {
+      countResponse: "0",
       fields: [],
       data: [],
       tableData: [],
@@ -107,6 +108,15 @@ export default {
           )
           .then((response) => {
             this.tableData = response.data;
+            this.countResponse = Object.keys(this.tableData.data).length;
+            const dataTasks = {
+              count: `${this.countResponse}`,
+              showControl: true,
+              variant: "warning",
+              textColor: "text-warning",
+              colorText: "color: #ff9900"
+            };
+            this.$emit("tasksCount", dataTasks);
           })
           .catch(() => {
             this.tableData = [];
