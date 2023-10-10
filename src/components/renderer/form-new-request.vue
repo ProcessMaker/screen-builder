@@ -81,7 +81,8 @@ export default {
             count: "0",
             showControl: true,
             showAvatar: false,
-            colorTextStart: "color: #57646F"
+            colorTextStart: "color: #57646F",
+            url: "#"
           };
           this.$emit("startControl", dataStart);
         })

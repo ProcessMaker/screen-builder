@@ -115,7 +115,8 @@ export default {
               showAvatar: true,
               variant: "warning",
               textColor: "text-warning",
-              colorText: "color: #ff9900"
+              colorText: "color: #ff9900",
+              url: "/tasks"
             };
             this.$emit("tasksCount", dataTasks);
           })
