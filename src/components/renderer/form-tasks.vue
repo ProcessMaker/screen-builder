@@ -112,6 +112,7 @@ export default {
             const dataTasks = {
               count: `${this.countResponse}`,
               showControl: true,
+              showAvatar: true,
               variant: "warning",
               textColor: "text-warning",
               colorText: "color: #ff9900"

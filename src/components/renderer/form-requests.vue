@@ -115,6 +115,7 @@ export default {
             const dataRequests = {
               count: `${this.countResponse}`,
               showControl: true,
+              showAvatar: true,
               variant: "primary",
               textColor: "text-primary",
               colorText: "color: #1572C2"
