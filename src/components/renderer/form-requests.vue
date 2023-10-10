@@ -118,7 +118,8 @@ export default {
               showAvatar: true,
               variant: "primary",
               textColor: "text-primary",
-              colorText: "color: #1572C2"
+              colorText: "color: #1572C2",
+              url: "/requests"
             };
             this.$emit("requestsCount", dataRequests);
           })

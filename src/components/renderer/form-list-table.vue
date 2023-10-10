@@ -23,8 +23,13 @@
             {{ title }}
           </p>
         </template>
+        <div class="ml-auto mr-2">
+          <i class="fas fa-search custom-icon" />
+        </div>
         <div>
-          <i class="fas fa-search" />
+          <b-link :href="dataControl.url">
+            <i class="fas fa-external-link-alt custom-icon" />
+          </b-link>
         </div>
       </div>
     </div>
@@ -101,5 +106,9 @@ export default {
   line-height: normal;
   letter-spacing: -0.28px;
   text-transform: uppercase;
+}
+
+.custom-icon {
+  color: #6C8498; /* Cambia esto al color que desees */
 }
 </style>
