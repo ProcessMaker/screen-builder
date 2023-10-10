@@ -1,5 +1,15 @@
 <template>
-  <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="tableData">
+  <vuetable
+    ref="vuetable"
+    :data-manager="dataManager"
+    :sort-order="sortOrder"
+    :api-mode="false"
+    :fields="fields"
+    :data="tableData"
+    :css="css"
+    data-path="data"
+    pagination-path="meta"
+  >
     <template slot="ids" slot-scope="props">
       <b-link
         class="text-nowrap"
@@ -39,10 +49,11 @@
 
 <script>
 import { createUniqIdsMixin } from "vue-uniq-ids";
+import datatableMixin from "../../mixins/datatable";
 
 const uniqIdsMixin = createUniqIdsMixin();
 export default {
-  mixins: [uniqIdsMixin],
+  mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
       fields: [],
@@ -52,7 +63,6 @@ export default {
       orderBy: "id",
       orderDirection: "DESC",
       additionalParams: "",
-      perPage: 10,
       sortOrder: [
         {
           field: "id",
@@ -120,18 +130,24 @@ export default {
       this.fields.push({
         name: "__slot:ids",
         field: "id",
+        sortField: "id",
+        sortable: true,
         title: "#"
       });
 
       this.fields.push({
         name: "__slot:name",
         field: "name",
+        sortField: "name",
+        sortable: true,
         title: () => this.$t("Name")
       });
 
       this.fields.push({
         name: "__slot:status",
         field: "status",
+        sortField: "status",
+        sortable: true,
         title: () => this.$t("Status")
       });
 
