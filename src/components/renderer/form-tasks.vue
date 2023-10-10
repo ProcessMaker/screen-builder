@@ -1,5 +1,15 @@
 <template>
-  <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="tableData">
+  <vuetable
+    ref="vuetable"
+    :data-manager="dataManager"
+    :sort-order="sortOrder"
+    :api-mode="false"
+    :fields="fields"
+    :data="tableData"
+    :css="css"
+    data-path="data"
+    pagination-path="meta"
+  >
     <template slot="name" slot-scope="props">
       <b-link
         v-uni-id="props.rowData.id.toString()"
@@ -21,6 +31,11 @@
         {{ formatDate(props.rowData.due_at) }}
       </span>
     </template>
+    <template slot="completedDate" slot-scope="props">
+      <span class="text-dark">
+        {{ formatDate(props.rowData.completed_at) }}
+      </span>
+    </template>
     <template slot="preview" slot-scope="props">
       <span>
         <i class="fa fa-eye" @click="previewTasks(props.rowData)" />
@@ -31,10 +46,11 @@
 
 <script>
 import { createUniqIdsMixin } from "vue-uniq-ids";
+import datatableMixin from "../../mixins/datatable";
 
 const uniqIdsMixin = createUniqIdsMixin();
 export default {
-  mixins: [uniqIdsMixin],
+  mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
       fields: [],
@@ -43,7 +59,6 @@ export default {
       orderBy: "ID",
       order_direction: "DESC",
       status: "",
-      perPage: 10,
       sortOrder: [
         {
           field: "ID",
@@ -113,23 +128,80 @@ export default {
           });
       });
     },
+    getColumns() {
+      const columns = [
+        {
+          label: "Task",
+          field: "task",
+          sortable: true,
+          default: true
+        },
+        {
+          label: "Request",
+          field: "request",
+          sortable: true,
+          default: true
+        }
+      ];
+
+      if (this.status === "CLOSED") {
+        columns.push({
+          label: "Completed",
+          field: "completed_at",
+          sortable: true,
+          default: true
+        });
+      } else {
+        columns.push({
+          label: "Due",
+          field: "due_at",
+          sortable: true,
+          default: true
+        });
+      }
+      return columns;
+    },
     setFields() {
-      this.fields.push({
-        name: "__slot:name",
-        field: "element_name",
-        title: () => this.$t("Task")
-      });
+      const columns = this.getColumns();
 
-      this.fields.push({
-        name: "__slot:requestName",
-        field: "element_name",
-        title: () => this.$t("Request")
-      });
+      columns.forEach((column) => {
+        const field = {
+          title: () => this.$t(column.label)
+        };
 
-      this.fields.push({
-        name: "__slot:dueDate",
-        field: "dueDate",
-        title: () => this.$t("Due")
+        switch (column.field) {
+          case "task":
+            field.name = "__slot:name";
+            field.field = "element_name";
+            field.sortField = "element_name";
+            break;
+          case "request":
+            field.name = "__slot:requestName";
+            field.sortField = "process_requests.id,process_requests.name";
+            break;
+          case "due_at":
+            field.name = "__slot:dueDate";
+            break;
+          case "completed_at":
+            field.name = "__slot:completedDate";
+            break;
+          default:
+            field.name = column.field;
+        }
+
+        if (!field.field) {
+          field.field = column.field;
+        }
+
+        if (column.format === "datetime" || column.format === "date") {
+          field.callback = "formatDate";
+        }
+
+        if (column.sortable && !field.sortField) {
+          field.sortField = column.field;
+        }
+
+        this.fields.push(field);
       });
 
       this.fields.push({
