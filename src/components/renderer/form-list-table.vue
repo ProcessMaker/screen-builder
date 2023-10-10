@@ -4,35 +4,39 @@
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
-        <template v-if="dataChild.showControl">
+        <template v-if="dataControl.showControl">
           <div class="mb-2">
             <b-avatar
+              v-if="dataControl.showAvatar"
               size="2em"
-              :variant="dataChild.variant"
-              :text="dataChild.count"
+              :variant="dataControl.variant"
+              :text="dataControl.count"
               class="avatar-text"
             ></b-avatar>
-            <p class="control-text" :style="dataChild.colorText">
+            <p class="control-text" :style="dataControl.colorText">
               {{ title }}
             </p>
           </div>
         </template>
-        <!-- <h4></h4> -->
+        <template v-else>
+          <p class="control-text">
+            {{ title }}
+          </p>
+        </template>
         <div>
           <i class="fas fa-search" />
         </div>
       </div>
+    </div>
+    <div class="card-body list-table">
       <template v-if="listOption === 'My Tasks'">
-        <FormTasks @tasksCount="capturarDato"></FormTasks>
+        <FormTasks @tasksCount="getData"></FormTasks>
       </template>
       <template v-if="listOption === 'My Requests'">
-        <FormRequests @requestsCount="capturarDato"></FormRequests>
+        <FormRequests @requestsCount="getData"></FormRequests>
       </template>
       <template v-if="listOption === 'Start new Request'">
-        <!--
-          TODO Card for New Requests
-          <FormNewRequest></FormNewRequest>
-        -->
+        <FormNewRequest @startControl="getData"></FormNewRequest>
       </template>
     </div>
   </div>
@@ -41,72 +45,30 @@
 <script>
 import FormTasks from "./form-tasks.vue";
 import FormRequests from "./form-requests.vue";
+import FormNewRequest from "./form-new-request.vue";
 
 export default {
-  components: { FormTasks, FormRequests },
+  components: { FormTasks, FormRequests, FormNewRequest },
   mixins: [],
   props: ["listOption"],
   data() {
     return {
-      dataChild: {},
       title: this.$t("List Table"),
-      data: [],
-      tableData: [],
-      fields: [],
-      actions: [
-        {
-          value: "edit",
-          content: "Open Task",
-          icon: "fas fa-caret-square-right",
-          link: true,
-          href: "/tasks/{{id}}/edit"
-        },
-        {
-          value: "showRequestSummary",
-          content: "Open Request",
-          icon: "fas fa-clipboard",
-          link: true,
-          href: "/requests/{{process_request.id}}"
-        }
-      ]
+      dataControl: {}
     };
   },
   watch: {
     listOption() {
       this.title = this.listOption;
-      // this.populateFields(this.title);
+      this.dataControl = {};
     }
   },
   mounted() {
     this.title = this.listOption;
-    // this.populateFields(this.title);
   },
   methods: {
-    capturarDato(dato) {
-      this.dataChild = dato;
-    },
-    callAPI(url) {
-      try {
-        ProcessMaker.apiClient.get(url).then((response) => {
-          this.tableData = response.data;
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
-    populateFields(option) {
-      this.fields = [];
-      if (option === this.$t("My Tasks")) {
-        this.callAPI("/tasks");
-      }
-
-      if (option === this.$t("My Requests")) {
-        this.callAPI("/requests");
-      }
-
-      if (option === this.$t("Start new Request")) {
-        this.callAPI("/start_processes");
-      }
+    getData(data) {
+      this.dataControl = data;
     }
   }
 };
