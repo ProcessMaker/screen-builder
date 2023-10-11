@@ -24,7 +24,7 @@
         <i class="fas fa-search custom-icon" />
       </div>
       <div>
-        <b-link :href="dataControl.url">
+        <b-link @click="openExternalLink">
           <i class="fas fa-external-link-alt custom-icon" />
         </b-link>
       </div>
@@ -70,6 +70,9 @@ export default {
   methods: {
     getData(data) {
       this.dataControl = data;
+    },
+    openExternalLink() {
+      window.open(this.dataControl.url, "_blank");
     }
   }
 };
