@@ -1,20 +1,43 @@
 <template>
   <div class="card mt-4 mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h4>{{ title }}</h4>
+      <template v-if="dataControl.showControl">
+        <div class="mb-2">
+          <b-avatar
+            v-if="dataControl.showAvatar"
+            size="2em"
+            :variant="dataControl.variant"
+            :text="dataControl.count"
+            class="avatar-text"
+          ></b-avatar>
+          <p class="control-text" :style="dataControl.colorText">
+            {{ title }}
+          </p>
+        </div>
+      </template>
+      <template v-else>
+        <p class="control-text">
+          {{ title }}
+        </p>
+      </template>
+      <div class="ml-auto mr-2">
+        <i class="fas fa-search custom-icon" />
+      </div>
       <div>
-        <i class="fas fa-search" />
+        <b-link @click="openExternalLink">
+          <i class="fas fa-external-link-alt custom-icon" />
+        </b-link>
       </div>
     </div>
     <div class="card-body list-table">
       <template v-if="listOption === 'My Tasks'">
-        <FormTasks></FormTasks>
+        <FormTasks @tasksCount="getData"></FormTasks>
       </template>
       <template v-if="listOption === 'My Requests'">
-        <FormRequests></FormRequests>
+        <FormRequests @requestsCount="getData"></FormRequests>
       </template>
       <template v-if="listOption === 'Start new Request'">
-        <FormNewRequest></FormNewRequest>
+        <FormNewRequest @startControl="getData"></FormNewRequest>
       </template>
     </div>
   </div>
@@ -31,18 +54,27 @@ export default {
   props: ["listOption"],
   data() {
     return {
-      title: this.$t("List Table")
+      title: this.$t("List Table"),
+      dataControl: {}
     };
   },
   watch: {
     listOption() {
       this.title = this.listOption;
+      this.dataControl = {};
     }
   },
   mounted() {
     this.title = this.listOption;
   },
-  methods: {}
+  methods: {
+    getData(data) {
+      this.dataControl = data;
+    },
+    openExternalLink() {
+      window.open(this.dataControl.url, "_blank");
+    }
+  }
 };
 </script>
 
@@ -50,6 +82,35 @@ export default {
 .prevent-interaction.form-list-table::after {
   content: attr(placeholder);
 }
+
+.avatar-text {
+  display: inline-block;
+  margin-right: 10px;
+  color: white;
+  font-family: "Open Sans", sans-serif;
+  text-align: center;
+  font-size: 15.832px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.317px;
+}
+
+.control-text {
+  display: inline-block;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.28px;
+  text-transform: uppercase;
+}
+
+.custom-icon {
+  color: #6c8498; /* Cambia esto al color que desees */
+}
+
 .list-table {
   height: 300px;
   overflow: auto;

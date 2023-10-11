@@ -77,6 +77,14 @@ export default {
           data.meta.from -= 1;
           this.$refs.listProcess.data = data;
           this.$refs.listProcess.setPaginationData(data.meta);
+          const dataStart = {
+            count: "0",
+            showControl: true,
+            showAvatar: false,
+            colorTextStart: "color: #57646F",
+            url: "#"
+          };
+          this.$emit("startControl", dataStart);
         })
         .catch(() => {
           this.error = true;
