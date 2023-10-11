@@ -20,8 +20,46 @@
           {{ title }}
         </p>
       </template>
-      <div class="ml-auto mr-2">
-        <i class="fas fa-search custom-icon" />
+      <div class="ml-auto d-flex align-items-center">
+        <template v-if="dataControl.dropdownShow === 'requests'">
+          <div class="mr-4">
+            <b-dropdown variant="secondary" size="sm">
+              <template #button-content>
+                <span>View All</span>
+              </template>
+              <b-dropdown-item variant="warning">
+                <i class="fas fa-circle mr-2"></i>In Progress
+              </b-dropdown-item>
+              <b-dropdown-item variant="success">
+                <i class="fas fa-circle mr-2"></i>Completed
+              </b-dropdown-item>
+              <b-dropdown-item>View All</b-dropdown-item>
+            </b-dropdown>
+          </div>
+        </template>
+        <template v-if="dataControl.dropdownShow === 'tasks'">
+          <div class="mr-4">
+            <b-dropdown variant="secondary" size="sm">
+              <template #button-content>
+                <span>View All</span>
+              </template>
+              <AvatarDropdown
+                :variant="'warning'"
+                :text="countInProgress"
+                :label="'In Progress'"
+              ></AvatarDropdown>
+              <AvatarDropdown
+                :variant="'danger'"
+                :text="countOverdue"
+                :label="'Overdue'"
+              ></AvatarDropdown>
+              <b-dropdown-item>View All</b-dropdown-item>
+            </b-dropdown>
+          </div>
+        </template>
+        <div>
+          <i class="fas fa-search custom-icon ml-2"></i>
+        </div>
       </div>
       <div>
         <b-link @click="openExternalLink">
@@ -47,13 +85,18 @@
 import FormTasks from "./form-tasks.vue";
 import FormRequests from "./form-requests.vue";
 import FormNewRequest from "./form-new-request.vue";
+import AvatarDropdown from "./avatar-dropdown.vue";
 
 export default {
-  components: { FormTasks, FormRequests, FormNewRequest },
+  components: { FormTasks, FormRequests, FormNewRequest, AvatarDropdown },
   mixins: [],
   props: ["listOption"],
   data() {
     return {
+      countInProgress: "0",
+      countOverdue: "0",
+      selectedOptionStatus: "In Progress",
+      selectedIconStatus: "fas fa-circle text-warning",
       title: this.$t("List Table"),
       dataControl: {}
     };
@@ -66,6 +109,7 @@ export default {
   },
   mounted() {
     this.title = this.listOption;
+    // this.fetch();
   },
   methods: {
     getData(data) {
@@ -73,6 +117,20 @@ export default {
     },
     openExternalLink() {
       window.open(this.dataControl.url, "_blank");
+    },
+    fetch() {
+      // Load from our api client
+      ProcessMaker.apiClient
+        .get(
+          `tasks?page=${this.page}&include=process,processRequest,processRequest.user,user,data` +
+            `&per_page=10&non_system=true`
+        )
+        .then((response) => {
+          this.countInProgress = `${Object.keys(response.data).length}`;
+        })
+        .catch(() => {
+          this.countInProgress = "0";
+        });
     }
   }
 };
@@ -108,7 +166,8 @@ export default {
 }
 
 .custom-icon {
-  color: #6c8498; /* Cambia esto al color que desees */
+  color: #6c8498;
+  /* Cambia esto al color que desees */
 }
 
 .list-table {

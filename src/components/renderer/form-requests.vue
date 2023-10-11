@@ -129,7 +129,8 @@ export default {
               variant: "primary",
               textColor: "text-primary",
               colorText: "color: #1572C2",
-              url: "/requests"
+              url: "/requests",
+              dropdownShow: "requests"
             };
             this.$emit("requestsCount", dataRequests);
           })

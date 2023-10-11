@@ -131,7 +131,8 @@ export default {
               variant: "warning",
               textColor: "text-warning",
               colorText: "color: #ff9900",
-              url: "/tasks"
+              url: "/tasks",
+              dropdownShow: "tasks"
             };
             this.$emit("tasksCount", dataTasks);
           })
