@@ -53,6 +53,8 @@ export default {
   mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
+      countInProgress: "0",
+      countOverdue: "0",
       countResponse: "0",
       fields: [],
       data: [],
@@ -113,6 +115,30 @@ export default {
 
         this.previousPmql = pmql;
 
+        let tasksDropdown = [];
+        ProcessMaker.apiClient
+          .get(
+            'tasks?include=process,processRequest,processRequest.user,user,data&pmql=(status = "In Progress")&non_system=true'
+          )
+          .then((response) => {
+            this.countOverdue = `${response.data.meta.in_overdue}`;
+            tasksDropdown.push(this.countOverdue);
+          })
+          .catch(() => {
+            this.countOverdue = "0";
+            tasksDropdown.push("0");
+          });
+
+        ProcessMaker.apiClient
+          .get('requests?total=true&pmql=(status = "In Progress")')
+          .then((response) => {
+            this.countInProgress = `${response.data.meta.total}`;
+            tasksDropdown.push(this.countInProgress);
+          })
+          .catch(() => {
+            this.countInProgress = "0";
+            tasksDropdown.push("0");
+          });
         // Load from our api client
         ProcessMaker.apiClient
           .get(
@@ -124,7 +150,7 @@ export default {
           .then((response) => {
             this.tableData = response.data;
             this.countResponse = Object.keys(this.tableData.data).length;
-            const dataTasks = {
+            const dataControls = {
               count: `${this.countResponse}`,
               showControl: true,
               showAvatar: true,
@@ -134,7 +160,7 @@ export default {
               url: "/tasks",
               dropdownShow: "tasks"
             };
-            this.$emit("tasksCount", dataTasks);
+            this.$emit("tasksCount", { dataControls, tasksDropdown });
           })
           .catch(() => {
             this.tableData = [];

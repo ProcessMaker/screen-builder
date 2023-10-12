@@ -122,7 +122,7 @@ export default {
             }
             this.tableData = response.data;
             this.countResponse = Object.keys(this.tableData.data).length;
-            const dataRequests = {
+            const dataControls = {
               count: `${this.countResponse}`,
               showControl: true,
               showAvatar: true,
@@ -132,7 +132,8 @@ export default {
               url: "/requests",
               dropdownShow: "requests"
             };
-            this.$emit("requestsCount", dataRequests);
+            let tasksDropdown = [];
+            this.$emit("requestsCount", { dataControls, tasksDropdown });
           })
           .catch(() => {
             this.tableData = [];

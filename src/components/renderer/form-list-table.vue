@@ -117,36 +117,16 @@ export default {
   },
   mounted() {
     this.title = this.listOption;
-    this.fetch();
+    //this.fetch();
   },
   methods: {
     getData(data) {
-      this.dataControl = data;
+      this.dataControl = data.dataControls;
+      this.countOverdue = data.tasksDropdown[0];
+      this.countInProgress = data.tasksDropdown[1];
     },
     openExternalLink() {
       window.open(this.dataControl.url, "_blank");
-    },
-    fetch() {
-      // Load from our api client
-      ProcessMaker.apiClient
-        .get(
-          "tasks?include=process,processRequest,processRequest.user,user,data&pmql=(status = \"In Progress\")&non_system=true"
-        )
-        .then((response) => {
-          this.countOverdue = `${response.data.meta.in_overdue}`;
-        })
-        .catch(() => {
-          this.countOverdue = "0";
-        });
-
-      ProcessMaker.apiClient
-        .get("requests?total=true&pmql=(status = \"In Progress\")")
-        .then((response) => {
-          this.countInProgress = `${response.data.meta.total}`;
-        })
-        .catch(() => {
-          this.countInProgress = "0";
-        });
     }
   }
 };
