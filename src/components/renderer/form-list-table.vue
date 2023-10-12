@@ -16,9 +16,18 @@
         </div>
       </template>
       <template v-else>
-        <p class="control-text">
-          {{ title }}
-        </p>
+        <span class="control-text">{{ $t(title) }}</span>
+        <b-dropdown variant="custom" no-caret>
+          <template #button-content>
+            <i class="fas fa-caret-down"></i>
+          </template>
+          <b-dropdown-item @click="handleOption('me')"
+            >Request Started By Me</b-dropdown-item
+          >
+          <b-dropdown-item @click="handleOption('participant')"
+            >With Me as Participant
+          </b-dropdown-item>
+        </b-dropdown>
       </template>
       <div class="ml-auto d-flex align-items-center">
         <template v-if="dataControl.dropdownShow === 'requests'">
@@ -121,7 +130,7 @@ export default {
       // Load from our api client
       ProcessMaker.apiClient
         .get(
-          'tasks?include=process,processRequest,processRequest.user,user,data&pmql=(status = "In Progress")&non_system=true'
+          "tasks?include=process,processRequest,processRequest.user,user,data&pmql=(status = \"In Progress\")&non_system=true"
         )
         .then((response) => {
           this.countOverdue = `${response.data.meta.in_overdue}`;
@@ -131,7 +140,7 @@ export default {
         });
 
       ProcessMaker.apiClient
-        .get('requests?total=true&pmql=(status = "In Progress")')
+        .get("requests?total=true&pmql=(status = \"In Progress\")")
         .then((response) => {
           this.countInProgress = `${response.data.meta.total}`;
         })
@@ -143,7 +152,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .prevent-interaction.form-list-table::after {
   content: attr(placeholder);
 }
@@ -175,9 +184,11 @@ export default {
 .custom-icon {
   color: #6c8498;
 }
-
 .list-table {
   height: 300px;
   overflow: auto;
+}
+.btn-custom {
+  background-color: #f7f7f7;
 }
 </style>
