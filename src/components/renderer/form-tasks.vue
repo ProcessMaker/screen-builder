@@ -73,6 +73,7 @@ export default {
   },
   mounted() {
     this.setFields();
+    this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
     this.fetch();
   },
   methods: {
@@ -121,7 +122,7 @@ export default {
         ProcessMaker.apiClient
           .get(
             `tasks?page=${this.page}&include=process,processRequest,processRequest.user,user,data` +
-              `&per_page=${
+              `&pmql=${encodeURIComponent(pmql)}&per_page=${
                 this.perPage
               }${filterParams}${this.getSortParam()}&non_system=true`
           )
