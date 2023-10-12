@@ -22,10 +22,10 @@
             <i class="fas fa-caret-down"></i>
           </template>
           <b-dropdown-item @click="handleOption('me')"
-            >Request Started By Me</b-dropdown-item
+            >{{ $t('Request Started By Me') }}</b-dropdown-item
           >
           <b-dropdown-item @click="handleOption('participant')"
-            >With Me as Participant
+            >{{ $t('With Me as Participant') }}
           </b-dropdown-item>
         </b-dropdown>
       </template>
