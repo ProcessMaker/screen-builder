@@ -116,29 +116,7 @@ export default {
         this.previousPmql = pmql;
 
         let tasksDropdown = [];
-        ProcessMaker.apiClient
-          .get(
-            'tasks?include=process,processRequest,processRequest.user,user,data&pmql=(status = "In Progress")&non_system=true'
-          )
-          .then((response) => {
-            this.countOverdue = `${response.data.meta.in_overdue}`;
-            tasksDropdown.push(this.countOverdue);
-          })
-          .catch(() => {
-            this.countOverdue = "0";
-            tasksDropdown.push("0");
-          });
 
-        ProcessMaker.apiClient
-          .get('requests?total=true&pmql=(status = "In Progress")')
-          .then((response) => {
-            this.countInProgress = `${response.data.meta.total}`;
-            tasksDropdown.push(this.countInProgress);
-          })
-          .catch(() => {
-            this.countInProgress = "0";
-            tasksDropdown.push("0");
-          });
         // Load from our api client
         ProcessMaker.apiClient
           .get(
@@ -150,6 +128,10 @@ export default {
           .then((response) => {
             this.tableData = response.data;
             this.countResponse = Object.keys(this.tableData.data).length;
+            this.countOverdue = `${this.tableData.meta.in_overdue}`;
+            tasksDropdown.push(this.countOverdue);
+            this.countInProgress = `${this.tableData.meta.total}`;
+            tasksDropdown.push(this.countInProgress);
             const dataControls = {
               count: `${this.countResponse}`,
               showControl: true,
