@@ -59,6 +59,7 @@ export default {
     },
     fetch() {
       // Now call our api
+      
       window.ProcessMaker.apiClient
         .get(
           `start_processes?page=${this.page}&per_page=${this.perPage}&filter=${this.filter}&order_by=category.name,name` +
@@ -77,14 +78,15 @@ export default {
           data.meta.from -= 1;
           this.$refs.listProcess.data = data;
           this.$refs.listProcess.setPaginationData(data.meta);
-          const dataStart = {
+          const dataControls = {
             count: "0",
             showControl: true,
             showAvatar: false,
             colorTextStart: "color: #57646F",
-            url: "#"
+            url: ""
           };
-          this.$emit("startControl", dataStart);
+          let tasksDropdown = [];
+          this.$emit("startControl", { dataControls, tasksDropdown });
         })
         .catch(() => {
           this.error = true;

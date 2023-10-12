@@ -53,6 +53,8 @@ export default {
   mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
+      countInProgress: "0",
+      countOverdue: "0",
       countResponse: "0",
       fields: [],
       data: [],
@@ -114,6 +116,8 @@ export default {
 
         this.previousPmql = pmql;
 
+        let tasksDropdown = [];
+
         // Load from our api client
         ProcessMaker.apiClient
           .get(
@@ -125,16 +129,21 @@ export default {
           .then((response) => {
             this.tableData = response.data;
             this.countResponse = Object.keys(this.tableData.data).length;
-            const dataTasks = {
+            this.countOverdue = `${this.tableData.meta.in_overdue}`;
+            tasksDropdown.push(this.countOverdue);
+            this.countInProgress = `${this.tableData.meta.total}`;
+            tasksDropdown.push(this.countInProgress);
+            const dataControls = {
               count: `${this.countResponse}`,
               showControl: true,
               showAvatar: true,
               variant: "warning",
               textColor: "text-warning",
               colorText: "color: #ff9900",
-              url: "/tasks"
+              url: "/tasks",
+              dropdownShow: "tasks"
             };
-            this.$emit("tasksCount", dataTasks);
+            this.$emit("tasksCount", { dataControls, tasksDropdown });
           })
           .catch(() => {
             this.tableData = [];

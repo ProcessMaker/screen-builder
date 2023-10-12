@@ -16,12 +16,59 @@
         </div>
       </template>
       <template v-else>
-        <p class="control-text">
-          {{ title }}
-        </p>
+        <span class="control-text">{{ $t(title) }}</span>
+        <b-dropdown variant="custom" no-caret>
+          <template #button-content>
+            <i class="fas fa-caret-down"></i>
+          </template>
+          <b-dropdown-item @click="handleOption('me')"
+            >{{ $t('Request Started By Me') }}</b-dropdown-item
+          >
+          <b-dropdown-item @click="handleOption('participant')"
+            >{{ $t('With Me as Participant') }}
+          </b-dropdown-item>
+        </b-dropdown>
       </template>
-      <div class="ml-auto mr-2">
-        <i class="fas fa-search custom-icon" />
+      <div class="ml-auto d-flex align-items-center">
+        <template v-if="dataControl.dropdownShow === 'requests'">
+          <div class="mr-4">
+            <b-dropdown variant="secondary" size="sm">
+              <template #button-content>
+                <span>{{ $t(titleDropdown) }}</span>
+              </template>
+              <b-dropdown-item variant="warning">
+                <i class="fas fa-circle mr-2"></i>{{ $t("In Progress") }}
+              </b-dropdown-item>
+              <b-dropdown-item variant="success">
+                <i class="fas fa-circle mr-2"></i>{{ $t("Completed") }}
+              </b-dropdown-item>
+              <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
+            </b-dropdown>
+          </div>
+        </template>
+        <template v-if="dataControl.dropdownShow === 'tasks'">
+          <div class="mr-4">
+            <b-dropdown variant="secondary" size="sm">
+              <template #button-content>
+                <span>{{ $t(titleDropdown) }}</span>
+              </template>
+              <AvatarDropdown
+                :variant="'warning'"
+                :text="countInProgress"
+                :label="'In Progress'"
+              ></AvatarDropdown>
+              <AvatarDropdown
+                :variant="'danger'"
+                :text="countOverdue"
+                :label="'Overdue'"
+              ></AvatarDropdown>
+              <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
+            </b-dropdown>
+          </div>
+        </template>
+        <div>
+          <i class="fas fa-search custom-icon ml-2"></i>
+        </div>
       </div>
       <div>
         <b-link @click="openExternalLink">
@@ -47,13 +94,17 @@
 import FormTasks from "./form-tasks.vue";
 import FormRequests from "./form-requests.vue";
 import FormNewRequest from "./form-new-request.vue";
+import AvatarDropdown from "./avatar-dropdown.vue";
 
 export default {
-  components: { FormTasks, FormRequests, FormNewRequest },
+  components: { FormTasks, FormRequests, FormNewRequest, AvatarDropdown },
   mixins: [],
   props: ["listOption"],
   data() {
     return {
+      titleDropdown: "View All",
+      countInProgress: "0",
+      countOverdue: "0",
       title: this.$t("List Table"),
       dataControl: {}
     };
@@ -69,7 +120,9 @@ export default {
   },
   methods: {
     getData(data) {
-      this.dataControl = data;
+      this.dataControl = data.dataControls;
+      this.countOverdue = data.tasksDropdown[0];
+      this.countInProgress = data.tasksDropdown[1];
     },
     openExternalLink() {
       window.open(this.dataControl.url, "_blank");
@@ -78,7 +131,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .prevent-interaction.form-list-table::after {
   content: attr(placeholder);
 }
@@ -108,11 +161,13 @@ export default {
 }
 
 .custom-icon {
-  color: #6c8498; /* Cambia esto al color que desees */
+  color: #6c8498;
 }
-
 .list-table {
   height: 300px;
   overflow: auto;
+}
+.btn-custom {
+  background-color: #f7f7f7;
 }
 </style>
