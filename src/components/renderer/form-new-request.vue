@@ -82,7 +82,8 @@ export default {
             showControl: true,
             showAvatar: false,
             colorTextStart: "color: #57646F",
-            url: "#"
+            url: "#",
+            dropdownShow: "start"
           };
           this.$emit("startControl", dataStart);
         })
