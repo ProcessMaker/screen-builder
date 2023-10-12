@@ -25,15 +25,15 @@
           <div class="mr-4">
             <b-dropdown variant="secondary" size="sm">
               <template #button-content>
-                <span>View All</span>
+                <span>{{ $t(titleDropdown) }}</span>
               </template>
               <b-dropdown-item variant="warning">
-                <i class="fas fa-circle mr-2"></i>In Progress
+                <i class="fas fa-circle mr-2"></i>{{ $t("In Progress") }}
               </b-dropdown-item>
               <b-dropdown-item variant="success">
-                <i class="fas fa-circle mr-2"></i>Completed
+                <i class="fas fa-circle mr-2"></i>{{ $t("Completed") }}
               </b-dropdown-item>
-              <b-dropdown-item>View All</b-dropdown-item>
+              <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
             </b-dropdown>
           </div>
         </template>
@@ -41,7 +41,7 @@
           <div class="mr-4">
             <b-dropdown variant="secondary" size="sm">
               <template #button-content>
-                <span>View All</span>
+                <span>{{ $t(titleDropdown) }}</span>
               </template>
               <AvatarDropdown
                 :variant="'warning'"
@@ -53,7 +53,7 @@
                 :text="countOverdue"
                 :label="'Overdue'"
               ></AvatarDropdown>
-              <b-dropdown-item>View All</b-dropdown-item>
+              <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
             </b-dropdown>
           </div>
         </template>
@@ -93,10 +93,9 @@ export default {
   props: ["listOption"],
   data() {
     return {
+      titleDropdown: "View All",
       countInProgress: "0",
       countOverdue: "0",
-      selectedOptionStatus: "In Progress",
-      selectedIconStatus: "fas fa-circle text-warning",
       title: this.$t("List Table"),
       dataControl: {}
     };
@@ -109,7 +108,7 @@ export default {
   },
   mounted() {
     this.title = this.listOption;
-    // this.fetch();
+    this.fetch();
   },
   methods: {
     getData(data) {
@@ -122,11 +121,19 @@ export default {
       // Load from our api client
       ProcessMaker.apiClient
         .get(
-          `tasks?page=${this.page}&include=process,processRequest,processRequest.user,user,data` +
-            `&per_page=10&non_system=true`
+          'tasks?include=process,processRequest,processRequest.user,user,data&pmql=(status = "In Progress")&non_system=true'
         )
         .then((response) => {
-          this.countInProgress = `${Object.keys(response.data).length}`;
+          this.countOverdue = `${response.data.meta.in_overdue}`;
+        })
+        .catch(() => {
+          this.countOverdue = "0";
+        });
+
+      ProcessMaker.apiClient
+        .get('requests?total=true&pmql=(status = "In Progress")')
+        .then((response) => {
+          this.countInProgress = `${response.data.meta.total}`;
         })
         .catch(() => {
           this.countInProgress = "0";
@@ -167,7 +174,6 @@ export default {
 
 .custom-icon {
   color: #6c8498;
-  /* Cambia esto al color que desees */
 }
 
 .list-table {
