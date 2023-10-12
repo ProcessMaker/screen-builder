@@ -117,7 +117,6 @@ export default {
   },
   mounted() {
     this.title = this.listOption;
-    //this.fetch();
   },
   methods: {
     getData(data) {
