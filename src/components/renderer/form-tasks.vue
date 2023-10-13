@@ -83,7 +83,7 @@ export default {
     this.setFields();
     this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
     this.fetch();
-    this.$root.$on('dropdownSelectionTask', this.fetchData);
+    this.$root.$on("dropdownSelectionTask", this.fetchData);
   },
   methods: {
     getSortParam() {
@@ -130,7 +130,7 @@ export default {
 
         this.previousPmql = pmql;
 
-        let tasksDropdown = [];
+        const tasksDropdown = [];
 
         // Load from our api client
         ProcessMaker.apiClient
@@ -282,10 +282,10 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOption) {
-      if (selectedOption === 'In Progress') {
+      if (selectedOption === "In Progress" || selectedOption === "all") {
         this.filterDropdowns = "";
       }
-      if (selectedOption === 'Overdue') {
+      if (selectedOption === "Overdue") {
         this.filterDropdowns = "overdue=true";
       }
       this.fetch();
