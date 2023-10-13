@@ -49,7 +49,6 @@ export default {
   },
   mounted() {
     this.fetch();
-    this.$root.$on('dropdownSelectionStart', this.fetchData);
   },
   methods: {
     hasEmptyStartEvents(process) {
@@ -60,7 +59,6 @@ export default {
     },
     fetch() {
       // Now call our api
-      
       window.ProcessMaker.apiClient
         .get(
           `start_processes?page=${this.page}&per_page=${this.perPage}&filter=${this.filter}&order_by=category.name,name` +
@@ -108,15 +106,6 @@ export default {
           this.processes[category.name].push(process);
         }
       }
-    },
-    fetchData(selectedOption) {
-      if (selectedOption === 'by_me') {
-        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (requester = "${Processmaker.user.username}")`;
-      }
-      if (selectedOption === 'as_participant') {
-        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (participant = "${Processmaker.user.username}")`;
-      }
-      this.fetch();
     }
   }
 };

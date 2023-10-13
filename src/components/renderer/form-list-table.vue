@@ -13,22 +13,24 @@
           <p class="control-text" :style="dataControl.colorText">
             {{ title }}
           </p>
+          <template v-if="dataControl.dropdownShow === 'requests'">
+          <b-dropdown variant="custom" no-caret>
+          <template #button-content>
+            <i class="fas fa-caret-down"></i>
+          </template>
+          <b-dropdown-item @click="handleDropdownSelection('requests_filter', 'by_me')">{{
+            $t("Request Started By Me")
+          }}</b-dropdown-item>
+          <b-dropdown-item
+            @click="handleDropdownSelection('requests_filter', 'as_participant')"
+            >{{ $t("With Me as Participant") }}
+          </b-dropdown-item>
+        </b-dropdown>
+        </template>
         </div>
       </template>
       <template v-else>
         <span class="control-text">{{ $t(title) }}</span>
-        <b-dropdown variant="custom" no-caret>
-          <template #button-content>
-            <i class="fas fa-caret-down"></i>
-          </template>
-          <b-dropdown-item @click="handleDropdownSelection('start', 'by_me')">{{
-            $t("Request Started By Me")
-          }}</b-dropdown-item>
-          <b-dropdown-item
-            @click="handleDropdownSelection('start', 'as_participant')"
-            >{{ $t("With Me as Participant") }}
-          </b-dropdown-item>
-        </b-dropdown>
       </template>
       <div class="ml-auto d-flex align-items-center">
         <template v-if="dataControl.dropdownShow === 'requests'">
@@ -39,18 +41,18 @@
               </template>
               <b-dropdown-item
                 variant="success"
-                @click="handleDropdownSelection('requests', 'In Progress')"
+                @click="handleDropdownSelection('requests_dropdown', 'In Progress')"
               >
                 <i class="fas fa-circle mr-2"></i>{{ $t("In Progress") }}
               </b-dropdown-item>
               <b-dropdown-item
                 variant="primary"
-                @click="handleDropdownSelection('requests', 'Completed')"
+                @click="handleDropdownSelection('requests_dropdown', 'Completed')"
               >
                 <i class="fas fa-circle mr-2"></i>{{ $t("Completed") }}
               </b-dropdown-item>
               <b-dropdown-item
-                @click="handleDropdownSelection('requests', 'all')"
+                @click="handleDropdownSelection('requests_dropdown', 'all')"
                 >{{ $t(titleDropdown) }}</b-dropdown-item
               >
             </b-dropdown>
@@ -123,6 +125,8 @@ export default {
   props: ["listOption"],
   data() {
     return {
+      optionRequest: "by_me",
+      dropdownRequest: "In Progress",
       titleDropdown: "View All",
       countInProgress: "0",
       countOverdue: "0",
@@ -149,14 +153,25 @@ export default {
       window.open(this.dataControl.url, "_blank");
     },
     handleDropdownSelection(listType, valueSelected) {
+      let combinedFilter = [];
       if (listType === "tasks") {
         this.$root.$emit("dropdownSelectionTask", valueSelected);
-      }
-      if (listType === "requests") {
-        this.$root.$emit("dropdownSelectionRequest", valueSelected);
-      }
-      if (listType === "start") {
-        this.$root.$emit("dropdownSelectionStart", valueSelected);
+      } else {
+        if (listType === "requests_filter") {
+          this.optionRequest = valueSelected;
+          if (valueSelected === 'by_me') {
+            this.title = 'Request Started By Me';
+          }
+          if (valueSelected === 'as_participant') {
+            this.title = 'With Me as Participant';
+          }
+        }
+        if (listType === "requests_dropdown") {
+          this.dropdownRequest = valueSelected;
+        }
+        combinedFilter.push(this.optionRequest);
+        combinedFilter.push(this.dropdownRequest);
+        this.$root.$emit("dropdownSelectionRequest", combinedFilter);
       }
     }
   }
