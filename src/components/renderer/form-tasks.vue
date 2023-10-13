@@ -83,6 +83,7 @@ export default {
     this.setFields();
     this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
     this.fetch();
+    this.$root.$on("dropdownSelectionTask", this.fetchData);
   },
   methods: {
     getSortParam() {
@@ -95,9 +96,14 @@ export default {
     fetch() {
       Vue.nextTick(() => {
         let pmql = "";
+        let filterDropdowns = "";
 
         if (this.pmql !== undefined) {
           pmql = this.pmql;
+        }
+
+        if (this.filterDropdowns !== undefined) {
+          filterDropdowns = this.filterDropdowns;
         }
 
         let { filter } = this;
@@ -124,7 +130,7 @@ export default {
 
         this.previousPmql = pmql;
 
-        let tasksDropdown = [];
+        const tasksDropdown = [];
 
         // Load from our api client
         ProcessMaker.apiClient
@@ -132,7 +138,7 @@ export default {
             `tasks?page=${this.page}&include=process,processRequest,processRequest.user,user,data` +
               `&pmql=${encodeURIComponent(pmql)}&per_page=${
                 this.perPage
-              }${filterParams}${this.getSortParam()}&non_system=true`
+              }${filterParams}${this.getSortParam()}&non_system=true&${filterDropdowns}`
           )
           .then((response) => {
             this.showTable = response.data.data.length !== 0;
@@ -274,6 +280,15 @@ export default {
         : diff <= 1
         ? "text-warning"
         : "text-dark";
+    },
+    fetchData(selectedOption) {
+      if (selectedOption === "In Progress" || selectedOption === "all") {
+        this.filterDropdowns = "";
+      }
+      if (selectedOption === "Overdue") {
+        this.filterDropdowns = "overdue=true";
+      }
+      this.fetch();
     }
   }
 };

@@ -85,6 +85,7 @@ export default {
     this.setFields();
     this.pmql = `(status = "In Progress") AND (requester = "${Processmaker.user.username}")`;
     this.fetch();
+    this.$root.$on("dropdownSelectionRequest", this.fetchData);
   },
   methods: {
     fetch() {
@@ -143,7 +144,7 @@ export default {
               url: "/requests",
               dropdownShow: "requests"
             };
-            let tasksDropdown = [];
+            const tasksDropdown = [];
             this.$emit("requestsCount", { dataControls, tasksDropdown });
           })
           .catch(() => {
@@ -222,6 +223,21 @@ export default {
         : diff <= 1
         ? "text-warning"
         : "text-dark";
+    },
+    fetchData(selectedOptions) {
+      if (selectedOptions[0] === "by_me" && selectedOptions[1] !== "all") {
+        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "${selectedOptions[1]}")`;
+      }
+      if (
+        selectedOptions[0] === "as_participant" &&
+        selectedOptions[1] !== "all"
+      ) {
+        this.pmql = `(status = "${selectedOptions[1]}") AND (participant = "${Processmaker.user.username}")`;
+      }
+      if (selectedOptions[1] === "all") {
+        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND ((status = "In Progress") OR (status = "Completed"))`;
+      }
+      this.fetch();
     }
   }
 };
