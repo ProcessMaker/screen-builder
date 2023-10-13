@@ -59,7 +59,6 @@ export default {
     },
     fetch() {
       // Now call our api
-      
       window.ProcessMaker.apiClient
         .get(
           `start_processes?page=${this.page}&per_page=${this.perPage}&filter=${this.filter}&order_by=category.name,name` +
