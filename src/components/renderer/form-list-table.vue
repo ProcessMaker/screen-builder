@@ -21,11 +21,12 @@
           <template #button-content>
             <i class="fas fa-caret-down"></i>
           </template>
-          <b-dropdown-item @click="handleOption('me')"
-            >{{ $t('Request Started By Me') }}</b-dropdown-item
-          >
-          <b-dropdown-item @click="handleOption('participant')"
-            >{{ $t('With Me as Participant') }}
+          <b-dropdown-item @click="handleDropdownSelection('start', 'by_me')">{{
+            $t("Request Started By Me")
+          }}</b-dropdown-item>
+          <b-dropdown-item
+            @click="handleDropdownSelection('start', 'as_participant')"
+            >{{ $t("With Me as Participant") }}
           </b-dropdown-item>
         </b-dropdown>
       </template>
@@ -36,10 +37,16 @@
               <template #button-content>
                 <span>{{ $t(titleDropdown) }}</span>
               </template>
-              <b-dropdown-item variant="warning">
+              <b-dropdown-item
+                variant="success"
+                @click="handleDropdownSelection('requests', 'In Progress')"
+              >
                 <i class="fas fa-circle mr-2"></i>{{ $t("In Progress") }}
               </b-dropdown-item>
-              <b-dropdown-item variant="success">
+              <b-dropdown-item
+                variant="primary"
+                @click="handleDropdownSelection('requests', 'Completed')"
+              >
                 <i class="fas fa-circle mr-2"></i>{{ $t("Completed") }}
               </b-dropdown-item>
               <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
@@ -52,16 +59,24 @@
               <template #button-content>
                 <span>{{ $t(titleDropdown) }}</span>
               </template>
-              <AvatarDropdown
-                :variant="'warning'"
-                :text="countInProgress"
-                :label="'In Progress'"
-              ></AvatarDropdown>
-              <AvatarDropdown
-                :variant="'danger'"
-                :text="countOverdue"
-                :label="'Overdue'"
-              ></AvatarDropdown>
+              <b-dropdown-item
+                @click="handleDropdownSelection('tasks', 'In Progress')"
+              >
+                <AvatarDropdown
+                  :variant="'warning'"
+                  :text="countInProgress"
+                  :label="'In Progress'"
+                ></AvatarDropdown>
+              </b-dropdown-item>
+              <b-dropdown-item
+                @click="handleDropdownSelection('tasks', 'Overdue')"
+              >
+                <AvatarDropdown
+                  :variant="'danger'"
+                  :text="countOverdue"
+                  :label="'Overdue'"
+                ></AvatarDropdown>
+              </b-dropdown-item>
               <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
             </b-dropdown>
           </div>
@@ -126,6 +141,17 @@ export default {
     },
     openExternalLink() {
       window.open(this.dataControl.url, "_blank");
+    },
+    handleDropdownSelection(listType, valueSelected) {
+      if (listType === "tasks") {
+        this.$root.$emit("dropdownSelectionTask", valueSelected);
+      }
+      if (listType === "requests") {
+        this.$root.$emit("dropdownSelectionRequest", valueSelected);
+      }
+      if (listType === "start") {
+        this.$root.$emit("dropdownSelectionStart", valueSelected);
+      }
     }
   }
 };
