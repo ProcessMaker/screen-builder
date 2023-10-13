@@ -6,6 +6,18 @@
     class="tab-pane active show h-100"
   >
     <template v-if="screen">
+      <b-overlay
+          :show="disabled"
+          id="overlay-background"
+          variant="white"
+          cardStyles="pointer-events: none;pointer-events: none;inset: 1px"
+          rounded="sm"
+      >
+      <template #overlay>
+        <div class="text-center">
+          <p>Please claim this task to continue.</p>
+        </div>
+      </template>
       <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
         <div v-if="renderComponent === 'task-screen'">
           <vue-form-renderer
@@ -43,6 +55,7 @@
           {{ $t('Complete Task') }}
         </button>
       </div>
+      </b-overlay>
     </template>
     <template v-if="showTaskIsCompleted">
       <div class="card card-body text-center" v-cloak>
@@ -311,6 +324,15 @@ export default {
       }
       this.prepareTask();
     },
+    disableForSelfService() {
+      this.$nextTick(() => {
+        if (window.ProcessMaker.isSelfService) {
+          this.disabled = true;
+        } else {
+          this.disabled = false;
+        }
+      });
+    },
     closeTask(parentRequestId = null) {
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
@@ -407,8 +429,8 @@ export default {
     },
     onUpdate(data) {
       this.$emit('input', data);
+      this.disableForSelfService();
     },
-
     activityAssigned() {
       // This may no longer be needed
     },
