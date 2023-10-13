@@ -1,55 +1,62 @@
 <template>
-  <vuetable
-    ref="vuetable"
-    :data-manager="dataManager"
-    :sort-order="sortOrder"
-    :api-mode="false"
-    :fields="fields"
-    :data="tableData"
-    :css="css"
-    data-path="data"
-    pagination-path="meta"
-  >
-    <template slot="name" slot-scope="props">
-      <b-link
-        v-uni-id="props.rowData.id.toString()"
-        :href="onAction('edit', props.rowData, props.rowIndex)"
-      >
-        {{ props.rowData.element_name }}
-      </b-link>
-    </template>
-    <template slot="requestName" slot-scope="props">
-      <b-link
-        :href="onAction('showRequestSummary', props.rowData, props.rowIndex)"
-      >
-        #{{ props.rowData.process_request.id }}
-        {{ props.rowData.process_request.name }}
-      </b-link>
-    </template>
-    <template slot="dueDate" slot-scope="props">
-      <span :class="classDueDate(props.rowData.due_at)">
-        {{ formatDate(props.rowData.due_at) }}
-      </span>
-    </template>
-    <template slot="completedDate" slot-scope="props">
-      <span class="text-dark">
-        {{ formatDate(props.rowData.completed_at) }}
-      </span>
-    </template>
-    <template slot="preview" slot-scope="props">
-      <span>
-        <i class="fa fa-eye" @click="previewTasks(props.rowData)" />
-      </span>
-    </template>
-  </vuetable>
+  <div v-if="showTable">
+    <vuetable
+      ref="vuetable"
+      :data-manager="dataManager"
+      :sort-order="sortOrder"
+      :api-mode="false"
+      :fields="fields"
+      :data="tableData"
+      :css="css"
+      data-path="data"
+      pagination-path="meta"
+    >
+      <template slot="name" slot-scope="props">
+        <b-link
+          v-uni-id="props.rowData.id.toString()"
+          :href="onAction('edit', props.rowData, props.rowIndex)"
+        >
+          {{ props.rowData.element_name }}
+        </b-link>
+      </template>
+      <template slot="requestName" slot-scope="props">
+        <b-link
+          :href="onAction('showRequestSummary', props.rowData, props.rowIndex)"
+        >
+          #{{ props.rowData.process_request.id }}
+          {{ props.rowData.process_request.name }}
+        </b-link>
+      </template>
+      <template slot="dueDate" slot-scope="props">
+        <span :class="classDueDate(props.rowData.due_at)">
+          {{ formatDate(props.rowData.due_at) }}
+        </span>
+      </template>
+      <template slot="completedDate" slot-scope="props">
+        <span class="text-dark">
+          {{ formatDate(props.rowData.completed_at) }}
+        </span>
+      </template>
+      <template slot="preview" slot-scope="props">
+        <span>
+          <i class="fa fa-eye" @click="previewTasks(props.rowData)" />
+        </span>
+      </template>
+    </vuetable>
+  </div>
+  <div v-else>
+    <formEmpty link="Tasks" title="No tasks in sight" url="/tasks" />
+  </div>
 </template>
 
 <script>
 import { createUniqIdsMixin } from "vue-uniq-ids";
 import datatableMixin from "../../mixins/datatable";
+import formEmpty from "./form-empty-table.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
 export default {
+  components: { formEmpty },
   mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
@@ -62,6 +69,7 @@ export default {
       orderBy: "ID",
       order_direction: "DESC",
       status: "",
+      showTable: true,
       sortOrder: [
         {
           field: "ID",
@@ -133,6 +141,7 @@ export default {
               }${filterParams}${this.getSortParam()}&non_system=true&${filterDropdowns}`
           )
           .then((response) => {
+            this.showTable = response.data.data.length !== 0;
             this.tableData = response.data;
             this.countResponse = Object.keys(this.tableData.data).length;
             this.countOverdue = `${this.tableData.meta.in_overdue}`;
