@@ -49,7 +49,10 @@
               >
                 <i class="fas fa-circle mr-2"></i>{{ $t("Completed") }}
               </b-dropdown-item>
-              <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
+              <b-dropdown-item
+                @click="handleDropdownSelection('requests', 'all')"
+                >{{ $t(titleDropdown) }}</b-dropdown-item
+              >
             </b-dropdown>
           </div>
         </template>
@@ -77,7 +80,10 @@
                   :label="'Overdue'"
                 ></AvatarDropdown>
               </b-dropdown-item>
-              <b-dropdown-item>{{ $t(titleDropdown) }}</b-dropdown-item>
+              <b-dropdown-item
+                @click="handleDropdownSelection('tasks', 'all')"
+                >{{ $t(titleDropdown) }}</b-dropdown-item
+              >
             </b-dropdown>
           </div>
         </template>

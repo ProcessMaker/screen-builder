@@ -111,10 +111,10 @@ export default {
     },
     fetchData(selectedOption) {
       if (selectedOption === 'by_me') {
-        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress") AND (requester = "${Processmaker.user.username}")`;
+        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (requester = "${Processmaker.user.username}")`;
       }
       if (selectedOption === 'as_participant') {
-        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress") AND (participant = "${Processmaker.user.username}")`;
+        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (participant = "${Processmaker.user.username}")`;
       }
       this.fetch();
     }

@@ -231,6 +231,9 @@ export default {
       if (selectedOption === 'Completed') {
         this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "Completed")`;
       }
+      if (selectedOption === 'all') {
+        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND ((status = "In Progress") OR (status = "Completed"))`;
+      }
       this.fetch();
     }
   }
