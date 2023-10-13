@@ -1,58 +1,65 @@
 <template>
-  <vuetable
-    ref="vuetable"
-    :data-manager="dataManager"
-    :sort-order="sortOrder"
-    :api-mode="false"
-    :fields="fields"
-    :data="tableData"
-    :css="css"
-    data-path="data"
-    pagination-path="meta"
-  >
-    <template slot="ids" slot-scope="props">
-      <b-link
-        class="text-nowrap"
-        :href="openRequest(props.rowData, props.rowIndex)"
-      >
-        #{{ props.rowData.id }}
-      </b-link>
-    </template>
-    <template slot="name" slot-scope="props">
-      <span v-uni-id="props.rowData.id.toString()">{{
-        props.rowData.name
-      }}</span>
-    </template>
-    <template slot="status" slot-scope="props">
-      <span>
-        <i :class="`fas fa-circle text-${props.rowData.status.color}`" />
-        {{ props.rowData.status.label }}
-      </span>
-    </template>
-    <template slot="actions" slot-scope="props">
-      <div class="actions">
-        <div class="popout">
-          <b-btn
-            v-b-tooltip.hover
-            v-uni-aria-describedby="props.rowData.id.toString()"
-            variant="link"
-            :href="openRequest(props.rowData, props.rowIndex)"
-            :title="$t('Open Request')"
-          >
-            <i class="fas fa-caret-square-right fa-lg fa-fw" />
-          </b-btn>
+  <div v-if="showTable">
+    <vuetable
+      ref="vuetable"
+      :data-manager="dataManager"
+      :sort-order="sortOrder"
+      :api-mode="false"
+      :fields="fields"
+      :data="tableData"
+      :css="css"
+      data-path="data"
+      pagination-path="meta"
+    >
+      <template slot="ids" slot-scope="props">
+        <b-link
+          class="text-nowrap"
+          :href="openRequest(props.rowData, props.rowIndex)"
+        >
+          #{{ props.rowData.id }}
+        </b-link>
+      </template>
+      <template slot="name" slot-scope="props">
+        <span v-uni-id="props.rowData.id.toString()">{{
+          props.rowData.name
+        }}</span>
+      </template>
+      <template slot="status" slot-scope="props">
+        <span>
+          <i :class="`fas fa-circle text-${props.rowData.status.color}`" />
+          {{ props.rowData.status.label }}
+        </span>
+      </template>
+      <template slot="actions" slot-scope="props">
+        <div class="actions">
+          <div class="popout">
+            <b-btn
+              v-b-tooltip.hover
+              v-uni-aria-describedby="props.rowData.id.toString()"
+              variant="link"
+              :href="openRequest(props.rowData, props.rowIndex)"
+              :title="$t('Open Request')"
+            >
+              <i class="fas fa-caret-square-right fa-lg fa-fw" />
+            </b-btn>
+          </div>
         </div>
-      </div>
-    </template>
-  </vuetable>
+      </template>
+    </vuetable>
+  </div>
+  <div v-else>
+    <formEmpty link="Requests" title="No Requests to Show" url="/requests" />
+  </div>
 </template>
 
 <script>
 import { createUniqIdsMixin } from "vue-uniq-ids";
 import datatableMixin from "../../mixins/datatable";
+import formEmpty from "./form-empty-table.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
 export default {
+  components: { formEmpty },
   mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
@@ -64,6 +71,7 @@ export default {
       orderBy: "id",
       orderDirection: "DESC",
       additionalParams: "",
+      showTable: true,
       sortOrder: [
         {
           field: "id",
@@ -119,6 +127,7 @@ export default {
               }&order_direction=${this.orderDirection}${this.additionalParams}`
           )
           .then((response) => {
+            this.showTable = response.data.data.length !== 0;
             for (const record of response.data.data) {
               // format Status
               record.status = this.formatStatus(record.status);
