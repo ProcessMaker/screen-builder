@@ -14,19 +14,22 @@
             {{ title }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
-          <b-dropdown variant="custom" no-caret>
-          <template #button-content>
-            <i class="fas fa-caret-down"></i>
+            <b-dropdown variant="custom" no-caret>
+              <template #button-content>
+                <i class="fas fa-caret-down"></i>
+              </template>
+              <b-dropdown-item
+                @click="handleDropdownSelection('requests_filter', 'by_me')"
+                >{{ $t("Request Started By Me") }}</b-dropdown-item
+              >
+              <b-dropdown-item
+                @click="
+                  handleDropdownSelection('requests_filter', 'as_participant')
+                "
+                >{{ $t("With Me as Participant") }}
+              </b-dropdown-item>
+            </b-dropdown>
           </template>
-          <b-dropdown-item @click="handleDropdownSelection('requests_filter', 'by_me')">{{
-            $t("Request Started By Me")
-          }}</b-dropdown-item>
-          <b-dropdown-item
-            @click="handleDropdownSelection('requests_filter', 'as_participant')"
-            >{{ $t("With Me as Participant") }}
-          </b-dropdown-item>
-        </b-dropdown>
-        </template>
         </div>
       </template>
       <template v-else>
@@ -41,13 +44,17 @@
               </template>
               <b-dropdown-item
                 variant="success"
-                @click="handleDropdownSelection('requests_dropdown', 'In Progress')"
+                @click="
+                  handleDropdownSelection('requests_dropdown', 'In Progress')
+                "
               >
                 <i class="fas fa-circle mr-2"></i>{{ $t("In Progress") }}
               </b-dropdown-item>
               <b-dropdown-item
                 variant="primary"
-                @click="handleDropdownSelection('requests_dropdown', 'Completed')"
+                @click="
+                  handleDropdownSelection('requests_dropdown', 'Completed')
+                "
               >
                 <i class="fas fa-circle mr-2"></i>{{ $t("Completed") }}
               </b-dropdown-item>
@@ -90,7 +97,25 @@
           </div>
         </template>
         <div>
-          <i class="fas fa-search custom-icon ml-2"></i>
+          <div class="d-flex justify-content-end">
+            <button
+              class="btn btn-outline-primary border-0 mr-1"
+              @click="toggleInput(dataControl.dropdownShow)"
+            >
+              <i class="fas fa-search" />
+            </button>
+            <input
+              v-if="showInput"
+              ref="input"
+              v-model="searchCriteria"
+              type="text"
+              class="form-control narrow-input"
+              @keyup.enter="performSearch(dataControl.dropdownShow)"
+            />
+            <button v-if="showInput" class="btn btn-clear" @click="clearSearch">
+              <i class="fas fa-times" />
+            </button>
+          </div>
         </div>
       </div>
       <div>
@@ -131,7 +156,10 @@ export default {
       countInProgress: "0",
       countOverdue: "0",
       title: this.$t("List Table"),
-      dataControl: {}
+      dataControl: {},
+      searchCriteria: "",
+      showInput: false,
+      pmql: ""
     };
   },
   watch: {
@@ -142,10 +170,12 @@ export default {
   },
   mounted() {
     this.title = this.listOption;
+    console.log("mounted form list table: ", this.listOption);
   },
   methods: {
     getData(data) {
       this.dataControl = data.dataControls;
+      console.log("datos recibidos: ", this.dataControl);
       this.countOverdue = data.tasksDropdown[0];
       this.countInProgress = data.tasksDropdown[1];
     },
@@ -153,17 +183,17 @@ export default {
       window.open(this.dataControl.url, "_blank");
     },
     handleDropdownSelection(listType, valueSelected) {
-      let combinedFilter = [];
+      const combinedFilter = [];
       if (listType === "tasks") {
         this.$root.$emit("dropdownSelectionTask", valueSelected);
       } else {
         if (listType === "requests_filter") {
           this.optionRequest = valueSelected;
-          if (valueSelected === 'by_me') {
-            this.title = 'Request Started By Me';
+          if (valueSelected === "by_me") {
+            this.title = "Request Started By Me";
           }
-          if (valueSelected === 'as_participant') {
-            this.title = 'With Me as Participant';
+          if (valueSelected === "as_participant") {
+            this.title = "With Me as Participant";
           }
         }
         if (listType === "requests_dropdown") {
@@ -173,6 +203,34 @@ export default {
         combinedFilter.push(this.dropdownRequest);
         this.$root.$emit("dropdownSelectionRequest", combinedFilter);
       }
+    },
+    /**
+     * This boolean method shows or hide elements
+     */
+    toggleInput(listType) {
+      if (this.showInput) {
+        this.performSearch(listType);
+      }
+      this.showInput = !this.showInput;
+    },
+    /**
+     * This method sends users's input criteria to filter specific tasks, requests, Start new Request
+     */
+    performSearch(listType) {
+      this.pmql = `(fulltext LIKE "%${this.searchCriteria}%")`;
+      if (listType === "tasks") {
+        this.$root.$emit("searchTask", this.pmql);
+      }
+      if (listType === "requests") {
+        this.$root.$emit("searchRequest", this.pmql);
+      }
+      if (listType === undefined) {
+        this.$root.$emit("dropdownSelectionStart", `${this.searchCriteria}`);
+      }
+    },
+    clearSearch() {
+      this.searchCriteria = "";
+      this.toggleInput();
     }
   }
 };
