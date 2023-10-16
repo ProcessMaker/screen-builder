@@ -170,12 +170,10 @@ export default {
   },
   mounted() {
     this.title = this.listOption;
-    console.log("mounted form list table: ", this.listOption);
   },
   methods: {
     getData(data) {
       this.dataControl = data.dataControls;
-      console.log("datos recibidos: ", this.dataControl);
       this.countOverdue = data.tasksDropdown[0];
       this.countInProgress = data.tasksDropdown[1];
     },
