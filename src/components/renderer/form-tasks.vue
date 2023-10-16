@@ -43,6 +43,7 @@
         </span>
       </template>
     </vuetable>
+    <tasks-preview ref="preview" />
   </div>
   <div v-else>
     <formEmpty link="Tasks" title="No tasks in sight" url="/tasks" />
@@ -51,12 +52,13 @@
 
 <script>
 import { createUniqIdsMixin } from "vue-uniq-ids";
+import { TasksPreview } from "SharedComponents";
 import datatableMixin from "../../mixins/datatable";
 import formEmpty from "./form-empty-table.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
 export default {
-  components: { formEmpty },
+  components: { formEmpty, TasksPreview },
   mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
