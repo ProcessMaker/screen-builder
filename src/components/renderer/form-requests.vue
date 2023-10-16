@@ -86,6 +86,7 @@ export default {
     this.pmql = `(status = "In Progress") AND (requester = "${Processmaker.user.username}")`;
     this.fetch();
     this.$root.$on("dropdownSelectionRequest", this.fetchData);
+    this.$root.$on("searchRequest", this.fetchSearch);
   },
   methods: {
     fetch() {
@@ -237,6 +238,11 @@ export default {
       if (selectedOptions[1] === "all") {
         this.pmql = `(user_id = ${ProcessMaker.user.id}) AND ((status = "In Progress") OR (status = "Completed"))`;
       }
+      this.fetch();
+    },
+    fetchSearch(searchData) {
+      this.pmql = "";
+      this.pmql = searchData;
       this.fetch();
     }
   }

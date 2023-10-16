@@ -49,6 +49,7 @@ export default {
   },
   mounted() {
     this.fetch();
+    this.$root.$on("dropdownSelectionStart", this.fetchData);
   },
   methods: {
     hasEmptyStartEvents(process) {
@@ -58,10 +59,13 @@ export default {
       );
     },
     fetch() {
-      // Now call our api
+      Vue.nextTick(() => {
+
       window.ProcessMaker.apiClient
         .get(
-          `start_processes?page=${this.page}&per_page=${this.perPage}&filter=${this.filter}&order_by=category.name,name` +
+          `start_processes?page=${this.page}&per_page=${this.perPage}&filter=${
+            this.filter
+          }&order_by=category.name,name` +
             "&order_direction=asc,asc" +
             "&include=events,categories" +
             "&without_event_definitions=true"
@@ -84,12 +88,13 @@ export default {
             colorTextStart: "color: #57646F",
             url: ""
           };
-          let tasksDropdown = [];
+          const tasksDropdown = [];
           this.$emit("startControl", { dataControls, tasksDropdown });
         })
         .catch(() => {
           this.error = true;
         });
+      });
     },
     populate(data) {
       // Each element in data represents an individual process
@@ -106,6 +111,10 @@ export default {
           this.processes[category.name].push(process);
         }
       }
+    },
+    fetchData(value) {
+      this.filter = value;
+      this.fetch();
     }
   }
 };
