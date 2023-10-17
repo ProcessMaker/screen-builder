@@ -43,7 +43,7 @@
         </span>
       </template>
     </vuetable>
-    <tasks-preview ref="preview" />
+    <component :is="tasksPreview" ref="preview" />
   </div>
   <div v-else>
     <formEmpty link="Tasks" title="No tasks in sight" url="/tasks" />
@@ -52,13 +52,12 @@
 
 <script>
 import { createUniqIdsMixin } from "vue-uniq-ids";
-import { TasksPreview } from "SharedComponents";
 import datatableMixin from "../../mixins/datatable";
 import formEmpty from "./form-empty-table.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
 export default {
-  components: { formEmpty, TasksPreview },
+  components: { formEmpty },
   mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
@@ -78,7 +77,9 @@ export default {
           sortField: "ID",
           direction: "DESC"
         }
-      ]
+      ],
+      tasksPreview:
+        (window.SharedComponents && window.SharedComponents.TasksPreview) || {}
     };
   },
   mounted() {
@@ -270,8 +271,8 @@ export default {
       }
       return link;
     },
-    previewTasks() {
-      console.log("preview");
+    previewTasks(info) {
+      this.$refs.preview.showSideBar(info, this.tableData.data, true);
     },
     classDueDate(value) {
       const dueDate = moment(value);
