@@ -87,6 +87,7 @@ export default {
     this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
     this.fetch();
     this.$root.$on("dropdownSelectionTask", this.fetchData);
+    this.$root.$on("searchTask", this.fetchSearch);
   },
   methods: {
     getSortParam() {
@@ -291,6 +292,12 @@ export default {
       if (selectedOption === "Overdue") {
         this.filterDropdowns = "overdue=true";
       }
+      this.pmql = "";
+      this.fetch();
+    },
+    fetchSearch(searchData) {
+      this.pmql = "";
+      this.pmql = searchData;
       this.fetch();
     }
   }
