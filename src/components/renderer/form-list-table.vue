@@ -266,10 +266,12 @@ export default {
 .custom-icon {
   color: #6c8498;
 }
+
 .list-table {
   height: 300px;
   overflow: auto;
 }
+
 .btn-custom {
   background-color: #f7f7f7;
 }
