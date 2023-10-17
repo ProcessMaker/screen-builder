@@ -26,23 +26,22 @@ module.exports = {
             : "@processmaker/vue-form-elements"
       }
     },
-    externals: [
-      ...(process.env.NODE_ENV === "production"
+    externals:
+      process.env.NODE_ENV === "production"
         ? [
-            "vue-monaco",
-            "monaco-editor",
-            "vue-deepset",
-            /^@fortawesome\/.+$/,
-            "vue",
-            "vuex",
-            /^bootstrap\/.+$/,
-            /^@processmaker\/.+$/,
-            "i18next",
-            "@panter/vue-i18next",
-            "validatorjs"
-          ]
-        : []),
+      'vue-monaco',
+      'monaco-editor',
+      'vue-deepset',
+      /^@fortawesome\/.+$/,
+      'vue',
+      'vuex',
+      /^bootstrap\/.+$/,
+      /^@processmaker\/.+$/,
+      'i18next',
+      '@panter/vue-i18next',
+      'validatorjs',
       "SharedComponents"
-    ]
+
+    ] : [],
   }
 };
