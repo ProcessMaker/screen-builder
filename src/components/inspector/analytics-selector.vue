@@ -19,6 +19,7 @@
 const globalObject = typeof window === "undefined" ? global : window;
 
 export default {
+  props: ["value"],
   data() {
     return {
       selectedOption: null,
@@ -28,10 +29,14 @@ export default {
   watch: {
     selectedOption(newValue) {
       this.$emit("input", newValue);
+    },
+    value() {
+      this.selectedOption = this.value;
     }
   },
-  created() {
+  mounted() {
     this.fetchChartData();
+    this.selectedOption = this.value;
   },
   methods: {
     fetchChartData() {
