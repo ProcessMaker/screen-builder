@@ -4,7 +4,7 @@
     <span class="title">
       {{ $t(title) }}
     </span>
-    <b-link :href="url">
+    <b-link v-if="url !== ''" :href="url">
       {{ linkText }}
     </b-link>
   </div>

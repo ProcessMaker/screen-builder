@@ -28,14 +28,18 @@
         </b-container>
       </div>
     </div>
+    <div v-else>
+      <formEmpty link="" title="No Request to Start" url="" />
+    </div>
   </div>
 </template>
 
 <script>
 import ProcessCard from "./card.vue";
+import formEmpty from "./form-empty-table.vue";
 
 export default {
-  components: { ProcessCard },
+  components: { ProcessCard, formEmpty },
   data() {
     return {
       filter: "",
