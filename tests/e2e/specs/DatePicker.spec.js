@@ -294,6 +294,7 @@ describe('Date Picker', () => {
       form_date_picker_2: moment(dateSame).toISOString(),
     });
   });
+  
   it('Date time picker validate when the user enter a string instead of a valid date', () => {
     const date = moment(new Date()).format('MM/DD/YYYY');
     const dateSame = moment(new Date()).format('MM/DD/YYYY');
