@@ -83,7 +83,7 @@ export default {
   },
   mounted() {
     this.setFields();
-    this.pmql = `(status = "In Progress") AND (requester = "${Processmaker.user.username}")`;
+    this.pmql = `requester = "${Processmaker.user.username}"`;
     this.fetch();
     this.$root.$on("dropdownSelectionRequest", this.fetchData);
     this.$root.$on("searchRequest", this.fetchSearch);
