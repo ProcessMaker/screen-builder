@@ -4,7 +4,7 @@
     <span class="title">
       {{ $t(title) }}
     </span>
-    <b-link :href="url">
+    <b-link v-if="url !== ''" @click="openLink()">
       {{ linkText }}
     </b-link>
   </div>
@@ -18,6 +18,11 @@ export default {
     return {
       linkText
     };
+  },
+  methods: {
+    openLink() {
+      window.open(this.link, "_blank");
+    }
   }
 };
 </script>

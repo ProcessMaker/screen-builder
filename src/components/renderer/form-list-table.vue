@@ -20,13 +20,13 @@
               </template>
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_filter', 'by_me')"
-                >{{ $t("Request Started By Me") }}</b-dropdown-item
+                >{{ $t("Requester") }}</b-dropdown-item
               >
               <b-dropdown-item
                 @click="
                   handleDropdownSelection('requests_filter', 'as_participant')
                 "
-                >{{ $t("With Me as Participant") }}
+                >{{ $t("Participant") }}
               </b-dropdown-item>
             </b-dropdown>
           </template>
