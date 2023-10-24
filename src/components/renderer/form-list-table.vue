@@ -118,7 +118,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div v-if="listOption !== 'Start new Request'">
         <b-link @click="openExternalLink">
           <i class="fas fa-external-link-alt custom-icon" />
         </b-link>
