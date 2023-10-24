@@ -16,17 +16,19 @@
           <template v-if="dataControl.dropdownShow === 'requests'">
             <b-dropdown variant="custom" no-caret>
               <template #button-content>
-                <i class="fas fa-caret-down"></i>
+                <i class="fas fa-caret-down" />
               </template>
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_filter', 'by_me')"
-                >{{ $t("Requester") }}</b-dropdown-item
+              >
+                {{ $t("Requester") }}</b-dropdown-item
               >
               <b-dropdown-item
                 @click="
                   handleDropdownSelection('requests_filter', 'as_participant')
                 "
-                >{{ $t("Participant") }}
+              >
+                {{ $t("Participant") }}
               </b-dropdown-item>
             </b-dropdown>
           </template>
@@ -48,7 +50,7 @@
                   handleDropdownSelection('requests_dropdown', 'In Progress')
                 "
               >
-                <i class="fas fa-circle mr-2"></i>{{ $t("In Progress") }}
+                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
               </b-dropdown-item>
               <b-dropdown-item
                 variant="primary"
@@ -56,12 +58,13 @@
                   handleDropdownSelection('requests_dropdown', 'Completed')
                 "
               >
-                <i class="fas fa-circle mr-2"></i>{{ $t("Completed") }}
+                <i class="fas fa-circle mr-2" />{{ $t("Completed") }}
               </b-dropdown-item>
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_dropdown', 'all')"
-                >{{ $t(titleDropdown) }}</b-dropdown-item
               >
+                {{ $t(titleDropdown) }}
+              </b-dropdown-item>
             </b-dropdown>
           </div>
         </template>
@@ -89,10 +92,9 @@
                   :label="'Overdue'"
                 ></AvatarDropdown>
               </b-dropdown-item>
-              <b-dropdown-item
-                @click="handleDropdownSelection('tasks', 'all')"
-                >{{ $t(titleDropdown) }}</b-dropdown-item
-              >
+              <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
+                {{ $t(titleDropdown) }}
+              </b-dropdown-item>
             </b-dropdown>
           </div>
         </template>
@@ -112,7 +114,11 @@
               class="form-control narrow-input"
               @keyup.enter="performSearch(dataControl.dropdownShow)"
             />
-            <button v-if="showInput" class="btn btn-clear" @click="clearSearch">
+            <button
+              v-if="showInput"
+              class="btn btn-clear"
+              @click="clearSearch(dataControl.dropdownShow)"
+            >
               <i class="fas fa-times" />
             </button>
           </div>
@@ -226,9 +232,9 @@ export default {
         this.$root.$emit("dropdownSelectionStart", `${this.searchCriteria}`);
       }
     },
-    clearSearch() {
+    clearSearch(listType) {
       this.searchCriteria = "";
-      this.toggleInput();
+      this.toggleInput(listType);
     }
   }
 };
