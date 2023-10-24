@@ -185,6 +185,7 @@
               <div class="ml-auto">
                 <button
                   v-if="isAiSection(element) && aiPreview(element)"
+                  data-test="apply-ai-btn"
                   class="btn btn-sm btn-primary mr-2"
                   :title="$t('Apply Changes')"
                   @click="applyAiChanges(element)"
@@ -192,7 +193,8 @@
                   {{ $t("Apply Changes") }}
                 </button>
                 <button
-                v-if="!(isAiSection(element) && aiPreview(element))"
+                  v-if="!(isAiSection(element) && aiPreview(element))"
+                  data-test="copy-control-btn"
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
                   @click="duplicateItem(index)"
@@ -200,6 +202,7 @@
                   <i class="fas fa-copy text-light" />
                 </button>
                 <button
+                  data-test="delete-control-btn"
                   class="btn btn-sm btn-danger"
                   :title="$t('Delete Control')"
                   @click="deleteItem(index)"
