@@ -150,7 +150,7 @@ export default {
             this.countResponse = Object.keys(this.tableData.data).length;
             this.countOverdue = `${this.tableData.meta.in_overdue}`;
             tasksDropdown.push(this.countOverdue);
-            this.countInProgress = `${this.tableData.meta.total}`;
+            this.countInProgress = `${this.tableData.meta.in_progress}`;
             tasksDropdown.push(this.countInProgress);
             const dataControls = {
               count: `${this.countResponse}`,
@@ -286,13 +286,18 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOption) {
-      if (selectedOption === "In Progress" || selectedOption === "all") {
+      if (selectedOption === "In Progress") {
         this.filterDropdowns = "";
+        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
+      }
+      if (selectedOption === "all") {
+        this.filterDropdowns = "";
+        this.pmql = `(user_id = ${ProcessMaker.user.id})`;
       }
       if (selectedOption === "Overdue") {
         this.filterDropdowns = "overdue=true";
+        this.pmql = "";
       }
-      this.pmql = "";
       this.fetch();
     },
     fetchSearch(searchData) {
