@@ -4,7 +4,7 @@
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
-        <h4>{{ title }}</h4>
+        <span class="control-text">{{ title }}</span>
       </div>
       <div>
         <div class="d-flex flex-wrap p-2">
@@ -64,5 +64,15 @@ export default {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.control-text {
+  display: inline-block;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.28px;
+  text-transform: uppercase;
 }
 </style>

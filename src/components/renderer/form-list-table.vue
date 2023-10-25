@@ -118,7 +118,7 @@
           </div>
         </div>
       </div>
-      <div v-if="listOption !== 'Start new Request'">
+      <div v-if="listOption !== 'Start New Request'">
         <b-link @click="openExternalLink">
           <i class="fas fa-external-link-alt custom-icon" />
         </b-link>
@@ -131,7 +131,7 @@
       <template v-if="listOption === 'My Requests'">
         <FormRequests @requestsCount="getData"></FormRequests>
       </template>
-      <template v-if="listOption === 'Start new Request'">
+      <template v-if="listOption === 'Start New Request'">
         <FormNewRequest @startControl="getData"></FormNewRequest>
       </template>
     </div>
