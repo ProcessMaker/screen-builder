@@ -43,7 +43,7 @@
         </span>
       </template>
     </vuetable>
-    <component :is="tasksPreview" ref="preview" />
+    <component :is="tasksPreview" ref="preview-sidebar" />
   </div>
   <div v-else>
     <formEmpty link="Tasks" title="No tasks in sight" url="/tasks" />
@@ -79,7 +79,7 @@ export default {
         }
       ],
       tasksPreview:
-        (window.SharedComponents && window.SharedComponents.TasksPreview) || {}
+        (window.SharedComponents && window.SharedComponents.TasksHome) || {}
     };
   },
   mounted() {
@@ -272,8 +272,15 @@ export default {
       }
       return link;
     },
+    /**
+     * Show the preview tasks
+     */
     previewTasks(info) {
-      this.$refs.preview.showSideBar(info, this.tableData.data, true);
+      this.$refs["preview-sidebar"].showSideBar(
+        info,
+        this.tableData.data,
+        true
+      );
     },
     classDueDate(value) {
       const dueDate = moment(value);
