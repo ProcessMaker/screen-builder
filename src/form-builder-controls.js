@@ -855,8 +855,8 @@ export default [
               { value: "My Tasks", content: "My Tasks" },
               { value: "My Requests", content: "My Requests" },
               {
-                value: "Start new Request",
-                content: "Start new Request"
+                value: "Start New Request",
+                content: "Start New Request"
               }
             ]
           }
