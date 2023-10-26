@@ -84,7 +84,7 @@ export default {
   },
   mounted() {
     this.setFields();
-    this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
+    this.pmql = `(user_id = ${ProcessMaker.user.id})`;
     this.fetch();
     this.$root.$on("dropdownSelectionTask", this.fetchData);
     this.$root.$on("searchTask", this.fetchSearch);
