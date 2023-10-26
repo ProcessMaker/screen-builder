@@ -150,7 +150,7 @@ export default {
             this.countResponse = Object.keys(this.tableData.data).length;
             this.countOverdue = `${this.tableData.meta.in_overdue}`;
             tasksDropdown.push(this.countOverdue);
-            this.countInProgress = `${this.tableData.meta.in_progress}`;
+            this.countInProgress = `${this.tableData.meta.total}`;
             tasksDropdown.push(this.countInProgress);
             const dataControls = {
               count: `${this.countResponse}`,
