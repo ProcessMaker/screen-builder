@@ -1,12 +1,6 @@
 <template>
-  <b-dropdown-item>
-    <b-avatar
-      :variant="variant"
-      size="1.5rem"
-      :text="text"
-      class="text-white"
-    ></b-avatar>
-    {{ label }}
+  <b-dropdown-item :variant="variant">
+    <i class="fas fa-circle mr-2" />{{ label }}
   </b-dropdown-item>
 </template>
 
@@ -19,4 +13,3 @@ export default {
   }
 };
 </script>
-
