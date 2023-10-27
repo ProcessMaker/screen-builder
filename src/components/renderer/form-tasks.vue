@@ -286,13 +286,18 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOption) {
-      if (selectedOption === "In Progress" || selectedOption === "all") {
+      if (selectedOption === "In Progress") {
         this.filterDropdowns = "";
+        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
+      }
+      if (selectedOption === "all") {
+        this.filterDropdowns = "";
+        this.pmql = `(user_id = ${ProcessMaker.user.id})`;
       }
       if (selectedOption === "Overdue") {
         this.filterDropdowns = "overdue=true";
+        this.pmql = "";
       }
-      this.pmql = "";
       this.fetch();
     },
     fetchSearch(searchData) {
