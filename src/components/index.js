@@ -1,55 +1,28 @@
 // Import our components
-import VueFormBuilder from './vue-form-builder';
-import VueFormRenderer from './vue-form-renderer';
-import * as renderer from './renderer';
-import FormMultiColumn from './renderer/form-multi-column';
-import * as inspector from './inspector';
-import FormBuilderControls from '../form-builder-controls';
-import Task from './task';
-import Loop from './editor/loop';
-import MultiColumn from './editor/multi-column';
-import FormLoop from './renderer/form-loop';
-import NewFormMultiColumn from './renderer/new-form-multi-column';
-import FormNestedScreen from './renderer/form-nested-screen';
-import ScreenRenderer from './screen-renderer';
-import AddLoopRow from './renderer/add-loop-row';
-import FormRecordList from './renderer/form-record-list';
-import FormImage from './renderer/form-image';
-import VueFormElements from '@processmaker/vue-form-elements';
-import FormButton from './renderer/form-button';
-import FileUpload from './renderer/file-upload.vue';
-import FileDownload from './renderer/file-download.vue';
-import FormMaskedInput from './renderer/form-masked-input';
-import DefaultLoadingSpinner from './utils/default-loading-spinner';
-import DataProvider from '../DataProvider';
+import * as renderer from "./renderer";
+import * as inspector from "./inspector";
+import DataProvider from "../DataProvider";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import LRUCache from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import undoRedoModule from "@/store/modules/undoRedoModule";
-import FormListTable from './renderer/form-list-table';
-import FormAnalyticsChart from './renderer/form-analytics-chart';
+import FormListTable from "./renderer/form-list-table";
+import FormAnalyticsChart from "./renderer/form-analytics-chart";
 
 const rendererComponents = {
   ...renderer,
-  FormMultiColumn,
+  FormMultiColumn
 };
 
 // Export our named exports
-export {
-  VueFormBuilder,
-  VueFormRenderer,
-  inspector,
-  rendererComponents as renderer,
-  FormBuilderControls,
-  Task,
-};
+export { VueFormBuilder, VueFormRenderer, inspector, rendererComponents as renderer, FormBuilderControls, Task };
 
 /**
  * Gets the screen parent or null if don't have
  * @returns {object|null}
  */
- function findScreenOwner(control) {
+function findScreenOwner(control) {
   let owner = control.$parent;
   while (owner) {
     const isScreen = owner.$options.name === "ScreenContent";
@@ -74,30 +47,30 @@ export default {
     Vue._processMakerVueFormBuilderInstalled = true;
 
     // Register the builder and renderer
-    Vue.component('AddLoopRow', AddLoopRow);
-    Vue.component('FormImage', FormImage);
-    Vue.component('FormLoop', FormLoop);
-    Vue.component('FormMultiColumn', FormMultiColumn);
-    Vue.component('FormNestedScreen', FormNestedScreen);
-    Vue.component('FormRecordList', FormRecordList);
-    Vue.component('Loop', Loop);
-    Vue.component('MultiColumn', MultiColumn);
-    Vue.component('NewFormMultiColumn', NewFormMultiColumn);
-    Vue.component('ScreenRenderer', ScreenRenderer);
-    Vue.component('task', Task);
-    Vue.component('vue-form-builder', VueFormBuilder);
-    Vue.component('vue-form-renderer', VueFormRenderer);
-    Vue.component('default-loading-spinner', DefaultLoadingSpinner);
+    Vue.component("AddLoopRow", AddLoopRow);
+    Vue.component("FormImage", FormImage);
+    Vue.component("FormLoop", FormLoop);
+    Vue.component("FormMultiColumn", FormMultiColumn);
+    Vue.component("FormNestedScreen", FormNestedScreen);
+    Vue.component("FormRecordList", FormRecordList);
+    Vue.component("Loop", Loop);
+    Vue.component("MultiColumn", MultiColumn);
+    Vue.component("NewFormMultiColumn", NewFormMultiColumn);
+    Vue.component("ScreenRenderer", ScreenRenderer);
+    Vue.component("task", Task);
+    Vue.component("vue-form-builder", VueFormBuilder);
+    Vue.component("vue-form-renderer", VueFormRenderer);
+    Vue.component("default-loading-spinner", DefaultLoadingSpinner);
     Vue.use(VueFormElements);
-    Vue.component('FormButton', FormButton);
-    Vue.component('FileUpload', FileUpload);
-    Vue.component('FileDownload', FileDownload);
-    Vue.component('FormAnalyticsChart', FormAnalyticsChart);
-    Vue.component('FormMaskedInput', FormMaskedInput);
+    Vue.component("FormButton", FormButton);
+    Vue.component("FileUpload", FileUpload);
+    Vue.component("FileDownload", FileDownload);
+    Vue.component("FormAnalyticsChart", FormAnalyticsChart);
+    Vue.component("FormMaskedInput", FormMaskedInput);
     Vue.use(DataProvider);
 
     Vue.use(Vuex);
-    Vue.component('FormListTable', FormListTable);
+    Vue.component("FormListTable", FormListTable);
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,
@@ -108,11 +81,15 @@ export default {
     Vue.mixin({ store });
 
     //Helper to access data reference.
-    Vue.mixin({ methods:{ getScreenDataReference(customProperties = null, setter = null) {
-      const control = this;
-      const screen = findScreenOwner(control);
-      return screen.getDataReference(customProperties, setter);
-    }}});
+    Vue.mixin({
+      methods: {
+        getScreenDataReference(customProperties = null, setter = null) {
+          const control = this;
+          const screen = findScreenOwner(control);
+          return screen.getDataReference(customProperties, setter);
+        }
+      }
+    });
   }
 };
 
