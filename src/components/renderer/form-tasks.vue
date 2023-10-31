@@ -84,7 +84,7 @@ export default {
   },
   mounted() {
     this.setFields();
-    this.pmql = `(user_id = ${ProcessMaker.user.id})`;
+    this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
     this.fetch();
     this.$root.$on("dropdownSelectionTask", this.fetchData);
     this.$root.$on("searchTask", this.fetchSearch);
@@ -293,17 +293,12 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOption) {
-      if (selectedOption === "In Progress") {
+      if (selectedOption === "In Progress" || selectedOption === "all") {
         this.filterDropdowns = "";
         this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
       }
-      if (selectedOption === "all") {
-        this.filterDropdowns = "";
-        this.pmql = `(user_id = ${ProcessMaker.user.id})`;
-      }
       if (selectedOption === "Overdue") {
         this.filterDropdowns = "overdue=true";
-        this.pmql = "";
       }
       this.fetch();
     },
