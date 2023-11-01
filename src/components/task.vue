@@ -6,6 +6,18 @@
     class="tab-pane active show h-100"
   >
     <template v-if="screen">
+      <b-overlay
+          :show="disabled"
+          id="overlay-background"
+          variant="white"
+          cardStyles="pointer-events: none;pointer-events: none;inset: 1px"
+          rounded="sm"
+      >
+      <template #overlay>
+        <div class="text-center">
+          <p>Please claim this task to continue.</p>
+        </div>
+      </template>
       <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
         <div v-if="renderComponent === 'task-screen'">
           <vue-form-renderer
@@ -43,6 +55,7 @@
           {{ $t('Complete Task') }}
         </button>
       </div>
+      </b-overlay>
     </template>
     <template v-if="showTaskIsCompleted">
       <div class="card card-body text-center" v-cloak>
@@ -79,7 +92,8 @@ export default {
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
-    initialLoopContext: { type: String, default: "" }
+    initialLoopContext: { type: String, default: "" },
+    loading: { type: Number, default: null }
   },
   data() {
     return {
@@ -98,6 +112,7 @@ export default {
       hasErrors: false,
       refreshScreen: 0,
       redirecting: null,
+      loadingButton: false
     };
   },
   watch: {
@@ -162,9 +177,16 @@ export default {
 
     task: {
       handler() {
+        if (!this.screen) {
+          // if no current screen show the interstitial screen if exists
+          this.screen = this.task && this.task.interstitial_screen;
+        }
         this.taskId = this.task.id;
         this.nodeId = this.task.element_id;
         this.listenForParentChanges();
+        if (this.task.process_request.status === 'COMPLETED') {
+          this.$emit('completed', this.task.process_request.id);
+        }
       },
     },
 
@@ -263,10 +285,15 @@ export default {
       });
     },
     prepareTask() {
-      this.resetScreenState();
-      this.requestData = _.get(this.task, 'request_data', {});
-      this.loopContext = _.get(this.task, "loop_context", "");
-      this.refreshScreen++;
+      // If the immediate task status is completed and we are waiting with a loading button,
+      // do not reset the screen because that would stop displaying the loading spinner
+      // before the next task is ready.
+      if (!this.loadingButton || this.task.status === 'ACTIVE') {
+        this.resetScreenState();
+        this.requestData = _.get(this.task, 'request_data', {});
+        this.loopContext = _.get(this.task, "loop_context", "");
+        this.refreshScreen++;
+      }
 
       this.$emit('task-updated', this.task);
 
@@ -278,8 +305,11 @@ export default {
       }
     },
     resetScreenState() {
+      this.loadingButton = false;
+      this.disabled = false;
       if (this.$refs.renderer && this.$refs.renderer.$children[0]) {
         this.$refs.renderer.$children[0].currentPage = 0;
+        this.$refs.renderer.restartValidation();
       }
     },
     checkTaskStatus() {
@@ -294,6 +324,15 @@ export default {
       }
       this.prepareTask();
     },
+    disableForSelfService() {
+      this.$nextTick(() => {
+        if (window.ProcessMaker.isSelfService) {
+          this.disabled = true;
+        } else {
+          this.disabled = false;
+        }
+      });
+    },
     closeTask(parentRequestId = null) {
       if (this.hasErrors) {
         this.$emit('error', this.requestId);
@@ -301,6 +340,9 @@ export default {
       }
 
       if (this.task.process_request.status === 'COMPLETED') {
+        this.loadNextAssignedTask(parentRequestId);
+
+      } else if (this.loadingButton) {
         this.loadNextAssignedTask(parentRequestId);
 
       } else if (this.task.allow_interstitial) {
@@ -362,7 +404,7 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    submit(formData = null) {
+    submit(formData = null, loading = false) {
       //single click
       if (this.disabled) {
         return;
@@ -372,20 +414,23 @@ export default {
       if (formData) {
         this.onUpdate(Object.assign({}, this.requestData, formData));
       }
-      this.$emit('submit', this.task);
-      this.$nextTick(() => {
-        this.disabled = false;
-      });
 
-      if (this.task && this.task.allow_interstitial) {
+      if (loading) {
+        this.loadingButton = true;
+      } else {
+        this.loadingButton = false;
+      }
+      this.$emit('submit', this.task, loading);
+
+      if (this.task && this.task.allow_interstitial && !this.loadingButton) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
     },
     onUpdate(data) {
       this.$emit('input', data);
+      this.disableForSelfService();
     },
-
     activityAssigned() {
       // This may no longer be needed
     },
@@ -500,6 +545,7 @@ export default {
         requestIdNode.setAttribute('content', this.requestId);
       }
     },
+
   },
   mounted() {
     this.screenId = this.initialScreenId;
@@ -509,6 +555,15 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
+    if (
+      this.$parent.task &&
+      !this.$parent.task.screen &&
+      this.$parent.task.allow_interstitial &&
+      this.$parent.task.interstitial_screen
+    ) {
+      // if interstitial screen exists, show it
+      this.screen = this.$parent.task.interstitial_screen;
+    }
   },
   destroyed() {
     this.unsubscribeSocketListeners();
