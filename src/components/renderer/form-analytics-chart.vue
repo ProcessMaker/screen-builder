@@ -5,21 +5,17 @@
         class="card-header d-flex justify-content-between align-items-center"
       >
         <span class="control-text">{{ title }}</span>
+        <b-link @click="openExternalLink">
+          <i class="fas fa-external-link-alt custom-icon" />
+        </b-link>
       </div>
       <div>
         <div class="d-flex flex-wrap p-2">
           <template>
             <b-col cols="12">
-              <b-card
-                :title="graphic.name"
-                img-top
-                tag="article"
-                class="mb-0 mr-0 card-graphic"
-              >
-                <b-card-text>
-                  <b-embed type="iframe" :src="graphic.link"></b-embed>
-                </b-card-text>
-              </b-card>
+              <b-card-text>
+                <b-embed type="iframe" :src="graphic.link"></b-embed>
+              </b-card-text>
             </b-col>
           </template>
         </div>
@@ -36,6 +32,11 @@ export default {
       title: this.$t("Analytics Chart"),
       graphic: []
     };
+  },
+  methods: {
+    openExternalLink() {
+      window.open("/package-analytics-reporting", "_blank");
+    }
   },
   watch: {
     listChartOption() {
