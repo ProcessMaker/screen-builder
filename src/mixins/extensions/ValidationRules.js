@@ -54,14 +54,19 @@ export default {
       return check.str;
     },
     fieldValidationShow (element) {
+      console.log('fieldValidationShow', element.config.name, element.config, element.config.validation);
       let showError = true;
-      if (element.config.validation) {
+      if (element.config && element.config.validation) {
         const validationHidden = ['Required', 'Required if'];
-        element.config.validation.forEach((validation) => {
-          if (validationHidden.includes(validation.content)) {
-            showError = false;
-          }
-        });
+        if (Array.isArray(element.config.validation)) {
+          element.config.validation.forEach((validation) => {
+            if (validationHidden.includes(validation.content)) {
+              showError = false;
+            }
+          });
+        } else {
+          showError = validationHidden.includes(element.config.validation);
+        }
       }
       return showError;
     }
