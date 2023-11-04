@@ -17,8 +17,8 @@ export default {
               console.error("Invalid variable name");
             }
           } else {
-            properties[':class'] = `{ 'form-group--error': showValidationErrors && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && $v.vdata.${element.config.name}.$invalid || showValidationErrors && ${this.checkVariableExists('$v.schema.' + element.config.name)} && $v.schema.${element.config.name}.$invalid }`;
-            properties[':error'] = `showValidationErrors && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || showValidationErrors && ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`;
+            properties[':class'] = `{ 'form-group--error': (showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && $v.vdata.${element.config.name}.$invalid || (showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.schema.' + element.config.name)} && $v.schema.${element.config.name}.$invalid }`;
+            properties[':error'] = `(showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || (showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`;
           }
         }
       },
@@ -53,5 +53,21 @@ export default {
       }, {str: '', variable: ''});
       return check.str;
     },
+    fieldValidationShow (element) {
+      let showError = true;
+      if (element.config && element.config.validation) {
+        const validationHidden = ['Required', 'Required if'];
+        if (Array.isArray(element.config.validation)) {
+          element.config.validation.forEach((validation) => {
+            if (validationHidden.includes(validation.content)) {
+              showError = false;
+            }
+          });
+        } else {
+          showError = validationHidden.includes(element.config.validation);
+        }
+      }
+      return showError;
+    }
   },
 };
