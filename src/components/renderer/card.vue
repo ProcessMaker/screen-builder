@@ -115,11 +115,7 @@ export default {
         .then((response) => {
           this.spin = 0;
           const instance = response.data;
-          if (this.$cookies.get("isMobile")) {
-            window.location = `/requests/mobile/${instance.id}?fromRedirect=true`;
-          } else {
-            window.location = `/requests/${instance.id}?fromRedirect=true`;
-          }
+          window.location = `/requests/${instance.id}?fromRedirect=true`;
         })
         .catch((err) => {
           this.disabled = false;
