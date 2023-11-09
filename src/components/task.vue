@@ -92,7 +92,8 @@ export default {
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
-    initialLoopContext: { type: String, default: "" }
+    initialLoopContext: { type: String, default: "" },
+    avoidClose: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -330,7 +331,7 @@ export default {
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask(parentRequestId);
 
-      } else {
+      } else if (!this.avoidClose) {
         this.$emit('closed', this.task.id);
       }
     },
