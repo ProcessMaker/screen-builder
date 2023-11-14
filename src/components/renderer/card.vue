@@ -3,7 +3,7 @@
     <div v-for="event in emptyStartEvents" :key="event.id" class="card">
       <div class="card-body">
         <div class="d-flex justify-content-between">
-          <div>
+          <div style="width: 80%">
             <span v-uni-id="event.id.toString()">{{ transformedName }}</span>
             <span v-if="process.startEvents.length > 1">
               : {{ event.name }}
