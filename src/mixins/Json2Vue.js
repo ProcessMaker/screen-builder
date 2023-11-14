@@ -53,8 +53,8 @@ export default {
     dot2bracket(str) {
       return str.replace(/\.\d/g, match => `[${match.substr(1)}]`);
     },
-    submit() {
-      this.$emit('submit', this.value);
+    submit(eventData, loading = false) {
+      this.$emit('submit', this.value, loading);
     },
     buildComponent(definition) {
       if (window.ProcessMaker && window.ProcessMaker.EventBus) {
