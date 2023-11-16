@@ -9,12 +9,13 @@
         <b-container fluid>
           <b-card-group>
             <template v-for="(process, id) in category">
-              <ProcessCard
-                v-if="hasEmptyStartEvents(process)"
-                :key="`process-${id}`"
-                :filter="filter"
-                :process="process"
-              />
+              <b-col :key="`process-${id}`" cols="6">
+                <ProcessCard
+                  v-if="hasEmptyStartEvents(process)"
+                  :filter="filter"
+                  :process="process"
+                />
+              </b-col>
             </template>
           </b-card-group>
         </b-container>
