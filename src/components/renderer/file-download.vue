@@ -217,6 +217,7 @@ export default {
       }
 
       if (!this.requestId || !fileId) {
+        this.filesInfo = [];
         return;
       }
 
