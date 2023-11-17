@@ -170,7 +170,7 @@ export default {
         }
       }
 
-      if (parent?.loopContext) {
+      if (parent && parent.loopContext) {
         this.prefix = `${parent.loopContext}.`;
       }
     },
