@@ -81,7 +81,7 @@
             data-cy="toolbar-edit"
             @click="openEditPageModal(currentPage)"
           >
-            <i class="far fa-edit" />
+            <i class="far fa-edit p-0" />
           </b-button>
 
           <b-button
@@ -93,7 +93,7 @@
             data-cy="toolbar-remove"
             @click="confirmDelete()"
           >
-            <i class="far fa-trash-alt" />
+            <i class="far fa-trash-alt p-0" />
           </b-button>
 
           <b-button
@@ -105,7 +105,7 @@
             data-cy="toolbar-add"
             @click="originalPageName = null"
           >
-            <i class="fas fa-plus" />
+            <i class="fas fa-plus p-0" />
           </b-button>
         </div>
 
