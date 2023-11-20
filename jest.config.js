@@ -1,27 +1,29 @@
 module.exports = {
-  moduleFileExtensions: [
-    'js',
-    'jsx',
-    'json',
-    'vue',
-  ],
+  moduleFileExtensions: ["js", "jsx", "json", "vue"],
+
   transform: {
-    '^.+\\.vue$': 'vue-jest',
-    '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.jsx?$': 'babel-jest',
+    "^.+\\.vue$": "vue-jest",
+    ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$":
+      "jest-transform-stub",
+    "^.+\\.jsx?$": "babel-jest"
   },
+
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(css|less)$': 'identity-obj-proxy',
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "\\.(css|less)$": "identity-obj-proxy"
   },
-  snapshotSerializers: [
-    'jest-serializer-vue',
-  ],
+
+  snapshotSerializers: ["jest-serializer-vue"],
+
   testMatch: [
-    '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)',
+    "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
   ],
-  testURL: 'http://localhost/',
+
+  testURL: "http://localhost/",
+
   transformIgnorePatterns: [
-    'node_modules/(?!(vuetable-2|vue-uniq-ids|@processmaker/vue-form-elements/src)/)',
+    "node_modules/(?!(vuetable-2|vue-uniq-ids|@processmaker/vue-form-elements/src)/)"
   ],
+
+  preset: "@vue/cli-plugin-unit-jest"
 };
