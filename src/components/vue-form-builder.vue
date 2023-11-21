@@ -1,56 +1,58 @@
 <template>
-  <b-row class="h-100 m-0">
+  <b-row class="custom-row h-100 m-0">
     <!-- Controls -->
     <b-col class="overflow-hidden h-100 p-0 controls-column">
       <b-card
         no-body
         class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       >
-        <b-input-group size="sm">
-          <b-input-group-prepend>
-            <b-input-group-text
-              class="filter-icon border-left-0 border-top-0 rounded-0"
-            >
-              <i class="fas fa-filter" />
-            </b-input-group-text>
+        <b-input-group size="sm" style="height: 42px">
+          <b-input-group-prepend style="width;: 100px">
+            <span class="input-group-text rounded-0"
+              ><i class="fas fa-search"></i
+            ></span>
           </b-input-group-prepend>
-
           <b-form-input
             v-model="filterQuery"
-            class="border-top-0 border-right-0 rounded-0"
+            class="border-top-0 border-left-0 border-right-0 rounded-0"
             type="text"
-            :placeholder="$t('Filter Controls')"
-          />
+            size="lg"
+            style="height: 42px"
+            :placeholder="$t('Search Here')"
+          >
+          </b-form-input>
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
-          <draggable
-            v-if="renderControls"
-            id="controls"
-            v-model="filteredControls"
-            data-cy="controls"
-            v-bind="{
-              sort: false,
-              group: { name: 'controls', pull: 'clone', put: false }
-            }"
-            :clone="cloneControl"
-            class="controls list-group w-auto list-group-flush"
-          >
-            <b-list-group-item
-              v-for="(element, index) in filteredControls"
-              :key="index"
-              :data-cy="'controls-' + element.component"
-              :class="{ 'ai-control': element.component === 'AiSection'}"
+          <b-list-group>
+            <draggable
+              v-if="renderControls"
+              id="controls"
+              v-model="filteredControls"
+              data-cy="controls"
+              v-bind="{
+                sort: false,
+                group: { name: 'controls', pull: 'clone', put: false }
+              }"
+              :clone="cloneControl"
+              class="controls list-group w-auto list-group-flush"
             >
-              <i v-if="element.config.icon" :class="element.config.icon" />
-              <span v-html="element.config.svg" class="svg-icon"></span>
-              {{ $t(element.label) }}
-            </b-list-group-item>
+              <b-list-group-item
+                v-for="(element, index) in filteredControls"
+                :key="index"
+                :data-cy="'controls-' + element.component"
+                :class="{ 'ai-control': element.component === 'AiSection' }"
+              >
+                <i v-if="element.config.icon" :class="element.config.icon" />
+                <span class="svg-icon" v-html="element.config.svg"></span>
+                {{ $t(element.label) }}
+              </b-list-group-item>
 
-            <li v-if="!filteredControls.length" class="list-group-item">
-              <slot />
-            </li>
-          </draggable>
+              <li v-if="!filteredControls.length" class="list-group-item">
+                <slot />
+              </li>
+            </draggable>
+          </b-list-group>
         </b-card-body>
       </b-card>
     </b-col>
@@ -81,7 +83,7 @@
             data-cy="toolbar-edit"
             @click="openEditPageModal(currentPage)"
           >
-            <i class="far fa-edit p-0" />
+            <i class="far fa-edit" />
           </b-button>
 
           <b-button
@@ -93,7 +95,7 @@
             data-cy="toolbar-remove"
             @click="confirmDelete()"
           >
-            <i class="far fa-trash-alt p-0" />
+            <i class="far fa-trash-alt" />
           </b-button>
 
           <b-button
@@ -105,7 +107,7 @@
             data-cy="toolbar-add"
             @click="originalPageName = null"
           >
-            <i class="fas fa-plus p-0" />
+            <i class="fas fa-plus" />
           </b-button>
         </div>
 
@@ -129,7 +131,11 @@
         <span class="mb-3" v-html="dragElementIcon"></span>
         <h3>{{ $t("Place your controls here.") }}</h3>
         <p>
-          {{ $t("To begin creating a screen, drag and drop items from the Controls Menu on the left.") }}
+          {{
+            $t(
+              "To begin creating a screen, drag and drop items from the Controls Menu on the left."
+            )
+          }}
         </p>
         <!-- {{ $t("Drag an element here") }} -->
       </div>
@@ -168,7 +174,7 @@
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
-              :class="{ 'pulse': isAiSection(element) && aiPreview(element) }"
+              :class="{ pulse: isAiSection(element) && aiPreview(element) }"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted" />
               <i
@@ -178,8 +184,8 @@
               />
               <span
                 v-if="element.config.svg"
-                v-html="element.config.svg"
                 class="svg-icon mr-2 ml-1"
+                v-html="element.config.svg"
               ></span>
               {{ element.config.name || element.label || $t("Field Name") }}
               <div class="ml-auto">
@@ -485,7 +491,7 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer,
+    ...renderer
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -510,8 +516,8 @@ export default {
       type: Object
     },
     processId: {
-      default: 0,
-    },
+      default: 0
+    }
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -570,40 +576,73 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
+      const priorityLabels = [
+        "AI Generated",
+        "Line Input",
+        "Select List",
+        "Submit Button",
+        "Textarea",
+        "Date Picker",
+        "Checkbox",
+        "Photo/Video",
+        "Signature",
+        "Rich Text",
+        "Multicolumn / Table",
+        "Image",
+        "Record List",
+        "Loop",
+        "Nested Screen",
+        "Page Navigation",
+        "File Upload",
+        "File Download",
+        "File Preview",
+        "Bootstrap Component",
+        "Bootstrap wrapper",
+        "Captcha",
+        "Google Places",
+        "Saved Search Chart"
+      ];
+
       const excludedLabels = ["Bootstrap Wrapper", "Bootstrap Component"];
 
       const filtered = this.controls.filter((control) => {
-        return control.label.toLowerCase().includes(this.filterQuery.toLowerCase());
-      });
-
-      const excluded = filtered.filter((control) => {
-        return excludedLabels.includes(control.label);
+        return control.label
+          .toLowerCase()
+          .includes(this.filterQuery.toLowerCase());
       });
 
       const included = filtered.filter((control) => {
         return !excludedLabels.includes(control.label);
       });
 
-      const sorted = included.sort((a, b) => {
+      const prioritySorted = included.sort((a, b) => {
+        const indexA = priorityLabels.indexOf(a.label);
+        const indexB = priorityLabels.indexOf(b.label);
+
+        if (indexA !== -1 && indexB !== -1) {
+          return indexA - indexB;
+        }
+        if (indexA !== -1) {
+          return -1;
+        }
+        if (indexB !== -1) {
+          return 1;
+        }
         return this.collator.compare(a.label, b.label);
       });
 
-      return [...sorted, ...excluded].sort((a, b) => {
-        const textA = a.label.toLowerCase();
-        const textB = b.label.toLowerCase();
-        if (textA < textB) {
-          return -1;
-        }
-        return textA > textB ? 1 : 0;
+      const excluded = included.filter((control) => {
+        return excludedLabels.includes(control.label);
       });
+
+      return [...prioritySorted, ...excluded];
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
       return this.screenType === formTypes.form;
-    },
-    
+    }
   },
   watch: {
     config: {
@@ -826,7 +865,7 @@ export default {
               : "");
           item.config = {
             content:
-              "<div style=\"" + style + "\">" + item.config.label + "</div>",
+              '<div style="' + style + '">' + item.config.label + "</div>",
             interactive: true
           };
         }
@@ -1088,7 +1127,8 @@ export default {
       // Generate Variable Name
       if (
         _.findIndex(control.inspector, keyNameProperty) !== -1 ||
-        control.component === "FormLoop") {
+        control.component === "FormLoop"
+      ) {
         [this.variables, copy.config.name] = this.generator.generate(
           this.config,
           copy["editor-control"] ? copy["editor-control"] : copy.component
@@ -1182,6 +1222,10 @@ export default {
 </script>
 
 <style>
+.custom-row {
+  height: 80vh;
+  margin: 0;
+}
 .prevent-interaction {
   pointer-events: none;
 }
@@ -1298,15 +1342,15 @@ $side-bar-font-size: 0.875rem;
   top: 4rem;
 }
 .ai-section-card {
-  border-color: #8AB8FF;
+  border-color: #8ab8ff;
 }
 
 .ai-section-card .card-header {
-  background: #CBDFFF;
+  background: #cbdfff;
 }
 
 .ai-control {
-  background: #FFF4D3;
+  background: #fff4d3;
 }
 
 .pulse {
