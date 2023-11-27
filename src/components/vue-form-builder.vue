@@ -9,7 +9,7 @@
         <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend style="width;: 100px">
             <span class="input-group-text rounded-0 border-left-0 border-top-0"
-              ><i class="fas fa-search"></i
+              ><i class="fas fa-search icon"></i
             ></span>
           </b-input-group-prepend>
           <b-form-input
