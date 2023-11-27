@@ -8,7 +8,7 @@
       >
         <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend style="width;: 100px">
-            <span class="input-group-text rounded-0"
+            <span class="input-group-text rounded-0 border-left-0 border-top-0"
               ><i class="fas fa-search"></i
             ></span>
           </b-input-group-prepend>
@@ -41,9 +41,15 @@
                 v-for="(element, index) in filteredControls"
                 :key="index"
                 :data-cy="'controls-' + element.component"
-                :class="{ 'ai-control': element.component === 'AiSection' }"
+                :class="{
+                  'ai-control': element.component === 'AiSection',
+                  'gray-text': true
+                }"
               >
-                <i v-if="element.config.icon" :class="element.config.icon" />
+                <i
+                  v-if="element.config.icon"
+                  :class="['icon', element.config.icon]"
+                ></i>
                 <span class="svg-icon" v-html="element.config.svg"></span>
                 {{ $t(element.label) }}
               </b-list-group-item>
@@ -597,13 +603,13 @@ export default {
         "File Download",
         "File Preview",
         "Bootstrap Component",
-        "Bootstrap wrapper",
+        "Bootstrap Wrapper",
         "Captcha",
         "Google Places",
         "Saved Search Chart"
       ];
 
-      const excludedLabels = ["Bootstrap Wrapper", "Bootstrap Component"];
+      const excludedLabels = [""];
 
       const filtered = this.controls.filter((control) => {
         return control.label
@@ -865,7 +871,7 @@ export default {
               : "");
           item.config = {
             content:
-              '<div style="' + style + '">' + item.config.label + "</div>",
+              "<div style=\"" + style + "\">" + item.config.label + "</div>",
             interactive: true
           };
         }
@@ -1222,6 +1228,13 @@ export default {
 </script>
 
 <style>
+.gray-text {
+  color: gray;
+}
+
+.icon {
+  color: gray;
+}
 .custom-row {
   height: 80vh;
   margin: 0;
