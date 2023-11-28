@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/valid-v-for -->
 <template>
   <b-row class="custom-row h-100 m-0">
     <!-- Controls -->
@@ -7,14 +8,14 @@
         class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       >
         <b-input-group size="sm" style="height: 42px">
-          <b-input-group-prepend style="width;: 100px">
-            <span class="input-group-text rounded-0 border-left-0 border-top-0"
-              ><i class="fas fa-search icon"></i
-            ></span>
+          <b-input-group-prepend>
+            <span class="input-group-text rounded-0 border-left-0 border-top-0">
+              <i class="fas fa-search icon"></i>
+            </span>
           </b-input-group-prepend>
           <b-form-input
             v-model="filterQuery"
-            class="border-top-0 border-left-0 border-right-0 rounded-0"
+            class="border-0 rounded-0"
             type="text"
             size="lg"
             style="height: 42px"
@@ -24,41 +25,65 @@
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
-          <b-list-group>
-            <draggable
-              v-if="renderControls"
-              id="controls"
-              v-model="filteredControls"
-              data-cy="controls"
-              v-bind="{
-                sort: false,
-                group: { name: 'controls', pull: 'clone', put: false }
-              }"
-              :clone="cloneControl"
-              class="controls list-group w-auto list-group-flush"
+          <!-- Accordion Bootstrap -->
+          <template v-for="(group, index) in controlGroups">
+            <b-button
+              v-if="filteredControlsGrouped[group.key].length > 0"
+              v-b-toggle="`collapse-${index}`"
+              class="w-100 rounded-0 text-left"
+              style="
+                font-size: smaller;
+                height: 42px;
+                color: grey;
+                border-color: rgb(224, 224, 224);
+                background-color: rgb(235, 238, 242);
+              "
+              @click="toggleCollapse(index)"
             >
-              <b-list-group-item
-                v-for="(element, index) in filteredControls"
-                :key="index"
-                :data-cy="'controls-' + element.component"
-                :class="{
-                  'ai-control': element.component === 'AiSection',
-                  'gray-text': true
-                }"
+              {{ group.label
+              }}<b-icon
+                :icon="isCollapsed[index] ? 'chevron-down' : 'chevron-up'"
+                class="float-right"
+              />
+            </b-button>
+            <b-collapse :id="`collapse-${index}`" class="mt-2">
+              <b-list-group
+                v-if="filteredControlsGrouped[group.key].length > 0"
               >
-                <i
-                  v-if="element.config.icon"
-                  :class="['icon', element.config.icon]"
-                ></i>
-                <span class="svg-icon" v-html="element.config.svg"></span>
-                {{ $t(element.label) }}
-              </b-list-group-item>
-
-              <li v-if="!filteredControls.length" class="list-group-item">
-                <slot />
-              </li>
-            </draggable>
-          </b-list-group>
+                <draggable
+                  v-if="renderControls"
+                  id="controls"
+                  v-model="filteredControls"
+                  data-cy="controls"
+                  v-bind="{
+                    sort: false,
+                    group: { name: 'controls', pull: 'clone', put: false }
+                  }"
+                  :clone="cloneControl"
+                  class="controls list-group w-auto list-group-flush"
+                >
+                  <b-list-group-item
+                    v-for="(element, elementIndex) in filteredControlsGrouped[
+                      group.key
+                    ]"
+                    :key="elementIndex"
+                    :data-cy="`controls-${element.component}`"
+                    :class="{ 'ai-control': element.component === 'AiSection' }"
+                  >
+                    <i
+                      v-if="element.config.icon"
+                      :class="element.config.icon"
+                    />
+                    <span class="svg-icon" v-html="element.config.svg"></span>
+                    {{ $t(element.label) }}
+                  </b-list-group-item>
+                  <li v-if="!filteredControls.length" class="list-group-item">
+                    <slot />
+                  </li>
+                </draggable>
+              </b-list-group>
+            </b-collapse>
+          </template>
         </b-card-body>
       </b-card>
     </b-col>
@@ -565,7 +590,27 @@ export default {
       language: "en",
       collator: null,
       editorContentKey: 0,
-      cancelledJobs: []
+      cancelledJobs: [],
+
+      filteredControlsGrouped: {
+        AIAssistant: [],
+        InputFields: [],
+        ContentFields: [],
+        Navigation: [],
+        Files: [],
+        Advanced: []
+      },
+
+      controlGroups: [
+        { key: "AIAssistant", label: "AI Assistant" },
+        { key: "InputFields", label: "Input Fields" },
+        { key: "ContentFields", label: "Content Fields" },
+        { key: "Navigation", label: "Navigation" },
+        { key: "Files", label: "Files" },
+        { key: "Advanced", label: "Advanced" }
+      ],
+
+      isCollapsed: new Array(6).fill(true)
     };
   },
   computed: {
@@ -687,6 +732,13 @@ export default {
       ) {
         this.addDefaultAiControl();
       }
+    },
+
+    filteredControls: {
+      handler(newVal) {
+        this.groupFilteredControls(newVal);
+      },
+      deep: true
     }
   },
   created() {
@@ -732,6 +784,55 @@ export default {
     });
   },
   methods: {
+    toggleCollapse(index) {
+      this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
+    },
+    groupFilteredControls(controls) {
+      this.filteredControlsGrouped = {
+        AIAssistant: controls.filter(
+          (control) => control.label === "AI Generated"
+        ),
+        InputFields: controls.filter((control) =>
+          [
+            "Line Input",
+            "Select List",
+            "Submit Button",
+            "Textarea",
+            "Date Picker",
+            "Checkbox",
+            "Photo/Video",
+            "Signature"
+          ].includes(control.label)
+        ),
+        ContentFields: controls.filter((control) =>
+          [
+            "Rich Text",
+            "Multicolumn / Table",
+            "Image",
+            "Record List",
+            "Loop",
+            "Nested Screen"
+          ].includes(control.label)
+        ),
+        Navigation: controls.filter(
+          (control) => control.label === "Page Navigation"
+        ),
+        Files: controls.filter((control) =>
+          ["File Upload", "File Downloa", "File Preview"].includes(
+            control.label
+          )
+        ),
+        Advanced: controls.filter((control) =>
+          [
+            "Bootstrap Component",
+            "Bootstrap Wrapper",
+            "Captcha",
+            "Google Places",
+            "Saved Search Chart"
+          ].includes(control.label)
+        )
+      };
+    },
     refreshContent() {
       this.editorContentKey++;
     },
