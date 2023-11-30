@@ -1,18 +1,18 @@
-const path = require('path');
+const path = require("path");
+const MonacoEditorPlugin = require("monaco-editor-webpack-plugin");
 
 const plugins = [];
 if (process.env.NODE_ENV !== "production") {
-  // eslint-disable-next-line global-require
-  const MonocoEditorPlugin = require("monaco-editor-webpack-plugin");
   plugins.push(
-    new MonocoEditorPlugin({
-      languages: ["javascript", "typescript", "css", "json"]
+    new MonacoEditorPlugin({
+      languages: ["javascript", "json"]
     })
   );
 }
 
 module.exports = {
   runtimeCompiler: true,
+  lintOnSave: false,
   transpileDependencies: ["vuetable-2"],
   configureWebpack: {
     plugins,
@@ -24,24 +24,27 @@ module.exports = {
           process.env.NODE_ENV === "development"
             ? "@processmaker/vue-form-elements/src/components"
             : "@processmaker/vue-form-elements"
+      },
+      fallback: {
+        util: require.resolve("util/")
       }
     },
     externals:
       process.env.NODE_ENV === "production"
         ? [
-      'vue-monaco',
-      'monaco-editor',
-      'vue-deepset',
-      /^@fortawesome\/.+$/,
-      'vue',
-      'vuex',
-      /^bootstrap\/.+$/,
-      /^@processmaker\/.+$/,
-      'i18next',
-      '@panter/vue-i18next',
-      'validatorjs',
-      "SharedComponents"
-
-    ] : [],
+            "vue-monaco",
+            "monaco-editor",
+            "vue-deepset",
+            /^@fortawesome\/.+$/,
+            "vue",
+            "vuex",
+            /^bootstrap\/.+$/,
+            /^@processmaker\/.+$/,
+            "i18next",
+            "@panter/vue-i18next",
+            "validatorjs",
+            "SharedComponents"
+          ]
+        : []
   }
 };
