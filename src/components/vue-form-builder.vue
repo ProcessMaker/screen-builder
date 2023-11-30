@@ -70,7 +70,10 @@
                     v-b-popover.hover.top="element.popoverContent"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
-                    :class="{ 'ai-control': element.component === 'AiSection' }"
+                    :class="{
+                      'ai-control': element.component === 'AiSection',
+                      'gray-text': true
+                    }"
                   >
                     <i
                       v-if="element.config.icon"
@@ -1010,7 +1013,7 @@ export default {
               : "");
           item.config = {
             content:
-              '<div style="' + style + '">' + item.config.label + "</div>",
+              "<div style=\"" + style + "\">" + item.config.label + "</div>",
             interactive: true
           };
         }
