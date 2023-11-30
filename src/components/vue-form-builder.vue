@@ -67,6 +67,8 @@
                       group.key
                     ]"
                     :key="elementIndex"
+                    v-b-popover.hover.top="element.popoverContent"
+                    :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
                     :class="{ 'ai-control': element.component === 'AiSection' }"
                   >
@@ -508,6 +510,80 @@ const defaultConfig = [
   }
 ];
 
+function filterControlsByLabel(controls, labels) {
+  return controls.filter((control) => labels.includes(control.label));
+}
+
+const controlGroups = {
+  AIAssistant: ["AI Generated"],
+  InputFields: [
+    "Line Input",
+    "Select List",
+    "Submit Button",
+    "Textarea",
+    "Date Picker",
+    "Checkbox",
+    "Photo/Video",
+    "Signature"
+  ],
+  ContentFields: [
+    "Rich Text",
+    "Multicolumn / Table",
+    "Image",
+    "Record List",
+    "Loop",
+    "Nested Screen"
+  ],
+  Navigation: ["Page Navigation"],
+  Files: ["File Upload", "File Download", "File Preview"],
+  Advanced: [
+    "Bootstrap Component",
+    "Bootstrap Wrapper",
+    "Captcha",
+    "Google Places",
+    "Saved Search Chart"
+  ]
+};
+
+const popoverContentMap = {
+  "AI Generated":
+    "Generate single fields or entire forms with our generative assistant",
+  "Line Input":
+    "Collect a string of text and format it as one of several data types",
+  "Select List": "Collect options from a list, as radio butttons or dropdowns",
+  "Submit Button": "Add an action to submit your form or update a field",
+  // eslint-disable-next-line prettier/prettier
+  "Textarea": "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
+  "Date Picker": "Collect a date or date/time",
+  // eslint-disable-next-line prettier/prettier
+  "Checkbox": "Add a checkbox or toggle for true/false responses",
+  "Photo/Video": "Capture a photo or a Video straight from a camera device",
+  // eslint-disable-next-line prettier/prettier
+  "Signature": "Add a signature box to collect a hand-drawn signature image",
+  "Rich Text": "Use a Rich Text Editor to add HTML-formatted",
+  "Multicolumn / Table": "Organize and group your content in columns",
+  // eslint-disable-next-line prettier/prettier
+  "Image": "Upload an image to your screen",
+  "Record List": "Upload an image to your screen",
+  // eslint-disable-next-line prettier/prettier
+  "Loop": "Format content in a table structure and allow for adding rows",
+  "Nested Screen": "Add a repeatable section of content",
+  "Page Navigation": "Add and reuse another Form within this Form",
+  "File Upload":
+    "Add special buttons that link between subpages within this Form",
+  "File Download": "Collect files uploaded into the Form",
+  "File Preview": "Offer a File download",
+  "Bootstrap Component":
+    "Add a Preview section that displays the content of a File",
+  "Bootstrap Wrapper":
+    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
+  // eslint-disable-next-line prettier/prettier
+  "Captcha":
+    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
+  "Google Places": "Collect an address using Google's location search",
+  "Saved Search Chart": "Add a chart from one of your Saved Searches"
+};
+
 export default {
   components: {
     draggable,
@@ -591,15 +667,6 @@ export default {
       collator: null,
       editorContentKey: 0,
       cancelledJobs: [],
-
-      filteredControlsGrouped: {
-        AIAssistant: [],
-        InputFields: [],
-        ContentFields: [],
-        Navigation: [],
-        Files: [],
-        Advanced: []
-      },
 
       controlGroups: [
         { key: "AIAssistant", label: "AI Assistant" },
@@ -788,50 +855,21 @@ export default {
       this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
     },
     groupFilteredControls(controls) {
-      this.filteredControlsGrouped = {
-        AIAssistant: controls.filter(
-          (control) => control.label === "AI Generated"
-        ),
-        InputFields: controls.filter((control) =>
-          [
-            "Line Input",
-            "Select List",
-            "Submit Button",
-            "Textarea",
-            "Date Picker",
-            "Checkbox",
-            "Photo/Video",
-            "Signature"
-          ].includes(control.label)
-        ),
-        ContentFields: controls.filter((control) =>
-          [
-            "Rich Text",
-            "Multicolumn / Table",
-            "Image",
-            "Record List",
-            "Loop",
-            "Nested Screen"
-          ].includes(control.label)
-        ),
-        Navigation: controls.filter(
-          (control) => control.label === "Page Navigation"
-        ),
-        Files: controls.filter((control) =>
-          ["File Upload", "File Downloa", "File Preview"].includes(
-            control.label
-          )
-        ),
-        Advanced: controls.filter((control) =>
-          [
-            "Bootstrap Component",
-            "Bootstrap Wrapper",
-            "Captcha",
-            "Google Places",
-            "Saved Search Chart"
-          ].includes(control.label)
-        )
-      };
+      this.filteredControlsGrouped = {};
+
+      for (const groupKey in controlGroups) {
+        this.filteredControlsGrouped[groupKey] = filterControlsByLabel(
+          controls,
+          controlGroups[groupKey]
+        );
+
+        this.filteredControlsGrouped[groupKey].forEach((control) => {
+          const popoverContent = popoverContentMap[control.label];
+          if (popoverContent) {
+            control.popoverContent = popoverContent;
+          }
+        });
+      }
     },
     refreshContent() {
       this.editorContentKey++;
@@ -972,7 +1010,7 @@ export default {
               : "");
           item.config = {
             content:
-              "<div style=\"" + style + "\">" + item.config.label + "</div>",
+              '<div style="' + style + '">' + item.config.label + "</div>",
             interactive: true
           };
         }
