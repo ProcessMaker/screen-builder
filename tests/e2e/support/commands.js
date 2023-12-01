@@ -223,3 +223,18 @@ Cypress.Commands.add('showValidationOnLoad', () => {
     win.vueInstance.$children[0].$refs.renderer.showValidationOnLoad(true);
   });
 })
+
+Cypress.Commands.add("openAcordeon", (name) => {
+  cy.get(`button[aria-controls='${name}']`).should("be.visible");
+  cy.get(`div[id='${name}']`).invoke("attr", "style").should("eq", "display: none;");
+  cy.get(`button[aria-controls='${name}']`).click();
+  cy.get(`div[id='${name}']`).invoke("attr", "style").should("not.equal", "display: none;");
+});
+
+Cypress.Commands.add("openAllAcordeon", () => {
+  cy.openAcordeon("collapse-5");
+  cy.openAcordeon("collapse-4");
+  cy.openAcordeon("collapse-3");
+  cy.openAcordeon("collapse-2");
+  cy.openAcordeon("collapse-1");
+});
