@@ -13,6 +13,7 @@ describe('Screen Warnings', () => {
   });
 
   it('Use script warning', () => {
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy="topbar-watchers"]').click();
     cy.get('[data-cy="watchers-add-watcher"]').click();
