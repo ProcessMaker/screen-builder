@@ -9,7 +9,9 @@
       >
         <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend>
-            <span class="input-group-text rounded-0 border-left-0 border-top-0">
+            <span
+              class="input-group-text rounded-0 border-left-0 border-top-0 border-bottom-0"
+            >
               <i class="fas fa-search icon"></i>
             </span>
           </b-input-group-prepend>
@@ -53,7 +55,7 @@
                 <draggable
                   v-if="renderControls"
                   id="controls"
-                  v-model="filteredControls"
+                  v-model="filteredControlsGrouped[group.key]"
                   data-cy="controls"
                   v-bind="{
                     sort: false,
