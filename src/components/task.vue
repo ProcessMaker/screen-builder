@@ -587,6 +587,14 @@ export default {
       // if interstitial screen exists, show it
       this.screen = this.$parent.task.interstitial_screen;
     }
+
+    if (
+      this.$parent.task &&
+      this.$parent.task.interstitial_screen &&
+      this.$parent.task.process_request.status === 'ACTIVE'
+    ) {
+      this.screen = this.$parent.task.interstitial_screen;
+    }
   },
   destroyed() {
     this.unsubscribeSocketListeners();
