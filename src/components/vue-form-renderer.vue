@@ -171,7 +171,7 @@ export default {
     this.containerObserver.observe(this.$refs.formRendererContainer);
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad"]),
+    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad", "restartValidation"]),
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
@@ -231,8 +231,8 @@ export default {
         node.$children.forEach(child => this.registerCustomFunctions(child));
       }
     },
-    submit() {
-      this.$emit('submit', this.data);
+    submit(eventData, loading = false) {
+      this.$emit('submit', this.data, loading);
     },
     parseCss() {
       const containerSelector = `.${this.containerClass}`;

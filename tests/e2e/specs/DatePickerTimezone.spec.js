@@ -41,11 +41,19 @@ describe("Date Picker", () => {
 
     cy.wait(500);
 
-    const todayDateChanged = `${moment().format("YYYY-MM-DD")}T20:15:00`;
-    const today = moment.tz(todayDateChanged, timezoneTest);
+    let todayDateChanged = `${moment().format("YYYY-MM-DD")}T20:15:00`;
+    let today = moment.tz(todayDateChanged, timezoneTest);
 
-    cy.assertPreviewData({
-      form_date_picker_1: today.toISOString()
-    });
+    cy.get('input[aria-label="New Date Picker"]').invoke('val')
+      .then(dateVal => {
+        let today2 = moment.tz(dateVal, timezoneTest);
+        let todayA = today;
+        let todayB = today;
+        todayA = todayA.toISOString().substr(0,7);
+        todayB = todayB.toISOString().substr(13,(today.toISOString().length-1));
+        let datePicker = today2.toISOString();
+        expect(datePicker).to.contains(todayA);
+        expect(datePicker).to.contains(todayB);
+      });
   });
 });

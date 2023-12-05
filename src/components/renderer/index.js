@@ -13,3 +13,7 @@ export { default as FormRecordListStatic } from "./form-record-list-static.vue";
 export { default as FormText } from "./form-text.vue";
 export { default as NewFormMultiColumn } from "./new-form-multi-column.vue";
 export { default as ScreenRendererError } from "./screen-renderer-error.vue";
+export { default as FormListTable } from "./form-list-table.vue";
+export { default as FormAnalyticsChart } from "./form-analytics-chart.vue";
+export { default as FormRequests } from "./form-requests.vue";
+export { default as FormTasks } from "./form-tasks.vue";

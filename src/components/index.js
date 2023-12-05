@@ -43,6 +43,8 @@ import {
   DataTypeProperty,
   DataTypeWithoutDateProperty
 } from "../VariableDataTypeProperties.js";
+import FormListTable from './renderer/form-list-table';
+import FormAnalyticsChart from './renderer/form-analytics-chart';
 
 const rendererComponents = {
   ...renderer,
@@ -124,11 +126,12 @@ export default {
     Vue.component('FormButton', FormButton);
     Vue.component('FileUpload', FileUpload);
     Vue.component('FileDownload', FileDownload);
-
+    Vue.component('FormAnalyticsChart', FormAnalyticsChart);
     Vue.component('FormMaskedInput', FormMaskedInput);
     Vue.use(DataProvider);
 
     Vue.use(Vuex);
+    Vue.component('FormListTable', FormListTable);
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,
