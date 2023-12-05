@@ -1,6 +1,7 @@
 describe('Loop control', () => {
   it('Input inside loop', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     // Add loop control
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
@@ -56,6 +57,7 @@ describe('Loop control', () => {
 
   it('Verify validation on visible fields', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     // Add loop control
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
