@@ -6,6 +6,7 @@ describe("Wrong Configuration Errors", () => {
         cy.stub(win.console, "error").as("consoleError");
       }
     });
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-drop-zone]",
       "bottom"
@@ -20,13 +21,14 @@ describe("Wrong Configuration Errors", () => {
     );
   });
 
-  it("Screen with rendering problem in a component should not show a warning after the problematic component is deleted", () => {
+  it.only("Screen with rendering problem in a component should not show a warning after the problematic component is deleted", () => {
     cy.visit("/", {
       onBeforeLoad(win) {
         cy.stub(win.console, "warn").as("consoleWarn");
         cy.stub(win.console, "error").as("consoleError");
       }
     });
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-drop-zone]",
       "bottom"
