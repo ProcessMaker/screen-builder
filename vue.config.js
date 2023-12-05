@@ -38,7 +38,8 @@ module.exports = {
             /^@processmaker\/.+$/,
             "i18next",
             "@panter/vue-i18next",
-            "validatorjs"
+            "validatorjs",
+            "SharedComponents"
           ]
         : []
   }
