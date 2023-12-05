@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-html -->
 <!-- eslint-disable vue/valid-v-for -->
 <template>
   <b-row class="custom-row h-100 m-0">
@@ -81,7 +82,10 @@
                       v-if="element.config.icon"
                       :class="element.config.icon"
                     />
-                    <span class="svg-icon" v-html="element.config.svg"></span>
+                    <span
+                      class="svg-icon"
+                      v-html="sanitizeHtml(element.config.svg)"
+                    ></span>
                     {{ $t(element.label) }}
                   </b-list-group-item>
                   <li v-if="!filteredControls.length" class="list-group-item">
@@ -682,6 +686,12 @@ export default {
         { key: "Advanced", label: "Advanced" }
       ],
 
+      element: {
+        config: {
+          svg: '<svg><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" /></svg>'
+        }
+      },
+
       isCollapsed: new Array(6).fill(true)
     };
   },
@@ -856,6 +866,15 @@ export default {
     });
   },
   methods: {
+    sanitizeHtml(html) {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      doc.body.querySelectorAll("*").forEach((node) => {
+        if (!["span", "svg"].includes(node.tagName.toLowerCase())) {
+          node.parentNode.removeChild(node);
+        }
+      });
+      return doc.body.innerHTML;
+    },
     toggleCollapse(index) {
       this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
     },
