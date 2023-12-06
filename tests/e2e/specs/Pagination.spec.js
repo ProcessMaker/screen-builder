@@ -57,6 +57,7 @@ const data = {
 beforeEach(() => {
   cy.visit('/');
   cy.openAcordeon("collapse-2");
+  cy.openAcordeon("collapse-1");
   cy.get('[data-cy=controls-FormRecordList]').drag('[data-cy=screen-drop-zone]', 'bottom');
   cy.get('[data-cy=toolbar-add]').click({force: true});
   cy.get('[data-cy=add-page-name]').type('page2');
