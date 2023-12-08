@@ -268,6 +268,7 @@ describe('Device Visiblility Inspector', () => {
     cy.visit('/');
     //Step 1: Add Loop
     addControl('Loop');
+    cy.openAcordeon("collapse-1");
 
     //Step 2: Add Line input inside the loop
     addControlInsideLoop(1,nodeControls.formInput);
@@ -329,6 +330,7 @@ describe('Device Visiblility Inspector', () => {
   it('Verify Device Visibility of controls inside a table', () => {
     cy.visit('/');
     cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-1");
     //Step 1: Add Loop
     addControl('Multicolumn / Table');
 
@@ -357,6 +359,7 @@ describe('Device Visiblility Inspector', () => {
   it('Verify Device Visibility of controls inside a table mobile', () => {
     cy.visit('/');
     cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-1");
     //Step 1: Add Table
     addControl('Multicolumn / Table');
 
