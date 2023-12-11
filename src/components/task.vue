@@ -578,23 +578,6 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    if (
-      this.$parent.task &&
-      !this.$parent.task.screen &&
-      this.$parent.task.allow_interstitial &&
-      this.$parent.task.interstitial_screen
-    ) {
-      // if interstitial screen exists, show it
-      this.screen = this.$parent.task.interstitial_screen;
-    }
-
-    if (
-      this.$parent.task &&
-      this.$parent.task.interstitial_screen &&
-      this.$parent.task.process_request.status === 'ACTIVE'
-    ) {
-      this.screen = this.$parent.task.interstitial_screen;
-    }
   },
   destroyed() {
     this.unsubscribeSocketListeners();
