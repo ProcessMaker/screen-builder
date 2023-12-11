@@ -1,6 +1,7 @@
 describe('Rich Text control', () => {
   it('Rich text with mustache', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormHtmlViewer]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-content]').focus().clear().type('<p>Hello {{ name }}</p>', {parseSpecialCharSequences: false});
@@ -11,6 +12,7 @@ describe('Rich Text control', () => {
 
   it('Rich text render HTML from a Variable', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormHtmlViewer]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-content]').focus().clear().type('{{ name }}', {parseSpecialCharSequences: false});

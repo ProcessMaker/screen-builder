@@ -11,6 +11,7 @@ import {nodeControls} from '../support/constants.js'
 describe('Device Visiblility Inspector', () => {
   it('Verify if an input has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -24,6 +25,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a checkbox has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormCheckbox]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -37,6 +39,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a datePicker has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormDatePicker]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -50,6 +53,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FileDownload has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-4");
     cy.get('[data-cy=controls-FileDownload]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -63,6 +67,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FileUpload has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-4");
     cy.get('[data-cy=controls-FileUpload]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -76,6 +81,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormImage has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormImage]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -89,6 +95,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormLoop has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -102,6 +109,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormMultiColumn has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormMultiColumn]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -115,6 +123,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormNestedScreen has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormNestedScreen]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -128,6 +137,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormButton has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormButton]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -141,6 +151,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormRecordList has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormRecordList]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -154,6 +165,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormHtmlViewer has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormHtmlViewer]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -167,6 +179,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormSelectList has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -180,6 +193,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Verify if a FormTextArea has device visiblility settings', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormTextArea]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -193,6 +207,7 @@ describe('Device Visiblility Inspector', () => {
   });
   it('Enabled device visiblility', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -253,6 +268,7 @@ describe('Device Visiblility Inspector', () => {
     cy.visit('/');
     //Step 1: Add Loop
     addControl('Loop');
+    cy.openAcordeon("collapse-1");
 
     //Step 2: Add Line input inside the loop
     addControlInsideLoop(1,nodeControls.formInput);
@@ -313,6 +329,8 @@ describe('Device Visiblility Inspector', () => {
 
   it('Verify Device Visibility of controls inside a table', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-1");
     //Step 1: Add Loop
     addControl('Multicolumn / Table');
 
@@ -340,7 +358,8 @@ describe('Device Visiblility Inspector', () => {
 
   it('Verify Device Visibility of controls inside a table mobile', () => {
     cy.visit('/');
-
+    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-1");
     //Step 1: Add Table
     addControl('Multicolumn / Table');
 
@@ -368,7 +387,6 @@ describe('Device Visiblility Inspector', () => {
 
   it('Verify Device Visibility of a control and Visibility Rule', () => {
     cy.visit("/");
-
     //Step 1: Add line input control
     addControl('Line Input');
 
