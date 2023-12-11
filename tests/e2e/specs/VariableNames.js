@@ -1,6 +1,7 @@
 describe('Default values', () => {
   it('Variable names with dots 2 levels', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('user.address');
@@ -13,6 +14,7 @@ describe('Default values', () => {
   });
   it('Variable names with dots 3 levels', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('user.address.city');
@@ -28,6 +30,7 @@ describe('Default values', () => {
   });
   it('Variable names with dots and one attribute same as the name', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]').clear().type('address.address.city');

@@ -1,56 +1,96 @@
+<!-- eslint-disable vue/no-v-html -->
+<!-- eslint-disable vue/valid-v-for -->
 <template>
-  <b-row class="h-100 m-0">
+  <b-row class="custom-row h-100 m-0">
     <!-- Controls -->
     <b-col class="overflow-hidden h-100 p-0 controls-column">
       <b-card
         no-body
         class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       >
-        <b-input-group size="sm">
+        <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend>
-            <b-input-group-text
-              class="filter-icon border-left-0 border-top-0 rounded-0"
+            <span
+              class="input-group-text rounded-0 border-left-0 border-top-0 border-bottom-0"
             >
-              <i class="fas fa-filter" />
-            </b-input-group-text>
+              <i class="fas fa-search icon"></i>
+            </span>
           </b-input-group-prepend>
-
           <b-form-input
             v-model="filterQuery"
-            class="border-top-0 border-right-0 rounded-0"
+            class="border-0 rounded-0"
             type="text"
-            :placeholder="$t('Filter Controls')"
-          />
+            size="lg"
+            style="height: 42px"
+            :placeholder="$t('Search Here')"
+          >
+          </b-form-input>
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
-          <draggable
-            v-if="renderControls"
-            id="controls"
-            v-model="filteredControls"
-            data-cy="controls"
-            v-bind="{
-              sort: false,
-              group: { name: 'controls', pull: 'clone', put: false }
-            }"
-            :clone="cloneControl"
-            class="controls list-group w-auto list-group-flush"
-          >
-            <b-list-group-item
-              v-for="(element, index) in filteredControls"
-              :key="index"
-              :data-cy="'controls-' + element.component"
-              :class="{ 'ai-control': element.component === 'AiSection'}"
+          <!-- Accordion Bootstrap -->
+          <template v-for="(group, index) in controlGroups">
+            <b-button
+              v-if="filteredControlsGrouped[group.key].length > 0"
+              v-b-toggle="`collapse-${index}`"
+              class="w-100 rounded-0 text-left"
+              style="
+                font-size: smaller;
+                height: 42px;
+                color: grey;
+                border-color: rgb(224, 224, 224);
+                background-color: rgb(235, 238, 242);
+              "
+              @click="toggleCollapse(index)"
             >
-              <i v-if="element.config.icon" :class="element.config.icon" />
-              <span v-html="element.config.svg" class="svg-icon"></span>
-              {{ $t(element.label) }}
-            </b-list-group-item>
-
-            <li v-if="!filteredControls.length" class="list-group-item">
-              <slot />
-            </li>
-          </draggable>
+              {{ group.label
+              }}<b-icon
+                :icon="isCollapsed[index] ? 'chevron-down' : 'chevron-up'"
+                class="float-right"
+              />
+            </b-button>
+            <b-collapse :id="`collapse-${index}`" class="mt-2">
+              <b-list-group
+                v-if="filteredControlsGrouped[group.key].length > 0"
+              >
+                <draggable
+                  v-if="renderControls"
+                  id="controls"
+                  v-model="filteredControlsGrouped[group.key]"
+                  data-cy="controls"
+                  v-bind="{
+                    sort: false,
+                    group: { name: 'controls', pull: 'clone', put: false }
+                  }"
+                  :clone="cloneControl"
+                  class="controls list-group w-auto list-group-flush"
+                >
+                  <b-list-group-item
+                    v-for="(element, elementIndex) in filteredControlsGrouped[
+                      group.key
+                    ]"
+                    :key="elementIndex"
+                    v-b-popover.hover.top="element.popoverContent"
+                    :boundary="'viewport'"
+                    :data-cy="`controls-${element.component}`"
+                    :class="{
+                      'ai-control': element.component === 'AiSection',
+                      'gray-text': true
+                    }"
+                  >
+                    <i
+                      v-if="element.config.icon"
+                      :class="element.config.icon"
+                    />
+                    {{ $t(element.label) }}
+                  </b-list-group-item>
+                  <li v-if="!filteredControls.length" class="list-group-item">
+                    <slot />
+                  </li>
+                </draggable>
+              </b-list-group>
+            </b-collapse>
+          </template>
         </b-card-body>
       </b-card>
     </b-col>
@@ -81,7 +121,7 @@
             data-cy="toolbar-edit"
             @click="openEditPageModal(currentPage)"
           >
-            <i class="far fa-edit p-0" />
+            <i class="far fa-edit" />
           </b-button>
 
           <b-button
@@ -93,7 +133,7 @@
             data-cy="toolbar-remove"
             @click="confirmDelete()"
           >
-            <i class="far fa-trash-alt p-0" />
+            <i class="far fa-trash-alt" />
           </b-button>
 
           <b-button
@@ -105,7 +145,7 @@
             data-cy="toolbar-add"
             @click="originalPageName = null"
           >
-            <i class="fas fa-plus p-0" />
+            <i class="fas fa-plus" />
           </b-button>
         </div>
 
@@ -126,10 +166,25 @@
         data-cy="screen-drop-zone"
         class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
       >
-        <span class="mb-3" v-html="dragElementIcon"></span>
+        <svg
+          width="81"
+          height="107"
+          viewBox="0 0 81 107"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z"
+            fill="#699CFF"
+          />
+        </svg>
         <h3>{{ $t("Place your controls here.") }}</h3>
         <p>
-          {{ $t("To begin creating a screen, drag and drop items from the Controls Menu on the left.") }}
+          {{
+            $t(
+              "To begin creating a screen, drag and drop items from the Controls Menu on the left."
+            )
+          }}
         </p>
         <!-- {{ $t("Drag an element here") }} -->
       </div>
@@ -168,7 +223,7 @@
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
-              :class="{ 'pulse': isAiSection(element) && aiPreview(element) }"
+              :class="{ pulse: isAiSection(element) && aiPreview(element) }"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted" />
               <i
@@ -176,11 +231,6 @@
                 :class="element.config.icon"
                 class="mr-2 ml-1"
               />
-              <span
-                v-if="element.config.svg"
-                v-html="element.config.svg"
-                class="svg-icon mr-2 ml-1"
-              ></span>
               {{ element.config.name || element.label || $t("Field Name") }}
               <div class="ml-auto">
                 <button
@@ -471,6 +521,80 @@ const defaultConfig = [
   }
 ];
 
+function filterControlsByLabel(controls, labels) {
+  return controls.filter((control) => labels.includes(control.label));
+}
+
+const controlGroups = {
+  AIAssistant: ["AI Generated"],
+  InputFields: [
+    "Line Input",
+    "Select List",
+    "Submit Button",
+    "Textarea",
+    "Date Picker",
+    "Checkbox",
+    "Photo/Video",
+    "Signature"
+  ],
+  ContentFields: [
+    "Rich Text",
+    "Multicolumn / Table",
+    "Image",
+    "Record List",
+    "Loop",
+    "Nested Screen"
+  ],
+  Navigation: ["Page Navigation"],
+  Files: ["File Upload", "File Download", "File Preview"],
+  Advanced: [
+    "Bootstrap Component",
+    "Bootstrap Wrapper",
+    "Captcha",
+    "Google Places",
+    "Saved Search Chart"
+  ]
+};
+
+const popoverContentMap = {
+  "AI Generated":
+    "Generate single fields or entire forms with our generative assistant",
+  "Line Input":
+    "Collect a string of text and format it as one of several data types",
+  "Select List": "Collect options from a list, as radio butttons or dropdowns",
+  "Submit Button": "Add an action to submit your form or update a field",
+  // eslint-disable-next-line prettier/prettier
+  "Textarea": "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
+  "Date Picker": "Collect a date or date/time",
+  // eslint-disable-next-line prettier/prettier
+  "Checkbox": "Add a checkbox or toggle for true/false responses",
+  "Photo/Video": "Capture a photo or a Video straight from a camera device",
+  // eslint-disable-next-line prettier/prettier
+  "Signature": "Add a signature box to collect a hand-drawn signature image",
+  "Rich Text": "Use a Rich Text Editor to add HTML-formatted",
+  "Multicolumn / Table": "Organize and group your content in columns",
+  // eslint-disable-next-line prettier/prettier
+  "Image": "Upload an image to your screen",
+  "Record List": "Upload an image to your screen",
+  // eslint-disable-next-line prettier/prettier
+  "Loop": "Format content in a table structure and allow for adding rows",
+  "Nested Screen": "Add a repeatable section of content",
+  "Page Navigation": "Add and reuse another Form within this Form",
+  "File Upload":
+    "Add special buttons that link between subpages within this Form",
+  "File Download": "Collect files uploaded into the Form",
+  "File Preview": "Offer a File download",
+  "Bootstrap Component":
+    "Add a Preview section that displays the content of a File",
+  "Bootstrap Wrapper":
+    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
+  // eslint-disable-next-line prettier/prettier
+  "Captcha":
+    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
+  "Google Places": "Collect an address using Google's location search",
+  "Saved Search Chart": "Add a chart from one of your Saved Searches"
+};
+
 export default {
   components: {
     draggable,
@@ -485,7 +609,7 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer,
+    ...renderer
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -510,8 +634,8 @@ export default {
       type: Object
     },
     processId: {
-      default: 0,
-    },
+      default: 0
+    }
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -524,9 +648,6 @@ export default {
     }
 
     return {
-      dragElementIcon: `<svg width="81" height="107" viewBox="0 0 81 107" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z" fill="#699CFF"/>
-      </svg>`,
       currentPage: 0,
       selected: null,
       display: "editor",
@@ -553,7 +674,18 @@ export default {
       language: "en",
       collator: null,
       editorContentKey: 0,
-      cancelledJobs: []
+      cancelledJobs: [],
+
+      controlGroups: [
+        { key: "AIAssistant", label: "AI Assistant" },
+        { key: "InputFields", label: "Input Fields" },
+        { key: "ContentFields", label: "Content Fields" },
+        { key: "Navigation", label: "Navigation" },
+        { key: "Files", label: "Files" },
+        { key: "Advanced", label: "Advanced" }
+      ],
+
+      isCollapsed: new Array(6).fill(true)
     };
   },
   computed: {
@@ -570,40 +702,73 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      const excludedLabels = ["Bootstrap Wrapper", "Bootstrap Component"];
+      const priorityLabels = [
+        "AI Generated",
+        "Line Input",
+        "Select List",
+        "Submit Button",
+        "Textarea",
+        "Date Picker",
+        "Checkbox",
+        "Photo/Video",
+        "Signature",
+        "Rich Text",
+        "Multicolumn / Table",
+        "Image",
+        "Record List",
+        "Loop",
+        "Nested Screen",
+        "Page Navigation",
+        "File Upload",
+        "File Download",
+        "File Preview",
+        "Bootstrap Component",
+        "Bootstrap Wrapper",
+        "Captcha",
+        "Google Places",
+        "Saved Search Chart"
+      ];
+
+      const excludedLabels = [""];
 
       const filtered = this.controls.filter((control) => {
-        return control.label.toLowerCase().includes(this.filterQuery.toLowerCase());
-      });
-
-      const excluded = filtered.filter((control) => {
-        return excludedLabels.includes(control.label);
+        return control.label
+          .toLowerCase()
+          .includes(this.filterQuery.toLowerCase());
       });
 
       const included = filtered.filter((control) => {
         return !excludedLabels.includes(control.label);
       });
 
-      const sorted = included.sort((a, b) => {
+      const prioritySorted = included.sort((a, b) => {
+        const indexA = priorityLabels.indexOf(a.label);
+        const indexB = priorityLabels.indexOf(b.label);
+
+        if (indexA !== -1 && indexB !== -1) {
+          return indexA - indexB;
+        }
+        if (indexA !== -1) {
+          return -1;
+        }
+        if (indexB !== -1) {
+          return 1;
+        }
         return this.collator.compare(a.label, b.label);
       });
 
-      return [...sorted, ...excluded].sort((a, b) => {
-        const textA = a.label.toLowerCase();
-        const textB = b.label.toLowerCase();
-        if (textA < textB) {
-          return -1;
-        }
-        return textA > textB ? 1 : 0;
+      const excluded = included.filter((control) => {
+        return excludedLabels.includes(control.label);
       });
+
+      return [...prioritySorted, ...excluded];
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
       return this.screenType === formTypes.form;
-    },
-    
+    }
   },
   watch: {
     config: {
@@ -642,6 +807,13 @@ export default {
       ) {
         this.addDefaultAiControl();
       }
+    },
+
+    filteredControls: {
+      handler(newVal) {
+        this.groupFilteredControls(newVal);
+      },
+      deep: true
     }
   },
   created() {
@@ -687,6 +859,26 @@ export default {
     });
   },
   methods: {
+    toggleCollapse(index) {
+      this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
+    },
+    groupFilteredControls(controls) {
+      this.filteredControlsGrouped = {};
+
+      for (const groupKey in controlGroups) {
+        this.filteredControlsGrouped[groupKey] = filterControlsByLabel(
+          controls,
+          controlGroups[groupKey]
+        );
+
+        this.filteredControlsGrouped[groupKey].forEach((control) => {
+          const popoverContent = popoverContentMap[control.label];
+          if (popoverContent) {
+            control.popoverContent = popoverContent;
+          }
+        });
+      }
+    },
     refreshContent() {
       this.editorContentKey++;
     },
@@ -1088,7 +1280,8 @@ export default {
       // Generate Variable Name
       if (
         _.findIndex(control.inspector, keyNameProperty) !== -1 ||
-        control.component === "FormLoop") {
+        control.component === "FormLoop"
+      ) {
         [this.variables, copy.config.name] = this.generator.generate(
           this.config,
           copy["editor-control"] ? copy["editor-control"] : copy.component
@@ -1182,6 +1375,17 @@ export default {
 </script>
 
 <style>
+.gray-text {
+  color: gray;
+}
+
+.icon {
+  color: gray;
+}
+.custom-row {
+  height: 80vh;
+  margin: 0;
+}
 .prevent-interaction {
   pointer-events: none;
 }
@@ -1298,15 +1502,15 @@ $side-bar-font-size: 0.875rem;
   top: 4rem;
 }
 .ai-section-card {
-  border-color: #8AB8FF;
+  border-color: #8ab8ff;
 }
 
 .ai-section-card .card-header {
-  background: #CBDFFF;
+  background: #cbdfff;
 }
 
 .ai-control {
-  background: #FFF4D3;
+  background: #fff4d3;
 }
 
 .pulse {
