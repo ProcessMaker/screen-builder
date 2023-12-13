@@ -110,7 +110,7 @@
   ],
   "engines": {
     "npm": ">=8",
-    "node": ">=16 <18"
+    "node": ">=18"
   },
   "nyc": {
     "include": [
