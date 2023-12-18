@@ -546,7 +546,8 @@ const controlGroups = {
     "Nested Screen"
   ],
   Navigation: ["Page Navigation"],
-  Files: ["File Upload", "File Download", "File Preview"],
+  Dashboards: ["Saved Search Chart", "Analytics Chart"],
+  Files: ["File Upload", "File Download", "File Preview", "List Table"],
   Advanced: [
     "Bootstrap Component",
     "Bootstrap Wrapper",
@@ -580,10 +581,12 @@ const popoverContentMap = {
   "Loop": "Format content in a table structure and allow for adding rows",
   "Nested Screen": "Add a repeatable section of content",
   "Page Navigation": "Add and reuse another Form within this Form",
+  "Analytics Chart": "Add a chart from the Analytics Reports",
   "File Upload":
     "Add special buttons that link between subpages within this Form",
   "File Download": "Collect files uploaded into the Form",
   "File Preview": "Offer a File download",
+  "List Table": "Create List Table",
   "Bootstrap Component":
     "Add a Preview section that displays the content of a File",
   "Bootstrap Wrapper":
@@ -681,6 +684,7 @@ export default {
         { key: "InputFields", label: "Input Fields" },
         { key: "ContentFields", label: "Content Fields" },
         { key: "Navigation", label: "Navigation" },
+        { key: "Dashboards", label: "Dashboards" },
         { key: "Files", label: "Files" },
         { key: "Advanced", label: "Advanced" }
       ],
@@ -719,9 +723,12 @@ export default {
         "Loop",
         "Nested Screen",
         "Page Navigation",
+        "Saved Search Chart",
+        "Analytics Chart",
         "File Upload",
         "File Download",
         "File Preview",
+        "List Table",
         "Bootstrap Component",
         "Bootstrap Wrapper",
         "Captcha",
