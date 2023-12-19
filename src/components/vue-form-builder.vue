@@ -70,7 +70,10 @@
                       group.key
                     ]"
                     :key="elementIndex"
-                    v-b-popover.hover.top="element.popoverContent"
+                    v-b-popover.hover.right="{
+                      content: element.popoverContent,
+                      customClass: 'custom-popover'
+                    }"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
                     :class="{
@@ -1382,6 +1385,9 @@ export default {
 </script>
 
 <style>
+.custom-popover {
+  margin-right: -400px;
+}
 .gray-text {
   color: gray;
 }
