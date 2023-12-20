@@ -1,6 +1,7 @@
 describe('Custom CSS', () => {
   it('Shows Modal', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -11,6 +12,7 @@ describe('Custom CSS', () => {
 
   it('Closes Modal', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -24,6 +26,7 @@ describe('Custom CSS', () => {
 
   it('Does Not Save Custom CSS', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -39,6 +42,7 @@ describe('Custom CSS', () => {
 
   it('Saves Custom CSS', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -55,6 +59,7 @@ describe('Custom CSS', () => {
 
   it('Does not add styling to element in design mode', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -70,6 +75,7 @@ describe('Custom CSS', () => {
 
   it('Adds styling to element in preview mode', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();

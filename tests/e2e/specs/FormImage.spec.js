@@ -1,6 +1,7 @@
 describe('Form Image', () => {
   it('Upload image to show', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormImage]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.uploadFile('[data-cy=inspector-image] input[type=file]', 'avatar.jpeg', 'image/jpeg');
@@ -15,6 +16,7 @@ describe('Form Image', () => {
 
   it('Image by variable', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormImage]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-renderImage]').click();

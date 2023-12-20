@@ -1,6 +1,8 @@
 describe('File Upload', () => {
   it('Automatically sets a variable name', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-4");
+    //cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FileUpload]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
 

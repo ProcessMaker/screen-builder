@@ -1,6 +1,7 @@
 describe('Form Select List', () => {
   beforeEach(() => {
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     // Add loop control
     cy.get('[data-cy=controls-FormSelectList]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
