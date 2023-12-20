@@ -71,7 +71,7 @@
                     ]"
                     :key="elementIndex"
                     v-b-popover.hover.right="{
-                      content: element.popoverContent,
+                      content: $t(element.popoverContent),
                       customClass: 'custom-popover'
                     }"
                     :boundary="'viewport'"
@@ -692,7 +692,7 @@ export default {
         { key: "Advanced", label: "Advanced" }
       ],
 
-      isCollapsed: new Array(6).fill(true)
+      isCollapsed: new Array(7).fill(true)
     };
   },
   computed: {
@@ -899,7 +899,7 @@ export default {
     },
     checkForCaptcha(items, insideLoop = false, nestedScreen = null) {
       items.forEach((item) => {
-        if (!item.items && item.component == "Captcha" && insideLoop) {
+        if (!item.items && item.component === "Captcha" && insideLoop) {
           if (nestedScreen && nestedScreen.config.screen) {
             this.$root.$emit("remove-nested", nestedScreen.config.screen);
             nestedScreen.config.screen = null;
