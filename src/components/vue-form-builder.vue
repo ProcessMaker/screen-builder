@@ -31,7 +31,10 @@
           <!-- Accordion Bootstrap -->
           <template v-for="(group, index) in controlGroups">
             <b-button
-              v-if="filteredControlsGrouped[group.key].length > 0"
+              v-if="
+                filteredControlsGrouped[group.key] &&
+                filteredControlsGrouped[group.key].length > 0
+              "
               v-b-toggle="`collapse-${index}`"
               class="w-100 rounded-0 text-left"
               style="
@@ -51,7 +54,10 @@
             </b-button>
             <b-collapse :id="`collapse-${index}`" class="mt-2">
               <b-list-group
-                v-if="filteredControlsGrouped[group.key].length > 0"
+                v-if="
+                  filteredControlsGrouped[group.key] &&
+                  filteredControlsGrouped[group.key].length > 0
+                "
               >
                 <draggable
                   v-if="renderControls"
@@ -82,12 +88,15 @@
                     }"
                   >
                     <i
-                      v-if="element.config.icon"
+                      v-if="element.config && element.config.icon"
                       :class="element.config.icon"
                     />
                     {{ $t(element.label) }}
                   </b-list-group-item>
-                  <li v-if="!filteredControls.length" class="list-group-item">
+                  <li
+                    v-if="filteredControls && !filteredControls.length"
+                    class="list-group-item"
+                  >
                     <slot />
                   </li>
                 </draggable>
@@ -340,7 +349,7 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              v-if="getInspectorFields(accordion).length > 0"
+              v-if="getInspectorFields(accordion) && getInspectorFields(accordion).length > 0"
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
@@ -681,6 +690,7 @@ export default {
       collator: null,
       editorContentKey: 0,
       cancelledJobs: [],
+      filteredControlsGrouped: {},
 
       controlGroups: [
         { key: "AIAssistant", label: "AI Assistant" },
@@ -873,8 +883,6 @@ export default {
       this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
     },
     groupFilteredControls(controls) {
-      this.filteredControlsGrouped = {};
-
       for (const groupKey in controlGroups) {
         this.filteredControlsGrouped[groupKey] = filterControlsByLabel(
           controls,
@@ -1028,7 +1036,7 @@ export default {
               : "");
           item.config = {
             content:
-              "<div style=\"" + style + "\">" + item.config.label + "</div>",
+              '<div style="' + style + '">' + item.config.label + "</div>",
             interactive: true
           };
         }
