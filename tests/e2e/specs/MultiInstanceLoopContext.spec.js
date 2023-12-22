@@ -3,9 +3,7 @@ import Screens from "../fixtures/MultiInstanceLoopContext.json";
 
 describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
   beforeEach(() => {
-    cy.server();
-
-    cy.route(
+    cy.intercept(
       "GET",
       "http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -57,7 +55,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
     cy.get("@consoleError").should("not.to.be.called");
 
     // Upload main file
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -65,15 +63,11 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
         fileUploadId: 1
       })
     ).as("uploadMainFile");
-    cy.uploadFile(
-      "[data-cy='screen-field-rootUpload'] input[type=file]",
-      "avatar.jpeg",
-      "image/jpg"
-    );
+    cy.uploadFile("[data-cy='screen-field-rootUpload'] input[type=file]", "avatar.jpeg", "image/jpg");
     cy.wait("@uploadMainFile");
 
     // Upload file 1
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -81,16 +75,11 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
         fileUploadId: 2
       })
     ).as("uploadFile1");
-    cy.uploadFile(
-      "[data-cy='screen-field-fileLoppPaola'] input[type=file]",
-      "file1.png",
-      "image/png",
-      0
-    );
+    cy.uploadFile("[data-cy='screen-field-fileLoppPaola'] input[type=file]", "file1.png", "image/png", 0);
     cy.wait("@uploadFile1");
 
     // Upload file 2
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -98,16 +87,11 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
         fileUploadId: 3
       })
     ).as("uploadFile2");
-    cy.uploadFile(
-      "[data-cy='screen-field-fileLoppPaola'] input[type=file]",
-      "file2.png",
-      "image/png",
-      1
-    );
+    cy.uploadFile("[data-cy='screen-field-fileLoppPaola'] input[type=file]", "file2.png", "image/png", 1);
     cy.wait("@uploadFile2");
 
     // Upload file 3
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -115,12 +99,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
         fileUploadId: 4
       })
     ).as("uploadFile3");
-    cy.uploadFile(
-      "[data-cy='screen-field-fileLoppPaola'] input[type=file]",
-      "file3.png",
-      "image/png",
-      2
-    );
+    cy.uploadFile("[data-cy='screen-field-fileLoppPaola'] input[type=file]", "file3.png", "image/png", 2);
     cy.wait("@uploadFile3");
     // Check global variable
     cy.window().then((win) => {
@@ -162,9 +141,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
           }
         ]
       };
-      const current = JSON.parse(
-        JSON.stringify(win.PM4ConfigOverrides.requestFiles)
-      );
+      const current = JSON.parse(JSON.stringify(win.PM4ConfigOverrides.requestFiles));
       expect(current).to.deep.equal(expected);
     });
   });

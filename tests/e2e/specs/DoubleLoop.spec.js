@@ -1,6 +1,5 @@
 describe("Double loop tests", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 
@@ -22,14 +21,10 @@ describe("Double loop tests", () => {
     cy.get("[data-cy=mode-preview]").click();
 
     // Select option "one" on select inside loop 2
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_select_list_1]"
-    ).selectOption("one");
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_select_list_1]").selectOption("one");
 
     // Select option "one" on select inside loop 3
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_select_list_2]"
-    ).selectOption("two");
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_select_list_2]").selectOption("two");
 
     // Check the data of the screen
     cy.assertPreviewData({

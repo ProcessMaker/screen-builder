@@ -29,9 +29,8 @@ describe("SelectList - Watcher", () => {
   ];
 
   beforeEach(() => {
-    cy.server();
     // Mock the response from the data source
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/2",
       JSON.stringify({
@@ -51,14 +50,10 @@ describe("SelectList - Watcher", () => {
     cy.get("[data-cy=preview-content] [name=enable]").click();
 
     // Select "John" option in radio buttons "form_select_list_2"
-    cy.get(
-      "[data-cy=preview-content] [name=form_select_list_2][value=John]"
-    ).click();
+    cy.get("[data-cy=preview-content] [name=form_select_list_2][value=John]").click();
 
     // Select "Mary" option in select list "form_select_list_3"
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_select_list_3]"
-    ).selectOption("Mary");
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_select_list_3]").selectOption("Mary");
 
     // Check the data of the screen
     cy.assertPreviewData({
@@ -78,14 +73,10 @@ describe("SelectList - Watcher", () => {
     cy.get("[data-cy=preview-content] [name=enable]").click();
 
     // Select "John" option in radio buttons "form_select_list_2"
-    cy.get(
-      "[data-cy=preview-content] [name=form_select_list_2][value=John]"
-    ).click();
+    cy.get("[data-cy=preview-content] [name=form_select_list_2][value=John]").click();
 
     // Select "Mary" option in select list "form_select_list_3"
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_select_list_3]"
-    ).selectOption("Mary");
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_select_list_3]").selectOption("Mary");
 
     // Check the data of the screen
     cy.assertPreviewData({

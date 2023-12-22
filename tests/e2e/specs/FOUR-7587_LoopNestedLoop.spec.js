@@ -14,8 +14,7 @@ describe("FOUR-7587 Loop Nested Loop", () => {
               file: null,
               document: {
                 id: 15,
-                label:
-                  "Recent Statement of Information (Domestic Stock Corporation) filed with Secretary of State",
+                label: "Recent Statement of Information (Domestic Stock Corporation) filed with Secretary of State",
                 coreCode: "recentStatementInfo"
               },
               required: true
@@ -45,7 +44,6 @@ describe("FOUR-7587 Loop Nested Loop", () => {
   };
 
   beforeEach(() => {
-    cy.server();
     cy.visit("/", {
       onBeforeLoad(win) {
         cy.stub(win.console, "log").as("consoleLog");

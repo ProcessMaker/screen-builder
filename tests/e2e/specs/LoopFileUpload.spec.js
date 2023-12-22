@@ -3,7 +3,6 @@ describe("FOUR-2164 Loop FileUpload", () => {
   const initialData = {};
 
   beforeEach(() => {
-    cy.server();
     cy.visit("/", {
       onBeforeLoad(win) {
         cy.stub(win.console, "log").as("consoleLog");
@@ -29,7 +28,7 @@ describe("FOUR-2164 Loop FileUpload", () => {
     cy.get("@consoleError").should("not.to.be.called");
 
     // Upload file 1
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -37,16 +36,11 @@ describe("FOUR-2164 Loop FileUpload", () => {
         fileUploadId: 1
       })
     ).as("uploadFile1");
-    cy.uploadFile(
-      "[data-cy=preview-content] [data-cy='screen-field-fileLoppPaola'] input[type=file]",
-      "file1.jpeg",
-      "image/jpg",
-      0
-    );
+    cy.uploadFile("[data-cy=preview-content] [data-cy='screen-field-fileLoppPaola'] input[type=file]", "file1.jpeg", "image/jpg", 0);
     cy.wait("@uploadFile1");
 
     // Upload file 2
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -54,16 +48,11 @@ describe("FOUR-2164 Loop FileUpload", () => {
         fileUploadId: 2
       })
     ).as("uploadFile2");
-    cy.uploadFile(
-      "[data-cy=preview-content] [data-cy='screen-field-fileLoppPaola'] input[type=file]",
-      "file2.jpeg",
-      "image/jpg",
-      1
-    );
+    cy.uploadFile("[data-cy=preview-content] [data-cy='screen-field-fileLoppPaola'] input[type=file]", "file2.jpeg", "image/jpg", 1);
     cy.wait("@uploadFile2");
 
     // Upload file 3
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -71,12 +60,7 @@ describe("FOUR-2164 Loop FileUpload", () => {
         fileUploadId: 3
       })
     ).as("uploadFile3");
-    cy.uploadFile(
-      "[data-cy=preview-content] [data-cy='screen-field-fileLoppPaola'] input[type=file]",
-      "file3.jpeg",
-      "image/jpg",
-      2
-    );
+    cy.uploadFile("[data-cy=preview-content] [data-cy='screen-field-fileLoppPaola'] input[type=file]", "file3.jpeg", "image/jpg", 2);
     cy.wait("@uploadFile3");
     // Check global variable
     cy.window().then((win) => {
@@ -109,9 +93,7 @@ describe("FOUR-2164 Loop FileUpload", () => {
           }
         ]
       };
-      const current = JSON.parse(
-        JSON.stringify(win.PM4ConfigOverrides.requestFiles)
-      );
+      const current = JSON.parse(JSON.stringify(win.PM4ConfigOverrides.requestFiles));
       expect(current).to.deep.equal(expected);
     });
   });

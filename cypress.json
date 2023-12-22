@@ -1,8 +1,0 @@
-{
-  "projectId": "c4pb2f",
-  "viewportWidth": 1140,
-  "viewportHeight": 668,
-  "pluginsFile": "tests/e2e/plugins/index.js",
-  "baseUrl": "http://localhost:8080",
-  "video": false
-}

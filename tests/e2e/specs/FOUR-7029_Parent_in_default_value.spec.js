@@ -1,6 +1,5 @@
 describe("access to _parent variable in default value", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 
@@ -9,9 +8,7 @@ describe("access to _parent variable in default value", () => {
     // set init screen test data
     cy.get("[data-cy=mode-preview]").click();
 
-    cy.get("[data-cy=preview-content] [name='parentInput']")
-      .clear()
-      .type("new value to parent");
+    cy.get("[data-cy=preview-content] [name='parentInput']").clear().type("new value to parent");
 
     cy.assertPreviewData({
       parentInput: "new value to parent",

@@ -1,6 +1,6 @@
 name: ci
 
-on: 
+on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
 
@@ -33,12 +33,13 @@ jobs:
       #        run: npm run test
 
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
+          browser: chrome
           install: false
           start: npm run serve
           wait-on: http://localhost:8080/
-          config-file: cypress.json
+          config-file: cypress.config.js
           spec: "tests/e2e/**/*"
           record: true
           parallel: true

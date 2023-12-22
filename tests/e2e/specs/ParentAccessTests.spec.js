@@ -1,6 +1,5 @@
 describe("Test access to _parent", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 
@@ -9,32 +8,20 @@ describe("Test access to _parent", () => {
     // set init screen test data
     cy.get("[data-cy=mode-preview]").click();
 
-    cy.get("[data-cy=preview-content] [name='parentInput']")
-      .eq(0)
-      .clear()
-      .type("value in parent")
-      .blur();
+    cy.get("[data-cy=preview-content] [name='parentInput']").eq(0).clear().type("value in parent").blur();
 
-    cy.get("[data-cy=preview-content] [name='form_input_1']")
-      .eq(0)
-      .type(":value in loop");
+    cy.get("[data-cy=preview-content] [name='form_input_1']").eq(0).type(":value in loop");
 
     // Click ADD record in Record List
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]"
-    ).click();
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]").click();
 
     // Type in form_input_1 inside record list
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_1]"
-    )
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_1]")
       .type(":value in record list + loop")
       .blur();
 
     // Click OK button to insert the row
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary"
-    ).click();
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary").click();
 
     // Check the data of the screen
     cy.assertPreviewData({
