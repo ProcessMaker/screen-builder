@@ -1,6 +1,5 @@
 describe("screen error nested calc", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 
@@ -9,9 +8,7 @@ describe("screen error nested calc", () => {
     // set init screen test data
     cy.get("[data-cy=mode-preview]").click();
 
-    cy.get("[data-cy=preview-content] [name='parentInput']")
-      .clear()
-      .type("123");
+    cy.get("[data-cy=preview-content] [name='parentInput']").clear().type("123");
 
     // Check the data of the screen
     cy.assertPreviewData({
@@ -29,9 +26,7 @@ describe("screen error nested calc", () => {
     // set init screen test data
     cy.get("[data-cy=mode-preview]").click();
 
-    cy.get("[data-cy=preview-content] [name='parentInput']")
-      .clear()
-      .type("123");
+    cy.get("[data-cy=preview-content] [name='parentInput']").clear().type("123");
 
     // Check the data of the screen
     cy.assertPreviewData({
@@ -60,33 +55,23 @@ describe("screen error nested calc", () => {
     // set init screen test data
     cy.get("[data-cy=mode-preview]").click();
 
-    cy.get("[data-cy=preview-content] [name='form_input_1']")
-      .clear()
-      .type("123");
+    cy.get("[data-cy=preview-content] [name='form_input_1']").clear().type("123");
 
     // Click ADD record in Record List
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]"
-    ).click();
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]").click();
 
     // Type in form_input_2
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_2]"
-    )
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_2]")
       .clear()
       .type("456");
 
     // Type in form_input_3
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_3]"
-    )
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=form_input_3]")
       .clear()
       .type("789");
 
     // Click OK button to insert the row
-    cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary"
-    ).click();
+    cy.get("[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary").click();
 
     // Check the data of the screen
     cy.get("#screen-builder-container").then((div) => {

@@ -1,22 +1,24 @@
 const sizes = [
   [700, 800],
   [1000, 800],
-  [1200, 768],
+  [1200, 768]
 ];
-const backgroundColor = ['rgb(0, 0, 255)', 'rgb(255, 0, 0)', 'rgb(0, 128, 0)'];
+const backgroundColor = ["rgb(0, 0, 255)", "rgb(255, 0, 0)", "rgb(0, 128, 0)"];
 
-describe('Media Query CSS', () => {
+describe("Media Query CSS", () => {
   before(() => {
     // run these tests as if in a desktop
-    cy.visit('/');
-    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
-    cy.get('[data-cy=screen-element-container]').click();
-    cy.get('[data-cy=accordion-Advanced]').click();
-    cy.get('[data-cy=inspector-customCssSelector]').type('new_input_css');
-    cy.get('[data-cy=topbar-css]').click();
+    cy.visit("/");
+    cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
+    cy.get("[data-cy=screen-element-container]").click();
+    cy.get("[data-cy=accordion-Advanced]").click();
+    cy.get("[data-cy=inspector-customCssSelector]").type("new_input_css");
+    cy.get("[data-cy=topbar-css]").click();
     cy.wait(500);
     // write the media query in the custom css panel
-    cy.get('#custom-css').type(
+    cy.get("#custom-css").type(
       `@media (max-width: 480px) {
       div[selector="new_input_css"] {
         background-color: blue;
@@ -35,13 +37,13 @@ describe('Media Query CSS', () => {
       }
     }
   `,
-      { parseSpecialCharSequences: false },
+      { parseSpecialCharSequences: false }
     );
 
     cy.wait(500);
-    cy.get('[data-cy=save-button]').click();
+    cy.get("[data-cy=save-button]").click();
     // preview
-    cy.get('[data-cy=mode-preview]').click();
+    cy.get("[data-cy=mode-preview]").click();
   });
 
   sizes.forEach((size, index) => {
@@ -55,7 +57,7 @@ describe('Media Query CSS', () => {
       }
 
       cy.wait(300);
-      cy.get('[selector=new_input_css]').should('have.css', 'background-color').and('eq', backgroundColor[index]);
+      cy.get("[selector=new_input_css]").should("have.css", "background-color").and("eq", backgroundColor[index]);
     });
   });
 });

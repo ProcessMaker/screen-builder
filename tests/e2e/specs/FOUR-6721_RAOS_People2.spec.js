@@ -1,5 +1,4 @@
 describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
-
   // initial data to test the screen
   const initialData = {
     _user: {
@@ -263,15 +262,14 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
       validationMessage: ""
     },
     primaryContact: null,
-    requestSummary:
-      "Personal Account Opening (GENEVIEVE GILBERT |  + 2 people |  + Trust |  Banker - In-Person)",
+    requestSummary: "Personal Account Opening (GENEVIEVE GILBERT |  + 2 people |  + Trust |  Banker - In-Person)",
     searchCategory: "RAOS",
     officersInvolved: [
       {
         id: 3,
         name: "Briana Banker",
         task: "Start Application",
-        email: "solutions+banker@processmaker.com",
+        email: "solutions+banker@processmaker.com"
       }
     ],
     acceptedDocuments: null,
@@ -290,9 +288,8 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
   };
 
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/38",
       JSON.stringify({
@@ -316,7 +313,7 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
         }
       })
     ).as("DataSourceOne");
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/22",
       JSON.stringify({
@@ -373,12 +370,7 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
     cy.window().its("performance").invoke("mark", "endPreviewScreen");
     cy.window()
       .its("performance")
-      .invoke(
-        "measure",
-        "previewScreen",
-        "startPreviewScreen",
-        "endPreviewScreen"
-      )
+      .invoke("measure", "previewScreen", "startPreviewScreen", "endPreviewScreen")
       .its("duration")
       .should("be.lessThan", 4000);
   });
@@ -414,12 +406,7 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
     cy.window().its("performance").invoke("mark", "endPreviewScreen");
     cy.window()
       .its("performance")
-      .invoke(
-        "measure",
-        "previewScreen",
-        "startPreviewScreen",
-        "endPreviewScreen"
-      )
+      .invoke("measure", "previewScreen", "startPreviewScreen", "endPreviewScreen")
       .its("duration")
       .should("be.lessThan", 10000);
   });
