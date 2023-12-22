@@ -109,8 +109,8 @@
     "not ie <= 8"
   ],
   "engines": {
-    "npm": ">=9",
-    "node": ">=18"
+    "npm": ">=8",
+    "node": ">=16"
   },
   "nyc": {
     "include": [
