@@ -2,6 +2,7 @@ describe("Default values", () => {
   it("Check visible", () => {
     cy.visit("/");
     cy.setPreviewDataInput({ name: "world" });
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -14,6 +15,7 @@ describe("Default values", () => {
   it("Check hidden", () => {
     cy.visit("/");
     cy.setPreviewDataInput({ name: "" });
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -21,11 +23,12 @@ describe("Default values", () => {
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-conditionalHide]").clear().type("name");
     cy.get("[data-cy=mode-preview]").click();
-    cy.get("[data-cy=preview-content] [name=form_input_1]").should("be.not.exist");
+    cy.get("[data-cy=preview-content] [name=form_input_1]").should("be.not.visible");
   });
   it("Check dynamic visibility rule", () => {
     cy.visit("/");
     cy.setPreviewDataInput({ name: "" });
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

@@ -1,6 +1,7 @@
 describe("Custom CSS", () => {
   it("Shows Modal", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -13,7 +14,8 @@ describe("Custom CSS", () => {
 
   it("Closes Modal", () => {
     cy.visit("/");
-    cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+    cy.openAcordeon("collapse-1");
+    cy.get("[data-cy{=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
     cy.get("[data-cy=screen-element-container]").click();
@@ -28,6 +30,7 @@ describe("Custom CSS", () => {
 
   it("Does Not Save Custom CSS", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -47,6 +50,7 @@ describe("Custom CSS", () => {
 
   it("Saves Custom CSS", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -67,6 +71,7 @@ describe("Custom CSS", () => {
 
   it("Does not add styling to element in design mode", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -84,6 +89,7 @@ describe("Custom CSS", () => {
 
   it("Adds styling to element in preview mode", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

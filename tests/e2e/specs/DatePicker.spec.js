@@ -5,6 +5,7 @@ moment.tz.setDefault("UTC");
 describe("Date Picker", () => {
   beforeEach(() => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.window().then((win) => {
       win.ProcessMaker.user.timezone = "UTC";
     });
@@ -325,16 +326,14 @@ describe("Date Picker", () => {
   });
   it("Date picker with Required validation shouldn't allow the user to submit the date if empty", () => {
     const date = moment(new Date()).format("MM/DD/YYYY");
-
     cy.showValidationOnLoad();
-
     cy.get("[data-cy=controls-FormDatePicker]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.setMultiselect("[data-cy=inspector-dataFormat]", "Date");
     cy.get("[data-cy=add-rule]").click();
     cy.setMultiselect("[data-cy=select-rule]", "Required");
     cy.get("[data-cy=save-rule]").click();
-    cy.get("[data-cy=controls-FormButton]").last().drag("[data-cy=screen-element-container]", { position: "bottom" });
+    cy.get("[data-cy=controls-FormButton]").first().drag("[data-cy=screen-element-container]", { position: "bottom" });
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(".invalid-feedback").contains("Field is required");

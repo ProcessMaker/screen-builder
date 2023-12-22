@@ -1,6 +1,7 @@
 describe("Default values", () => {
   it("Variable names with dots 2 levels", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -15,6 +16,7 @@ describe("Default values", () => {
   });
   it("Variable names with dots 3 levels", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -32,6 +34,7 @@ describe("Default values", () => {
   });
   it("Variable names with dots and one attribute same as the name", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

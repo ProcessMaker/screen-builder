@@ -1,6 +1,7 @@
 describe("Form Text Area Field", () => {
   it("Default properties", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=mode-preview]").click();
@@ -11,6 +12,7 @@ describe("Form Text Area Field", () => {
   });
   it("Variable properties", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-name]").clear().type("comments");
@@ -27,6 +29,7 @@ describe("Form Text Area Field", () => {
   });
   it("Read Only", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-name]").clear().type("comments");
@@ -40,6 +43,7 @@ describe("Form Text Area Field", () => {
   // Configuration
   it("Placeholder", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Configuration]").click();
@@ -49,6 +53,7 @@ describe("Form Text Area Field", () => {
   });
   it("Helper Text", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Configuration]").click();
@@ -58,6 +63,7 @@ describe("Form Text Area Field", () => {
   });
   it("Rich Text", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Configuration]").click();
@@ -70,6 +76,7 @@ describe("Form Text Area Field", () => {
   });
   it("Rows", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Configuration]").click();
@@ -79,6 +86,7 @@ describe("Form Text Area Field", () => {
   });
   it("Default Value", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
@@ -90,6 +98,7 @@ describe("Form Text Area Field", () => {
   });
   it("CSS Selector Name", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
@@ -99,6 +108,7 @@ describe("Form Text Area Field", () => {
   });
   it("Aria Label", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
@@ -108,6 +118,7 @@ describe("Form Text Area Field", () => {
   });
   it("Tab Order", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormTextArea]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();

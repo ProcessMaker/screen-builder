@@ -1,6 +1,7 @@
 describe("Screen Builder", () => {
   beforeEach(() => {
     cy.visit("/");
+    cy.openAllAcordeon();
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

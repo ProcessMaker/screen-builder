@@ -63,6 +63,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
         fileUploadId: 1
       })
     ).as("uploadMainFile");
+    cy.openAcordeon("collapse-4");
     cy.uploadFile("[data-cy='screen-field-rootUpload'] input[type=file]", "avatar.jpeg", "image/jpg");
     cy.wait("@uploadMainFile");
 

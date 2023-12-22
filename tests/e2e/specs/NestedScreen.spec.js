@@ -80,6 +80,7 @@ describe("Nested screen", () => {
 
   it("Without a variable defined", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormNestedScreen]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-screen] div.multiselect").click();

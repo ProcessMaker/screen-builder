@@ -139,6 +139,7 @@ describe("Computed fields", () => {
 
   it.only("The user should not be able to change a FormDatePicker assigned to a computed property", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     // Add an input field
     cy.get("[data-cy=controls-FormDatePicker]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();

@@ -83,6 +83,7 @@ describe("Computed fields", () => {
   });
   it("Create a javascript computed field", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -115,6 +116,7 @@ describe("Computed fields", () => {
 
   it("Create a computed field with formula", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
