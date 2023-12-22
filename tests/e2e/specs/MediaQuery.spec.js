@@ -9,6 +9,7 @@ describe('Media Query CSS', () => {
   before(() => {
     // run these tests as if in a desktop
     cy.visit('/');
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
