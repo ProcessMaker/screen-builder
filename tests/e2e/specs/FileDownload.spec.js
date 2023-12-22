@@ -14,14 +14,18 @@ describe("File Download", () => {
     uploadSingleFile();
 
     // The file should be listed in the file download control
-    cy.get(":nth-child(2) > .row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"1-avatar\"]").contains("avatar.jpeg");
+    cy.get(':nth-child(2) > .row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains(
+      "avatar.jpeg"
+    );
 
     // The file using the `_parent` variable should be listed in the file download control
-    cy.get(".page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"1-avatar\"]").contains("avatar.jpeg");
+    cy.get('.page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]').contains("avatar.jpeg");
 
     // The file should be listed in the Record List file download control
     cy.get("[data-cy=add-row]").click();
-    cy.get("[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"1-avatar\"]").contains("avatar.jpeg");
+    cy.get(
+      '[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"]'
+    ).contains("avatar.jpeg");
   });
 
   it("Can download a single file", () => {
@@ -30,9 +34,7 @@ describe("File Download", () => {
     cy.intercept("/api/1.0/files/1/contents", "avatar.jpeg").as("download");
 
     // A standard file is downloadable
-    cy.get(
-      '.row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn'
-    ).click();
+    cy.get('.row > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn').click();
     cy.wait("@download").then(async (xhr) => {
       const content = await xhr.response.body.text();
       expect(content).to.equal("avatar.jpeg");
@@ -49,7 +51,11 @@ describe("File Download", () => {
 
     // A Record List file is downloadable
     cy.get("[data-cy=add-row]").click();
-    cy.get("[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"1-avatar\"] > .btn").eq(0).click();
+    cy.get(
+      '[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn'
+    )
+      .eq(0)
+      .click();
     cy.wait("@download").then(async (xhr) => {
       const content = await xhr.response.body.text();
       expect(content).to.equal("avatar.jpeg");
@@ -77,7 +83,8 @@ describe("File Download", () => {
     cy.intercept("/api/1.0/files/2/contents", "file1.jpeg").as("download");
     cy.wait(1000);
     // The first file should be downloaded
-    cy.get(".row > :nth-child(1) > :nth-child(1) > [icon=\"fas fa-redo\"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"1-avatar\"] > .btn")
+    cy.get(
+      '.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(1) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn'
     ).click();
     cy.wait("@download").then(async (xhr) => {
       const content = await xhr.response.body.text();
@@ -85,7 +92,8 @@ describe("File Download", () => {
     });
 
     // The second file should be downloaded
-    cy.get(".row > :nth-child(1) > :nth-child(1) > [icon=\"fas fa-redo\"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"2-file1\"] > .btn")
+    cy.get(
+      '.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="2-file1"] > .btn'
     ).click();
     cy.wait("@download").then(async (xhr) => {
       const content = await xhr.response.body.text();
@@ -122,7 +130,10 @@ function uploadSingleFile() {
   cy.loadFromJson("single_file_download.json", 0);
   cy.get("[data-cy=mode-preview]").click();
   // Upload single file should show the uploaded file name
-  cy.intercept("POST", "/api/1.0/requests/1/files", JSON.stringify({
+  cy.intercept(
+    "POST",
+    "/api/1.0/requests/1/files",
+    JSON.stringify({
       message: "The file was uploaded.",
       fileUploadId: 1
     })
@@ -130,8 +141,7 @@ function uploadSingleFile() {
   cy.uploadFile("[data-cy=preview-content] [data-cy=screen-field-file_upload_1] input[type=file]", "avatar.jpeg", "image/jpg");
 
   // Mock file info
-  cy.intercept("/api/1.0/requests/1/files?id=*",
-    {
+  cy.intercept("/api/1.0/requests/1/files?id=*", {
     id: 1,
     file_name: "avatar.jpeg",
     name: "avatar"
@@ -143,28 +153,32 @@ function uploadMultiFile() {
   cy.get("[data-cy=mode-preview]").click();
 
   // Upload first file
-  cy.intercept("POST", "/api/1.0/requests/1/files", JSON.stringify({
+  cy.intercept(
+    "POST",
+    "/api/1.0/requests/1/files",
+    JSON.stringify({
       message: "The file was uploaded.",
       fileUploadId: 1
     })
   );
   cy.uploadFile("[data-cy=preview-content] [data-cy=screen-field-file_upload_1] input[type=file]", "avatar.jpeg", "image/jpg");
-  cy.intercept("/api/1.0/requests/1/files?id=1",
-    {
+  cy.intercept("/api/1.0/requests/1/files?id=1", {
     id: 1,
     file_name: "avatar.jpeg",
     name: "avatar"
   }).as("getFileInfo");
 
   // Upload second file
-  cy.intercept("POST", "/api/1.0/requests/1/files", JSON.stringify({
+  cy.intercept(
+    "POST",
+    "/api/1.0/requests/1/files",
+    JSON.stringify({
       message: "The file was uploaded.",
       fileUploadId: 2
     })
   );
   cy.uploadFile("[data-cy=preview-content] [data-cy=screen-field-file_upload_1] input[type=file]", "file1.jpeg", "image/jpg");
-  cy.intercept("/api/1.0/requests/1/files?id=2",
-    {
+  cy.intercept("/api/1.0/requests/1/files?id=2", {
     id: 2,
     file_name: "file1.jpeg",
     name: "file1"
