@@ -55,6 +55,7 @@ const data = {
 };
 
 beforeEach(() => {
+<<<<<<< HEAD
   cy.visit("/");
   cy.get("[data-cy=controls-FormRecordList]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
   cy.get("[data-cy=toolbar-add]").click({ force: true });
@@ -68,6 +69,21 @@ beforeEach(() => {
   cy.get("[data-cy=accordion-Configuration]").click();
   cy.get(".form-check-label").click();
   cy.get("div.multiselect").click();
+=======
+  cy.visit('/');
+  cy.openAcordeon("collapse-2");
+  cy.openAcordeon("collapse-1");
+  cy.get('[data-cy=controls-FormRecordList]').drag('[data-cy=screen-drop-zone]', 'bottom');
+  cy.get('[data-cy=toolbar-add]').click({force: true});
+  cy.get('[data-cy=add-page-name]').type('page2');
+  cy.get('#addPageModal___BV_modal_footer_ > .btn-secondary').click();
+  cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
+  cy.get('[data-cy=toolbar-page]').select('0');
+  cy.get('[data-cy=screen-element-container]').click();
+  cy.get('[data-cy=accordion-Configuration]').click();
+  cy.get('.form-check-label').click();
+  cy.get('div.multiselect').click();
+>>>>>>> origin/next
   cy.get('.multiselect__element > .multiselect__option span:contains("page2")').click();
   cy.get('button:contains("Columns")').click();
   cy.get(".col-2 > .fas").click();

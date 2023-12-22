@@ -1,6 +1,7 @@
 describe("Pages and navigations", () => {
   it("Basic default value", () => {
     cy.visit("/");
+    cy.openAllAcordeon();
     cy.get("[data-cy=toolbar-add]").click();
     // Define Page 2
     cy.get("[data-cy=add-page-name]").clear().type("Page 2");

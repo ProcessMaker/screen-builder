@@ -79,16 +79,10 @@ describe("select list dependent collection", () => {
   });
 
   it("Configure collection select list", () => {
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormSelectList]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-DataSource]").click();
-
-    cy.get("[data-cy=inspector-data-sources]").select("Collection");
-    cy.get("[data-cy=inspector-collection]").select("States");
-    cy.get("[data-cy=inspector-collection-label]").select("name");
-    cy.get("[data-cy=inspector-collection-value]").select("Collection Record ID");
-
-    cy.get("[data-cy=mode-preview]").click();
 
     // Select a valid option
     cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption("Nevada");

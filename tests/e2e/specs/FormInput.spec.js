@@ -1,6 +1,7 @@
 describe("Form Input", () => {
   it("Default properties", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -13,6 +14,7 @@ describe("Form Input", () => {
   });
   it("Variable properties", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -28,6 +30,7 @@ describe("Form Input", () => {
   });
   it("Data type Integer", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -41,6 +44,7 @@ describe("Form Input", () => {
   });
   it("Data type Currency", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -55,6 +59,7 @@ describe("Form Input", () => {
   });
   it("Data type Currency with initial data", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.setPreviewDataInput('{"form_input_1":1234}');
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -69,6 +74,7 @@ describe("Form Input", () => {
   });
   it("Data type Currency when backspacing a decimal digit", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -85,6 +91,7 @@ describe("Form Input", () => {
   });
   it("Validation rule", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -95,6 +102,7 @@ describe("Form Input", () => {
   });
   it("Placeholder", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -106,6 +114,7 @@ describe("Form Input", () => {
   });
   it("Data type Percentage", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -120,6 +129,7 @@ describe("Form Input", () => {
   });
   it("Data type Datetime", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -134,6 +144,7 @@ describe("Form Input", () => {
   });
   it("Data type Date", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -148,6 +159,7 @@ describe("Form Input", () => {
   });
   it("Data type password", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
