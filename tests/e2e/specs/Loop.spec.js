@@ -1,6 +1,7 @@
 describe('Loop control', () => {
   it('Input inside loop', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     // Add loop control
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
@@ -9,6 +10,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-add]').click();
 
     // Add input to loop
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
 
     // Preview
@@ -56,6 +58,7 @@ describe('Loop control', () => {
 
   it('Verify validation on visible fields', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-2");
     // Add loop control
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
@@ -63,6 +66,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-source]').select('existing');
 
     // Add input to loop
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container] .column-draggable div', 'bottom');
 
@@ -125,6 +129,7 @@ describe('Loop control', () => {
     cy.on('window:alert', msg => alert = msg);
 
     // Add loop control
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]');
@@ -139,6 +144,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-conditionalHide]').clear().type('name != "foo"');
 
     // Add input to multicolumn
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('.mb-1 > :nth-child(1) > .row > :nth-child(1)', 'bottom');
 
     // Configure Validation rule
@@ -175,7 +181,8 @@ describe('Loop control', () => {
     let alert = false;
     cy.on('window:alert', msg => alert = msg);
 
-    // Add loop control
+    // Add loop contro
+    cy.openAcordeon("collapse-2");
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=inspector-name]');
@@ -191,6 +198,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-conditionalHide]').clear().type('name != "foo"');
 
     // Add input to nested loop
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('.m-2 > .column-draggable > div', 'bottom');
 
     // Configure Input Validation rule
@@ -267,6 +275,7 @@ describe('Loop control', () => {
     cy.showValidationOnLoad();
     let alert = false;
     cy.on('window:alert', msg => alert = msg);
+    cy.openAcordeon("collapse-2");
 
     // Add loop control
     cy.get('[data-cy=controls-FormLoop]').drag('[data-cy=screen-drop-zone]', 'bottom'); 
@@ -284,6 +293,7 @@ describe('Loop control', () => {
     cy.get('[data-cy=inspector-conditionalHide]').clear().type('name != "foo"');
 
     // Add submit button
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormButton]').contains('Submit Button').drag('[data-cy=screen-element-container]', 'bottom');
 
     // Set preview data
