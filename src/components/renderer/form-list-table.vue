@@ -210,7 +210,7 @@ export default {
      * This boolean method shows or hide elements
      */
     toggleInput(listType) {
-      if (this.showInput) {
+      if (this.showInput && this.searchCriteria !== "") {
         this.performSearch(listType);
       }
       this.showInput = !this.showInput;
