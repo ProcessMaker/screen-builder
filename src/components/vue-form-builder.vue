@@ -565,7 +565,8 @@ const controlGroups = {
     "Bootstrap Wrapper",
     "Captcha",
     "Google Places",
-    "Saved Search Chart"
+    "Saved Search Chart",
+    "Plaid"
   ]
 };
 
