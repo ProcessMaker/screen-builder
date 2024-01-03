@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { createVuePlugin } from "vite-plugin-vue2";
+import vue from "@vitejs/plugin-vue2";
 import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { resolve } from "path";
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
@@ -13,7 +13,7 @@ export default defineConfig({
     "process.env": {}
   },
   plugins: [
-    createVuePlugin(),
+    vue(),
     // https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21
     monacoEditorPlugin.default({ languageWorkers: monacoLanguages }),
     viteCommonjs()
@@ -47,8 +47,8 @@ export default defineConfig({
         "moment-timezone",
         "lodash",
         "@processmaker/vue-form-elements",
-        "@processmaker/vue-multiselect",
-        "@chantouchsek/validatorjs"
+        "@processmaker/vue-multiselect"
+        // "@chantouchsek/validatorjs"
       ],
       output: {
         exports: "named",
@@ -63,6 +63,7 @@ export default defineConfig({
           lodash: "lodash",
           "@processmaker/vue-form-elements": "VueFormElements",
           "@processmaker/vue-multiselect": "VueMultiselect"
+          // "@chantouchsek/validatorjs": "Validator"
         }
       }
     }
