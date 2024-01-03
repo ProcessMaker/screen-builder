@@ -93,6 +93,7 @@ export default {
     value: { type: Object, default: () => {} },
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
     initialLoopContext: { type: String, default: "" },
+    taskPreview: { type: Boolean, default: false },
     loading: { type: Number, default: null }
   },
   data() {
@@ -185,9 +186,16 @@ export default {
         this.nodeId = this.task.element_id;
         this.listenForParentChanges();
         if (this.task.process_request.status === 'COMPLETED') {
-          this.$emit('completed', this.task.process_request.id);
+          if (!this.taskPreview) {
+            this.$emit('completed', this.task.process_request.id);
+          }
         }
-      },
+        if (this.taskPreview && this.task.status === "CLOSED") {
+          this.task.interstitial_screen['_interstitial'] = false;
+          this.task.screen.config = this.disableForm(this.task.screen.config);
+          this.screen = this.task.screen;
+        }
+      }
     },
 
     value: {
@@ -240,6 +248,24 @@ export default {
     },
   },
   methods: {
+    disableForm(json) {
+      if (json instanceof Array) {
+        for (let item of json) {
+          if (item.component==='FormButton' && item.config.event==='submit') {
+            json.splice(json.indexOf(item), 1);
+          } else {
+            this.disableForm(item);
+          }
+        }
+      }
+      if (json.config !== undefined) {
+        json.config.disabled = true;
+      }
+      if (json.items !== undefined) {
+        this.disableForm(json.items);
+      }
+      return json;
+    },
     showSimpleErrorMessage() {
       this.renderComponent = 'simpleErrorMessage';
     },
@@ -341,16 +367,13 @@ export default {
 
       if (this.task.process_request.status === 'COMPLETED') {
         this.loadNextAssignedTask(parentRequestId);
-
       } else if (this.loadingButton) {
         this.loadNextAssignedTask(parentRequestId);
-
       } else if (this.task.allow_interstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask(parentRequestId);
-
-      } else {
+      } else if (!this.taskPreview) {
         this.$emit('closed', this.task.id);
       }
     },
@@ -555,15 +578,6 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    if (
-      this.$parent.task &&
-      !this.$parent.task.screen &&
-      this.$parent.task.allow_interstitial &&
-      this.$parent.task.interstitial_screen
-    ) {
-      // if interstitial screen exists, show it
-      this.screen = this.$parent.task.interstitial_screen;
-    }
   },
   destroyed() {
     this.unsubscribeSocketListeners();

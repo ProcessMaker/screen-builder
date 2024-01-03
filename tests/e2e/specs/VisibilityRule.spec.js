@@ -2,6 +2,7 @@ describe('Default values', () => {
   it('Check visible', () => {
     cy.visit('/');
     cy.setPreviewDataInput({name: 'world'});
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -12,6 +13,7 @@ describe('Default values', () => {
   it('Check hidden', () => {
     cy.visit('/');
     cy.setPreviewDataInput({name: ''});
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
     cy.get('[data-cy=accordion-Advanced]').click();
@@ -22,6 +24,7 @@ describe('Default values', () => {
   it('Check dynamic visibility rule', () => {
     cy.visit('/');
     cy.setPreviewDataInput({name: ''});
+    cy.openAcordeon("collapse-1");
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', 'bottom');
     // Add a second input field
     cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-element-container]', 'bottom');

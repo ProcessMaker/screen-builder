@@ -3,7 +3,7 @@
     <div v-for="event in emptyStartEvents" :key="event.id" class="card">
       <div class="card-body">
         <div class="d-flex justify-content-between">
-          <div>
+          <div style="width: 80%">
             <span v-uni-id="event.id.toString()">{{ transformedName }}</span>
             <span v-if="process.startEvents.length > 1">
               : {{ event.name }}
@@ -115,11 +115,8 @@ export default {
         .then((response) => {
           this.spin = 0;
           const instance = response.data;
-          if (this.$cookies.get("isMobile")) {
-            window.location = `/requests/mobile/${instance.id}?fromRedirect=true`;
-          } else {
-            window.location = `/requests/${instance.id}?fromRedirect=true`;
-          }
+          this.$cookies.set("fromTriggerStartEvent", true, "1min");
+          window.location = `/requests/${instance.id}?fromRedirect=true`;
         })
         .catch((err) => {
           this.disabled = false;

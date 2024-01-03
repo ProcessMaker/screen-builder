@@ -6,23 +6,16 @@
         :key="`category-${index}`"
         class="mt-3"
       >
-        <!--
-        <h5 class="mb-n2">
-          {{ index }}
-          <span class="badge badge-pill badge-secondary">
-            {{ category.length }}
-          </span>
-        </h5>
-        -->
         <b-container fluid>
           <b-card-group>
             <template v-for="(process, id) in category">
-              <ProcessCard
-                v-if="hasEmptyStartEvents(process)"
-                :key="`process-${id}`"
-                :filter="filter"
-                :process="process"
-              />
+              <b-col :key="`process-${id}`" cols="6">
+                <ProcessCard
+                  v-if="hasEmptyStartEvents(process)"
+                  :filter="filter"
+                  :process="process"
+                />
+              </b-col>
             </template>
           </b-card-group>
         </b-container>
@@ -64,40 +57,37 @@ export default {
     },
     fetch() {
       Vue.nextTick(() => {
-
-      window.ProcessMaker.apiClient
-        .get(
-          `start_processes?page=${this.page}&per_page=${this.perPage}&filter=${
-            this.filter
-          }&order_by=category.name,name` +
-            "&order_direction=asc,asc" +
-            "&include=events,categories" +
-            "&without_event_definitions=true"
-        )
-        .then((response) => {
-          const { data } = response;
-          // Empty processes
-          this.processes = {};
-          // Now populate our processes array with data for rendering
-          this.populate(data.data);
-          // Do initial filter
-          // Set data in paginate
-          data.meta.from -= 1;
-          this.$refs.listProcess.data = data;
-          this.$refs.listProcess.setPaginationData(data.meta);
-          const dataControls = {
-            count: "0",
-            showControl: true,
-            showAvatar: false,
-            colorTextStart: "color: #57646F",
-            url: ""
-          };
-          const tasksDropdown = [];
-          this.$emit("startControl", { dataControls, tasksDropdown });
-        })
-        .catch(() => {
-          this.error = true;
-        });
+        window.ProcessMaker.apiClient
+          .get(
+            `start_processes?page=${this.page}&per_page=${this.perPage}&filter=${this.filter}&order_by=category.name,name` +
+              "&order_direction=asc,asc" +
+              "&include=events,categories" +
+              "&without_event_definitions=true"
+          )
+          .then((response) => {
+            const { data } = response;
+            // Empty processes
+            this.processes = {};
+            // Now populate our processes array with data for rendering
+            this.populate(data.data);
+            // Do initial filter
+            // Set data in paginate
+            data.meta.from -= 1;
+            this.$refs.listProcess.data = data;
+            this.$refs.listProcess.setPaginationData(data.meta);
+            const dataControls = {
+              count: "0",
+              showControl: true,
+              showAvatar: false,
+              colorTextStart: "color: #57646F",
+              url: ""
+            };
+            const tasksDropdown = [];
+            this.$emit("startControl", { dataControls, tasksDropdown });
+          })
+          .catch(() => {
+            this.error = true;
+          });
       });
     },
     populate(data) {

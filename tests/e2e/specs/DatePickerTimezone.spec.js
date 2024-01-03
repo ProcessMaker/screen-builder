@@ -6,6 +6,7 @@ moment.tz.setDefault(timezoneTest);
 describe("Date Picker", () => {
   beforeEach(() => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.window().then((win) => {
       win.ProcessMaker.user.timezone = timezoneTest;
     });
