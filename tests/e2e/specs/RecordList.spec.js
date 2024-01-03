@@ -420,10 +420,10 @@ describe('Record list', () => {
     //Add data
     for (let i = 0; i < 9; i++) {
       cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
-      if (data[i]['date'] != '') {
+      if (data[i]['date'] !== '') {
         cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"]').type(data[i]['date']);
       }
-      if (data[i]['name'] != '') {
+      if (data[i]['name'] !== '') {
         cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]['name']);
       }
       cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
