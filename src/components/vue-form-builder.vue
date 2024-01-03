@@ -589,7 +589,7 @@ const popoverContentMap = {
   "Multicolumn / Table": "Organize and group your content in columns",
   // eslint-disable-next-line prettier/prettier
   "Image": "Upload an image to your screen",
-  "Record List": "Upload an image to your screen",
+  "Record List": "Format content in a table structure ",
   // eslint-disable-next-line prettier/prettier
   "Loop": "Format content in a table structure and allow for adding rows",
   "Nested Screen": "Add a repeatable section of content",
@@ -606,7 +606,7 @@ const popoverContentMap = {
     "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
   // eslint-disable-next-line prettier/prettier
   "Captcha":
-    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
+    "Add a Captcha box to your Form",
   "Google Places": "Collect an address using Google's location search",
   "Saved Search Chart": "Add a chart from one of your Saved Searches"
 };
@@ -891,7 +891,7 @@ export default {
         );
 
         this.filteredControlsGrouped[groupKey].forEach((control) => {
-          const popoverContent = popoverContentMap[control.label];
+          const popoverContent = this.$t(popoverContentMap[control.label]);
           if (popoverContent) {
             control.popoverContent = popoverContent;
           }
