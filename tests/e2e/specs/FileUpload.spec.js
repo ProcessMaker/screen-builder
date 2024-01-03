@@ -2,7 +2,6 @@ describe("File Upload", () => {
   it("Automatically sets a variable name", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-4");
-    // cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FileUpload]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -22,11 +21,11 @@ describe("File Upload", () => {
     cy.window().then((win) => {
       win.ProcessMaker.isSelfService = true;
     });
-
+    cy.openAcordeon("collapse-4");
     cy.get("[data-cy=controls-FileUpload]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
-    cy.get("[data-cy=mode-preview]").click();
-    cy.get("[data-cy=file-upload-button]").should("have.attr", "disabled");
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=file-upload-button]').should('have.attr', 'disabled');
   });
 });
