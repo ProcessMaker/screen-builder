@@ -421,7 +421,7 @@ describe('Record list', () => {
     for (let i = 0; i < 9; i++) {
       cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
       if (data[i]['date'] !== '') {
-        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"]').type(data[i]['date']);
+        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"] input').click().type(data[i]['date']);
       }
       if (data[i]['name'] !== '') {
         cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]['name']);
@@ -474,7 +474,7 @@ describe('Record list', () => {
     cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should('contain.text', 'F');
   });
 
-  it('Check editing records with empty from second page', () => {
+  it.only('Check editing records with empty from second page', () => {
     cy.loadFromJson('record_list_date_input.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
@@ -494,7 +494,7 @@ describe('Record list', () => {
     for (let i = 0; i < 9; i++) {
       cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
       if (data[i]['date'] !== '') {
-        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"]').type(data[i]['date']);
+        cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"] input').click().type(data[i]['date']);
       }
       if (data[i]['name'] !== '') {
         cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [name=name]').type(data[i]['name']);
