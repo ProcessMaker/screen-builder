@@ -31,7 +31,10 @@
           <!-- Accordion Bootstrap -->
           <template v-for="(group, index) in controlGroups">
             <b-button
-              v-if="filteredControlsGrouped[group.key].length > 0"
+              v-if="
+                !!filteredControlsGrouped &&
+                filteredControlsGrouped[group.key].length > 0
+              "
               v-b-toggle="`collapse-${index}`"
               class="w-100 rounded-0 text-left"
               style="
@@ -84,7 +87,10 @@
                     />
                     {{ $t(element.label) }}
                   </b-list-group-item>
-                  <li v-if="!filteredControls.length" class="list-group-item">
+                  <li
+                    v-if="!!filteredControls && filteredControls.length > 0"
+                    class="list-group-item"
+                  >
                     <slot />
                   </li>
                 </draggable>
@@ -684,6 +690,7 @@ export default {
         { key: "Files", label: "Files" },
         { key: "Advanced", label: "Advanced" }
       ],
+      filteredControlsGrouped: {},
 
       isCollapsed: new Array(6).fill(true)
     };
@@ -813,7 +820,8 @@ export default {
       handler(newVal) {
         this.groupFilteredControls(newVal);
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   created() {
@@ -878,6 +886,7 @@ export default {
           }
         });
       }
+      console.log("filtered", this.filteredControlsGrouped);
     },
     refreshContent() {
       this.editorContentKey++;
