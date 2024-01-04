@@ -474,7 +474,7 @@ describe('Record list', () => {
     cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should('contain.text', 'F');
   });
 
-  it.only('Check editing records with empty from second page', () => {
+  it('Check editing records with empty from second page', () => {
     cy.loadFromJson('record_list_date_input.json', 0);
     cy.get('[data-cy=mode-preview]').click();
 
