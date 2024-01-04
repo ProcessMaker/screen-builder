@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name vue-form-builder ./src/components/index.js",
+    "build-bundle": "npm run build",
     "lint-fix": "vue-cli-service lint",
     "open-cypress": "NODE_ENV=test TZ=UTC nyc cypress open",
     "run-cypress": "NODE_ENV=test TZ=UTC nyc cypress run",
