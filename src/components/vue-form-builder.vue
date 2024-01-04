@@ -184,6 +184,7 @@
             fill="#699CFF"
           />
         </svg>
+        <h1>Screen Builder Test From CI</h1>
         <h3>{{ $t("Place your controls here.") }}</h3>
         <p>
           {{
