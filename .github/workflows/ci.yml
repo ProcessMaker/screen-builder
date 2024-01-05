@@ -1,6 +1,6 @@
 name: ci
 
-on: 
+on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
 
@@ -36,8 +36,8 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          start: npm run serve
-          wait-on: http://localhost:8080/
+          start: npm run dev
+          wait-on: http://localhost:5173/
           config-file: cypress.json
           spec: "tests/e2e/**/*"
           record: true
