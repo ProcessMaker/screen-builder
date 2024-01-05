@@ -46,7 +46,7 @@
               "
               @click="toggleCollapse(index)"
             >
-              {{ group.label
+              {{ $t(group.label)
               }}<b-icon
                 :icon="isCollapsed[index] ? 'chevron-down' : 'chevron-up'"
                 class="float-right"
