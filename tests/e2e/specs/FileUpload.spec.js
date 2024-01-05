@@ -9,11 +9,11 @@ describe('File Upload', () => {
       const data = div[0].__vue__.name;
       expect(data).to.eql('file_upload_1');
     });
-    
+
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=file-upload-button]').should('not.have.attr', 'disabled');
   });
-  
+
   it('Disables when task is self service', () => {
     cy.visit('/');
     cy.openAcordeon("collapse-5");
