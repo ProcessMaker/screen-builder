@@ -91,6 +91,7 @@
                       v-if="element.config && element.config.icon"
                       :class="element.config.icon"
                     />
+                    <span v-html="element.config.svg" class="svg-icon"></span>
                     {{ $t(element.label) }}
                   </b-list-group-item>
                   <li
