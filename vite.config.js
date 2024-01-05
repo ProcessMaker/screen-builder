@@ -47,8 +47,8 @@ export default defineConfig({
         "moment-timezone",
         "lodash",
         "@processmaker/vue-form-elements",
-        "@processmaker/vue-multiselect"
-        // "@chantouchsek/validatorjs"
+        "@processmaker/vue-multiselect",
+        "@chantouchsek/validatorjs"
       ],
       output: {
         exports: "named",
@@ -62,8 +62,8 @@ export default defineConfig({
           "moment-timezone": "moment-timezone",
           lodash: "lodash",
           "@processmaker/vue-form-elements": "VueFormElements",
-          "@processmaker/vue-multiselect": "VueMultiselect"
-          // "@chantouchsek/validatorjs": "Validator"
+          "@processmaker/vue-multiselect": "VueMultiselect",
+          "@chantouchsek/validatorjs": "Validator"
         }
       }
     }
