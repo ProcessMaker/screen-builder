@@ -32,6 +32,7 @@
           <template v-for="(group, index) in controlGroups">
             <b-button
               v-if="
+                !!filteredControlsGrouped &&
                 filteredControlsGrouped[group.key] &&
                 filteredControlsGrouped[group.key].length > 0
               "
@@ -55,6 +56,7 @@
             <b-collapse :id="`collapse-${index}`" class="mt-2">
               <b-list-group
                 v-if="
+                  !!filteredControlsGrouped &&
                   filteredControlsGrouped[group.key] &&
                   filteredControlsGrouped[group.key].length > 0
                 "
@@ -95,7 +97,7 @@
                     {{ $t(element.label) }}
                   </b-list-group-item>
                   <li
-                    v-if="filteredControls && !filteredControls.length"
+                    v-if="!!filteredControls && filteredControls.length > 0"
                     class="list-group-item"
                   >
                     <slot />
@@ -703,6 +705,7 @@ export default {
         { key: "Files", label: "Files" },
         { key: "Advanced", label: "Advanced" }
       ],
+      filteredControlsGrouped: {},
 
       isCollapsed: new Array(7).fill(true)
     };
@@ -835,7 +838,8 @@ export default {
       handler(newVal) {
         this.groupFilteredControls(newVal);
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   created() {
