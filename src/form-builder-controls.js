@@ -51,6 +51,9 @@ export default [
     rendererComponent: FormHtmlEditor,
     rendererBinding: 'FormHtmlEditor',
     control: {
+      group: "Content Fields",
+      popoverContent: "Use a Rich Text Editor to add HTML-formatted",
+      order: 1.0,
       label: 'Rich Text',
       component: 'FormHtmlViewer',
       'editor-component': 'FormHtmlEditor',
@@ -356,6 +359,8 @@ export default [
     rendererBinding: 'FormMultiColumn',
     control: {
       label: 'Multicolumn / Table',
+      group: "Content Fields",
+      order: 2.0,
       component: 'FormMultiColumn',
       'editor-component': 'MultiColumn',
       'editor-control': 'MultiColumn',
@@ -491,6 +496,8 @@ export default [
     rendererBinding: 'FormImage',
     control: {
       label: 'Image',
+      order: 3.0,
+      group: "Content Fields",
       component: 'FormImage',
       'editor-component': 'FormImage',
       'editor-control': 'FormImage',

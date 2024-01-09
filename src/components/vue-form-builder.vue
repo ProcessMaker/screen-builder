@@ -29,14 +29,8 @@
 
         <b-card-body no-body class="p-0 overflow-auto">
           <!-- Accordion Bootstrap -->
-          <template v-for="(group, index) in controlGroups">
+          <template v-for="(elements, group) in filteredControlsGrouped">
             <b-button
-              v-if="
-                !!filteredControlsGrouped &&
-                filteredControlsGrouped[group.key] &&
-                filteredControlsGrouped[group.key].length > 0
-              "
-              v-b-toggle="`collapse-${index}`"
               class="w-100 rounded-0 text-left"
               style="
                 font-size: smaller;
@@ -45,26 +39,20 @@
                 border-color: rgb(224, 224, 224);
                 background-color: rgb(235, 238, 242);
               "
-              @click="toggleCollapse(index)"
+              @click="toggleCollapse(groupId(group))"
             >
-              {{ $t(group.label)
-              }}<b-icon
-                :icon="isCollapsed[index] ? 'chevron-down' : 'chevron-up'"
+              {{ $t(group) }}
+              <b-icon
+                :icon="isCollapsed(groupId(group)) ? 'chevron-down' : 'chevron-up'"
                 class="float-right"
               />
             </b-button>
-            <b-collapse :id="`collapse-${index}`" class="mt-2">
-              <b-list-group
-                v-if="
-                  !!filteredControlsGrouped &&
-                  filteredControlsGrouped[group.key] &&
-                  filteredControlsGrouped[group.key].length > 0
-                "
-              >
+            <b-collapse v-model="collapse[groupId(group)]" class="mt-2">
+              <b-list-group>
                 <draggable
                   v-if="renderControls"
                   id="controls"
-                  v-model="filteredControlsGrouped[group.key]"
+                  v-model="filteredControlsGrouped[group]"
                   data-cy="controls"
                   v-bind="{
                     sort: false,
@@ -74,9 +62,7 @@
                   class="controls list-group w-auto list-group-flush"
                 >
                   <b-list-group-item
-                    v-for="(element, elementIndex) in filteredControlsGrouped[
-                      group.key
-                    ]"
+                    v-for="(element, elementIndex) in elements"
                     :key="elementIndex"
                     v-b-popover.hover.right="{
                       content: $t(element.popoverContent),
@@ -96,12 +82,6 @@
                     <span v-html="element.config.svg" class="svg-icon"></span>
                     {{ $t(element.label) }}
                   </b-list-group-item>
-                  <li
-                    v-if="!!filteredControls && filteredControls.length > 0"
-                    class="list-group-item"
-                  >
-                    <slot />
-                  </li>
                 </draggable>
               </b-list-group>
             </b-collapse>
@@ -536,9 +516,6 @@ const defaultConfig = [
   }
 ];
 
-function filterControlsByLabel(controls, labels) {
-  return controls.filter((control) => labels.includes(control.label));
-}
 
 const controlGroups = {
   AIAssistant: ["AI Generated"],
@@ -694,20 +671,7 @@ export default {
       collator: null,
       editorContentKey: 0,
       cancelledJobs: [],
-      filteredControlsGrouped: {},
-
-      controlGroups: [
-        { key: "AIAssistant", label: "AI Assistant" },
-        { key: "InputFields", label: "Input Fields" },
-        { key: "ContentFields", label: "Content Fields" },
-        { key: "Navigation", label: "Navigation" },
-        { key: "Dashboards", label: "Dashboards" },
-        { key: "Files", label: "Files" },
-        { key: "Advanced", label: "Advanced" }
-      ],
-      filteredControlsGrouped: {},
-
-      isCollapsed: new Array(7).fill(true)
+      collapse: {},
     };
   },
   computed: {
@@ -762,31 +726,30 @@ export default {
           .includes(this.filterQuery.toLowerCase());
       });
 
-      const included = filtered.filter((control) => {
-        return !excludedLabels.includes(control.label);
+      return filtered;
+    },
+    filteredControlsGrouped() {
+      const grouped = this.filteredControls.reduce((groups, control) => {
+        let group = control.group;
+        if (!group) {
+          group = "Advanced";
+        }
+        if (!groups[group]) {
+          groups[group] = [];
+        }
+        groups[group].push(control);
+        return groups;
+      }, {});
+
+      Object.keys(grouped).forEach((key) => {
+        grouped[key].sort((a, b) => {
+          const orderA = a.order !== undefined ? a.order : Number.POSITIVE_INFINITY;
+          const orderB = b.order !== undefined ? b.order : Number.POSITIVE_INFINITY;
+          return orderA - orderB;
+        })
       });
 
-      const prioritySorted = included.sort((a, b) => {
-        const indexA = priorityLabels.indexOf(a.label);
-        const indexB = priorityLabels.indexOf(b.label);
-
-        if (indexA !== -1 && indexB !== -1) {
-          return indexA - indexB;
-        }
-        if (indexA !== -1) {
-          return -1;
-        }
-        if (indexB !== -1) {
-          return 1;
-        }
-        return this.collator.compare(a.label, b.label);
-      });
-
-      const excluded = included.filter((control) => {
-        return excludedLabels.includes(control.label);
-      });
-
-      return [...prioritySorted, ...excluded];
+      return grouped;
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
@@ -834,13 +797,6 @@ export default {
       }
     },
 
-    filteredControls: {
-      handler(newVal) {
-        this.groupFilteredControls(newVal);
-      },
-      deep: true,
-      immediate: true
-    }
   },
   created() {
     Validator.register(
@@ -885,23 +841,18 @@ export default {
     });
   },
   methods: {
-    toggleCollapse(index) {
-      this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
-    },
-    groupFilteredControls(controls) {
-      for (const groupKey in controlGroups) {
-        this.filteredControlsGrouped[groupKey] = filterControlsByLabel(
-          controls,
-          controlGroups[groupKey]
-        );
-
-        this.filteredControlsGrouped[groupKey].forEach((control) => {
-          const popoverContent = this.$t(popoverContentMap[control.label]);
-          if (popoverContent) {
-            control.popoverContent = popoverContent;
-          }
-        });
+    toggleCollapse(groupId) {
+      if (this.collapse[groupId] && this.collapse[groupId] === true) {
+        this.collapse[groupId] = false;
+      } else {
+        this.collapse[groupId] = true;
       }
+    },
+    isCollapsed(groupId) {
+      return this.collapse[groupId];
+    },
+    groupId(group) {
+      return 'collapse-' + group.replace(/\s/g, "-");
     },
     refreshContent() {
       this.editorContentKey++;
