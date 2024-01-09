@@ -1,7 +1,7 @@
 describe('File Upload', () => {
   it('Automatically sets a variable name', () => {
     cy.visit('/');
-    cy.openAcordeon("collapse-4");
+    cy.openAcordeon("collapse-5");
     cy.get('[data-cy=controls-FileUpload]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=screen-element-container]').click();
 
@@ -16,11 +16,10 @@ describe('File Upload', () => {
 
   it('Disables when task is self service', () => {
     cy.visit('/');
+    cy.openAcordeon("collapse-5");
     cy.window().then((win) => {
       win.ProcessMaker.isSelfService = true;
     });
-
-    cy.openAcordeon("collapse-4");
     cy.get('[data-cy=controls-FileUpload]').drag('[data-cy=screen-drop-zone]', 'bottom');
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=file-upload-button]').should('have.attr', 'disabled');

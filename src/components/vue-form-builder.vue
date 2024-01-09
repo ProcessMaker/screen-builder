@@ -33,6 +33,7 @@
             <b-button
               v-if="
                 !!filteredControlsGrouped &&
+                filteredControlsGrouped[group.key] &&
                 filteredControlsGrouped[group.key].length > 0
               "
               v-b-toggle="`collapse-${index}`"
@@ -46,7 +47,7 @@
               "
               @click="toggleCollapse(index)"
             >
-              {{ group.label
+              {{ $t(group.label)
               }}<b-icon
                 :icon="isCollapsed[index] ? 'chevron-down' : 'chevron-up'"
                 class="float-right"
@@ -54,7 +55,11 @@
             </b-button>
             <b-collapse :id="`collapse-${index}`" class="mt-2">
               <b-list-group
-                v-if="filteredControlsGrouped[group.key].length > 0"
+                v-if="
+                  !!filteredControlsGrouped &&
+                  filteredControlsGrouped[group.key] &&
+                  filteredControlsGrouped[group.key].length > 0
+                "
               >
                 <draggable
                   v-if="renderControls"
@@ -73,7 +78,10 @@
                       group.key
                     ]"
                     :key="elementIndex"
-                    v-b-popover.hover.top="element.popoverContent"
+                    v-b-popover.hover.right="{
+                      content: $t(element.popoverContent),
+                      customClass: 'custom-popover'
+                    }"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
                     :class="{
@@ -82,9 +90,10 @@
                     }"
                   >
                     <i
-                      v-if="element.config.icon"
+                      v-if="element.config && element.config.icon"
                       :class="element.config.icon"
                     />
+                    <span v-html="element.config.svg" class="svg-icon"></span>
                     {{ $t(element.label) }}
                   </b-list-group-item>
                   <li
@@ -343,7 +352,7 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              v-if="getInspectorFields(accordion).length > 0"
+              v-if="getInspectorFields(accordion) && getInspectorFields(accordion).length > 0"
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
@@ -552,13 +561,15 @@ const controlGroups = {
     "Nested Screen"
   ],
   Navigation: ["Page Navigation"],
-  Files: ["File Upload", "File Download", "File Preview"],
+  Dashboards: ["Saved Search Chart", "Analytics Chart"],
+  Files: ["File Upload", "File Download", "File Preview", "List Table"],
   Advanced: [
     "Bootstrap Component",
     "Bootstrap Wrapper",
     "Captcha",
     "Google Places",
-    "Saved Search Chart"
+    "Saved Search Chart",
+    "Plaid"
   ]
 };
 
@@ -581,22 +592,24 @@ const popoverContentMap = {
   "Multicolumn / Table": "Organize and group your content in columns",
   // eslint-disable-next-line prettier/prettier
   "Image": "Upload an image to your screen",
-  "Record List": "Upload an image to your screen",
+  "Record List": "Format content in a table structure ",
   // eslint-disable-next-line prettier/prettier
   "Loop": "Format content in a table structure and allow for adding rows",
   "Nested Screen": "Add a repeatable section of content",
   "Page Navigation": "Add and reuse another Form within this Form",
+  "Analytics Chart": "Add a chart from the Analytics Reports",
   "File Upload":
     "Add special buttons that link between subpages within this Form",
   "File Download": "Collect files uploaded into the Form",
   "File Preview": "Offer a File download",
+  "List Table": "Create List Table",
   "Bootstrap Component":
     "Add a Preview section that displays the content of a File",
   "Bootstrap Wrapper":
     "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
   // eslint-disable-next-line prettier/prettier
   "Captcha":
-    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
+    "Add a Captcha box to your Form",
   "Google Places": "Collect an address using Google's location search",
   "Saved Search Chart": "Add a chart from one of your Saved Searches"
 };
@@ -681,18 +694,20 @@ export default {
       collator: null,
       editorContentKey: 0,
       cancelledJobs: [],
+      filteredControlsGrouped: {},
 
       controlGroups: [
         { key: "AIAssistant", label: "AI Assistant" },
         { key: "InputFields", label: "Input Fields" },
         { key: "ContentFields", label: "Content Fields" },
         { key: "Navigation", label: "Navigation" },
+        { key: "Dashboards", label: "Dashboards" },
         { key: "Files", label: "Files" },
         { key: "Advanced", label: "Advanced" }
       ],
       filteredControlsGrouped: {},
 
-      isCollapsed: new Array(6).fill(true)
+      isCollapsed: new Array(7).fill(true)
     };
   },
   computed: {
@@ -726,9 +741,12 @@ export default {
         "Loop",
         "Nested Screen",
         "Page Navigation",
+        "Saved Search Chart",
+        "Analytics Chart",
         "File Upload",
         "File Download",
         "File Preview",
+        "List Table",
         "Bootstrap Component",
         "Bootstrap Wrapper",
         "Captcha",
@@ -871,8 +889,6 @@ export default {
       this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
     },
     groupFilteredControls(controls) {
-      this.filteredControlsGrouped = {};
-
       for (const groupKey in controlGroups) {
         this.filteredControlsGrouped[groupKey] = filterControlsByLabel(
           controls,
@@ -880,7 +896,7 @@ export default {
         );
 
         this.filteredControlsGrouped[groupKey].forEach((control) => {
-          const popoverContent = popoverContentMap[control.label];
+          const popoverContent = this.$t(popoverContentMap[control.label]);
           if (popoverContent) {
             control.popoverContent = popoverContent;
           }
@@ -897,7 +913,7 @@ export default {
     },
     checkForCaptcha(items, insideLoop = false, nestedScreen = null) {
       items.forEach((item) => {
-        if (!item.items && item.component == "Captcha" && insideLoop) {
+        if (!item.items && item.component === "Captcha" && insideLoop) {
           if (nestedScreen && nestedScreen.config.screen) {
             this.$root.$emit("remove-nested", nestedScreen.config.screen);
             nestedScreen.config.screen = null;
@@ -1026,7 +1042,7 @@ export default {
               : "");
           item.config = {
             content:
-              "<div style=\"" + style + "\">" + item.config.label + "</div>",
+              '<div style="' + style + '">' + item.config.label + "</div>",
             interactive: true
           };
         }
@@ -1383,6 +1399,9 @@ export default {
 </script>
 
 <style>
+.custom-popover {
+  margin-right: -400px;
+}
 .gray-text {
   color: gray;
 }
