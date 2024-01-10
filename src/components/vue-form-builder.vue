@@ -29,7 +29,7 @@
 
         <b-card-body no-body class="p-0 overflow-auto">
           <!-- Accordion Bootstrap -->
-          <template v-for="(elements, group) in filteredControlsGrouped">
+          <template v-for="({name, elements}, index) in filteredControlsGrouped">
             <b-button
               class="w-100 rounded-0 text-left"
               style="
@@ -39,20 +39,20 @@
                 border-color: rgb(224, 224, 224);
                 background-color: rgb(235, 238, 242);
               "
-              @click="toggleCollapse(groupId(group))"
+              @click="toggleCollapse(index)"
             >
-              {{ $t(group) }}
+              {{ $t(name) }}
               <b-icon
-                :icon="isCollapsed(groupId(group)) ? 'chevron-down' : 'chevron-up'"
+                :icon="isCollapsed(index) ? 'chevron-down' : 'chevron-up'"
                 class="float-right"
               />
             </b-button>
-            <b-collapse v-model="collapse[groupId(group)]" class="mt-2">
+            <b-collapse v-model="collapse[index]" class="mt-2">
               <b-list-group>
                 <draggable
                   v-if="renderControls"
                   id="controls"
-                  v-model="filteredControlsGrouped[group]"
+                  v-model="filteredControlsGrouped[index].elements"
                   data-cy="controls"
                   v-bind="{
                     sort: false,
@@ -516,6 +516,14 @@ const defaultConfig = [
   }
 ];
 
+const groupOrder = [
+  "AI Assistant",
+  "Input Fields",
+  "Content Fields",
+  "Navigation",
+  "Files",
+  "Advanced",
+];
 
 const controlGroups = {
   AIAssistant: ["AI Generated"],
@@ -730,23 +738,29 @@ export default {
     },
     filteredControlsGrouped() {
       const grouped = this.filteredControls.reduce((groups, control) => {
-        let group = control.group;
-        if (!group) {
-          group = "Advanced";
+        let name = control.group;
+        if (!name) {
+          name = "Advanced";
         }
-        if (!groups[group]) {
-          groups[group] = [];
+        let existingGroupIndex = groups.findIndex((group) => group.name === name);
+        if (existingGroupIndex === -1) {
+          groups.push({ name, order: this.getGroupOrder(control), elements: [] });
+          existingGroupIndex = groups.length - 1;
         }
-        groups[group].push(control);
+        groups[existingGroupIndex].elements.push(control);
         return groups;
-      }, {});
+      }, []);
 
-      Object.keys(grouped).forEach((key) => {
-        grouped[key].sort((a, b) => {
+      // Sort the groups
+      grouped.sort((a, b) => a.order - b.order);
+
+      // Sor the elements in each group
+      grouped.forEach((_, index) => {
+        grouped[index].elements.sort((a, b) => {
           const orderA = a.order !== undefined ? a.order : Number.POSITIVE_INFINITY;
           const orderB = b.order !== undefined ? b.order : Number.POSITIVE_INFINITY;
           return orderA - orderB;
-        })
+        });
       });
 
       return grouped;
@@ -841,18 +855,26 @@ export default {
     });
   },
   methods: {
-    toggleCollapse(groupId) {
-      if (this.collapse[groupId] && this.collapse[groupId] === true) {
-        this.collapse[groupId] = false;
+    getGroupOrder(control) {
+      let order = groupOrder.indexOf(control.group);
+      if (order === -1) {
+        if (control.groupOrder) {
+          order = control.groupOrder;
+        } else {
+          order = Number.POSITIVE_INFINITY;
+        }
+      }
+      return order;
+    },
+    toggleCollapse(index) {
+      if (this.collapse[index] && this.collapse[index] === true) {
+        this.collapse[index] = false;
       } else {
-        this.collapse[groupId] = true;
+        this.collapse[index] = true;
       }
     },
-    isCollapsed(groupId) {
-      return this.collapse[groupId];
-    },
-    groupId(group) {
-      return 'collapse-' + group.replace(/\s/g, "-");
+    isCollapsed(index) {
+      return this.collapse[index];
     },
     refreshContent() {
       this.editorContentKey++;
