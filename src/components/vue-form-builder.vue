@@ -765,14 +765,13 @@ export default {
           });
           existingGroupIndex = groups.length - 1;
         }
-        
+
         groups[existingGroupIndex].elements.push(control);
         return groups;
       }, []);
 
       // Sort the groups
       grouped.sort((a, b) => a.order - b.order);
-      console.log('group sorted', grouped);
 
       // Sor the elements in each group
       grouped.forEach((_, index) => {
@@ -874,17 +873,14 @@ export default {
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
     });
-    console.log("Setting default group order");
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
     getGroupOrder(groupName) {
       let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
-      console.log("Got group order", groupName, order);
       return order;
     },
     setGroupOrder(orderConfig) {
-      console.log("Setting group order", orderConfig);
       this.groupOrder = Object.assign({}, this.groupOrder, orderConfig);
     },
     toggleCollapse(index) {

@@ -53,7 +53,6 @@ export default [
     control: {
       popoverContent: "Use a Rich Text Editor to add HTML-formatted",
       order: 1.0,
-      groupOrder: 3.0,
       label: 'Rich Text',
       component: 'FormHtmlViewer',
       'editor-component': 'FormHtmlEditor',
@@ -95,7 +94,6 @@ export default [
     control: {
       popoverContent: "Collect a string of text and format it as one of several data types",
       order: 1.0,
-      groupOrder: 2.0,
       label: 'Line Input',
       component: 'FormInput',
       'editor-component': 'FormInput',
@@ -133,7 +131,6 @@ export default [
     control: {
       popoverContent: "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
       order: 4.0,
-      groupOrder: 2.0,
       label: 'Textarea',
       component: 'FormTextArea',
       'editor-component': 'FormTextArea',
@@ -191,7 +188,6 @@ export default [
     control: {
       popoverContent: "Collect options from a list, as radio butttons or dropdowns",
       order: 2.0,
-      groupOrder: 2.0,
       label: 'Select List',
       component: 'FormSelectList',
       'editor-component': 'FormSelectList',
@@ -246,7 +242,6 @@ export default [
     control: {
       popoverContent: "Add a checkbox or toggle for true/false responses",
       order: 6.0,
-      groupOrder: 2.0,
       label: 'Checkbox',
       component: 'FormCheckbox',
       'editor-component': 'FormCheckbox',
@@ -288,7 +283,6 @@ export default [
     control: {
       popoverContent: "Collect a date or date/time",
       order: 5.0,
-      groupOrder: 2.0,
       label: 'Date Picker',
       component: 'FormDatePicker',
       'editor-component': 'FormDatePicker',
@@ -342,7 +336,6 @@ export default [
     control: {
       popoverContent: "Add and reuse another Form within this Form",
       order: 1.0,
-      groupOrder: 4.0,
       label: 'Page Navigation',
       component: 'FormButton',
       'editor-component': 'FormButton',
@@ -376,8 +369,8 @@ export default [
     rendererBinding: 'FormMultiColumn',
     control: {
       popoverContent: "Organize and group your content in columns",
+      group: "Content Fields",
       order: 2.0,
-      groupOrder: 3.0,
       label: 'Multicolumn / Table',
       component: 'FormMultiColumn',
       'editor-component': 'MultiColumn',
@@ -422,7 +415,6 @@ export default [
     control: {
       popoverContent: "Format content in a table structure and allow for adding rows",
       order: 5.0,
-      groupOrder: 3.0,
       label: 'Loop',
       component: 'FormLoop',
       'editor-component': 'Loop',
@@ -458,7 +450,6 @@ export default [
     control: {
       popoverContent: "Format content in a table structure",
       order: 4.0,
-      groupOrder: 3.0,
       label: 'Record List',
       component: 'FormRecordList',
       'editor-component': 'FormText',
@@ -521,7 +512,6 @@ export default [
     control: {
       popoverContent: "Upload an image to your screen",
       order: 3.0,
-      groupOrder: 3.0,
       label: 'Image',
       component: 'FormImage',
       'editor-component': 'FormImage',
@@ -588,7 +578,6 @@ export default [
     control: {
       popoverContent: "Add an action to submit your form or update a field",
       order: 3.0,
-      groupOrder: 2.0,
       label: 'Submit Button',
       component: 'FormButton',
       'editor-component': 'FormButton',
@@ -649,7 +638,6 @@ export default [
     control: {
       popoverContent: "Add a repeatable section of content",
       order: 6.0,
-      groupOrder: 3.0,
       label: 'Nested Screen',
       component: 'FormNestedScreen',
       'editor-component': 'FormNestedScreen',
@@ -684,7 +672,6 @@ export default [
       group: "Files",
       popoverContent: "Add special buttons that link between subpages within this Form",
       order: 1.0,
-      groupOrder: 5.0,
       label: 'File Upload',
       component: 'FileUpload',
       'editor-component': 'FileUpload',
@@ -738,7 +725,6 @@ export default [
       group: "Files",
       popoverContent: "Collect files uploaded into the Form",
       order: 2.0,
-      groupOrder: 5.0,
       label: 'File Download',
       component: 'FileDownload',
       'editor-component': 'FormText',
@@ -774,7 +760,6 @@ export default [
     control: {
       popoverContent: "Add a Preview section that displays the content of a File",
       order: 1.0,
-      groupOrder: 6.0,
       label: 'Bootstrap Component',
       component: 'BFormComponent',
       'editor-component': 'BFormComponent',
@@ -828,7 +813,6 @@ export default [
     control: {
       popoverContent: "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
       order: 2.0,
-      groupOrder: 6.0,
       label: 'Bootstrap Wrapper',
       component: 'BWrapperComponent',
       'editor-component': 'BWrapperComponent',
@@ -889,7 +873,6 @@ export default [
     control: {
       popoverContent: "Create List Table",
       order: 1.0,
-      groupOrder: 5.0,
       label: "List Table",
       component: "FormListTable",
       "editor-component": "FormListTable",
@@ -927,7 +910,6 @@ export default [
     control: {
       popoverContent: "Add a chart from the Analytics Reports",
       order: 1.0,
-      groupOrder: 2.0,
       label: "Analytics Chart",
       component: "FormAnalyticsChart",
       "editor-component": "FormAnalyticsChart",
