@@ -29,7 +29,9 @@
 
         <b-card-body no-body class="p-0 overflow-auto">
           <!-- Accordion Bootstrap -->
-          <template v-for="({name, elements}, index) in filteredControlsGrouped">
+          <template
+            v-for="({ name, elements }, index) in filteredControlsGrouped"
+          >
             <b-button
               class="w-100 rounded-0 text-left"
               style="
@@ -79,7 +81,11 @@
                       v-if="element.config && element.config.icon"
                       :class="element.config.icon"
                     />
-                    <span v-html="element.config.svg" class="svg-icon"></span>
+                    <span
+                      class="svg-icon"
+                      style="width: 12px; height: 12px"
+                      v-html="element.config.svg"
+                    ></span>
                     {{ $t(element.label) }}
                   </b-list-group-item>
                 </draggable>
@@ -332,7 +338,10 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              v-if="getInspectorFields(accordion) && getInspectorFields(accordion).length > 0"
+              v-if="
+                getInspectorFields(accordion) &&
+                getInspectorFields(accordion).length > 0
+              "
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
@@ -522,7 +531,7 @@ const groupOrder = [
   "Content Fields",
   "Navigation",
   "Files",
-  "Advanced",
+  "Advanced"
 ];
 
 const controlGroups = {
@@ -679,7 +688,7 @@ export default {
       collator: null,
       editorContentKey: 0,
       cancelledJobs: [],
-      collapse: {},
+      collapse: {}
     };
   },
   computed: {
@@ -706,7 +715,7 @@ export default {
         "Checkbox",
         "Photo/Video",
         "Signature",
-        "Rich Text",
+        "",
         "Multicolumn / Table",
         "Image",
         "Record List",
@@ -742,9 +751,15 @@ export default {
         if (!name) {
           name = "Advanced";
         }
-        let existingGroupIndex = groups.findIndex((group) => group.name === name);
+        let existingGroupIndex = groups.findIndex(
+          (group) => group.name === name
+        );
         if (existingGroupIndex === -1) {
-          groups.push({ name, order: this.getGroupOrder(control), elements: [] });
+          groups.push({
+            name,
+            order: this.getGroupOrder(control),
+            elements: []
+          });
           existingGroupIndex = groups.length - 1;
         }
         groups[existingGroupIndex].elements.push(control);
@@ -757,8 +772,10 @@ export default {
       // Sor the elements in each group
       grouped.forEach((_, index) => {
         grouped[index].elements.sort((a, b) => {
-          const orderA = a.order !== undefined ? a.order : Number.POSITIVE_INFINITY;
-          const orderB = b.order !== undefined ? b.order : Number.POSITIVE_INFINITY;
+          const orderA =
+            a.order !== undefined ? a.order : Number.POSITIVE_INFINITY;
+          const orderB =
+            b.order !== undefined ? b.order : Number.POSITIVE_INFINITY;
           return orderA - orderB;
         });
       });
@@ -809,8 +826,7 @@ export default {
       ) {
         this.addDefaultAiControl();
       }
-    },
-
+    }
   },
   created() {
     Validator.register(
@@ -1015,7 +1031,7 @@ export default {
               : "");
           item.config = {
             content:
-              '<div style="' + style + '">' + item.config.label + "</div>",
+              "<div style=\"" + style + "\">" + item.config.label + "</div>",
             interactive: true
           };
         }
