@@ -516,14 +516,13 @@ const defaultConfig = [
   }
 ];
 
-const groupOrder = [
-  "AI Assistant",
-  "Input Fields",
-  "Content Fields",
-  "Navigation",
-  "Files",
-  "Advanced",
-];
+const defaultGroupOrder = {
+  "Input Fields" : 1.0,
+  "Content Fields" : 2.0,
+  "Navigation" : 3.0,
+  "Files" : 4.0,
+  "Advanced" : 5.0,
+};
 
 const controlGroups = {
   AIAssistant: ["AI Generated"],
@@ -680,6 +679,7 @@ export default {
       editorContentKey: 0,
       cancelledJobs: [],
       collapse: {},
+      groupOrder: {},
     };
   },
   computed: {
@@ -738,13 +738,13 @@ export default {
     },
     filteredControlsGrouped() {
       const grouped = this.filteredControls.reduce((groups, control) => {
-        let name = control.group;
-        if (!name) {
-          name = "Advanced";
+        let groupName = _.get(control, 'group', null);
+        if (!groupName) {
+          groupName = "Advanced";
         }
-        let existingGroupIndex = groups.findIndex((group) => group.name === name);
+        let existingGroupIndex = groups.findIndex((group) => group.name === groupName);
         if (existingGroupIndex === -1) {
-          groups.push({ name, order: this.getGroupOrder(control), elements: [] });
+          groups.push({ name: groupName, order: this.getGroupOrder(groupName), elements: [] });
           existingGroupIndex = groups.length - 1;
         }
         groups[existingGroupIndex].elements.push(control);
@@ -753,6 +753,7 @@ export default {
 
       // Sort the groups
       grouped.sort((a, b) => a.order - b.order);
+      console.log('group sorted', grouped);
 
       // Sor the elements in each group
       grouped.forEach((_, index) => {
@@ -853,18 +854,18 @@ export default {
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
     });
+    console.log("Setting default group order");
+    this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
-    getGroupOrder(control) {
-      let order = groupOrder.indexOf(control.group);
-      if (order === -1) {
-        if (control.groupOrder) {
-          order = control.groupOrder;
-        } else {
-          order = Number.POSITIVE_INFINITY;
-        }
-      }
+    getGroupOrder(groupName) {
+      let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
+      console.log("Got group order", groupName, order);
       return order;
+    },
+    setGroupOrder(orderConfig) {
+      console.log("Setting group order", orderConfig);
+      this.groupOrder = Object.assign({}, this.groupOrder, orderConfig);
     },
     toggleCollapse(index) {
       if (this.collapse[index] && this.collapse[index] === true) {
