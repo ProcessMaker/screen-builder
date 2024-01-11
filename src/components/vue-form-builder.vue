@@ -93,7 +93,7 @@
                       v-if="element.config && element.config.icon"
                       :class="element.config.icon"
                     />
-                    <span v-html="element.config.svg" class="svg-icon"></span>
+                    <span class="svg-icon" v-html="element.config.svg"></span>
                     {{ $t(element.label) }}
                   </b-list-group-item>
                   <li
@@ -352,7 +352,10 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              v-if="getInspectorFields(accordion) && getInspectorFields(accordion).length > 0"
+              v-if="
+                getInspectorFields(accordion) &&
+                getInspectorFields(accordion).length > 0
+              "
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
@@ -485,6 +488,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer
 } from "@processmaker/vue-form-elements";
+import * as Validator from "validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
@@ -498,7 +502,6 @@ import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 
-const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
 
