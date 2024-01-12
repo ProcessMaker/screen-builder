@@ -27,10 +27,6 @@ export default defineConfig({
       {
         find: "vue",
         replacement: resolve(__dirname, "node_modules/vue/dist/vue.esm.js")
-      },
-      {
-        find: "validatorjs",
-        replacement: "validatorjs/dist/validator.js"
       }
     ],
     extensions: [".js", ".mjs", ".vue", ".json"]
@@ -51,8 +47,7 @@ export default defineConfig({
         "moment-timezone",
         "lodash",
         "@processmaker/vue-form-elements",
-        "@processmaker/vue-multiselect",
-        "validatorjs"
+        "@processmaker/vue-multiselect"
       ],
       output: {
         exports: "named",
@@ -66,8 +61,7 @@ export default defineConfig({
           "moment-timezone": "moment-timezone",
           lodash: "lodash",
           "@processmaker/vue-form-elements": "VueFormElements",
-          "@processmaker/vue-multiselect": "VueMultiselect",
-          validatorjs: "Validator"
+          "@processmaker/vue-multiselect": "VueMultiselect"
         }
       }
     }

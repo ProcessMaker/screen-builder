@@ -1,4 +1,4 @@
-import * as Validator from "validatorjs";
+import Validator from "@chantouchsek/validatorjs";
 import moment from "moment-timezone";
 
 Validator.register(

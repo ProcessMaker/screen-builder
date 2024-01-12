@@ -10,6 +10,7 @@ import axios from "axios";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import { Multiselect } from "@processmaker/vue-multiselect";
+import "@processmaker/vue-multiselect/dist/vue-multiselect.min.css";
 import { LRUCache } from "lru-cache";
 import VueFormElements from "@processmaker/vue-form-elements";
 import undoRedoModule from "@/store/modules/undoRedoModule";
