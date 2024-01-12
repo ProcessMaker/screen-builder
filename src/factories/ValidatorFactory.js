@@ -1,7 +1,7 @@
 import _ from "lodash";
 import "./CustomValidationRules";
 
-import * as Validator from "validatorjs";
+import Validator from "@chantouchsek/validatorjs";
 
 export function ValidatorFactory(config, data) {
   const validate = {};

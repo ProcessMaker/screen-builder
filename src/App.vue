@@ -345,7 +345,7 @@
 import MonacoEditor from "vue-monaco";
 import { cloneDeep, debounce } from "lodash";
 import { mapMutations } from "vuex";
-import * as Validator from "validatorjs";
+import Validator from "@chantouchsek/validatorjs";
 import ComputedProperties from "./components/computed-properties.vue";
 import WatchersPopup from "./components/watchers-popup.vue";
 import CustomCss from "./components/custom-css.vue";

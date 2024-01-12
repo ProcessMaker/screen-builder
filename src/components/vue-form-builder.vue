@@ -488,7 +488,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer
 } from "@processmaker/vue-form-elements";
-import * as Validator from "validatorjs";
+import Validator from "@chantouchsek/validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
