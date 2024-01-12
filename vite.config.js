@@ -67,7 +67,7 @@ export default defineConfig({
           lodash: "lodash",
           "@processmaker/vue-form-elements": "VueFormElements",
           "@processmaker/vue-multiselect": "VueMultiselect",
-          validatorjs: "validatorjs"
+          validatorjs: "Validator"
         }
       }
     }
