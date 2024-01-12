@@ -34,6 +34,7 @@
           >
             <b-button
               class="w-100 rounded-0 text-left"
+              :aria-controls="`collapse-${index + 1}`"
               style="
                 font-size: smaller;
                 height: 42px;
