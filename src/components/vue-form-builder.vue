@@ -881,7 +881,7 @@ export default {
       return order;
     },
     setGroupOrder(orderConfig) {
-      this.groupOrder = Object.assign({}, this.groupOrder, orderConfig);
+      this.groupOrder = { ...orderConfig };
     },
     toggleCollapse(index) {
       if (this.collapse[index] && this.collapse[index] === true) {
