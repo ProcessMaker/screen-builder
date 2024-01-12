@@ -684,7 +684,6 @@ export default [
       group: "Files",
       popoverContent: "Add special buttons that link between subpages within this Form",
       order: 1.0,
-      group: 'Files',
       label: 'File Upload',
       component: 'FileUpload',
       'editor-component': 'FileUpload',
