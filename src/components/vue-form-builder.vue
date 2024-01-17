@@ -529,6 +529,7 @@ const defaultConfig = [
 const defaultGroupOrder = {
   "Input Fields" : 1.0,
   "Content Fields" : 2.0,
+  "Dashboards" : 2.5,
   "Navigation" : 3.0,
   "Files" : 4.0,
   "Advanced" : 5.0,
