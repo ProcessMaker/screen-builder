@@ -44,7 +44,7 @@
               "
               @click="toggleCollapse(index)"
             >
-              {{ $t(name) }}
+              <strong>{{ $t(name) }}</strong>
               <b-icon
                 :icon="isCollapsed(index) ? 'chevron-down' : 'chevron-up'"
                 class="float-right"
@@ -69,7 +69,8 @@
                     :key="elementIndex"
                     v-b-popover.hover.right="{
                       content: $t(element.popoverContent),
-                      customClass: 'custom-popover'
+                      customClass: 'custom-popover',
+                      boundaryPadding: 16
                     }"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
@@ -1390,10 +1391,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .custom-popover {
   margin-right: -400px;
+  padding: 16px;
 }
+</style>
+
+<style>
 .gray-text {
   color: gray;
 }
