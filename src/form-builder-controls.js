@@ -924,7 +924,7 @@ export default [
     rendererBinding: "FormAnalyticsChart",
     control: {
       popoverContent: "Add a chart from the Analytics Reports",
-      order: 2.0,
+      order: 6.0,
       group: 'Dashboards',
       label: "Analytics Chart",
       component: "FormAnalyticsChart",
