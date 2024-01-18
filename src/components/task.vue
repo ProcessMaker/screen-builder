@@ -299,7 +299,11 @@ export default {
           .then((response) => {
             this.task = response.data;
             this.checkTaskStatus();
-            if (window.PM4ConfigOverrides.getScreenEndpoint && window.PM4ConfigOverrides.getScreenEndpoint.includes('tasks/')) {
+            if (
+              window.PM4ConfigOverrides
+              && window.PM4ConfigOverrides.getScreenEndpoint
+              && window.PM4ConfigOverrides.getScreenEndpoint.includes('tasks/')
+            ) {
               const screenPath = window.PM4ConfigOverrides.getScreenEndpoint.split('/');
               screenPath[1] = this.task.id;
               window.PM4ConfigOverrides.getScreenEndpoint = screenPath.join('/');
