@@ -74,6 +74,7 @@
                     }"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
+                    class="gray-text"
                   >
                     <i
                       v-if="element.config && element.config.icon"
@@ -532,6 +533,7 @@ const defaultGroupOrder = {
   "Advanced" : 5.0,
 };
 
+const DEFAULT_GROUP = "Advanced";
 
 export default {
   components: {
@@ -647,7 +649,7 @@ export default {
         let groupName = _.get(control, 'group', null);
         
         if (!groupName) {
-          groupName = "Advanced";
+          groupName = DEFAULT_GROUP;
         }
         
         let existingGroupIndex = groups.findIndex((group) => {
@@ -1294,11 +1296,11 @@ export default {
 
 <style>
 .gray-text {
-  color: gray;
+  color: #556271;
 }
 
 .icon {
-  color: gray;
+  color: #6A7888;
 }
 .custom-row {
   height: 80vh;
@@ -1310,6 +1312,10 @@ export default {
 
 .svg-icon > svg {
   margin-bottom: 3px;
+}
+
+.svg-icon > svg > path {
+  fill: #6A7888;
 }
 </style>
 
