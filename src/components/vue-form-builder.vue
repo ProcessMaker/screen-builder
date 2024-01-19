@@ -74,10 +74,6 @@
                     }"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
-                    :class="{
-                      'ai-control': element.component === 'AiSection',
-                      'gray-text': true
-                    }"
                   >
                     <i
                       v-if="element.config && element.config.icon"
@@ -1429,10 +1425,6 @@ $side-bar-font-size: 0.875rem;
 
 .ai-section-card .card-header {
   background: #cbdfff;
-}
-
-.ai-control {
-  background: #fff4d3;
 }
 
 .pulse {
