@@ -27,8 +27,8 @@
     }
   },
   "files": [
-    "dist",
-    "src"
+    "dist/*",
+    "src/*"
   ],
   "dependencies": {
     "@chantouchsek/validatorjs": "1.2.3",
