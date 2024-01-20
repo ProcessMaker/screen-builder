@@ -29,15 +29,12 @@
 
         <b-card-body no-body class="p-0 overflow-auto">
           <!-- Accordion Bootstrap -->
-          <template v-for="(group, index) in controlGroups">
+          <template
+            v-for="({ name, elements }, index) in filteredControlsGrouped"
+          >
             <b-button
-              v-if="
-                !!filteredControlsGrouped &&
-                filteredControlsGrouped[group.key] &&
-                filteredControlsGrouped[group.key].length > 0
-              "
-              v-b-toggle="`collapse-${index}`"
               class="w-100 rounded-0 text-left"
+              :aria-controls="`collapse-${index + 1}`"
               style="
                 font-size: smaller;
                 height: 42px;
@@ -47,24 +44,18 @@
               "
               @click="toggleCollapse(index)"
             >
-              {{ $t(group.label)
-              }}<b-icon
-                :icon="isCollapsed[index] ? 'chevron-down' : 'chevron-up'"
+              <strong>{{ $t(name) }}</strong>
+              <b-icon
+                :icon="isCollapsed(index) ? 'chevron-down' : 'chevron-up'"
                 class="float-right"
               />
             </b-button>
-            <b-collapse :id="`collapse-${index}`" class="mt-2">
-              <b-list-group
-                v-if="
-                  !!filteredControlsGrouped &&
-                  filteredControlsGrouped[group.key] &&
-                  filteredControlsGrouped[group.key].length > 0
-                "
-              >
+            <b-collapse v-model="collapse[index]" class="mt-2">
+              <b-list-group>
                 <draggable
                   v-if="renderControls"
                   id="controls"
-                  v-model="filteredControlsGrouped[group.key]"
+                  v-model="filteredControlsGrouped[index].elements"
                   data-cy="controls"
                   v-bind="{
                     sort: false,
@@ -74,34 +65,28 @@
                   class="controls list-group w-auto list-group-flush"
                 >
                   <b-list-group-item
-                    v-for="(element, elementIndex) in filteredControlsGrouped[
-                      group.key
-                    ]"
+                    v-for="(element, elementIndex) in elements"
                     :key="elementIndex"
                     v-b-popover.hover.right="{
                       content: $t(element.popoverContent),
-                      customClass: 'custom-popover'
+                      customClass: 'custom-popover',
+                      boundaryPadding: 16
                     }"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
-                    :class="{
-                      'ai-control': element.component === 'AiSection',
-                      'gray-text': true
-                    }"
+                    class="gray-text"
                   >
                     <i
                       v-if="element.config && element.config.icon"
                       :class="element.config.icon"
                     />
-                    <span v-html="element.config.svg" class="svg-icon"></span>
+                    <span
+                      class="svg-icon"
+                      style="width: 12px; height: 12px"
+                      v-html="element.config.svg"
+                    ></span>
                     {{ $t(element.label) }}
                   </b-list-group-item>
-                  <li
-                    v-if="!!filteredControls && filteredControls.length > 0"
-                    class="list-group-item"
-                  >
-                    <slot />
-                  </li>
                 </draggable>
               </b-list-group>
             </b-collapse>
@@ -352,7 +337,10 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              v-if="getInspectorFields(accordion) && getInspectorFields(accordion).length > 0"
+              v-if="
+                getInspectorFields(accordion) &&
+                getInspectorFields(accordion).length > 0
+              "
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
@@ -536,83 +524,16 @@ const defaultConfig = [
   }
 ];
 
-function filterControlsByLabel(controls, labels) {
-  return controls.filter((control) => labels.includes(control.label));
-}
-
-const controlGroups = {
-  AIAssistant: ["AI Generated"],
-  InputFields: [
-    "Line Input",
-    "Select List",
-    "Submit Button",
-    "Textarea",
-    "Date Picker",
-    "Checkbox",
-    "Photo/Video",
-    "Signature"
-  ],
-  ContentFields: [
-    "Rich Text",
-    "Multicolumn / Table",
-    "Image",
-    "Record List",
-    "Loop",
-    "Nested Screen"
-  ],
-  Navigation: ["Page Navigation"],
-  Dashboards: ["Saved Search Chart", "Analytics Chart"],
-  Files: ["File Upload", "File Download", "File Preview", "List Table"],
-  Advanced: [
-    "Bootstrap Component",
-    "Bootstrap Wrapper",
-    "Captcha",
-    "Google Places",
-    "Saved Search Chart",
-    "Plaid"
-  ]
+const defaultGroupOrder = {
+  "Input Fields" : 1.0,
+  "Content Fields" : 2.0,
+  "Dashboards" : 2.5,
+  "Navigation" : 3.0,
+  "Files" : 4.0,
+  "Advanced" : 5.0,
 };
 
-const popoverContentMap = {
-  "AI Generated":
-    "Generate single fields or entire forms with our generative assistant",
-  "Line Input":
-    "Collect a string of text and format it as one of several data types",
-  "Select List": "Collect options from a list, as radio butttons or dropdowns",
-  "Submit Button": "Add an action to submit your form or update a field",
-  // eslint-disable-next-line prettier/prettier
-  "Textarea": "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
-  "Date Picker": "Collect a date or date/time",
-  // eslint-disable-next-line prettier/prettier
-  "Checkbox": "Add a checkbox or toggle for true/false responses",
-  "Photo/Video": "Capture a photo or a Video straight from a camera device",
-  // eslint-disable-next-line prettier/prettier
-  "Signature": "Add a signature box to collect a hand-drawn signature image",
-  "Rich Text": "Use a Rich Text Editor to add HTML-formatted",
-  "Multicolumn / Table": "Organize and group your content in columns",
-  // eslint-disable-next-line prettier/prettier
-  "Image": "Upload an image to your screen",
-  "Record List": "Format content in a table structure ",
-  // eslint-disable-next-line prettier/prettier
-  "Loop": "Format content in a table structure and allow for adding rows",
-  "Nested Screen": "Add a repeatable section of content",
-  "Page Navigation": "Add and reuse another Form within this Form",
-  "Analytics Chart": "Add a chart from the Analytics Reports",
-  "File Upload":
-    "Add special buttons that link between subpages within this Form",
-  "File Download": "Collect files uploaded into the Form",
-  "File Preview": "Offer a File download",
-  "List Table": "Create List Table",
-  "Bootstrap Component":
-    "Add a Preview section that displays the content of a File",
-  "Bootstrap Wrapper":
-    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
-  // eslint-disable-next-line prettier/prettier
-  "Captcha":
-    "Add a Captcha box to your Form",
-  "Google Places": "Collect an address using Google's location search",
-  "Saved Search Chart": "Add a chart from one of your Saved Searches"
-};
+const DEFAULT_GROUP = "Advanced";
 
 export default {
   components: {
@@ -694,20 +615,8 @@ export default {
       collator: null,
       editorContentKey: 0,
       cancelledJobs: [],
-      filteredControlsGrouped: {},
-
-      controlGroups: [
-        { key: "AIAssistant", label: "AI Assistant" },
-        { key: "InputFields", label: "Input Fields" },
-        { key: "ContentFields", label: "Content Fields" },
-        { key: "Navigation", label: "Navigation" },
-        { key: "Dashboards", label: "Dashboards" },
-        { key: "Files", label: "Files" },
-        { key: "Advanced", label: "Advanced" }
-      ],
-      filteredControlsGrouped: {},
-
-      isCollapsed: new Array(7).fill(true)
+      collapse: {},
+      groupOrder: {},
     };
   },
   computed: {
@@ -724,35 +633,6 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      const priorityLabels = [
-        "AI Generated",
-        "Line Input",
-        "Select List",
-        "Submit Button",
-        "Textarea",
-        "Date Picker",
-        "Checkbox",
-        "Photo/Video",
-        "Signature",
-        "Rich Text",
-        "Multicolumn / Table",
-        "Image",
-        "Record List",
-        "Loop",
-        "Nested Screen",
-        "Page Navigation",
-        "Saved Search Chart",
-        "Analytics Chart",
-        "File Upload",
-        "File Download",
-        "File Preview",
-        "List Table",
-        "Bootstrap Component",
-        "Bootstrap Wrapper",
-        "Captcha",
-        "Google Places",
-        "Saved Search Chart"
-      ];
 
       const excludedLabels = [""];
 
@@ -762,31 +642,48 @@ export default {
           .includes(this.filterQuery.toLowerCase());
       });
 
-      const included = filtered.filter((control) => {
-        return !excludedLabels.includes(control.label);
+      return filtered;
+    },
+    filteredControlsGrouped() {
+      const grouped = this.filteredControls.reduce((groups, control) => {
+        let groupName = _.get(control, 'group', null);
+        
+        if (!groupName) {
+          groupName = DEFAULT_GROUP;
+        }
+        
+        let existingGroupIndex = groups.findIndex((group) => {
+          return group.name === groupName;
+        });
+
+        if (existingGroupIndex === -1) {
+          groups.push({
+            name: groupName,
+            order: this.getGroupOrder(groupName), 
+            elements: []
+          });
+          existingGroupIndex = groups.length - 1;
+        }
+
+        groups[existingGroupIndex].elements.push(control);
+        return groups;
+      }, []);
+
+      // Sort the groups
+      grouped.sort((a, b) => a.order - b.order);
+
+      // Sort the elements in each group
+      grouped.forEach((_, index) => {
+        grouped[index].elements.sort((a, b) => {
+          const orderA =
+            a.order !== undefined ? a.order : Number.POSITIVE_INFINITY;
+          const orderB =
+            b.order !== undefined ? b.order : Number.POSITIVE_INFINITY;
+          return orderA - orderB;
+        });
       });
 
-      const prioritySorted = included.sort((a, b) => {
-        const indexA = priorityLabels.indexOf(a.label);
-        const indexB = priorityLabels.indexOf(b.label);
-
-        if (indexA !== -1 && indexB !== -1) {
-          return indexA - indexB;
-        }
-        if (indexA !== -1) {
-          return -1;
-        }
-        if (indexB !== -1) {
-          return 1;
-        }
-        return this.collator.compare(a.label, b.label);
-      });
-
-      const excluded = included.filter((control) => {
-        return excludedLabels.includes(control.label);
-      });
-
-      return [...prioritySorted, ...excluded];
+      return grouped;
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
@@ -832,14 +729,6 @@ export default {
       ) {
         this.addDefaultAiControl();
       }
-    },
-
-    filteredControls: {
-      handler(newVal) {
-        this.groupFilteredControls(newVal);
-      },
-      deep: true,
-      immediate: true
     }
   },
   created() {
@@ -883,25 +772,25 @@ export default {
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
     });
+    this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
-    toggleCollapse(index) {
-      this.$set(this.isCollapsed, index, !this.isCollapsed[index]);
+    getGroupOrder(groupName) {
+      let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
+      return order;
     },
-    groupFilteredControls(controls) {
-      for (const groupKey in controlGroups) {
-        this.filteredControlsGrouped[groupKey] = filterControlsByLabel(
-          controls,
-          controlGroups[groupKey]
-        );
-
-        this.filteredControlsGrouped[groupKey].forEach((control) => {
-          const popoverContent = this.$t(popoverContentMap[control.label]);
-          if (popoverContent) {
-            control.popoverContent = popoverContent;
-          }
-        });
+    setGroupOrder(orderConfig) {
+      this.groupOrder = { ...this.groupOrder, ...orderConfig };
+    },
+    toggleCollapse(index) {
+      if (this.collapse[index] && this.collapse[index] === true) {
+        this.collapse[index] = false;
+      } else {
+        this.collapse[index] = true;
       }
+    },
+    isCollapsed(index) {
+      return this.collapse[index];
     },
     refreshContent() {
       this.editorContentKey++;
@@ -1042,7 +931,7 @@ export default {
               : "");
           item.config = {
             content:
-              '<div style="' + style + '">' + item.config.label + "</div>",
+              "<div style=\"" + style + "\">" + item.config.label + "</div>",
             interactive: true
           };
         }
@@ -1398,16 +1287,20 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .custom-popover {
   margin-right: -400px;
+  padding: 16px;
 }
+</style>
+
+<style>
 .gray-text {
-  color: gray;
+  color: #556271;
 }
 
 .icon {
-  color: gray;
+  color: #6A7888;
 }
 .custom-row {
   height: 80vh;
@@ -1419,6 +1312,10 @@ export default {
 
 .svg-icon > svg {
   margin-bottom: 3px;
+}
+
+.svg-icon > svg > path {
+  fill: #6A7888;
 }
 </style>
 
@@ -1534,10 +1431,6 @@ $side-bar-font-size: 0.875rem;
 
 .ai-section-card .card-header {
   background: #cbdfff;
-}
-
-.ai-control {
-  background: #fff4d3;
 }
 
 .pulse {
