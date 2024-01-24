@@ -340,7 +340,7 @@ export default [
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
-      popoverContent: "Add and reuse another Form within this Form",
+      popoverContent: "Add special buttons that link between subpages within this Form",
       order: 1.0,
       group: 'Navigation',
       label: 'Page Navigation',
@@ -420,7 +420,7 @@ export default [
     rendererComponent: FormLoop,
     rendererBinding: 'FormLoop',
     control: {
-      popoverContent: "Format content in a table structure and allow for adding rows",
+      popoverContent: "Add a repeatable section of content",
       order: 5.0,
       group: 'Content Fields',
       label: 'Loop',
@@ -456,7 +456,7 @@ export default [
     rendererComponent: FormRecordList,
     rendererBinding: 'FormRecordList',
     control: {
-      popoverContent: "Format content in a table structure",
+      popoverContent: "Format content in a table structure and allow for adding rows",
       order: 4.0,
       group: 'Content Fields',
       label: 'Record List',
@@ -647,7 +647,7 @@ export default [
     rendererComponent: FormNestedScreen,
     rendererBinding: 'FormNestedScreen',
     control: {
-      popoverContent: "Add a repeatable section of content",
+      popoverContent: "Add and reuse another Form within this Form",
       order: 6.0,
       group: 'Content Fields',
       label: 'Nested Screen',
@@ -682,7 +682,7 @@ export default [
     builderBinding: 'FileUpload',
     control: {
       group: "Files",
-      popoverContent: "Add special buttons that link between subpages within this Form",
+      popoverContent: "Collect files uploaded into the Form",
       order: 1.0,
       label: 'File Upload',
       component: 'FileUpload',
@@ -734,7 +734,7 @@ export default [
     builderComponent: FileDownload,
     builderBinding: 'FileDownload',
     control: {
-      popoverContent: "Collect files uploaded into the Form",
+      popoverContent: "Offer a File download",
       order: 2.0,
       group: "Files",
       label: 'File Download',
@@ -770,7 +770,7 @@ export default [
     builderComponent: BFormComponent,
     builderBinding: 'BFormComponent',
     control: {
-      popoverContent: "Add a Preview section that displays the content of a File",
+      popoverContent: "Add one of several Bootstrap Vue components",
       order: 1.0,
       group: 'Advanced',
       label: 'Bootstrap Component',
@@ -824,7 +824,7 @@ export default [
     builderComponent: BWrapperComponent,
     builderBinding: 'BWrapperComponent',
     control: {
-      popoverContent: "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
+      popoverContent: "Wrap an existing subpage within this Form into a Bootstrap Vue component",
       order: 2.0,
       group: 'Advanced',
       label: 'Bootstrap Wrapper',
