@@ -44,7 +44,7 @@
               "
               @click="toggleCollapse(index)"
             >
-              {{ $t(name) }}
+              <strong>{{ $t(name) }}</strong>
               <b-icon
                 :icon="isCollapsed(index) ? 'chevron-down' : 'chevron-up'"
                 class="float-right"
@@ -69,14 +69,12 @@
                     :key="elementIndex"
                     v-b-popover.hover.right="{
                       content: $t(element.popoverContent),
-                      customClass: 'custom-popover'
+                      customClass: 'custom-popover',
+                      boundaryPadding: 16
                     }"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
-                    :class="{
-                      'ai-control': element.component === 'AiSection',
-                      'gray-text': true
-                    }"
+                    class="gray-text"
                   >
                     <i
                       v-if="element.config && element.config.icon"
@@ -529,84 +527,13 @@ const defaultConfig = [
 const defaultGroupOrder = {
   "Input Fields" : 1.0,
   "Content Fields" : 2.0,
+  "Dashboards" : 2.5,
   "Navigation" : 3.0,
   "Files" : 4.0,
   "Advanced" : 5.0,
 };
 
-const controlGroups = {
-  AIAssistant: ["AI Generated"],
-  InputFields: [
-    "Line Input",
-    "Select List",
-    "Submit Button",
-    "Textarea",
-    "Date Picker",
-    "Checkbox",
-    "Photo/Video",
-    "Signature"
-  ],
-  ContentFields: [
-    "Rich Text",
-    "Multicolumn / Table",
-    "Image",
-    "Record List",
-    "Loop",
-    "Nested Screen"
-  ],
-  Navigation: ["Page Navigation"],
-  Dashboards: ["Saved Search Chart", "Analytics Chart"],
-  Files: ["File Upload", "File Download", "File Preview", "List Table"],
-  Advanced: [
-    "Bootstrap Component",
-    "Bootstrap Wrapper",
-    "Captcha",
-    "Google Places",
-    "Saved Search Chart",
-    "Plaid"
-  ]
-};
-
-const popoverContentMap = {
-  "AI Generated":
-    "Generate single fields or entire forms with our generative assistant",
-  "Line Input":
-    "Collect a string of text and format it as one of several data types",
-  "Select List": "Collect options from a list, as radio butttons or dropdowns",
-  "Submit Button": "Add an action to submit your form or update a field",
-  // eslint-disable-next-line prettier/prettier
-  "Textarea": "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
-  "Date Picker": "Collect a date or date/time",
-  // eslint-disable-next-line prettier/prettier
-  "Checkbox": "Add a checkbox or toggle for true/false responses",
-  "Photo/Video": "Capture a photo or a Video straight from a camera device",
-  // eslint-disable-next-line prettier/prettier
-  "Signature": "Add a signature box to collect a hand-drawn signature image",
-  "Rich Text": "Use a Rich Text Editor to add HTML-formatted",
-  "Multicolumn / Table": "Organize and group your content in columns",
-  // eslint-disable-next-line prettier/prettier
-  "Image": "Upload an image to your screen",
-  "Record List": "Format content in a table structure ",
-  // eslint-disable-next-line prettier/prettier
-  "Loop": "Format content in a table structure and allow for adding rows",
-  "Nested Screen": "Add a repeatable section of content",
-  "Page Navigation": "Add and reuse another Form within this Form",
-  "Analytics Chart": "Add a chart from the Analytics Reports",
-  "File Upload":
-    "Add special buttons that link between subpages within this Form",
-  "File Download": "Collect files uploaded into the Form",
-  "File Preview": "Offer a File download",
-  "List Table": "Create List Table",
-  "Bootstrap Component":
-    "Add a Preview section that displays the content of a File",
-  "Bootstrap Wrapper":
-    "Wrap an existing subpage within this Form into a Bootstrap Vue component	",
-  // eslint-disable-next-line prettier/prettier
-  "Captcha":
-    "Add a Captcha box to your Form",
-  "Google Places": "Collect an address using Google's location search",
-  "Saved Search Chart": "Add a chart from one of your Saved Searches"
-};
+const DEFAULT_GROUP = "Advanced";
 
 export default {
   components: {
@@ -706,35 +633,6 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      const priorityLabels = [
-        "AI Generated",
-        "Line Input",
-        "Select List",
-        "Submit Button",
-        "Textarea",
-        "Date Picker",
-        "Checkbox",
-        "Photo/Video",
-        "Signature",
-        "",
-        "Multicolumn / Table",
-        "Image",
-        "Record List",
-        "Loop",
-        "Nested Screen",
-        "Page Navigation",
-        "Saved Search Chart",
-        "Analytics Chart",
-        "File Upload",
-        "File Download",
-        "File Preview",
-        "List Table",
-        "Bootstrap Component",
-        "Bootstrap Wrapper",
-        "Captcha",
-        "Google Places",
-        "Saved Search Chart"
-      ];
 
       const excludedLabels = [""];
 
@@ -751,7 +649,7 @@ export default {
         let groupName = _.get(control, 'group', null);
         
         if (!groupName) {
-          groupName = "Advanced";
+          groupName = DEFAULT_GROUP;
         }
         
         let existingGroupIndex = groups.findIndex((group) => {
@@ -774,7 +672,7 @@ export default {
       // Sort the groups
       grouped.sort((a, b) => a.order - b.order);
 
-      // Sor the elements in each group
+      // Sort the elements in each group
       grouped.forEach((_, index) => {
         grouped[index].elements.sort((a, b) => {
           const orderA =
@@ -882,7 +780,7 @@ export default {
       return order;
     },
     setGroupOrder(orderConfig) {
-      this.groupOrder = { ...orderConfig };
+      this.groupOrder = { ...this.groupOrder, ...orderConfig };
     },
     toggleCollapse(index) {
       if (this.collapse[index] && this.collapse[index] === true) {
@@ -1389,16 +1287,20 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .custom-popover {
   margin-right: -400px;
+  padding: 16px;
 }
+</style>
+
+<style>
 .gray-text {
-  color: gray;
+  color: #556271;
 }
 
 .icon {
-  color: gray;
+  color: #6A7888;
 }
 .custom-row {
   height: 80vh;
@@ -1410,6 +1312,10 @@ export default {
 
 .svg-icon > svg {
   margin-bottom: 3px;
+}
+
+.svg-icon > svg > path {
+  fill: #6A7888;
 }
 </style>
 
@@ -1525,10 +1431,6 @@ $side-bar-font-size: 0.875rem;
 
 .ai-section-card .card-header {
   background: #cbdfff;
-}
-
-.ai-control {
-  background: #fff4d3;
 }
 
 .pulse {
