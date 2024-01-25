@@ -1,5 +1,3 @@
-export * from "./extensions";
-
 export { default as canOpenJsonFile } from "./canOpenJsonFile";
 export { default as computedFields } from "./computedFields";
 export { default as CurrentPageProperty } from "./CurrentPageProperty";
