@@ -1,19 +1,22 @@
-import { camelCase, upperFirst } from "lodash";
+export * from "./extensions";
 
-const mixins = [];
-const modules = import.meta.globEager("./**/*.js");
-
-Object.entries(modules).forEach(([path, m]) => {
-  const mixingName = upperFirst(
-    camelCase(
-      path
-        .split("/")
-        .pop()
-        .replace(/\.\w+$/, "")
-    )
-  );
-
-  mixins.push(m.default);
-});
-
-export default mixins;
+export { default as canOpenJsonFile } from "./canOpenJsonFile";
+export { default as computedFields } from "./computedFields";
+export { default as CurrentPageProperty } from "./CurrentPageProperty";
+export { default as DataReference } from "./DataReference";
+export { default as datatable } from "./datatable";
+export { default as defaultValues } from "./defaultValues";
+export { default as DeviceDetector } from "./DeviceDetector";
+export { default as focusErrors } from "./focusErrors";
+export { default as formWatchers } from "./formWatchers";
+export { default as getValidPath } from "./getValidPath";
+export { default as HasColorProperty } from "./HasColorProperty";
+export { default as Json2Vue } from "./Json2Vue";
+export { default as multiselectApi } from "./multiselectApi";
+export { default as mustacheEvaluation } from "./mustacheEvaluation";
+export { default as ScreenBase } from "./ScreenBase";
+export { default as shouldElementBeVisible } from "./shouldElementBeVisible";
+export { default as testing } from "./testing";
+export { ValidationMsg, validators } from "./ValidationRules";
+export { default as VisibilityRule } from "./VisibilityRule";
+export { default as watchers } from "./watchers";

@@ -1,19 +1,14 @@
-import { camelCase, upperFirst } from "lodash";
-
-const mixins = [];
-const modules = import.meta.globEager("./*.js");
-
-Object.entries(modules).forEach(([path, m]) => {
-  const mixingName = upperFirst(
-    camelCase(
-      path
-        .split("/")
-        .pop()
-        .replace(/\.\w+$/, "")
-    )
-  );
-
-  mixins.push(m.default);
-});
-
-export default mixins;
+export { default as AccordionContainer } from "./AccordionContainer";
+export { default as ComputedFields } from "./ComputedFields";
+export { default as CustomCss } from "./CustomCss";
+export { default as DataManager } from "./DataManager";
+export { default as DefaultValues } from "./DefaultValues";
+export { default as InputText } from "./InputText";
+export { default as LoadFieldComponents } from "./LoadFieldComponents";
+export { default as LoopContainer } from "./LoopContainer";
+export { default as MultiColumn } from "./MultiColumn";
+export { default as PageNavigate } from "./PageNavigate";
+export { default as Submit } from "./Submit";
+// export { default as ValidationRules } from "./ValidationRules";
+// export { default as VisibilityRule } from "./VisibilityRule";
+export { default as Watchers } from "./Watchers";
