@@ -78,6 +78,7 @@ export * from "./renderer";
 export * as Currencies from "../currency.json";
 export * from "./utils";
 export * from "./editor";
+export * from "../mixins";
 
 /**
  * Gets the screen parent or null if don't have
