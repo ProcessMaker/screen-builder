@@ -26,15 +26,14 @@ export default {
       axios.defaults.headers.common = {
         Authorization: `Bearer ${this.token()}`
       };
-      axios.defaults.adapter = cacheAdapterEnhancer(
-        axios.defaults.adapter,
-        window.ProcessMaker.screen.cacheEnabled,
-        "useCache",
-        new LRUCache({
+      axios.defaults.adapter = cacheAdapterEnhancer(axios.defaults.adapter, {
+        enabledByDefault: window.ProcessMaker.screen.cacheEnabled,
+        cacheFlag: "useCache",
+        defaultCache: new LRUCache({
           ttl: window.ProcessMaker.screen.cacheTimeout,
           max: 100
         })
-      );
+      });
       return axios;
     }
 

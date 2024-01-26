@@ -269,15 +269,14 @@ window.Echo = {
 
 window.axios = axios.create({
   baseURL: "/api/1.0/",
-  adapter: cacheAdapterEnhancer(
-    axios.defaults.adapter,
-    window.ProcessMaker.screen.cacheEnabled,
-    "useCache",
-    new LRUCache({
+  adapter: cacheAdapterEnhancer(axios.defaults.adapter, {
+    enabledByDefault: window.ProcessMaker.screen.cacheEnabled,
+    cacheFlag: "useCache",
+    defaultCache: new LRUCache({
       ttl: window.ProcessMaker.screen.cacheTimeout,
       max: 100
     })
-  )
+  })
 });
 
 const scenario = (window.location.search.substr(1).match(/\w+=(\w+)/) || [])[1];
