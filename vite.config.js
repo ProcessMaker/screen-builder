@@ -27,6 +27,10 @@ export default defineConfig({
       {
         find: "vue",
         replacement: resolve(__dirname, "node_modules/vue/dist/vue.esm.js")
+      },
+      {
+        find: "axios/lib",
+        replacement: resolve(__dirname, "node_modules/axios/lib")
       }
     ],
     extensions: [".js", ".mjs", ".vue", ".json"]
