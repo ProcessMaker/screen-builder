@@ -164,11 +164,13 @@ export default {
 export function initializeScreenCache(apiClient, screenConfig) {
   apiClient.defaults.adapter = cacheAdapterEnhancer(
     apiClient.defaults.adapter,
-    screenConfig.cacheEnabled,
-    "useCache",
-    new LRUCache({
-      ttl: screenConfig.cacheTimeout,
-      max: 100
-    })
+    {
+      enabledByDefault: window.ProcessMaker.screen.cacheEnabled,
+      cacheFlag: "useCache",
+      defaultCache: new LRUCache({
+        ttl: window.ProcessMaker.screen.cacheTimeout,
+        max: 100
+      })
+    }
   );
 }
