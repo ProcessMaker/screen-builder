@@ -7,60 +7,60 @@
   >
     <template v-if="screen">
       <b-overlay
-          :show="disabled"
-          id="overlay-background"
-          variant="white"
-          cardStyles="pointer-events: none;pointer-events: none;inset: 1px"
-          rounded="sm"
+        id="overlay-background"
+        :show="disabled"
+        variant="white"
+        card-styles="pointer-events: none;pointer-events: none;inset: 1px"
+        rounded="sm"
       >
-      <template #overlay>
-        <div class="text-center">
-          <p>Please claim this task to continue.</p>
+        <template #overlay>
+          <div class="text-center">
+            <p>Please claim this task to continue.</p>
+          </div>
+        </template>
+        <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
+          <div v-if="renderComponent === 'task-screen'">
+            <vue-form-renderer
+              ref="renderer"
+              :key="refreshScreen"
+              v-model="requestData"
+              :config="screen.config"
+              :computed="screen.computed"
+              :custom-css="screen.custom_css"
+              :watchers="screen.watchers"
+              :loop-context="loopContext"
+              @update="onUpdate"
+              @submit="submit"
+            />
+          </div>
+          <div v-else>
+            <component
+              :is="renderComponent"
+              :process-id="processId"
+              :instance-id="requestId"
+              :token-id="taskId"
+              :screen="screen.config"
+              :csrf-token="csrfToken"
+              :computed="screen.computed"
+              :custom-css="screen.custom_css"
+              :watchers="screen.watchers"
+              :data="requestData"
+              :type="screen.type"
+              @submit="submit"
+            />
+          </div>
         </div>
-      </template>
-      <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
-        <div v-if="renderComponent === 'task-screen'">
-          <vue-form-renderer
-            ref="renderer"
-            v-model="requestData"
-            :config="screen.config"
-            :computed="screen.computed"
-            :custom-css="screen.custom_css"
-            :watchers="screen.watchers"
-            :key="refreshScreen"
-            :loop-context="loopContext"
-            @update="onUpdate"
-            @submit="submit"
-          />
+        <div v-if="shouldAddSubmitButton" class="card-footer">
+          <button type="button" class="btn btn-primary" @click="submit(null)">
+            {{ $t("Complete Task") }}
+          </button>
         </div>
-        <div v-else>
-          <component
-            :is="renderComponent"
-            :process-id="processId"
-            :instance-id="requestId"
-            :token-id="taskId"
-            :screen="screen.config"
-            :csrf-token="csrfToken"
-            :computed="screen.computed"
-            :custom-css="screen.custom_css"
-            :watchers="screen.watchers"
-            :data="requestData"
-            :type="screen.type"
-            @submit="submit"
-          />
-        </div>
-      </div>
-      <div v-if="shouldAddSubmitButton" class="card-footer">
-        <button type="button" class="btn btn-primary" @click="submit(null)">
-          {{ $t('Complete Task') }}
-        </button>
-      </div>
       </b-overlay>
     </template>
     <template v-if="showTaskIsCompleted">
-      <div class="card card-body text-center" v-cloak>
+      <div v-cloak class="card card-body text-center">
         <h1>
-          {{ $t('Task Completed') }}
+          {{ $t("Task Completed") }}
           <i class="fas fa-clipboard-check" />
         </h1>
       </div>
@@ -69,8 +69,8 @@
 </template>
 
 <script>
-import _ from 'lodash';
-import simpleErrorMessage from './SimpleErrorMessage.vue';
+import _ from "lodash";
+import simpleErrorMessage from "./SimpleErrorMessage.vue";
 
 const defaultBeforeLoadTask = () => {
   return new Promise((resolve) => {
@@ -78,8 +78,11 @@ const defaultBeforeLoadTask = () => {
   });
 };
 
+console.log("hi");
+
 export default {
-  components:{
+  name: "Task",
+  components: {
     simpleErrorMessage
   },
   props: {
@@ -104,7 +107,7 @@ export default {
       requestId: null,
       screen: null,
       screenId: null,
-      renderComponent: 'task-screen',
+      renderComponent: "task-screen",
       processId: null,
       nodeId: null,
       disabled: false,
@@ -116,35 +119,61 @@ export default {
       loadingButton: false
     };
   },
+  computed: {
+    shouldAddSubmitButton() {
+      if (!this.task) {
+        return false;
+      }
+      return (
+        this.task.bpmn_tag_name === "manualTask" ||
+        (!this.task.screen && this.task.element_type !== "startEvent")
+      );
+    },
+    showTaskIsCompleted() {
+      return (
+        this.task && this.task.advanceStatus === "completed" && !this.screen
+      );
+    },
+    screenTypeClass() {
+      if (!this.screen) {
+        return;
+      }
+      const screenType = this.screen.type;
+      return `${screenType.toLowerCase()}-screen`;
+    },
+    parentRequest() {
+      return _.get(this.task, "process_request.parent_request_id", null);
+    }
+  },
   watch: {
     initialScreenId: {
       handler() {
         this.screenId = this.initialScreenId;
-      },
+      }
     },
 
     initialTaskId: {
       handler() {
         this.taskId = this.initialTaskId;
-      },
+      }
     },
 
     initialRequestId: {
       handler() {
         this.requestId = this.initialRequestId;
-      },
+      }
     },
 
     initialProcessId: {
       handler() {
         this.processId = this.initialProcessId;
-      },
+      }
     },
 
     initialNodeId: {
       handler() {
         this.nodeId = this.initialNodeId;
-      },
+      }
     },
 
     screenId: {
@@ -152,7 +181,7 @@ export default {
         if (this.screenId) {
           this.loadScreen(this.screenId);
         }
-      },
+      }
     },
 
     taskId: {
@@ -162,7 +191,7 @@ export default {
             this.loadTask();
           }
         }
-      },
+      }
     },
 
     requestId: {
@@ -173,7 +202,7 @@ export default {
         } else {
           this.unsubscribeSocketListeners();
         }
-      },
+      }
     },
 
     task: {
@@ -185,13 +214,13 @@ export default {
         this.taskId = this.task.id;
         this.nodeId = this.task.element_id;
         this.listenForParentChanges();
-        if (this.task.process_request.status === 'COMPLETED') {
+        if (this.task.process_request.status === "COMPLETED") {
           if (!this.taskPreview) {
-            this.$emit('completed', this.task.process_request.id);
+            this.$emit("completed", this.task.process_request.id);
           }
         }
         if (this.taskPreview && this.task.status === "CLOSED") {
-          this.task.interstitial_screen['_interstitial'] = false;
+          this.task.interstitial_screen._interstitial = false;
           this.task.screen.config = this.disableForm(this.task.screen.config);
           this.screen = this.task.screen;
         }
@@ -201,57 +230,37 @@ export default {
     value: {
       handler() {
         this.requestData = this.value;
-      },
+      }
     },
     screen: {
       handler() {
         if (!this.screen) {
           return;
         }
-        if (this.renderComponent === 'ConversationalForm') {
+        if (this.renderComponent === "ConversationalForm") {
           return;
         }
-        if (this.screen.type === 'CONVERSATIONAL') {
-          this.renderComponent = 'ConversationalForm';
+        if (this.screen.type === "CONVERSATIONAL") {
+          this.renderComponent = "ConversationalForm";
         } else {
-          const isInterstitial = _.get(this.screen, '_interstitial', false);
-          let component = _.get(this, 'task.component', 'task-screen');
+          const isInterstitial = _.get(this.screen, "_interstitial", false);
+          let component = _.get(this, "task.component", "task-screen");
           if (component === null || isInterstitial) {
-            component = 'task-screen';
+            component = "task-screen";
           }
           this.renderComponent = component;
         }
-      },
-    },
-  },
-  computed: {
-    shouldAddSubmitButton() {
-      if (!this.task) {
-        return false;
       }
-      return this.task.bpmn_tag_name === 'manualTask' || (!this.task.screen && this.task.element_type !== 'startEvent');
-    },
-    showTaskIsCompleted() {
-      return (
-        this.task && this.task.advanceStatus === 'completed' && !this.screen
-      );
-    },
-    screenTypeClass() {
-      if (!this.screen) {
-        return;
-      }
-      const screenType = this.screen.type;
-      return screenType.toLowerCase() + '-screen';
-    },
-    parentRequest() {
-      return _.get(this.task, 'process_request.parent_request_id', null);
-    },
+    }
   },
   methods: {
     disableForm(json) {
       if (json instanceof Array) {
-        for (let item of json) {
-          if (item.component==='FormButton' && item.config.event==='submit') {
+        for (const item of json) {
+          if (
+            item.component === "FormButton" &&
+            item.config.event === "submit"
+          ) {
             json.splice(json.indexOf(item), 1);
           } else {
             this.disableForm(item);
@@ -267,12 +276,12 @@ export default {
       return json;
     },
     showSimpleErrorMessage() {
-      this.renderComponent = 'simpleErrorMessage';
+      this.renderComponent = "simpleErrorMessage";
     },
     loadScreen(id) {
-      let query = '?include=nested';
+      let query = "?include=nested";
       if (this.requestId) {
-        query += '&request_id=' + this.requestId;
+        query += `&request_id=${this.requestId}`;
       }
 
       this.$dataProvider.getScreen(id, query).then((response) => {
@@ -289,7 +298,11 @@ export default {
     loadTask() {
       const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
       // For Vocabularies
-      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
+      if (
+        window.ProcessMaker &&
+        window.ProcessMaker.packages &&
+        window.ProcessMaker.packages.includes("package-vocabularies")
+      ) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
       }
 
@@ -300,13 +313,15 @@ export default {
             this.task = response.data;
             this.checkTaskStatus();
             if (
-              window.PM4ConfigOverrides
-              && window.PM4ConfigOverrides.getScreenEndpoint
-              && window.PM4ConfigOverrides.getScreenEndpoint.includes('tasks/')
+              window.PM4ConfigOverrides &&
+              window.PM4ConfigOverrides.getScreenEndpoint &&
+              window.PM4ConfigOverrides.getScreenEndpoint.includes("tasks/")
             ) {
-              const screenPath = window.PM4ConfigOverrides.getScreenEndpoint.split('/');
+              const screenPath =
+                window.PM4ConfigOverrides.getScreenEndpoint.split("/");
               screenPath[1] = this.task.id;
-              window.PM4ConfigOverrides.getScreenEndpoint = screenPath.join('/');
+              window.PM4ConfigOverrides.getScreenEndpoint =
+                screenPath.join("/");
             }
           })
           .catch(() => {
@@ -318,18 +333,18 @@ export default {
       // If the immediate task status is completed and we are waiting with a loading button,
       // do not reset the screen because that would stop displaying the loading spinner
       // before the next task is ready.
-      if (!this.loadingButton || this.task.status === 'ACTIVE') {
+      if (!this.loadingButton || this.task.status === "ACTIVE") {
         this.resetScreenState();
-        this.requestData = _.get(this.task, 'request_data', {});
+        this.requestData = _.get(this.task, "request_data", {});
         this.loopContext = _.get(this.task, "loop_context", "");
         this.refreshScreen++;
       }
 
-      this.$emit('task-updated', this.task);
+      this.$emit("task-updated", this.task);
 
-      if (this.task.process_request.status === 'ERROR') {
+      if (this.task.process_request.status === "ERROR") {
         this.hasErrors = true;
-        this.$emit('error', this.requestId);
+        this.$emit("error", this.requestId);
       } else {
         this.hasErrors = false;
       }
@@ -344,9 +359,9 @@ export default {
     },
     checkTaskStatus() {
       if (
-        this.task.status == 'COMPLETED' ||
-        this.task.status == 'CLOSED' ||
-        this.task.status == 'TRIGGERED'
+        this.task.status == "COMPLETED" ||
+        this.task.status == "CLOSED" ||
+        this.task.status == "TRIGGERED"
       ) {
         this.closeTask();
       } else {
@@ -365,20 +380,20 @@ export default {
     },
     closeTask(parentRequestId = null) {
       if (this.hasErrors) {
-        this.$emit('error', this.requestId);
+        this.$emit("error", this.requestId);
         return;
       }
 
-      if (this.task.process_request.status === 'COMPLETED') {
+      if (this.task.process_request.status === "COMPLETED") {
         this.loadNextAssignedTask(parentRequestId);
       } else if (this.loadingButton) {
         this.loadNextAssignedTask(parentRequestId);
       } else if (this.task.allow_interstitial) {
-        this.task.interstitial_screen['_interstitial'] = true;
+        this.task.interstitial_screen._interstitial = true;
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask(parentRequestId);
       } else if (!this.taskPreview) {
-        this.$emit('closed', this.task.id);
+        this.$emit("closed", this.task.id);
       }
     },
     loadNextAssignedTask(requestId = null) {
@@ -387,59 +402,63 @@ export default {
       }
       const timestamp = !window.Cypress ? `&t=${Date.now()}` : "";
       const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${timestamp}`;
-      return this.$dataProvider
-        .getTasks(url).then((response) => {
-          if (response.data.data.length > 0) {
-            let task = response.data.data[0];
-            if (task.process_request_id !== this.requestId) {
-              // Next task is in a subprocess, do a hard redirect
-              if (this.redirecting === task.process_request_id) {
-                return;
-              }
-              this.unsubscribeSocketListeners();
-              this.redirecting = task.process_request_id;
-              this.$emit('redirect', task.id, true);
+      return this.$dataProvider.getTasks(url).then((response) => {
+        if (response.data.data.length > 0) {
+          const task = response.data.data[0];
+          if (task.process_request_id !== this.requestId) {
+            // Next task is in a subprocess, do a hard redirect
+            if (this.redirecting === task.process_request_id) {
               return;
-            } else {
-              this.emitIfTaskCompleted(requestId);
             }
-            this.taskId = task.id;
-            this.nodeId = task.element_id;
-          } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
-            this.$emit('completed', this.getAllowedRequestId());
+            this.unsubscribeSocketListeners();
+            this.redirecting = task.process_request_id;
+            this.$emit("redirect", task.id, true);
+            return;
           }
-        });
+          this.emitIfTaskCompleted(requestId);
+
+          this.taskId = task.id;
+          this.nodeId = task.element_id;
+        } else if (
+          this.parentRequest &&
+          ["COMPLETED", "CLOSED"].includes(this.task.process_request.status)
+        ) {
+          this.$emit("completed", this.getAllowedRequestId());
+        }
+      });
     },
     emitIfTaskCompleted(requestId) {
       // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed
-      if (this.task
-          && this.parentRequest
-          && requestId == this.task.process_request_id
-          && this.task.process_request.status === 'COMPLETED') {
-        this.$emit('completed',  this.parentRequest);
+      if (
+        this.task &&
+        this.parentRequest &&
+        requestId == this.task.process_request_id &&
+        this.task.process_request.status === "COMPLETED"
+      ) {
+        this.$emit("completed", this.parentRequest);
       }
     },
     classHeaderCard(status) {
-      let header = 'bg-success';
+      let header = "bg-success";
       switch (status) {
-        case 'completed':
-          header = 'bg-secondary';
+        case "completed":
+          header = "bg-secondary";
           break;
-        case 'overdue':
-          header = 'bg-danger';
+        case "overdue":
+          header = "bg-danger";
           break;
       }
-      return 'card-header text-capitalize text-white ' + header;
+      return `card-header text-capitalize text-white ${header}`;
     },
     submit(formData = null, loading = false) {
-      //single click
+      // single click
       if (this.disabled) {
         return;
       }
       this.disabled = true;
 
       if (formData) {
-        this.onUpdate(Object.assign({}, this.requestData, formData));
+        this.onUpdate({ ...this.requestData, ...formData });
       }
 
       if (loading) {
@@ -447,15 +466,15 @@ export default {
       } else {
         this.loadingButton = false;
       }
-      this.$emit('submit', this.task, loading);
+      this.$emit("submit", this.task, loading);
 
       if (this.task && this.task.allow_interstitial && !this.loadingButton) {
-        this.task.interstitial_screen['_interstitial'] = true;
+        this.task.interstitial_screen._interstitial = true;
         this.screen = this.task.interstitial_screen;
       }
     },
     onUpdate(data) {
-      this.$emit('input', data);
+      this.$emit("input", data);
       this.disableForSelfService();
     },
     activityAssigned() {
@@ -465,34 +484,36 @@ export default {
       let requestId;
       if (this.parentRequest) {
         requestId = this.getAllowedRequestId();
-        this.$emit('completed', requestId);
+        this.$emit("completed", requestId);
       }
       if (requestId !== this.requestId) {
-        this.$emit('completed', this.requestId);
+        this.$emit("completed", this.requestId);
       }
     },
     getAllowedRequestId() {
       const permissions = this.task.user_request_permission || [];
-      const permission = permissions.find(item => item.process_request_id === this.parentRequest)
+      const permission = permissions.find(
+        (item) => item.process_request_id === this.parentRequest
+      );
       const allowed = permission && permission.allowed;
-      return allowed ? this.parentRequest : this.requestId
+      return allowed ? this.parentRequest : this.requestId;
     },
-    processUpdated: _.debounce(function(data) {
+    processUpdated: _.debounce(function (data) {
       if (
-        data.event === 'ACTIVITY_COMPLETED' ||
-        data.event === 'ACTIVITY_ACTIVATED'
+        data.event === "ACTIVITY_COMPLETED" ||
+        data.event === "ACTIVITY_ACTIVATED"
       ) {
         this.reload();
       }
-      if (data.event === 'ACTIVITY_EXCEPTION') {
-        this.$emit('error', this.requestId);
+      if (data.event === "ACTIVITY_EXCEPTION") {
+        this.$emit("error", this.requestId);
       }
     }, 300),
     initSocketListeners() {
       this.addSocketListener(
         `completed-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-        '.ProcessCompleted',
+        ".ProcessCompleted",
         (data) => {
           this.processCompleted(data);
         }
@@ -501,7 +522,7 @@ export default {
       this.addSocketListener(
         `updated-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-        '.ProcessUpdated',
+        ".ProcessUpdated",
         (data) => {
           this.processUpdated(data);
         }
@@ -520,18 +541,18 @@ export default {
       this.addSocketListener(
         `parent-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.parentRequest}`,
-        '.ProcessUpdated',
+        ".ProcessUpdated",
         (data) => {
-          if (['ACTIVITY_ACTIVATED'].includes(data.event)) {
+          if (["ACTIVITY_ACTIVATED"].includes(data.event)) {
             this.closeTask(this.parentRequest);
           }
-          if (['ACTIVITY_COMPLETED'].includes(data.event)) {
-            if (this.task.process_request.status === 'COMPLETED') {
+          if (["ACTIVITY_COMPLETED"].includes(data.event)) {
+            if (this.task.process_request.status === "COMPLETED") {
               this.processCompleted();
             }
           }
-          if (data.event === 'ACTIVITY_EXCEPTION') {
-            this.$emit('error', this.requestId);
+          if (data.event === "ACTIVITY_EXCEPTION") {
+            this.$emit("error", this.requestId);
           }
         }
       );
@@ -542,14 +563,14 @@ export default {
       }
       this.socketListeners[key] = {
         channel,
-        event,
+        event
       };
       window.Echo.private(channel).listen(event, (data) => {
         callback(data);
       });
     },
     unsubscribeSocketListeners() {
-      Object.values(this.socketListeners).forEach(element => {
+      Object.values(this.socketListeners).forEach((element) => {
         window.Echo.private(element.channel).stopListening(element.event);
       });
       this.socketListeners = {};
@@ -567,12 +588,13 @@ export default {
       });
     },
     setMetaValue() {
-      const requestIdNode = document.head.querySelector('meta[name="request-id"]');
+      const requestIdNode = document.head.querySelector(
+        "meta[name=\"request-id\"]"
+      );
       if (requestIdNode) {
-        requestIdNode.setAttribute('content', this.requestId);
+        requestIdNode.setAttribute("content", this.requestId);
       }
-    },
-
+    }
   },
   mounted() {
     this.screenId = this.initialScreenId;
@@ -585,6 +607,6 @@ export default {
   },
   destroyed() {
     this.unsubscribeSocketListeners();
-  },
+  }
 };
 </script>

@@ -479,12 +479,12 @@ import * as renderer from "./renderer";
 import * as inspector from "./inspector";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import accordions from "./accordions";
-import { keyNameProperty } from "../form-control-common-properties";
+import { keyNameProperty } from "@/form-control-common-properties";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
 import testing from "@/mixins/testing";
-import defaultValueEditor from "./inspector/default-value-editor";
-import RequiredCheckbox from "./utils/required-checkbox";
-import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
+import defaultValueEditor from "./inspector/default-value-editor.vue";
+import RequiredCheckbox from "./utils/required-checkbox.vue";
+import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox.vue";
 import { formTypes } from "@/global-properties";
 
 // To include another language in the Validator with variable processmaker
@@ -525,12 +525,12 @@ const defaultConfig = [
 ];
 
 const defaultGroupOrder = {
-  "Input Fields" : 1.0,
-  "Content Fields" : 2.0,
-  "Dashboards" : 2.5,
-  "Navigation" : 3.0,
-  "Files" : 4.0,
-  "Advanced" : 5.0,
+  "Input Fields": 1.0,
+  "Content Fields": 2.0,
+  Dashboards: 2.5,
+  Navigation: 3.0,
+  Files: 4.0,
+  Advanced: 5.0
 };
 
 const DEFAULT_GROUP = "Advanced";
@@ -616,7 +616,7 @@ export default {
       editorContentKey: 0,
       cancelledJobs: [],
       collapse: {},
-      groupOrder: {},
+      groupOrder: {}
     };
   },
   computed: {
@@ -633,7 +633,6 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-
       const excludedLabels = [""];
 
       const filtered = this.controls.filter((control) => {
@@ -646,7 +645,7 @@ export default {
     },
     filteredControlsGrouped() {
       const grouped = this.filteredControls.reduce((groups, control) => {
-        let groupName = _.get(control, 'group', null);
+        let groupName = _.get(control, "group", null);
 
         if (!groupName) {
           groupName = DEFAULT_GROUP;
@@ -776,7 +775,7 @@ export default {
   },
   methods: {
     getGroupOrder(groupName) {
-      let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
+      const order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
       return order;
     },
     setGroupOrder(orderConfig) {
@@ -1300,7 +1299,7 @@ export default {
 }
 
 .icon {
-  color: #6A7888;
+  color: #6a7888;
 }
 .custom-row {
   height: 80vh;
@@ -1315,7 +1314,7 @@ export default {
 }
 
 .svg-icon > svg > path {
-  fill: #6A7888;
+  fill: #6a7888;
 }
 </style>
 

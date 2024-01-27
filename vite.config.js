@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [
     vue(),
     // https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21
-    monacoEditorPlugin({ languageWorkers: monacoLanguages }),
+    monacoEditorPlugin.default({ languageWorkers: monacoLanguages }),
     viteCommonjs()
   ],
   resolve: {
@@ -32,8 +32,7 @@ export default defineConfig({
         find: "axios/lib",
         replacement: resolve(__dirname, "node_modules/axios/lib")
       }
-    ],
-    extensions: [".js", ".mjs", ".vue", ".json"]
+    ]
   },
   build: {
     lib: {
@@ -46,12 +45,13 @@ export default defineConfig({
       // into your library
       external: [
         "vue",
-        "vuex",
         "moment",
         "moment-timezone",
         "lodash",
         "@processmaker/vue-form-elements",
-        "@processmaker/vue-multiselect"
+        "@processmaker/vue-multiselect",
+        "vue-monaco",
+        "monaco-editor"
       ],
       output: {
         exports: "named",
@@ -60,12 +60,12 @@ export default defineConfig({
         // for externalized deps
         globals: {
           vue: "Vue",
-          vuex: "Vuex",
           moment: "moment",
           "moment-timezone": "moment-timezone",
-          lodash: "lodash",
+          lodash: "_",
           "@processmaker/vue-form-elements": "VueFormElements",
-          "@processmaker/vue-multiselect": "VueMultiselect"
+          "@processmaker/vue-multiselect": "VueMultiselect",
+          "vue-monaco": "MonacoEditor"
         }
       }
     }

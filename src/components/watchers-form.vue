@@ -108,6 +108,7 @@
         >
           <div class="card-body pt-3 px-3 pb-0">
             <form-multi-select
+              ref="script"
               v-model="config.script"
               :name="$t('Source')"
               :label="$t('Source') + ' *'"
@@ -116,7 +117,6 @@
               :multiple="false"
               :show-labels="false"
               :searchable="true"
-              ref="script"
               option-value="id"
               option-content="title"
               group-values="items"
@@ -209,12 +209,12 @@
             <div v-if="isDatasource">
               <div class="form-group">
                 <form-multi-select
+                  ref="endpoint"
                   v-model="endpoint"
                   :name="$t('Resource')"
                   :label="$t('Resource')"
                   :options="endpoints"
                   :placeholder="$t('Select a resource')"
-                  ref="endpoint"
                   :multiple="false"
                   :show-labels="false"
                   :searchable="true"
@@ -367,10 +367,10 @@ import {
 } from "@processmaker/vue-form-elements";
 import MonacoEditor from "vue-monaco";
 import _ from "lodash";
-import DataMapping from "./inspector/data-mapping";
-import OutboundConfig from "./inspector/outbound-config";
+import DataMapping from "./inspector/data-mapping.vue";
+import OutboundConfig from "./inspector/outbound-config.vue";
 import FocusErrors from "../mixins/focusErrors";
-import ScreenVariableSelector from "./screen-variable-selector";
+import ScreenVariableSelector from "./screen-variable-selector.vue";
 
 const globalObject = typeof window === "undefined" ? global : window;
 
