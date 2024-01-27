@@ -45,6 +45,7 @@ import {
 } from "../VariableDataTypeProperties";
 import FormListTable from "./renderer/form-list-table.vue";
 import FormAnalyticsChart from "./renderer/form-analytics-chart.vue";
+import accordions from "@/components/accordions";
 
 const rendererComponents = {
   ...renderer,
@@ -94,7 +95,8 @@ export {
   DataTypeBooleanProperty,
   DataTypeDateTimeProperty,
   DataFormatProperty,
-  globalErrorsModule
+  globalErrorsModule,
+  accordions
 };
 export * from "./inspector";
 export * from "./renderer";
