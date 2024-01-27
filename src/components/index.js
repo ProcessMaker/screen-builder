@@ -51,6 +51,28 @@ const rendererComponents = {
   FormMultiColumn
 };
 
+export {
+  bgcolorProperty,
+  colorProperty,
+  javascriptReservedKeywords,
+  keyNameProperty,
+  labelProperty,
+  buttonLabelProperty,
+  placeholderProperty,
+  helperTextProperty,
+  readonlyProperty,
+  disabledProperty,
+  validationRulesProperty,
+  toggleStyleProperty,
+  buttonVariantStyleProperty,
+  defaultValueProperty,
+  buttonTypeEvent,
+  tooltipProperty,
+  deviceVisibilityProperty,
+  LoadingSubmitButtonProperty,
+  LabelSubmitButtonProperty
+} from "../form-control-common-properties";
+
 // Export our named exports
 export {
   VueFormBuilder,
