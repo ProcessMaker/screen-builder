@@ -35,7 +35,6 @@ import WatchersForm from "./watchers-form.vue";
 import WatchersList from "./watchers-list.vue";
 import WatchersPopup from "./watchers-popup.vue";
 import WatchersSynchronous from "./watchers-synchronous.vue";
-import globalProperties from "../global-properties";
 import {
   DataFormatProperty,
   DataTypeBooleanProperty,
@@ -46,12 +45,13 @@ import {
 import FormListTable from "./renderer/form-list-table.vue";
 import FormAnalyticsChart from "./renderer/form-analytics-chart.vue";
 import accordions from "@/components/accordions";
+import VariableNameGenerator from "@/components/VariableNameGenerator";
 
 const rendererComponents = {
   ...renderer,
   FormMultiColumn
 };
-
+export {default as globalProperties, formTypes} from "../global-properties";
 export {
   bgcolorProperty,
   colorProperty,
@@ -89,14 +89,14 @@ export {
   WatchersList,
   WatchersPopup,
   WatchersSynchronous,
-  globalProperties,
   DataTypeProperty,
   DataTypeWithoutDateProperty,
   DataTypeBooleanProperty,
   DataTypeDateTimeProperty,
   DataFormatProperty,
   globalErrorsModule,
-  accordions
+  accordions,
+  VariableNameGenerator
 };
 export * from "./inspector";
 export * from "./renderer";
