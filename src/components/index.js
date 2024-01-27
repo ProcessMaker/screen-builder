@@ -93,7 +93,8 @@ export {
   DataTypeWithoutDateProperty,
   DataTypeBooleanProperty,
   DataTypeDateTimeProperty,
-  DataFormatProperty
+  DataFormatProperty,
+  globalErrorsModule
 };
 export * from "./inspector";
 export * from "./renderer";
