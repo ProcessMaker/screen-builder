@@ -61,7 +61,7 @@ describe("Device Visiblility Inspector", () => {
   });
   it("Verify if a FileDownload has device visiblility settings", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-4");
+    cy.openAcordeon("collapse-5");
     cy.get("[data-cy=controls-FileDownload]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
@@ -77,7 +77,7 @@ describe("Device Visiblility Inspector", () => {
   });
   it("Verify if a FileUpload has device visiblility settings", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-4");
+    cy.openAcordeon("collapse-5");
     cy.get("[data-cy=controls-FileUpload]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

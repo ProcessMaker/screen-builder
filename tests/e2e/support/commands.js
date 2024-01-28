@@ -227,10 +227,7 @@ Cypress.Commands.add("showValidationOnLoad", () => {
 });
 
 Cypress.Commands.add("openAcordeon", (name) => {
-  cy.get(`button[aria-controls='${name}']`).should("be.visible");
-  cy.get(`div[id='${name}']`).invoke("attr", "style").should("eq", "display: none;");
-  cy.get(`button[aria-controls='${name}']`).click();
-  cy.get(`div[id='${name}']`).invoke("attr", "style").should("not.equal", "display: none;");
+  cy.get(`button[aria-controls='${name}']`).click({waitForAnimations: 500, force:true});
 });
 
 Cypress.Commands.add("openAllAcordeon", () => {

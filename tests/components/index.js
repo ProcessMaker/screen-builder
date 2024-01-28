@@ -1,7 +1,18 @@
-const components = {};
-const modules = require.context('./', true, /\.vue$/i);
-modules.keys().map(key => {
-  if (key !== './index.js') components[key.substr(2, key.length - 6)] = (modules(key).default);
+import { camelCase, upperFirst } from "lodash";
+
+const components = [];
+const modules = import.meta.globEager("./*.vue");
+Object.entries(modules).forEach(([path, m]) => {
+  const componentFiles = upperFirst(
+    camelCase(
+      path
+        .split("/")
+        .pop()
+        .replace(/\.\w+$/, "")
+    )
+  );
+
+  components.push(m.default);
 });
 
 export default components;

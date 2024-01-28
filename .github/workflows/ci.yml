@@ -19,7 +19,7 @@ jobs:
       - name: Setup node env 🏗
         uses: actions/setup-node@master
         with:
-          node-version: 16
+          node-version: 20
           check-latest: true
           cache: 'npm'
 
@@ -37,8 +37,8 @@ jobs:
         with:
           browser: chrome
           install: false
-          start: npm run serve
-          wait-on: http://localhost:8080/
+          start: npm run dev
+          wait-on: http://localhost:5173/
           config-file: cypress.config.js
           spec: "tests/e2e/**/*"
           record: true
@@ -74,5 +74,5 @@ jobs:
           name: code-coverage-report
           path: combined-coverage
 
-      - name: Run build bundle 📦
-        run: npm run build-bundle
+      - name: Run build 📦
+        run: npm run build
