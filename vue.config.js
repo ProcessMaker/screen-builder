@@ -11,6 +11,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 module.exports = {
+  lintOnSave: false,
   runtimeCompiler: true,
   lintOnSave: false,
   transpileDependencies: ["vuetable-2"],

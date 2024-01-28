@@ -20,27 +20,20 @@
   </div>
 </template>
 
-
 <script>
-import mustacheEvaluation from '../../mixins/mustacheEvaluation';
-import { dateUtils } from '@processmaker/vue-form-elements';
+import { formatIfDate as dateUtilsFormatIfDate } from "@processmaker/vue-form-elements";
+import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 
 export default {
-  name: 'FormRecordListStatic',
+  name: "FormRecordListStatic",
+  components: {},
   mixins: [mustacheEvaluation],
-  props: ['label', 'fields', 'value', 'editable', '_config', 'form'],
-  components: {
-  },
-  mounted() {
-  },
-  data() {
-    return {
-    };
-  },
+  props: ["label", "fields", "value", "editable", "_config", "form"],
+  mounted() {},
   methods: {
     formatIfDate(string) {
-      return dateUtils.formatIfDate(string);
-    },
-  },
+      return dateUtilsFormatIfDate(string);
+    }
+  }
 };
 </script>
