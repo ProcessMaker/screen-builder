@@ -35,7 +35,6 @@ import WatchersForm from "./watchers-form.vue";
 import WatchersList from "./watchers-list.vue";
 import WatchersPopup from "./watchers-popup.vue";
 import WatchersSynchronous from "./watchers-synchronous.vue";
-import globalProperties from "../global-properties";
 import {
   DataFormatProperty,
   DataTypeBooleanProperty,
@@ -45,11 +44,35 @@ import {
 } from "../VariableDataTypeProperties";
 import FormListTable from "./renderer/form-list-table.vue";
 import FormAnalyticsChart from "./renderer/form-analytics-chart.vue";
+import accordions from "@/components/accordions";
+import VariableNameGenerator from "@/components/VariableNameGenerator";
 
 const rendererComponents = {
   ...renderer,
   FormMultiColumn
 };
+export {default as globalProperties, formTypes} from "../global-properties";
+export {
+  bgcolorProperty,
+  colorProperty,
+  javascriptReservedKeywords,
+  keyNameProperty,
+  labelProperty,
+  buttonLabelProperty,
+  placeholderProperty,
+  helperTextProperty,
+  readonlyProperty,
+  disabledProperty,
+  validationRulesProperty,
+  toggleStyleProperty,
+  buttonVariantStyleProperty,
+  defaultValueProperty,
+  buttonTypeEvent,
+  tooltipProperty,
+  deviceVisibilityProperty,
+  LoadingSubmitButtonProperty,
+  LabelSubmitButtonProperty
+} from "../form-control-common-properties";
 
 // Export our named exports
 export {
@@ -66,12 +89,14 @@ export {
   WatchersList,
   WatchersPopup,
   WatchersSynchronous,
-  globalProperties,
   DataTypeProperty,
   DataTypeWithoutDateProperty,
   DataTypeBooleanProperty,
   DataTypeDateTimeProperty,
-  DataFormatProperty
+  DataFormatProperty,
+  globalErrorsModule,
+  accordions,
+  VariableNameGenerator
 };
 export * from "./inspector";
 export * from "./renderer";
