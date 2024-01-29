@@ -1,6 +1,6 @@
 name: ci
 
-on: 
+on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
 
@@ -19,7 +19,7 @@ jobs:
       - name: Setup node env 🏗
         uses: actions/setup-node@master
         with:
-          node-version: 16
+          node-version: 20
           check-latest: true
           cache: 'npm'
 
@@ -36,8 +36,8 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          start: npm run serve
-          wait-on: http://localhost:8080/
+          start: npm run dev -- --host
+          wait-on: http://localhost:5173/
           config-file: cypress.json
           spec: "tests/e2e/**/*"
           record: true
@@ -73,5 +73,5 @@ jobs:
           name: code-coverage-report
           path: combined-coverage
 
-      - name: Run build bundle 📦
-        run: npm run build-bundle
+      - name: Run build 📦
+        run: npm run build

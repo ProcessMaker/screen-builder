@@ -473,6 +473,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer
 } from "@processmaker/vue-form-elements";
+import Validator from "@chantouchsek/validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
@@ -486,7 +487,6 @@ import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 
-const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -647,11 +647,11 @@ export default {
     filteredControlsGrouped() {
       const grouped = this.filteredControls.reduce((groups, control) => {
         let groupName = _.get(control, 'group', null);
-        
+
         if (!groupName) {
           groupName = DEFAULT_GROUP;
         }
-        
+
         let existingGroupIndex = groups.findIndex((group) => {
           return group.name === groupName;
         });
@@ -659,7 +659,7 @@ export default {
         if (existingGroupIndex === -1) {
           groups.push({
             name: groupName,
-            order: this.getGroupOrder(groupName), 
+            order: this.getGroupOrder(groupName),
             elements: []
           });
           existingGroupIndex = groups.length - 1;
