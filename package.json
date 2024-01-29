@@ -1,33 +1,46 @@
 {
   "name": "@processmaker/screen-builder",
-  "version": "2.80.0",
+  "version": "2.82.0",
   "scripts": {
+    "dev": "vite",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vite build",
+    "preview": "vite preview",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name vue-form-builder ./src/components/index.js",
+    "build-bundle": "npm run build",
     "lint-fix": "vue-cli-service lint",
-    "open-cypress": "TZ=UTC nyc cypress open",
-    "run-cypress": "TZ=UTC nyc cypress run",
+    "open-cypress": "NODE_ENV=test TZ=UTC nyc cypress open",
+    "run-cypress": "NODE_ENV=test TZ=UTC nyc cypress run",
     "test": "vue-cli-service test:unit"
   },
-  "main": "./dist/vue-form-builder.common.js",
+  "main": "./dist/vue-form-builder.umd.js",
+  "module": "./dist/vue-form-builder.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-form-builder.es.js",
+      "require": "./dist/vue-form-builder.umd.js"
+    },
+    "./dist/vue-form-builder.css": {
+      "import": "./dist/vue-form-builder.css",
+      "require": "./dist/vue-form-builder.css"
+    }
+  },
   "files": [
-    "dist/*",
-    "src/*",
-    "public/*",
-    "*.json",
-    "*.js"
+    "dist/**",
+    "src/**"
   ],
   "dependencies": {
-    "axios-extensions": "^2.0.3",
+    "@chantouchsek/validatorjs": "1.2.3",
+    "axios-extensions": "^3.1.6",
     "lodash": "^4.17.21",
-    "lru-cache": "^7.14.0",
+    "lru-cache": "^10.0.1",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.27",
+    "monaco-editor": "^0.34.0",
     "scrollparent": "^2.0.1",
     "vue-loader": "^15.9.2",
+    "vue-monaco": "^0.3.2",
     "vue-simple-uploader": "^0.7.4",
     "vue-the-mask": "^0.11.1",
     "vuelidate": "^0.7.5"
@@ -38,17 +51,15 @@
     "@babel/eslint-parser": "^7.12.16",
     "@cypress/code-coverage": "^3.8.1",
     "@fortawesome/fontawesome-free": "^5.6.1",
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@panter/vue-i18next": "^0.15.2",
-    "@processmaker/vue-form-elements": "0.50.2",
-    "@processmaker/vue-multiselect": "^2.2.0",
-    "@vue/cli-plugin-babel": "^3.6.0",
-    "@vue/cli-plugin-e2e-cypress": "^4.0.3",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-plugin-unit-jest": "^4.3.0",
-    "@vue/cli-service": "^3.6.0",
+    "@processmaker/vue-form-elements": "0.51.0",
+    "@processmaker/vue-multiselect": "2.3.0",
+    "@vitejs/plugin-vue2": "^2.3.1",
     "@vue/test-utils": "^1.1.1",
-    "axios": "^0.21.2",
+    "axios": "^1.6.0",
     "babel-core": "7.0.0-bridge.0",
+    "babel-plugin-istanbul": "^6.1.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.19.0",
     "css-loader": "^5.2.7",
@@ -67,17 +78,16 @@
     "i18next": "^15.0.8",
     "identity-obj-proxy": "^3.0.0",
     "inputmask": "^5.0.7",
-    "monaco-editor-webpack-plugin": "~1.7.0",
     "mustache": "^3.0.1",
     "nyc": "^15.1.0",
     "prettier": "2.7.1",
     "sass": "^1.53.0",
-    "sass-loader": "^10.3.1",
     "v-calendar": "^0.9.7",
     "validatorjs": "^3.14.2",
+    "vite": "^4.0.4",
+    "vite-plugin-monaco-editor": "^1.1.0",
     "vue": "^2.6.12",
     "vue-deepset": "^0.6.3",
-    "vue-monaco": "^0.3.1",
     "vue-template-compiler": "^2.6.14",
     "vue-uniq-ids": "^1.0.0",
     "vue-upload-component": "^2.8.14",
@@ -88,15 +98,10 @@
   },
   "peerDependencies": {
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "0.50.2",
+    "@processmaker/vue-form-elements": "0.51.0",
     "i18next": "^15.0.8",
     "vue": "^2.6.12",
     "vuex": "^3.1.1"
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
   },
   "browserslist": [
     "> 1%",
