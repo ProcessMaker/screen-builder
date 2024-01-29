@@ -41,10 +41,18 @@ module.exports = {
 
   overrides: [
     {
-      files: [
-        "**/__tests__/*.{j,t}s?(x)",
-        "**/tests/unit/**/*.spec.{j,t}s?(x)"
-      ],
+      files: ["**/tests/**/*.{j,t}s?(x)", "**/tests/e2e/**/*.spec.{j,t}s?(x)"],
+      plugins: ["cypress"],
+      env: {
+        mocha: true,
+        "cypress/globals": true
+      },
+      rules: {
+        strict: "off"
+      }
+    },
+    {
+      files: ["**/tests/unit/**/*.spec.{j,t}s?(x)"],
       env: {
         jest: true
       }
