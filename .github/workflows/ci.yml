@@ -33,12 +33,12 @@ jobs:
       #        run: npm run test
 
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@latest
         with:
           install: false
-          start: npm run dev -- --host
+          start: npm run dev
           wait-on: http://localhost:5173/
-          config-file: cypress.json
+          config-file: cypress.config.json
           spec: "tests/e2e/**/*"
           record: true
           parallel: true
