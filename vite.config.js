@@ -36,6 +36,7 @@ export default defineConfig({
     extensions: [".js", ".mjs", ".vue", ".json"]
   },
   build: {
+    sourcemap: true,
     lib: {
       entry: resolve(__dirname, "src/components/index.js"),
       name: libraryName,
@@ -51,7 +52,9 @@ export default defineConfig({
         "moment-timezone",
         "lodash",
         "@processmaker/vue-form-elements",
-        "@processmaker/vue-multiselect"
+        "@processmaker/vue-multiselect",
+        "vue-monaco",
+        "monaco-editor"
       ],
       output: {
         exports: "named",
