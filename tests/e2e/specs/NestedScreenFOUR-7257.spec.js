@@ -1,6 +1,5 @@
 describe("FOUR-7257 validations", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
     cy.showValidationOnLoad();
   });

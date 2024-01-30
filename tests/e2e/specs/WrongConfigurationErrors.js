@@ -7,10 +7,9 @@ describe("Wrong Configuration Errors", () => {
       }
     });
     cy.openAcordeon("collapse-1");
-    cy.get("[data-cy=controls-FormInput]").drag(
-      "[data-cy=screen-drop-zone]",
-      "bottom"
-    );
+    cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-name]").clear().type("s.1");
     cy.get("[data-cy=mode-preview]").click();
@@ -21,7 +20,7 @@ describe("Wrong Configuration Errors", () => {
     );
   });
 
-  it.only("Screen with rendering problem in a component should not show a warning after the problematic component is deleted", () => {
+  it("Screen with rendering problem in a component should not show a warning after the problematic component is deleted", () => {
     cy.visit("/", {
       onBeforeLoad(win) {
         cy.stub(win.console, "warn").as("consoleWarn");
@@ -29,10 +28,9 @@ describe("Wrong Configuration Errors", () => {
       }
     });
     cy.openAcordeon("collapse-1");
-    cy.get("[data-cy=controls-FormInput]").drag(
-      "[data-cy=screen-drop-zone]",
-      "bottom"
-    );
+    cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-name]").clear().type("s.1");
     cy.get("[data-cy=mode-preview]").click();
@@ -42,10 +40,9 @@ describe("Wrong Configuration Errors", () => {
       "There was a problem rendering the screen"
     );
     cy.get("[data-cy=screen-element-container] .ml-auto > .btn-danger").click();
-    cy.get("[data-cy=controls-FormInput]").drag(
-      "[data-cy=screen-drop-zone]",
-      "bottom"
-    );
+    cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=mode-editor]").click();
     cy.get("@consoleError").should("not.to.be.called");
