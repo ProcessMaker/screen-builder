@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import moment from "moment-timezone";
+
 const timezoneTest = "America/Los_Angeles";
 moment.tz.setDefault(timezoneTest);
 
@@ -42,17 +43,20 @@ describe("Date Picker", () => {
 
     cy.wait(500);
 
-    let todayDateChanged = `${moment().format("YYYY-MM-DD")}T20:15:00`;
-    let today = moment.tz(todayDateChanged, timezoneTest);
+    const todayDateChanged = `${moment().format("YYYY-MM-DD")}T20:15:00`;
+    const today = moment.tz(todayDateChanged, timezoneTest);
 
-    cy.get('input[aria-label="New Date Picker"]').invoke('val')
-      .then(dateVal => {
-        let today2 = moment.tz(dateVal, timezoneTest);
+    cy.get('input[aria-label="New Date Picker"]')
+      .invoke("val")
+      .then((dateVal) => {
+        const today2 = moment.tz(dateVal, timezoneTest);
         let todayA = today;
         let todayB = today;
-        todayA = todayA.toISOString().substr(0,7);
-        todayB = todayB.toISOString().substr(13,(today.toISOString().length-1));
-        let datePicker = today2.toISOString();
+        todayA = todayA.toISOString().substr(0, 7);
+        todayB = todayB
+          .toISOString()
+          .substr(13, today.toISOString().length - 1);
+        const datePicker = today2.toISOString();
         expect(datePicker).to.contains(todayA);
         expect(datePicker).to.contains(todayB);
       });

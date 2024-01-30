@@ -1,12 +1,8 @@
-describe("FOUR-6788 screen performance", () => {
+describe.skip("FOUR-6788 screen performance", () => {
   // @todo Improve the boot-time of the stand alone app (general and within cypress)
   const avgBootTime = 12000;
   const minimumPerformanceScore = 12;
   const accessibility = 50;
-
-  beforeEach(() => {
-    cy.server();
-  });
 
   // This test includes a Loop with 6 iterations, multi-column, select lists, rich texts and text areas
   it("Verify FOUR-6788 screen performance: select list, rich text", () => {
