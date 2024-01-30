@@ -21,10 +21,11 @@
             <button
               v-uni-aria-describedby="event.id.toString()"
               :href="getNewRequestLinkHref(process, event)"
-              class="btn btn-primary btn-sm"
+              class="btn btn-outline-primary btn-sm"
               @click.prevent="newRequestLink(process, event)"
             >
-              <i class="fas fa-caret-square-right mr-1"></i> {{ $t("Start") }}
+              {{ $t("Start") }}
+              <i class="fas fa-play mr-1"></i>
             </button>
           </div>
         </div>
