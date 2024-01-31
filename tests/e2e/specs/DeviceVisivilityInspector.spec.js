@@ -303,8 +303,9 @@ describe("Device Visiblility Inspector", () => {
         expect($lis).to.have.length(2); // true
       });
   });
-  it.skip("Disabled device visiblility", () => {
+  it("Disabled device visiblility", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
