@@ -92,7 +92,7 @@ describe("Loop control", () => {
     );
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container] .column-draggable div",
-      { position: "bottom" }
+      { position: "top" }
     );
 
     // Configure Validation rule
@@ -104,7 +104,9 @@ describe("Loop control", () => {
 
     // Set Visibility rule
     cy.get("[data-cy=accordion-Advanced]").click();
-    cy.get("[data-cy=inspector-conditionalHide]").clear().type('name != "foo"');
+    cy.get("[data-cy=inspector-conditionalHide]")
+      .clear()
+      .type('name !== "foo"');
 
     // Add submit button
     cy.get("[data-cy=controls-FormButton]")
@@ -114,11 +116,13 @@ describe("Loop control", () => {
     cy.setPreviewDataInput('{"loop_1":[{"name": "foo"}]}');
 
     cy.get("[data-cy=mode-preview]").click();
-    cy.get("[data-cy=preview-content] [name=form_input_2]").should("not.exist");
+    cy.get("[data-cy=preview-content] [name=form_input_2]").should(
+      "not.be.visible"
+    );
 
     // submit form valid
     cy.get(
-      "[data-cy=preview-content] [name=\"Default\"] > :nth-child(1) > .form-group > .btn"
+      "[data-cy=preview-content] [name=\"Default\"] > :nth-child(2) > .form-group > .btn"
     ).click();
     cy.on("window:alert", (str) => {
       expect(str).to.equal("Preview Form was Submitted");
@@ -200,10 +204,10 @@ describe("Loop control", () => {
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
       ":nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > .row > :nth-child(1)"
-    ).should("not.exist");
+    ).should("not.be.visible");
 
     // Ensure form cannot be submitted
-    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+    cy.get('[name="Default"] > :nth-child(2) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal(false));
 
@@ -270,11 +274,11 @@ describe("Loop control", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[name="loop_1"] > :nth-child(2) > :nth-child(1)').should(
-      "not.exist"
+      "not.be.visible"
     );
 
     // Ensure form cannot be submitted
-    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+    cy.get('[name="Default"] > :nth-child(2) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal(false));
 
@@ -287,7 +291,7 @@ describe("Loop control", () => {
       .blur();
 
     // Ensure form can be submitted
-    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+    cy.get('[name="Default"] > :nth-child(2) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal("Preview Form was Submitted"));
   });
@@ -377,7 +381,7 @@ describe("Loop control", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[name="loop_1"] > :nth-child(2) > :nth-child(1)').should(
-      "not.exist"
+      "not.be.visible"
     );
     cy.wait(1000);
     cy.get(
@@ -388,7 +392,7 @@ describe("Loop control", () => {
       .should("be.visible");
 
     // Ensure form cannot be submitted
-    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+    cy.get('[name="Default"] > :nth-child(2) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal(false));
 
@@ -401,7 +405,7 @@ describe("Loop control", () => {
       .blur();
 
     // Ensure form can be submitted
-    cy.get('[name="Default"] > :nth-child(1) > .form-group > .btn')
+    cy.get('[name="Default"] > :nth-child(2) > .form-group > .btn')
       .click()
       .then(() => expect(alert).to.equal("Preview Form was Submitted"));
   });
