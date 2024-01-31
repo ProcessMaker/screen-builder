@@ -623,7 +623,7 @@ describe("Record list", () => {
     });
   });
 
-  it.skip("Check deleting the correct record in recordlist with empty after sorting", () => {
+  it("Check deleting the correct record in recordlist with empty after sorting", () => {
     cy.loadFromJson("record_list_date_input.json", 0);
     cy.get("[data-cy=mode-preview]").click();
 
