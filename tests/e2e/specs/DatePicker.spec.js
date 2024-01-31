@@ -373,7 +373,7 @@ describe("Date Picker", () => {
       "[data-cy=screen-element-container]",
       { position: "bottom" }
     );
-    cy.get("[data-cy=screen-element-container]").first().click();
+    cy.get("[data-cy=screen-element-container]").last().click();
     cy.setMultiselect("[data-cy=inspector-dataFormat]", "Datetime");
     cy.get("[data-cy=accordion-Configuration]").click();
     cy.get("[data-cy=inspector-minDate]")
