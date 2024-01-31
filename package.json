@@ -2,17 +2,13 @@
   "name": "@processmaker/screen-builder",
   "version": "2.83.0",
   "scripts": {
-    "dev": "vite",
-    "serve": "vue-cli-service serve",
+    "dev": "VITE_COVERAGE=true vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "build-bundle": "npm run build",
-    "lint-fix": "vue-cli-service lint",
-    "open-cypress": "NODE_ENV=test TZ=UTC nyc cypress open",
-    "run-cypress": "NODE_ENV=test TZ=UTC nyc cypress run",
-    "test": "vue-cli-service test:unit"
+    "open-cypress": "nyc cypress open",
+    "run-cypress": "TZ=UTC nyc cypress run"
   },
   "main": "./dist/vue-form-builder.umd.js",
   "module": "./dist/vue-form-builder.es.js",
@@ -88,6 +84,7 @@
     "v-calendar": "^0.9.7",
     "validatorjs": "^3.14.2",
     "vite": "^4.0.4",
+    "vite-plugin-istanbul": "^5.0.0",
     "vite-plugin-monaco-editor": "^1.1.0",
     "vue": "^2.6.12",
     "vue-deepset": "^0.6.3",
