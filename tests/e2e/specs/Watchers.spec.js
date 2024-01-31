@@ -1,4 +1,4 @@
-describe.skip("Watchers", () => {
+describe("Watchers", () => {
   beforeEach(() => {
     cy.intercept(
       "GET",
@@ -64,6 +64,7 @@ describe.skip("Watchers", () => {
 
   it("CRUD of watchers", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -73,7 +74,7 @@ describe.skip("Watchers", () => {
     cy.get('[data-cy="watchers-watcher-name"]').clear().type("Watcher test");
     cy.setMultiselect('[data-cy="watchers-watcher-variable"]', "form_input_1");
     cy.get(
-      ".custom-switch:has([data-cy=\"watchers-watcher-synchronous\"]) label"
+      '.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label'
     ).click();
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setMultiselect('[data-cy="watchers-watcher-source"]', "Test Script");
@@ -103,7 +104,7 @@ describe.skip("Watchers", () => {
     cy.get('[data-cy="watchers-watcher-name"]').clear().type("Watcher test 2");
     cy.setMultiselect('[data-cy="watchers-watcher-variable"]', "form_input_1");
     cy.get(
-      ".custom-switch:has([data-cy=\"watchers-watcher-synchronous\"]) label"
+      '.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label'
     ).click();
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setMultiselect(
@@ -133,6 +134,7 @@ describe.skip("Watchers", () => {
   });
   it("Test cancel", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -149,11 +151,13 @@ describe.skip("Watchers", () => {
   });
   it("Test variables in multi columns", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormMultiColumn]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
     );
     cy.get("[data-cy=screen-element-container]").click();
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container] .column-draggable",
       { position: "bottom" }
@@ -167,6 +171,7 @@ describe.skip("Watchers", () => {
 
   it("Test variables in nested screens", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormNestedScreen]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -174,7 +179,7 @@ describe.skip("Watchers", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-screen] div.multiselect").click();
     cy.get(
-      "[data-cy=inspector-screen] span:contains(\"Sub screen example\"):first"
+      '[data-cy=inspector-screen] span:contains("Sub screen example"):first'
     ).click();
     // Create a calculated watcher
     cy.get('[data-cy="topbar-watchers"]').click();
@@ -187,6 +192,7 @@ describe.skip("Watchers", () => {
 
   it("Create duplicated properties", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -196,7 +202,7 @@ describe.skip("Watchers", () => {
     cy.get('[data-cy="watchers-watcher-name"]').clear().type("Watcher test");
     cy.setMultiselect('[data-cy="watchers-watcher-variable"]', "form_input_1");
     cy.get(
-      ".custom-switch:has([data-cy=\"watchers-watcher-synchronous\"]) label"
+      '.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label'
     ).click();
     cy.get('[data-cy="watchers-accordion-source"]').click();
     cy.setMultiselect('[data-cy="watchers-watcher-source"]', "Test Script");
@@ -245,14 +251,15 @@ describe.skip("Watchers", () => {
     );
 
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container]",
-      { position: "bottom" }
+      { position: "top" }
     );
-    cy.get("[data-cy=screen-element-container]").eq(1).click();
+    cy.get("[data-cy=screen-element-container]").last().click();
     cy.get("[data-cy=inspector-name]").clear().type("user.name");
 
     // Create
@@ -283,7 +290,7 @@ describe.skip("Watchers", () => {
     cy.get("#watchers-synchronous").should("be.visible");
     // wait for watcher execution
     cy.wait(2000);
-    cy.get("#watchers-synchronous").should("not.be.visible");
+    cy.get("#watchers-synchronous").should("not.exist");
     cy.assertPreviewData({
       form_input_2: "name",
       user: {
@@ -305,14 +312,15 @@ describe.skip("Watchers", () => {
     );
 
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container]",
-      { position: "bottom" }
+      { position: "top" }
     );
-    cy.get("[data-cy=screen-element-container]").eq(1).click();
+    cy.get("[data-cy=screen-element-container]").last().click();
     cy.get("[data-cy=inspector-name]").clear().type("user.name");
 
     // Create
@@ -337,7 +345,7 @@ describe.skip("Watchers", () => {
       .clear()
       .type("name");
     // Assertion: Watcher popup is not displayed
-    cy.get("#watchers-synchronous").should("not.be.visible");
+    cy.get("#watchers-synchronous").should("not.exist");
     // wait for watcher execution
     cy.wait(3000);
     cy.assertPreviewData({
@@ -350,25 +358,24 @@ describe.skip("Watchers", () => {
   it("Test error in synchronous watcher", () => {
     // Mock script response
 
-    cy.intercept({
-      method: "POST",
-      url: "/api/1.0/scripts/execute/1",
-      response: JSON.stringify({
+    cy.intercept("POST", "/api/1.0/scripts/execute/1", {
+      body: JSON.stringify({
         exception: "Exception",
         message: "Test exception response"
       }),
-      status: 403
+      statusCode: 403
     });
 
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container]",
-      { position: "bottom" }
+      { position: "top" }
     );
-    cy.get("[data-cy=screen-element-container]").eq(1).click();
+    cy.get("[data-cy=screen-element-container]").last().click();
     cy.get("[data-cy=inspector-name]").clear().type("user.name");
 
     // Create
@@ -461,7 +468,7 @@ describe.skip("Watchers", () => {
     cy.get("#watchers-synchronous").should("be.visible");
     // wait for watcher execution
     cy.wait(2000);
-    cy.get("#watchers-synchronous").should("not.be.visible");
+    cy.get("#watchers-synchronous").should("not.exist");
     cy.wait(2000);
 
     // Assertion: Check listValues was loaded
@@ -501,6 +508,7 @@ describe.skip("Watchers", () => {
   });
   it("Focuses the first field that has an error", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
