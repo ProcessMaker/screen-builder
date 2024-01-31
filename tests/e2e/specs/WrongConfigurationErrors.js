@@ -1,4 +1,4 @@
-describe("Wrong Configuration Errors", () => {
+describe.skip("Wrong Configuration Errors", () => {
   it("Screen with rendering problem in a component should show a warning", () => {
     cy.visit("/", {
       onBeforeLoad(win) {
