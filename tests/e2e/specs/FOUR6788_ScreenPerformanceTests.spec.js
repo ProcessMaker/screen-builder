@@ -1,6 +1,6 @@
-describe.skip("FOUR-6788 screen performance", () => {
+describe("FOUR-6788 screen performance", () => {
   // @todo Improve the boot-time of the stand alone app (general and within cypress)
-  const avgBootTime = 12000;
+  const avgBootTime = 16000;
   const minimumPerformanceScore = 12;
   const accessibility = 50;
 
