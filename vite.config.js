@@ -82,7 +82,7 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ["coverage", ".nyc-output"]
+      ignored: ["coverage/**", ".nyc-output/**"]
     }
   }
 });
