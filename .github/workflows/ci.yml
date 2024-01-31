@@ -33,7 +33,7 @@ jobs:
       #        run: npm run test
 
       - name: Cypress run
-        uses: cypress-io/github-action@latest
+        uses: cypress-io/github-action@v6.6.1
         with:
           install: false
           start: npm run dev
