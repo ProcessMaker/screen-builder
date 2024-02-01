@@ -886,8 +886,8 @@ export default [
     rendererBinding: "FormListTable",
     control: {
       popoverContent: "Create List Table",
-      order: 3.0,
-      group: 'Files',
+      order: 6.5,
+      group: 'Dashboards',
       label: "List Table",
       component: "FormListTable",
       "editor-component": "FormListTable",
