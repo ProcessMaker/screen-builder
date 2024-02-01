@@ -1,24 +1,18 @@
 <template>
-  <div class="container mt-4">
-    <div class="card">
-      <div
-        class="card-header d-flex justify-content-between align-items-center"
-      >
-        <span class="control-text">{{ title }}</span>
-        <b-link @click="openExternalLink">
-          <i class="fas fa-external-link-alt custom-icon" />
-        </b-link>
-      </div>
-      <div>
-        <div class="d-flex flex-wrap p-2">
-          <template>
-            <b-col cols="12">
-              <b-card-text>
-                <b-embed type="iframe" :src="graphic.link"></b-embed>
-              </b-card-text>
-            </b-col>
-          </template>
-        </div>
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span class="control-text">{{ title }}</span>
+      <b-link @click="openExternalLink">
+        <i class="fas fa-external-link-alt custom-icon" />
+      </b-link>
+    </div>
+    <div>
+      <div class="d-flex flex-wrap p-2">
+        <b-col cols="12">
+          <b-card-text>
+            <b-embed type="iframe" :src="graphic.link"></b-embed>
+          </b-card-text>
+        </b-col>
       </div>
     </div>
   </div>
@@ -33,11 +27,6 @@ export default {
       graphic: []
     };
   },
-  methods: {
-    openExternalLink() {
-      window.open("/package-analytics-reporting", "_blank");
-    }
-  },
   watch: {
     listChartOption() {
       if (this.listChartOption && this.listChartOption.name) {
@@ -48,6 +37,11 @@ export default {
   mounted() {
     if (this.listChartOption && this.listChartOption.name) {
       this.graphic = this.listChartOption;
+    }
+  },
+  methods: {
+    openExternalLink() {
+      window.open("/package-analytics-reporting", "_blank");
     }
   }
 };
