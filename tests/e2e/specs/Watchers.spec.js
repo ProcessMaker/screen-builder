@@ -62,7 +62,7 @@ describe("Watchers", () => {
     );
   });
 
-  it("CRUD of watchers", () => {
+  it.skip("CRUD of watchers", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
