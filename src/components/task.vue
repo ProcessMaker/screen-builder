@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import VueFormRenderer from './vue-form-renderer.vue';
 import _ from 'lodash';
 import simpleErrorMessage from './SimpleErrorMessage.vue';
 
@@ -80,7 +81,8 @@ const defaultBeforeLoadTask = () => {
 
 export default {
   components:{
-    simpleErrorMessage
+    simpleErrorMessage,
+    VueFormRenderer
   },
   props: {
     initialTaskId: { type: Number, default: null },
