@@ -38,7 +38,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("setMultiselect", (selector, text, index = 0) => {
-  cy.get(`${selector}`).click();
+  cy.get(`${selector}`).click({ waitForAnimations: true });
   cy.get(`${selector} input`).clear().type(text);
   cy.get(
     `${selector} span:not(.multiselect__option--disabled) span:contains("${text}")`
@@ -282,7 +282,7 @@ Cypress.Commands.add("showValidationOnLoad", () => {
 
 Cypress.Commands.add("openAcordeon", (name) => {
   cy.get(`button[aria-controls='${name}']`).click({
-    waitForAnimations: 500,
+    waitForAnimations: true,
     force: true
   });
 });
