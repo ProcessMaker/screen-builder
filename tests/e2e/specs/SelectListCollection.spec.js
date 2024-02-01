@@ -140,32 +140,32 @@ describe("select list mustache", () => {
     // Select all the row
     cy.get('[data-cy="screen-field-form_select_list_1"]')
       .parent()
-      .find("label:contains(\"1234\")")
+      .find('label:contains("1234")')
       .click();
     // Select property `data.name`
     cy.get('[data-cy="screen-field-form_select_list_2"]')
       .parent()
-      .find("label:contains(\"Oliver\")")
+      .find('label:contains("Oliver")')
       .click();
     // Select all the row
     cy.get('[data-cy="screen-field-form_select_list_3"]')
       .parent()
-      .find("label:contains(\"DNI: 1234 Name: Oliver Smith\")")
+      .find('label:contains("DNI: 1234 Name: Oliver Smith")')
       .click();
     // Select data.dni
     cy.get('[data-cy="screen-field-form_select_list_4"]')
       .parent()
-      .find("label:contains(\"Oliver Smith\")")
+      .find('label:contains("Oliver Smith")')
       .click();
     // Select {{ data.name.first }} {{ data.name.last }}
     cy.get('[data-cy="screen-field-form_select_list_5"]')
       .parent()
-      .find("label:contains(\"Oliver Smith\")")
+      .find('label:contains("Oliver Smith")')
       .click();
     // Select {{ data.id }}
     cy.get('[data-cy="screen-field-form_select_list_6"]')
       .parent()
-      .find("label:contains(\"Oliver Smith\")")
+      .find('label:contains("Oliver Smith")')
       .click();
 
     // Check the data of the screen
@@ -203,56 +203,56 @@ describe("select list mustache", () => {
     // Select all the row
     cy.get('[data-cy="screen-field-form_select_list_1"]')
       .parent()
-      .find("label:contains(\"1234\")")
+      .find('label:contains("1234")')
       .click();
     cy.get('[data-cy="screen-field-form_select_list_1"]')
       .parent()
-      .find("label:contains(\"5678\")")
+      .find('label:contains("5678")')
       .click();
     // Select property `data.name`
     cy.get('[data-cy="screen-field-form_select_list_2"]')
       .parent()
-      .find("label:contains(\"Oliver\")")
+      .find('label:contains("Oliver")')
       .click();
     cy.get('[data-cy="screen-field-form_select_list_2"]')
       .parent()
-      .find("label:contains(\"John\")")
+      .find('label:contains("John")')
       .click();
     // Select all the row
     cy.get('[data-cy="screen-field-form_select_list_3"]')
       .parent()
-      .find("label:contains(\"DNI: 1234 Name: Oliver Smith\")")
+      .find('label:contains("DNI: 1234 Name: Oliver Smith")')
       .click();
     cy.get('[data-cy="screen-field-form_select_list_3"]')
       .parent()
-      .find("label:contains(\"DNI: 5678 Name: John Doe\")")
+      .find('label:contains("DNI: 5678 Name: John Doe")')
       .click();
     // Select data.dni
     cy.get('[data-cy="screen-field-form_select_list_4"]')
       .parent()
-      .find("label:contains(\"Oliver Smith\")")
+      .find('label:contains("Oliver Smith")')
       .click();
     cy.get('[data-cy="screen-field-form_select_list_4"]')
       .parent()
-      .find("label:contains(\"John Doe\")")
+      .find('label:contains("John Doe")')
       .click();
     // Select {{ data.name.first }} {{ data.name.last }}
     cy.get('[data-cy="screen-field-form_select_list_5"]')
       .parent()
-      .find("label:contains(\"Oliver Smith\")")
+      .find('label:contains("Oliver Smith")')
       .click();
     cy.get('[data-cy="screen-field-form_select_list_5"]')
       .parent()
-      .find("label:contains(\"John Doe\")")
+      .find('label:contains("John Doe")')
       .click();
     // Select {{ data.id }}
     cy.get('[data-cy="screen-field-form_select_list_6"]')
       .parent()
-      .find("label:contains(\"Oliver Smith\")")
+      .find('label:contains("Oliver Smith")')
       .click();
     cy.get('[data-cy="screen-field-form_select_list_6"]')
       .parent()
-      .find("label:contains(\"John Doe\")")
+      .find('label:contains("John Doe")')
       .click();
 
     // Check the data of the screen
@@ -317,7 +317,7 @@ describe("select list mustache", () => {
     cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption("1234");
     cy.get('[data-cy="screen-field-form_select_list_1"]').click();
     cy.get(
-      "[data-cy=\"screen-field-form_select_list_1\"] li:contains(\"5678\")"
+      '[data-cy="screen-field-form_select_list_1"] li:contains("5678")'
     ).click();
     // Select property `data.name`
     cy.get('[data-cy="screen-field-form_select_list_2"]').selectOption(
@@ -325,7 +325,7 @@ describe("select list mustache", () => {
     );
     cy.get('[data-cy="screen-field-form_select_list_2"]').click();
     cy.get(
-      "[data-cy=\"screen-field-form_select_list_2\"] li:contains(\"John\")"
+      '[data-cy="screen-field-form_select_list_2"] li:contains("John")'
     ).click();
     // Select all the row
     cy.get('[data-cy="screen-field-form_select_list_3"]').selectOption(
@@ -333,7 +333,7 @@ describe("select list mustache", () => {
     );
     cy.get('[data-cy="screen-field-form_select_list_3"]').click();
     cy.get(
-      "[data-cy=\"screen-field-form_select_list_3\"] li:contains(\"DNI: 5678 Name: John Doe\")"
+      '[data-cy="screen-field-form_select_list_3"] li:contains("DNI: 5678 Name: John Doe")'
     ).click();
     // Select data.dni
     cy.get('[data-cy="screen-field-form_select_list_4"]').selectOption(
@@ -341,7 +341,7 @@ describe("select list mustache", () => {
     );
     cy.get('[data-cy="screen-field-form_select_list_4"]').click();
     cy.get(
-      "[data-cy=\"screen-field-form_select_list_4\"] li:contains(\"John Doe\")"
+      '[data-cy="screen-field-form_select_list_4"] li:contains("John Doe")'
     ).click();
     // Select {{ data.name.first }} {{ data.name.last }}
     cy.get('[data-cy="screen-field-form_select_list_5"]').selectOption(
@@ -349,7 +349,7 @@ describe("select list mustache", () => {
     );
     cy.get('[data-cy="screen-field-form_select_list_5"]').click();
     cy.get(
-      "[data-cy=\"screen-field-form_select_list_5\"] li:contains(\"John Doe\")"
+      '[data-cy="screen-field-form_select_list_5"] li:contains("John Doe")'
     ).click();
     // Select {{ data.id }}
     cy.get('[data-cy="screen-field-form_select_list_6"]').selectOption(
@@ -357,7 +357,7 @@ describe("select list mustache", () => {
     );
     cy.get('[data-cy="screen-field-form_select_list_6"]').click();
     cy.get(
-      "[data-cy=\"screen-field-form_select_list_6\"] li:contains(\"John Doe\")"
+      '[data-cy="screen-field-form_select_list_6"] li:contains("John Doe")'
     ).click();
 
     // Check the data of the screen

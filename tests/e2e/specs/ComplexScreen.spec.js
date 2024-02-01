@@ -70,7 +70,7 @@ describe("Complex screen", () => {
     cy.get("[data-cy=preview-content] [name=form_checkbox_1]").click();
 
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
     ).pickToday();
 
     cy.get(
@@ -233,7 +233,7 @@ describe("Complex screen", () => {
     );
 
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_5\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_5"]'
     ).pickToday();
 
     cy.get("[data-cy=preview-content] [name=form_text_area_3]").type(
@@ -245,7 +245,7 @@ describe("Complex screen", () => {
     ).pickTodayWithTime("8", "15", "AM");
 
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_3\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_3"]'
     ).click();
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_select_list_3"]'

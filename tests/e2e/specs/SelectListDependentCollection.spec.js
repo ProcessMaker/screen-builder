@@ -97,7 +97,7 @@ describe("select list dependent collection", () => {
     cy.get("[data-cy=mode-preview]").click();
 
     // Select a valid option
-    cy.get("[data-cy=\"screen-field-form_select_list_1\"]").selectOption(
+    cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption(
       "Nevada"
     );
 
@@ -110,8 +110,8 @@ describe("select list dependent collection", () => {
   it("Without dependent list option checked", () => {
     cy.loadFromJson("select_list_dependent_collection.json", 0);
     cy.get("[data-cy=mode-preview]").click();
-    cy.get("[data-cy=\"screen-field-state\"]").selectOption("Nevada");
-    cy.get("[data-cy=\"screen-field-city\"]").selectOption("Henderson");
+    cy.get('[data-cy="screen-field-state"]').selectOption("Nevada");
+    cy.get('[data-cy="screen-field-city"]').selectOption("Henderson");
     cy.assertPreviewData({
       state: "NV",
       city: "789",
@@ -120,7 +120,7 @@ describe("select list dependent collection", () => {
     });
 
     // Updating a value referenced with mustache in the PMQL should trigger a backend call
-    cy.get("[data-cy=\"screen-field-id_gt_than\"]").type("44");
+    cy.get('[data-cy="screen-field-id_gt_than"]').type("44");
 
     cy.assertPreviewData({
       state: "NV",
@@ -141,7 +141,7 @@ describe("select list dependent collection", () => {
 
     const assert = () => {
       cy.get("[data-cy=mode-preview]").click();
-      cy.get("[data-cy=\"screen-field-city\"] .multiselect__single").should(
+      cy.get('[data-cy="screen-field-city"] .multiselect__single').should(
         "have.text",
         "Henderson"
       );

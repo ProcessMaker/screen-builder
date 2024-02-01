@@ -74,7 +74,7 @@ beforeEach(() => {
   cy.get(".form-check-label").click();
   cy.get("div.multiselect").click();
   cy.get(
-    ".multiselect__element > .multiselect__option span:contains(\"page2\")"
+    '.multiselect__element > .multiselect__option span:contains("page2")'
   ).click();
   cy.get('button:contains("Columns")').click();
   cy.get(".col-2 > .fas").click();
@@ -98,7 +98,7 @@ describe("Pagination", () => {
   it("Should Display Data When Navigating Pages", () => {
     cy.setPreviewDataInput(data);
     cy.get(
-      "[data-cy=table-pagination] button[aria-label=\"Go to last page\"]"
+      '[data-cy=table-pagination] button[aria-label="Go to last page"]'
     ).click();
     cy.get('[data-cy="table"] tbody').find("tr").should("have.length", "1");
   });

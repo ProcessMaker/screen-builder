@@ -122,7 +122,7 @@ describe("Loop control", () => {
 
     // submit form valid
     cy.get(
-      "[data-cy=preview-content] [name=\"Default\"] > :nth-child(2) > .form-group > .btn"
+      '[data-cy=preview-content] [name="Default"] > :nth-child(2) > .form-group > .btn'
     ).click();
     cy.on("window:alert", (str) => {
       expect(str).to.equal("Preview Form was Submitted");
@@ -385,7 +385,7 @@ describe("Loop control", () => {
     );
     cy.wait(1000);
     cy.get(
-      ":nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [data-cy=\"screen-field-Nested Screen\"] > [data-cy=screen-renderer] > :nth-child(1) > .page > [selector=\"first-name\"] > .form-group > [data-cy=screen-field-firstname]"
+      ':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [data-cy="screen-field-Nested Screen"] > [data-cy=screen-renderer] > :nth-child(1) > .page > [selector="first-name"] > .form-group > [data-cy=screen-field-firstname]'
     )
       .parent()
       .find(".invalid-feedback")

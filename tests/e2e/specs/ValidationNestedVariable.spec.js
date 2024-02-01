@@ -68,13 +68,13 @@ describe("Validate nested variable", () => {
     ).should("not.be.visible");
     // Should not be required
     cy.get(
-      "[data-cy=preview-content] [name=\"user.properties.three.form_input_1\"]"
+      '[data-cy=preview-content] [name="user.properties.three.form_input_1"]'
     )
       .parent()
       .should("not.contain.text", "Field is required");
     // Should not be a valid email
     cy.get(
-      "[data-cy=preview-content] [name=\"user.properties.three.form_input_1\"]"
+      '[data-cy=preview-content] [name="user.properties.three.form_input_1"]'
     )
       .parent()
       .should("not.contain.text", "Must be a valid email address");
@@ -87,7 +87,7 @@ describe("Validate nested variable", () => {
 
     // The field is required
     cy.get(
-      "[data-cy=preview-content] [name=\"user.properties.three.form_input_1\"]"
+      '[data-cy=preview-content] [name="user.properties.three.form_input_1"]'
     )
       .parent()
       .should("contain.text", "Field is required");
@@ -99,7 +99,7 @@ describe("Validate nested variable", () => {
       .clear()
       .type("invalid email");
     cy.get(
-      "[data-cy=preview-content] [name=\"user.properties.three.form_input_1\"]"
+      '[data-cy=preview-content] [name="user.properties.three.form_input_1"]'
     )
       .parent()
       .should("contain.text", "Must be a valid email address");

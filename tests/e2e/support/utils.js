@@ -39,7 +39,7 @@ export function previewScreen() {
  * @return nothing returns
  */
 export function previewScreenWebMobile(mode) {
-  const selectorMode = "[data-cy=\"device-screen-mode-button\"]".replace(
+  const selectorMode = '[data-cy="device-screen-mode-button"]'.replace(
     "mode",
     mode
   );
@@ -60,7 +60,7 @@ export function addControlInsideTable(numColumn, control) {
       numColumn
     );
   cy.get(control).drag(
-    "[data-cy=screen-element-container] >* div[class^= \"column-draggable\"]:nth-child(2)"
+    '[data-cy=screen-element-container] >* div[class^= "column-draggable"]:nth-child(2)'
   );
   cy.get("[data-cy=screen-element-container]").last().click();
 }

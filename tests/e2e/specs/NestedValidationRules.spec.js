@@ -115,6 +115,6 @@ function fillInputText(dataCy, index = null, value = "test") {
 
 function submitForm() {
   cy.get(
-    "[data-cy=preview-content] [data-cy=\"screen-field-submit\"] button"
+    '[data-cy=preview-content] [data-cy="screen-field-submit"] button'
   ).click();
 }

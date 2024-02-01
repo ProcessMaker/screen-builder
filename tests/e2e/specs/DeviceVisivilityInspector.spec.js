@@ -361,7 +361,7 @@ describe("Device Visiblility Inspector", () => {
 
     // Step 4: Disable for Show for desktop
     cy.get(
-      "[data-cy=\"inspector-deviceVisibility\"]>* div:nth-child(2) > label"
+      '[data-cy="inspector-deviceVisibility"]>* div:nth-child(2) > label'
     ).click();
 
     // Step 5: Press Preview button
@@ -370,9 +370,9 @@ describe("Device Visiblility Inspector", () => {
     // Step 6: Verify that line input is not visible in Web
     previewScreenWebMobile("desktop");
     cy.get("body").then(($body) => {
-      const lineinputControlls = $body.find("[name=\"form_input_1\"]").length;
+      const lineinputControlls = $body.find('[name="form_input_1"]').length;
       for (let i = 0; i < lineinputControlls; i++) {
-        cy.get("[name=\"form_input_1\"]").eq(i).should("not.be.visible");
+        cy.get('[name="form_input_1"]').eq(i).should("not.be.visible");
       }
     });
 
@@ -428,7 +428,7 @@ describe("Device Visiblility Inspector", () => {
 
     // Step 4: Disable for Show for desktop
     cy.get(
-      "[data-cy=\"inspector-deviceVisibility\"]>* div:nth-child(2) > label"
+      '[data-cy="inspector-deviceVisibility"]>* div:nth-child(2) > label'
     ).click();
 
     // Step 5: Press Preview button
@@ -461,7 +461,7 @@ describe("Device Visiblility Inspector", () => {
 
     // Step 4: Disable for Show for desktop
     cy.get(
-      "[data-cy=\"inspector-deviceVisibility\"]>* div:nth-child(3) > label"
+      '[data-cy="inspector-deviceVisibility"]>* div:nth-child(3) > label'
     ).click();
 
     // Step 5: Press Preview button
@@ -547,7 +547,7 @@ describe("Device Visiblility Inspector", () => {
     cy.get('[name="visible"]+label').first().click({ force: true });
     cy.get('[data-cy="accordion-Advanced"]').click();
     cy.get(
-      "[data-cy=\"inspector-deviceVisibility\"]>* div:nth-child(2) > label"
+      '[data-cy="inspector-deviceVisibility"]>* div:nth-child(2) > label'
     ).click();
 
     previewScreen();
