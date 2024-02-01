@@ -88,7 +88,7 @@ describe("Nested screen", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-screen] div.multiselect").click();
     cy.get(
-      "[data-cy=inspector-screen] span:contains(\"Sub screen example\"):first"
+      '[data-cy=inspector-screen] span:contains("Sub screen example"):first'
     ).click();
     cy.get("[data-cy=inspector-screen] .screen-link a")
       .should("have.attr", "href")

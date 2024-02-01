@@ -65,10 +65,10 @@ describe("Date Picker", () => {
     cy.setMultiselect("[data-cy=inspector-dataFormat]", "Date");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] input"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input'
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .selectable.today"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .selectable.today'
     ).click();
 
     cy.assertPreviewData({
@@ -106,16 +106,16 @@ describe("Date Picker", () => {
     cy.setMultiselect("[data-cy=inspector-dataFormat]", "Datetime");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] input"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] input'
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .selectable.today"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .selectable.today'
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpHoursInput"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpHoursInput'
     ).type("8");
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpMinutesInput"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpMinutesInput'
     ).type("{moveToEnd}15");
 
     const today = moment.utc({ hour: 8, minute: 15 });
@@ -199,17 +199,17 @@ describe("Date Picker", () => {
       .type("{{}{{}form_date_picker_1{}}{}}");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]'
     ).type(dateBefore);
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]'
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] input"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input'
     ).click();
 
     cy.assertPreviewData({
@@ -239,17 +239,17 @@ describe("Date Picker", () => {
       .type("{{}{{}form_date_picker_1{}}{}}");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]'
     ).type(dateAfter);
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]'
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] input"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input'
     ).click();
 
     cy.assertPreviewData({
@@ -280,11 +280,11 @@ describe("Date Picker", () => {
       .type("{{}{{}form_date_picker_1{}}{}}");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).type(dateSame);
     cy.get("[data-cy=preview-content]").click();
 
@@ -315,11 +315,11 @@ describe("Date Picker", () => {
       .type("{{}{{}form_date_picker_1{}}{}}");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).type(dateSame);
     cy.get("[data-cy=preview-content]").click();
 
@@ -348,7 +348,7 @@ describe("Date Picker", () => {
     cy.get("[data-cy=inspector-maxDate]").clear().type(maxDate);
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
 
@@ -381,16 +381,16 @@ describe("Date Picker", () => {
       .type("{{}{{}form_date_picker_1{}}{}}");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(date);
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).type(dateBefore);
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] input"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input'
     ).click();
     cy.get("[data-cy=preview-content]").click();
 
@@ -422,11 +422,11 @@ describe("Date Picker", () => {
       .type("{{}{{}form_date_picker_1{}}{}}");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).type(dateSame);
     cy.get("[data-cy=preview-content]").click();
     cy.assertPreviewData({
@@ -457,7 +457,7 @@ describe("Date Picker", () => {
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type("fooBarr{enter}");
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).click();
     cy.assertPreviewData({
       form_date_picker_1: null,
@@ -487,10 +487,10 @@ describe("Date Picker", () => {
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(`${date}{enter}`);
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_1\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(`${date}foo{enter}`);
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_date_picker_2\"] .vdpComponent"
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).click();
     cy.assertPreviewData({
       form_date_picker_1: moment(date).toISOString(),

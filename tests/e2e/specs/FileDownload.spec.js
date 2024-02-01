@@ -72,7 +72,7 @@ describe("File Download", () => {
     // A Record List file is downloadable
     cy.get("[data-cy=add-row]").click();
     cy.get(
-      "[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"1-avatar\"] > .btn"
+      '[data-cy=screen-renderer] > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="1-avatar"] > .btn'
     )
       .eq(0)
       .click();
@@ -119,7 +119,7 @@ describe("File Download", () => {
 
     // The second file should be downloaded
     cy.get(
-      ".row > :nth-child(1) > :nth-child(1) > [icon=\"fas fa-redo\"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy=\"2-file1\"] > .btn"
+      '.row > :nth-child(1) > :nth-child(1) > [icon="fas fa-redo"] > :nth-child(2) > .container-fluid > :nth-child(1) > .page > :nth-child(1) > :nth-child(1) > :nth-child(2) > [data-cy="2-file1"] > .btn'
     ).click();
     cy.wait("@downloadFile1").then(() => {
       findTheFile("file1.jpeg");

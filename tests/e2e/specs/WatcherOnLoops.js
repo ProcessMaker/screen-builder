@@ -53,7 +53,7 @@ describe("Watcher on Loops", () => {
 
     // Click [+] add loop item and inmediatly close popup
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button[title=\"Add Item\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button[title="Add Item"]'
     ).click();
     cy.get(
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary"
@@ -74,7 +74,7 @@ describe("Watcher on Loops", () => {
 
     // Click [+] add loop item
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button[title=\"Add Item\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button[title="Add Item"]'
     ).click();
     // Watcher should be displayed and executed
     cy.get("#watchers-synchronous").should("exist");

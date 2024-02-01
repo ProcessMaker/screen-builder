@@ -26,7 +26,11 @@ module.exports = {
     eqeqeq: "error",
     "max-len": ["error", { code: 140, ignoreUrls: true }],
     "comma-dangle": ["error", "never"],
-    quotes: ["error", "double", { allowTemplateLiterals: true }],
+    quotes: [
+      "error",
+      "double",
+      { avoidEscape: true, allowTemplateLiterals: true }
+    ],
     "import/no-extraneous-dependencies": "warn",
     "consistent-return": "warn",
     "no-plusplus": 0,

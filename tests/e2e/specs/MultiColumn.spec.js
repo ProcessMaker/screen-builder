@@ -15,7 +15,7 @@ describe("MultiColumns", () => {
       "[data-cy=screen-element-container] .column-draggable:empty"
     );
     cy.get(
-      ".custom-switch:has([data-cy=\"inspector-jsonFormat\"]) label"
+      '.custom-switch:has([data-cy="inspector-jsonFormat"]) label'
     ).click();
     cy.get("[data-cy=inspector-dataJson]")
       .clear()

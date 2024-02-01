@@ -49,11 +49,11 @@ describe("refresh nested screen", () => {
     cy.get("[data-cy=screen-element-container]").eq(0).click();
     cy.get("[data-cy=inspector-screen] div.multiselect").click();
     cy.get(
-      "[data-cy=inspector-screen] span:contains(\"Nested Screen\"):first"
+      '[data-cy=inspector-screen] span:contains("Nested Screen"):first'
     ).click();
     cy.get("[data-cy=inspector-screen] div.multiselect").click();
     cy.get(
-      "[data-cy=inspector-screen] span:contains(\"Nested Screen\"):first"
+      '[data-cy=inspector-screen] span:contains("Nested Screen"):first'
     ).click();
 
     // Should show the new content

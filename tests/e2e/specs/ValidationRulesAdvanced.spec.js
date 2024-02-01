@@ -41,7 +41,7 @@ describe("Validation Rules (Advanced test)", () => {
     fillInputText("screen-field-form_input_13", 0, "paola");
 
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_2\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]'
     ).selectOption("one");
 
     cy.get(
@@ -72,7 +72,7 @@ describe("Validation Rules (Advanced test)", () => {
     shouldNotHaveValidationErrors();
 
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_2\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_2"]'
     ).selectOption("two");
     shouldHaveValidationErrors();
     fillInputText("screen-field-form_input_12", 0, "ok");
@@ -115,6 +115,6 @@ function submitForm() {
     0
   );
   cy.get(
-    "[data-cy=preview-content] [data-cy=\"screen-field-submit\"] button"
+    '[data-cy=preview-content] [data-cy="screen-field-submit"] button'
   ).click();
 }

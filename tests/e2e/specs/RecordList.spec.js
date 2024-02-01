@@ -128,7 +128,7 @@ describe("Record list", () => {
       })
     );
     cy.uploadFile(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file1\"] input[type=file]",
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file1"] input[type=file]',
       "avatar.jpeg",
       "image/jpg"
     );
@@ -143,7 +143,7 @@ describe("Record list", () => {
       })
     );
     cy.uploadFile(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file2\"] input[type=file]",
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file2"] input[type=file]',
       "record_list_fileupload.json",
       "application/json"
     );
@@ -166,10 +166,10 @@ describe("Record list", () => {
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]"
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file1\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]'
     ).should("contain.text", "avatar.jpeg");
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]'
     ).should("contain.text", "record_list_fileupload.json");
     cy.get(
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Cancel)"
@@ -208,7 +208,7 @@ describe("Record list", () => {
       })
     );
     cy.uploadFile(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file1\"] input[type=file]",
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file1"] input[type=file]',
       "avatar.jpeg",
       "image/jpg"
     );
@@ -216,7 +216,7 @@ describe("Record list", () => {
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button:contains(Ok)"
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]'
     ).should("contain.text", "required");
 
     // Upload second file
@@ -229,7 +229,7 @@ describe("Record list", () => {
       })
     );
     cy.uploadFile(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file2\"] input[type=file]",
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file2"] input[type=file]',
       "record_list_fileupload_required.json",
       "application/json"
     );
@@ -252,10 +252,10 @@ describe("Record list", () => {
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]"
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file1\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file1"]'
     ).should("contain.text", "avatar.jpeg");
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file2"]'
     ).should("contain.text", "record_list_fileupload_required.json");
     cy.get(
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button:contains(Cancel)"
@@ -315,15 +315,15 @@ describe("Record list", () => {
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] button.btn-primary"
     ).click();
     // Check the data is correct after edit
-    cy.get("[aria-rowindex=\"1\"] > .table-column").should("contain.text", "A");
-    cy.get("[aria-rowindex=\"2\"] > .table-column").should("contain.text", "BBB");
-    cy.get("[aria-rowindex=\"3\"] > .table-column").should("contain.text", "C");
-    cy.get("[aria-rowindex=\"4\"] > .table-column").should("contain.text", "D");
-    cy.get("[aria-rowindex=\"5\"] > .table-column").should("contain.text", "E");
+    cy.get('[aria-rowindex="1"] > .table-column').should("contain.text", "A");
+    cy.get('[aria-rowindex="2"] > .table-column').should("contain.text", "BBB");
+    cy.get('[aria-rowindex="3"] > .table-column').should("contain.text", "C");
+    cy.get('[aria-rowindex="4"] > .table-column').should("contain.text", "D");
+    cy.get('[aria-rowindex="5"] > .table-column').should("contain.text", "E");
     // Go to pagination page 2
     cy.get(":nth-child(4) > .page-link").click();
-    cy.get("[aria-rowindex=\"6\"] > .table-column").should("contain.text", "F");
-    cy.get("[aria-rowindex=\"7\"] > .table-column").should("contain.text", "G");
+    cy.get('[aria-rowindex="6"] > .table-column').should("contain.text", "F");
+    cy.get('[aria-rowindex="7"] > .table-column').should("contain.text", "G");
 
     // Sort data
     cy.get(".b-table-sort-icon-left").click();
@@ -357,11 +357,11 @@ describe("Record list", () => {
     ).click();
 
     // Check the data is correct after edit
-    cy.get("[aria-rowindex=\"1\"] > .table-column").should("contain.text", "A");
-    cy.get("[aria-rowindex=\"2\"] > .table-column").should("contain.text", "BBB");
-    cy.get("[aria-rowindex=\"3\"] > .table-column").should("contain.text", "C");
-    cy.get("[aria-rowindex=\"4\"] > .table-column").should("contain.text", "E");
-    cy.get("[aria-rowindex=\"5\"] > .table-column").should("contain.text", "F");
+    cy.get('[aria-rowindex="1"] > .table-column').should("contain.text", "A");
+    cy.get('[aria-rowindex="2"] > .table-column').should("contain.text", "BBB");
+    cy.get('[aria-rowindex="3"] > .table-column').should("contain.text", "C");
+    cy.get('[aria-rowindex="4"] > .table-column').should("contain.text", "E");
+    cy.get('[aria-rowindex="5"] > .table-column').should("contain.text", "F");
   });
 
   it("Check deleting the correct record in recordlist after sorting", () => {
@@ -398,11 +398,11 @@ describe("Record list", () => {
     // Check after Delete it was deleted the correct row and other data are in table
     cy.get(".table-column").should("contain.text", "G");
     cy.get(":nth-child(3) > .page-link").click();
-    cy.get("[aria-rowindex=\"1\"] > .table-column").should("contain.text", "A");
-    cy.get("[aria-rowindex=\"2\"] > .table-column").should("contain.text", "B");
-    cy.get("[aria-rowindex=\"3\"] > .table-column").should("contain.text", "C");
-    cy.get("[aria-rowindex=\"4\"] > .table-column").should("contain.text", "D");
-    cy.get("[aria-rowindex=\"5\"] > .table-column").should("contain.text", "E");
+    cy.get('[aria-rowindex="1"] > .table-column').should("contain.text", "A");
+    cy.get('[aria-rowindex="2"] > .table-column').should("contain.text", "B");
+    cy.get('[aria-rowindex="3"] > .table-column').should("contain.text", "C");
+    cy.get('[aria-rowindex="4"] > .table-column').should("contain.text", "D");
+    cy.get('[aria-rowindex="5"] > .table-column').should("contain.text", "E");
 
     // Sort data
     cy.get(".b-table-sort-icon-left").click();
@@ -414,11 +414,11 @@ describe("Record list", () => {
     cy.get("[data-cy=modal-remove] .btn-primary").click();
 
     // Check after Delete B, it was deleted the correct row and other data are in table
-    cy.get("[aria-rowindex=\"1\"] > .table-column").should("contain.text", "G");
-    cy.get("[aria-rowindex=\"2\"] > .table-column").should("contain.text", "E");
-    cy.get("[aria-rowindex=\"3\"] > .table-column").should("contain.text", "D");
-    cy.get("[aria-rowindex=\"4\"] > .table-column").should("contain.text", "C");
-    cy.get("[aria-rowindex=\"5\"] > .table-column").should("contain.text", "A");
+    cy.get('[aria-rowindex="1"] > .table-column').should("contain.text", "G");
+    cy.get('[aria-rowindex="2"] > .table-column').should("contain.text", "E");
+    cy.get('[aria-rowindex="3"] > .table-column').should("contain.text", "D");
+    cy.get('[aria-rowindex="4"] > .table-column').should("contain.text", "C");
+    cy.get('[aria-rowindex="5"] > .table-column').should("contain.text", "A");
   });
 
   it("Check editing after remove all records from second page", () => {
@@ -461,11 +461,11 @@ describe("Record list", () => {
     ).click();
 
     // Check the data is correct after edit
-    cy.get("[aria-rowindex=\"1\"] > .table-column").should("contain.text", "A");
-    cy.get("[aria-rowindex=\"2\"] > .table-column").should("contain.text", "BB");
-    cy.get("[aria-rowindex=\"3\"] > .table-column").should("contain.text", "C");
-    cy.get("[aria-rowindex=\"4\"] > .table-column").should("contain.text", "D");
-    cy.get("[aria-rowindex=\"5\"] > .table-column").should("contain.text", "E");
+    cy.get('[aria-rowindex="1"] > .table-column').should("contain.text", "A");
+    cy.get('[aria-rowindex="2"] > .table-column').should("contain.text", "BB");
+    cy.get('[aria-rowindex="3"] > .table-column').should("contain.text", "C");
+    cy.get('[aria-rowindex="4"] > .table-column').should("contain.text", "D");
+    cy.get('[aria-rowindex="5"] > .table-column').should("contain.text", "E");
   });
 
   it("FileUpload in record lists within loops", () => {
@@ -491,7 +491,7 @@ describe("Record list", () => {
       })
     );
     cy.uploadFile(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file_upload_2\"] input[type=file]",
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file_upload_2"] input[type=file]',
       "avatar.jpeg",
       "image/jpg"
     );
@@ -515,19 +515,19 @@ describe("Record list", () => {
       })
     );
     cy.uploadFile(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file_upload_2\"] input[type=file]",
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file_upload_2"] input[type=file]',
       "avatar.jpeg",
       "image/jpg",
       1
     );
     cy.wait(1000);
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file_upload_2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file_upload_2"]'
     )
       .eq(0)
       .should("contain.text", "avatar.jpeg");
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-file_upload_2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file_upload_2"]'
     )
       .eq(1)
       .should("contain.text", "avatar.jpeg");
@@ -541,12 +541,12 @@ describe("Record list", () => {
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]"
     ).click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file_upload_2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"]'
     )
       .eq(0)
       .should("contain.text", "avatar.jpeg");
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file_upload_2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"]'
     )
       .eq(1)
       .should("contain.text", "avatar.jpeg");
@@ -570,14 +570,14 @@ describe("Record list", () => {
       })
     );
     cy.uploadFile(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file_upload_2\"] input[type=file]",
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"] input[type=file]',
       "avatar.jpeg",
       "image/jpg",
       2
     );
     cy.wait(1000);
     cy.get(
-      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy=\"screen-field-file_upload_2\"]"
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-edit] [data-cy="screen-field-file_upload_2"]'
     )
       .eq(2)
       .should("contain.text", "avatar.jpeg");
@@ -646,7 +646,7 @@ describe("Record list", () => {
       ).click();
       if (data[i].date !== "") {
         cy.get(
-          "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-date\"] input"
+          '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"] input'
         )
           .click()
           .type(data[i].date);
@@ -662,7 +662,7 @@ describe("Record list", () => {
     }
 
     // Sort data
-    cy.get("[aria-colindex=\"1\"] > div").click();
+    cy.get('[aria-colindex="1"] > div').click();
 
     // Go to pagination page 2
     cy.get(":nth-child(4) > .page-link").click();
@@ -674,7 +674,7 @@ describe("Record list", () => {
     cy.get("[data-cy=modal-remove] .btn-primary").click();
 
     // Sort data
-    cy.get("[aria-colindex=\"1\"] > div").click();
+    cy.get('[aria-colindex="1"] > div').click();
 
     // Delete B
     cy.get(
@@ -698,47 +698,47 @@ describe("Record list", () => {
     cy.get("[data-cy=modal-remove] .btn-primary").click();
 
     // Sort data
-    cy.get("[aria-colindex=\"1\"] > div").click();
+    cy.get('[aria-colindex="1"] > div').click();
 
     // Check after Delete it was deleted the correct row and other data are in table
-    cy.get("[aria-rowindex=\"1\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="1"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/01/2022"
     );
-    cy.get("[aria-rowindex=\"2\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/03/2022"
     );
-    cy.get("[aria-rowindex=\"3\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/04/2022"
     );
-    cy.get("[aria-rowindex=\"4\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/05/2022"
     );
-    cy.get("[aria-rowindex=\"5\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="5"] > [aria-colindex="1"]').should(
       "contain.text",
       ""
     );
 
-    cy.get("[aria-rowindex=\"1\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="1"] > [aria-colindex="2"]').should(
       "contain.text",
       "A"
     );
-    cy.get("[aria-rowindex=\"2\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="2"] > [aria-colindex="2"]').should(
       "contain.text",
       "C"
     );
-    cy.get("[aria-rowindex=\"3\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="3"] > [aria-colindex="2"]').should(
       "contain.text",
       "D"
     );
-    cy.get("[aria-rowindex=\"4\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="4"] > [aria-colindex="2"]').should(
       "contain.text",
       "E"
     );
-    cy.get("[aria-rowindex=\"5\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should(
       "contain.text",
       "F"
     );
@@ -767,7 +767,7 @@ describe("Record list", () => {
       ).click();
       if (data[i].date !== "") {
         cy.get(
-          "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy=\"screen-field-date\"] input"
+          '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-date"] input'
         )
           .click()
           .type(data[i].date);
@@ -783,7 +783,7 @@ describe("Record list", () => {
     }
 
     // Sort data
-    cy.get("[aria-colindex=\"1\"] > div").click();
+    cy.get('[aria-colindex="1"] > div').click();
 
     // Go to pagination page 2
     cy.get(":nth-child(4) > .page-link").click();
@@ -826,36 +826,36 @@ describe("Record list", () => {
     ).click();
 
     // Check after edit values are correct
-    cy.get("[aria-rowindex=\"6\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="6"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/10/2022"
     );
-    cy.get("[aria-rowindex=\"7\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="7"] > [aria-colindex="1"]').should(
       "contain.text",
       "06/06/2022"
     );
-    cy.get("[aria-rowindex=\"8\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="8"] > [aria-colindex="1"]').should(
       "contain.text",
       ""
     );
-    cy.get("[aria-rowindex=\"9\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="9"] > [aria-colindex="1"]').should(
       "contain.text",
       ""
     );
 
-    cy.get("[aria-rowindex=\"6\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="6"] > [aria-colindex="2"]').should(
       "contain.text",
       "New value"
     );
-    cy.get("[aria-rowindex=\"7\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="7"] > [aria-colindex="2"]').should(
       "contain.text",
       "GG"
     );
-    cy.get("[aria-rowindex=\"8\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="8"] > [aria-colindex="2"]').should(
       "contain.text",
       "F"
     );
-    cy.get("[aria-rowindex=\"9\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="9"] > [aria-colindex="2"]').should(
       "contain.text",
       "H"
     );
@@ -864,50 +864,50 @@ describe("Record list", () => {
     cy.get(":nth-child(3) > .page-link").click();
 
     // Check after edit values are correct
-    cy.get("[aria-rowindex=\"1\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="1"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/01/2022"
     );
-    cy.get("[aria-rowindex=\"2\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/02/2022"
     );
-    cy.get("[aria-rowindex=\"3\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/03/2022"
     );
-    cy.get("[aria-rowindex=\"4\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/04/2022"
     );
-    cy.get("[aria-rowindex=\"5\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="5"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/05/2022"
     );
 
-    cy.get("[aria-rowindex=\"1\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="1"] > [aria-colindex="2"]').should(
       "contain.text",
       "A"
     );
-    cy.get("[aria-rowindex=\"2\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="2"] > [aria-colindex="2"]').should(
       "contain.text",
       "B"
     );
-    cy.get("[aria-rowindex=\"3\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="3"] > [aria-colindex="2"]').should(
       "contain.text",
       "C"
     );
-    cy.get("[aria-rowindex=\"4\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="4"] > [aria-colindex="2"]').should(
       "contain.text",
       "D"
     );
-    cy.get("[aria-rowindex=\"5\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should(
       "contain.text",
       "E"
     );
 
     // Sort data
-    cy.get("[aria-colindex=\"1\"] > div").click();
+    cy.get('[aria-colindex="1"] > div').click();
 
     // Go to pagination page 2
     cy.get(":nth-child(4) > .page-link").click();
@@ -932,36 +932,36 @@ describe("Record list", () => {
     ).click();
 
     // Check after edit values are correct
-    cy.get("[aria-rowindex=\"6\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="6"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/05/2022"
     );
-    cy.get("[aria-rowindex=\"7\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="7"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/04/2022"
     );
-    cy.get("[aria-rowindex=\"8\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="8"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/03/2022"
     );
-    cy.get("[aria-rowindex=\"9\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="9"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/01/2022"
     );
 
-    cy.get("[aria-rowindex=\"6\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="6"] > [aria-colindex="2"]').should(
       "contain.text",
       "E"
     );
-    cy.get("[aria-rowindex=\"7\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="7"] > [aria-colindex="2"]').should(
       "contain.text",
       "D"
     );
-    cy.get("[aria-rowindex=\"8\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="8"] > [aria-colindex="2"]').should(
       "contain.text",
       "C"
     );
-    cy.get("[aria-rowindex=\"9\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="9"] > [aria-colindex="2"]').should(
       "contain.text",
       "A"
     );
@@ -970,44 +970,44 @@ describe("Record list", () => {
     cy.get(":nth-child(3) > .page-link").click();
 
     // Check after edit values are correct
-    cy.get("[aria-rowindex=\"1\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="1"] > [aria-colindex="1"]').should(
       "contain.text",
       ""
     );
-    cy.get("[aria-rowindex=\"2\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"]').should(
       "contain.text",
       ""
     );
-    cy.get("[aria-rowindex=\"3\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"]').should(
       "contain.text",
       "06/06/2022"
     );
-    cy.get("[aria-rowindex=\"4\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"]').should(
       "contain.text",
       "02/02/2022"
     );
-    cy.get("[aria-rowindex=\"5\"] > [aria-colindex=\"1\"]").should(
+    cy.get('[aria-rowindex="5"] > [aria-colindex="1"]').should(
       "contain.text",
       "01/10/2022"
     );
 
-    cy.get("[aria-rowindex=\"1\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="1"] > [aria-colindex="2"]').should(
       "contain.text",
       "F"
     );
-    cy.get("[aria-rowindex=\"2\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="2"] > [aria-colindex="2"]').should(
       "contain.text",
       "H"
     );
-    cy.get("[aria-rowindex=\"3\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="3"] > [aria-colindex="2"]').should(
       "contain.text",
       "GG"
     );
-    cy.get("[aria-rowindex=\"4\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="4"] > [aria-colindex="2"]').should(
       "contain.text",
       "BB"
     );
-    cy.get("[aria-rowindex=\"5\"] > [aria-colindex=\"2\"]").should(
+    cy.get('[aria-rowindex="5"] > [aria-colindex="2"]').should(
       "contain.text",
       "New value"
     );

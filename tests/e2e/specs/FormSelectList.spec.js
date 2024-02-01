@@ -13,7 +13,7 @@ describe("Form Select List", () => {
   it("Default properties", () => {
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content]").should(
       "contain.text",
@@ -50,7 +50,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(one)").should("be.visible");
     cy.get("[data-cy=preview-content] span:contains(two)").should("be.visible");
@@ -109,7 +109,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(one)").should("be.visible");
     cy.get("[data-cy=preview-content] span:contains(two)").should("be.visible");
@@ -119,7 +119,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=preview-content] span:contains(two):first").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(one):first").click();
 
@@ -215,7 +215,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(one)").should("be.visible");
     cy.get("[data-cy=preview-content] span:contains(two)").should("be.visible");
@@ -250,7 +250,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(one)").should("be.visible");
     cy.get("[data-cy=preview-content] span:contains(two)").should("be.visible");
@@ -280,7 +280,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(James)").should(
       "be.visible"
@@ -314,7 +314,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(James)").should(
       "be.visible"
@@ -374,7 +374,7 @@ describe("Form Select List", () => {
 
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_select_list_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_select_list_1"]'
     ).click();
     cy.get("[data-cy=preview-content] span:contains(one)").should("be.visible");
     cy.get("[data-cy=preview-content] span:contains(two)").should("be.visible");

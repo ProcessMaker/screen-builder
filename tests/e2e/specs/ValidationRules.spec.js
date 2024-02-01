@@ -182,20 +182,20 @@ describe("Validation Rules", () => {
     cy.get("[data-cy=screen-element-container]").eq(2).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("After Date");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] [name="Date"]').type(
       "_parent.form_input_1"
     );
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateBefore);
@@ -214,20 +214,20 @@ describe("Validation Rules", () => {
     cy.get("[data-cy=screen-element-container]").eq(2).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("After or Equal to Date");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] [name="Date"]').type(
       "_parent.form_input_1"
     );
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateBefore);
@@ -253,20 +253,20 @@ describe("Validation Rules", () => {
     cy.get("[data-cy=screen-element-container]").eq(2).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("Before Date");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] [name="Date"]').type(
       "_parent.form_input_1"
     );
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateAfter);
@@ -285,20 +285,20 @@ describe("Validation Rules", () => {
     cy.get("[data-cy=screen-element-container]").eq(2).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("Before or Equal to Date");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] [name="Date"]').type(
       "_parent.form_input_1"
     );
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type(dateAfter);
@@ -327,14 +327,14 @@ describe("Validation Rules", () => {
     cy.get("[data-cy=screen-element-container]").eq(2).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("Required Unless");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').type(
       "_parent.form_input_1"
@@ -343,7 +343,7 @@ describe("Validation Rules", () => {
       '[data-cy="inspector-validation"] input[name="variable-value"]'
     ).type("abc");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[data-cy=preview-content] [name="form_input_2"]')
@@ -369,20 +369,20 @@ describe("Validation Rules", () => {
     cy.get("[data-cy=screen-element-container]").eq(2).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("Same");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').type(
       "_parent.form_input_1"
     );
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
     cy.get("[data-cy=mode-preview]").click();
     cy.get('[data-cy=preview-content] [name="form_input_1"]').type("abc");
@@ -405,40 +405,40 @@ describe("Validation Rules", () => {
     cy.get("[data-cy=screen-element-container]").eq(1).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("Same");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').type(
       "_parent.user_name"
     );
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
 
     // Change validation rule to Same (input 1 inside loop)
     cy.get("[data-cy=screen-element-container]").eq(2).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="remove-rule"]').click();
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"confirm-delete-rule\"]"
+      '[data-cy="inspector-validation"] [data-cy="confirm-delete-rule"]'
     ).click();
     cy.get('[data-cy="inspector-validation"] [data-cy="add-rule"]').click();
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="select-rule"]'
     ).selectOption("Same");
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"save-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="save-rule"]:visible'
     ).click();
     cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').type(
       "_parent._parent.user_name"
     );
     cy.get(
-      "[data-cy=\"inspector-validation\"] [data-cy=\"update-rule\"]:visible"
+      '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
 
     cy.get("[data-cy=mode-preview]").click();
@@ -483,19 +483,19 @@ describe("Validation Rules", () => {
 
     // Check box 1
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_checkbox_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
     ).click();
     cy.shouldHaveValidationErrors("screen-field-form_input_2");
 
     // Uncheck box 1
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_checkbox_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
     ).click();
     cy.shouldNotHaveValidationErrors("screen-field-form_input_2");
 
     // Check box 1
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_checkbox_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
     ).click();
 
     // Fill name
@@ -511,19 +511,19 @@ describe("Validation Rules", () => {
 
     // Check box 1
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_checkbox_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
     ).click();
     cy.shouldHaveValidationErrors("screen-field-form_input_2");
 
     // Uncheck box 1
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_checkbox_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
     ).click();
     cy.shouldNotHaveValidationErrors("screen-field-form_input_2");
 
     // Check box 1
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_checkbox_1\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
     ).click();
 
     // Fill name

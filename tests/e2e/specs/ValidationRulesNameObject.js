@@ -10,13 +10,13 @@ describe("Validation Rules", () => {
 
     // ACCEPTED INPUT
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_input_2.res\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_2.res"]'
     )
       .parent()
       .should("contain.text", "Field is required");
     cy.get("[data-cy=preview-content] [name=form_input_1]").type("12");
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_input_2.res\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_2.res"]'
     )
       .parent()
       .should("not.contain.text", "Field is required");
@@ -32,26 +32,26 @@ describe("Validation Rules", () => {
 
     // REJECTED INPUT
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_input_4.res\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_4.res"]'
     )
       .parent()
       .should("not.contain.text", "Must be same as form_input_3");
     cy.get("[data-cy=preview-content] [name=form_input_3]").type("13");
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_input_4.res\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_4.res"]'
     )
       .parent()
       .should("contain.text", "Must be same as form_input_3");
 
     // REJECTED INPUT
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_input_6.res\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_6.res"]'
     )
       .parent()
       .should("not.contain.text", "Field is required");
     cy.get("[data-cy=preview-content] [name=form_input_5]").type("14");
     cy.get(
-      "[data-cy=preview-content] [data-cy=\"screen-field-form_input_6.res\"]"
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_6.res"]'
     )
       .parent()
       .should("contain.text", "Field is required");
