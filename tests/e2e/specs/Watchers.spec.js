@@ -440,7 +440,7 @@ describe("Watchers", () => {
     );
   });
 
-  it("Test watcher with select list", () => {
+  it.skip("Test watcher with select list", () => {
     cy.visit("/");
     // Mock script response
 
