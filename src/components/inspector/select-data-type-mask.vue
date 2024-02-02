@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import FormMultiselect from './form-multiselect';
+import FormMultiselect from './form-multiselect.vue';
 import maskConfig from '../../form-input-mask-config';
 
 export default {

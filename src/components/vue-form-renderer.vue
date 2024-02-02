@@ -35,10 +35,11 @@ import { getItemsFromConfig } from "../itemProcessingUtils";
 import { ValidatorFactory } from "../factories/ValidatorFactory";
 import CurrentPageProperty from "../mixins/CurrentPageProperty";
 import DeviceDetector, { MAX_MOBILE_WIDTH } from "../mixins/DeviceDetector";
+import ScreenRenderer from "@/components/screen-renderer.vue";
 
 export default {
   name: "VueFormRenderer",
-  components: { CustomCssOutput },
+  components: { ScreenRenderer, CustomCssOutput },
   mixins: [CurrentPageProperty, DeviceDetector],
   model: {
     prop: "data",
