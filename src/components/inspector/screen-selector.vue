@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import { FormMultiSelect } from "@processmaker/vue-form-elements";
 import { get } from "lodash";
 import { multiselectApi } from "@/mixins";
 import { formTypes } from "@/global-properties";
@@ -40,9 +39,6 @@ import { formTypes } from "@/global-properties";
 const globalObject = typeof window === "undefined" ? global : window;
 
 export default {
-  components: {
-    multiselect: FormMultiSelect
-  },
   mixins: [multiselectApi],
   props: {
     api: {
