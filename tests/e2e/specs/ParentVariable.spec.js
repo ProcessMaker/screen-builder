@@ -1,18 +1,21 @@
-describe('_parent variable', () => {
+describe("_parent variable", () => {
+  beforeEach(() => {});
 
-  beforeEach(() => {
-    cy.server();
-  });
+  it("Test _parent in loop>nested", () => {
+    cy.visit("/");
+    cy.loadFromJson("parent_variable.json", 1);
+    cy.get("[data-cy=mode-preview]").click();
 
-  it('Test _parent in loop>nested', () => {
-    cy.visit('/');
-    cy.loadFromJson('parent_variable.json', 1);
-    cy.get('[data-cy=mode-preview]').click();
+    cy.get(
+      '[data-cy=preview-content] [data-cy="screen-field-select_padre"]'
+    ).selectOption("aaaa");
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-select_padre"]').selectOption('aaaa');
-
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-select_hijo"]').selectOption('aaaa');
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-input_hijo"]').clear().type('test');
+    cy.get(
+      '[data-cy=preview-content] [data-cy="screen-field-select_hijo"]'
+    ).selectOption("aaaa");
+    cy.get('[data-cy=preview-content] [data-cy="screen-field-input_hijo"]')
+      .clear()
+      .type("test");
 
     cy.assertPreviewData({
       select_padre: [
@@ -31,16 +34,24 @@ describe('_parent variable', () => {
     });
   });
 
-  it('Test _parent in record list', () => {
-    cy.visit('/');
-    cy.loadFromJson('parent_variable.json', 1);
-    cy.get('[data-cy=mode-preview]').click();
+  it("Test _parent in record list", () => {
+    cy.visit("/");
+    cy.loadFromJson("parent_variable.json", 1);
+    cy.get("[data-cy=mode-preview]").click();
 
-    cy.get('[data-cy=preview-content] [data-cy="screen-field-select_padre"]').selectOption('aaaa');
+    cy.get(
+      '[data-cy=preview-content] [data-cy="screen-field-select_padre"]'
+    ).selectOption("aaaa");
 
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]').click();
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-form_select_list_1"]').selectOption('aaaa');
-    cy.get('[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary').click();
+    cy.get(
+      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=add-row]"
+    ).click();
+    cy.get(
+      '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-form_select_list_1"]'
+    ).selectOption("aaaa");
+    cy.get(
+      "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] button.btn-primary"
+    ).click();
 
     cy.assertPreviewData({
       select_padre: [
