@@ -9,21 +9,34 @@
         :watchers="null"
         :is-loop="true"
         :debug-context="'Loop #' + loopIndex"
-        @submit="submit"
-        @pageNavigate="$emit('pageNavigate', $event)"
-        @update="setMatrixValue(loopIndex, $event)"
         :mode="mode"
         :loop-context="getLoopContext(loopIndex)"
         :form-config="formConfig"
+        @submit="submit"
+        @pageNavigate="$emit('pageNavigate', $event)"
+        @update="setMatrixValue(loopIndex, $event)"
       />
     </form>
-    <b-row class="justify-content-md-center" v-if="config.settings.add">
+    <b-row v-if="config.settings.add" class="justify-content-md-center">
       <b-col md="auto">
-        <b-button size="sm" variant="secondary" class="ml-1 mr-1" @click="add" :title="$t('Add Item')">
-          <i class="fas fa-plus"/>
+        <b-button
+          size="sm"
+          variant="secondary"
+          class="ml-1 mr-1"
+          :title="$t('Add Item')"
+          @click="add"
+        >
+          <i class="fas fa-plus" />
         </b-button>
-        <b-button v-if="times.length > 0" size="sm" variant="outline-danger" class="ml-1 mr-1" @click="removeConfirm" :title="$t('Delete Item')">
-          <i class="fas fa-minus"/>
+        <b-button
+          v-if="times.length > 0"
+          size="sm"
+          variant="outline-danger"
+          class="ml-1 mr-1"
+          :title="$t('Delete Item')"
+          @click="removeConfirm"
+        >
+          <i class="fas fa-minus" />
         </b-button>
       </b-col>
     </b-row>
@@ -31,27 +44,31 @@
 </template>
 
 <script>
-import Mustache from 'mustache';
-import _ from 'lodash';
+import Mustache from "mustache";
+import _ from "lodash";
+import VueFormRenderer from "../vue-form-renderer.vue";
 
 export default {
-  name: 'FormLoop',
+  name: "FormLoop",
+  components: {
+    VueFormRenderer
+  },
   mixins: [],
-  props: ['value', 'config', 'transientData', 'name', 'mode', 'formConfig'],
+  props: ["value", "config", "transientData", "name", "mode", "formConfig"],
   data() {
     return {
       matrix: [],
       items: [],
       additionalItems: 0,
       transientDataCopy: null,
-      parentObjectChanges: [],
+      parentObjectChanges: []
     };
   },
   computed: {
     parentLoopContext() {
       let parent = this.$parent;
       let i = 0;
-      let context = '';
+      let context = "";
       while (!parent.loopContext) {
         parent = parent.$parent;
 
@@ -59,9 +76,9 @@ export default {
           parent = null;
           break;
         }
-        
+
         if (i > 100) {
-          throw 'Loop Error';
+          throw new Error("Loop Error");
         }
 
         i++;
@@ -74,18 +91,20 @@ export default {
       return context;
     },
     rendererConfig() {
-      let items = this.items;
-      return [{
-        name: 'LoopItem',
-        items,
-      }];
+      const { items } = this;
+      return [
+        {
+          name: "LoopItem",
+          items
+        }
+      ];
     },
     times() {
       if (!this.config || !this.config.settings) {
         return [];
       }
 
-      if (this.config.settings.type === 'existing') {
+      if (this.config.settings.type === "existing") {
         const itemsFromData = _.get(this.transientData, this.name, null);
         if (!itemsFromData) {
           return [];
@@ -93,11 +112,13 @@ export default {
         return [...itemsFromData.keys()];
       }
 
-      let times = this.config.settings.times;
+      let { times } = this.config.settings;
 
       try {
         times = Mustache.render(times, this.transientData);
-      } catch (error) { error; }
+      } catch (error) {
+        throw new Error(error);
+      }
 
       times = parseInt(times);
 
@@ -112,7 +133,7 @@ export default {
       times += this.additionalItems;
 
       return [...Array(times).keys()];
-    },
+    }
   },
   watch: {
     transientData: {
@@ -120,7 +141,7 @@ export default {
         this.transientDataCopy = _.cloneDeep(this.transientData);
         this.$delete(this.transientDataCopy, this.name);
 
-        const data = _.get(this, 'transientData.' + this.name, null);
+        const data = _.get(this, `transientData.${this.name}`, null);
         if (data && Array.isArray(data)) {
           this.matrix = data;
         } else {
@@ -128,82 +149,92 @@ export default {
         }
         this.setupMatrix();
       },
-      immediate: true,
+      immediate: true
     },
     value: {
       handler() {
         this.items = this.value;
       },
-      immediate: true,
+      immediate: true
     },
     matrix: {
       handler() {
         if (_.isEqual(this.$parent.transientData[this.name], this.matrix)) {
           return;
         }
-        this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
+        this.$set(
+          this.$parent.transientData,
+          this.name,
+          _.cloneDeep(this.matrix)
+        );
       },
-      deep: true,
+      deep: true
     },
     times() {
       this.setupMatrix();
     },
-    'config.settings.times': {
+    "config.settings.times": {
       handler() {
         this.additionalItems = 0;
-      },
-    },
+      }
+    }
+  },
+  mounted() {
+    this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
   },
   methods: {
     getLoopContext(i) {
-      let context = this.name + '.' + i.toString();
-      if (this.parentLoopContext !== '') {
-        context = this.parentLoopContext + '.' + context;
+      let context = `${this.name}.${i.toString()}`;
+      if (this.parentLoopContext !== "") {
+        context = `${this.parentLoopContext}.${context}`;
       }
       return context;
     },
     add() {
-      if (this.config.settings.type === 'existing') {
+      if (this.config.settings.type === "existing") {
         this.setMatrixValue(this.matrix.length, {});
       } else {
         this.additionalItems++;
       }
     },
     remove() {
-      if (this.config.settings.type === 'existing') {
+      if (this.config.settings.type === "existing") {
         this.$delete(this.matrix, this.matrix.length - 1);
       } else {
         this.additionalItems--;
       }
     },
     removeConfirm() {
-      const message = this.$t('Are you sure you want to delete this?');
-      window.ProcessMaker.confirmModal(
-        this.$t('Caution!'),
-        message,
-        '',
-        () => {
-          this.remove();
-        }
-      );
+      const message = this.$t("Are you sure you want to delete this?");
+      window.ProcessMaker.confirmModal(this.$t("Caution!"), message, "", () => {
+        this.remove();
+      });
     },
     setMatrixValue(i, v) {
-      let item = _.omit(v, '_parent');
+      const item = _.omit(v, "_parent");
       this.registerParentVariableChanges(v);
       this.$set(this.matrix, i, item);
       this.setChagnedParentVariables();
     },
     registerParentVariableChanges(obj) {
       if (obj._parent) {
-        Object.keys(obj._parent).forEach(parentKey => {
-          if (!_.isEqual(this.transientDataCopy[parentKey], obj._parent[parentKey])) {
-            this.parentObjectChanges.push({key: parentKey, value: obj._parent[parentKey]});
+        Object.keys(obj._parent).forEach((parentKey) => {
+          if (
+            !_.isEqual(
+              this.transientDataCopy[parentKey],
+              obj._parent[parentKey]
+            )
+          ) {
+            this.parentObjectChanges.push({
+              key: parentKey,
+              value: obj._parent[parentKey]
+            });
           }
         });
       }
     },
     setChagnedParentVariables() {
-      this.parentObjectChanges.forEach(change => {
+      this.parentObjectChanges.forEach((change) => {
         this.$set(this.$parent.transientData, change.key, change.value);
       });
       this.parentObjectChanges = [];
@@ -213,13 +244,13 @@ export default {
       if (!val) {
         val = {};
       }
-      
+
       val._parent = _.cloneDeep(this.transientDataCopy);
       return val;
     },
     setupMatrix() {
       for (const i of this.times) {
-        if (typeof this.matrix[i] === 'undefined') {
+        if (typeof this.matrix[i] === "undefined") {
           this.setMatrixValue(i, {});
         }
       }
@@ -230,11 +261,8 @@ export default {
     },
     submit() {
       // Just bubble up
-      this.$emit('submit');
-    },
-  },
-  mounted() {
-    this.$set(this.$parent.transientData, this.name, _.cloneDeep(this.matrix));
-  },
+      this.$emit("submit");
+    }
+  }
 };
 </script>
