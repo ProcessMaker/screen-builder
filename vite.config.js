@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue2";
 import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { resolve } from "path";
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
+import istanbulPlugin from "vite-plugin-istanbul";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
@@ -16,7 +17,13 @@ export default defineConfig({
     vue(),
     // https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21
     monacoEditorPlugin({ languageWorkers: monacoLanguages }),
-    viteCommonjs()
+    viteCommonjs(),
+    istanbulPlugin({
+      include: "src/**",
+      exclude: ["node_modules", "test/"],
+      extension: [".js", ".ts", ".vue"],
+      requireEnv: true
+    })
   ],
   resolve: {
     alias: [
@@ -75,7 +82,7 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ["coverage"]
+      ignored: ["**/coverage/**", "**/.nyc-output/**"]
     }
   }
 });

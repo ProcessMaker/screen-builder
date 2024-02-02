@@ -1,6 +1,5 @@
 describe("test validation with nested side effects", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
     cy.showValidationOnLoad();
   });
