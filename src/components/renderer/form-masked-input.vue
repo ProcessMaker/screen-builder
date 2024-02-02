@@ -51,7 +51,7 @@ import {
   getUserDateTimeFormat,
   ValidationMixin
 } from "@processmaker/vue-form-elements";
-import Inputmasked from "./form-input-masked";
+import Inputmasked from "./form-input-masked.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
