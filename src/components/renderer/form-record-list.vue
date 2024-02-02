@@ -42,9 +42,13 @@
           <template v-else-if="isImage(field, item)">
             <img :src="mustache(field.key, item)" style="record-list-image" />
           </template>
+          <template v-else-if="isWebEntryFile(field, item)">
+            {{ formatIfWebEntryFile(field, item) }}
+          </template>
           <template v-else>
             {{ formatIfDate(mustache(field.key, item)) }}
           </template>
+
         </template>
         <template #cell(__actions)="{ index, item }">
           <div class="actions">
@@ -340,6 +344,17 @@ export default {
       return (
         typeof content === "string" && content.substr(0, 11) === "data:image/"
       );
+    },
+    isWebEntryFile(field, item) {
+      const content = _.get(item, field.key);
+      const regex = /^webentry_.*:*$/;
+      return regex.test(content);
+    },
+    formatIfWebEntryFile(field, item) {
+      const requestFiles = _.get(window, "PM4ConfigOverrides.requestFiles", {});
+      const fileInfo = requestFiles[`${field.key}.${item.row_id}`];
+
+      return fileInfo[0].file_name;
     },
     isFiledownload(field) {
       return field.key === "__filedownload";
