@@ -212,7 +212,7 @@ export default {
 
             // add url parameters:
             const matchedParams = (endpointData.url || "").matchAll(
-              /\{\{(.+?)\}\}/gm
+              /\{\{(.+?)}}/gm
             );
             for (const match of matchedParams) {
               const urlParam = match[1];
@@ -225,7 +225,7 @@ export default {
 
           if (rowType === "BODY") {
             const matchedParams = (endpointData.body || "").matchAll(
-              /\{\{(.+?)\}\}/gm
+              /\{\{(.+?)}}/gm
             );
             for (const match of matchedParams) {
               const urlParam = match[1];
