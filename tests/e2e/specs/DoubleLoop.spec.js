@@ -1,6 +1,5 @@
 describe("Double loop tests", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 

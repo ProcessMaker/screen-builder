@@ -3,11 +3,9 @@ import Screens from "../fixtures/MultiInstanceLoopContext.json";
 
 describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
   beforeEach(() => {
-    cy.server();
-
-    cy.route(
+    cy.intercept(
       "GET",
-      "http://localhost:8080/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
         id: 1,
         advanceStatus: "open",
@@ -57,7 +55,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
     cy.get("@consoleError").should("not.to.be.called");
 
     // Upload main file
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -73,7 +71,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
     cy.wait("@uploadMainFile");
 
     // Upload file 1
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -90,7 +88,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
     cy.wait("@uploadFile1");
 
     // Upload file 2
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -107,7 +105,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
     cy.wait("@uploadFile2");
 
     // Upload file 3
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({

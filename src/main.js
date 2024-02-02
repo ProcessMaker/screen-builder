@@ -269,7 +269,7 @@ window.Echo = {
 
 window.axios = axios.create({
   baseURL: "/api/1.0/",
-  adapter: cacheAdapterEnhancer(axios.defaults.adapter, {
+  adapter: cacheAdapterEnhancer(axios.getAdapter(axios.defaults.adapter), {
     enabledByDefault: window.ProcessMaker.screen.cacheEnabled,
     cacheFlag: "useCache",
     defaultCache: new LRUCache({
@@ -279,7 +279,9 @@ window.axios = axios.create({
   })
 });
 
-const scenario = (window.location.search.substr(1).match(/\w+=(\w+)/) || [])[1];
+const searchParams = new URLSearchParams(window.location.search);
+
+const scenario = searchParams?.get("scenario");
 if (scenario) {
   if (!TestComponents[scenario]) {
     // eslint-disable-next-line no-console
