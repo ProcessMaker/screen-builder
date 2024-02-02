@@ -1,6 +1,5 @@
 describe("RAOS 1.0.0 Account Opening Customer Form", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 
