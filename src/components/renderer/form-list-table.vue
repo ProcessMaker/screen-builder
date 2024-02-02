@@ -1,5 +1,5 @@
 <template>
-  <div class="card mt-4 mb-4">
+  <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
       <template v-if="dataControl.showControl">
         <div class="mb-2">
@@ -14,7 +14,7 @@
             {{ title }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
-            <b-dropdown variant="custom" no-caret>
+            <b-dropdown variant="outline-secondary" no-caret>
               <template #button-content>
                 <i class="fas fa-caret-down" />
               </template>
@@ -38,9 +38,16 @@
       <div class="ml-auto d-flex align-items-center">
         <template v-if="dataControl.dropdownShow === 'requests'">
           <div class="mr-4">
-            <b-dropdown variant="secondary" size="sm">
+            <b-dropdown variant="outline-secondary" size="sm">
               <template #button-content>
-                <span>{{ $t(titleDropdown) }}</span>
+                <span>
+                  <b-icon
+                    v-if="showBadge"
+                    icon="circle-fill"
+                    :variant="badgeVariant"
+                  />
+                  {{ $t(titleDropdown) }}
+                </span>
               </template>
               <b-dropdown-item
                 variant="success"
@@ -61,37 +68,38 @@
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_dropdown', 'all')"
               >
-                {{ $t(titleDropdown) }}
+                {{ $t("View All") }}
               </b-dropdown-item>
             </b-dropdown>
           </div>
         </template>
         <template v-if="dataControl.dropdownShow === 'tasks'">
           <div class="mr-4">
-            <b-dropdown variant="secondary" size="sm">
+            <b-dropdown variant="outline-secondary" size="sm">
               <template #button-content>
-                <span>{{ $t(titleDropdown) }}</span>
+                <span>
+                  <b-icon
+                    v-if="showBadge"
+                    icon="circle-fill"
+                    :variant="badgeVariant"
+                  />
+                  {{ $t(titleDropdown) }}
+                </span>
               </template>
               <b-dropdown-item
+                variant="warning"
                 @click="handleDropdownSelection('tasks', 'In Progress')"
               >
-                <AvatarDropdown
-                  :variant="'warning'"
-                  :text="countInProgress"
-                  :label="'In Progress'"
-                ></AvatarDropdown>
+                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
               </b-dropdown-item>
               <b-dropdown-item
+                variant="danger"
                 @click="handleDropdownSelection('tasks', 'Overdue')"
               >
-                <AvatarDropdown
-                  :variant="'danger'"
-                  :text="countOverdue"
-                  :label="'Overdue'"
-                ></AvatarDropdown>
+                <i class="fas fa-circle mr-2" />{{ $t("Overdue") }}
               </b-dropdown-item>
               <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
-                {{ $t(titleDropdown) }}
+                {{ $t("View All") }}
               </b-dropdown-item>
             </b-dropdown>
           </div>
@@ -146,10 +154,9 @@
 import FormTasks from "./form-tasks.vue";
 import FormRequests from "./form-requests.vue";
 import FormNewRequest from "./form-new-request.vue";
-import AvatarDropdown from "./avatar-dropdown.vue";
 
 export default {
-  components: { FormTasks, FormRequests, FormNewRequest, AvatarDropdown },
+  components: { FormTasks, FormRequests, FormNewRequest },
   mixins: [],
   props: ["listOption"],
   data() {
@@ -157,13 +164,15 @@ export default {
       optionRequest: "by_me",
       dropdownRequest: "In Progress",
       titleDropdown: "View All",
-      countInProgress: "0",
-      countOverdue: "0",
+      viewAll: "View All",
       title: this.$t("List Table"),
       dataControl: {},
       searchCriteria: "",
       showInput: false,
-      pmql: ""
+      pmql: "",
+      badgeVariant: "",
+      typeSelected: "",
+      showBadge: false
     };
   },
   watch: {
@@ -178,16 +187,18 @@ export default {
   methods: {
     getData(data) {
       this.dataControl = data.dataControls;
-      this.countOverdue = data.tasksDropdown[0];
-      this.countInProgress = data.tasksDropdown[1];
     },
     openExternalLink() {
       window.open(this.dataControl.url, "_blank");
     },
     handleDropdownSelection(listType, valueSelected) {
       const combinedFilter = [];
+      this.typeSelected = listType;
       if (listType === "tasks") {
         this.$root.$emit("dropdownSelectionTask", valueSelected);
+        this.titleDropdown =
+          valueSelected === "all" ? this.viewAll : valueSelected;
+        this.colorBadge();
       } else {
         if (listType === "requests_filter") {
           this.optionRequest = valueSelected;
@@ -199,6 +210,9 @@ export default {
           }
         }
         if (listType === "requests_dropdown") {
+          this.titleDropdown =
+            valueSelected === "all" ? this.viewAll : valueSelected;
+          this.colorBadge();
           this.dropdownRequest = valueSelected;
         }
         combinedFilter.push(this.optionRequest);
@@ -233,6 +247,36 @@ export default {
     clearSearch(listType) {
       this.searchCriteria = "";
       this.toggleInput(listType);
+    },
+    /**
+     * Set the badge's color of the filter selected
+     */
+    colorBadge() {
+      if (this.titleDropdown === "In Progress") {
+        if (this.typeSelected === "tasks") {
+          this.badgeVariant = "warning";
+        }
+        if (this.typeSelected === "requests_dropdown") {
+          this.badgeVariant = "success";
+        }
+        this.showBadge = true;
+      }
+      if (this.titleDropdown === "Overdue") {
+        this.badgeVariant = "danger";
+        this.showBadge = true;
+      }
+      if (this.titleDropdown === "Overdue") {
+        this.badgeVariant = "danger";
+        this.showBadge = true;
+      }
+      if (this.titleDropdown === "Completed") {
+        this.badgeVariant = "primary";
+        this.showBadge = true;
+      }
+      if (this.titleDropdown === "View All" || this.titleDropdown === "all") {
+        this.badgeVariant = "";
+        this.showBadge = false;
+      }
     }
   }
 };
@@ -276,7 +320,7 @@ export default {
   overflow: auto;
 }
 
-.btn-custom {
-  background-color: #f7f7f7;
+.btn-outline-secondary {
+  border: none;
 }
 </style>
