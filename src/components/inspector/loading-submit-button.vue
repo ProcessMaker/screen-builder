@@ -1,9 +1,9 @@
 <template>
-  <div v-if="event === 'submit'" style="border-style: none !important;">
+  <div v-if="event === 'submit'" style="border-style: none !important">
     <div>
       <form-checkbox
-        :label="$t('Loading Submit Button')"
         v-model="loading"
+        :label="$t('Loading Submit Button')"
         :toggle="false"
         :helper="$t('Loading Submit Button')"
       />
@@ -12,8 +12,11 @@
 </template>
 
 <script>
+import { FormCheckbox } from "@processmaker/vue-form-elements";
+
 export default {
-  props: ['value', 'selectedControl'],
+  components: { FormCheckbox },
+  props: ["value", "selectedControl"],
   data() {
     return {
       event: "",
@@ -23,11 +26,11 @@ export default {
   computed: {
     mode() {
       return this.$root.$children[0].mode;
-    },
+    }
   },
   watch: {
     loading() {
-      this.$emit('input', this.loading);
+      this.$emit("input", this.loading);
     },
     value() {
       this.loading = this.value;

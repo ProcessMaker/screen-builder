@@ -180,6 +180,7 @@
 <script>
 import _ from "lodash";
 import { dateUtils } from "@processmaker/vue-form-elements";
+import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 
 const jsonOptionsActionsColumn = {
@@ -190,6 +191,9 @@ const jsonOptionsActionsColumn = {
 };
 
 export default {
+  components: {
+    VueFormRenderer
+  },
   mixins: [mustacheEvaluation],
   props: [
     "name",

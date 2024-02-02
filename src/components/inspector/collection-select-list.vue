@@ -59,9 +59,9 @@
 
 <script>
 import { debounce } from "lodash";
-import _ from "lodash";
-import MustacheHelper from "./mustache-helper";
+import MustacheHelper from "./mustache-helper.vue";
 import ScreenVariableSelector from '../screen-variable-selector.vue';
+import { PmqlInput } from "SharedComponents";
 
 const CONFIG_FIELDS = [
   "collectionId",
@@ -76,6 +76,7 @@ export default {
   components: {
     MustacheHelper,
     ScreenVariableSelector,
+    PmqlInput
   },
   data() {
     return {
