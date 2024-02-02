@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import moment from "moment-timezone";
+
 const timezoneTest = "America/Los_Angeles";
 moment.tz.setDefault(timezoneTest);
 
@@ -12,7 +13,7 @@ describe("Date Picker", () => {
     });
   });
 
-  it("DateTime type", () => {
+  it("should convert the date from ther users timezone to UTC", () => {
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
       "bottom"
@@ -41,20 +42,15 @@ describe("Date Picker", () => {
     });
 
     cy.wait(500);
+    const todaysDate = moment();
+    const todayDateChanged = `${moment
+      .tz(todaysDate, "America/Los_Angeles")
+      .format("YYYY-MM-DD")}T20:15:00`;
+    const today = moment(todayDateChanged).utc();
+    cy.log("today", today.toISOString());
 
-    let todayDateChanged = `${moment().format("YYYY-MM-DD")}T20:15:00`;
-    let today = moment.tz(todayDateChanged, timezoneTest);
-
-    cy.get('input[aria-label="New Date Picker"]').invoke('val')
-      .then(dateVal => {
-        let today2 = moment.tz(dateVal, timezoneTest);
-        let todayA = today;
-        let todayB = today;
-        todayA = todayA.toISOString().substr(0,7);
-        todayB = todayB.toISOString().substr(13,(today.toISOString().length-1));
-        let datePicker = today2.toISOString();
-        expect(datePicker).to.contains(todayA);
-        expect(datePicker).to.contains(todayB);
-      });
+    cy.assertPreviewData({
+      form_date_picker_1: moment(today).toISOString()
+    });
   });
 });

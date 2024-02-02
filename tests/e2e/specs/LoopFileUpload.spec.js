@@ -3,7 +3,6 @@ describe("FOUR-2164 Loop FileUpload", () => {
   const initialData = {};
 
   beforeEach(() => {
-    cy.server();
     cy.visit("/", {
       onBeforeLoad(win) {
         cy.stub(win.console, "log").as("consoleLog");
@@ -29,7 +28,7 @@ describe("FOUR-2164 Loop FileUpload", () => {
     cy.get("@consoleError").should("not.to.be.called");
 
     // Upload file 1
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -46,7 +45,7 @@ describe("FOUR-2164 Loop FileUpload", () => {
     cy.wait("@uploadFile1");
 
     // Upload file 2
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
@@ -63,7 +62,7 @@ describe("FOUR-2164 Loop FileUpload", () => {
     cy.wait("@uploadFile2");
 
     // Upload file 3
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/1/files",
       JSON.stringify({
