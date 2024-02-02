@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
+  <div class="card" :style="customStyle">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <span class="control-text">{{ title }}</span>
+      <span class="mb-2 mt-2 control-text">{{ title }}</span>
       <b-link @click="openExternalLink">
         <i class="fas fa-external-link-alt custom-icon" />
       </b-link>
@@ -24,7 +24,10 @@ export default {
   data() {
     return {
       title: this.$t("Analytics Chart"),
-      graphic: []
+      graphic: [],
+      customStyle: {
+        "border-radius": "8px"
+      }
     };
   },
   watch: {
