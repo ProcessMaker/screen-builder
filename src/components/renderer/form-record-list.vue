@@ -348,13 +348,19 @@ export default {
     isWebEntryFile(field, item) {
       const content = _.get(item, field.key);
       const regex = /^webentry_.*:*$/;
-      return regex.test(content);
+      let checkWebEntryValue = content;
+
+      if (Array.isArray(content)) {
+        checkWebEntryValue = content[0].file;
+      }
+
+      return regex.test(checkWebEntryValue);
     },
     formatIfWebEntryFile(field, item) {
       const requestFiles = _.get(window, "PM4ConfigOverrides.requestFiles", {});
       const fileInfo = requestFiles[`${field.key}.${item.row_id}`];
 
-      return fileInfo[0].file_name;
+      return fileInfo.map((file) => file.file_name).join(", ");
     },
     isFiledownload(field) {
       return field.key === "__filedownload";
