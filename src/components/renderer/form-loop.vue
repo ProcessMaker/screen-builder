@@ -78,7 +78,7 @@ export default {
         }
 
         if (i > 100) {
-          throw "Loop Error";
+          throw new Error("Loop Error");
         }
 
         i++;
@@ -117,7 +117,7 @@ export default {
       try {
         times = Mustache.render(times, this.transientData);
       } catch (error) {
-        error;
+        throw new Error(error);
       }
 
       times = parseInt(times);
