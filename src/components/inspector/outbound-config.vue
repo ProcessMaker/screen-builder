@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import { findIndex, get, isNil } from "lodash";
 import MustacheHelper from "./mustache-helper.vue";
 
 export default {
@@ -156,10 +157,7 @@ export default {
     loadOptions(index) {
       const config = this.getConfig();
       this.apiProperties = [];
-      if (
-        window._.isNil(config.dataSource) ||
-        window._.isNil(config.endpoint)
-      ) {
+      if (isNil(config.dataSource) || isNil(config.endpoint)) {
         return;
       }
 
@@ -175,7 +173,7 @@ export default {
         .get(`/data_sources/${config.dataSource}`)
         .then((response) => {
           const rowType = this.outboundConfig[index].type;
-          const endpointData = window._.get(
+          const endpointData = get(
             response,
             `data.endpoints.${endpoint}`,
             null
@@ -187,12 +185,10 @@ export default {
           this.apiProperties = [];
 
           if (rowType === "HEADER") {
-            const headerProps = window._.get(endpointData, "headers", []);
+            const headerProps = get(endpointData, "headers", []);
 
             this.apiProperties = headerProps.reduce((acc, header) => {
-              if (
-                window._.findIndex(this.apiProperties, { key: header.key }) < 0
-              ) {
+              if (findIndex(this.apiProperties, { key: header.key }) < 0) {
                 acc.push(header.key);
               }
               return acc;
@@ -200,11 +196,9 @@ export default {
           }
 
           if (rowType === "PARAM") {
-            const paramProps = window._.get(endpointData, "params", []);
+            const paramProps = get(endpointData, "params", []);
             this.apiProperties = paramProps.reduce((acc, param) => {
-              if (
-                window._.findIndex(this.apiProperties, { key: param.key }) < 0
-              ) {
+              if (findIndex(this.apiProperties, { key: param.key }) < 0) {
                 acc.push(param.key);
               }
               return acc;
