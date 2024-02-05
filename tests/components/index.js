@@ -1,18 +1,7 @@
-import { camelCase, upperFirst } from "lodash";
-
-const components = [];
-const modules = import.meta.globEager("./*.vue");
+const components = {};
+const modules = import.meta.glob("./*.vue");
 Object.entries(modules).forEach(([path, m]) => {
-  const componentFiles = upperFirst(
-    camelCase(
-      path
-        .split("/")
-        .pop()
-        .replace(/\.\w+$/, "")
-    )
-  );
-
-  components.push(m.default);
+  components[path.substr(2, path.length - 6)] = m;
 });
 
 export default components;
