@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     noDataUrl() {
-      return `${window.ProcessMaker?.app?.url}requests`;
+      return `${window.ProcessMaker?.app?.url}/requests`;
     }
   },
   mounted() {
