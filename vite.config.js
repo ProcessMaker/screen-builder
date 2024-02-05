@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue2";
 import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { resolve } from "path";
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
+import istanbulPlugin from "vite-plugin-istanbul";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
@@ -16,7 +17,13 @@ export default defineConfig({
     vue(),
     // https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21
     monacoEditorPlugin({ languageWorkers: monacoLanguages }),
-    viteCommonjs()
+    viteCommonjs(),
+    istanbulPlugin({
+      include: "src/**",
+      exclude: ["node_modules", "test/"],
+      extension: [".js", ".ts", ".vue"],
+      requireEnv: true
+    })
   ],
   resolve: {
     alias: [
@@ -54,7 +61,8 @@ export default defineConfig({
         "@processmaker/vue-form-elements",
         "@processmaker/vue-multiselect",
         "vue-monaco",
-        "monaco-editor"
+        "monaco-editor",
+        "SharedComponents"
       ],
       output: {
         exports: "named",
@@ -68,14 +76,15 @@ export default defineConfig({
           "moment-timezone": "moment-timezone",
           lodash: "lodash",
           "@processmaker/vue-form-elements": "VueFormElements",
-          "@processmaker/vue-multiselect": "VueMultiselect"
+          "@processmaker/vue-multiselect": "VueMultiselect",
+          SharedComponents: "SharedComponents"
         }
       }
     }
   },
   server: {
     watch: {
-      ignored: ["coverage"]
+      ignored: ["**/coverage/**", "**/.nyc-output/**"]
     }
   }
 });

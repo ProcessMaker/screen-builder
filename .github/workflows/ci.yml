@@ -33,21 +33,26 @@ jobs:
       #        run: npm run test
 
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
+          browser: chrome
           install: false
-          start: npm run dev -- --host
-          wait-on: http://localhost:5173/
-          config-file: cypress.json
+          start: npm run dev
+          wait-on: 'http://localhost:5173/'
+          config-file: cypress.config.js
           spec: "tests/e2e/**/*"
           record: true
           parallel: true
+          group: 'CI - Chrome'
         env:
           # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
           # in GitHub repo → Settings → Secrets → Actions
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           # Creating a token https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+          # re-enable PR comment bot
+          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
       - name: Upload Cypress Screenshots
         uses: actions/upload-artifact@v3
         # Only capture images on failure
