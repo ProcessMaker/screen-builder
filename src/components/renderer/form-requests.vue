@@ -48,7 +48,7 @@
     </vuetable>
   </div>
   <div v-else>
-    <formEmpty link="Requests" title="No Requests to Show" url="/requests" />
+    <formEmpty link="Requests" title="No Requests to Show" :url="noDataUrl" />
   </div>
 </template>
 
@@ -80,6 +80,11 @@ export default {
         }
       ]
     };
+  },
+  computed: {
+    noDataUrl() {
+      return `${window.ProcessMaker?.app?.url}requests`;
+    }
   },
   mounted() {
     this.setFields();

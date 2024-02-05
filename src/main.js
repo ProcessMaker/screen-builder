@@ -117,6 +117,9 @@ window.ProcessMaker = {
     id: 1,
     lang: "en"
   },
+  app: {
+    url: window.location.href
+  },
   apiClient: {
     create() {
       return this;
