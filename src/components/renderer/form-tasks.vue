@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     noDataUrl() {
-      return `${window.ProcessMaker?.app?.url}tasks`;
+      return `${window.ProcessMaker?.app?.url}/tasks`;
     }
   },
   mounted() {
