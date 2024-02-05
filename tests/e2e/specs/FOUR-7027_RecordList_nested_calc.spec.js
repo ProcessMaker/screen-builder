@@ -1,6 +1,5 @@
 describe("screen error nested calc", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 

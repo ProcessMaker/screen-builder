@@ -1,6 +1,5 @@
 describe("access to _parent variable in default value", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 

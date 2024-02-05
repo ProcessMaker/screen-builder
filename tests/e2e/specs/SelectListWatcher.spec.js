@@ -29,9 +29,8 @@ describe("SelectList - Watcher", () => {
   ];
 
   beforeEach(() => {
-    cy.server();
     // Mock the response from the data source
-    cy.route(
+    cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/2",
       JSON.stringify({

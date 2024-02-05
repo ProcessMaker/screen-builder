@@ -25,42 +25,41 @@
 
 <script>
 import { mapActions } from "vuex";
-import _ from 'lodash';
-import CustomCssOutput from './custom-css-output';
-import currencies from '../currency.json';
-import Inputmask from 'inputmask';
-import { getItemsFromConfig } from '../itemProcessingUtils';
-import { ValidatorFactory } from '../factories/ValidatorFactory';
-import CurrentPageProperty from '../mixins/CurrentPageProperty';
-import DeviceDetector from '../mixins/DeviceDetector';
-import { MAX_MOBILE_WIDTH } from '../mixins/DeviceDetector';
-
-const csstree = require('css-tree');
-const Scrollparent = require('scrollparent');
+import _ from "lodash";
+import Inputmask from "inputmask";
+import * as csstree from "css-tree";
+import Scrollparent from "scrollparent";
+import CustomCssOutput from "./custom-css-output";
+import currencies from "../currency.json";
+import { getItemsFromConfig } from "../itemProcessingUtils";
+import { ValidatorFactory } from "../factories/ValidatorFactory";
+import CurrentPageProperty from "../mixins/CurrentPageProperty";
+import DeviceDetector, { MAX_MOBILE_WIDTH } from "../mixins/DeviceDetector";
+import ScreenRenderer from "@/components/screen-renderer.vue";
 
 export default {
-  name: 'VueFormRenderer',
-  components: { CustomCssOutput },
+  name: "VueFormRenderer",
+  components: { ScreenRenderer, CustomCssOutput },
   mixins: [CurrentPageProperty, DeviceDetector],
   model: {
-    prop: 'data',
-    event: 'update',
+    prop: "data",
+    event: "update"
   },
   props: [
-    'config',
-    'data',
-    '_parent',
-    'page',
-    'computed',
-    'customCss',
-    'mode',
-    'watchers',
-    'isLoop',
-    'ancestorScreens',
-    'loopContext',
-    'showErrors',
-    'testScreenDefinition',
-    'deviceScreen',
+    "config",
+    "data",
+    "_parent",
+    "page",
+    "computed",
+    "customCss",
+    "mode",
+    "watchers",
+    "isLoop",
+    "ancestorScreens",
+    "loopContext",
+    "showErrors",
+    "testScreenDefinition",
+    "deviceScreen"
   ],
   data() {
     return {
@@ -69,57 +68,66 @@ export default {
         computed: this.computed,
         customCss: this.customCss,
         watchers: this.watchers,
-        isMobile: false,
+        isMobile: false
       },
-      formSubmitErrorClass: '',
+      formSubmitErrorClass: "",
       // watcher URLs
       watchers_config: {
         api: {
           execute: null,
-          execution: null,
-        },
+          execution: null
+        }
       },
-      customCssWrapped: '',
+      customCssWrapped: "",
       // Custom Functions for Rich Text Control
       customFunctions: {
         formatCurrency() {
           const format = (value, currency) => {
-            const definition = currencies.find(definition => definition.code === currency);
-            const options = { alias: 'currency' };
+            const definition = currencies.find(
+              (definition) => definition.code === currency
+            );
+            const options = { alias: "currency" };
             if (definition) {
               const separators = definition.format.match(/[.,]/g);
-              if (separators.length === 0) separators.push('', '.');
-              else if (separators.length === 1) separators.push(separators[0] === '.' ? ',': '.');
-              options.digits = (definition.format.split(separators[1])[1] || '').length;
+              if (separators.length === 0) separators.push("", ".");
+              else if (separators.length === 1)
+                separators.push(separators[0] === "." ? "," : ".");
+              options.digits = (
+                definition.format.split(separators[1])[1] || ""
+              ).length;
               options.radixPoint = separators[1];
               options.groupSeparator = separators[0];
-              options.prefix = definition.symbol + ' ';
-              options.suffix = ' ' + definition.code;
+              options.prefix = `${definition.symbol} `;
+              options.suffix = ` ${definition.code}`;
             }
             return Inputmask.format(value, options);
           };
-          return function(text) {
+          return function (text) {
             const params = JSON.parse(`[${text}]`);
             return format(_.get(this, params[0]), params[1]);
           };
-        },
+        }
       },
       scrollable: null,
-      containerObserver: null,
+      containerObserver: null
     };
   },
   computed: {
     containerClass() {
-      return this.parentScreen ? `screen-${this.parentScreen}` : 'custom-css-scope';
+      return this.parentScreen
+        ? `screen-${this.parentScreen}`
+        : "custom-css-scope";
     },
     cssDevice() {
       return {
-        '--mobile-width': MAX_MOBILE_WIDTH,
+        "--mobile-width": MAX_MOBILE_WIDTH
       };
     },
     containerDeviceClass() {
-      return this.deviceScreen === 'mobile' ? 'container-mobile' : 'container-desktop';
-    },
+      return this.deviceScreen === "mobile"
+        ? "container-mobile"
+        : "container-desktop";
+    }
   },
   watch: {
     customCss(customCss) {
@@ -130,8 +138,10 @@ export default {
       deep: true,
       handler(config) {
         this.definition.config = config;
-        this.$nextTick(() => {this.registerCustomFunctions();});
-      },
+        this.$nextTick(() => {
+          this.registerCustomFunctions();
+        });
+      }
     },
     data: {
       deep: true,
@@ -141,37 +151,42 @@ export default {
         if (mainScreen) {
           this.validate(mainScreen);
         }
-      },
+      }
     },
     computed: {
       deep: true,
       handler(computed) {
         this.definition.computed = computed;
-      },
+      }
     },
     watchers: {
       deep: true,
       handler(watchers) {
         this.definition.watchers = watchers;
-      },
-    },
+      }
+    }
   },
   created() {
-    this.parseCss = _.debounce(this.parseCss, 500, {leading: true});
+    this.parseCss = _.debounce(this.parseCss, 500, { leading: true });
 
     this.containerObserver = new ResizeObserver(this.onContainerObserver);
   },
   mounted() {
     this.registerCustomFunctions();
     if (window.ProcessMaker && window.ProcessMaker.EventBus) {
-      window.ProcessMaker.EventBus.$emit('screen-renderer-init', this);
+      window.ProcessMaker.EventBus.$emit("screen-renderer-init", this);
     }
     this.scrollable = Scrollparent(this.$el);
 
     this.containerObserver.observe(this.$refs.formRendererContainer);
   },
   methods: {
-    ...mapActions("globalErrorsModule", ["validate", "hasSubmitted", "showValidationOnLoad", "restartValidation"]),
+    ...mapActions("globalErrorsModule", [
+      "validate",
+      "hasSubmitted",
+      "showValidationOnLoad",
+      "restartValidation"
+    ]),
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
@@ -180,12 +195,12 @@ export default {
       return this.$refs.renderer.countElements(definition);
     },
     checkForRecordList(items, config) {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (item.items) {
           this.checkForRecordList(item.items, config);
         }
 
-        if (item.component === 'FormRecordList') {
+        if (item.component === "FormRecordList") {
           this.removeRecordListForms(item, config);
         }
       });
@@ -197,7 +212,7 @@ export default {
       return config;
     },
     checkForNestedScreenErrors(child) {
-      if (child.$options._componentTag !== 'FormNestedScreen') {
+      if (child.$options._componentTag !== "FormNestedScreen") {
         return;
       }
 
@@ -210,29 +225,29 @@ export default {
      */
     isValid() {
       const items = getItemsFromConfig(this.definition.config);
-      let config = _.cloneDeep(this.definition.config);
+      const config = _.cloneDeep(this.definition.config);
 
       this.checkForRecordList(items, config);
       this.dataTypeValidator = ValidatorFactory(config, this.data);
       this.errors = this.dataTypeValidator.getErrors();
 
       if (this.errors) {
-        this.formSubmitErrorClass = 'invalid-form-submission';
+        this.formSubmitErrorClass = "invalid-form-submission";
       }
       return _.size(this.errors) === 0;
     },
-    registerCustomFunctions(node=this) {
+    registerCustomFunctions(node = this) {
       if (node.registerCustomFunction instanceof Function) {
-        Object.keys(this.customFunctions).forEach(key => {
+        Object.keys(this.customFunctions).forEach((key) => {
           node.registerCustomFunction(key, this.customFunctions[key]);
         });
       }
       if (node.$children instanceof Array) {
-        node.$children.forEach(child => this.registerCustomFunctions(child));
+        node.$children.forEach((child) => this.registerCustomFunctions(child));
       }
     },
     submit(eventData, loading = false) {
-      this.$emit('submit', this.data, loading);
+      this.$emit("submit", this.data, loading);
     },
     parseCss() {
       const containerSelector = `.${this.containerClass}`;
@@ -242,24 +257,28 @@ export default {
           onParseError(error) {
             // throw "CSS has the following errors:\n\n" + error.formattedMessage
             throw error.formattedMessage;
-          },
+          }
         });
 
         let i = 0;
-        csstree.walk(ast, function(node, item, list) {
-          if (node.type.match(/^.+Selector$/) && node.name !== containerSelector && list) {
+        csstree.walk(ast, function (node, item, list) {
+          if (
+            node.type.match(/^.+Selector$/) &&
+            node.name !== containerSelector &&
+            list
+          ) {
             // Wait until we get to the first item before prepending our container selector
             if (!item.prev) {
-              list.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
+              list.prependData({ type: "WhiteSpace", loc: null, value: " " });
               list.prependData({
-                type: 'TypeSelector',
+                type: "TypeSelector",
                 loc: null,
-                name: containerSelector,
+                name: containerSelector
               });
             }
           }
           if (i > 5000) {
-            throw Error('CSS is too long');
+            throw Error("CSS is too long");
           }
 
           i += 1;
@@ -268,55 +287,65 @@ export default {
         // Find the media block
         const mediaConditions = [];
         csstree.walk(ast, {
-          visit: 'Atrule',
+          visit: "Atrule",
           enter: (node, item, list) => {
-            if (!item.prev && node.name === 'media') {
+            if (!item.prev && node.name === "media") {
               const mediaCondition = {
                 minWidth: 0,
-                maxWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-                rules: [],
+                maxWidth: Math.max(
+                  document.documentElement.clientWidth,
+                  window.innerWidth || 0
+                ),
+                rules: []
               };
 
               csstree.walk(node.prelude, {
-                visit: 'MediaFeature',
+                visit: "MediaFeature",
                 enter: (featureNode) => {
-                  if (['min-width', 'max-width'].includes(featureNode.name)) {
-                    mediaCondition[_.camelCase(featureNode.name)] = parseInt(featureNode.value.value, 10);
+                  if (["min-width", "max-width"].includes(featureNode.name)) {
+                    mediaCondition[_.camelCase(featureNode.name)] = parseInt(
+                      featureNode.value.value,
+                      10
+                    );
 
                     if (mediaCondition.rules.length === 0) {
                       csstree.walk(node.block, {
-                        visit: 'Rule',
+                        visit: "Rule",
                         enter: (ruleNode) => {
                           const rule = csstree.generate(ruleNode);
 
                           mediaCondition.rules.push(rule);
-                        },
+                        }
                       });
                     }
 
                     mediaConditions.push(mediaCondition);
                   }
-                },
+                }
               });
 
               list.remove(item);
             }
-          },
+          }
         });
 
         this.customCssWrapped = csstree.generate(ast);
 
         mediaConditions.forEach((condition) => {
-          const { width: currentWidth } = this.$refs.formRendererContainer.getBoundingClientRect();
+          const { width: currentWidth } =
+            this.$refs.formRendererContainer.getBoundingClientRect();
 
-          if (currentWidth >= condition.minWidth && currentWidth <= condition.maxWidth) {
-            this.customCssWrapped += condition.rules.join(' ');
+          if (
+            currentWidth >= condition.minWidth &&
+            currentWidth <= condition.maxWidth
+          ) {
+            this.customCssWrapped += condition.rules.join(" ");
           }
         });
 
-        this.$emit('css-errors', '');
+        this.$emit("css-errors", "");
       } catch (error) {
-        this.$emit('css-errors', error);
+        this.$emit("css-errors", error);
       }
     },
     getCurrentPage() {
@@ -329,8 +358,8 @@ export default {
       // Control coordinates
       const controlEl = entries[0].target.getBoundingClientRect();
       this.parseCss();
-    },
-  },
+    }
+  }
 };
 </script>
 

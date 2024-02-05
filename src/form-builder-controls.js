@@ -51,6 +51,9 @@ export default [
     rendererComponent: FormHtmlEditor,
     rendererBinding: 'FormHtmlEditor',
     control: {
+      popoverContent: "Use a Rich Text Editor to add HTML-formatted",
+      order: 1.0,
+      group: 'Content Fields',
       label: 'Rich Text',
       component: 'FormHtmlViewer',
       'editor-component': 'FormHtmlEditor',
@@ -90,6 +93,9 @@ export default [
     rendererComponent: FormMaskedInput,
     rendererBinding: 'FormMaskedInput',
     control: {
+      popoverContent: "Collect a string of text and format it as one of several data types",
+      order: 1.0,
+      group: 'Input Fields',
       label: 'Line Input',
       component: 'FormInput',
       'editor-component': 'FormInput',
@@ -125,6 +131,9 @@ export default [
     rendererComponent: FormTextArea,
     rendererBinding: 'FormTextArea',
     control: {
+      popoverContent: "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
+      order: 4.0,
+      group: 'Input Fields',
       label: 'Textarea',
       component: 'FormTextArea',
       'editor-component': 'FormTextArea',
@@ -180,6 +189,9 @@ export default [
     rendererComponent: FormSelectList,
     rendererBinding: 'FormSelectList',
     control: {
+      popoverContent: "Collect options from a list, as radio butttons or dropdowns",
+      order: 2.0,
+      group: 'Input Fields',
       label: 'Select List',
       component: 'FormSelectList',
       'editor-component': 'FormSelectList',
@@ -232,6 +244,9 @@ export default [
     rendererComponent: FormCheckbox,
     rendererBinding: 'FormCheckbox',
     control: {
+      popoverContent: "Add a checkbox or toggle for true/false responses",
+      order: 6.0,
+      group: 'Input Fields',
       label: 'Checkbox',
       component: 'FormCheckbox',
       'editor-component': 'FormCheckbox',
@@ -271,6 +286,9 @@ export default [
     rendererComponent: FormDatePicker,
     rendererBinding: 'FormDatePicker',
     control: {
+      popoverContent: "Collect a date or date/time",
+      order: 5.0,
+      group: 'Input Fields',
       label: 'Date Picker',
       component: 'FormDatePicker',
       'editor-component': 'FormDatePicker',
@@ -317,12 +335,14 @@ export default [
     },
   },
   {
-
     editorComponent: FormButton,
     editorBinding: 'FormButton',
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
+      popoverContent: "Add special buttons that link between subpages within this Form",
+      order: 1.0,
+      group: 'Navigation',
       label: 'Page Navigation',
       component: 'FormButton',
       'editor-component': 'FormButton',
@@ -355,6 +375,9 @@ export default [
     rendererComponent: FormMultiColumn,
     rendererBinding: 'FormMultiColumn',
     control: {
+      popoverContent: "Organize and group your content in columns",
+      order: 2.0,
+      group: 'Content Fields',
       label: 'Multicolumn / Table',
       component: 'FormMultiColumn',
       'editor-component': 'MultiColumn',
@@ -397,6 +420,9 @@ export default [
     rendererComponent: FormLoop,
     rendererBinding: 'FormLoop',
     control: {
+      popoverContent: "Add a repeatable section of content",
+      order: 5.0,
+      group: 'Content Fields',
       label: 'Loop',
       component: 'FormLoop',
       'editor-component': 'Loop',
@@ -430,6 +456,9 @@ export default [
     rendererComponent: FormRecordList,
     rendererBinding: 'FormRecordList',
     control: {
+      popoverContent: "Format content in a table structure and allow for adding rows",
+      order: 4.0,
+      group: 'Content Fields',
       label: 'Record List',
       component: 'FormRecordList',
       'editor-component': 'FormText',
@@ -490,6 +519,9 @@ export default [
     rendererComponent: FormImage,
     rendererBinding: 'FormImage',
     control: {
+      popoverContent: "Upload an image to your screen",
+      order: 3.0,
+      group: 'Content Fields',
       label: 'Image',
       component: 'FormImage',
       'editor-component': 'FormImage',
@@ -554,6 +586,9 @@ export default [
     rendererComponent: FormButton,
     rendererBinding: 'FormButton',
     control: {
+      popoverContent: "Add an action to submit your form or update a field",
+      order: 3.0,
+      group: 'Input Fields',
       label: 'Submit Button',
       component: 'FormButton',
       'editor-component': 'FormButton',
@@ -612,6 +647,9 @@ export default [
     rendererComponent: FormNestedScreen,
     rendererBinding: 'FormNestedScreen',
     control: {
+      popoverContent: "Add and reuse another Form within this Form",
+      order: 6.0,
+      group: 'Content Fields',
       label: 'Nested Screen',
       component: 'FormNestedScreen',
       'editor-component': 'FormNestedScreen',
@@ -643,6 +681,9 @@ export default [
     builderComponent: FileUpload,
     builderBinding: 'FileUpload',
     control: {
+      group: "Files",
+      popoverContent: "Collect files uploaded into the Form",
+      order: 1.0,
       label: 'File Upload',
       component: 'FileUpload',
       'editor-component': 'FileUpload',
@@ -693,6 +734,9 @@ export default [
     builderComponent: FileDownload,
     builderBinding: 'FileDownload',
     control: {
+      popoverContent: "Offer a File download",
+      order: 2.0,
+      group: "Files",
       label: 'File Download',
       component: 'FileDownload',
       'editor-component': 'FormText',
@@ -726,6 +770,9 @@ export default [
     builderComponent: BFormComponent,
     builderBinding: 'BFormComponent',
     control: {
+      popoverContent: "Add one of several Bootstrap Vue components",
+      order: 1.0,
+      group: 'Advanced',
       label: 'Bootstrap Component',
       component: 'BFormComponent',
       'editor-component': 'BFormComponent',
@@ -777,6 +824,9 @@ export default [
     builderComponent: BWrapperComponent,
     builderBinding: 'BWrapperComponent',
     control: {
+      popoverContent: "Wrap an existing subpage within this Form into a Bootstrap Vue component",
+      order: 2.0,
+      group: 'Advanced',
       label: 'Bootstrap Wrapper',
       component: 'BWrapperComponent',
       'editor-component': 'BWrapperComponent',
@@ -835,6 +885,9 @@ export default [
     rendererComponent: FormListTable,
     rendererBinding: "FormListTable",
     control: {
+      popoverContent: "Create List Table",
+      order: 6.5,
+      group: 'Dashboards',
       label: "List Table",
       component: "FormListTable",
       "editor-component": "FormListTable",
@@ -870,6 +923,9 @@ export default [
     rendererComponent: FormAnalyticsChart,
     rendererBinding: "FormAnalyticsChart",
     control: {
+      popoverContent: "Add a chart from the Analytics Reports",
+      order: 6.0,
+      group: 'Dashboards',
       label: "Analytics Chart",
       component: "FormAnalyticsChart",
       "editor-component": "FormAnalyticsChart",
