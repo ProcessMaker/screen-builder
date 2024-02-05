@@ -301,7 +301,7 @@ export default {
       nativeFiles: {},
       uploading: false,
       invalidFile: false,
-      showComponent: false,
+      showComponent: true,
     };
   },
   methods: {
