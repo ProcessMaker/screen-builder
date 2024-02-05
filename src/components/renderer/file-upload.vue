@@ -5,7 +5,7 @@
       {{ $t('File uploads are unavailable in preview mode.') }}
     </b-card>
     <uploader
-      v-else
+      v-if="!inPreviewMode && showComponent"
       :options="options"
       :attrs="attrs"
       ref="uploader"
@@ -106,6 +106,10 @@ export default {
 
     this.$root.$on('removed-loop',
       (loop, removed) => this.listenRemovedLoop(loop, removed));
+    
+    window.ProcessMaker.EventBus.$on("modal-shown", () => {
+      this.clearFiles();
+    });
 
     this.removeDefaultClasses();
 
@@ -297,9 +301,16 @@ export default {
       nativeFiles: {},
       uploading: false,
       invalidFile: false,
+      showComponent: true,
     };
   },
   methods: {
+    clearFiles() {
+      this.showComponent = false;
+      this.$nextTick(() => {
+        this.showComponent = true;
+      });
+    },
     uploaderLoaded() {
       return this.$refs['uploader'];
     },
