@@ -1,4 +1,5 @@
 import FormText from './components/renderer/form-text';
+import FormAvatar from './components/renderer/form-avatar';
 import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormLoop from './components/renderer/form-loop';
@@ -577,6 +578,50 @@ export default [
           type: 'number',
         },
       },
+      ],
+    },
+  },
+  {
+    editorComponent: FormAvatar,
+    editorBinding: 'FormAvatar',
+    rendererComponent: FormAvatar,
+    rendererBinding: 'FormAvatar',
+    control: {
+      popoverContent: "User avatar",
+      order: 3.0,
+      group: 'Content Fields',
+      label: 'Image',
+      component: 'FormAvatar',
+      'editor-component': 'FormAvatar',
+      'editor-control': 'FormAvatar',
+      config: {
+        label: 'Image',
+        icon: 'fas fa-user-circle',
+        variant: 'primary',
+        event: 'submit',
+        name: null,
+        value: null,
+        renderImage: false,
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'height',
+          config: {
+            label: 'Height',
+            helper: 'Image height',
+            type: 'number',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'width',
+          config: {
+            label: 'Width',
+            helper: 'image width',
+            type: 'number',
+          },
+        },
       ],
     },
   },

@@ -16,6 +16,7 @@ import ScreenRenderer from "./screen-renderer.vue";
 import AddLoopRow from "./renderer/add-loop-row.vue";
 import FormRecordList from "./renderer/form-record-list.vue";
 import FormImage from "./renderer/form-image.vue";
+import FormAvatar from "./renderer/form-avatar.vue";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import FormButton from "./renderer/form-button.vue";
 import FileUpload from "./renderer/file-upload.vue";
@@ -136,6 +137,7 @@ export default {
     // Register the builder and renderer
     Vue.component("AddLoopRow", AddLoopRow);
     Vue.component("FormImage", FormImage);
+    Vue.component("FormAvatar", FormAvatar);
     Vue.component("FormLoop", FormLoop);
     Vue.component("FormMultiColumn", FormMultiColumn);
     Vue.component("FormNestedScreen", FormNestedScreen);
