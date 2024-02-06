@@ -1,8 +1,8 @@
 <template>
-  <div class="card">
+  <div class="card" :style="customStyle">
     <div class="card-header d-flex justify-content-between align-items-center">
       <template v-if="dataControl.showControl">
-        <div class="mb-2">
+        <div class="mb-1 mt-1">
           <b-avatar
             v-if="dataControl.showAvatar"
             size="2em"
@@ -10,7 +10,7 @@
             :text="dataControl.count"
             class="avatar-text"
           ></b-avatar>
-          <p class="control-text" :style="dataControl.colorText">
+          <p class="control-text mb-0" :style="dataControl.colorText">
             {{ title }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
@@ -107,7 +107,7 @@
         <div>
           <div class="d-flex justify-content-end">
             <button
-              class="btn btn-outline-primary border-0 mr-1"
+              class="btn btn-outline-secondary border-0 mr-1"
               @click="toggleInput(dataControl.dropdownShow)"
             >
               <i class="fas fa-search" />
@@ -172,7 +172,10 @@ export default {
       pmql: "",
       badgeVariant: "",
       typeSelected: "",
-      showBadge: false
+      showBadge: false,
+      customStyle: {
+        "border-radius": "8px"
+      }
     };
   },
   watch: {

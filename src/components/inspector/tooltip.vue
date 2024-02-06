@@ -1,7 +1,7 @@
 <template>
   <div v-if="buttonType !== 'submit'">
     <label class="typo__label">{{ label }}</label>
-    <br >
+    <br />
     <label class="typo__label">{{ $t("Position") }}</label>
     <multiselect
       v-model="position"
@@ -34,123 +34,125 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import _ from "lodash";
+import { FormTextArea } from "@processmaker/vue-form-elements";
 
 export default {
+  components: { FormTextArea },
   inheritAttrs: false,
-  props: ['label', 'value', 'helper'],
+  props: ["label", "value", "helper"],
   data() {
     return {
       options: [
         {
-          value: 'top',
-          content: this.$t('Top'),
+          value: "top",
+          content: this.$t("Top")
         },
         {
-          value: 'topleft',
-          content: this.$t('Top Left'),
+          value: "topleft",
+          content: this.$t("Top Left")
         },
         {
-          value: 'topright',
-          content: this.$t('Top Right'),
+          value: "topright",
+          content: this.$t("Top Right")
         },
         {
-          value: 'right',
-          content: this.$t('Right'),
+          value: "right",
+          content: this.$t("Right")
         },
         {
-          value: 'righttop',
-          content: this.$t('Right Top'),
+          value: "righttop",
+          content: this.$t("Right Top")
         },
         {
-          value: 'rightbottom',
-          content: this.$t('Right Bottom'),
+          value: "rightbottom",
+          content: this.$t("Right Bottom")
         },
         {
-          value: 'bottom',
-          content: this.$t('Bottom'),
+          value: "bottom",
+          content: this.$t("Bottom")
         },
         {
-          value: 'bottomleft',
-          content: this.$t('Bottom Left'),
+          value: "bottomleft",
+          content: this.$t("Bottom Left")
         },
         {
-          value: 'bottomright',
-          content: this.$t('Bottom Right'),
+          value: "bottomright",
+          content: this.$t("Bottom Right")
         },
         {
-          value: 'left',
-          content: this.$t('Left'),
+          value: "left",
+          content: this.$t("Left")
         },
         {
-          value: 'lefttop',
-          content: this.$t('Left Top'),
+          value: "lefttop",
+          content: this.$t("Left Top")
         },
         {
-          value: 'leftbottom',
-          content: this.$t('Left Bottom'),
-        },
+          value: "leftbottom",
+          content: this.$t("Left Bottom")
+        }
       ],
       optionsVariant: [
         {
-          value: 'primary',
-          content: this.$t('Primary'),
+          value: "primary",
+          content: this.$t("Primary")
         },
         {
-          value: 'secondary',
-          content: this.$t('Secondary'),
+          value: "secondary",
+          content: this.$t("Secondary")
         },
         {
-          value: 'success',
-          content: this.$t('Success'),
+          value: "success",
+          content: this.$t("Success")
         },
         {
-          value: 'danger',
-          content: this.$t('Danger'),
+          value: "danger",
+          content: this.$t("Danger")
         },
         {
-          value: 'warning',
-          content: this.$t('Warning'),
+          value: "warning",
+          content: this.$t("Warning")
         },
         {
-          value: 'info',
-          content: this.$t('Info'),
+          value: "info",
+          content: this.$t("Info")
         },
         {
-          value: 'light',
-          content: this.$t('Light'),
+          value: "light",
+          content: this.$t("Light")
         },
         {
-          value: 'dark',
-          content: this.$t('Dark'),
-        },
+          value: "dark",
+          content: this.$t("Dark")
+        }
       ],
-      position: 'top',
-      content: '',
-      variant: '',
+      position: "top",
+      content: "",
+      variant: ""
     };
   },
   computed: {
     buttonType() {
-      return _.get(this.$attrs, 'selectedControl.config.event');
-    },
+      return _.get(this.$attrs, "selectedControl.config.event");
+    }
   },
   watch: {
     value: {
       handler() {
         if (this.value) {
-          this.position = this.value.position || '';
-          this.content = this.value.content || '';
-          this.variant = this.value.variant || '';
+          this.position = this.value.position || "";
+          this.content = this.value.content || "";
+          this.variant = this.value.variant || "";
         } else {
           this.value = {
-            position: '',
-            content: '',
-            variant: '',
+            position: "",
+            content: "",
+            variant: ""
           };
         }
       },
-      immediate: true,
+      immediate: true
     },
     position() {
       this.value.position = this.position;
@@ -160,7 +162,7 @@ export default {
     },
     variant() {
       this.value.variant = this.variant;
-    },
+    }
   },
   methods: {
     getLabelFromValuePosition(value) {
@@ -174,7 +176,7 @@ export default {
         (option) => option.value == value
       );
       return selectedOption ? selectedOption.content : null;
-    },
-  },
+    }
+  }
 };
 </script>
