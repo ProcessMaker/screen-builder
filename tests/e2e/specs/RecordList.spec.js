@@ -133,6 +133,8 @@ describe("Record list", () => {
       "image/jpg"
     );
 
+    cy.wait(1000);
+
     // Upload second file
     cy.intercept(
       "POST",
@@ -142,6 +144,7 @@ describe("Record list", () => {
         fileUploadId: 2
       })
     );
+
     cy.uploadFile(
       '[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=modal-add] [data-cy="screen-field-file2"] input[type=file]',
       "record_list_fileupload.json",

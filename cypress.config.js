@@ -55,6 +55,7 @@ module.exports = defineConfig({
     baseUrl: "http://localhost:5173",
     specPattern: "tests/e2e/specs/**/*.{js,jsx,ts,tsx}",
     supportFile: "tests/e2e/support/index.js",
-    waitForAnimations: true
+    waitForAnimations: true,
+    animationDistanceThreshold: 2
   }
 });

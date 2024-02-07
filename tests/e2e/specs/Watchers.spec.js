@@ -62,7 +62,7 @@ describe("Watchers", () => {
     );
   });
 
-  it.skip("CRUD of watchers", () => {
+  it("CRUD of watchers", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
@@ -251,7 +251,7 @@ describe("Watchers", () => {
       "The Variable to Watch * field is required"
     );
   });
-  it.skip("Test synchronous watcher", () => {
+  it("Test synchronous watcher", () => {
     // Mock script response
 
     cy.intercept(
@@ -440,7 +440,7 @@ describe("Watchers", () => {
     );
   });
 
-  it.skip("Test watcher with select list", () => {
+  it("Test watcher with select list", () => {
     cy.visit("/");
     // Mock script response
 
