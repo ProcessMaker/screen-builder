@@ -28,7 +28,7 @@
                 @click.prevent="newRequestLink(process, event)"
               >
                 {{ $t("Start") }}
-                <i class="fas fa-play mr-1"></i>
+                <i class="fas fa-play mr-1 card-icon"></i>
               </button>
             </div>
           </div>
@@ -164,10 +164,11 @@ export default {
   height: 28px;
   padding: 4px 9px;
   justify-content: center;
-  align-items: center;
+  align-items: inherit;
   gap: 6px;
   color: #1572c2;
   font-size: 14px;
+  font-weight: 600;
 }
 .btn-ellipsis {
   background: #fff;
@@ -203,5 +204,13 @@ export default {
 }
 .card-title {
   font-weight: 700;
+}
+.card-icon {
+  display: flex;
+  padding: 2px 1px 0px 0px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 7px;
 }
 </style>
