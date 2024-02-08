@@ -589,13 +589,13 @@ export default [
     control: {
       popoverContent: "User avatar",
       order: 3.0,
-      group: 'Content Fields',
-      label: 'Image',
+      group: 'Dashboards',
+      label: 'User Avatar',
       component: 'FormAvatar',
       'editor-component': 'FormAvatar',
       'editor-control': 'FormAvatar',
       config: {
-        label: 'Image',
+        label: 'User Avatar',
         icon: 'fas fa-user-circle',
         variant: 'primary',
         event: 'submit',
@@ -609,7 +609,7 @@ export default [
           field: 'height',
           config: {
             label: 'Height',
-            helper: 'Image height',
+            helper: 'Avatar height',
             type: 'number',
           },
         },
@@ -618,7 +618,7 @@ export default [
           field: 'width',
           config: {
             label: 'Width',
-            helper: 'image width',
+            helper: 'Avatar width',
             type: 'number',
           },
         },
