@@ -3,6 +3,7 @@
     <b-button
       :variant="variant()"
       class="avatar-button rounded-circle overflow-hidden p-0 m-0 d-inline-flex border-0"
+      :style="styleAvatar()"
       disabled
     >
       <img v-if="user.avatar"
