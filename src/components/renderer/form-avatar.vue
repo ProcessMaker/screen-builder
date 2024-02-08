@@ -1,11 +1,17 @@
 <template>
   <span>
     <b-button
-      variant="primary"
+      :variant="variant()"
       class="avatar-button rounded-circle overflow-hidden p-0 m-0 d-inline-flex border-0"
       disabled
     >
-      <img v-if="user.avatar" :src="user.avatar" :width="width" :height="height">
+      <img v-if="user.avatar"
+        :src="user.avatar"
+        :width="width"
+        :height="height"
+        :class="image"
+        :alt="user.fullname"
+      >
       
       <span
         v-else
@@ -43,6 +49,13 @@ export default {
       return this.user.firstname && this.user.lastname
         ? this.user.firstname.match(/./u)[0] + this.user.lastname.match(/./u)[0]
         : "";
+    },
+    variant() {
+      if (this.user.avatar) {
+        return 'secondary';
+      } else {
+        return 'info';
+      }
     },
     styleAvatar() {
       return "width: " +
