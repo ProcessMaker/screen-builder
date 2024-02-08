@@ -6,14 +6,14 @@
       :style="styleAvatar()"
       disabled
     >
-      <img v-if="user.avatar"
+      <img
+        v-if="user.avatar"
         :src="user.avatar"
         :width="width"
         :height="height"
         :class="image"
         :alt="user.fullname"
-      >
-      
+      />
       <span
         v-else
         class="border-0 d-inline-flex align-items-center justify-content-center text-white text-uppercase text-nowrap font-weight-normal"
@@ -52,11 +52,7 @@ export default {
         : "";
     },
     variant() {
-      if (this.user.avatar) {
-        return 'secondary';
-      } else {
-        return 'info';
-      }
+        return this.user.avatar ? 'secondary' : 'info';
     },
     styleAvatar() {
       return "width: " +
