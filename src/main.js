@@ -110,12 +110,16 @@ const cacheEnabled = document.head.querySelector(
 const cacheTimeout = document.head.querySelector(
   "meta[name='screen-cache-timeout']"
 );
-
+// Get the current protocol, hostname, and port
+const { protocol, hostname, port } = window.location;
 window.ProcessMaker = {
   isStub: true,
   user: {
     id: 1,
     lang: "en"
+  },
+  app: {
+    url: `${protocol}//${hostname}:${port}` // Create a URL with the current port
   },
   apiClient: {
     create() {
