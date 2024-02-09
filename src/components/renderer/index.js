@@ -1,6 +1,7 @@
 export { default as AddLoopRow } from "./add-loop-row.vue";
 export { default as FileDownload } from "./file-download.vue";
 export { default as FileUpload } from "./file-upload.vue";
+export { default as FormAvatar } from "./form-avatar.vue";
 export { default as FormButton } from "./form-button.vue";
 export { default as FormImage } from "./form-image.vue";
 export { default as FormInputMasked } from "./form-masked-input.vue";
