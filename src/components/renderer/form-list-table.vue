@@ -11,7 +11,7 @@
             class="avatar-text"
           ></b-avatar>
           <p class="control-text mb-0" :style="dataControl.colorText">
-            {{ title }}
+            {{ $t(title) }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
             <b-dropdown variant="outline-secondary" no-caret>
