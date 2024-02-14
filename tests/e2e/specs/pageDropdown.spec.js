@@ -3,7 +3,6 @@ describe("Page Dropdown", () => {
     cy.visit("/");
   });
   it("Basic default value", () => {
-    cy.visit("/");
     cy.openAllAcordeon();
     cy.get("[data-cy=page-dropdown]").click();
     cy.get("[data-cy=add-page]").click();
