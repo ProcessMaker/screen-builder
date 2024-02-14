@@ -19,7 +19,8 @@ describe("Page Dropdown", () => {
     cy.get("[data-cy=accordion-Configuration]").click();
     cy.setMultiselect("[data-cy=inspector-eventData]", "Default");
     // Define Page 1
-    cy.get("[data-cy=toolbar-page]").select("0");
+    cy.get("[data-cy=page-dropdown]").click();
+    cy.get("[data-cy=page-Default]").click();
     cy.get('[data-cy=controls-FormButton]:contains("Page")').drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
