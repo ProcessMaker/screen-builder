@@ -8,7 +8,8 @@ module.exports = {
   extends: [
     "plugin:vue/recommended",
     "airbnb-base",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:storybook/recommended"
   ],
 
   parserOptions: {
