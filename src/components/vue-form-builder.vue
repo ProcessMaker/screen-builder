@@ -101,6 +101,41 @@
       class="overflow-auto mh-100 p-0 px-4 d-flex flex-column position-relative pt-2"
     >
       <b-input-group size="sm" class="bg-white mt-3">
+        <b-dropdown
+          v-if="showToolbar"
+          class="mx-1 bg-light"
+          right
+          text="menu"
+          data-cy="page-dropdown"
+        >
+          <template #button-content>
+            <i class="fa fa-file"></i>
+          </template>
+          <b-dropdown-item
+            data-cy="add-page"
+            @click="
+              originalPageName = null;
+              $bvModal.show('addPageModal');
+            "
+          >
+            <i class="fa fa-plus"></i>
+            {{ $t("Create Page") }}
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <i class="fa fa-eye"></i>
+            {{ $t("See all pages") }}
+          </b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
+
+          <b-dropdown-item
+            v-for="(data, page) in config"
+            :key="page"
+            :data-cy="'page-' + data.name"
+            @click="onClick(page)"
+          >
+            {{ data.name }}
+          </b-dropdown-item>
+        </b-dropdown>
         <b-form-select
           v-if="showToolbar"
           v-model="currentPage"
@@ -398,6 +433,7 @@
     <!-- Modals -->
     <b-modal
       id="addPageModal"
+      ref="addPageModal"
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
@@ -775,6 +811,9 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    onClick(page) {
+      this.currentPage = page;
+    },
     getGroupOrder(groupName) {
       let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
       return order;
