@@ -3,23 +3,23 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 import Vue from "vue";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
 import i18next from "i18next";
 import VueI18Next from "@panter/vue-i18next";
-import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import Vuex from "vuex";
 import axios from "axios";
 import { cacheAdapterEnhancer } from "axios-extensions";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import { Multiselect } from "@processmaker/vue-multiselect";
-import "@processmaker/vue-multiselect/dist/vue-multiselect.min.css";
 import { LRUCache } from "lru-cache";
 import VueFormElements from "@processmaker/vue-form-elements";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
 import ScreenBuilder from "@/components";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
+import "@processmaker/vue-multiselect/dist/vue-multiselect.min.css";
 
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
@@ -46,6 +46,7 @@ const cacheEnabled = document.head.querySelector(
 const cacheTimeout = document.head.querySelector(
   "meta[name='screen-cache-timeout']"
 );
+
 // Get the current protocol, hostname, and port
 const { protocol, hostname, port } = window.location;
 window.ProcessMaker = {
@@ -57,99 +58,9 @@ window.ProcessMaker = {
   app: {
     url: `${protocol}//${hostname}:${port}` // Create a URL with the current port
   },
-  apiClient: {
-    create() {
-      return this;
-    },
-    defaults: {
-      headers: {
-        common: {
-          "X-CSRF-TOKEN": "token"
-        }
-      }
-    },
-    get(url, params) {
-      return new Promise((resolve, reject) => {
-        let screen;
-        if (url.substr(0, 8) === "screens/") {
-          screen = window.exampleScreens.find((s) => s.id == url.substr(8));
-        }
-        if (url.substr(0, 8) === "screens/" && screen) {
-          resolve({ data: screen });
-        } else if (url === "screens") {
-          resolve({
-            data: {
-              data: window.exampleScreens
-            }
-          });
-        } else if (url === "/data_sources/1") {
-          resolve({
-            data: {
-              endpoints: {
-                list: {}
-              }
-            }
-          });
-        } else if (url === "/data_sources") {
-          resolve({
-            data: {
-              data: [
-                {
-                  id: 1,
-                  name: "Persons",
-                  endpoints: {
-                    list: {}
-                  }
-                }
-              ]
-            }
-          });
-        } else {
-          window.axios
-            .get(url, params)
-            .then((response) => resolve(response))
-            .catch((error) => reject(error));
-        }
-      });
-    },
-    post(url, body) {
-      return new Promise((resolve, reject) => {
-        if (url === "/requests/data_sources/1") {
-          resolve({
-            data: {
-              response: [
-                { value: 1, content: "James" },
-                { value: 2, content: "John" },
-                { value: 3, content: "Mary" },
-                { value: 4, content: "Patricia" }
-              ]
-            }
-          });
-        } else {
-          window.axios
-            .post(url, body)
-            .then((response) => resolve(response))
-            .catch((error) => reject(error));
-        }
-      });
-    },
-    put() {
-      return Promise.resolve({
-        data: {
-          response: []
-        }
-      });
-    },
-    delete() {
-      return Promise.resolve({
-        data: {
-          response: []
-        }
-      });
-    }
-  },
   EventBus: new Vue(),
   confirmModal(title, message, variant, callback) {
+    // eslint-disable-next-line no-alert
     if (window.confirm(`${title}: ${message}`)) {
       callback();
     }
@@ -199,6 +110,7 @@ window.Echo = {
   }
 };
 
+// axios
 window.axios = axios.create({
   baseURL: "/api/1.0/",
   adapter: cacheAdapterEnhancer(axios.getAdapter(axios.defaults.adapter), {
@@ -210,5 +122,7 @@ window.axios = axios.create({
     })
   })
 });
+
+window.ProcessMaker.apiClient = window.axios;
 
 export default { ScreenBuilder };
