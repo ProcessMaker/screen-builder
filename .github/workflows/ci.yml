@@ -68,6 +68,8 @@ jobs:
         with:
           name: cypress-videos
           path: tests/e2e/videos
+      - run: ls -l .
+      - run: ls -R coverage .nyc_output
 
       - name: Prepare coverage
         run: mkdir coverage && mv .nyc_output/out.json coverage/coverage-${{ matrix.containers }}.json
