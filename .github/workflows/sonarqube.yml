@@ -15,6 +15,8 @@ jobs:
         with:
           name: code-coverage-report
           path: coverage
+      - run: ls -l
+      - run: ls -R coverage
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
