@@ -115,5 +115,5 @@ jobs:
             .nyc_output
             reports
   scan:
-    needs: ci
+    needs: coverage
     uses: ./.github/workflows/sonarqube.yml
