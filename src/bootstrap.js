@@ -74,27 +74,6 @@ window.ProcessMaker = {
 };
 window.Echo = {
   listeners: [],
-  watcherMocks(body, response) {
-    this.listeners.forEach((listener) => {
-      setTimeout(() => {
-        listener.callback({
-          type: ".ProcessMaker\\Events\\ScriptResponseEvent",
-          watcher: body.watcher,
-          response
-        });
-      }, 1000);
-    });
-  },
-  eventMocks(event, response) {
-    this.listeners.forEach((listener) => {
-      setTimeout(() => {
-        listener.callback({
-          type: event,
-          response
-        });
-      }, 1000);
-    });
-  },
   private() {
     return {
       notification(callback) {
