@@ -54,7 +54,7 @@ jobs:
           # re-enable PR comment bot
           COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
       - name: Upload Cypress Screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         # Only capture images on failure
         if: failure()
         with:
@@ -62,7 +62,7 @@ jobs:
           path: tests/e2e/screenshots
 
       - name: Upload Cypress Videos
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         # Only capture videos on failure
         if: failure()
         with:
@@ -70,13 +70,16 @@ jobs:
           path: tests/e2e/videos
 
       - name: Run Coverage
-        run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
+        run: npx nyc report --reporter html --reporter text --reporter json-summary --reporter lcov --report-dir combined-coverage
 
       - name: Store Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
           path: combined-coverage
 
       - name: Run build 📦
         run: npm run build
+  Scan:
+    needs: ci
+    uses: ./.github/actions/sonarqube.yml
