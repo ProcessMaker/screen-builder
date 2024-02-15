@@ -46,7 +46,7 @@
     <component :is="tasksPreview" ref="preview-sidebar" />
   </div>
   <div v-else>
-    <formEmpty link="Tasks" title="No tasks in sight" url="/tasks" />
+    <formEmpty link="Tasks" title="No tasks in sight" :url="noDataUrl" />
   </div>
 </template>
 
@@ -81,6 +81,11 @@ export default {
       tasksPreview:
         (window.SharedComponents && window.SharedComponents.TasksHome) || {}
     };
+  },
+  computed: {
+    noDataUrl() {
+      return `${window.ProcessMaker?.app?.url}/tasks`;
+    }
   },
   mounted() {
     this.setFields();
