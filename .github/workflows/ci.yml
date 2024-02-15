@@ -80,6 +80,6 @@ jobs:
 
       - name: Run build 📦
         run: npm run build
-  Scan:
+  scan:
     needs: ci
-    uses: ./.github/actions/sonarqube.yml
+    uses: ./.github/workflows/sonarqube.yml
