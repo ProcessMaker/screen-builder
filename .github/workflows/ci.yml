@@ -72,12 +72,12 @@ jobs:
       - run: ls -R coverage .nyc_output
 
       - name: Prepare coverage
-        run: mkdir coverage && mv .nyc_output/out.json coverage/coverage-${{ matrix.containers }}.json
+        run: cp .nyc_output/out.json coverage/coverage-${{ matrix.containers }}.json
       - name: Archive code coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.containers }}
-          path: coverage
+          path: ./coverage/coverage-${{ matrix.containers }}.json
   coverage:
     needs: e2e
     runs-on: ubuntu-latest
@@ -101,7 +101,6 @@ jobs:
         with:
           path: reports
           merge-multiple: true
-      - run: ls -l .
       - name: Run Coverage
         run: |
           npx nyc merge reports
