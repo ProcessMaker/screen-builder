@@ -5,7 +5,7 @@ on:
     types: [opened, reopened, synchronize, edited]
 
 jobs:
-  ci:
+  e2e:
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false # https://github.com/cypress-io/github-action/issues/48
@@ -69,17 +69,51 @@ jobs:
           name: cypress-videos
           path: tests/e2e/videos
 
-      - name: Run Coverage
-        run: npx nyc report --reporter html --reporter text --reporter json-summary --reporter lcov --report-dir combined-coverage
+      - name: Prepare coverage
+        run: mkdir coverage && mv .nyc_output/out.json coverage/coverage-${{ matrix.containers }}.json
+      - name: Archive code coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.containers }}
+          path: coverage
+  coverage:
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
 
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          check-latest: true
+          cache: 'npm'
+
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+      - name: Create reports folder
+        run: mkdir reports .nyc_output
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: reports
+          merge-multiple: true
+      - run: ls -l .
+      - name: Run Coverage
+        run: |
+          npx nyc merge reports
+          mv coverage.json .nyc_output/out.json
+      - name: Create coverage report
+        run: npx nyc report --reporter html --reporter text --reporter json-summary --reporter lcov --report-dir coverage
       - name: Store Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
-          path: combined-coverage
-
-      - name: Run build 📦
-        run: npm run build
+          path: |
+            coverage
+            .nyc_output
+            reports
   scan:
     needs: ci
     uses: ./.github/workflows/sonarqube.yml
