@@ -14,8 +14,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: code-coverage-report
-          path: coverage
-          merge-multiple: true
       - run: ls -l
       - run: ls -R coverage
       - uses: sonarsource/sonarqube-scan-action@master
