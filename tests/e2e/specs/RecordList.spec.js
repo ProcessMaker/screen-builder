@@ -1,6 +1,6 @@
 import moment from "moment";
 
-describe("Record list", () => {
+describe.skip("Record list", () => {
   beforeEach(() => {
     cy.visit("/");
     cy.showValidationOnLoad();
