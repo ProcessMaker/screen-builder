@@ -118,3 +118,4 @@ jobs:
   scan:
     needs: coverage
     uses: ./.github/workflows/sonarqube.yml
+    secrets: inherit
