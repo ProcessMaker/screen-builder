@@ -397,6 +397,16 @@
 
     <!-- Modals -->
     <b-modal
+      id="openSortable"
+      header-close-content="&times;"
+      role="dialog"
+      size="lg"
+      @ok="editPage"
+    >
+      <Sortable />
+    </b-modal>
+
+    <b-modal
       id="addPageModal"
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
@@ -486,6 +496,7 @@ import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
+import Sortable from './sortable/Sortable.vue';
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -549,7 +560,8 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer
+    ...renderer,
+    Sortable,
   },
   mixins: [HasColorProperty, testing],
   props: {
