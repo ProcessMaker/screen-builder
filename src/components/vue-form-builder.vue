@@ -118,11 +118,11 @@
               $bvModal.show('addPageModal');
             "
           >
-            <i class="fa fa-plus dropdown-platform-item-icon"></i>
+            <i class="fa fa-plus platform-dropdown-item-icon"></i>
             {{ $t("Create Page") }}
           </b-dropdown-item>
           <b-dropdown-item>
-            <i class="fa fa-eye dropdown-platform-item-icon"></i>
+            <i class="fa fa-eye platform-dropdown-item-icon"></i>
             {{ $t("See all pages") }}
           </b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
@@ -1484,7 +1484,7 @@ $side-bar-font-size: 0.875rem;
     box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
   }
 }
-.dropdown-platform-item-icon {
+.platform-dropdown-item-icon {
   color: #1572c2;
 }
 </style>
