@@ -6,6 +6,7 @@
   &-search-box {
     display: flex;
     align-items: center;
+    border-color: #cdddee !important;
   }
 
   &-search-icon {
@@ -13,6 +14,7 @@
       left: 16px;
       right: 8px;
     }
+    color: #6A7888;
   }
 
   &-btn-new {
