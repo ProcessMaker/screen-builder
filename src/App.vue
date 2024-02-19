@@ -814,4 +814,9 @@ body {
 .editor {
   height: 30em;
 }
+// Platform btn style
+.btn-platform {
+  background-color: #ffff;
+  color: #6a7888;
+}
 </style>

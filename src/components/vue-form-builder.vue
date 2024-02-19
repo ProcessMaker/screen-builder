@@ -103,10 +103,10 @@
       <b-input-group size="sm" class="bg-white mt-3">
         <b-dropdown
           v-if="showToolbar"
-          class="mx-1 bg-light"
           right
           text="menu"
           data-cy="page-dropdown"
+          variant="platform"
         >
           <template #button-content>
             <i class="fa fa-file"></i>
@@ -118,11 +118,11 @@
               $bvModal.show('addPageModal');
             "
           >
-            <i class="fa fa-plus"></i>
+            <i class="fa fa-plus dropdown-platform-item-icon"></i>
             {{ $t("Create Page") }}
           </b-dropdown-item>
           <b-dropdown-item>
-            <i class="fa fa-eye"></i>
+            <i class="fa fa-eye dropdown-platform-item-icon"></i>
             {{ $t("See all pages") }}
           </b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
@@ -1326,7 +1326,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .custom-popover {
   margin-right: -400px;
   padding: 16px;
@@ -1483,5 +1483,8 @@ $side-bar-font-size: 0.875rem;
   100% {
     box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
   }
+}
+.dropdown-platform-item-icon {
+  color: #1572c2;
 }
 </style>
