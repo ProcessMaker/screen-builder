@@ -1,0 +1,23 @@
+.sortable {
+  &-box {
+    font-family: "Open Sans", sans-serif !important;
+  }
+
+  &-search-box {
+    display: flex;
+    align-items: center;
+  }
+
+  &-search-icon {
+    margin: {
+      left: 16px;
+      right: 8px;
+    }
+  }
+
+  &-btn-new {
+    background: #1572C2;
+    color: #ffffff;
+  }
+}
+
