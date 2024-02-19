@@ -2,6 +2,8 @@ $border-color: #cdddee;
 
 .sortable {
   &-list {
+    display: flex;
+    flex-direction: column;
     border: 1px solid $border-color !important;
 
     &-header {
@@ -15,6 +17,12 @@ $border-color: #cdddee;
       font-weight: bold;
       color: #566877;
     }
+  }
+
+  &-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 
   &-item {
@@ -55,4 +63,8 @@ $border-color: #cdddee;
       border-right: 1px solid $border-color;
     }
   }
+}
+
+.dragging {
+  box-shadow: 0 1px 5px 0 rgba(86, 104, 119, 0.4);
 }

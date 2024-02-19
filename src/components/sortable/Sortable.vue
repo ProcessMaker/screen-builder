@@ -1,5 +1,5 @@
 <template>
-  <div class="container .sortable-box">
+  <div class="container sortable-box">
     <div class="row">
       <div class="col-sm border rounded-lg p-0 mr-3 sortable-search-box">
         <i class="fa fa-search sortable-search-icon"></i>
@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <SortableList />
+    <SortableList :items="items" />
   </div>
 </template>
 
@@ -24,11 +24,9 @@ export default {
   components: {
     SortableList
   },
-  data() {
-    return {
-      msg: 'Sortable'
-    }
-  }
+  props: {
+    items: { type: Array, required: true },
+  },
 }
 </script>
 
