@@ -147,6 +147,19 @@
           >
             <i class="fas fa-plus" />
           </b-button>
+
+          <!-- TODO: Remove this button when the sortable list is finished -->
+          <b-button
+            v-b-modal.openSortable
+            size="sm"
+            variant="secondary"
+            class="ml-1 mr-1"
+            :title="$t('Edit pages')"
+            data-cy="toolbar-add"
+            @click="originalPageName = null"
+          >
+            <i class="fas fa-cog" />
+          </b-button>
         </div>
 
         <b-button-group size="sm" class="ml-1 ml-auto">
@@ -396,6 +409,7 @@
     </b-col>
 
     <!-- Modals -->
+    <!-- TODO: Remove this modal when the sortable list is finished -->
     <b-modal
       id="openSortable"
       header-close-content="&times;"
@@ -404,7 +418,7 @@
       ok-title="Save"
       @ok="editPage"
     >
-      <Sortable />
+      <Sortable :items="items" />
     </b-modal>
 
     <b-modal
@@ -630,6 +644,15 @@ export default {
       cancelledJobs: [],
       collapse: {},
       groupOrder: {},
+      // TODO: Remove this when the sortable component is finished
+      items: [
+        { name: 'Learn JavaScript', },
+        { name: 'Learn Vue', },
+        { name: 'Build something awesome', },
+        { name: 'Learn PHP', },
+        { name: 'Learn Laravel', },
+        { name: 'Build Python', },
+      ],
     };
   },
   computed: {
