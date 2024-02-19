@@ -401,6 +401,7 @@
       header-close-content="&times;"
       role="dialog"
       size="lg"
+      ok-title="Save"
       @ok="editPage"
     >
       <Sortable />

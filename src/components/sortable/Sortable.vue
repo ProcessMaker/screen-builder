@@ -11,12 +11,19 @@
         </button>
       </div>
     </div>
+
+    <SortableList />
   </div>
 </template>
 
 <script>
+import SortableList from './sortableList/SortableList.vue'
+
 export default {
   name: 'Sortable',
+  components: {
+    SortableList
+  },
   data() {
     return {
       msg: 'Sortable'
