@@ -33,7 +33,7 @@
     <b-dropdown-item
       v-for="(item, page) in data"
       :key="page"
-      :data-cy="'page-' + item.name"
+      :data-test="'page-' + item.name"
       @click="onClickPage(page)"
     >
       <!-- Display the name of the page -->
