@@ -31,13 +31,14 @@
       v-for="(index, n) in localOpenedPages"
       :key="`tab-${n}`"
       class="h-100 d-inline-block"
-      :data-testid="`tab-${n}`"
     >
       <template #title>
         <b-badge variant="primary" class="mr-1">
           {{ pageNumber(index) }}
         </b-badge>
-        {{ pages[index].name }}
+        <span :data-testid="`tab-${n}`">
+          {{ pages[index].name }}
+        </span>
         <span
           v-if="localOpenedPages.length > 1"
           :data-testid="`close-tab-${n}`"
