@@ -231,29 +231,76 @@ export const TabContentFillAllTheAvailableSpace = {
       { name: "Page 4" },
       { name: "Page 5" }
     ],
-    initialOpenedPages: [0]
+    initialOpenedPages: [0, 1]
   },
   parameters: {
     layout: "fullscreen"
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const tabContent = canvas.getByTestId("tab-content");
-    const tabsBar = canvas.getByRole("tablist").parentElement;
 
-    // -------------------------------------
-    //
-    // Check the height of the tab content is the same as the height
-    // of the canvas minus height of the tabs bar. This is important
-    // to make sure the tab content fill all the available space and
-    // the dropzone can be used to drop elements.
-    //
-    // -------------------------------------
-    await waitFor(() => {
-      const canvasHeight = canvasElement.clientHeight;
-      const tabsBarHeight = tabsBar.clientHeight;
-      expect(tabContent).toHaveStyle({
-        height: `${canvasHeight - tabsBarHeight}px`
+    // Check content position in Page 1
+    await step("Check content position in Page 1", async () => {
+      const tabContent = canvas.getByTestId("tab-content");
+      const tabsBar = canvas.getByRole("tablist").parentElement;
+
+      // -------------------------------------
+      //
+      // Check the height of the tab content is the same as the height
+      // of the canvas minus height of the tabs bar. This is important
+      // to make sure the tab content fill all the available space and
+      // the dropzone can be used to drop elements. Also check the top
+      // position of the tab content is the same as the height of the
+      // tabs bar.
+      //
+      // -------------------------------------
+      await waitFor(() => {
+        const canvasHeight = canvasElement.clientHeight;
+        const tabsBarHeight = tabsBar.clientHeight;
+        const tabContentTop = tabContent.getBoundingClientRect().top;
+        expect(tabContentTop).toBe(tabsBarHeight);
+        expect(tabContent).toHaveStyle({
+          height: `${canvasHeight - tabsBarHeight}px`
+        });
+      });
+    });
+
+    // Select Page 2 using tab (data-testid=tab-1)
+    await step("Select Page 2 using tab", async () => {
+      canvas.getByTestId("tab-1").click();
+      await waitFor(
+        () => {
+          expect(canvas.getByTestId("tab-content")).toContainHTML(
+            "Here comes content of Page 2 (#1)"
+          );
+        },
+        { timeout: 1000 }
+      );
+    });
+
+    // Check content position in Page 2
+    await step("Check content position in Page 2", async () => {
+      const tabContent = canvas.getByTestId("tab-content");
+      const tabsBar = canvas.getByRole("tablist").parentElement;
+
+      // -------------------------------------
+      //
+      // Check the height of the tab content is the same as the height
+      // of the canvas minus height of the tabs bar. This is important
+      // to make sure the tab content fill all the available space and
+      // the dropzone can be used to drop elements. Also check the top
+      // position of the tab content is the same as the height of the
+      // tabs bar.
+      //
+      // -------------------------------------
+      await waitFor(() => {
+        const canvasHeight = canvasElement.clientHeight;
+        const tabsBarHeight = tabsBar.clientHeight;
+        const tabContentTop = tabContent.getBoundingClientRect().top;
+        expect(tabContentTop).toBe(tabsBarHeight);
+        expect(tabContent).toHaveStyle({
+          height: `${canvasHeight - tabsBarHeight}px`
+        });
       });
     });
   }
