@@ -754,6 +754,7 @@ export default {
 <style lang="scss">
 @import "bootstrap/dist/css/bootstrap";
 @import "bootstrap-vue/dist/bootstrap-vue";
+@import "assets/css/custom";
 
 $validation-panel-bottom: 3.5rem;
 $validation-panel-right: 0;
@@ -813,10 +814,5 @@ body {
 }
 .editor {
   height: 30em;
-}
-// Platform btn style
-.btn-platform {
-  background-color: #ffff;
-  color: #6a7888;
 }
 </style>
