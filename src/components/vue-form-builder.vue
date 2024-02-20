@@ -157,172 +157,184 @@
             $t("Redo")
           }}</b-button>
         </b-button-group>
-
       </b-input-group>
-      <tabs-bar :config="config" :opened-pages="openedPages">
-      <div
-        v-if="isCurrentPageEmpty"
-        data-cy="screen-drop-zone"
-        class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
+      <tabs-bar
+        ref="tabsBar"
+        :pages="config"
+        @tab-opened="currentPage = $event"
       >
-        <svg
-          width="81"
-          height="107"
-          viewBox="0 0 81 107"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z"
-            fill="#699CFF"
+        <template #tabs-start>
+          <b-form-select
+            :options="config.map((v, k) => k)"
+            data-testid="open-page"
+            @change="$refs.tabsBar.openPageByIndex($event)"
           />
-        </svg>
-        <h3>{{ $t("Place your controls here.") }}</h3>
-        <p>
-          {{
-            $t(
-              "To begin creating a screen, drag and drop items from the Controls Menu on the left."
-            )
-          }}
-        </p>
-        <!-- {{ $t("Drag an element here") }} -->
-      </div>
-
-      <draggable
-        v-if="renderControls"
-        :key="editorContentKey"
-        data-cy="editor-content"
-        class="h-100"
-        ghost-class="form-control-ghost"
-        :value="config[currentPage].items"
-        v-bind="{
-          group: { name: 'controls' },
-          swapThreshold: 0.5
-        }"
-        @input="updateConfig"
-      >
-        <div
-          v-for="(element, index) in config[currentPage].items"
-          :key="index"
-          class="control-item mt-4 mb-4"
-          :class="{
-            selected: selected === element,
-            hasError: hasError(element)
-          }"
-          :selector="element.config.customCssSelector"
-          @click="inspect(element)"
-        >
+        </template>
+        <template #default>
           <div
-            v-if="element.container"
-            class="card container-lement"
-            :class="{ 'ai-section-card': isAiSection(element) }"
-            data-cy="screen-element-container"
-            @click="inspect(element)"
+            v-if="isCurrentPageEmpty"
+            data-cy="screen-drop-zone"
+            class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
+          >
+            <svg
+              width="81"
+              height="107"
+              viewBox="0 0 81 107"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z"
+                fill="#699CFF"
+              />
+            </svg>
+            <h3>{{ $t("Place your controls here.") }}</h3>
+            <p>
+              {{
+                $t(
+                  "To begin creating a screen, drag and drop items from the Controls Menu on the left."
+                )
+              }}
+            </p>
+            <!-- {{ $t("Drag an element here") }} -->
+          </div>
+
+          <draggable
+            v-if="renderControls"
+            :key="editorContentKey"
+            data-cy="editor-content"
+            class="h-100"
+            ghost-class="form-control-ghost"
+            :value="config[currentPage].items"
+            v-bind="{
+              group: { name: 'controls' },
+              swapThreshold: 0.5
+            }"
+            @input="updateConfig"
           >
             <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-              :class="{ pulse: isAiSection(element) && aiPreview(element) }"
+              v-for="(element, index) in config[currentPage].items"
+              :key="index"
+              class="control-item mt-4 mb-4"
+              :class="{
+                selected: selected === element,
+                hasError: hasError(element)
+              }"
+              :selector="element.config.customCssSelector"
+              @click="inspect(element)"
             >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
-              <i
-                v-if="element.config.icon"
-                :class="element.config.icon"
-                class="mr-2 ml-1"
-              />
-              {{ element.config.name || element.label || $t("Field Name") }}
-              <div class="ml-auto">
-                <button
-                  v-if="isAiSection(element) && aiPreview(element)"
-                  data-test="apply-ai-btn"
-                  class="btn btn-sm btn-primary mr-2"
-                  :title="$t('Apply Changes')"
-                  @click="applyAiChanges(element)"
+              <div
+                v-if="element.container"
+                class="card container-lement"
+                :class="{ 'ai-section-card': isAiSection(element) }"
+                data-cy="screen-element-container"
+                @click="inspect(element)"
+              >
+                <div
+                  v-if="selected === element"
+                  class="card-header form-element-header d-flex align-items-center"
+                  :class="{ pulse: isAiSection(element) && aiPreview(element) }"
                 >
-                  {{ $t("Apply Changes") }}
-                </button>
-                <button
-                  v-if="!(isAiSection(element) && aiPreview(element))"
-                  data-test="copy-control-btn"
-                  class="btn btn-sm btn-secondary mr-2"
-                  :title="$t('Copy Control')"
-                  @click="duplicateItem(index)"
-                >
-                  <i class="fas fa-copy text-light" />
-                </button>
-                <button
-                  data-test="delete-control-btn"
-                  class="btn btn-sm btn-danger"
-                  :title="$t('Delete Control')"
-                  @click="deleteItem(index)"
-                >
-                  <i class="far fa-trash-alt text-light" />
-                </button>
+                  <i class="fas fa-arrows-alt-v mr-1 text-muted" />
+                  <i
+                    v-if="element.config.icon"
+                    :class="element.config.icon"
+                    class="mr-2 ml-1"
+                  />
+                  {{ element.config.name || element.label || $t("Field Name") }}
+                  <div class="ml-auto">
+                    <button
+                      v-if="isAiSection(element) && aiPreview(element)"
+                      data-test="apply-ai-btn"
+                      class="btn btn-sm btn-primary mr-2"
+                      :title="$t('Apply Changes')"
+                      @click="applyAiChanges(element)"
+                    >
+                      {{ $t("Apply Changes") }}
+                    </button>
+                    <button
+                      v-if="!(isAiSection(element) && aiPreview(element))"
+                      data-test="copy-control-btn"
+                      class="btn btn-sm btn-secondary mr-2"
+                      :title="$t('Copy Control')"
+                      @click="duplicateItem(index)"
+                    >
+                      <i class="fas fa-copy text-light" />
+                    </button>
+                    <button
+                      data-test="delete-control-btn"
+                      class="btn btn-sm btn-danger"
+                      :title="$t('Delete Control')"
+                      @click="deleteItem(index)"
+                    >
+                      <i class="far fa-trash-alt text-light" />
+                    </button>
+                  </div>
+                </div>
+                <component
+                  :is="element['editor-component']"
+                  v-model="element.items"
+                  :validation-errors="validationErrors"
+                  class="card-body"
+                  :class="elementCssClass(element)"
+                  :selected="selected"
+                  :config="element.config"
+                  :ai-element="element"
+                  @inspect="inspect"
+                  @update-state="updateState"
+                />
               </div>
-            </div>
-            <component
-              :is="element['editor-component']"
-              v-model="element.items"
-              :validation-errors="validationErrors"
-              class="card-body"
-              :class="elementCssClass(element)"
-              :selected="selected"
-              :config="element.config"
-              :ai-element="element"
-              @inspect="inspect"
-              @update-state="updateState"
-            />
-          </div>
 
-          <div v-else class="card" data-cy="screen-element-container">
-            <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-            >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
-              <i
-                v-if="element.config.icon"
-                :class="element.config.icon"
-                class="mr-2 ml-1"
-              />
-              {{ element.config.name || $t("Variable Name") }}
-              <div class="ml-auto">
-                <button
-                  class="btn btn-sm btn-secondary mr-2"
-                  :title="$t('Copy Control')"
-                  @click="duplicateItem(index)"
+              <div v-else class="card" data-cy="screen-element-container">
+                <div
+                  v-if="selected === element"
+                  class="card-header form-element-header d-flex align-items-center"
                 >
-                  <i class="fas fa-copy text-light" />
-                </button>
-                <button
-                  class="btn btn-sm btn-danger"
-                  :title="$t('Delete Control')"
-                  @click="deleteItem(index)"
-                >
-                  <i class="far fa-trash-alt text-light" />
-                </button>
+                  <i class="fas fa-arrows-alt-v mr-1 text-muted" />
+                  <i
+                    v-if="element.config.icon"
+                    :class="element.config.icon"
+                    class="mr-2 ml-1"
+                  />
+                  {{ element.config.name || $t("Variable Name") }}
+                  <div class="ml-auto">
+                    <button
+                      class="btn btn-sm btn-secondary mr-2"
+                      :title="$t('Copy Control')"
+                      @click="duplicateItem(index)"
+                    >
+                      <i class="fas fa-copy text-light" />
+                    </button>
+                    <button
+                      class="btn btn-sm btn-danger"
+                      :title="$t('Delete Control')"
+                      @click="deleteItem(index)"
+                    >
+                      <i class="far fa-trash-alt text-light" />
+                    </button>
+                  </div>
+                </div>
+                <component
+                  v-bind="element.config"
+                  :is="element['editor-component']"
+                  :tabindex="element.config.interactive ? 0 : -1"
+                  class="card-body m-0 pb-4 pt-4"
+                  :class="[
+                    elementCssClass(element),
+                    { 'prevent-interaction': !element.config.interactive }
+                  ]"
+                  @input="
+                    element.config.interactive
+                      ? (element.config.content = $event)
+                      : null
+                  "
+                  @focusout.native="updateState"
+                />
               </div>
             </div>
-            <component
-              v-bind="element.config"
-              :is="element['editor-component']"
-              :tabindex="element.config.interactive ? 0 : -1"
-              class="card-body m-0 pb-4 pt-4"
-              :class="[
-                elementCssClass(element),
-                { 'prevent-interaction': !element.config.interactive }
-              ]"
-              @input="
-                element.config.interactive
-                  ? (element.config.content = $event)
-                  : null
-              "
-              @focusout.native="updateState"
-            />
-          </div>
-        </div>
-      </draggable>
-    </tabs-bar>
+          </draggable>
+        </template>
+      </tabs-bar>
     </b-col>
 
     <!-- Inspector -->
