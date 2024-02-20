@@ -98,9 +98,9 @@
     <!-- Renderer -->
     <b-col
       id="screen-container"
-      class="overflow-auto mh-100 p-0 px-4 d-flex flex-column position-relative pt-2"
+      class="overflow-auto mh-100 p-0 d-flex flex-column position-relative"
     >
-      <b-input-group size="sm" class="bg-white mt-3">
+      <b-input-group size="sm" class="bg-white p-2">
         <b-form-select
           v-if="showToolbar"
           v-model="currentPage"
@@ -158,9 +158,8 @@
           }}</b-button>
         </b-button-group>
 
-        <hr class="w-100" />
       </b-input-group>
-
+      <tabs-bar :config="config" :opened-pages="openedPages">
       <div
         v-if="isCurrentPageEmpty"
         data-cy="screen-drop-zone"
@@ -323,6 +322,7 @@
           </div>
         </div>
       </draggable>
+    </tabs-bar>
     </b-col>
 
     <!-- Inspector -->
@@ -486,6 +486,7 @@ import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
+import TabsBar from "./TabsBar.vue";
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -537,6 +538,7 @@ const DEFAULT_GROUP = "Advanced";
 
 export default {
   components: {
+    TabsBar,
     draggable,
     FormInput,
     FormSelectList,
@@ -588,6 +590,7 @@ export default {
     }
 
     return {
+      openedPages: [0],
       currentPage: 0,
       selected: null,
       display: "editor",
