@@ -20,7 +20,7 @@
           <div
             role="link"
             class="nav-scroll nav-scroll-left"
-            data-testid="scroll-left"
+            data-test="scroll-left"
             @click="scrollTabsLeft"
           >
             <i class="fas fa-chevron-left" />
@@ -37,12 +37,12 @@
         <b-badge variant="primary" class="mr-1">
           {{ pageNumber(index) }}
         </b-badge>
-        <span :data-testid="`tab-${n}`">
+        <span :data-test="`tab-${n}`">
           {{ pages[index].name }}
         </span>
         <span
           v-if="localOpenedPages.length > 1"
-          :data-testid="`close-tab-${n}`"
+          :data-test="`close-tab-${n}`"
           class="close-tab"
           role="link"
           @click.stop="closeTab(n)"
@@ -50,7 +50,7 @@
           <i class="fas fa-times" />
         </span>
       </template>
-      <div class="h-100 w-100" data-testid="tab-content">
+      <div class="h-100 w-100" data-test="tab-content">
         <slot :current-page="index" />
       </div>
     </b-tab>
@@ -62,7 +62,7 @@
         <div
           role="link"
           class="nav-scroll nav-scroll-right"
-          data-testid="scroll-right"
+          data-test="scroll-right"
           @click="scrollTabsRight"
         >
           <i class="fas fa-chevron-right" />
