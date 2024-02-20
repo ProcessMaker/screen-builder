@@ -166,7 +166,7 @@
         <template #tabs-start>
           <b-form-select
             :options="config.map((v, k) => k)"
-            data-testid="open-page"
+            data-test="open-page"
             @change="$refs.tabsBar.openPageByIndex($event)"
           />
         </template>
@@ -893,6 +893,7 @@ export default {
       config.forEach((page) =>
         this.removeDataVariableFromNestedScreens(page.items)
       );
+      config.forEach((page, index) => { /* add order property to page if not has */ });
     },
     updateFieldNameValidation(items) {
       items.forEach((item) => {

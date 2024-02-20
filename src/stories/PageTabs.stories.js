@@ -12,16 +12,15 @@ export default {
     props: Object.keys(argTypes),
     components: { TabsBar },
     template: `
-    <div style="height: calc(100vh - 2rem)">
       <tabs-bar ref="tabsBar" v-bind="$props">
         <template v-slot:tabs-start>
-          <b-form-select :options="pages.map((v,k)=>k)" @change="openPage($event)" data-testid="open-page" />
+          <b-form-select :options="pages.map((v,k)=>k)" @change="openPage($event)" data-test="open-page" />
         </template>
         <template v-slot="{ currentPage }">
           Here comes content of {{pages[currentPage].name}} (#{{currentPage}})
         </template>
       </tabs-bar>
-    </div>`,
+    `,
     data() {
       return {};
     },
@@ -64,7 +63,7 @@ export const OpenPageByIndexFunction = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const selector = canvasElement.querySelector("[data-testid=open-page]");
+    const selector = canvasElement.querySelector("[data-test=open-page]");
 
     // Open Page 3 (index=2)
     await step("Open Page 3 (index=2)", async () => {
@@ -148,7 +147,7 @@ export const UserNavigatingThroughTabs = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // Select Page 2 using tab (data-testid=tab-1)
+    // Select Page 2 using tab (data-test=tab-1)
     await step("Select Page 2 using tab", async () => {
       canvas.getByTestId("tab-1").click();
       await waitFor(
@@ -161,7 +160,7 @@ export const UserNavigatingThroughTabs = {
       );
     });
 
-    // Select Page 1 using tab (data-testid=tab-0)
+    // Select Page 1 using tab (data-test=tab-0)
     await step("Select Page 1 using tab", async () => {
       canvas.getByTestId("tab-0").click();
       await waitFor(
@@ -236,6 +235,11 @@ export const TabContentFillAllTheAvailableSpace = {
   parameters: {
     layout: "fullscreen"
   },
+  decorators: [
+    () => ({
+      template: '<div style="height: calc(100vh - 2rem)"><story/></div>'
+    })
+  ],
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -265,7 +269,7 @@ export const TabContentFillAllTheAvailableSpace = {
       });
     });
 
-    // Select Page 2 using tab (data-testid=tab-1)
+    // Select Page 2 using tab (data-test=tab-1)
     await step("Select Page 2 using tab", async () => {
       canvas.getByTestId("tab-1").click();
       await waitFor(
