@@ -12,14 +12,16 @@ export default {
     props: Object.keys(argTypes),
     components: { TabsBar },
     template: `
-    <tabs-bar ref="tabsBar" v-bind="$props">
-      <template v-slot:tabs-start>
-        <b-form-select :options="pages.map((v,k)=>k)" @change="openPage($event)" data-testid="open-page" />
-      </template>
-      <template v-slot="{ currentPage }">
-        Here comes content of {{pages[currentPage].name}} (#{{currentPage}})
-      </template>
-    </tabs-bar>`,
+    <div style="height: calc(100vh - 2rem)">
+      <tabs-bar ref="tabsBar" v-bind="$props">
+        <template v-slot:tabs-start>
+          <b-form-select :options="pages.map((v,k)=>k)" @change="openPage($event)" data-testid="open-page" />
+        </template>
+        <template v-slot="{ currentPage }">
+          Here comes content of {{pages[currentPage].name}} (#{{currentPage}})
+        </template>
+      </tabs-bar>
+    </div>`,
     data() {
       return {};
     },
@@ -215,6 +217,44 @@ export const ALotOfPagesOpen = {
     await step("Scroll to the left", async () => {
       scrollLeft.click();
       await waitFor(() => expect(scrollLeft).not.toBeVisible());
+    });
+  }
+};
+
+// Tab content fill all the available space
+export const TabContentFillAllTheAvailableSpace = {
+  args: {
+    pages: [
+      { name: "Page 1" },
+      { name: "Page 2" },
+      { name: "Page 3" },
+      { name: "Page 4" },
+      { name: "Page 5" }
+    ],
+    initialOpenedPages: [0]
+  },
+  parameters: {
+    layout: "fullscreen"
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const tabContent = canvas.getByTestId("tab-content");
+    const tabsBar = canvas.getByRole("tablist").parentElement;
+
+    // -------------------------------------
+    //
+    // Check the height of the tab content is the same as the height
+    // of the canvas minus height of the tabs bar. This is important
+    // to make sure the tab content fill all the available space and
+    // the dropzone can be used to drop elements.
+    //
+    // -------------------------------------
+    await waitFor(() => {
+      const canvasHeight = canvasElement.clientHeight;
+      const tabsBarHeight = tabsBar.clientHeight;
+      expect(tabContent).toHaveStyle({
+        height: `${canvasHeight - tabsBarHeight}px`
+      });
     });
   }
 };
