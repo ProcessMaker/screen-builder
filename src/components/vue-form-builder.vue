@@ -417,7 +417,9 @@
       :title="$t('Add New Page')"
       header-close-content="&times;"
       data-cy="add-page-modal"
+      :ok-disabled="!addPageName || !!checkPageName(addPageName)"
       @ok="addPage"
+      @hide="addPageName = ''"
     >
       <required />
       <form-input
@@ -426,7 +428,8 @@
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The name of the new page to add')"
-        validation="unique-page-name|required"
+        validation="required"
+        :error="checkPageName(addPageName)"
         data-cy="add-page-name"
         required
         aria-required="true"
@@ -450,7 +453,8 @@
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The new name of the page')"
-        validation="unique-page-name|required"
+        validation="required"
+        :error="checkPageName(editPageName)"
         required
         aria-required="true"
       />
@@ -747,16 +751,6 @@ export default {
     }
   },
   created() {
-    Validator.register(
-      "unique-page-name",
-      (value) => {
-        const pageNames = this.config
-          .map((config) => config.name)
-          .filter((name) => name !== this.originalPageName);
-        return !pageNames.includes(value);
-      },
-      this.$t("Must be unique")
-    );
     this.$store.dispatch("undoRedoModule/pushState", {
       config: JSON.stringify(this.config),
       currentPage: this.currentPage
@@ -790,6 +784,12 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    checkPageName(value) {
+      const pageNames = this.config
+        .map((config) => config.name)
+        .filter((name) => name !== this.originalPageName);
+      return pageNames.includes(value) ? this.$t("Must be unique.") : "";
+    },
     getGroupOrder(groupName) {
       let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
       return order;

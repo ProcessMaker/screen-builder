@@ -31,7 +31,7 @@
     <b-tab
       v-for="(index, n) in localOpenedPages"
       :key="`tab-${n}`"
-      class="h-100 w-100 d-inline-block"
+      class="h-100 w-100"
     >
       <template #title>
         <b-badge variant="primary" class="mr-1">
