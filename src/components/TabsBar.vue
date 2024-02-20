@@ -3,9 +3,10 @@
     ref="tabs"
     v-model="activeTab"
     class="h-100 w-100 flat-tabs"
-    content-class="h-100"
+    content-class="h-tab"
     lazy
     @changed="tabsUpdated"
+    @input="tabOpened"
   >
     <template #tabs-start>
       <div class="tabs-sticky d-flex flex-row tabs-start">
@@ -30,7 +31,7 @@
     <b-tab
       v-for="(index, n) in localOpenedPages"
       :key="`tab-${n}`"
-      class="h-100 d-inline-block"
+      class="h-100 w-100 d-inline-block"
     >
       <template #title>
         <b-badge variant="primary" class="mr-1">
@@ -49,8 +50,8 @@
           <i class="fas fa-times" />
         </span>
       </template>
-      <div data-testid="tab-content">
-        <slot :current-page="index" data-test="ss" />
+      <div class="h-100 w-100" data-testid="tab-content">
+        <slot :current-page="index" />
       </div>
     </b-tab>
     <template #tabs-end>
@@ -88,7 +89,7 @@ export default {
      */
     initialOpenedPages: {
       type: Array,
-      required: true
+      default: () => [0]
     }
   },
   data() {
@@ -127,6 +128,10 @@ export default {
     this.checkTabsOverflow();
   },
   methods: {
+    tabOpened() {
+      const pageIndex = this.localOpenedPages[this.activeTab];
+      this.$emit("tab-opened", pageIndex);
+    },
     pageNumber(index) {
       return index + 1;
     },
@@ -277,5 +282,8 @@ export default {
 /* add margin right to the last li element to hide safely the right scroll button */
 .nav-tabs .nav-item:last-of-type {
   margin-right: 2rem;
+}
+.flat-tabs .h-tab {
+  height: calc(100% - 42px) !important;
 }
 </style>
