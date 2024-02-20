@@ -418,7 +418,12 @@
       ok-title="Save"
       @ok="editPage"
     >
-      <Sortable :items="items" />
+      <Sortable
+        :items="items"
+        :order-cb="setSortedConfig"
+        :item-edit-cb="() => {}"
+        :item-delete-cb="() => {}"
+      />
     </b-modal>
 
     <b-modal
@@ -646,12 +651,12 @@ export default {
       groupOrder: {},
       // TODO: Remove this when the sortable component is finished
       items: [
-        { name: 'Learn JavaScript', },
-        { name: 'Learn Vue', },
-        { name: 'Build something awesome', },
-        { name: 'Learn PHP', },
-        { name: 'Learn Laravel', },
-        { name: 'Build Python', },
+        { name: 'Learn JavaScript', order: 1 },
+        { name: 'Learn Vue', order: 2 },
+        { name: 'Build something awesome', order: 3 },
+        { name: 'Learn PHP', order: 4 },
+        { name: 'Learn Laravel', order: 5 },
+        { name: 'Build Python', order: 6 },
       ],
     };
   },
@@ -1318,7 +1323,10 @@ export default {
       this.config[this.currentPage].items.push(clone);
       this.updateState();
       this.inspect(clone);
-    }
+    },
+    setSortedConfig(config) {
+      this.items = config;
+    },
   }
 };
 </script>

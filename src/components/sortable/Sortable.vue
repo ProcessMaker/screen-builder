@@ -12,7 +12,12 @@
       </div>
     </div>
 
-    <SortableList :items="items" />
+    <SortableList
+      :items="items"
+      :order-cb="orderCb"
+      :item-edit-cb="itemEditCb"
+      :item-delete-cb="itemDeleteCb"
+    />
   </div>
 </template>
 
@@ -26,6 +31,9 @@ export default {
   },
   props: {
     items: { type: Array, required: true },
+    orderCb: { type: Function, required: true },
+    itemEditCb: { type: Function, required: true },
+    itemDeleteCb: { type: Function, required: true },
   },
 }
 </script>
