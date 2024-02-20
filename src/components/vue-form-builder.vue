@@ -101,41 +101,12 @@
       class="overflow-auto mh-100 p-0 px-4 d-flex flex-column position-relative pt-2"
     >
       <b-input-group size="sm" class="bg-white mt-3">
-        <b-dropdown
+        <pages-dropdown
           v-if="showToolbar"
-          right
-          text="menu"
-          data-cy="page-dropdown"
-          variant="platform"
-        >
-          <template #button-content>
-            <i class="fa fa-file"></i>
-          </template>
-          <b-dropdown-item
-            data-cy="add-page"
-            @click="
-              originalPageName = null;
-              $bvModal.show('addPageModal');
-            "
-          >
-            <i class="fa fa-plus platform-dropdown-item-icon"></i>
-            {{ $t("Create Page") }}
-          </b-dropdown-item>
-          <b-dropdown-item>
-            <i class="fa fa-eye platform-dropdown-item-icon"></i>
-            {{ $t("See all pages") }}
-          </b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-
-          <b-dropdown-item
-            v-for="(data, page) in config"
-            :key="page"
-            :data-cy="'page-' + data.name"
-            @click="onClick(page)"
-          >
-            {{ data.name }}
-          </b-dropdown-item>
-        </b-dropdown>
+          :data="config"
+          @addPage="$bvModal.show('addPageModal')"
+          @clickPage="onClick"
+        />
         <b-form-select
           v-if="showToolbar"
           v-model="currentPage"
@@ -517,6 +488,7 @@ import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import accordions from "./accordions";
 import { keyNameProperty } from "../form-control-common-properties";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
+import PagesDropdown from "@/components/editor/pagesDropdown";
 import testing from "@/mixins/testing";
 import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
@@ -585,7 +557,8 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer
+    ...renderer,
+    PagesDropdown
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -1483,8 +1456,5 @@ $side-bar-font-size: 0.875rem;
   100% {
     box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
   }
-}
-.platform-dropdown-item-icon {
-  color: #1572c2;
 }
 </style>
