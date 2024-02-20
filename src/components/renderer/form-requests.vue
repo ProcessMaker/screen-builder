@@ -139,7 +139,7 @@ export default {
               record.status = this.formatStatus(record.status);
             }
             this.tableData = response.data;
-            this.countResponse = Object.keys(this.tableData.data).length;
+            this.countResponse = this.tableData.meta.total;
             const dataControls = {
               count: `${this.countResponse}`,
               showControl: true,
