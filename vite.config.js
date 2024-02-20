@@ -40,7 +40,7 @@ export default defineConfig({
         replacement: resolve(__dirname, "node_modules/axios/lib")
       }
     ],
-    extensions: [".js", ".mjs", ".vue", ".json"]
+    extensions: [".mjs", ".js", ".vue", ".json"]
   },
   build: {
     sourcemap: true,
