@@ -3,7 +3,8 @@
     Dropdown component to display options related to pages.
     Provides options to add a new page, see all pages, and select individual pages.
   -->
-  <b-dropdown right data-cy="page-dropdown" variant="platform">
+  <b-dropdown data-cy="page-dropdown" variant="platform" :boundary="boundary"
+  >
     <!-- Dropdown button content -->
     <template #button-content>
       <!-- Icon representing a file -->
@@ -66,6 +67,10 @@ export default {
     data: {
       type: Array,
       default: null
+    },
+    boundary: {
+      type: String,
+      default: "viewport"
     }
   },
 
