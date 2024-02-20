@@ -152,7 +152,7 @@ export default {
           .then((response) => {
             this.showTable = response.data.data.length !== 0;
             this.tableData = response.data;
-            this.countResponse = Object.keys(this.tableData.data).length;
+            this.countResponse = this.tableData.meta.total;
             this.countOverdue = `${this.tableData.meta.in_overdue}`;
             tasksDropdown.push(this.countOverdue);
             this.countInProgress = `${this.tableData.meta.total}`;
