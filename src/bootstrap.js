@@ -21,7 +21,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import "@processmaker/vue-multiselect/dist/vue-multiselect.min.css";
-
+import "@/assets/css/custom.css";
 // For QA: Set default testIdAttribute to "data-test"
 configure({ testIdAttribute: "data-test" });
 

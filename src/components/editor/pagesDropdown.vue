@@ -3,8 +3,7 @@
     Dropdown component to display options related to pages.
     Provides options to add a new page, see all pages, and select individual pages.
   -->
-  <b-dropdown data-cy="page-dropdown" variant="platform" :boundary="boundary"
-  >
+  <b-dropdown data-test="page-dropdown" variant="platform" :boundary="boundary">
     <!-- Dropdown button content -->
     <template #button-content>
       <!-- Icon representing a file -->
@@ -12,7 +11,7 @@
     </template>
 
     <!-- Option to add a new page -->
-    <b-dropdown-item data-cy="add-page" @click="onAddPage">
+    <b-dropdown-item data-test="add-page" @click="onAddPage">
       <!-- Icon for adding a new page -->
       <i class="fa fa-plus platform-dropdown-item-icon"></i>
       <!-- Text for adding a new page -->
@@ -20,7 +19,7 @@
     </b-dropdown-item>
 
     <!-- Option to see all pages -->
-    <b-dropdown-item data-cy="see-all-pages" @click="onSeeAllPages">
+    <b-dropdown-item data-test="see-all-pages" @click="onSeeAllPages">
       <!-- Icon for seeing all pages -->
       <i class="fa fa-eye platform-dropdown-item-icon"></i>
       <!-- Text for seeing all pages -->
@@ -107,6 +106,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// Platform btn style
+.btn-platform {
+  background-color: #ffff;
+  color: #6a7888;
+}
 .platform-dropdown-item-icon {
   // Style for the icons in dropdown items.
   color: #1572c2;
