@@ -10,6 +10,8 @@
           v-for="(item, index) in sortedItems"
           :key="index"
           :data-order="item.order"
+          :data-test="`item-${item.order}`"
+          :title="item.name"
           draggable="true"
           @dragstart="(event) => dragStart(event, item.order)"
           @dragenter="(event) => dragEnter(event, item.order)"
