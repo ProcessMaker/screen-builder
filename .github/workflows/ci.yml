@@ -5,7 +5,7 @@ on:
     types: [opened, reopened, synchronize, edited]
 
 jobs:
-  ci:
+  e2e:
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false # https://github.com/cypress-io/github-action/issues/48
@@ -54,7 +54,7 @@ jobs:
           # re-enable PR comment bot
           COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
       - name: Upload Cypress Screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         # Only capture images on failure
         if: failure()
         with:
@@ -62,21 +62,60 @@ jobs:
           path: tests/e2e/screenshots
 
       - name: Upload Cypress Videos
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         # Only capture videos on failure
         if: failure()
         with:
           name: cypress-videos
           path: tests/e2e/videos
+      - run: ls -l .
+      - run: ls -R coverage .nyc_output
 
+      - name: Prepare coverage
+        run: cp .nyc_output/out.json coverage/coverage-${{ matrix.containers }}.json
+      - name: Archive code coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.containers }}
+          path: ./coverage/coverage-${{ matrix.containers }}.json
+  coverage:
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          check-latest: true
+          cache: 'npm'
+
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+      - name: Create reports folder
+        run: mkdir reports .nyc_output
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: reports
+          merge-multiple: true
       - name: Run Coverage
-        run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
-
+        run: |
+          npx nyc merge reports
+          mv coverage.json .nyc_output/out.json
+      - name: Create coverage report
+        run: npx nyc report --reporter html --reporter text --reporter json-summary --reporter lcov --report-dir coverage
       - name: Store Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
-          path: combined-coverage
-
-      - name: Run build 📦
-        run: npm run build
+          path: |
+            coverage
+            .nyc_output
+            reports
+  scan:
+    needs: coverage
+    uses: ./.github/workflows/sonarqube.yml
+    secrets: inherit
