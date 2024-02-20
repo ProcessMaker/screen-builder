@@ -5,7 +5,7 @@ import "../bootstrap";
 import TabsBar from "../components/TabsBar.vue";
 
 export default {
-  title: "Components/Tabs",
+  title: "Components/TabsBar",
   component: TabsBar,
   tags: ["autodocs"],
   render: (args, { argTypes }) => ({
