@@ -7,22 +7,25 @@
       </div>
       <div class="sortable-container">
         <div
-          v-for="(item, index) in items"
+          v-for="(item, index) in sortedItems"
           :key="index"
-          :data-index="index"
+          :data-order="item.order"
           draggable="true"
+          @dragstart="(event) => dragStart(event, item.order)"
+          @dragenter="(event) => dragEnter(event, item.order)"
+          @dragend="dragEnd"
           class="sortable-item sortable-draggable"
         >
           <div class="sortable-item-icon">
             <i class="fas fa-bars"></i>
           </div>
-          <div class="sortable-item-name">{{ item.name }} {{ index }}</div>
+          <div class="rounded sortable-item-name">{{ item.name }} {{ item.order }}</div>
           <div class="border rounded-lg sortable-item-action">
-            <button class="btn">
+            <button @click="itemEditCb" class="btn">
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
-            <button class="btn">
+            <button @click="itemDeleteCb" class="btn">
               <i class="fas fa-trash-alt"></i>
             </button>
           </div>
@@ -36,68 +39,70 @@
 export default {
   name: 'SortableList',
   props: {
-    items: { type: Array },
+    items: { type: Array, required: true },
+    orderCb: { type: Function, required: true },
+    itemEditCb: { type: Function, required: true },
+    itemDeleteCb: { type: Function, required: true },
+  },
+  data() {
+    return {
+      draggedItem: 0,
+      draggedOverItem: 0,
+      itemsClone: [],
+    };
+  },
+  computed: {
+    sortedItems () {
+      return this.itemsClone.sort((a, b) => a.order - b.order);
+    }
+  },
+  watch: {
+    items: {
+      handler(newVal) {
+        this.itemsClone = [...newVal];
+      },
+      immediate: true,
+    },
   },
   methods: {
-    initDraggable() {
-      // get all draggable elements and the container
-      const draggables = document.querySelectorAll('.sortable-draggable');
-      const container = document.querySelector('.sortable-container');
-
-      // add event listeners to the draggable elements
-      draggables.forEach(draggable => {
-        draggable.addEventListener('dragstart', this.dragStart);
-        draggable.addEventListener('dragend', this.dragEnd);
-      });
-
-      // add event listeners to the container
-      container.addEventListener('dragover', this.dragOver);
-    },
-    dragStart(event) {
+    dragStart(event, order) {
+      this.draggedItem = order;
       // add dragging class to the element
       event.target.classList.add('dragging');
+    },
+    dragEnter(event, order) {
+      this.draggedOverItem = order;
     },
     dragEnd(event) {
       // remove dragging class from the element
       event.target.classList.remove('dragging');
-    },
-    dragOver(event) {
-      event.preventDefault();
 
-      // get the draggable element
-      const draggable = document.querySelector('.dragging');
-      // get the element above the draggable
-      const afterElement = this.getDragAfterElement(event.currentTarget, event.clientY);
+      // get the index of the dragged item and the dragged over item
+      const draggedItemIndex = this.itemsClone.findIndex(item => item.order === this.draggedItem);
+      const draggedOverItemIndex = this.itemsClone.findIndex(item => item.order === this.draggedOverItem);
 
-      if (afterElement === null) {
-        // append the draggable to the end of the container
-        event.currentTarget.appendChild(draggable);
-      } else {
-        // insert the draggable above the element
-        event.currentTarget.insertBefore(draggable, afterElement);
-      }
-    },
-    getDragAfterElement(container, y) {
-      // get all draggable elements except the one being dragged
-      const draggableElements = [...container.querySelectorAll('.sortable-draggable:not(.dragging)')];
+      if (draggedItemIndex !== draggedOverItemIndex) {
+        // get the order of the dragged over item
+        const tempOrder = this.itemsClone[draggedOverItemIndex].order;
+        // swap the order of the dragged item and the dragged over item
+        this.itemsClone[draggedItemIndex].order = tempOrder;
+        // set the index of the dragged item
+        const start = Math.min(draggedItemIndex, draggedOverItemIndex);
+        // set the index of the dragged over item
+        const end = Math.max(draggedItemIndex, draggedOverItemIndex);
+        // set the increment
+        const increment = draggedItemIndex > draggedOverItemIndex ? 1 : -1;
 
-      return draggableElements.reduce((closest, child) => {
-        // get the position of the element
-        const box = child.getBoundingClientRect();
-        // get the offset from the center of the element
-        const offset = y - box.top - box.height / 2;
-
-        // find the closest element to the current dragging position
-        if (offset < 0 && offset > closest.offset) {
-          return { offset: offset, element: child };
-        } else {
-          return closest;
+        // update the order of the items
+        for (let i = start; i <= end; i++) {
+          if (i !== draggedItemIndex) {
+            this.itemsClone[i].order += increment;
+          }
         }
-      }, { offset: Number.NEGATIVE_INFINITY }).element;
+      }
+
+      this.orderCb(this.itemsClone);
     },
-  },
-  mounted() {
-    this.initDraggable();
   },
 }
 </script>
