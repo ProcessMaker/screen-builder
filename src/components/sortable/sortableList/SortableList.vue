@@ -26,12 +26,13 @@
               v-if="editRowIndex === index"
               v-model="item.name"
               type="text"
-              @blur="editRowIndex = null"
+              autofocus
+              @blur.stop="onBlur()"
             />
             <span v-else>{{ item.name }} {{ item.order }}</span>
           </div>
           <div class="border rounded-lg sortable-item-action">
-            <button class="btn" @click="onClick(item, index)">
+            <button class="btn" @click.stop="onClick(item, index)">
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
@@ -74,8 +75,11 @@ export default {
     },
   },
   methods: {
+    onBlur() {
+      this.editRowIndex = -1;
+    },
     onClick(item, index) {
-      if (this.editRowIndex === index) {
+      if (this.editRowIndex === -1 || this.editRowIndex === index) {
         this.editRowIndex = null;
         return;
       }
