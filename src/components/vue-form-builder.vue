@@ -1149,7 +1149,7 @@ export default {
         // can not delete the last page
         return;
       }
-      this.pageDelete = this.currentPage;
+      this.pageDelete = this.config.indexOf(item);
       this.$refs.confirm.show();
     },
     hideConfirmModal() {
@@ -1189,13 +1189,11 @@ export default {
         return;
       }
       this.config.push({ name: this.addPageName, items: [] });
-      this.currentPage = this.config.length - 1;
       this.addPageName = "";
       this.updateState();
     },
     deletePage() {
       this.config.splice(this.pageDelete, 1);
-      this.currentPage = this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0;
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage,
