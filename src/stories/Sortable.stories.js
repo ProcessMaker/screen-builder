@@ -59,6 +59,7 @@ export default {
 // Preview the component
 export const Preview = {
   args: {
+    filterKey: "name",
     items: [
       { name: "Page 1", order: 1 },
       { name: "Page 2", order: 2 },
@@ -72,6 +73,7 @@ export const Preview = {
 // User can reorder items
 export const UserCanReorderItems = {
   args: {
+    filterKey: "name",
     items: [
       { name: "Page 1", order: 1 },
       { name: "Page 2", order: 2 },
@@ -120,6 +122,7 @@ export const UserCanReorderItems = {
 // User can filter by text
 export const UserCanFilterByText = {
   args: {
+    filterKey: "name",
     items: [
       { name: "Zeus", order: 1 },
       { name: "Hera", order: 2 },
@@ -167,6 +170,7 @@ export const UserCanFilterByText = {
 // User can sort with filter by text
 export const UserCanSortWithFilterByText = {
   args: {
+    filterKey: "name",
     items: [
       { name: "Zeus", order: 1 },
       { name: "Hera", order: 2 },
@@ -185,7 +189,7 @@ export const UserCanSortWithFilterByText = {
       await userEvent.type(search, "A");
       const items = canvas.getAllByTestId(/item-\d+/);
       await waitFor(() => {
-        expect(items).toHaveLength(5);
+        expect(items).toHaveLength(3);
       });
     });
 
