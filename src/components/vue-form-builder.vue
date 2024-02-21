@@ -98,6 +98,7 @@
     <!-- Renderer -->
     <b-col
       id="screen-container"
+      ref="screen-container"
       class="overflow-auto mh-100 p-0 d-flex flex-column position-relative"
     >
       <b-input-group size="sm" class="bg-white p-2">
@@ -158,16 +159,19 @@
           }}</b-button>
         </b-button-group>
       </b-input-group>
+
       <tabs-bar
         ref="tabsBar"
         :pages="config"
         @tab-opened="currentPage = $event"
       >
         <template #tabs-start>
-          <b-form-select
-            :options="config.map((v, k) => k)"
-            data-test="open-page"
-            @change="$refs.tabsBar.openPageByIndex($event)"
+          <pages-dropdown
+            v-if="showToolbar"
+            :data="config"
+            @addPage="$bvModal.show('addPageModal')"
+            @clickPage="onClick"
+            @seeAllPages="onSeeAllPages"
           />
         </template>
         <template #default>
@@ -410,6 +414,7 @@
     <!-- Modals -->
     <b-modal
       id="addPageModal"
+      ref="addPageModal"
       :ok-title="$t('Save')"
       :cancel-title="$t('Cancel')"
       cancel-variant="btn btn-outline-secondary"
@@ -497,6 +502,7 @@ import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import accordions from "./accordions";
 import { keyNameProperty } from "../form-control-common-properties";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
+import PagesDropdown from "@/components/editor/pagesDropdown";
 import testing from "@/mixins/testing";
 import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
@@ -567,7 +573,8 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer
+    ...renderer,
+    PagesDropdown
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -784,11 +791,20 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    onSeeAllPages() {
+      // TODO open the all pages modal
+      console.log("onSeeAllPages");
+    },
+    onClick(page) {
+      this.currentPage = page;
+      this.$refs.tabsBar.openPageByIndex(page);
+    },
     checkPageName(value) {
       const pageNames = this.config
         .map((config) => config.name)
         .filter((name) => name !== this.originalPageName);
       return pageNames.includes(value) ? this.$t("Must be unique.") : "";
+
     },
     getGroupOrder(groupName) {
       let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
@@ -1303,7 +1319,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .custom-popover {
   margin-right: -400px;
   padding: 16px;
