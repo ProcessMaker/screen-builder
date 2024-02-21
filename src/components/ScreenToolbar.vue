@@ -2,6 +2,26 @@
   <div class="flex-grow-1 d-flex flex-row-reverse">
     <b-button-group size="sm" class="bg-white p-2 screen-toolbar">
       <b-button
+        class="screen-toolbar-button"
+        variant="link"
+        :disabled="!canUndo"
+        data-cy="toolbar-undo"
+        @click="$emit('undo')"
+      >
+        <i class="fas fa-undo" />
+        {{ $t("Undo") }}
+      </b-button>
+      <b-button
+        class="screen-toolbar-button"
+        variant="link"
+        :disabled="!canRedo"
+        data-cy="toolbar-redo"
+        @click="$emit('redo')"
+      >
+        <i class="fas fa-redo" />
+        {{ $t("Redo") }}
+      </b-button>
+      <b-button
         type="button"
         class="screen-toolbar-button"
         variant="link"
@@ -61,6 +81,14 @@ export default {
     return {
       showToolbar: true
     };
+  },
+  computed: {
+    canUndo() {
+      return this.$store.getters["undoRedoModule/canUndo"];
+    },
+    canRedo() {
+      return this.$store.getters["undoRedoModule/canRedo"];
+    },
   }
 };
 </script>

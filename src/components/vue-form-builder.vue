@@ -149,15 +149,6 @@
             <i class="fas fa-plus" />
           </b-button>
         </div>
-
-        <b-button-group size="sm" class="ml-1 ml-auto">
-          <b-button :disabled="!canUndo" data-cy="toolbar-undo" @click="undo">{{
-            $t("Undo")
-          }}</b-button>
-          <b-button :disabled="!canRedo" data-cy="toolbar-redo" @click="redo">{{
-            $t("Redo")
-          }}</b-button>
-        </b-button-group>
       </b-input-group>
 
       <tabs-bar
@@ -669,12 +660,6 @@ export default {
   computed: {
     builder() {
       return this;
-    },
-    canUndo() {
-      return this.$store.getters["undoRedoModule/canUndo"];
-    },
-    canRedo() {
-      return this.$store.getters["undoRedoModule/canRedo"];
     },
     displayDelete() {
       return this.config.length > 1;

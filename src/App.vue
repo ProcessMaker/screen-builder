@@ -50,6 +50,8 @@
 
           <b-col v-if="displayBuilder && !displayPreview" class="text-right">
             <screen-toolbar
+              @undo="$refs.builder.undo()"
+              @redo="$refs.builder.redo()"
               @open-calc="openComputedProperties"
               @open-customCss="openCustomCSS"
               @open-watchers="openWatchersPopup"
