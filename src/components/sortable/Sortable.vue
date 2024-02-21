@@ -14,9 +14,9 @@
 
     <SortableList
       :items="items"
-      :order-cb="orderCb"
-      :item-edit-cb="itemEditCb"
-      :item-delete-cb="itemDeleteCb"
+      @ordered="$emit('ordered', $event)"
+      @item-edit="$emit('item-edit', $event)"
+      @item-delete="$emit('item-delete', $event)"
     />
   </div>
 </template>
@@ -31,9 +31,6 @@ export default {
   },
   props: {
     items: { type: Array, required: true },
-    orderCb: { type: Function, required: true },
-    itemEditCb: { type: Function, required: true },
-    itemDeleteCb: { type: Function, required: true },
   },
 }
 </script>
