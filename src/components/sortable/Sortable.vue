@@ -42,7 +42,7 @@ export default {
   },
   data() {
     return {
-      search: '',
+      search: "",
       filteredItems: this.items,
     };
   },
