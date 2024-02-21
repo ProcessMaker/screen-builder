@@ -2,33 +2,12 @@
   <div class="flex-grow-1 d-flex flex-row-reverse">
     <b-button-group size="sm" class="bg-white p-2 screen-toolbar">
       <b-button
-        class="screen-toolbar-button"
-        variant="link"
-        :disabled="!canUndo"
-        data-cy="toolbar-undo"
-        @click="undo"
-      >
-        <i class="fas fa-undo" />
-        {{ $t("Undo") }}
-      </b-button>
-      <b-button
-        class="screen-toolbar-button"
-        variant="link"
-        :disabled="!canRedo"
-        data-cy="toolbar-redo"
-        @click="redo"
-      >
-        <i class="fas fa-redo" />
-        {{ $t("Redo") }}
-      </b-button>
-
-      <b-button
         type="button"
         class="screen-toolbar-button"
         variant="link"
         :title="$t('Calculated Properties')"
         data-cy="topbar-calcs"
-        @click="openComputedProperties"
+        @click="$emit('open-calc')"
       >
         <i class="fas fa-flask" />
         {{ $t("Calcs") }}
@@ -39,7 +18,7 @@
         variant="link"
         :title="$t('Custom CSS')"
         data-cy="topbar-css"
-        @click="openCustomCSS"
+        @click="$emit('open-customCss')"
       >
         <i class="fab fa-css3" />
         {{ $t("CSS") }}
@@ -50,7 +29,7 @@
         variant="link"
         :title="$t('Watchers')"
         data-cy="topbar-watchers"
-        @click="openWatchersPopup"
+        @click="$emit('open-watchers')"
       >
         <i class="fas fa-mask" />
         {{ $t("Watchers") }}
