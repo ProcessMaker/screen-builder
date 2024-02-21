@@ -82,6 +82,8 @@ export default {
       this.$emit("item-edit", item);
     },
     dragStart(event, order) {
+      // disable edit mode
+      this.editRowIndex = null;
       this.draggedItem = order;
       // add dragging class to the element
       event.target.classList.add('dragging');
