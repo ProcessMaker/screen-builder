@@ -9,21 +9,21 @@
     @input="tabOpened"
   >
     <template #tabs-start>
-      <div class="tabs-sticky d-flex flex-row tabs-start">
-        <div>
-          <slot name="tabs-start" />
-        </div>
-        <div
-          v-show="tabsListOverflow && showLeftScroll"
-          class="position-relative overflow-visible"
-        >
+      <div>
+        <slot name="tabs-start" />
+        <div class="tabs-sticky d-flex flex-row tabs-start">
           <div
-            role="link"
-            class="nav-scroll nav-scroll-left"
-            data-test="scroll-left"
-            @click="scrollTabsLeft"
+            v-show="tabsListOverflow && showLeftScroll"
+            class="position-relative overflow-visible"
           >
-            <i class="fas fa-chevron-left" />
+            <div
+              role="link"
+              class="nav-scroll nav-scroll-left"
+              data-test="scroll-left"
+              @click="scrollTabsLeft"
+            >
+              <i class="fas fa-chevron-left" />
+            </div>
           </div>
         </div>
       </div>
