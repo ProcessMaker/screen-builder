@@ -409,9 +409,10 @@
       header-close-content="&times;"
       role="dialog"
       size="lg"
-      title="Edit Pages"
-      ok-title="Save"
-      @ok="editPage"
+      :title="$t('Edit Pages')"
+      :ok-title="$t('CONFIRM')"
+      ok-only
+      ok-variant="secondary"
     >
       <Sortable
         :items="config"
