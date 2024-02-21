@@ -38,7 +38,7 @@
           {{ pageNumber(index) }}
         </b-badge>
         <span :data-test="`tab-${n}`">
-          {{ pages[index].name }}
+          {{ pages[index]?.name }}
         </span>
         <span
           v-if="localOpenedPages.length > 1"
@@ -167,14 +167,25 @@ export default {
       this.localOpenedPages.splice(this.localOpenedPages.indexOf(pageId), 1);
       this.$emit("tab-closed", this.pages[pageId], this.localOpenedPages);
     },
+    updateTabsReferences(pageDelete) {
+      this.localOpenedPages = this.localOpenedPages.map((page) => {
+        return page > pageDelete ? page - 1 : page;
+      });
+    },
     async openPageByIndex(index) {
-      const n = this.localOpenedPages.indexOf(index);
+      const n = this.localOpenedPages.indexOf(index * 1);
       if (n === -1) {
         this.localOpenedPages.push(index);
         await this.waitUpdates(this.updates + 2, 1000);
         this.activeTab = this.localOpenedPages.length - 1;
       } else {
         this.activeTab = n;
+      }
+    },
+    closePageByIndex(index) {
+      const n = this.localOpenedPages.indexOf(index);
+      if (n !== -1) {
+        this.localOpenedPages.splice(n, 1);
       }
     },
     checkTabsOverflow() {
