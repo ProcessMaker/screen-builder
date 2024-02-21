@@ -422,11 +422,10 @@
       @ok="editPage"
     >
       <Sortable
-        :items="items"
+        :items="config"
         filter-key="name"
-        :order-cb="setSortedConfig"
-        :item-edit-cb="() => {}"
-        :item-delete-cb="() => {}"
+        @item-edit="() => {}"
+        @item-delete="confirmDelete"
       />
     </b-modal>
 
@@ -821,6 +820,9 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    onSeeAllPages() {
+      this.$bvModal.show("openSortable");
+    },
     onClick(page) {
       this.currentPage = page;
       this.$refs.tabsBar.openPageByIndex(page);
@@ -1149,11 +1151,16 @@ export default {
         });
       });
     },
-    confirmDelete() {
+    confirmDelete(item = this.config[this.currentPage]) {
       this.confirmMessage = this.$t(
         "Are you sure you want to delete {{item}}?",
-        { item: this.config[this.currentPage].name }
+        { item: item.name }
       );
+      const isLastPage = this.config.length === 1;
+      if (isLastPage) {
+        // can not delete the last page
+        return;
+      }
       this.pageDelete = this.currentPage;
       this.$refs.confirm.show();
     },
@@ -1340,9 +1347,6 @@ export default {
       this.config[this.currentPage].items.push(clone);
       this.updateState();
       this.inspect(clone);
-    },
-    setSortedConfig(config) {
-      this.items = config;
     },
   }
 };
