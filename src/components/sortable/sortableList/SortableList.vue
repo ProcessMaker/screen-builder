@@ -21,9 +21,16 @@
           <div class="sortable-item-icon">
             <i class="fas fa-bars"></i>
           </div>
-          <div class="rounded sortable-item-name">{{ item.name }} {{ item.order }}</div>
+          <div class="rounded sortable-item-name">
+            <b-form-input
+              v-if="editRowIndex === index"
+              v-model="item.name"
+              type="text"
+            />
+            <span v-else>{{ item.name }} {{ item.order }}</span>
+          </div>
           <div class="border rounded-lg sortable-item-action">
-            <button class="btn" @click="$emit('item-edit', item)">
+            <button class="btn" @click="onClick(item, index)">
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
@@ -49,10 +56,11 @@ export default {
       draggedItem: 0,
       draggedOverItem: 0,
       itemsClone: [],
+      editRowIndex: null,
     };
   },
   computed: {
-    sortedItems () {
+    sortedItems() {
       return this.filteredItems.sort((a, b) => a.order - b.order);
     }
   },
@@ -65,6 +73,14 @@ export default {
     },
   },
   methods: {
+    onClick(item, index) {
+      if (this.editRowIndex === index) {
+        this.editRowIndex = null;
+        return;
+      }
+      this.editRowIndex = index;
+      this.$emit("item-edit", item);
+    },
     dragStart(event, order) {
       this.draggedItem = order;
       // add dragging class to the element
