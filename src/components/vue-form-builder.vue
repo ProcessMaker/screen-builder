@@ -663,17 +663,7 @@ export default {
       editorContentKey: 0,
       cancelledJobs: [],
       collapse: {},
-      groupOrder: {},
-      // TODO: Remove this when the sortable component is finished
-      items: [
-        { name: 'Learn JavaScript', order: 1 },
-        { name: 'Learn Vue', order: 2 },
-        { name: 'Build something awesome', order: 3 },
-        { name: 'Learn PHP', order: 4 },
-        { name: 'Learn Laravel', order: 5 },
-        { name: 'Build Python', order: 6 },
-        { name: 'Use ReactJS', order: 7 },
-      ],
+      groupOrder: {}
     };
   },
   computed: {
@@ -822,9 +812,6 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
-    onSeeAllPages() {
-      this.$bvModal.show("openSortable");
-    },
     onClick(page) {
       this.currentPage = page;
       this.$refs.tabsBar.openPageByIndex(page);
@@ -834,7 +821,6 @@ export default {
         .map((config) => config.name)
         .filter((name) => name !== this.originalPageName);
       return pageNames.includes(value) ? this.$t("Must be unique.") : "";
-
     },
     getGroupOrder(groupName) {
       let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
