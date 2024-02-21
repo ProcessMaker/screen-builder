@@ -427,6 +427,7 @@
         filter-key="name"
         @item-edit="() => {}"
         @item-delete="confirmDelete"
+        @add-page="$bvModal.show('addPageModal')"
       />
     </b-modal>
 
