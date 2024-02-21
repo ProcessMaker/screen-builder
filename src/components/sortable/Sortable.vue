@@ -12,7 +12,11 @@
         />
       </div>
       <div>
-        <button type="button" class="btn sortable-btn-new">
+        <button
+          type="button"
+          class="btn sortable-btn-new"
+          @click="$emit('add-page', $event)"
+        >
           <i class="fa fa-plus"></i>
         </button>
       </div>
