@@ -925,7 +925,10 @@ export default {
       config.forEach((page) =>
         this.removeDataVariableFromNestedScreens(page.items)
       );
-      config.forEach((page, index) => { /* add order property to page if not has */ });
+      // add order attribute
+      config.forEach((page, index) => {
+        page.order = page.order || index + 1;
+      });
     },
     updateFieldNameValidation(items) {
       items.forEach((item) => {
@@ -1188,7 +1191,16 @@ export default {
         e.preventDefault();
         return;
       }
-      this.config.push({ name: this.addPageName, items: [] });
+
+      const maxOrder = this.config.reduce((max, page) => {
+        return page.order > max ? page.order : max;
+      }, 0);
+
+      this.config.push({
+        name: this.addPageName,
+        order: maxOrder + 1,
+        items: []
+      });
       this.addPageName = "";
       this.updateState();
     },
