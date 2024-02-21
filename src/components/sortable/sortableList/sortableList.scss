@@ -23,6 +23,8 @@ $border-color: #cdddee;
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 340px;
+    overflow-x: auto;
   }
 
   &-item {

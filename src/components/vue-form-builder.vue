@@ -677,6 +677,7 @@ export default {
         { name: 'Learn PHP', order: 4 },
         { name: 'Learn Laravel', order: 5 },
         { name: 'Build Python', order: 6 },
+        { name: 'Use ReactJS', order: 7 },
       ],
     };
   },
