@@ -23,11 +23,11 @@
           </div>
           <div class="rounded sortable-item-name">{{ item.name }} {{ item.order }}</div>
           <div class="border rounded-lg sortable-item-action">
-            <button @click="itemEditCb" class="btn">
+            <button class="btn" @click="$emit('item-edit', item)">
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
-            <button @click="itemDeleteCb" class="btn">
+            <button class="btn" @click="$emit('item-delete', item)">
               <i class="fas fa-trash-alt"></i>
             </button>
           </div>
@@ -42,9 +42,6 @@ export default {
   name: 'SortableList',
   props: {
     items: { type: Array, required: true },
-    orderCb: { type: Function, required: true },
-    itemEditCb: { type: Function, required: true },
-    itemDeleteCb: { type: Function, required: true },
   },
   data() {
     return {
@@ -103,7 +100,7 @@ export default {
         }
       }
 
-      this.orderCb(this.itemsClone);
+      this.$emit('ordered', this.itemsClone);
     },
   },
 }

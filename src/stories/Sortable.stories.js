@@ -26,12 +26,26 @@ export default {
     props: Object.keys(argTypes),
     components: { Sortable },
     template: `
-      <sortable v-bind="$props" />
+      <sortable
+        v-bind="$props"
+        @sorted="sorted"
+        @item-edit="editPage"
+        @item-delete="deletePage"
+      />
     `,
     data() {
       return {};
     },
     methods: {
+      sorted(orderedArray) {
+        console.log("edit", orderedArray);
+      },
+      editPage(page) {
+        console.log("edit", page);
+      },
+      deletePage(page) {
+        this.items.splice(this.items.indexOf(page), 1);
+      },
       openPage(index) {
         this.$refs.tabsBar.openPageByIndex(index);
       }
@@ -51,10 +65,7 @@ export const Preview = {
       { name: "Page 3", order: 3 },
       { name: "Page 4", order: 4 },
       { name: "Page 5", order: 5 }
-    ],
-    orderCb: () => {},
-    itemEditCb: () => {},
-    itemDeleteCb: () => {}
+    ]
   }
 };
 
@@ -67,16 +78,7 @@ export const UserCanReorderItems = {
       { name: "Page 3", order: 3 },
       { name: "Page 4", order: 4 },
       { name: "Page 5", order: 5 }
-    ],
-    orderCb: () => {
-      return null;
-    },
-    itemEditCb: () => {
-      return null;
-    },
-    itemDeleteCb: () => {
-      return null;
-    }
+    ]
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -124,16 +126,7 @@ export const UserCanFilterByText = {
       { name: "Poseidon", order: 3 },
       { name: "Athena", order: 4 },
       { name: "Hephaïstus", order: 5 }
-    ],
-    orderCb: () => {
-      return null;
-    },
-    itemEditCb: () => {
-      return null;
-    },
-    itemDeleteCb: () => {
-      return null;
-    }
+    ]
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -180,16 +173,7 @@ export const UserCanSortWithFilterByText = {
       { name: "Poseidon", order: 3 },
       { name: "Athena", order: 4 },
       { name: "Hephaïstus", order: 5 }
-    ],
-    orderCb: () => {
-      return null;
-    },
-    itemEditCb: () => {
-      return null;
-    },
-    itemDeleteCb: () => {
-      return null;
-    }
+    ]
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
