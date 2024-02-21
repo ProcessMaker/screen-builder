@@ -26,6 +26,7 @@
               v-if="editRowIndex === index"
               v-model="item.name"
               type="text"
+              @blur="editRowIndex = null"
             />
             <span v-else>{{ item.name }} {{ item.order }}</span>
           </div>
