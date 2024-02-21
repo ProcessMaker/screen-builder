@@ -432,6 +432,7 @@
     >
       <Sortable
         :items="items"
+        filter-key="name"
         :order-cb="setSortedConfig"
         :item-edit-cb="() => {}"
         :item-delete-cb="() => {}"

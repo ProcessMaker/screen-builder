@@ -42,6 +42,7 @@ export default {
   name: 'SortableList',
   props: {
     items: { type: Array, required: true },
+    filteredItems: { type: Array, required: true },
   },
   data() {
     return {
@@ -52,7 +53,7 @@ export default {
   },
   computed: {
     sortedItems () {
-      return this.itemsClone.sort((a, b) => a.order - b.order);
+      return this.filteredItems.sort((a, b) => a.order - b.order);
     }
   },
   watch: {
