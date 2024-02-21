@@ -168,10 +168,10 @@
         <template #tabs-start>
           <pages-dropdown
             v-if="showToolbar"
-            v-b-modal.openSortable
             :data="config"
             @addPage="$bvModal.show('addPageModal')"
             @clickPage="onClick"
+            @seeAllPages="$bvModal.show('openSortable')"
           />
         </template>
         <template #default>
@@ -414,6 +414,7 @@
     <!-- Modals -->
     <b-modal
       id="openSortable"
+      ref="openSortable"
       header-close-content="&times;"
       role="dialog"
       size="lg"
