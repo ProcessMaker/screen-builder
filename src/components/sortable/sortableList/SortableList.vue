@@ -5,7 +5,7 @@
         <div class="sortable-item-icon"></div>
         <div class="sortable-list-title">PAGE NAME</div>
       </div>
-      <div class="sortable-container">
+      <div class="sortable-container" @dragover="dragOver">
         <div
           v-for="(item, index) in sortedItems"
           :key="index"
@@ -101,6 +101,9 @@ export default {
       }
 
       this.$emit('ordered', this.itemsClone);
+    },
+    dragOver(event) {
+      event.preventDefault();
     },
   },
 }
