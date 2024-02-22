@@ -225,11 +225,7 @@ window.ProcessMaker = {
     }
   },
   alert(message, variant) {
-    new Vue().$root.$bvModal.msgBoxOk(message, {
-      title: "Alert",
-      okVariant: variant || "info",
-      solid: true
-    });
+    console.log(`${variant}: ${message}`);
   },
   screen: {
     cacheEnabled: cacheEnabled ? cacheEnabled.content === "true" : false,
