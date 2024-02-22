@@ -149,15 +149,6 @@
             <i class="fas fa-plus" />
           </b-button>
         </div>
-
-        <b-button-group size="sm" class="ml-1 ml-auto">
-          <b-button :disabled="!canUndo" data-cy="toolbar-undo" @click="undo">{{
-            $t("Undo")
-          }}</b-button>
-          <b-button :disabled="!canRedo" data-cy="toolbar-redo" @click="redo">{{
-            $t("Redo")
-          }}</b-button>
-        </b-button-group>
       </b-input-group>
 
       <tabs-bar
@@ -171,7 +162,7 @@
             :data="config"
             @addPage="$bvModal.show('addPageModal')"
             @clickPage="onClick"
-            @seeAllPages="onSeeAllPages"
+            @seeAllPages="$bvModal.show('openSortable')"
           />
         </template>
         <template #default>
@@ -413,6 +404,26 @@
 
     <!-- Modals -->
     <b-modal
+      id="openSortable"
+      ref="openSortable"
+      header-close-content="&times;"
+      role="dialog"
+      size="lg"
+      :title="$t('Edit Pages')"
+      :ok-title="$t('CONFIRM')"
+      ok-only
+      ok-variant="secondary"
+    >
+      <Sortable
+        :items="config"
+        filter-key="name"
+        @item-edit="() => {}"
+        @item-delete="confirmDelete"
+        @add-page="$bvModal.show('addPageModal')"
+      />
+    </b-modal>
+
+    <b-modal
       id="addPageModal"
       ref="addPageModal"
       :ok-title="$t('Save')"
@@ -509,6 +520,7 @@ import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 import TabsBar from "./TabsBar.vue";
+import Sortable from './sortable/Sortable.vue';
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -574,7 +586,8 @@ export default {
     defaultValueEditor,
     ...inspector,
     ...renderer,
-    PagesDropdown
+    PagesDropdown,
+    Sortable,
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -642,18 +655,12 @@ export default {
       editorContentKey: 0,
       cancelledJobs: [],
       collapse: {},
-      groupOrder: {},
+      groupOrder: {}
     };
   },
   computed: {
     builder() {
       return this;
-    },
-    canUndo() {
-      return this.$store.getters["undoRedoModule/canUndo"];
-    },
-    canRedo() {
-      return this.$store.getters["undoRedoModule/canRedo"];
     },
     displayDelete() {
       return this.config.length > 1;
@@ -791,10 +798,6 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
-    onSeeAllPages() {
-      // TODO open the all pages modal
-      console.log("onSeeAllPages");
-    },
     onClick(page) {
       this.currentPage = page;
       this.$refs.tabsBar.openPageByIndex(page);
@@ -804,7 +807,6 @@ export default {
         .map((config) => config.name)
         .filter((name) => name !== this.originalPageName);
       return pageNames.includes(value) ? this.$t("Must be unique.") : "";
-
     },
     getGroupOrder(groupName) {
       let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
@@ -909,7 +911,10 @@ export default {
       config.forEach((page) =>
         this.removeDataVariableFromNestedScreens(page.items)
       );
-      config.forEach((page, index) => { /* add order property to page if not has */ });
+      // add order attribute
+      config.forEach((page, index) => {
+        page.order = page.order || index + 1;
+      });
     },
     updateFieldNameValidation(items) {
       items.forEach((item) => {
@@ -1123,12 +1128,17 @@ export default {
         });
       });
     },
-    confirmDelete() {
+    confirmDelete(item = this.config[this.currentPage]) {
       this.confirmMessage = this.$t(
         "Are you sure you want to delete {{item}}?",
-        { item: this.config[this.currentPage].name }
+        { item: item.name }
       );
-      this.pageDelete = this.currentPage;
+      const isLastPage = this.config.length === 1;
+      if (isLastPage) {
+        // can not delete the last page
+        return;
+      }
+      this.pageDelete = this.config.indexOf(item);
       this.$refs.confirm.show();
     },
     hideConfirmModal() {
@@ -1167,14 +1177,21 @@ export default {
         e.preventDefault();
         return;
       }
-      this.config.push({ name: this.addPageName, items: [] });
-      this.currentPage = this.config.length - 1;
+
+      const maxOrder = this.config.reduce((max, page) => {
+        return page.order > max ? page.order : max;
+      }, 0);
+
+      this.config.push({
+        name: this.addPageName,
+        order: maxOrder + 1,
+        items: []
+      });
       this.addPageName = "";
       this.updateState();
     },
     deletePage() {
       this.config.splice(this.pageDelete, 1);
-      this.currentPage = this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0;
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage,
@@ -1314,7 +1331,7 @@ export default {
       this.config[this.currentPage].items.push(clone);
       this.updateState();
       this.inspect(clone);
-    }
+    },
   }
 };
 </script>
