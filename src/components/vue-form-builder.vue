@@ -1145,9 +1145,6 @@ export default {
     },
     // This function is used to calculate the new index of the references
     calcNewIndexFor(index, referencedBy) {
-      if (index > this.pageDelete) {
-        return index - 1;
-      }
       if (index === this.pageDelete) {
         throw new Error(
           `${this.$t(
@@ -1155,7 +1152,7 @@ export default {
           )}: ${referencedBy}`
         );
       }
-      return index;
+      return index > this.pageDelete ? index - 1 : index;
     },
     // Update Record list references
     updateRecordListReferences() {
