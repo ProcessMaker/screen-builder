@@ -101,56 +101,6 @@
       ref="screen-container"
       class="overflow-auto mh-100 p-0 d-flex flex-column position-relative"
     >
-      <b-input-group size="sm" class="bg-white p-2">
-        <b-form-select
-          v-if="showToolbar"
-          v-model="currentPage"
-          class="form-control"
-          data-cy="toolbar-page"
-        >
-          <option v-for="(data, page) in config" :key="page" :value="page">
-            {{ data.name }}
-          </option>
-        </b-form-select>
-
-        <div v-if="showToolbar">
-          <b-button
-            size="sm"
-            variant="secondary"
-            class="ml-1"
-            :title="$t('Edit Page Title')"
-            data-cy="toolbar-edit"
-            @click="openEditPageModal(currentPage)"
-          >
-            <i class="far fa-edit" />
-          </b-button>
-
-          <b-button
-            size="sm"
-            variant="danger"
-            class="ml-1"
-            :title="$t('Delete Page')"
-            :disabled="!displayDelete"
-            data-cy="toolbar-remove"
-            @click="confirmDelete()"
-          >
-            <i class="far fa-trash-alt" />
-          </b-button>
-
-          <b-button
-            v-b-modal.addPageModal
-            size="sm"
-            variant="secondary"
-            class="ml-1 mr-1"
-            :title="$t('Add New Page')"
-            data-cy="toolbar-add"
-            @click="originalPageName = null"
-          >
-            <i class="fas fa-plus" />
-          </b-button>
-        </div>
-      </b-input-group>
-
       <tabs-bar
         ref="tabsBar"
         :pages="config"
@@ -799,7 +749,6 @@ export default {
   },
   methods: {
     onClick(page) {
-      this.currentPage = page;
       this.$refs.tabsBar.openPageByIndex(page);
     },
     checkPageName(value) {
@@ -1086,8 +1035,10 @@ export default {
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
-      this.currentPage = JSON.parse(
-        this.$store.getters["undoRedoModule/currentState"].currentPage
+      this.$refs.tabsBar.openPageByIndex(
+        this.config.indexOf(
+          this.$store.getters["undoRedoModule/currentState"].currentPage
+        )
       );
     },
     redo() {
@@ -1096,8 +1047,10 @@ export default {
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
-      this.currentPage = JSON.parse(
-        this.$store.getters["undoRedoModule/currentState"].currentPage
+      this.$refs.tabsBar.openPageByIndex(
+        this.config.indexOf(
+          this.$store.getters["undoRedoModule/currentState"].currentPage
+        )
       );
     },
     updateConfig(items) {
@@ -1109,7 +1062,7 @@ export default {
     },
     focusInspector(validation) {
       this.showConfiguration = true;
-      this.currentPage = this.config.indexOf(validation.page);
+      this.$refs.tabsBar.openPageByIndex(this.config.indexOf(validation.page));
       this.$nextTick(() => {
         this.inspect(validation.item);
         this.$nextTick(() => {
@@ -1190,8 +1143,62 @@ export default {
       this.addPageName = "";
       this.updateState();
     },
-    deletePage() {
-      this.config.splice(this.pageDelete, 1);
+    // This function is used to calculate the new index of the references
+    calcNewIndexFor(index, referencedBy) {
+      if (index === this.pageDelete) {
+        throw new Error(
+          `${this.$t(
+            "Can not delete this page, it is referenced by"
+          )}: ${referencedBy}`
+        );
+      }
+      return index > this.pageDelete ? index - 1 : index;
+    },
+    // Update Record list references
+    updateRecordListReferences() {
+      this.config.forEach((page) => {
+        page.items.forEach((item) => {
+          if (item.component === "FormRecordList") {
+            // eslint-disable-next-line no-param-reassign
+            item.config.form = this.calcNewIndexFor(
+              item.config.form * 1,
+              item.config.label
+            );
+          }
+        });
+      });
+    },
+    // Update navigation buttons references
+    updateNavigationButtonsReferences() {
+      this.config.forEach((page) => {
+        page.items.forEach((item) => {
+          if (
+            item.component === "FormButton" &&
+            item.config.event === "pageNavigate"
+          ) {
+            // eslint-disable-next-line no-param-reassign
+            item.config.eventData = this.calcNewIndexFor(
+              item.config.eventData * 1,
+              item.config.label
+            );
+          }
+        });
+      });
+    },
+    async deletePage() {
+      const back = _.cloneDeep(this.config);
+      try {
+        this.updateRecordListReferences();
+        this.updateNavigationButtonsReferences();
+        this.$refs.tabsBar.closePageByIndex(this.pageDelete);
+        this.$refs.tabsBar.updateTabsReferences(this.pageDelete);
+        await this.$nextTick();
+        this.config.splice(this.pageDelete, 1);
+      } catch (error) {
+        this.config = back;
+        globalObject.ProcessMaker.alert(error.message, "danger");
+        return;
+      }
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage,
