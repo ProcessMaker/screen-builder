@@ -38,7 +38,7 @@
           {{ pageNumber(index) }}
         </b-badge>
         <span :data-test="`tab-${n}`">
-          {{ pages[index].name }}
+          {{ pages[index]?.name }}
         </span>
         <span
           v-if="localOpenedPages.length > 1"
@@ -50,9 +50,11 @@
           <i class="fas fa-times" />
         </span>
       </template>
-      <div class="h-100 w-100" data-test="tab-content">
-        <slot :current-page="index" />
-      </div>
+      <template #default>
+        <div class="h-100 w-100" data-test="tab-content">
+          <slot :current-page="index" />
+        </div>
+      </template>
     </b-tab>
     <template #tabs-end>
       <div
@@ -68,6 +70,13 @@
           <i class="fas fa-chevron-right" />
         </div>
       </div>
+    </template>
+    <template #empty>
+      <p class="text-center m-5 text-secondary" data-test="tab-content">
+        {{ $t("There are no open pages.") }}<br />
+        {{ $t("Open a new page above using the button") }}
+        <i :class="buttonIcon" />
+      </p>
     </template>
   </b-tabs>
 </template>
@@ -90,6 +99,13 @@ export default {
     initialOpenedPages: {
       type: Array,
       default: () => [0]
+    },
+    /**
+     * Icon to open a new tab, displayed when there are no pages opened.
+     */
+    buttonIcon: {
+      type: String,
+      default: () => "fa fa-file"
     }
   },
   data() {
@@ -167,14 +183,23 @@ export default {
       this.localOpenedPages.splice(this.localOpenedPages.indexOf(pageId), 1);
       this.$emit("tab-closed", this.pages[pageId], this.localOpenedPages);
     },
+    updateTabsReferences(pageDelete) {
+      this.localOpenedPages = this.localOpenedPages.map((page) => page > pageDelete ? page - 1 : page);
+    },
     async openPageByIndex(index) {
-      const n = this.localOpenedPages.indexOf(index);
+      const n = this.localOpenedPages.indexOf(index * 1);
       if (n === -1) {
         this.localOpenedPages.push(index);
         await this.waitUpdates(this.updates + 2, 1000);
         this.activeTab = this.localOpenedPages.length - 1;
       } else {
         this.activeTab = n;
+      }
+    },
+    closePageByIndex(index) {
+      const n = this.localOpenedPages.indexOf(index);
+      if (n !== -1) {
+        this.localOpenedPages.splice(n, 1);
       }
     },
     checkTabsOverflow() {

@@ -309,3 +309,30 @@ export const TabContentFillAllTheAvailableSpace = {
     });
   }
 };
+
+// Without any page opened
+export const WithoutAnyPageOpened = {
+  args: {
+    pages: [
+      { name: "Page 1" },
+      { name: "Page 2" },
+      { name: "Page 3" },
+      { name: "Page 4" },
+      { name: "Page 5" }
+    ],
+    initialOpenedPages: []
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Check that there is a message when there is no page open.
+    await waitFor(
+      () => {
+        expect(canvas.getByTestId("tab-content")).toContainHTML(
+          "There are no open pages."
+        );
+      },
+      { timeout: 1000 }
+    );
+  }
+};

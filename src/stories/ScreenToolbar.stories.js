@@ -113,7 +113,7 @@ const options = [
 ];
 
 export default {
-  title: "Components/Public/ScreenToolbar",
+  title: "Components/ScreenToolbar",
   component: ScreenToolbar,
   tags: ["autodocs"],
   render: (args, { argTypes }) => ({
