@@ -50,9 +50,11 @@
           <i class="fas fa-times" />
         </span>
       </template>
-      <div class="h-100 w-100" data-test="tab-content">
-        <slot :current-page="index" />
-      </div>
+      <template #default>
+        <div class="h-100 w-100" data-test="tab-content">
+          <slot :current-page="index" />
+        </div>
+      </template>
     </b-tab>
     <template #tabs-end>
       <div
@@ -68,6 +70,13 @@
           <i class="fas fa-chevron-right" />
         </div>
       </div>
+    </template>
+    <template #empty>
+      <p class="text-center m-5 text-secondary" data-test="tab-content">
+        {{ $t("There are no open pages.") }}<br />
+        {{ $t("Open a new page above using the button") }}
+        <i :class="buttonIcon" />
+      </p>
     </template>
   </b-tabs>
 </template>
@@ -90,6 +99,13 @@ export default {
     initialOpenedPages: {
       type: Array,
       default: () => [0]
+    },
+    /**
+     * Icon to open a new tab, displayed when there are no pages opened.
+     */
+    buttonIcon: {
+      type: String,
+      default: () => "fa fa-file"
     }
   },
   data() {
