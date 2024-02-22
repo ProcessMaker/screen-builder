@@ -2,10 +2,10 @@
   <b-container id="screen-builder-container" class="h-100">
     <b-card id="app" no-body class="h-100 bg-white border-top-0 ">
       <!-- Card Header -->
-      <b-card-header class="bg-white">
+      <b-card-header class="bg-white p-0">
         <b-row>
-          <b-col>
-            <b-button-group size="sm pr-2">
+          <b-col class="d-flex align-items-center">
+            <b-button-group size="sm px-2">
               <b-button
                 :variant="displayBuilder ? 'secondary' : 'outline-secondary'"
                 data-cy="mode-editor"
