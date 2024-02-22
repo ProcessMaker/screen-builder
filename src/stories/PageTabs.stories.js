@@ -328,7 +328,7 @@ export const WithoutAnyPageOpened = {
     // Check that there is a message when there is no page open.
     await waitFor(
       () => {
-        expect(canvas.getBy("tab-content")).toContainHTML(
+        expect(canvas.getByTestId("tab-content")).toContainHTML(
           "There are no open pages."
         );
       },
