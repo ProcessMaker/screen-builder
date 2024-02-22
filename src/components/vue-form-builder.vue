@@ -101,56 +101,6 @@
       ref="screen-container"
       class="overflow-auto mh-100 p-0 d-flex flex-column position-relative"
     >
-      <b-input-group size="sm" class="bg-white p-2">
-        <b-form-select
-          v-if="showToolbar"
-          v-model="currentPage"
-          class="form-control"
-          data-cy="toolbar-page"
-        >
-          <option v-for="(data, page) in config" :key="page" :value="page">
-            {{ data.name }}
-          </option>
-        </b-form-select>
-
-        <div v-if="showToolbar">
-          <b-button
-            size="sm"
-            variant="secondary"
-            class="ml-1"
-            :title="$t('Edit Page Title')"
-            data-cy="toolbar-edit"
-            @click="openEditPageModal(currentPage)"
-          >
-            <i class="far fa-edit" />
-          </b-button>
-
-          <b-button
-            size="sm"
-            variant="danger"
-            class="ml-1"
-            :title="$t('Delete Page')"
-            :disabled="!displayDelete"
-            data-cy="toolbar-remove"
-            @click="confirmDelete()"
-          >
-            <i class="far fa-trash-alt" />
-          </b-button>
-
-          <b-button
-            v-b-modal.addPageModal
-            size="sm"
-            variant="secondary"
-            class="ml-1 mr-1"
-            :title="$t('Add New Page')"
-            data-cy="toolbar-add"
-            @click="originalPageName = null"
-          >
-            <i class="fas fa-plus" />
-          </b-button>
-        </div>
-      </b-input-group>
-
       <tabs-bar
         ref="tabsBar"
         :pages="config"
