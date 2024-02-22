@@ -168,9 +168,7 @@ export default {
       this.$emit("tab-closed", this.pages[pageId], this.localOpenedPages);
     },
     updateTabsReferences(pageDelete) {
-      this.localOpenedPages = this.localOpenedPages.map((page) => {
-        return page > pageDelete ? page - 1 : page;
-      });
+      this.localOpenedPages = this.localOpenedPages.map((page) => page > pageDelete ? page - 1 : page);
     },
     async openPageByIndex(index) {
       const n = this.localOpenedPages.indexOf(index * 1);
