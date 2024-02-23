@@ -1,7 +1,8 @@
 const mixins = [];
-const modules = require.context('./', true, /\.js$/i);
-modules.keys().map(key => {
-  if (key !== './index.js') mixins.push(modules(key).default);
+const modules = import.meta.glob("./*.js", { eager: true });
+
+Object.entries(modules).forEach(([path, m]) => {
+  mixins.push(m.default);
 });
 
 export default mixins;

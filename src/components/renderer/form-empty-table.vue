@@ -5,7 +5,7 @@
       {{ $t(title) }}
     </span>
     <b-link v-if="url !== ''" @click="openLink()">
-      {{ linkText }}
+      {{ $t(linkText) }}
     </b-link>
   </div>
 </template>
@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     openLink() {
-      window.open(this.link, "_blank");
+      window.open(this.url, "_blank");
     }
   }
 };

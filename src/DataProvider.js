@@ -2,8 +2,8 @@
 import axios from "axios";
 import { has, get } from "lodash";
 import { cacheAdapterEnhancer } from "axios-extensions";
-import LRUCache from "lru-cache";
-import i18next from 'i18next';
+import { LRUCache } from "lru-cache";
+import i18next from "i18next";
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
@@ -26,15 +26,14 @@ export default {
       axios.defaults.headers.common = {
         Authorization: `Bearer ${this.token()}`
       };
-      axios.defaults.adapter = cacheAdapterEnhancer(
-        axios.defaults.adapter,
-        window.ProcessMaker.screen.cacheEnabled,
-        "useCache",
-        new LRUCache({
+      axios.defaults.adapter = cacheAdapterEnhancer(axios.defaults.adapter, {
+        enabledByDefault: window.ProcessMaker.screen.cacheEnabled,
+        cacheFlag: "useCache",
+        defaultCache: new LRUCache({
           ttl: window.ProcessMaker.screen.cacheTimeout,
           max: 100
         })
-      );
+      });
       return axios;
     }
 
@@ -228,29 +227,36 @@ export default {
   },
 
   getCollectionFields(collectionId) {
-    return this.get(`/collections/${collectionId}/columns?per_page=1000`).catch((error) => {
-      if (error.response && error.response.status === 404) {
-        throw new Error(i18next.t("Collection id not found"));
+    return this.get(`/collections/${collectionId}/columns?per_page=1000`).catch(
+      (error) => {
+        if (error.response && error.response.status === 404) {
+          throw new Error(i18next.t("Collection id not found"));
+        }
+        throw error;
       }
-      throw error;
-    })
+    );
   },
 
   getCollectionRecords(collectionId, options, nonce = null) {
     options.useCache = window.ProcessMaker.screen.cacheEnabled;
 
-    return this.get(`/collections/${collectionId}/records` + this.authQueryString(), options).then((response) => {
-      const data = response ? response.data : null;
-      if (!data) {
-        throw new Error(i18next.t("No data returned"));
-      }
-      return [data, nonce];
-    }).catch((error) => {
-      if (error.response && error.response.status === 404) {
-        const data = { data: [] };
+    return this.get(
+      `/collections/${collectionId}/records${this.authQueryString()}`,
+      options
+    )
+      .then((response) => {
+        const data = response ? response.data : null;
+        if (!data) {
+          throw new Error(i18next.t("No data returned"));
+        }
         return [data, nonce];
-      }
-      throw error;
-    });
-  },
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          const data = { data: [] };
+          return [data, nonce];
+        }
+        throw error;
+      });
+  }
 };

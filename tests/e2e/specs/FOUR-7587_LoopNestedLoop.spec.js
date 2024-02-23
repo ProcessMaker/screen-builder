@@ -45,7 +45,6 @@ describe("FOUR-7587 Loop Nested Loop", () => {
   };
 
   beforeEach(() => {
-    cy.server();
     cy.visit("/", {
       onBeforeLoad(win) {
         cy.stub(win.console, "log").as("consoleLog");

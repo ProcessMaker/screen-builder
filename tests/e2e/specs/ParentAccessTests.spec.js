@@ -1,6 +1,5 @@
 describe("Test access to _parent", () => {
   beforeEach(() => {
-    cy.server();
     cy.visit("/");
   });
 

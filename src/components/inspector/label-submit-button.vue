@@ -12,7 +12,12 @@
 </template>
 
 <script>
+import { FormInput } from '@processmaker/vue-form-elements';
+
 export default {
+  components: {
+    FormInput
+  },
   props: ['value', 'selectedControl'],
   data() {
     return {

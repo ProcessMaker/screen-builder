@@ -4,11 +4,11 @@
       <b-tabs>
         <b-tab active title="Form">
           <task
-            :initial-task-id="task.id"
             v-model="data"
+            :initial-task-id="task.id"
+            :initial-request-id="1"
+            :user-id="1"
             @submit="submit"
-            :initialRequestId="1"
-            :userId="1"
             @completed="completed"
             @closed="closed"
             @redirect="redirectToTask"
@@ -19,10 +19,10 @@
             class="data-editor"
             language="json"
             :value="JSON.stringify(data, null, 4)"
-            :options="{automaticLayout: true, minimap: {enabled: false}}"
+            :options="{ automaticLayout: true, minimap: { enabled: false } }"
           />
           <div class="text-right">
-            <b-button variant="secondary">{{ __('Save') }}</b-button>
+            <b-button variant="secondary">{{ __("Save") }}</b-button>
           </div>
         </b-tab>
       </b-tabs>
@@ -36,28 +36,28 @@
       >
         <b-list-group flush>
           <b-list-group-item>
-            <i class="far fa-calendar-alt"/>
+            <i class="far fa-calendar-alt" />
             <small>
-              {{ __('Due') }}
+              {{ __("Due") }}
               {{ moment(task.due_at).fromNow() }}
             </small>
             <div>{{ formatDate(task.due_at) }}</div>
           </b-list-group-item>
           <b-list-group-item>
-            <h5>{{ __('Assigned To') }}</h5>
-            <b-avatar/>
+            <h5>{{ __("Assigned To") }}</h5>
+            <b-avatar />
             {{ task.user.fullname }}
           </b-list-group-item>
           <b-list-group-item>
-            <i class="far fa-calendar-alt"/>
+            <i class="far fa-calendar-alt" />
             <small>
-              {{ __('Assigned') }}
+              {{ __("Assigned") }}
               {{ moment(task.created_at).fromNow() }}
             </small>
             <div>{{ formatDate(task.created_at) }}</div>
           </b-list-group-item>
           <b-list-group-item>
-            <h5>{{ __('Request') }}</h5>
+            <h5>{{ __("Request") }}</h5>
             <div>
               <a :href="`/requests/${task.process_request.id}`">
                 #{{ task.process_request.id }} {{ task.process.name }}
@@ -65,8 +65,8 @@
             </div>
           </b-list-group-item>
           <b-list-group-item>
-            <h5>{{ __('Requested by') }}</h5>
-            <b-avatar/>
+            <h5>{{ __("Requested by") }}</h5>
+            <b-avatar />
             {{ task.process_request.user.fullname }}
           </b-list-group-item>
         </b-list-group>
@@ -76,52 +76,52 @@
 </template>
 
 <script>
-import moment from 'moment';
-import MonacoEditor from 'vue-monaco';
-import Screens from '../e2e/fixtures/single_line_input.json';
+import moment from "moment";
+import MonacoEditor from "vue-monaco";
+import Screens from "../e2e/fixtures/single_line_input.json";
 
 export default {
-  components: {MonacoEditor},
+  components: { MonacoEditor },
   data() {
     return {
       data: {},
       task: {
         id: 1,
-        advanceStatus: 'open',
-        component: 'task-screen',
+        advanceStatus: "open",
+        component: "task-screen",
         created_at: moment().toISOString(),
         completed_at: moment().toISOString(),
-        due_at: moment().add(1, 'day').toISOString(),
+        due_at: moment().add(1, "day").toISOString(),
         user: {
-          avatar: '',
-          fullname: 'Assigned User',
+          avatar: "",
+          fullname: "Assigned User"
         },
         screen: Screens.screens[0],
         process_request: {
           id: 1,
-          status: 'ACTIVE',
+          status: "ACTIVE",
           user: {
-            avatar: '',
-            fullname: 'Requester User',
-          },
+            avatar: "",
+            fullname: "Requester User"
+          }
         },
         process: {
           id: 1,
-          name: 'Process Name',
+          name: "Process Name"
         },
-        request_data: {},
-      },
+        request_data: {}
+      }
     };
   },
   methods: {
     completed(processRequestId) {
-      window.location.href = '/requests/' + processRequestId;
+      window.location.href = `/requests/${processRequestId}`;
     },
     closed() {
-      window.location.href = 'tasks';
+      window.location.href = "tasks";
     },
     redirectToTask(task) {
-      window.location.href = 'tasks/' + task + '/edit';
+      window.location.href = `tasks/${task}/edit`;
     },
     moment(...args) {
       return moment(...args);
@@ -130,7 +130,7 @@ export default {
       return text;
     },
     formatDate(date) {
-      return moment(date).format('YYYY-MM-DD HH:mm');
+      return moment(date).format("YYYY-MM-DD HH:mm");
     },
     submit(task) {
       if (this.disabled) {
@@ -140,15 +140,15 @@ export default {
       const taskId = task.id;
       const formData = task.request_data;
       window.ProcessMaker.apiClient
-        .put('/tasks/' + taskId, {status:'COMPLETED', data: formData})
+        .put(`/tasks/${taskId}`, { status: "COMPLETED", data: formData })
         .then(() => {
-          alert('Task Completed Successfully');
+          alert("Task Completed Successfully");
         })
         .finally(() => {
           this.disabled = false;
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

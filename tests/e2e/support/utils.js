@@ -1,4 +1,4 @@
-import {nodeControls} from './constants';
+import path from "path";
 
 /**
  * This method is responsible to add a control inside the screen
@@ -18,8 +18,10 @@ export function addControl(controlName) {
  * @return nothing returns
  */
 export function addControlInsideLoop(numLoop, control) {
-  cy.get(control).drag('[data-cy=screen-element-container] .column-draggable div');
-  cy.get('[data-cy=screen-element-container]').last().click();
+  cy.get(control).drag(
+    "[data-cy=screen-element-container] .column-draggable div"
+  );
+  cy.get("[data-cy=screen-element-container]").last().click();
 }
 
 /**
@@ -27,9 +29,9 @@ export function addControlInsideLoop(numLoop, control) {
  * @return nothing returns
  */
 export function previewScreen() {
-  cy.get('[data-cy="mode-preview"]').should('be.visible');
+  cy.get('[data-cy="mode-preview"]').should("be.visible");
   cy.get('[data-cy="mode-preview"]').click();
-  cy.get('[id="showDataInput"]').should('be.visible');
+  cy.get('[id="showDataInput"]').should("be.visible");
 }
 
 /**
@@ -37,9 +39,12 @@ export function previewScreen() {
  * @return nothing returns
  */
 export function previewScreenWebMobile(mode) {
-  let selectorMode = '[data-cy="device-screen-mode-button"]'.replace('mode',mode);
-  cy.get(selectorMode).should('be.visible').click();
-  cy.get(selectorMode).should('have.class', 'btn btn-secondary');
+  const selectorMode = '[data-cy="device-screen-mode-button"]'.replace(
+    "mode",
+    mode
+  );
+  cy.get(selectorMode).should("be.visible").click();
+  cy.get(selectorMode).should("have.class", "btn btn-secondary");
 }
 
 /**
@@ -49,10 +54,15 @@ export function previewScreenWebMobile(mode) {
  * @return nothing returns
  */
 export function addControlInsideTable(numColumn, control) {
-  let column = '[data-cy=screen-element-container] >* div[class^= "column-draggable"]:nth-child(numColumn)'
-    .replace('numColumn',numColumn);
-  cy.get(control).drag('[data-cy=screen-element-container] >* div[class^= "column-draggable"]:nth-child(2)');
-  cy.get('[data-cy=screen-element-container]').last().click();
+  const column =
+    '[data-cy=screen-element-container] >* div[class^= "column-draggable"]:nth-child(numColumn)'.replace(
+      "numColumn",
+      numColumn
+    );
+  cy.get(control).drag(
+    '[data-cy=screen-element-container] >* div[class^= "column-draggable"]:nth-child(2)'
+  );
+  cy.get("[data-cy=screen-element-container]").last().click();
 }
 
 /**
@@ -60,9 +70,9 @@ export function addControlInsideTable(numColumn, control) {
  * @return nothing returns
  */
 export function goToDesigner() {
-  cy.get('[data-cy="mode-editor"]').should('be.visible');
+  cy.get('[data-cy="mode-editor"]').should("be.visible");
   cy.get('[data-cy="mode-editor"]').click();
-  cy.get('[id="screen-container"]').should('be.visible');
+  cy.get('[id="screen-container"]').should("be.visible");
 }
 
 /**
@@ -72,14 +82,38 @@ export function goToDesigner() {
  * @param attempts: it is not change
  * @return nothing returns
  */
-export function waitUntilElementIsVisible(selector, maxAttempts=10, attempts=0){
+export function waitUntilElementIsVisible(
+  selector,
+  maxAttempts = 10,
+  attempts = 0
+) {
   if (attempts > maxAttempts) {
     throw new Error("Timed out waiting for report to be generated");
   }
   cy.wait(500);
-  cy.get('body').then($body => {
-      if ($body.find(selector).length <= 0) {
-        waitUntilElementIsVisible(selector, maxAttempts, attempts+1);
-      }
-   });
+  cy.get("body").then(($body) => {
+    if ($body.find(selector).length <= 0) {
+      waitUntilElementIsVisible(selector, maxAttempts, attempts + 1);
+    }
+  });
 }
+
+export const validateImage = (downloadedFilename) => {
+  const downloadsFolder = Cypress.config("downloadsFolder");
+
+  if (!downloadedFilename) {
+    throw new Error("Filename wasn't provided");
+  }
+
+  const filename = path.join(downloadsFolder, downloadedFilename);
+
+  // ensure the file has been saved before trying to parse it
+  cy.readFile(filename, "binary", { timeout: 15000 }).should((buffer) => {
+    // by having length assertion we ensure the file has text
+    // since we don't know when the browser finishes writing it to disk
+
+    // Tip: use expect() form to avoid dumping binary contents
+    // of the buffer into the Command Log
+    expect(buffer.length).to.be.gt(1000);
+  });
+};

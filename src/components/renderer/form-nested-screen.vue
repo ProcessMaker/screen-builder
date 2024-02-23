@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import VueFormRenderer from '../vue-form-renderer.vue';
+
 const globalObject = typeof window === 'undefined'
   ? global
   : window;
@@ -30,6 +32,9 @@ const defaultConfig = [
 ];
 
 export default {
+  components:{
+    VueFormRenderer
+  },
   props: {
     name: String,
     screen: Number,
