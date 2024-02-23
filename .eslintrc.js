@@ -26,7 +26,11 @@ module.exports = {
     eqeqeq: "error",
     "max-len": ["error", { code: 140, ignoreUrls: true }],
     "comma-dangle": ["error", "never"],
-    quotes: ["error", "double", { allowTemplateLiterals: true }],
+    quotes: [
+      "error",
+      "double",
+      { avoidEscape: true, allowTemplateLiterals: true }
+    ],
     "import/no-extraneous-dependencies": "warn",
     "consistent-return": "warn",
     "no-plusplus": 0,
@@ -41,10 +45,18 @@ module.exports = {
 
   overrides: [
     {
-      files: [
-        "**/__tests__/*.{j,t}s?(x)",
-        "**/tests/unit/**/*.spec.{j,t}s?(x)"
-      ],
+      files: ["**/tests/**/*.{j,t}s?(x)", "**/tests/e2e/**/*.spec.{j,t}s?(x)"],
+      plugins: ["cypress"],
+      env: {
+        mocha: true,
+        "cypress/globals": true
+      },
+      rules: {
+        strict: "off"
+      }
+    },
+    {
+      files: ["**/tests/unit/**/*.spec.{j,t}s?(x)"],
       env: {
         jest: true
       }

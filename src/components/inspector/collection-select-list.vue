@@ -5,13 +5,13 @@
       <b-form-select
         id="collection"
         v-model="collectionId"
-        @change="resetFields"
         :options="collections"
         data-cy="inspector-collection"
+        @change="resetFields"
       />
     </div>
 
-    <div class="mt-3" v-if="fields.length > 1">
+    <div v-if="fields.length > 1" class="mt-3">
       <label for="label">{{ $t("Label") }}</label>
       <b-form-select
         id="label"
@@ -21,7 +21,7 @@
       />
     </div>
 
-    <div class="mt-3" v-if="fields.length > 1">
+    <div v-if="fields.length > 1" class="mt-3">
       <label for="value">{{ $t("Value") }}</label>
       <b-form-select
         id="value"
@@ -31,52 +31,57 @@
       />
     </div>
 
-    <div class="mt-3" v-if="fields.length > 1">
+    <div v-if="fields.length > 1" class="mt-3">
       <pmql-input
-          :search-type="'collections_w_mustaches'"
-          class="mb-1"
-          data-cy="inspector-collection-pmql"
-          :input-label="'PMQL'"
-          v-model="pmql"
-          :condensed="true"
-          :ai-enabled="true"
-          :placeholder="$t('PMQL')">
-        </pmql-input>
-        <small class="form-text text-muted">{{ $t('Advanced data search') }}</small>
+        v-model="pmql"
+        :search-type="'collections_w_mustaches'"
+        class="mb-1"
+        data-cy="inspector-collection-pmql"
+        :input-label="'PMQL'"
+        :condensed="true"
+        :ai-enabled="true"
+        :placeholder="$t('PMQL')"
+      >
+      </pmql-input>
+      <small class="form-text text-muted">{{
+        $t("Advanced data search")
+      }}</small>
     </div>
 
-    <div class="mt-3" v-if="fields.length > 1">
+    <div v-if="fields.length > 1" class="mt-3">
       <form-checkbox
-        :label="$t('Ignore duplicates in list')"
         v-model="unique"
-        :helper="$t('Select to show only distinct list entries if labels are repeated. Only the first value will be used if duplicate labels have different values.')"
+        :label="$t('Ignore duplicates in list')"
+        :helper="
+          $t(
+            'Select to show only distinct list entries if labels are repeated. Only the first value will be used if duplicate labels have different values.'
+          )
+        "
         data-cy="inspector-collection-isDependent"
       />
     </div>
-
   </div>
 </template>
 
 <script>
 import { debounce } from "lodash";
-import _ from "lodash";
-import MustacheHelper from "./mustache-helper";
-import ScreenVariableSelector from '../screen-variable-selector.vue';
+import MustacheHelper from "./mustache-helper.vue";
+import ScreenVariableSelector from "../screen-variable-selector.vue";
 
 const CONFIG_FIELDS = [
   "collectionId",
   "labelField",
   "valueField",
   "pmql",
-  "unique",
+  "unique"
 ];
 
 export default {
-  props: ["value"],
   components: {
     MustacheHelper,
-    ScreenVariableSelector,
+    ScreenVariableSelector
   },
+  props: ["value"],
   data() {
     return {
       collections: [],
@@ -85,8 +90,15 @@ export default {
       labelField: null,
       valueField: null,
       pmql: "",
-      unique: false,
+      unique: false
     };
+  },
+  computed: {
+    options() {
+      return Object.fromEntries(
+        CONFIG_FIELDS.map((field) => [field, this[field]])
+      );
+    }
   },
   watch: {
     value: {
@@ -94,7 +106,7 @@ export default {
         if (!value) {
           return;
         }
-        CONFIG_FIELDS.forEach(field => this[field] = value[field]);
+        CONFIG_FIELDS.forEach((field) => (this[field] = value[field]));
       },
       immediate: true
     },
@@ -115,9 +127,10 @@ export default {
       this.onPmqlChange(pmql);
     }, 1000);
   },
-  computed: {
-    options() {
-      return Object.fromEntries(CONFIG_FIELDS.map(field => [field, this[field]]));
+  mounted() {
+    this.getCollections();
+    if (this.collectionId) {
+      this.getFields();
     }
   },
   methods: {
@@ -163,12 +176,6 @@ export default {
     },
     onPmqlChange(pmql) {
       this.pmql = pmql;
-    }
-  },
-  mounted() {
-    this.getCollections();
-    if (this.collectionId) {
-      this.getFields();
     }
   }
 };

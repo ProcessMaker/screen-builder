@@ -1,56 +1,96 @@
+<!-- eslint-disable vue/no-v-html -->
+<!-- eslint-disable vue/valid-v-for -->
 <template>
-  <b-row class="h-100 m-0">
+  <b-row class="custom-row h-100 m-0">
     <!-- Controls -->
     <b-col class="overflow-hidden h-100 p-0 controls-column">
       <b-card
         no-body
         class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       >
-        <b-input-group size="sm">
+        <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend>
-            <b-input-group-text
-              class="filter-icon border-left-0 border-top-0 rounded-0"
+            <span
+              class="input-group-text rounded-0 border-left-0 border-top-0 border-bottom-0"
             >
-              <i class="fas fa-filter" />
-            </b-input-group-text>
+              <i class="fas fa-search icon"></i>
+            </span>
           </b-input-group-prepend>
-
           <b-form-input
             v-model="filterQuery"
-            class="border-top-0 border-right-0 rounded-0"
+            class="border-0 rounded-0"
             type="text"
-            :placeholder="$t('Filter Controls')"
-          />
+            size="lg"
+            style="height: 42px"
+            :placeholder="$t('Search Here')"
+          >
+          </b-form-input>
         </b-input-group>
 
         <b-card-body no-body class="p-0 overflow-auto">
-          <draggable
-            v-if="renderControls"
-            id="controls"
-            v-model="filteredControls"
-            data-cy="controls"
-            v-bind="{
-              sort: false,
-              group: { name: 'controls', pull: 'clone', put: false }
-            }"
-            :clone="cloneControl"
-            class="controls list-group w-auto list-group-flush"
+          <!-- Accordion Bootstrap -->
+          <template
+            v-for="({ name, elements }, index) in filteredControlsGrouped"
           >
-            <b-list-group-item
-              v-for="(element, index) in filteredControls"
-              :key="index"
-              :data-cy="'controls-' + element.component"
-              :class="{ 'ai-control': element.component === 'AiSection'}"
+            <b-button
+              class="w-100 rounded-0 text-left"
+              :aria-controls="`collapse-${index + 1}`"
+              style="
+                font-size: smaller;
+                height: 42px;
+                color: grey;
+                border-color: rgb(224, 224, 224);
+                background-color: rgb(235, 238, 242);
+              "
+              @click="toggleCollapse(index)"
             >
-              <i v-if="element.config.icon" :class="element.config.icon" />
-              <span v-html="element.config.svg" class="svg-icon"></span>
-              {{ $t(element.label) }}
-            </b-list-group-item>
-
-            <li v-if="!filteredControls.length" class="list-group-item">
-              <slot />
-            </li>
-          </draggable>
+              <strong>{{ $t(name) }}</strong>
+              <b-icon
+                :icon="isCollapsed(index) ? 'chevron-down' : 'chevron-up'"
+                class="float-right"
+              />
+            </b-button>
+            <b-collapse v-model="collapse[index]" class="mt-2">
+              <b-list-group>
+                <draggable
+                  v-if="renderControls"
+                  id="controls"
+                  v-model="filteredControlsGrouped[index].elements"
+                  data-cy="controls"
+                  v-bind="{
+                    sort: false,
+                    group: { name: 'controls', pull: 'clone', put: false }
+                  }"
+                  :clone="cloneControl"
+                  class="controls list-group w-auto list-group-flush"
+                >
+                  <b-list-group-item
+                    v-for="(element, elementIndex) in elements"
+                    :key="elementIndex"
+                    v-b-popover.hover.right="{
+                      content: $t(element.popoverContent),
+                      customClass: 'custom-popover',
+                      boundaryPadding: 16
+                    }"
+                    :boundary="'viewport'"
+                    :data-cy="`controls-${element.component}`"
+                    class="gray-text"
+                  >
+                    <i
+                      v-if="element.config && element.config.icon"
+                      :class="element.config.icon"
+                    />
+                    <span
+                      class="svg-icon"
+                      style="width: 12px; height: 12px"
+                      v-html="element.config.svg"
+                    ></span>
+                    {{ $t(element.label) }}
+                  </b-list-group-item>
+                </draggable>
+              </b-list-group>
+            </b-collapse>
+          </template>
         </b-card-body>
       </b-card>
     </b-col>
@@ -81,7 +121,7 @@
             data-cy="toolbar-edit"
             @click="openEditPageModal(currentPage)"
           >
-            <i class="far fa-edit p-0" />
+            <i class="far fa-edit" />
           </b-button>
 
           <b-button
@@ -93,7 +133,7 @@
             data-cy="toolbar-remove"
             @click="confirmDelete()"
           >
-            <i class="far fa-trash-alt p-0" />
+            <i class="far fa-trash-alt" />
           </b-button>
 
           <b-button
@@ -105,7 +145,7 @@
             data-cy="toolbar-add"
             @click="originalPageName = null"
           >
-            <i class="fas fa-plus p-0" />
+            <i class="fas fa-plus" />
           </b-button>
         </div>
 
@@ -126,10 +166,25 @@
         data-cy="screen-drop-zone"
         class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
       >
-        <span class="mb-3" v-html="dragElementIcon"></span>
+        <svg
+          width="81"
+          height="107"
+          viewBox="0 0 81 107"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z"
+            fill="#699CFF"
+          />
+        </svg>
         <h3>{{ $t("Place your controls here.") }}</h3>
         <p>
-          {{ $t("To begin creating a screen, drag and drop items from the Controls Menu on the left.") }}
+          {{
+            $t(
+              "To begin creating a screen, drag and drop items from the Controls Menu on the left."
+            )
+          }}
         </p>
         <!-- {{ $t("Drag an element here") }} -->
       </div>
@@ -168,7 +223,7 @@
             <div
               v-if="selected === element"
               class="card-header form-element-header d-flex align-items-center"
-              :class="{ 'pulse': isAiSection(element) && aiPreview(element) }"
+              :class="{ pulse: isAiSection(element) && aiPreview(element) }"
             >
               <i class="fas fa-arrows-alt-v mr-1 text-muted" />
               <i
@@ -176,11 +231,6 @@
                 :class="element.config.icon"
                 class="mr-2 ml-1"
               />
-              <span
-                v-if="element.config.svg"
-                v-html="element.config.svg"
-                class="svg-icon mr-2 ml-1"
-              ></span>
               {{ element.config.name || element.label || $t("Field Name") }}
               <div class="ml-auto">
                 <button
@@ -287,7 +337,10 @@
         <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
-              v-if="getInspectorFields(accordion).length > 0"
+              v-if="
+                getInspectorFields(accordion) &&
+                getInspectorFields(accordion).length > 0
+              "
               :key="`${accordionName(accordion)}-button`"
               variant="outline"
               class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
@@ -420,6 +473,7 @@ import {
   FormHtmlEditor,
   FormHtmlViewer
 } from "@processmaker/vue-form-elements";
+import Validator from "@chantouchsek/validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
@@ -433,7 +487,6 @@ import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 
-const Validator = require("validatorjs");
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -471,6 +524,17 @@ const defaultConfig = [
   }
 ];
 
+const defaultGroupOrder = {
+  "Input Fields" : 1.0,
+  "Content Fields" : 2.0,
+  "Dashboards" : 2.5,
+  "Navigation" : 3.0,
+  "Files" : 4.0,
+  "Advanced" : 5.0,
+};
+
+const DEFAULT_GROUP = "Advanced";
+
 export default {
   components: {
     draggable,
@@ -485,7 +549,7 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer,
+    ...renderer
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -510,8 +574,8 @@ export default {
       type: Object
     },
     processId: {
-      default: 0,
-    },
+      default: 0
+    }
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -524,9 +588,6 @@ export default {
     }
 
     return {
-      dragElementIcon: `<svg width="81" height="107" viewBox="0 0 81 107" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z" fill="#699CFF"/>
-      </svg>`,
       currentPage: 0,
       selected: null,
       display: "editor",
@@ -553,7 +614,9 @@ export default {
       language: "en",
       collator: null,
       editorContentKey: 0,
-      cancelledJobs: []
+      cancelledJobs: [],
+      collapse: {},
+      groupOrder: {},
     };
   },
   computed: {
@@ -570,40 +633,64 @@ export default {
       return this.config.length > 1;
     },
     filteredControls() {
-      const excludedLabels = ["Bootstrap Wrapper", "Bootstrap Component"];
+
+      const excludedLabels = [""];
 
       const filtered = this.controls.filter((control) => {
-        return control.label.toLowerCase().includes(this.filterQuery.toLowerCase());
+        return control.label
+          .toLowerCase()
+          .includes(this.filterQuery.toLowerCase());
       });
 
-      const excluded = filtered.filter((control) => {
-        return excludedLabels.includes(control.label);
-      });
+      return filtered;
+    },
+    filteredControlsGrouped() {
+      const grouped = this.filteredControls.reduce((groups, control) => {
+        let groupName = _.get(control, 'group', null);
 
-      const included = filtered.filter((control) => {
-        return !excludedLabels.includes(control.label);
-      });
-
-      const sorted = included.sort((a, b) => {
-        return this.collator.compare(a.label, b.label);
-      });
-
-      return [...sorted, ...excluded].sort((a, b) => {
-        const textA = a.label.toLowerCase();
-        const textB = b.label.toLowerCase();
-        if (textA < textB) {
-          return -1;
+        if (!groupName) {
+          groupName = DEFAULT_GROUP;
         }
-        return textA > textB ? 1 : 0;
+
+        let existingGroupIndex = groups.findIndex((group) => {
+          return group.name === groupName;
+        });
+
+        if (existingGroupIndex === -1) {
+          groups.push({
+            name: groupName,
+            order: this.getGroupOrder(groupName),
+            elements: []
+          });
+          existingGroupIndex = groups.length - 1;
+        }
+
+        groups[existingGroupIndex].elements.push(control);
+        return groups;
+      }, []);
+
+      // Sort the groups
+      grouped.sort((a, b) => a.order - b.order);
+
+      // Sort the elements in each group
+      grouped.forEach((_, index) => {
+        grouped[index].elements.sort((a, b) => {
+          const orderA =
+            a.order !== undefined ? a.order : Number.POSITIVE_INFINITY;
+          const orderB =
+            b.order !== undefined ? b.order : Number.POSITIVE_INFINITY;
+          return orderA - orderB;
+        });
       });
+
+      return grouped;
     },
     isCurrentPageEmpty() {
       return this.config[this.currentPage].items.length === 0;
     },
     showToolbar() {
       return this.screenType === formTypes.form;
-    },
-    
+    }
   },
   watch: {
     config: {
@@ -685,8 +772,26 @@ export default {
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
     });
+    this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    getGroupOrder(groupName) {
+      let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
+      return order;
+    },
+    setGroupOrder(orderConfig) {
+      this.groupOrder = { ...this.groupOrder, ...orderConfig };
+    },
+    toggleCollapse(index) {
+      if (this.collapse[index] && this.collapse[index] === true) {
+        this.collapse[index] = false;
+      } else {
+        this.collapse[index] = true;
+      }
+    },
+    isCollapsed(index) {
+      return this.collapse[index];
+    },
     refreshContent() {
       this.editorContentKey++;
     },
@@ -697,7 +802,7 @@ export default {
     },
     checkForCaptcha(items, insideLoop = false, nestedScreen = null) {
       items.forEach((item) => {
-        if (!item.items && item.component == "Captcha" && insideLoop) {
+        if (!item.items && item.component === "Captcha" && insideLoop) {
           if (nestedScreen && nestedScreen.config.screen) {
             this.$root.$emit("remove-nested", nestedScreen.config.screen);
             nestedScreen.config.screen = null;
@@ -1088,7 +1193,8 @@ export default {
       // Generate Variable Name
       if (
         _.findIndex(control.inspector, keyNameProperty) !== -1 ||
-        control.component === "FormLoop") {
+        control.component === "FormLoop"
+      ) {
         [this.variables, copy.config.name] = this.generator.generate(
           this.config,
           copy["editor-control"] ? copy["editor-control"] : copy.component
@@ -1181,13 +1287,35 @@ export default {
 };
 </script>
 
+<style scoped>
+.custom-popover {
+  margin-right: -400px;
+  padding: 16px;
+}
+</style>
+
 <style>
+.gray-text {
+  color: #556271;
+}
+
+.icon {
+  color: #6A7888;
+}
+.custom-row {
+  height: 80vh;
+  margin: 0;
+}
 .prevent-interaction {
   pointer-events: none;
 }
 
 .svg-icon > svg {
   margin-bottom: 3px;
+}
+
+.svg-icon > svg > path {
+  fill: #6A7888;
 }
 </style>
 
@@ -1298,15 +1426,11 @@ $side-bar-font-size: 0.875rem;
   top: 4rem;
 }
 .ai-section-card {
-  border-color: #8AB8FF;
+  border-color: #8ab8ff;
 }
 
 .ai-section-card .card-header {
-  background: #CBDFFF;
-}
-
-.ai-control {
-  background: #FFF4D3;
+  background: #cbdfff;
 }
 
 .pulse {

@@ -2,8 +2,8 @@
   <div class="form-group">
     <required-asterisk /><label v-uni-for="name">{{ label }}</label>
     <component
-      v-if="componentType!=='input'"
       :is="componentType"
+      v-if="componentType !== 'input'"
       v-model="localValue"
       v-bind="componentConfigComputed"
       v-uni-id="name"
@@ -13,7 +13,8 @@
       type="text"
       @change="onChange"
     />
-    <input v-else
+    <input
+      v-else
       v-model="localValue"
       v-bind="componentConfig"
       v-uni-id="name"
@@ -23,59 +24,65 @@
       :type="dataType"
       :maxlength="maxlength"
       @change="onChange"
-    >
+    />
     <template v-if="validator && validator.errorCount">
-      <div class="invalid-feedback" v-for="(errors, index) in validator.errors.all()" :key="index">
+      <div
+        v-for="(errors, index) in validator.errors.all()"
+        :key="index"
+        class="invalid-feedback"
+      >
         <div v-for="(error, subIndex) in errors" :key="subIndex">
           {{ error }}
         </div>
       </div>
     </template>
-    <div class="invalid-feedback" v-if="error">{{ error }}</div>
+    <div v-if="error" class="invalid-feedback">{{ error }}</div>
     <small v-if="helper" class="form-text text-muted">{{ helper }}</small>
   </div>
 </template>
 
 <script>
-import { createUniqIdsMixin } from 'vue-uniq-ids';
-import Inputmasked from './form-input-masked';
-import { TheMask } from 'vue-the-mask';
-import { getUserDateFormat, getUserDateTimeFormat } from '@processmaker/vue-form-elements/src/dateUtils';
-import ValidationMixin from '@processmaker/vue-form-elements/src/components/mixins/validation';
-import moment from 'moment';
-import debounce from "lodash/debounce";
-import { RequiredAsterisk } from '@processmaker/vue-form-elements';
+import { createUniqIdsMixin } from "vue-uniq-ids";
+import { TheMask } from "vue-the-mask";
+import moment from "moment";
+import {
+  RequiredAsterisk,
+  getUserDateFormat,
+  getUserDateTimeFormat,
+  ValidationMixin
+} from "@processmaker/vue-form-elements";
+import Inputmasked from "./form-input-masked.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
 const componentTypes = {
-  currency: 'inputmasked',
-  date: 'the-mask',
-  datetime: 'the-mask',
-  percentage: 'inputmasked',
-  custom: 'the-mask',
+  currency: "inputmasked",
+  date: "the-mask",
+  datetime: "the-mask",
+  percentage: "inputmasked",
+  custom: "the-mask"
 };
 const componentTypesConfigs = {
-  currency: 'getCurrencyFormat',
-  date: 'getDateFormat',
-  datetime: 'getDatetimeFormat',
-  percentage: 'getPercentageFormat',
-  custom: 'getCustomFormatter',
+  currency: "getCurrencyFormat",
+  date: "getDateFormat",
+  datetime: "getDatetimeFormat",
+  percentage: "getPercentageFormat",
+  custom: "getCustomFormatter"
 };
 
 export default {
-  inheritAttrs: false,
   components: { TheMask, Inputmasked, RequiredAsterisk },
-  mixins: [ uniqIdsMixin, ValidationMixin ],
+  mixins: [uniqIdsMixin, ValidationMixin],
+  inheritAttrs: false,
   props: [
-    'value',
-    'label',
-    'error',
+    "value",
+    "label",
+    "error",
     // 'required',
-    'helper',
-    'name',
-    'controlClass',
-    'dataMask',
-    'config',
+    "helper",
+    "name",
+    "controlClass",
+    "dataMask",
+    "config",
     // these should not be passed by $attrs
     "transientData",
     "formConfig",
@@ -189,8 +196,9 @@ export default {
   computed: {
     classList() {
       return {
-        'is-invalid': (this.validator && this.validator.errorCount) || this.error,
-        [this.controlClass]: !!this.controlClass,
+        "is-invalid":
+          (this.validator && this.validator.errorCount) || this.error,
+        [this.controlClass]: !!this.controlClass
       };
     },
     componentConfigComputed() {
@@ -205,9 +213,9 @@ export default {
     },
     localValue(value) {
       if (value !== this.value) {
-        this.$emit('input', this.convertToData(value));
+        this.$emit("input", this.convertToData(value));
       }
-    },
+    }
   },
   mounted() {
     if (this.value !== undefined) {
@@ -225,40 +233,47 @@ export default {
     getUserDateTimeFormat,
     convertToData(newValue) {
       if (this.customFormatter) {
-        newValue = newValue.replace(/[^\w]/g, '');
+        newValue = newValue.replace(/[^\w]/g, "");
       } else {
         switch (this.dataFormat) {
-          case 'string':
+          case "string":
             newValue = newValue.toString();
             break;
-          case 'boolean':
+          case "boolean":
             newValue = Boolean(newValue);
             break;
-          case 'currency':
-          case 'percentage':
-          case 'float':
+          case "currency":
+          case "percentage":
+          case "float":
             newValue = parseFloat(newValue);
             if (isNaN(newValue)) {
               newValue = null;
             }
             break;
-          case 'int':
+          case "int":
             newValue = parseInt(newValue);
             if (isNaN(newValue)) {
               newValue = null;
             }
             break;
-          case 'date':
-            if (this.componentName === 'FormDatePicker') {
-              newValue = moment.utc(newValue, [getUserDateFormat(), moment.ISO_8601], true).toISOString().split(RegExp('T[0-9]'))[0];
+          case "date":
+            if (this.componentName === "FormDatePicker") {
+              newValue = moment
+                .utc(newValue, [getUserDateFormat(), moment.ISO_8601], true)
+                .toISOString()
+                .split(RegExp("T[0-9]"))[0];
             }
             break;
-          case 'datetime':
-            if (this.componentName === 'FormDatePicker') {
-              newValue = moment(newValue, [getUserDateTimeFormat(), moment.ISO_8601], true).toISOString();
+          case "datetime":
+            if (this.componentName === "FormDatePicker") {
+              newValue = moment(
+                newValue,
+                [getUserDateTimeFormat(), moment.ISO_8601],
+                true
+              ).toISOString();
             }
             break;
-          case 'array':
+          case "array":
             break;
           default:
             newValue = newValue.toString();
@@ -273,8 +288,8 @@ export default {
     getMask() {
       // Mask changed to ISO format for all the users
       return {
-        date: ['####-##-##'],
-        dateTime: ['####-##-## ##:##'],
+        date: ["####-##-##"],
+        dateTime: ["####-##-## ##:##"]
       };
     }
   }
