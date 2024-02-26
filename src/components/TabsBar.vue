@@ -310,6 +310,5 @@ export default {
 }
 .flat-tabs .h-tab {
   height: calc(100% - 42px) !important;
-  width: 100% !important;
 }
 </style>
