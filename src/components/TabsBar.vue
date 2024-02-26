@@ -128,16 +128,19 @@ export default {
     }
   },
   mounted() {
-    this.checkTabsOverflow();
-    this.checkScrollPosition();
-
     this.$nextTick(() => {
       // check resize of tabs list
       window.addEventListener("resize", this.checkTabsOverflow);
       // listen to scroll event
       const tablist = this.$refs.tabs.$el.querySelector(".nav-tabs");
       tablist.addEventListener("scroll", this.checkScrollPosition);
+
+      Promise.resolve().then(() => {
+        this.checkTabsOverflow();
+        this.checkScrollPosition();
+      });
     });
+
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.checkTabsOverflow);
