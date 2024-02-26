@@ -791,4 +791,7 @@ body {
 .editor {
   height: 30em;
 }
+.flat-tabs .h-tab {
+  height: calc(100% - 42px) !important;
+}
 </style>
