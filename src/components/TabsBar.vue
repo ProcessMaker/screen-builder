@@ -210,7 +210,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 /* Setup some colors */
 :root {
   --tabs-blue: #1572c2;
