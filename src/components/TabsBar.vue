@@ -9,23 +9,24 @@
     @input="tabOpened"
   >
     <template #tabs-start>
-      <div>
-        <slot name="tabs-start" />
-        <div class="tabs-sticky d-flex flex-row tabs-start">
+      <div class="tabs-sticky d-flex flex-row tabs-start">
+        <div
+          v-show="tabsListOverflow"
+          class="position-relative overflow-visible"
+        >
           <div
-            v-show="tabsListOverflow && showLeftScroll"
-            class="position-relative overflow-visible"
+            role="link"
+            class="nav-scroll nav-scroll-left"
+            data-test="scroll-left"
+            @click="scrollTabsLeft"
           >
-            <div
-              role="link"
-              class="nav-scroll nav-scroll-left"
-              data-test="scroll-left"
-              @click="scrollTabsLeft"
-            >
-              <i class="fas fa-chevron-left" />
-            </div>
+            <i class="fas fa-chevron-left" />
           </div>
         </div>
+      </div>
+
+      <div :class="{'dd-ml': tabsListOverflow}">
+        <slot name="tabs-start" />
       </div>
     </template>
     <b-tab
@@ -58,7 +59,7 @@
     </b-tab>
     <template #tabs-end>
       <div
-        v-show="tabsListOverflow && showRightScroll"
+        v-if="tabsListOverflow"
         class="tabs-sticky overflow-visible"
       >
         <div
@@ -127,15 +128,16 @@ export default {
     }
   },
   mounted() {
-    // check resize of tabs list
-    window.addEventListener("resize", this.checkTabsOverflow);
-    setTimeout(() => {
-      this.checkTabsOverflow();
-      this.checkScrollPosition();
-    }, 0);
-    // listen to scroll event
-    const tablist = this.$refs.tabs.$el.querySelector(".nav-tabs");
-    tablist.addEventListener("scroll", () => this.checkScrollPosition());
+    this.checkTabsOverflow();
+    this.checkScrollPosition();
+
+    this.$nextTick(() => {
+      // check resize of tabs list
+      window.addEventListener("resize", this.checkTabsOverflow);
+      // listen to scroll event
+      const tablist = this.$refs.tabs.$el.querySelector(".nav-tabs");
+      tablist.addEventListener("scroll", this.checkScrollPosition);
+    });
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.checkTabsOverflow);
@@ -226,6 +228,12 @@ export default {
   flex-wrap: nowrap !important;
   overflow: hidden !important;
 }
+
+.nav-tabs .nav-item .nav-link {
+  display: flex;
+  align-items: center;
+}
+
 /* Style for individual tabs */
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
@@ -250,6 +258,16 @@ export default {
   flex-wrap: nowrap !important;
 }
 
+.nav-tabs .nav-item .nav-link:not(.active) {
+  .badge {
+    background-color: #6A7888 !important;
+  }
+
+  span:not(.badge, .close-tab) {
+    color: #556271 !important;
+  }
+}
+
 /* Style for the hover effect */
 .nav-tabs .nav-link:hover {
   border: none;
@@ -261,7 +279,6 @@ export default {
 /* Adding the 'x' button to the tab */
 .nav-tabs .nav-link .close-tab {
   font-size: 0.8rem;
-  margin-top: 0.4rem;
   color: var(--tabs-light);
   margin-left: 0.5rem;
   display: inline !important;
@@ -289,10 +306,10 @@ export default {
   z-index: 1;
 }
 .nav-tabs .nav-scroll-right {
-  right: 0;
+  right: 5px;
 }
 .nav-tabs .nav-scroll-left {
-  left: 0;
+  margin-left: 5px;
 }
 .nav-tabs .tabs-sticky {
   position: sticky;
@@ -310,5 +327,8 @@ export default {
 }
 .flat-tabs .h-tab {
   height: calc(100% - 42px) !important;
+}
+.dd-ml {
+  margin-left: 2rem;
 }
 </style>
