@@ -278,6 +278,10 @@
               </div>
             </div>
           </draggable>
+
+          <div v-if="!isCurrentPageEmpty" data-cy="screen-drop-zone">
+            &nbsp;
+          </div>
         </template>
       </tabs-bar>
     </b-col>
@@ -1149,6 +1153,9 @@ export default {
       });
       this.addPageName = "";
       this.updateState();
+
+      // open new page
+      this.$refs.tabsBar.openPageByIndex(this.config.length - 1);
     },
     // This function is used to calculate the new index of the references
     calcNewIndexFor(index, referencedBy) {
