@@ -359,11 +359,18 @@
       header-close-content="&times;"
       role="dialog"
       size="lg"
-      :title="$t('Edit Pages')"
       :ok-title="$t('CONFIRM')"
       ok-only
       ok-variant="secondary"
+      header-class = "modal-header-custom"
     >
+    <template #modal-title>
+      <h5 class="modal-title">{{ $t('Edit Pages') }}</h5>
+      <span class="modal-subtitle">{{ $t('Change pages order and name') }}</span>
+    </template>
+    <template #modal-header-close="{ close }">
+      <button type="button" aria-label="Close" class="close"  @click="close()">×</button>
+    </template>
       <Sortable
         :items="config"
         filter-key="name"
@@ -1500,5 +1507,9 @@ $side-bar-font-size: 0.875rem;
   100% {
     box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
   }
+}
+.modal-subtitle {
+  font-size: 15px;
+  font-weight: normal;
 }
 </style>
