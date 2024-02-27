@@ -1511,7 +1511,7 @@ $side-bar-font-size: 0.875rem;
   }
 }
 .modal-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: normal;
 }
 </style>
