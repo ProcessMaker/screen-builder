@@ -5,8 +5,8 @@
         <i class="fa fa-search sortable-search-icon"></i>
         <input
           id="search"
-          class="form-control border-0 shadow-none px-0"
           v-model="search"
+          class="form-control border-0 shadow-none px-0"
           :placeholder="$t('Search here')"
           data-test="search"
         />
@@ -52,11 +52,28 @@ export default {
   },
   watch: {
     search(value) {
-      const cleanValue = value.trim().toLowerCase();
-
-      this.filteredItems = this.items.filter((item) => item[this.filterKey].toLowerCase().includes(cleanValue));
+      this.filteredItems = this.filterItems(value, this.items);
     },
-  }
+    items: {
+      handler(newItems) {
+        this.filteredItems = newItems;
+
+        if (this.search.length > 0) {
+          this.filteredItems = this.filterItems(this.search, newItems);
+        }
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    clearSearch(value) {
+      return value.trim().toLowerCase();
+    },
+    filterItems(searchValue, items) {
+      const cleanSearch = this.clearSearch(searchValue);
+      return items.filter((item) => item[this.filterKey].toLowerCase().includes(cleanSearch));
+    },
+  },
 }
 </script>
 

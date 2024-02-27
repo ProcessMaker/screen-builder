@@ -107,20 +107,24 @@ export default {
       if (draggedItemIndex !== draggedOverItemIndex) {
         // get the order of the dragged over item
         const tempOrder = this.itemsClone[draggedOverItemIndex].order;
-        // swap the order of the dragged item and the dragged over item
-        this.itemsClone[draggedItemIndex].order = tempOrder;
-        // set the index of the dragged item
-        const start = Math.min(draggedItemIndex, draggedOverItemIndex);
-        // set the index of the dragged over item
-        const end = Math.max(draggedItemIndex, draggedOverItemIndex);
         // set the increment
         const increment = draggedItemIndex > draggedOverItemIndex ? 1 : -1;
 
-        // update the order of the items
-        for (let i = start; i <= end; i++) {
-          if (i !== draggedItemIndex) {
-            this.itemsClone[i].order += increment;
+        // update the order of the items between the dragged item and the dragged over item
+        if (draggedItemIndex < draggedOverItemIndex) {
+          for (let i = draggedItemIndex + 1; i <= draggedOverItemIndex; i++) {
+            const orderAux = this.itemsClone[i].order;
+            this.itemsClone[i].order = orderAux + increment;
           }
+
+          this.itemsClone[draggedItemIndex].order = tempOrder;
+        } else if (draggedItemIndex > draggedOverItemIndex) {
+          for (let i = draggedOverItemIndex; i <= draggedItemIndex - 1; i++) {
+            const orderAux = this.itemsClone[i].order;
+            this.itemsClone[i].order = orderAux + increment;
+          }
+
+          this.itemsClone[draggedItemIndex].order = tempOrder;
         }
       }
 
