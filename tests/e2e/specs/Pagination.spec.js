@@ -62,13 +62,15 @@ beforeEach(() => {
     "[data-cy=screen-drop-zone]",
     { position: "bottom" }
   );
-  cy.get("[data-cy=toolbar-add]").click({ force: true });
+  cy.get("[data-test=page-dropdown]").click();
+  cy.get("[data-test=add-page]").click({ force: true });
   cy.get("[data-cy=add-page-name]").type("page2");
   cy.get("#addPageModal___BV_modal_footer_ > .btn-secondary").click();
   cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
     position: "bottom"
   });
-  cy.get("[data-cy=toolbar-page]").select("0");
+  cy.get("[data-test=page-dropdown]").click();
+  cy.get("[data-cy=page-0]").click({ force: true });
   cy.get("[data-cy=screen-element-container]").click();
   cy.get("[data-cy=accordion-Configuration]").click();
   cy.get(".form-check-label").click();

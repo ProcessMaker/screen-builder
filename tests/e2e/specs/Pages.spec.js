@@ -2,7 +2,8 @@ describe("Pages and navigations", () => {
   it("Basic default value", () => {
     cy.visit("/");
     cy.openAllAcordeon();
-    cy.get("[data-cy=toolbar-add]").click();
+    cy.get("[data-test=page-dropdown]").click();
+    cy.get("[data-test=add-page]").click({ force: true });
     // Define Page 2
     cy.get("[data-cy=add-page-name]").clear().type("Page 2");
     cy.get("[data-cy=add-page-modal] button.btn").eq(1).click();
@@ -15,7 +16,8 @@ describe("Pages and navigations", () => {
     cy.get("[data-cy=accordion-Configuration]").click();
     cy.setMultiselect("[data-cy=inspector-eventData]", "Default");
     // Define Page 1
-    cy.get("[data-cy=toolbar-page]").select("0");
+    cy.get("[data-test=page-dropdown]").click();
+    cy.get("[data-cy=page-0]").click({ force: true });
     cy.get('[data-cy=controls-FormButton]:contains("Page")').drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
