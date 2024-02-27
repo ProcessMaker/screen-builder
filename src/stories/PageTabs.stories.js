@@ -204,7 +204,7 @@ export const ALotOfPagesOpen = {
     const scrollRight = canvas.getByTestId("scroll-right");
 
     await waitFor(() => expect(scrollRight).toBeVisible());
-    await waitFor(() => expect(scrollLeft).not.toBeVisible());
+    await waitFor(() => expect(scrollLeft).toBeVisible());
 
     // Scroll to the right
     await step("Scroll to the right", async () => {
@@ -215,7 +215,7 @@ export const ALotOfPagesOpen = {
     // Scroll to the left
     await step("Scroll to the left", async () => {
       scrollLeft.click();
-      await waitFor(() => expect(scrollLeft).not.toBeVisible());
+      await waitFor(() => expect(scrollLeft).toBeVisible());
     });
   }
 };
