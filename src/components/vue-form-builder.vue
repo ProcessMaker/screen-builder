@@ -363,7 +363,8 @@
       header-close-content="&times;"
       role="dialog"
       size="lg"
-      :ok-title="$t('CONFIRM')"
+      :title="$t('Edit Pages')"
+      :ok-title="$t('DONE')"
       ok-only
       ok-variant="secondary"
       header-class = "modal-header-custom"
@@ -1353,6 +1354,7 @@ export default {
       this.updateState();
       this.inspect(clone);
     },
+
   }
 };
 </script>
