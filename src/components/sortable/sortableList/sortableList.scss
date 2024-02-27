@@ -9,6 +9,7 @@ $border-color: #cdddee;
     &-header {
       display: flex;
       align-items: center;
+      border-bottom: 1px solid $border-color;
     }
 
     &-title {
@@ -31,7 +32,7 @@ $border-color: #cdddee;
     display: flex;
     align-items: center;
     height: 56px;
-    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
     cursor: move;
 
     &-icon {
