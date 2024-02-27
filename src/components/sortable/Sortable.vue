@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       search: "",
-      filteredItems: this.items,
+      filteredItems: [...this.items],
     };
   },
   watch: {
@@ -56,7 +56,7 @@ export default {
     },
     items: {
       handler(newItems) {
-        this.filteredItems = newItems;
+        this.filteredItems = [...newItems];
 
         if (this.search.length > 0) {
           this.filteredItems = this.filterItems(this.search, newItems);

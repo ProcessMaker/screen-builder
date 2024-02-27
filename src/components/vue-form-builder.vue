@@ -378,7 +378,6 @@
         @item-edit="() => {}"
         @item-delete="confirmDelete"
         @add-page="$bvModal.show('addPageModal')"
-        @ordered="orderPages"
       />
     </b-modal>
 
@@ -1348,9 +1347,7 @@ export default {
       this.updateState();
       this.inspect(clone);
     },
-    orderPages(items) {
-      this.config = [...items];
-    }
+
   }
 };
 </script>
