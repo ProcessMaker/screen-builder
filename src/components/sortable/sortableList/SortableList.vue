@@ -108,7 +108,7 @@ export default {
         // get the order of the dragged over item
         const tempOrder = this.itemsClone[draggedOverItemIndex].order;
         // set the increment
-        const increment = draggedItemIndex > draggedOverItemIndex ? 1 : -1;
+        const increment = this.draggedItem > this.draggedOverItem ? 1 : -1;
 
         // update the order of the items between the dragged item and the dragged over item
         if (draggedItemIndex < draggedOverItemIndex) {
