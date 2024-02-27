@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { within, userEvent, expect, waitFor } from "@storybook/test";
+import { within, expect, waitFor } from "@storybook/test";
 import "../bootstrap";
 // b-tabs from bootstrap-vue
 import PagesDropdown from "../components/editor/pagesDropdown.vue";
