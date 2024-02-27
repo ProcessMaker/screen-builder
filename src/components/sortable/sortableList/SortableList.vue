@@ -29,7 +29,7 @@
               autofocus
               @blur.stop="onBlur()"
             />
-            <span v-else>{{ item.name }} {{ item.order }}</span>
+            <span v-else>{{ item.name }}</span>
           </div>
           <div class="border rounded-lg sortable-item-action">
             <button class="btn" @click.stop="onClick(item, index)">
