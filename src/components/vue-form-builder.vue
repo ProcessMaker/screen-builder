@@ -366,7 +366,7 @@
     >
     <template #modal-title>
       <h5 class="modal-title">{{ $t('Edit Pages') }}</h5>
-      <p class="modal-subtitle">{{ $t('Change pages order and name') }}</p>
+      <span class="modal-subtitle">{{ $t('Change pages order and name') }}</span>
     </template>
     <template #modal-header-close="{ close }">
       <button type="button" aria-label="Close" class="close"  @click="close()">×</button>
