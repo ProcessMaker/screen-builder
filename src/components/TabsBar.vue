@@ -30,7 +30,7 @@
       </div>
     </template>
     <b-tab
-      v-for="(index, n) in localOpenedPages"
+      v-for="(index, n) in validLocalOpenedPages"
       :key="`tab-${n}`"
       class="h-100 w-100"
     >
@@ -42,7 +42,6 @@
           {{ pages[index]?.name }}
         </span>
         <span
-          v-if="localOpenedPages.length > 1"
           :data-test="`close-tab-${n}`"
           class="close-tab"
           role="link"
@@ -119,10 +118,23 @@ export default {
       localOpenedPages: this.initialOpenedPages
     };
   },
+  computed: {
+    validLocalOpenedPages() {
+      return this.localOpenedPages.filter((page) => this.pages[page]);
+    }
+  },
   watch: {
     openedPages: {
       handler(newVal) {
         this.localOpenedPages = newVal;
+      },
+      deep: true
+    },
+    pages: {
+      handler() {
+        this.localOpenedPages = this.localOpenedPages.filter(
+          (page) => this.pages[page]
+        );
       },
       deep: true
     }
@@ -189,9 +201,14 @@ export default {
       this.$emit("tab-closed", this.pages[pageId], this.localOpenedPages);
     },
     updateTabsReferences(pageDelete) {
-      this.localOpenedPages = this.localOpenedPages.map((page) => page > pageDelete ? page - 1 : page);
+      this.localOpenedPages = this.localOpenedPages.map((page) =>
+        page > pageDelete ? page - 1 : page
+      );
     },
     async openPageByIndex(index) {
+      if (index === -1) {
+        return;
+      }
       const n = this.localOpenedPages.indexOf(index * 1);
       if (n === -1) {
         this.localOpenedPages.push(index);

@@ -117,7 +117,7 @@
         </template>
         <template #default>
           <div
-            v-if="isCurrentPageEmpty"
+            v-if="isCurrentPageEmpty(currentPage)"
             data-cy="screen-drop-zone"
             class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
           >
@@ -680,9 +680,6 @@ export default {
 
       return grouped;
     },
-    isCurrentPageEmpty() {
-      return this.config[this.currentPage].items.length === 0;
-    },
     showToolbar() {
       return this.screenType === formTypes.form;
     }
@@ -760,6 +757,9 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    isCurrentPageEmpty(currentPage) {
+      return this.config[currentPage]?.items?.length === 0;
+    },
     onClick(page) {
       this.$refs.tabsBar.openPageByIndex(page);
     },
@@ -1041,28 +1041,26 @@ export default {
         currentPage: this.currentPage
       });
     },
-    undo() {
+    async undo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/undo");
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
+      await this.$nextTick();
       this.$refs.tabsBar.openPageByIndex(
-        this.config.indexOf(
-          this.$store.getters["undoRedoModule/currentState"].currentPage
-        )
+        this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
-    redo() {
+    async redo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/redo");
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
+      await this.$nextTick();
       this.$refs.tabsBar.openPageByIndex(
-        this.config.indexOf(
-          this.$store.getters["undoRedoModule/currentState"].currentPage
-        )
+        this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
     updateConfig(items) {
