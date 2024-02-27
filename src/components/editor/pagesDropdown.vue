@@ -40,6 +40,7 @@
       v-for="(item, page) in data"
       :key="page"
       :data-test="'page-' + item.name"
+      :data-cy="'page-' + page"
       @click="onClickPage(page)"
     >
       <!-- Display the name of the page -->
