@@ -3,7 +3,13 @@
     Dropdown component to display options related to pages.
     Provides options to add a new page, see all pages, and select individual pages.
   -->
-  <b-dropdown data-test="page-dropdown" variant="platform" :boundary="boundary">
+  <b-dropdown
+    ref="pageDropdown"
+    data-test="page-dropdown"
+    variant="platform"
+    :boundary="boundary"
+    menu-class="page-dropdown-menu"
+  >
     <!-- Dropdown button content -->
     <template #button-content>
       <!-- Icon representing a file -->
