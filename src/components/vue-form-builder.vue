@@ -371,8 +371,6 @@
     <template #modal-header-close="{ close }">
       <button type="button" aria-label="Close" class="close"  @click="close()">×</button>
     </template>
-
-  
       <Sortable
         :items="config"
         filter-key="name"
