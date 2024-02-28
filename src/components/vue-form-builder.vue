@@ -729,7 +729,7 @@ export default {
   created() {
     this.$store.dispatch("undoRedoModule/pushState", {
       config: JSON.stringify(this.config),
-      currentPage: -1
+      currentPage: this.currentPage
     });
     this.initiateLanguageSupport();
   },
