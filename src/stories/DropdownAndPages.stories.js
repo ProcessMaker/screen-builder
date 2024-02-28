@@ -37,7 +37,8 @@ export default {
       onSeeAllPages() {
         console.log("See all pages clicked");
       },
-      onClick(index) {
+      onClick(page) {
+        const index = this.pages.indexOf(page);
         this.$refs.tabsBar.openPageByIndex(index);
       }
     }
