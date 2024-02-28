@@ -388,28 +388,30 @@
     <b-modal
       id="addPageModal"
       ref="addPageModal"
-      :ok-title="$t('Save')"
-      :cancel-title="$t('Cancel')"
+      header-class="pb-2"
+      size="lg"
+      :ok-title="$t('SAVE')"
+      :cancel-title="$t('CANCEL')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
-      :title="$t('Add New Page')"
       header-close-content="&times;"
       data-cy="add-page-modal"
       :ok-disabled="!addPageName || !!checkPageName(addPageName)"
       @ok="addPage"
-      @hide="addPageName = ''"
+      @show="addPageName = ''; showAddPageValidations=false;"
     >
-      <required />
+      <template #modal-title>
+        <h5 class="modal-title">{{ $t('Create New Page') }}</h5>
+        <small class="modal-subtitle mb-n2">{{ $t('Create a new page in your screen') }}</small>
+      </template>
       <form-input
         ref="addPageInput"
         v-model="addPageName"
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The name of the new page to add')"
-        validation="required"
         :error="checkPageName(addPageName)"
         data-cy="add-page-name"
-        required
         aria-required="true"
       />
     </b-modal>
@@ -588,6 +590,7 @@ export default {
     }
 
     return {
+      showAddPageValidations: false,
       openedPages: [0],
       currentPage: 0,
       selected: null,
@@ -763,7 +766,13 @@ export default {
     onClick(page) {
       this.$refs.tabsBar.openPageByIndex(page);
     },
-    checkPageName(value) {
+    checkPageName(value, force = false) {
+      if (!force && !this.showAddPageValidations) {
+        return null;
+      }
+      if (!value.trim()) {
+        return this.$t("The Page Name field is required.");
+      }
       const pageNames = this.config
         .map((config) => config.name)
         .filter((name) => name !== this.originalPageName);
@@ -1136,7 +1145,9 @@ export default {
       this.updateState();
     },
     addPage(e) {
-      if (this.$refs.addPageInput.validator.errorCount) {
+      this.showAddPageValidations = true;
+      const error = this.checkPageName(this.addPageName, true);
+      if (error) {
         e.preventDefault();
         return;
       }
@@ -1151,6 +1162,7 @@ export default {
         items: []
       });
       this.addPageName = "";
+      this.currentPage = this.config.length - 1;
       this.updateState();
 
       // open new page
