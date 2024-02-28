@@ -1162,6 +1162,7 @@ export default {
         items: []
       });
       this.addPageName = "";
+      this.currentPage = this.config.length - 1;
       this.updateState();
 
       // open new page
