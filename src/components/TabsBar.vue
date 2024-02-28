@@ -4,7 +4,7 @@
     v-model="activeTab"
     class="h-100 w-100 flat-tabs"
     content-class="testsdfsdfs"
-    nav-class="rodri"
+    nav-class="platform-tab"
     lazy
     @changed="tabsUpdated"
     @input="tabOpened"

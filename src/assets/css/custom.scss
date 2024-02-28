@@ -12,9 +12,6 @@
   min-width: 333px;
 }
 
-
-
-
 /* Setup some colors */
 :root {
   --tabs-blue: #1572c2;
@@ -26,7 +23,7 @@
 }
 
 /* Override Bootstrap default tab styles */
-.rodri {
+.platform-tab {
   border-bottom: 1px solid var(--tabs-border) !important;
   flex-wrap: nowrap !important;
   overflow: hidden !important;
