@@ -98,231 +98,192 @@
     <!-- Renderer -->
     <b-col
       id="screen-container"
-      class="overflow-auto mh-100 p-0 px-4 d-flex flex-column position-relative pt-2"
+      ref="screen-container"
+      class="overflow-auto mh-100 p-0 d-flex flex-column position-relative"
     >
-      <b-input-group size="sm" class="bg-white mt-3">
-        <b-form-select
-          v-if="showToolbar"
-          v-model="currentPage"
-          class="form-control"
-          data-cy="toolbar-page"
-        >
-          <option v-for="(data, page) in config" :key="page" :value="page">
-            {{ data.name }}
-          </option>
-        </b-form-select>
-
-        <div v-if="showToolbar">
-          <b-button
-            size="sm"
-            variant="secondary"
-            class="ml-1"
-            :title="$t('Edit Page Title')"
-            data-cy="toolbar-edit"
-            @click="openEditPageModal(currentPage)"
-          >
-            <i class="far fa-edit" />
-          </b-button>
-
-          <b-button
-            size="sm"
-            variant="danger"
-            class="ml-1"
-            :title="$t('Delete Page')"
-            :disabled="!displayDelete"
-            data-cy="toolbar-remove"
-            @click="confirmDelete()"
-          >
-            <i class="far fa-trash-alt" />
-          </b-button>
-
-          <b-button
-            v-b-modal.addPageModal
-            size="sm"
-            variant="secondary"
-            class="ml-1 mr-1"
-            :title="$t('Add New Page')"
-            data-cy="toolbar-add"
-            @click="originalPageName = null"
-          >
-            <i class="fas fa-plus" />
-          </b-button>
-        </div>
-
-        <b-button-group size="sm" class="ml-1 ml-auto">
-          <b-button :disabled="!canUndo" data-cy="toolbar-undo" @click="undo">{{
-            $t("Undo")
-          }}</b-button>
-          <b-button :disabled="!canRedo" data-cy="toolbar-redo" @click="redo">{{
-            $t("Redo")
-          }}</b-button>
-        </b-button-group>
-
-        <hr class="w-100" />
-      </b-input-group>
-
-      <div
-        v-if="isCurrentPageEmpty"
-        data-cy="screen-drop-zone"
-        class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
+      <tabs-bar
+        ref="tabsBar"
+        :pages="config"
+        @tab-opened="currentPage = $event"
       >
-        <svg
-          width="81"
-          height="107"
-          viewBox="0 0 81 107"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z"
-            fill="#699CFF"
+        <template #tabs-start>
+          <pages-dropdown
+            v-if="showToolbar"
+            :data="config"
+            @addPage="$bvModal.show('addPageModal')"
+            @clickPage="onClick"
+            @seeAllPages="$bvModal.show('openSortable')"
           />
-        </svg>
-        <h3>{{ $t("Place your controls here.") }}</h3>
-        <p>
-          {{
-            $t(
-              "To begin creating a screen, drag and drop items from the Controls Menu on the left."
-            )
-          }}
-        </p>
-        <!-- {{ $t("Drag an element here") }} -->
-      </div>
-
-      <draggable
-        v-if="renderControls"
-        :key="editorContentKey"
-        data-cy="editor-content"
-        class="h-100"
-        ghost-class="form-control-ghost"
-        :value="config[currentPage].items"
-        v-bind="{
-          group: { name: 'controls' },
-          swapThreshold: 0.5
-        }"
-        @input="updateConfig"
-      >
-        <div
-          v-for="(element, index) in config[currentPage].items"
-          :key="index"
-          class="control-item mt-4 mb-4"
-          :class="{
-            selected: selected === element,
-            hasError: hasError(element)
-          }"
-          :selector="element.config.customCssSelector"
-          @click="inspect(element)"
-        >
+        </template>
+        <template #default>
           <div
-            v-if="element.container"
-            class="card container-lement"
-            :class="{ 'ai-section-card': isAiSection(element) }"
-            data-cy="screen-element-container"
-            @click="inspect(element)"
+            v-if="isCurrentPageEmpty(currentPage)"
+            data-cy="screen-drop-zone"
+            class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
+          >
+            <svg
+              width="81"
+              height="107"
+              viewBox="0 0 81 107"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M47.125 28.6562V0.5H5.71875C2.96523 0.5 0.75 2.71523 0.75 5.46875V101.531C0.75 104.285 2.96523 106.5 5.71875 106.5H75.2812C78.0348 106.5 80.25 104.285 80.25 101.531V33.625H52.0938C49.3609 33.625 47.125 31.3891 47.125 28.6562ZM60.375 77.5156C60.375 78.882 59.257 80 57.8906 80H23.1094C21.743 80 20.625 78.882 20.625 77.5156V75.8594C20.625 74.493 21.743 73.375 23.1094 73.375H57.8906C59.257 73.375 60.375 74.493 60.375 75.8594V77.5156ZM60.375 64.2656C60.375 65.632 59.257 66.75 57.8906 66.75H23.1094C21.743 66.75 20.625 65.632 20.625 64.2656V62.6094C20.625 61.243 21.743 60.125 23.1094 60.125H57.8906C59.257 60.125 60.375 61.243 60.375 62.6094V64.2656ZM60.375 49.3594V51.0156C60.375 52.382 59.257 53.5 57.8906 53.5H23.1094C21.743 53.5 20.625 52.382 20.625 51.0156V49.3594C20.625 47.993 21.743 46.875 23.1094 46.875H57.8906C59.257 46.875 60.375 47.993 60.375 49.3594ZM80.25 25.7371V27H53.75V0.5H55.0129C56.3379 0.5 57.6008 1.01758 58.5324 1.94922L78.8008 22.2383C79.7324 23.1699 80.25 24.4328 80.25 25.7371Z"
+                fill="#699CFF"
+              />
+            </svg>
+            <h3>{{ $t("Place your controls here.") }}</h3>
+            <p>
+              {{
+                $t(
+                  "To begin creating a screen, drag and drop items from the Controls Menu on the left."
+                )
+              }}
+            </p>
+            <!-- {{ $t("Drag an element here") }} -->
+          </div>
+
+          <draggable
+            v-if="renderControls"
+            :key="editorContentKey"
+            data-cy="editor-content"
+            class="h-100"
+            ghost-class="form-control-ghost"
+            :value="config[currentPage].items"
+            v-bind="{
+              group: { name: 'controls' },
+              swapThreshold: 0.5
+            }"
+            @input="updateConfig"
           >
             <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-              :class="{ pulse: isAiSection(element) && aiPreview(element) }"
+              v-for="(element, index) in config[currentPage].items"
+              :key="index"
+              class="control-item mt-4 mb-4"
+              :class="{
+                selected: selected === element,
+                hasError: hasError(element)
+              }"
+              :selector="element.config.customCssSelector"
+              @click="inspect(element)"
             >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
-              <i
-                v-if="element.config.icon"
-                :class="element.config.icon"
-                class="mr-2 ml-1"
-              />
-              {{ element.config.name || element.label || $t("Field Name") }}
-              <div class="ml-auto">
-                <button
-                  v-if="isAiSection(element) && aiPreview(element)"
-                  data-test="apply-ai-btn"
-                  class="btn btn-sm btn-primary mr-2"
-                  :title="$t('Apply Changes')"
-                  @click="applyAiChanges(element)"
+              <div
+                v-if="element.container"
+                class="card container-lement"
+                :class="{ 'ai-section-card': isAiSection(element) }"
+                data-cy="screen-element-container"
+                @click="inspect(element)"
+              >
+                <div
+                  v-if="selected === element"
+                  class="card-header form-element-header d-flex align-items-center"
+                  :class="{ pulse: isAiSection(element) && aiPreview(element) }"
                 >
-                  {{ $t("Apply Changes") }}
-                </button>
-                <button
-                  v-if="!(isAiSection(element) && aiPreview(element))"
-                  data-test="copy-control-btn"
-                  class="btn btn-sm btn-secondary mr-2"
-                  :title="$t('Copy Control')"
-                  @click="duplicateItem(index)"
-                >
-                  <i class="fas fa-copy text-light" />
-                </button>
-                <button
-                  data-test="delete-control-btn"
-                  class="btn btn-sm btn-danger"
-                  :title="$t('Delete Control')"
-                  @click="deleteItem(index)"
-                >
-                  <i class="far fa-trash-alt text-light" />
-                </button>
+                  <i class="fas fa-arrows-alt-v mr-1 text-muted" />
+                  <i
+                    v-if="element.config.icon"
+                    :class="element.config.icon"
+                    class="mr-2 ml-1"
+                  />
+                  {{ element.config.name || element.label || $t("Field Name") }}
+                  <div class="ml-auto">
+                    <button
+                      v-if="isAiSection(element) && aiPreview(element)"
+                      data-test="apply-ai-btn"
+                      class="btn btn-sm btn-primary mr-2"
+                      :title="$t('Apply Changes')"
+                      @click="applyAiChanges(element)"
+                    >
+                      {{ $t("Apply Changes") }}
+                    </button>
+                    <button
+                      v-if="!(isAiSection(element) && aiPreview(element))"
+                      data-test="copy-control-btn"
+                      class="btn btn-sm btn-secondary mr-2"
+                      :title="$t('Copy Control')"
+                      @click="duplicateItem(index)"
+                    >
+                      <i class="fas fa-copy text-light" />
+                    </button>
+                    <button
+                      data-test="delete-control-btn"
+                      class="btn btn-sm btn-danger"
+                      :title="$t('Delete Control')"
+                      @click="deleteItem(index)"
+                    >
+                      <i class="far fa-trash-alt text-light" />
+                    </button>
+                  </div>
+                </div>
+                <component
+                  :is="element['editor-component']"
+                  v-model="element.items"
+                  :validation-errors="validationErrors"
+                  class="card-body"
+                  :class="elementCssClass(element)"
+                  :selected="selected"
+                  :config="element.config"
+                  :ai-element="element"
+                  @inspect="inspect"
+                  @update-state="updateState"
+                />
               </div>
-            </div>
-            <component
-              :is="element['editor-component']"
-              v-model="element.items"
-              :validation-errors="validationErrors"
-              class="card-body"
-              :class="elementCssClass(element)"
-              :selected="selected"
-              :config="element.config"
-              :ai-element="element"
-              @inspect="inspect"
-              @update-state="updateState"
-            />
-          </div>
 
-          <div v-else class="card" data-cy="screen-element-container">
-            <div
-              v-if="selected === element"
-              class="card-header form-element-header d-flex align-items-center"
-            >
-              <i class="fas fa-arrows-alt-v mr-1 text-muted" />
-              <i
-                v-if="element.config.icon"
-                :class="element.config.icon"
-                class="mr-2 ml-1"
-              />
-              {{ element.config.name || $t("Variable Name") }}
-              <div class="ml-auto">
-                <button
-                  class="btn btn-sm btn-secondary mr-2"
-                  :title="$t('Copy Control')"
-                  @click="duplicateItem(index)"
+              <div v-else class="card" data-cy="screen-element-container">
+                <div
+                  v-if="selected === element"
+                  class="card-header form-element-header d-flex align-items-center"
                 >
-                  <i class="fas fa-copy text-light" />
-                </button>
-                <button
-                  class="btn btn-sm btn-danger"
-                  :title="$t('Delete Control')"
-                  @click="deleteItem(index)"
-                >
-                  <i class="far fa-trash-alt text-light" />
-                </button>
+                  <i class="fas fa-arrows-alt-v mr-1 text-muted" />
+                  <i
+                    v-if="element.config.icon"
+                    :class="element.config.icon"
+                    class="mr-2 ml-1"
+                  />
+                  {{ element.config.name || $t("Variable Name") }}
+                  <div class="ml-auto">
+                    <button
+                      class="btn btn-sm btn-secondary mr-2"
+                      :title="$t('Copy Control')"
+                      @click="duplicateItem(index)"
+                    >
+                      <i class="fas fa-copy text-light" />
+                    </button>
+                    <button
+                      class="btn btn-sm btn-danger"
+                      :title="$t('Delete Control')"
+                      @click="deleteItem(index)"
+                    >
+                      <i class="far fa-trash-alt text-light" />
+                    </button>
+                  </div>
+                </div>
+                <component
+                  v-bind="element.config"
+                  :is="element['editor-component']"
+                  :tabindex="element.config.interactive ? 0 : -1"
+                  class="card-body m-0 pb-4 pt-4"
+                  :class="[
+                    elementCssClass(element),
+                    { 'prevent-interaction': !element.config.interactive }
+                  ]"
+                  @input="
+                    element.config.interactive
+                      ? (element.config.content = $event)
+                      : null
+                  "
+                  @focusout.native="updateState"
+                />
               </div>
             </div>
-            <component
-              v-bind="element.config"
-              :is="element['editor-component']"
-              :tabindex="element.config.interactive ? 0 : -1"
-              class="card-body m-0 pb-4 pt-4"
-              :class="[
-                elementCssClass(element),
-                { 'prevent-interaction': !element.config.interactive }
-              ]"
-              @input="
-                element.config.interactive
-                  ? (element.config.content = $event)
-                  : null
-              "
-              @focusout.native="updateState"
-            />
+          </draggable>
+
+          <div v-if="!isCurrentPageEmpty" data-cy="screen-drop-zone">
+            &nbsp;
           </div>
-        </div>
-      </draggable>
+        </template>
+      </tabs-bar>
     </b-col>
 
     <!-- Inspector -->
@@ -397,26 +358,60 @@
 
     <!-- Modals -->
     <b-modal
+      id="openSortable"
+      ref="openSortable"
+      header-close-content="&times;"
+      role="dialog"
+      size="lg"
+      :title="$t('Edit Pages')"
+      :ok-title="$t('DONE')"
+      ok-only
+      ok-variant="secondary"
+      header-class = "modal-header-custom"
+    >
+    <template #modal-title>
+      <h5 class="modal-title">{{ $t('Edit Pages') }}</h5>
+      <span class="modal-subtitle">{{ $t('Change pages order and name') }}</span>
+    </template>
+    <template #modal-header-close="{ close }">
+      <button type="button" aria-label="Close" class="close"  @click="close()">×</button>
+    </template>
+      <Sortable
+        :items="config"
+        filter-key="name"
+        @item-edit="() => {}"
+        @item-delete="confirmDelete"
+        @add-page="$bvModal.show('addPageModal')"
+      />
+    </b-modal>
+
+    <b-modal
       id="addPageModal"
-      :ok-title="$t('Save')"
-      :cancel-title="$t('Cancel')"
+      ref="addPageModal"
+      header-class="pb-2"
+      size="lg"
+      :ok-title="$t('SAVE')"
+      :cancel-title="$t('CANCEL')"
       cancel-variant="btn btn-outline-secondary"
       ok-variant="btn btn-secondary ml-2"
-      :title="$t('Add New Page')"
       header-close-content="&times;"
       data-cy="add-page-modal"
+      :ok-disabled="!addPageName || !!checkPageName(addPageName)"
       @ok="addPage"
+      @show="addPageName = ''; showAddPageValidations=false;"
     >
-      <required />
+      <template #modal-title>
+        <h5 class="modal-title">{{ $t('Create New Page') }}</h5>
+        <small class="modal-subtitle mb-n2">{{ $t('Create a new page in your screen') }}</small>
+      </template>
       <form-input
         ref="addPageInput"
         v-model="addPageName"
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The name of the new page to add')"
-        validation="unique-page-name|required"
+        :error="checkPageName(addPageName)"
         data-cy="add-page-name"
-        required
         aria-required="true"
       />
     </b-modal>
@@ -438,7 +433,8 @@
         :name="$t('Page Name')"
         :label="$t('Page Name') + ' *'"
         :helper="$t('The new name of the page')"
-        validation="unique-page-name|required"
+        validation="required"
+        :error="checkPageName(editPageName)"
         required
         aria-required="true"
       />
@@ -481,11 +477,14 @@ import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import accordions from "./accordions";
 import { keyNameProperty } from "../form-control-common-properties";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
+import PagesDropdown from "@/components/editor/pagesDropdown";
 import testing from "@/mixins/testing";
 import defaultValueEditor from "./inspector/default-value-editor";
 import RequiredCheckbox from "./utils/required-checkbox";
 import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
+import TabsBar from "./TabsBar.vue";
+import Sortable from './sortable/Sortable.vue';
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -537,6 +536,7 @@ const DEFAULT_GROUP = "Advanced";
 
 export default {
   components: {
+    TabsBar,
     draggable,
     FormInput,
     FormSelectList,
@@ -549,7 +549,9 @@ export default {
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
-    ...renderer
+    ...renderer,
+    PagesDropdown,
+    Sortable,
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -588,6 +590,8 @@ export default {
     }
 
     return {
+      showAddPageValidations: false,
+      openedPages: [0],
       currentPage: 0,
       selected: null,
       display: "editor",
@@ -616,18 +620,12 @@ export default {
       editorContentKey: 0,
       cancelledJobs: [],
       collapse: {},
-      groupOrder: {},
+      groupOrder: {}
     };
   },
   computed: {
     builder() {
       return this;
-    },
-    canUndo() {
-      return this.$store.getters["undoRedoModule/canUndo"];
-    },
-    canRedo() {
-      return this.$store.getters["undoRedoModule/canRedo"];
     },
     displayDelete() {
       return this.config.length > 1;
@@ -685,9 +683,6 @@ export default {
 
       return grouped;
     },
-    isCurrentPageEmpty() {
-      return this.config[this.currentPage].items.length === 0;
-    },
     showToolbar() {
       return this.screenType === formTypes.form;
     }
@@ -732,16 +727,6 @@ export default {
     }
   },
   created() {
-    Validator.register(
-      "unique-page-name",
-      (value) => {
-        const pageNames = this.config
-          .map((config) => config.name)
-          .filter((name) => name !== this.originalPageName);
-        return !pageNames.includes(value);
-      },
-      this.$t("Must be unique")
-    );
     this.$store.dispatch("undoRedoModule/pushState", {
       config: JSON.stringify(this.config),
       currentPage: this.currentPage
@@ -775,6 +760,24 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    isCurrentPageEmpty(currentPage) {
+      return this.config[currentPage]?.items?.length === 0;
+    },
+    onClick(page) {
+      this.$refs.tabsBar.openPageByIndex(page);
+    },
+    checkPageName(value, force = false) {
+      if (!force && !this.showAddPageValidations) {
+        return null;
+      }
+      if (!value.trim()) {
+        return this.$t("The Page Name field is required.");
+      }
+      const pageNames = this.config
+        .map((config) => config.name)
+        .filter((name) => name !== this.originalPageName);
+      return pageNames.includes(value) ? this.$t("Must be unique.") : "";
+    },
     getGroupOrder(groupName) {
       let order = _.get(this.groupOrder, groupName, Number.POSITIVE_INFINITY);
       return order;
@@ -878,6 +881,10 @@ export default {
       config.forEach((page) =>
         this.removeDataVariableFromNestedScreens(page.items)
       );
+      // add order attribute
+      config.forEach((page, index) => {
+        page.order = page.order || index + 1;
+      });
     },
     updateFieldNameValidation(items) {
       items.forEach((item) => {
@@ -1043,23 +1050,25 @@ export default {
         currentPage: this.currentPage
       });
     },
-    undo() {
+    async undo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/undo");
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
-      this.currentPage = JSON.parse(
+      await this.$nextTick();
+      this.$refs.tabsBar.openPageByIndex(
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
-    redo() {
+    async redo() {
       this.inspect();
       this.$store.dispatch("undoRedoModule/redo");
       this.config = JSON.parse(
         this.$store.getters["undoRedoModule/currentState"].config
       );
-      this.currentPage = JSON.parse(
+      await this.$nextTick();
+      this.$refs.tabsBar.openPageByIndex(
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
@@ -1072,7 +1081,7 @@ export default {
     },
     focusInspector(validation) {
       this.showConfiguration = true;
-      this.currentPage = this.config.indexOf(validation.page);
+      this.$refs.tabsBar.openPageByIndex(this.config.indexOf(validation.page));
       this.$nextTick(() => {
         this.inspect(validation.item);
         this.$nextTick(() => {
@@ -1091,12 +1100,17 @@ export default {
         });
       });
     },
-    confirmDelete() {
+    confirmDelete(item = this.config[this.currentPage]) {
       this.confirmMessage = this.$t(
         "Are you sure you want to delete {{item}}?",
-        { item: this.config[this.currentPage].name }
+        { item: item.name }
       );
-      this.pageDelete = this.currentPage;
+      const isLastPage = this.config.length === 1;
+      if (isLastPage) {
+        // can not delete the last page
+        return;
+      }
+      this.pageDelete = this.config.indexOf(item);
       this.$refs.confirm.show();
     },
     hideConfirmModal() {
@@ -1131,18 +1145,85 @@ export default {
       this.updateState();
     },
     addPage(e) {
-      if (this.$refs.addPageInput.validator.errorCount) {
+      this.showAddPageValidations = true;
+      const error = this.checkPageName(this.addPageName, true);
+      if (error) {
         e.preventDefault();
         return;
       }
-      this.config.push({ name: this.addPageName, items: [] });
-      this.currentPage = this.config.length - 1;
+
+      const maxOrder = this.config.reduce((max, page) => {
+        return page.order > max ? page.order : max;
+      }, 0);
+
+      this.config.push({
+        name: this.addPageName,
+        order: maxOrder + 1,
+        items: []
+      });
       this.addPageName = "";
+      this.currentPage = this.config.length - 1;
       this.updateState();
+
+      // open new page
+      this.$refs.tabsBar.openPageByIndex(this.config.length - 1);
     },
-    deletePage() {
-      this.config.splice(this.pageDelete, 1);
-      this.currentPage = this.pageDelete - 1 >= 0 ? this.pageDelete - 1 : 0;
+    // This function is used to calculate the new index of the references
+    calcNewIndexFor(index, referencedBy) {
+      if (index === this.pageDelete) {
+        throw new Error(
+          `${this.$t(
+            "Can not delete this page, it is referenced by"
+          )}: ${referencedBy}`
+        );
+      }
+      return index > this.pageDelete ? index - 1 : index;
+    },
+    // Update Record list references
+    updateRecordListReferences() {
+      this.config.forEach((page) => {
+        page.items.forEach((item) => {
+          if (item.component === "FormRecordList") {
+            // eslint-disable-next-line no-param-reassign
+            item.config.form = this.calcNewIndexFor(
+              item.config.form * 1,
+              item.config.label
+            );
+          }
+        });
+      });
+    },
+    // Update navigation buttons references
+    updateNavigationButtonsReferences() {
+      this.config.forEach((page) => {
+        page.items.forEach((item) => {
+          if (
+            item.component === "FormButton" &&
+            item.config.event === "pageNavigate"
+          ) {
+            // eslint-disable-next-line no-param-reassign
+            item.config.eventData = this.calcNewIndexFor(
+              item.config.eventData * 1,
+              item.config.label
+            );
+          }
+        });
+      });
+    },
+    async deletePage() {
+      const back = _.cloneDeep(this.config);
+      try {
+        this.updateRecordListReferences();
+        this.updateNavigationButtonsReferences();
+        this.$refs.tabsBar.closePageByIndex(this.pageDelete);
+        this.$refs.tabsBar.updateTabsReferences(this.pageDelete);
+        await this.$nextTick();
+        this.config.splice(this.pageDelete, 1);
+      } catch (error) {
+        this.config = back;
+        globalObject.ProcessMaker.alert(error.message, "danger");
+        return;
+      }
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage,
@@ -1282,12 +1363,13 @@ export default {
       this.config[this.currentPage].items.push(clone);
       this.updateState();
       this.inspect(clone);
-    }
+    },
+
   }
 };
 </script>
 
-<style scoped>
+<style>
 .custom-popover {
   margin-right: -400px;
   padding: 16px;
@@ -1444,5 +1526,9 @@ $side-bar-font-size: 0.875rem;
   100% {
     box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
   }
+}
+.modal-subtitle {
+  font-size: 15px;
+  font-weight: normal;
 }
 </style>
