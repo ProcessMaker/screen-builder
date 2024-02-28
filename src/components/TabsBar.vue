@@ -45,7 +45,7 @@
           :data-test="`close-tab-${n}`"
           class="close-tab"
           role="link"
-          @click.stop="closeTab(n)"
+          @click.stop="closeTab(index)"
         >
           <i class="fas fa-times" />
         </span>
