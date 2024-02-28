@@ -109,7 +109,7 @@
         <template #tabs-start>
           <pages-dropdown
             v-if="showToolbar"
-            :data="config"
+            :data="sortedPages"
             @addPage="$bvModal.show('addPageModal')"
             @clickPage="onClick"
             @seeAllPages="$bvModal.show('openSortable')"
@@ -624,6 +624,9 @@ export default {
     };
   },
   computed: {
+    sortedPages() {
+      return [...this.config].sort((a, b) => a.order - b.order);
+    },
     builder() {
       return this;
     },
@@ -764,7 +767,7 @@ export default {
       return this.config[currentPage]?.items?.length === 0;
     },
     onClick(page) {
-      this.$refs.tabsBar.openPageByIndex(page);
+      this.$refs.tabsBar.openPageByIndex(this.config.indexOf(page));
     },
     checkPageName(value, force = false) {
       if (!force && !this.showAddPageValidations) {

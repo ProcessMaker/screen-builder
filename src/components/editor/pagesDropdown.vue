@@ -106,7 +106,7 @@ export default {
      * @param {PageItem} page - The selected page item.
      */
     onClickPage(page) {
-      this.$emit("clickPage", page);
+      this.$emit("clickPage", this.data[page]);
     }
   }
 };
