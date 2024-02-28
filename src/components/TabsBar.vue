@@ -3,7 +3,7 @@
     ref="tabs"
     v-model="activeTab"
     class="h-100 w-100 flat-tabs"
-    content-class="testsdfsdfs"
+    content-class="h-tab"
     nav-class="platform-tab"
     lazy
     @changed="tabsUpdated"
