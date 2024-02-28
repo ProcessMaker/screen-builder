@@ -9,6 +9,7 @@ describe("Page Dropdown", () => {
     // Define Page 2
     cy.get("[data-cy=add-page-name]").clear().type("Page_2");
     cy.get("[data-cy=add-page-modal] button.btn").eq(1).click();
+    cy.wait(300);
     cy.get('[data-cy=controls-FormButton]:contains("Page")').drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
