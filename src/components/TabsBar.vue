@@ -232,12 +232,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.flat-tabs .h-tab {
-  height: calc(100% - 42px) !important;
-}
-.dd-ml {
-  margin-left: 2rem;
-}
-</style>
