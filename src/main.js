@@ -225,8 +225,7 @@ window.ProcessMaker = {
     }
   },
   alert(message, variant) {
-    variant;
-    message;
+    console.log(`${variant}: ${message}`);
   },
   screen: {
     cacheEnabled: cacheEnabled ? cacheEnabled.content === "true" : false,
