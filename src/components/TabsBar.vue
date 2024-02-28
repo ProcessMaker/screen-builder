@@ -233,16 +233,7 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Setup some colors */
-:root {
-  --tabs-blue: #1572c2;
-  --tabs-light: #c3c9cf;
-  --tabs-grey: #6a7888;
-  --tabs-border: #cdddee;
-  --tabs-scroll-bg: #ebeef2;
-  --tabs-white: #ffffff;
-}
+<style lang="scss" scoped>
 .flat-tabs .h-tab {
   height: calc(100% - 42px) !important;
 }
