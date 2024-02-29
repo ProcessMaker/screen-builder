@@ -58,6 +58,7 @@ beforeEach(() => {
   cy.visit("/");
   cy.openAcordeon("collapse-2");
   cy.openAcordeon("collapse-1");
+  cy.wait(200);
   cy.get("[data-cy=controls-FormRecordList]").drag(
     "[data-cy=screen-drop-zone]",
     { position: "bottom" }
@@ -66,6 +67,7 @@ beforeEach(() => {
   cy.get("[data-test=add-page]").click({ force: true });
   cy.get("[data-cy=add-page-name]").type("page2");
   cy.get("#addPageModal___BV_modal_footer_ > .btn-secondary").click();
+  cy.wait(200);
   cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
     position: "bottom"
   });
