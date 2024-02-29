@@ -221,5 +221,16 @@ export const UserCanSortWithFilterByText = {
     expect(items[2]).toHaveTextContent("Hephaïstus");
     expect(items[3]).toHaveTextContent("Athena");
     expect(items[4]).toHaveTextContent("Hera");
+
+    // Drag "Athena" to "Hera" position
+    await dragAndDrop(canvas.getByTitle("Athena"), canvas.getByTitle("Hera"));
+
+    // Check the new order
+    const itemsOrder = canvas.getAllByTestId(/item-\d+/);
+    expect(itemsOrder[0]).toHaveAttribute("data-order", "1");
+    expect(itemsOrder[1]).toHaveAttribute("data-order", "2");
+    expect(itemsOrder[2]).toHaveAttribute("data-order", "3");
+    expect(itemsOrder[3]).toHaveAttribute("data-order", "4");
+    expect(itemsOrder[4]).toHaveAttribute("data-order", "5");
   }
 };
