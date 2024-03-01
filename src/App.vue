@@ -332,6 +332,7 @@ import controlConfig from "./form-builder-controls";
 import globalProperties from "./global-properties";
 
 import "bootstrap";
+import "./assets/css/tabs.css";
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
