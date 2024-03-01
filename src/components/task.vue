@@ -328,7 +328,7 @@ export default {
         if (this.task.draft) {
           this.requestData = {
             ...this.requestData,
-            ...this.task.data
+            ...this.task.draft.data
           };
         }
 
