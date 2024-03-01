@@ -57,22 +57,16 @@ export default {
     return {
       draggedItem: 0,
       draggedOverItem: 0,
-      itemsClone: [],
       editRowIndex: null,
     };
   },
   computed: {
     sortedItems() {
-      return this.filteredItems.sort((a, b) => a.order - b.order);
+      const sortedItems = [...this.filteredItems].sort(
+        (a, b) => a.order - b.order
+      );
+      return sortedItems;
     }
-  },
-  watch: {
-    items: {
-      handler(newVal) {
-        this.itemsClone = [...newVal];
-      },
-      immediate: true,
-    },
   },
   methods: {
     onBlur() {
@@ -101,34 +95,41 @@ export default {
       event.target.classList.remove('dragging');
 
       // get the index of the dragged item and the dragged over item
-      const draggedItemIndex = this.itemsClone.findIndex(item => item.order === this.draggedItem);
-      const draggedOverItemIndex = this.itemsClone.findIndex(item => item.order === this.draggedOverItem);
+      const itemsSortedClone = [...this.items].sort(
+        (a, b) => a.order - b.order
+      );
+      const draggedItemIndex = itemsSortedClone.findIndex(
+        (item) => item.order === this.draggedItem
+      );
+      const draggedOverItemIndex = itemsSortedClone.findIndex(
+        (item) => item.order === this.draggedOverItem
+      );
 
       if (draggedItemIndex !== draggedOverItemIndex) {
         // get the order of the dragged over item
-        const tempOrder = this.itemsClone[draggedOverItemIndex].order;
+        const tempOrder = itemsSortedClone[draggedOverItemIndex].order;
         // set the increment
         const increment = this.draggedItem > this.draggedOverItem ? 1 : -1;
 
         // update the order of the items between the dragged item and the dragged over item
         if (draggedItemIndex < draggedOverItemIndex) {
           for (let i = draggedItemIndex + 1; i <= draggedOverItemIndex; i++) {
-            const orderAux = this.itemsClone[i].order;
-            this.itemsClone[i].order = orderAux + increment;
+            const orderAux = itemsSortedClone[i].order;
+            itemsSortedClone[i].order = orderAux + increment;
           }
 
-          this.itemsClone[draggedItemIndex].order = tempOrder;
+          itemsSortedClone[draggedItemIndex].order = tempOrder;
         } else if (draggedItemIndex > draggedOverItemIndex) {
           for (let i = draggedOverItemIndex; i <= draggedItemIndex - 1; i++) {
-            const orderAux = this.itemsClone[i].order;
-            this.itemsClone[i].order = orderAux + increment;
+            const orderAux = itemsSortedClone[i].order;
+            itemsSortedClone[i].order = orderAux + increment;
           }
 
-          this.itemsClone[draggedItemIndex].order = tempOrder;
+          itemsSortedClone[draggedItemIndex].order = tempOrder;
         }
       }
 
-      this.$emit('ordered', this.itemsClone);
+      this.$emit('ordered', itemsSortedClone);
     },
     dragOver(event) {
       event.preventDefault();

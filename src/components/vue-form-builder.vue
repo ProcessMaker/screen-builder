@@ -109,15 +109,15 @@
         <template #tabs-start>
           <pages-dropdown
             v-if="showToolbar"
-            :data="config"
+            :data="sortedPages"
             @addPage="$bvModal.show('addPageModal')"
             @clickPage="onClick"
             @seeAllPages="$bvModal.show('openSortable')"
           />
         </template>
-        <template #default>
+        <template #default="{ currentPage: tabPage }">
           <div
-            v-if="isCurrentPageEmpty(currentPage)"
+            v-if="isCurrentPageEmpty(tabPage)"
             data-cy="screen-drop-zone"
             class="d-flex justify-content-center align-items-center drag-placeholder text-center position-absolute rounded mt-4 flex-column"
           >
@@ -150,7 +150,7 @@
             data-cy="editor-content"
             class="h-100"
             ghost-class="form-control-ghost"
-            :value="config[currentPage].items"
+            :value="config[tabPage].items"
             v-bind="{
               group: { name: 'controls' },
               swapThreshold: 0.5
@@ -158,7 +158,7 @@
             @input="updateConfig"
           >
             <div
-              v-for="(element, index) in config[currentPage].items"
+              v-for="(element, index) in config[tabPage].items"
               :key="index"
               class="control-item mt-4 mb-4"
               :class="{
@@ -279,7 +279,7 @@
             </div>
           </draggable>
 
-          <div v-if="!isCurrentPageEmpty" data-cy="screen-drop-zone">
+          <div v-if="!isCurrentPageEmpty(tabPage)" data-cy="screen-drop-zone">
             &nbsp;
           </div>
         </template>
@@ -624,6 +624,9 @@ export default {
     };
   },
   computed: {
+    sortedPages() {
+      return [...this.config].sort((a, b) => a.order - b.order);
+    },
     builder() {
       return this;
     },
@@ -764,7 +767,7 @@ export default {
       return this.config[currentPage]?.items?.length === 0;
     },
     onClick(page) {
-      this.$refs.tabsBar.openPageByIndex(page);
+      this.$refs.tabsBar.openPageByIndex(this.config.indexOf(page));
     },
     checkPageName(value, force = false) {
       if (!force && !this.showAddPageValidations) {

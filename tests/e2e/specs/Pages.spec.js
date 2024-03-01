@@ -7,6 +7,7 @@ describe("Pages and navigations", () => {
     // Define Page 2
     cy.get("[data-cy=add-page-name]").clear().type("Page 2");
     cy.get("[data-cy=add-page-modal] button.btn").eq(1).click();
+    cy.wait(500);
     cy.get('[data-cy=controls-FormButton]:contains("Page")').drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -18,6 +19,7 @@ describe("Pages and navigations", () => {
     // Define Page 1
     cy.get("[data-test=page-dropdown]").click();
     cy.get("[data-cy=page-0]").click({ force: true });
+    cy.wait(500);
     cy.get('[data-cy=controls-FormButton]:contains("Page")').drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
