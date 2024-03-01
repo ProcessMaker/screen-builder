@@ -27,12 +27,20 @@
               v-model="item.name"
               type="text"
               autofocus
-              @blur.stop="onBlur()"
+              required
+              :state="validateState(item.name, item)"
+              :error="validateError(item.name, item)"
+              @blur.stop="onBlur(item.name, item)"
+              @keydown.enter.stop="onBlur(item.name, item)"
+              @focus="onFocus(item.name, item)"
             />
             <span v-else>{{ item.name }}</span>
           </div>
           <div class="border rounded-lg sortable-item-action">
-            <button class="btn" @click.stop="onClick(item, index)">
+            <button v-if="editRowIndex === index" class="btn">
+              <i class="fas fa-check"></i>
+            </button>
+            <button v-else class="btn" @click.stop="onClick(item, index)">
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
@@ -55,6 +63,7 @@ export default {
   },
   data() {
     return {
+      originalName: '',
       draggedItem: 0,
       draggedOverItem: 0,
       editRowIndex: null,
@@ -69,14 +78,40 @@ export default {
     }
   },
   methods: {
-    onBlur() {
-      this.editRowIndex = -1;
+    validateState(name, item) {
+      const isEmpty = !name;
+      const isDuplicated = this.items
+        .filter((i) => i !== item)
+        .find((i) => i.name === name);
+      return isEmpty || isDuplicated ? false : null;
+    },
+    validateError(name, item) {
+      const isEmpty = !name;
+      if (!isEmpty) {
+        return this.$t("The Page Name field is required.");
+      }
+      const isDuplicated = this.items
+        .filter((i) => i !== item)
+        .find((i) => i.name === name);
+      if (isDuplicated) {
+        return this.$t('Must be unique.');
+      }
+      return '';
+    },
+    onFocus(name, item) {
+      this.originalName = name;
+    },
+    async onBlur(name, item) {
+      if (this.validateState(name, item) === false) {
+        // eslint-disable-next-line no-param-reassign
+        item.name = this.originalName;
+      }
+      await this.$nextTick();
+      setTimeout(() => {
+        this.editRowIndex = null;
+      }, 250);
     },
     onClick(item, index) {
-      if (this.editRowIndex === -1 || this.editRowIndex === index) {
-        this.editRowIndex = null;
-        return;
-      }
       this.editRowIndex = index;
       this.$emit("item-edit", item);
     },
