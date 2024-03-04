@@ -115,7 +115,8 @@ export default {
       hasErrors: false,
       refreshScreen: 0,
       redirecting: null,
-      loadingButton: false
+      loadingButton: false,
+      firstRun: true
     };
   },
   watch: {
@@ -223,7 +224,19 @@ export default {
           }
           this.renderComponent = component;
         }
+      }
+    },
+    requestData: {
+      handler(newValue, oldValue) {
+        if (!_.isEqual(oldValue, {})) {
+          if (this.firstRun) {
+            this.firstRun = false;
+          } else {
+            this.$emit('form-data-changed', newValue);
+          }
+        }
       },
+      deep: true
     },
   },
   computed: {
@@ -326,10 +339,11 @@ export default {
         this.loopContext = _.get(this.task, "loop_context", "");
 
         if (this.task.draft) {
-          this.requestData = {
-            ...this.requestData,
-            ...this.task.draft.data
-          };
+          this.requestData = _.merge(
+            {},
+            this.requestData,
+            this.task.draft.data
+          );
         }
 
         this.refreshScreen++;
