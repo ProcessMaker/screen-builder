@@ -96,7 +96,8 @@ export default {
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
     initialLoopContext: { type: String, default: "" },
     taskPreview: { type: Boolean, default: false },
-    loading: { type: Number, default: null }
+    loading: { type: Number, default: null },
+    quickFillSelectedTask: { type: Object, default: () => {} },
   },
   data() {
     return {
@@ -327,6 +328,10 @@ export default {
         this.refreshScreen++;
       }
 
+      if(this.quickFillSelectedTask) {
+        this.requestData = _.merge({}, this.requestData, this.quickFillSelectedTask);
+      }
+     
       this.$emit('task-updated', this.task);
 
       if (this.task.process_request.status === 'ERROR') {
