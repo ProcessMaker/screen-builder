@@ -1148,9 +1148,9 @@ export default {
       this.updateState();
     },
     addPage(e) {
-      this.showAddPageValidations = true;
       const error = this.checkPageName(this.addPageName, true);
       if (error) {
+        this.showAddPageValidations = true;
         e.preventDefault();
         return;
       }
