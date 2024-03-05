@@ -79,14 +79,14 @@ export default {
   },
   methods: {
     validateState(name, item) {
-      const isEmpty = !name;
+      const isEmpty = !name?.trim();
       const isDuplicated = this.items
         .filter((i) => i !== item)
         .find((i) => i.name === name);
       return isEmpty || isDuplicated ? false : null;
     },
     validateError(name, item) {
-      const isEmpty = !name;
+      const isEmpty = !name?.trim();
       if (!isEmpty) {
         return this.$t("The Page Name field is required.");
       }
@@ -162,6 +162,14 @@ export default {
 
           itemsSortedClone[draggedItemIndex].order = tempOrder;
         }
+
+        // Update order of the items
+        const clone = [...itemsSortedClone];
+        clone.sort((a, b) => a.order - b.order);
+        clone.forEach((item, index) => {
+          // eslint-disable-next-line no-param-reassign
+          item.order = index + 1;
+        });
       }
 
       this.$emit('ordered', itemsSortedClone);
