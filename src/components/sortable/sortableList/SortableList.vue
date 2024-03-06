@@ -105,9 +105,10 @@ export default {
     async onBlur(name, item) {
       if (this.validateState(name, item) === false) {
         this.newName = item.name;
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        item.name = name;
       }
-      // eslint-disable-next-line no-param-reassign
-      item.name = name;
       await this.$nextTick();
       setTimeout(() => {
         this.editRowIndex = null;
