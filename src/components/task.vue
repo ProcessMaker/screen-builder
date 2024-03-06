@@ -227,18 +227,6 @@ export default {
         }
       }
     },
-    requestData: {
-      handler(newValue, oldValue) {
-        if (!_.isEqual(oldValue, {})) {
-          if (this.firstRun) {
-            this.firstRun = false;
-          } else {
-            this.$emit('form-data-changed', newValue);
-          }
-        }
-      },
-      deep: true
-    },
   },
   computed: {
     shouldAddSubmitButton() {
