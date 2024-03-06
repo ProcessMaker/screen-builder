@@ -4,6 +4,7 @@
     v-model="activeTab"
     class="h-100 w-100 flat-tabs"
     content-class="h-tab"
+    nav-class="nav-tabs-nowrap"
     lazy
     @changed="tabsUpdated"
     @input="tabOpened"
