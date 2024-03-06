@@ -196,9 +196,10 @@ export default {
         }, visualThreshold);
       });
     },
-    closeTab(pageId) {
-      this.localOpenedPages.splice(this.localOpenedPages.indexOf(pageId), 1);
-      this.$emit("tab-closed", this.pages[pageId], this.localOpenedPages);
+    closeTab(tabIndex) {
+      const pageIndex = this.localOpenedPages[tabIndex];
+      this.localOpenedPages.splice(tabIndex, 1);
+      this.$emit("tab-closed", this.pages[pageIndex], this.localOpenedPages);
     },
     updateTabsReferences(pageDelete) {
       this.localOpenedPages = this.localOpenedPages.map((page) =>
