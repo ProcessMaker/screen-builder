@@ -4,6 +4,7 @@
     v-model="activeTab"
     class="h-100 w-100 flat-tabs"
     content-class="h-tab"
+    nav-class="nav-tabs-nowrap"
     lazy
     @changed="tabsUpdated"
     @input="tabOpened"
@@ -196,9 +197,10 @@ export default {
         }, visualThreshold);
       });
     },
-    closeTab(pageId) {
-      this.localOpenedPages.splice(this.localOpenedPages.indexOf(pageId), 1);
-      this.$emit("tab-closed", this.pages[pageId], this.localOpenedPages);
+    closeTab(tabIndex) {
+      const pageIndex = this.localOpenedPages[tabIndex];
+      this.localOpenedPages.splice(tabIndex, 1);
+      this.$emit("tab-closed", this.pages[pageIndex], this.localOpenedPages);
     },
     updateTabsReferences(pageDelete) {
       this.localOpenedPages = this.localOpenedPages.map((page) =>
