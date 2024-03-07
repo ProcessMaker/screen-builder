@@ -24,15 +24,24 @@
           <div class="rounded sortable-item-name">
             <b-form-input
               v-if="editRowIndex === index"
-              v-model="item.name"
+              v-model="newName"
               type="text"
               autofocus
-              @blur.stop="onBlur()"
+              required
+              :state="validateState(newName, item)"
+              :error="validateError(newName, item)"
+              @blur.stop="onBlur(newName, item)"
+              @keydown.enter.stop="onBlur(newName, item)"
+              @keydown.esc.stop="onCancel(item)"
+              @focus="onFocus(item)"
             />
             <span v-else>{{ item.name }}</span>
           </div>
           <div class="border rounded-lg sortable-item-action">
-            <button class="btn" @click.stop="onClick(item, index)">
+            <button v-if="editRowIndex === index" class="btn">
+              <i class="fas fa-check"></i>
+            </button>
+            <button v-else class="btn" @click.stop="onClick(item, index)">
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
@@ -55,6 +64,7 @@ export default {
   },
   data() {
     return {
+      newName: '',
       draggedItem: 0,
       draggedOverItem: 0,
       editRowIndex: null,
@@ -69,14 +79,46 @@ export default {
     }
   },
   methods: {
-    onBlur() {
-      this.editRowIndex = -1;
+    validateState(name, item) {
+      const isEmpty = !name?.trim();
+      const isDuplicated = this.items
+        .filter((i) => i !== item)
+        .find((i) => i.name === name);
+      return isEmpty || isDuplicated ? false : null;
+    },
+    validateError(name, item) {
+      const isEmpty = !name?.trim();
+      if (!isEmpty) {
+        return this.$t("The Page Name field is required.");
+      }
+      const isDuplicated = this.items
+        .filter((i) => i !== item)
+        .find((i) => i.name === name);
+      if (isDuplicated) {
+        return this.$t('Must be unique.');
+      }
+      return '';
+    },
+    onFocus(item) {
+      this.newName = item.name;
+    },
+    async onBlur(name, item) {
+      if (this.validateState(name, item) === false) {
+        this.newName = item.name;
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        item.name = name;
+      }
+      await this.$nextTick();
+      setTimeout(() => {
+        this.editRowIndex = null;
+      }, 250);
+    },
+    async onCancel(item) {
+      this.newName = item.name;
+      this.editRowIndex = null;
     },
     onClick(item, index) {
-      if (this.editRowIndex === -1 || this.editRowIndex === index) {
-        this.editRowIndex = null;
-        return;
-      }
       this.editRowIndex = index;
       this.$emit("item-edit", item);
     },
@@ -127,6 +169,14 @@ export default {
 
           itemsSortedClone[draggedItemIndex].order = tempOrder;
         }
+
+        // Update order of the items
+        const clone = [...itemsSortedClone];
+        clone.sort((a, b) => a.order - b.order);
+        clone.forEach((item, index) => {
+          // eslint-disable-next-line no-param-reassign
+          item.order = index + 1;
+        });
       }
 
       this.$emit('ordered', itemsSortedClone);
