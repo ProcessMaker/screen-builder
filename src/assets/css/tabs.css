@@ -10,10 +10,12 @@
   /* Override Bootstrap default tab styles */
   .nav-tabs {
     border-bottom: 1px solid var(--tabs-border) !important;
+  }
+  .nav-tabs-nowrap {
     flex-wrap: nowrap !important;
     overflow: hidden !important;
   }
-  
+
   .nav-tabs .nav-item .nav-link {
     display: flex;
     align-items: center;

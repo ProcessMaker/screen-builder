@@ -881,12 +881,25 @@ export default {
       config.forEach((page) => this.replaceFormText(page.items));
       config.forEach((page) => this.migrateFormSubmit(page.items));
       config.forEach((page) => this.updateFieldNameValidation(page.items));
+      this.updatePageOrder(config);
       config.forEach((page) =>
         this.removeDataVariableFromNestedScreens(page.items)
       );
       // add order attribute
       config.forEach((page, index) => {
         page.order = page.order || index + 1;
+      });
+    },
+    updatePageOrder(pages) {
+      const clone = [...pages];
+      clone.sort((a, b) => {
+        const aOrder = a.order || pages.indexOf(a) + 1;
+        const bOrder = b.order || pages.indexOf(b) + 1;
+        return aOrder - bOrder;
+      });
+      clone.forEach((item, index) => {
+        // eslint-disable-next-line no-param-reassign
+        item.order = index + 1;
       });
     },
     updateFieldNameValidation(items) {
@@ -1148,9 +1161,9 @@ export default {
       this.updateState();
     },
     addPage(e) {
-      this.showAddPageValidations = true;
       const error = this.checkPageName(this.addPageName, true);
       if (error) {
+        this.showAddPageValidations = true;
         e.preventDefault();
         return;
       }
@@ -1227,6 +1240,7 @@ export default {
         globalObject.ProcessMaker.alert(error.message, "danger");
         return;
       }
+      this.updatePageOrder(this.config);
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage,

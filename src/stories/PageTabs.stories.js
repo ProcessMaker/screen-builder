@@ -336,3 +336,60 @@ export const WithoutAnyPageOpened = {
     );
   }
 };
+
+// User can close tabs
+export const UserCanCloseTabs = {
+  args: {
+    pages: [
+      { name: "Page 1" },
+      { name: "Page 2" },
+      { name: "Page 3" },
+      { name: "Page 4" },
+      { name: "Page 5" }
+    ],
+    initialOpenedPages: [0, 1, 2, 3, 4]
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // Close Tab #1 = Page 1 (tab index=0)
+    await step("Close Page 1 (tab index=0)", async () => {
+      canvas.getByTestId("close-tab-0").click();
+      await waitFor(
+        () => {
+          expect(canvas.getByTestId("tab-content")).toContainHTML(
+            "Here comes content of Page 2 (#1)"
+          );
+        },
+        { timeout: 1000 }
+      );
+    });
+
+    // Close Tab #1 = Page 2 (tab index=0)
+    await step("Close Page 2 (tab index=0)", async () => {
+      canvas.getByTestId("close-tab-0").click();
+      await waitFor(
+        () => {
+          expect(canvas.getByTestId("tab-content")).toContainHTML(
+            "Here comes content of Page 3 (#2)"
+          );
+        },
+        { timeout: 1000 }
+      );
+    });
+
+    // Close Tab #2 = Page 4 (tab index=1)
+    await step("Close Page 4 (tab index=1)", async () => {
+      canvas.getByTestId("close-tab-1").click();
+      await waitFor(
+        () => {
+          // keep focus in the tab #1
+          expect(canvas.getByTestId("tab-content")).toContainHTML(
+            "Here comes content of Page 3 (#2)"
+          );
+        },
+        { timeout: 1000 }
+      );
+    });
+  }
+};

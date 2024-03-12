@@ -80,7 +80,6 @@ export const OpenPageUsingDropdown = {
       "[data-test=page-dropdown] button"
     );
     let selectorAddPage = canvasElement.querySelector("[data-test=page-Page3]");
-    console.log(selectorAddPage);
     await selector.click(selector);
     await selectorAddPage.click(selectorAddPage);
     // Open Page 3 (index=2)
@@ -107,6 +106,40 @@ export const OpenPageUsingDropdown = {
           );
         },
         { timeout: 1000 }
+      );
+    });
+  }
+};
+
+// Open a page using the PageDropdown(index)
+export const ScrollWithMoreThanTenPages = {
+  args: {
+    pages: [
+      { name: "Page1" },
+      { name: "Page2" },
+      { name: "Page3" },
+      { name: "Page4" },
+      { name: "Page5" },
+      { name: "Page6" },
+      { name: "Page7" },
+      { name: "Page8" },
+      { name: "Page9" },
+      { name: "Page10" },
+      { name: "Page11" },
+      { name: "Page12" }
+    ],
+    initialOpenedPages: [0]
+  },
+  play: async ({ canvasElement }) => {
+    const selector = canvasElement.querySelector(
+      "[data-test=page-dropdown] button"
+    );
+    await selector.click(selector);
+    // Test .page-dropdown-menu has scroll (scrollHeight > clientHeight)
+    await waitFor(() => {
+      const dropdownMenu = canvasElement.querySelector(".page-dropdown-menu");
+      expect(dropdownMenu.scrollHeight).toBeGreaterThan(
+        dropdownMenu.clientHeight
       );
     });
   }
