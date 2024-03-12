@@ -116,8 +116,6 @@ export default {
       refreshScreen: 0,
       redirecting: null,
       loadingButton: false,
-      firstRun: true,
-      debounceTimeout: null
     };
   },
   watch: {
