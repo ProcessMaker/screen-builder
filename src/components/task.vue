@@ -433,7 +433,7 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    submit(formData = null, loading = false) {
+    submit(formData = null, loading = false, buttonInfo = null) {
       //single click
       if (this.disabled) {
         return;
@@ -449,7 +449,7 @@ export default {
       } else {
         this.loadingButton = false;
       }
-      this.$emit('submit', this.task, loading);
+      this.$emit('submit', this.task, loading, buttonInfo);
 
       if (this.task && this.task.allow_interstitial && !this.loadingButton) {
         this.task.interstitial_screen['_interstitial'] = true;
