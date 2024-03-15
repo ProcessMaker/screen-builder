@@ -246,8 +246,8 @@ export default {
         node.$children.forEach((child) => this.registerCustomFunctions(child));
       }
     },
-    submit(eventData, loading = false) {
-      this.$emit("submit", this.data, loading);
+    submit(eventData, loading = false, buttonInfo = null) {
+      this.$emit("submit", this.data, loading, buttonInfo);
     },
     parseCss() {
       const containerSelector = `.${this.containerClass}`;
