@@ -57,6 +57,13 @@ export default {
         boundary: 'window',
       };
     },
+    buttonInfo() {
+      return {
+        name: this.name,
+        label: this.label,
+        value: this.fieldValue
+      };
+    }
   },
   methods: {
     setValue(parent, name, value) {
@@ -83,7 +90,7 @@ export default {
         }
         this.$emit('input', this.fieldValue);
         this.$nextTick(() => {
-          this.$emit('submit', this.eventData, this.loading);
+          this.$emit('submit', this.eventData, this.loading, this.buttonInfo);
         });
         return;
       }
