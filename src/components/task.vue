@@ -115,7 +115,7 @@ export default {
       hasErrors: false,
       refreshScreen: 0,
       redirecting: null,
-      loadingButton: false
+      loadingButton: false,
     };
   },
   watch: {
@@ -223,7 +223,7 @@ export default {
           }
           this.renderComponent = component;
         }
-      },
+      }
     },
   },
   computed: {
@@ -289,7 +289,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
+      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -324,6 +324,15 @@ export default {
         this.resetScreenState();
         this.requestData = _.get(this.task, 'request_data', {});
         this.loopContext = _.get(this.task, "loop_context", "");
+
+        if (this.task.draft) {
+          this.requestData = _.merge(
+            {},
+            this.requestData,
+            this.task.draft.data
+          );
+        }
+
         this.refreshScreen++;
       }
 
