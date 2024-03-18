@@ -47,7 +47,14 @@ export default {
   data() {
     return {
       search: "",
-      filteredItems: [...this.items],
+      filteredItems: [...this.items].map((item, index) => {
+        // Add the order property to the items if it doesn't exist
+        if (item.order === undefined) {
+          // eslint-disable-next-line no-param-reassign
+          this.$set(item, "order", index + 1);
+        }
+        return item;
+      })
     };
   },
   watch: {
