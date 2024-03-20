@@ -234,3 +234,52 @@ export const UserCanSortWithFilterByText = {
     expect(itemsOrder[4]).toHaveAttribute("data-order", "5");
   }
 };
+
+// User can reorder items that does not have an order
+export const UserCanReorderItemsThatDoesNotHaveAnOrder = {
+  args: {
+    filterKey: "name",
+    items: [
+      { name: "Page 1" },
+      { name: "Page 2" },
+      { name: "Page 3" },
+      { name: "Page 4" },
+      { name: "Page 5" }
+    ]
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Drag item-1 item-5 position
+    await dragAndDrop(
+      canvas.getByTestId("item-1"),
+      canvas.getByTestId("item-5")
+    );
+
+    // Drag item-1 item-4 position
+    await dragAndDrop(
+      canvas.getByTestId("item-1"),
+      canvas.getByTestId("item-4")
+    );
+
+    // Drag item-1 item-3 position
+    await dragAndDrop(
+      canvas.getByTestId("item-1"),
+      canvas.getByTestId("item-3")
+    );
+
+    // Drag item-1 item-2 position
+    await dragAndDrop(
+      canvas.getByTestId("item-1"),
+      canvas.getByTestId("item-2")
+    );
+
+    // Check the new order
+    const items = canvas.getAllByTestId(/item-\d+/);
+    expect(items[0]).toHaveTextContent("Page 5");
+    expect(items[1]).toHaveTextContent("Page 4");
+    expect(items[2]).toHaveTextContent("Page 3");
+    expect(items[3]).toHaveTextContent("Page 2");
+    expect(items[4]).toHaveTextContent("Page 1");
+  }
+};
