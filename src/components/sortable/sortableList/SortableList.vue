@@ -64,6 +64,7 @@ export default {
   },
   data() {
     return {
+      refreshSort: 1,
       newName: '',
       draggedItem: 0,
       draggedOverItem: 0,
@@ -72,9 +73,9 @@ export default {
   },
   computed: {
     sortedItems() {
-      const sortedItems = [...this.filteredItems].sort(
-        (a, b) => a.order - b.order
-      );
+      const sortedItems =
+        this.refreshSort &&
+        [...this.filteredItems].sort((a, b) => a.order - b.order);
       return sortedItems;
     }
   },
@@ -178,7 +179,7 @@ export default {
           item.order = index + 1;
         });
       }
-
+      this.refreshSort++;
       this.$emit('ordered', itemsSortedClone);
     },
     dragOver(event) {
