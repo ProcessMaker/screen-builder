@@ -515,6 +515,13 @@ export default {
         this.reload();
       }
     },
+    existsEventMessage(id, data) {
+      if (sessionStorage.getItem(id)) {
+        return true;
+      }
+      sessionStorage.setItem(id, data);
+      return false;
+    },
     listenForParentChanges() {
       if (!this.parentRequest) {
         return;
@@ -525,7 +532,9 @@ export default {
         '.ProcessUpdated',
         (data) => {
           if (['ACTIVITY_ACTIVATED'].includes(data.event)) {
-            this.closeTask(this.parentRequest);
+            if (['ACTIVITY_ACTIVATED'].includes(data.event) && this.existsEventMessage(`ACTIVATED-${this.userId}-${this.taskId}`)) {
+              this.closeTask(this.parentRequest);
+            }
           }
           if (['ACTIVITY_COMPLETED'].includes(data.event)) {
             if (this.task.process_request.status === 'COMPLETED') {
