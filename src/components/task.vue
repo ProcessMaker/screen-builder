@@ -489,7 +489,7 @@ export default {
       return allowed ? this.parentRequest : this.requestId
     },
     processUpdated: _.debounce(function(data) {
-      if (data.event === 'ACTIVITY_COMPLETED') {
+      if (data.event === 'ACTIVITY_ACTIVATED') {
         this.reload();
       }
       if (data.event === 'ACTIVITY_EXCEPTION') {
@@ -537,12 +537,16 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.parentRequest}`,
         '.ProcessUpdated',
         (data) => {
-          if (['ACTIVITY_ACTIVATED'].includes(data.event)) {
-            if (['ACTIVITY_ACTIVATED'].includes(data.event) && this.existsEventMessage(`${data.event}-${this.userId}-${this.taskId}`)) {
-              this.closeTask(this.parentRequest);
-            }
+          if (
+            ['ACTIVITY_ACTIVATED'].includes(data.event) &&
+            !this.existsEventMessage(`${data.event}-${this.userId}-${this.taskId}`)
+          ) {
+            this.closeTask(this.parentRequest);
           }
-          if (['ACTIVITY_COMPLETED'].includes(data.event)) {
+          if (
+            ["ACTIVITY_COMPLETED"].includes(data.event) &&
+            !this.existsEventMessage(`${data.event}-${this.userId}-${this.taskId}`)
+          ) {
             if (this.task.process_request.status === 'COMPLETED') {
               this.processCompleted();
             }
