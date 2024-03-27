@@ -20,6 +20,10 @@ describe("Undo and Redo", () => {
     });
     cy.get("[data-cy=toolbar-undo]").click();
     cy.get("[data-cy=toolbar-redo]").click();
-    cy.get("[data-cy=screen-drop-zone]").should("not.exist");
+    // Check that New Input control was restored
+    cy.get("[data-cy=screen-element-container]").should(
+      "contain.text",
+      "New Input"
+    );
   });
 });

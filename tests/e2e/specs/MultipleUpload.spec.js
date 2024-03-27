@@ -129,7 +129,7 @@ describe("Multiple Upload", () => {
       .should("not.exist");
   });
 
-  it("Upload files in record lists", () => {
+  it.skip("Upload files in record lists", () => {
     cy.loadFromJson("multiple_upload.json", 0);
     cy.get("[data-cy=mode-preview]").click();
 

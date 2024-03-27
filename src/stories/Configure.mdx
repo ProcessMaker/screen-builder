@@ -1,0 +1,78 @@
+import pkg from '../../package.json'; // Adjust the path as necessary
+import { Meta } from "@storybook/blocks";
+
+export const RightArrow = () => <svg 
+    viewBox="0 0 14 14" 
+    width="8px" 
+    height="14px" 
+    style={{ 
+      marginLeft: '4px',
+      display: 'inline-block',
+      shapeRendering: 'inherit',
+      verticalAlign: 'middle',
+      fill: 'currentColor',
+      'path fill': 'currentColor'
+    }}
+>
+  <path d="m11.1 7.35-5.5 5.5a.5.5 0 0 1-.7-.7L10.04 7 4.9 1.85a.5.5 0 1 1 .7-.7l5.5 5.5c.2.2.2.5 0 .7Z" />
+</svg>
+
+<Meta title="ProcessMaker ScreenBuilder" />
+
+# ScreenBuilder <strong>v{pkg.version}</strong>
+
+<div className="sb-container">
+  <div className='sb-section-title'>
+    ## Introduction
+  </div>
+
+  Welcome to the ProcessMaker ScreenBuilder Storybook! This interactive library is designed to showcase the components used to render screens within ProcessMaker processes. Built with Vue2, our components provide a versatile and intuitive way to build dynamic forms and interfaces for your business processes.
+
+  <div className='sb-section-title'>
+    ## Key Features
+  </div>
+  <ul>
+    <li>**Wide Range of Components**: From basic input fields to complex data grids, our library covers all the components you might need.</li>
+    <li>**Vue2 Compatibility**: Fully compatible with Vue2, ensuring seamless integration into your Vue applications.</li>
+    <li>**Interactive Examples**: Explore components through interactive examples, allowing you to see how they work in real-time.</li>
+    <li>**Customization**: Learn how to customize components to match your specific process requirements.</li>
+  </ul>
+
+  <div className='sb-section-title'>
+    ## Getting Started
+  </div>
+
+  To start using the ScreenBuilder components in your ProcessMaker processes, follow these steps:
+
+  Clone the repository and `cd` into the `screen-builder` directory:
+
+```bash
+git clone git@github.com:ProcessMaker/screen-builder.git
+cd screen-builder
+```
+
+  Install dependencies using NPM, then run the local development server:
+
+```bash
+npm i
+npm run serve
+```
+  <div className='sb-section-title'>
+    ## Explore Components
+  </div>
+  Start exploring the components by selecting them from the sidebar. Each entry provides detailed information about the component, including usage examples and customization options.
+</div>
+
+<style>
+{`
+.sb-container {
+  font-family: 'Arial', sans-serif;
+}
+
+.sb-section-title {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 20px;
+}
+`}
+</style>

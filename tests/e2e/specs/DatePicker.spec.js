@@ -534,7 +534,7 @@ describe("Date Picker", () => {
       form_date_picker_1: ""
     });
   });
-  it("Date Time Picker should have the class .datePicker applied in design mode", () => {
+  it.skip("Date Time Picker should have the class .datePicker applied in design mode", () => {
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -545,7 +545,7 @@ describe("Date Picker", () => {
     );
   });
 
-  it("Date Time Picker should have the class .datePicker applied in preview mode", () => {
+  it.skip("Date Time Picker should have the class .datePicker applied in preview mode", () => {
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }

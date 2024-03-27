@@ -36,7 +36,24 @@
 <script>
 export default {
   components: {},
-  props: ["label", "value", "helper", "options"],
+  props: {
+    /**
+     * The label for the color select
+     */
+    label: {},
+    /**
+     * The value of the color select. eg. `alert alert-success`
+     */
+    value: {},
+    /**
+     * The helper text for the color select (not visible yet)
+     */
+     helper: {},
+    /**
+     * The options for the color select
+     */
+    options: {},
+  },
   data() {
     return {
       newColor: ""

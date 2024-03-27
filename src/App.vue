@@ -1,11 +1,11 @@
 <template>
   <b-container id="screen-builder-container" class="h-100">
-    <b-card id="app" no-body class="h-100 bg-white border-top-0">
+    <b-card id="app" no-body class="h-100 bg-white border-top-0 ">
       <!-- Card Header -->
-      <b-card-header>
+      <b-card-header class="bg-white p-0">
         <b-row>
-          <b-col>
-            <b-button-group size="sm pr-2">
+          <b-col class="d-flex align-items-center">
+            <b-button-group size="sm px-2">
               <b-button
                 :variant="displayBuilder ? 'secondary' : 'outline-secondary'"
                 data-cy="mode-editor"
@@ -49,60 +49,33 @@
           </b-col>
 
           <b-col v-if="displayBuilder && !displayPreview" class="text-right">
-            <div
-              class="btn-group btn-group-sm mr-2"
-              role="group"
-              aria-label="Basic example"
+            <screen-toolbar
+              @undo="$refs.builder.undo()"
+              @redo="$refs.builder.redo()"
+              @open-calc="openComputedProperties"
+              @open-customCss="openCustomCSS"
+              @open-watchers="openWatchersPopup"
             >
-              <button
-                type="button"
-                class="btn btn-secondary"
-                :title="$t('Calculated Properties')"
-                data-cy="topbar-calcs"
-                @click="openComputedProperties"
+              <b-btn
+                v-b-modal="'uploadmodal'"
+                variant="secondary"
+                size="sm"
+                class="mr-2"
+                :title="$t('Load Screen')"
               >
-                <i class="fas fa-flask" />
-                {{ $t("Calcs") }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                :title="$t('Custom CSS')"
-                data-cy="topbar-css"
-                @click="openCustomCSS"
+                <i class="fas fa-upload mr-1" />
+              </b-btn>
+              <b-btn
+                v-b-modal.preview-config
+                variant="secondary"
+                size="sm"
+                class="mr-2"
+                :title="$t('Save Screen')"
+                @click="saveToLocalStorage()"
               >
-                <i class="fab fa-css3" />
-                {{ $t("CSS") }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                :title="$t('Watchers')"
-                data-cy="topbar-watchers"
-                @click="openWatchersPopup"
-              >
-                <i class="fas fa-mask" />
-                {{ $t("Watchers") }}
-              </button>
-            </div>
-            <b-btn
-              v-b-modal="'uploadmodal'"
-              variant="secondary"
-              size="sm"
-              class="mr-2"
-              :title="$t('Load Screen')"
-            >
-              <i class="fas fa-upload mr-1" />
-            </b-btn>
-            <button
-              v-b-modal.preview-config
-              type="button"
-              class="btn btn-secondary btn-sm ml-1"
-              :title="$t('Save Screen')"
-              @click="saveToLocalStorage()"
-            >
-              <i class="fas fa-save" />
-            </button>
+                <i class="fas fa-save mr-1" />
+              </b-btn>
+            </screen-toolbar>
           </b-col>
           <b-modal
             id="uploadmodal"
@@ -351,6 +324,7 @@ import WatchersPopup from "./components/watchers-popup.vue";
 import CustomCss from "./components/custom-css.vue";
 import VueFormBuilder from "./components/vue-form-builder.vue";
 import VueFormRenderer from "./components/vue-form-renderer.vue";
+import ScreenToolbar from "./components/ScreenToolbar.vue";
 import canOpenJsonFile from "./mixins/canOpenJsonFile";
 
 // Bring in our initial set of controls
@@ -358,6 +332,7 @@ import controlConfig from "./form-builder-controls";
 import globalProperties from "./global-properties";
 
 import "bootstrap";
+import "./assets/css/tabs.css";
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -411,7 +386,8 @@ export default {
     VueFormBuilder,
     VueFormRenderer,
     MonacoEditor,
-    WatchersPopup
+    WatchersPopup,
+    ScreenToolbar,
   },
   mixins: [canOpenJsonFile],
   data() {
@@ -754,6 +730,7 @@ export default {
 <style lang="scss">
 @import "bootstrap/dist/css/bootstrap";
 @import "bootstrap-vue/dist/bootstrap-vue";
+@import "assets/css/custom";
 
 $validation-panel-bottom: 3.5rem;
 $validation-panel-right: 0;
@@ -786,6 +763,7 @@ body {
 
 .card-header {
   border-radius: 0 !important;
+  background-color: none !important;
 }
 
 .border-check {

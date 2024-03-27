@@ -46,7 +46,7 @@
     <component :is="tasksPreview" ref="preview-sidebar" />
   </div>
   <div v-else>
-    <formEmpty link="Tasks" title="No tasks in sight" url="/tasks" />
+    <formEmpty link="Tasks" title="No tasks in sight" :url="noDataUrl" />
   </div>
 </template>
 
@@ -81,6 +81,11 @@ export default {
       tasksPreview:
         (window.SharedComponents && window.SharedComponents.TasksHome) || {}
     };
+  },
+  computed: {
+    noDataUrl() {
+      return `${window.ProcessMaker?.app?.url}/tasks`;
+    }
   },
   mounted() {
     this.setFields();
@@ -147,7 +152,7 @@ export default {
           .then((response) => {
             this.showTable = response.data.data.length !== 0;
             this.tableData = response.data;
-            this.countResponse = Object.keys(this.tableData.data).length;
+            this.countResponse = this.tableData.meta.total;
             this.countOverdue = `${this.tableData.meta.in_overdue}`;
             tasksDropdown.push(this.countOverdue);
             this.countInProgress = `${this.tableData.meta.total}`;
