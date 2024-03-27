@@ -464,7 +464,7 @@ export default {
       }
       this.$emit('submit', this.task, loading, buttonInfo);
 
-      if (this.task && this.task.allow_interstitial && !this.loadingButton && !this.disableInterstitial) {
+      if (this.task?.allow_interstitial && !this.loadingButton && !this.disableInterstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
