@@ -96,7 +96,9 @@ export default {
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
     initialLoopContext: { type: String, default: "" },
     taskPreview: { type: Boolean, default: false },
-    loading: { type: Number, default: null }
+    loading: { type: Number, default: null },
+    alwaysAllowEditing: { type: Boolean, default: false },
+    disableInterstitial: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -194,7 +196,9 @@ export default {
         }
         if (this.taskPreview && this.task.status === "CLOSED") {
           this.task.interstitial_screen['_interstitial'] = false;
-          this.task.screen.config = this.disableForm(this.task.screen.config);
+          if (!this.alwaysAllowEditing) {
+            this.task.screen.config = this.disableForm(this.task.screen.config);
+          }
           this.screen = this.task.screen;
         }
       }
@@ -460,7 +464,7 @@ export default {
       }
       this.$emit('submit', this.task, loading, buttonInfo);
 
-      if (this.task && this.task.allow_interstitial && !this.loadingButton) {
+      if (this.task?.allow_interstitial && !this.loadingButton && !this.disableInterstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
