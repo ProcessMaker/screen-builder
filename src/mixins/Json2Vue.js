@@ -54,6 +54,9 @@ export default {
       return str.replace(/\.\d/g, match => `[${match.substr(1)}]`);
     },
     submit(eventData, loading = false, buttonInfo = null) {
+      if (buttonInfo && this.loopContext) {
+        buttonInfo.loopContext = this.loopContext;
+      }
       this.$emit('submit', this.value, loading, buttonInfo);
     },
     buildComponent(definition) {
