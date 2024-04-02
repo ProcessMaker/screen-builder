@@ -11,7 +11,8 @@
     "run-cypress": "TZ=UTC nyc cypress run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook"
+    "test-storybook": "test-storybook",
+    "serve": "npm run dev"
   },
   "main": "./dist/vue-form-builder.umd.js",
   "module": "./dist/vue-form-builder.es.js",
