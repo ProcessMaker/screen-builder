@@ -1391,6 +1391,9 @@ export default {
   margin-right: -400px;
   padding: 16px;
 }
+.popover-body {
+  max-width: 350px;
+}
 </style>
 
 <style>
