@@ -124,7 +124,9 @@ export default {
   watch: {
     clearTask: {
       handler() {
-        this.clearTask ? this.prepareTask() : null;
+        if (this.clearTask) {
+          this.prepareTask();
+        }
       }
     },
 
