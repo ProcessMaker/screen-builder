@@ -124,9 +124,6 @@ export default {
   watch: {
     clearTask: {
       handler() {
-        /*console.log("handler watcher clearTask: ", this.clearTask);
-        console.log("draft data: ", this.task.draft);
-        this.task.draft.data = {};*/
         this.clearTask ? this.prepareTask() : null;
       }
     },
@@ -338,10 +335,12 @@ export default {
         this.resetScreenState();
         this.requestData = _.get(this.task, 'request_data', {});
         this.loopContext = _.get(this.task, "loop_context", "");
-        if(this.clearTask) {
-          this.task.draft.data = {};
-        }
+        
         if (this.task.draft) {
+          //If Clear Task button is clicked from Inbox Rule page
+          if(this.clearTask) {
+            this.task.draft.data = {};
+          }
           this.requestData = _.merge(
             {},
             this.requestData,
