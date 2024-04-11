@@ -85,6 +85,7 @@ export default {
     VueFormRenderer
   },
   props: {
+    clearTask: { type: Boolean, default: false},
     initialTaskId: { type: Number, default: null },
     initialScreenId: { type: Number, default: null },
     initialRequestId: { type: Number, default: null },
@@ -121,6 +122,15 @@ export default {
     };
   },
   watch: {
+    clearTask: {
+      handler() {
+        /*console.log("handler watcher clearTask: ", this.clearTask);
+        console.log("draft data: ", this.task.draft);
+        this.task.draft.data = {};*/
+        this.clearTask ? this.prepareTask() : null;
+      }
+    },
+
     initialScreenId: {
       handler() {
         this.screenId = this.initialScreenId;
@@ -328,7 +338,9 @@ export default {
         this.resetScreenState();
         this.requestData = _.get(this.task, 'request_data', {});
         this.loopContext = _.get(this.task, "loop_context", "");
-
+        if(this.clearTask) {
+          this.task.draft.data = {};
+        }
         if (this.task.draft) {
           this.requestData = _.merge(
             {},
