@@ -1386,7 +1386,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .custom-popover {
   margin-right: -400px;
   padding: 16px;
