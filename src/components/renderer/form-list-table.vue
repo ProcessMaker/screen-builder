@@ -40,7 +40,7 @@
           <div class="mr-4">
             <b-dropdown variant="outline-secondary" size="sm">
               <template #button-content>
-                <span>
+                <span class="text-capitalize">
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
@@ -77,7 +77,7 @@
           <div class="mr-4">
             <b-dropdown variant="outline-secondary" size="sm">
               <template #button-content>
-                <span>
+                <span class="text-capitalize">
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
