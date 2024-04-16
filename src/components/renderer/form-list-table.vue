@@ -50,12 +50,9 @@
                 </span>
               </template>
               <b-dropdown-item
-                variant="success"
-                @click="
-                  handleDropdownSelection('requests_dropdown', 'In Progress')
-                "
+                @click="handleDropdownSelection('requests_dropdown', 'all')"
               >
-                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
+                {{ $t("View All") }}
               </b-dropdown-item>
               <b-dropdown-item
                 variant="primary"
@@ -66,9 +63,12 @@
                 <i class="fas fa-circle mr-2" />{{ $t("Completed") }}
               </b-dropdown-item>
               <b-dropdown-item
-                @click="handleDropdownSelection('requests_dropdown', 'all')"
+                variant="success"
+                @click="
+                  handleDropdownSelection('requests_dropdown', 'In Progress')
+                "
               >
-                {{ $t("View All") }}
+                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
               </b-dropdown-item>
             </b-dropdown>
           </div>
@@ -86,11 +86,8 @@
                   {{ $t(titleDropdown) }}
                 </span>
               </template>
-              <b-dropdown-item
-                variant="warning"
-                @click="handleDropdownSelection('tasks', 'In Progress')"
-              >
-                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
+              <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
+                {{ $t("View All") }}
               </b-dropdown-item>
               <b-dropdown-item
                 variant="danger"
@@ -98,8 +95,11 @@
               >
                 <i class="fas fa-circle mr-2" />{{ $t("Overdue") }}
               </b-dropdown-item>
-              <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
-                {{ $t("View All") }}
+              <b-dropdown-item
+                variant="warning"
+                @click="handleDropdownSelection('tasks', 'In Progress')"
+              >
+                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
               </b-dropdown-item>
             </b-dropdown>
           </div>
@@ -326,5 +326,14 @@ export default {
 
 .btn-outline-secondary {
   border: none;
+}
+
+.dropdown-menu.show {
+  padding: 10px;
+  width: 211px;
+}
+
+.dropdown-item {
+  padding: 12px 8px;
 }
 </style>
