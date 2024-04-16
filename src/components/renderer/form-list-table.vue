@@ -64,9 +64,7 @@
               </b-dropdown-item>
               <b-dropdown-item
                 variant="success"
-                @click="
-                  handleDropdownSelection('requests_dropdown', 'In Progress')
-                "
+                @click="handleDropdownSelection('requests_dropdown', 'In Progress')"
               >
                 <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
               </b-dropdown-item>
