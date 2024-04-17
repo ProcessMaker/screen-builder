@@ -55,13 +55,16 @@ export default {
   },
   methods: {
     loadMasks() {
-      Inputmask('currency', {
+      const mask = (this.suffix).trim() === 'INR' ? 'indianns' : 'currency';
+
+      Inputmask(mask,  {
         digits: this.precision,
         prefix: this.prefix,
         suffix: this.suffix,
         radixPoint: this.decimal,
         groupSeparator: this.thousands,
       }).mask(this.currencyInput);
+
       if (this.value) {
         this.currencyInput.inputmask.setValue(this.value);
       }
