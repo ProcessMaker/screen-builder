@@ -44,7 +44,7 @@
               size="sm"
             >
               <template #button-content>
-                <span>
+                <span class="text-capitalize">
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
@@ -91,7 +91,7 @@
               size="sm"
             >
               <template #button-content>
-                <span>
+                <span class="text-capitalize">
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
