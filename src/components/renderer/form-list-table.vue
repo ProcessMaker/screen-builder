@@ -15,7 +15,7 @@
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
             <b-dropdown
-              id="typeRequestDropdown"
+              class="type-request-dropdown"
               variant="outline-secondary"
               right
               no-caret
@@ -48,7 +48,7 @@
         <template v-if="dataControl.dropdownShow === 'requests'">
           <div class="mr-4">
             <b-dropdown
-              id="resquestDropdown"
+              class="resquest-dropdown"
               variant="outline-secondary"
               size="sm"
             >
@@ -96,7 +96,7 @@
         <template v-if="dataControl.dropdownShow === 'tasks'">
           <div class="mr-4">
             <b-dropdown
-              id="tasksDropdown"
+              class="tasks-dropdown"
               variant="outline-secondary"
               size="sm"
             >
@@ -375,17 +375,17 @@ export default {
 </style>
 
 <style lang="scss">
-#typeRequestDropdown .dropdown-menu,
-#resquestDropdown .dropdown-menu,
-#tasksDropdown .dropdown-menu {
+.type-request-dropdown .dropdown-menu,
+.resquest-dropdown .dropdown-menu,
+.tasks-dropdown .dropdown-menu {
   padding: 10px;
   width: 211px;
   box-shadow: 0px 10px 20px 4px #00000021;
 }
 
-#typeRequestDropdown .dropdown-item,
-#resquestDropdown .dropdown-item,
-#tasksDropdown .dropdown-item {
+.type-request-dropdown .dropdown-item,
+.resquest-dropdown .dropdown-item,
+.tasks-dropdown .dropdown-item {
   padding: 10px 8px;
 }
 </style>
