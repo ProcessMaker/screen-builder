@@ -14,19 +14,28 @@
             {{ $t(title) }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
-            <b-dropdown variant="outline-secondary" no-caret>
+            <b-dropdown
+              id="typeRequestDropdown"
+              variant="outline-secondary"
+              right
+              no-caret
+            >
               <template #button-content>
                 <i class="fas fa-caret-down" />
               </template>
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_filter', 'by_me')"
               >
-                {{ $t("As Requester") }}
+                <span class="item-text">
+                  {{ $t("As Requester") }}
+                </span>
               </b-dropdown-item>
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_filter', 'as_participant')"
               >
-                {{ $t("As Participant") }}
+                <span class="item-text">
+                  {{ $t("As Participant") }}
+                </span>
               </b-dropdown-item>
             </b-dropdown>
           </template>
@@ -366,12 +375,15 @@ export default {
 </style>
 
 <style lang="scss">
+#typeRequestDropdown .dropdown-menu,
 #resquestDropdown .dropdown-menu,
 #tasksDropdown .dropdown-menu {
   padding: 10px;
   width: 211px;
+  box-shadow: 0px 10px 20px 4px #00000021;
 }
 
+#typeRequestDropdown .dropdown-item,
 #resquestDropdown .dropdown-item,
 #tasksDropdown .dropdown-item {
   padding: 10px 8px;
