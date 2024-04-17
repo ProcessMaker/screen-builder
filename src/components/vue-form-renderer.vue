@@ -18,6 +18,7 @@
       :test-screen-definition="testScreenDefinition || false"
       class="p-0"
       :loop-context="loopContext"
+      @after-submit="afterSubmit"
       @submit="submit"
     />
   </div>
@@ -245,6 +246,9 @@ export default {
       if (node.$children instanceof Array) {
         node.$children.forEach((child) => this.registerCustomFunctions(child));
       }
+    },
+    afterSubmit() {
+      this.$emit('after-submit', ...arguments);
     },
     submit(eventData, loading = false, buttonInfo = null) {
       this.$emit("submit", this.data, loading, buttonInfo);
