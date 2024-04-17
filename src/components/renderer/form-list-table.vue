@@ -48,6 +48,7 @@
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
+                    class="mr-2"
                     :variant="badgeVariant"
                   />
                   {{ $t(titleDropdown) }}
@@ -95,6 +96,7 @@
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
+                    class="mr-2"
                     :variant="badgeVariant"
                   />
                   {{ $t(titleDropdown) }}
