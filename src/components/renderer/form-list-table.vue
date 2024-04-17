@@ -38,7 +38,11 @@
       <div class="ml-auto d-flex align-items-center">
         <template v-if="dataControl.dropdownShow === 'requests'">
           <div class="mr-4">
-            <b-dropdown variant="outline-secondary" size="sm">
+            <b-dropdown
+              id="resquestDropdown"
+              variant="outline-secondary"
+              size="sm"
+            >
               <template #button-content>
                 <span>
                   <b-icon
@@ -52,28 +56,40 @@
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_dropdown', 'all')"
               >
-                {{ $t("View All") }}
+                <span class="item-text">
+                  {{ $t("View All") }}
+                </span>
               </b-dropdown-item>
               <b-dropdown-item
-                variant="primary"
-                @click="
-                  handleDropdownSelection('requests_dropdown', 'Completed')
-                "
+                @click="handleDropdownSelection('requests_dropdown', 'Completed')"
               >
-                <i class="fas fa-circle mr-2" />{{ $t("Completed") }}
+                <span class="item-text">
+                  <i
+                    class="fas fa-circle mr-2 text-primary" 
+                  />
+                  {{ $t("Completed") }}
+                </span>
               </b-dropdown-item>
               <b-dropdown-item
-                variant="success"
                 @click="handleDropdownSelection('requests_dropdown', 'In Progress')"
               >
-                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
+                <span class="item-text">
+                  <i
+                    class="fas fa-circle mr-2 text-success"
+                  />
+                  {{ $t("In Progress") }}
+                </span>
               </b-dropdown-item>
             </b-dropdown>
           </div>
         </template>
         <template v-if="dataControl.dropdownShow === 'tasks'">
           <div class="mr-4">
-            <b-dropdown variant="outline-secondary" size="sm">
+            <b-dropdown
+              id="tasksDropdown"
+              variant="outline-secondary"
+              size="sm"
+            >
               <template #button-content>
                 <span>
                   <b-icon
@@ -85,19 +101,29 @@
                 </span>
               </template>
               <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
-                {{ $t("View All") }}
+                <span class="item-text">
+                  {{ $t("View All") }}
+                </span>
               </b-dropdown-item>
               <b-dropdown-item
-                variant="danger"
                 @click="handleDropdownSelection('tasks', 'Overdue')"
               >
-                <i class="fas fa-circle mr-2" />{{ $t("Overdue") }}
+                <span class="item-text">
+                <i
+                  class="fas fa-circle mr-2 text-danger"
+                />
+                {{ $t("Overdue") }}
+                </span>
               </b-dropdown-item>
               <b-dropdown-item
-                variant="warning"
                 @click="handleDropdownSelection('tasks', 'In Progress')"
               >
-                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
+                <span class="item-text">
+                  <i
+                    class="fas fa-circle mr-2 text-warning"
+                  />
+                  {{ $t("In Progress") }}
+                </span>
               </b-dropdown-item>
             </b-dropdown>
           </div>
@@ -326,12 +352,26 @@ export default {
   border: none;
 }
 
-.dropdown-menu.show {
+.item-text {
+  color: #42526E;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: -0.02em;
+  text-align: left;
+}
+</style>
+
+<style lang="scss">
+#resquestDropdown .dropdown-menu,
+#tasksDropdown .dropdown-menu {
   padding: 10px;
   width: 211px;
 }
 
-.dropdown-item {
-  padding: 12px 8px;
+#resquestDropdown .dropdown-item,
+#tasksDropdown .dropdown-item {
+  padding: 10px 8px;
 }
 </style>
