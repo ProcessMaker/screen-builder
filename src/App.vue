@@ -578,6 +578,8 @@ export default {
         ? JSON.parse(this.previewInput)
         : {};
       if (mode === "preview") {
+        console.log('trying');
+        this.changeDeviceScreen('desktop');
         this.$dataProvider.flushScreenCache();
         this.preview.config = cloneDeep(this.config);
         this.preview.computed = cloneDeep(this.computed);
