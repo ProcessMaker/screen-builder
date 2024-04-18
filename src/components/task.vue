@@ -30,6 +30,7 @@
             :key="refreshScreen"
             :loop-context="loopContext"
             @update="onUpdate"
+            @after-submit="afterSubmit"
             @submit="submit"
           />
         </div>
@@ -46,6 +47,7 @@
             :watchers="screen.watchers"
             :data="requestData"
             :type="screen.type"
+            @after-submit="afterSubmit"
             @submit="submit"
           />
         </div>
@@ -445,6 +447,9 @@ export default {
           break;
       }
       return 'card-header text-capitalize text-white ' + header;
+    },
+    afterSubmit() {
+      this.$emit('after-submit', ...arguments);
     },
     submit(formData = null, loading = false, buttonInfo = null) {
       //single click
