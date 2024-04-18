@@ -146,6 +146,15 @@ export default {
       }
     },
     async submitForm(eventData, loading = false, buttonInfo = null) {
+      const event = {
+        name: 'after-submit',
+        validation: true
+      };
+      this.$emit('after-submit', event, ...arguments);
+      if (event.validation === false) {
+        this.$emit('submit', this.vdata, loading, buttonInfo);
+        return;
+      }
       await this.validateNow(findRootScreen(this));
       this.hasSubmitted(true);
       if (!this.valid__ || this.disableSubmit__) {
