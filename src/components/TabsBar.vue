@@ -43,6 +43,7 @@
           {{ pages[index]?.name }}
         </span>
         <span
+          v-if="isMultiPage"
           :data-test="`close-tab-${n}`"
           class="close-tab"
           role="link"
@@ -107,6 +108,13 @@ export default {
     buttonIcon: {
       type: String,
       default: () => "fa fa-file"
+    },
+    /**
+     * Is multi page mode enabled
+     */
+    isMultiPage: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

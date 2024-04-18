@@ -104,6 +104,7 @@
       <tabs-bar
         ref="tabsBar"
         :pages="config"
+        :is-multi-page="showToolbar"
         @tab-opened="currentPage = $event"
       >
         <template #tabs-start>
