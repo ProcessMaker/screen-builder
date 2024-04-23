@@ -71,18 +71,38 @@ export default {
 
   // Methods below are used in the components
 
-  getTasks(params) {
+  async getTasks(params) {
     const endpoint = get(
       window,
       "PM4ConfigOverrides.getTasksEndpoint",
       "/tasks"
     );
-    return this.get(endpoint + params).then((response) => {
-      if (response.data.screen && response.data.screen.nested) {
-        this.addNestedScreenCache(response.data.screen.nested);
-      }
-      return response;
-    });
+    const promises = [];
+    const hasIncludeScreen = params.match(/include=.*,screen,/);
+    const hasIncludeNested = params.match(/include=.*,nested,/);
+
+    // remove params ?...
+    promises.push(
+      this.get(endpoint + params.replace(/,screen,|,nested,/g, ","))
+    );
+    // Get the screen from a separated cached endpoint
+    if (hasIncludeScreen) {
+      const screenEndpoint = `${(endpoint + params).replace(
+        /\?.+$/,
+        ""
+      )}/screen?include=screen${hasIncludeNested ? ",nested" : ""}`;
+      promises.push(this.get(screenEndpoint));
+    }
+    // Await for both promises to resolve
+    const [taskData, taskScreen] = await Promise.all(promises);
+    const response = taskData;
+    if (taskScreen) {
+      response.data.screen = taskScreen.data;
+    }
+    if (response.data.screen && response.data.screen.nested) {
+      this.addNestedScreenCache(response.data.screen.nested);
+    }
+    return response;
   },
   addNestedScreenCache(nested) {
     nested.forEach((screen) => {
