@@ -3,6 +3,18 @@ import Screens from "../fixtures/webentry.json";
 import SingleScreen from "../fixtures/single_line_input.json";
 import InterstitialScreen from "../fixtures/interstitial_screen.json";
 
+function initializeTaskAndScreenIntercepts(method, url, response) {
+  cy.intercept(
+    method,
+    url.replace(",screen,", ",").replace(",nested,", ","),
+    response
+  );
+  cy.intercept(
+    method,
+    url.replace(/\?.*$/, "/screen?include=screen,nested"),
+    response.screen
+  );
+}
 describe("Task component", () => {
   it("In a webentry", () => {
     cy.visit("/?scenario=WebEntry", {
@@ -22,7 +34,7 @@ describe("Task component", () => {
   });
 
   it("Task inside a Request", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -77,7 +89,7 @@ describe("Task component", () => {
   });
 
   it("Completes the Task", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -139,7 +151,7 @@ describe("Task component", () => {
           .should("have.been.calledOnce")
           .and("have.been.calledWith", "Task Completed Successfully")
           .then(function () {
-            cy.intercept(
+            initializeTaskAndScreenIntercepts(
               "GET",
               "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
               {
@@ -156,7 +168,7 @@ describe("Task component", () => {
   });
 
   it("Progresses to the interstitial screen", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -310,7 +322,7 @@ describe("Task component", () => {
             cy.intercept("GET", "/api/1.0/tasks**", {
               body: completedBodyRequest
             });
-            cy.intercept(
+            initializeTaskAndScreenIntercepts(
               "GET",
               "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
               { body: completedBodyRequest }
@@ -326,7 +338,7 @@ describe("Task component", () => {
     );
   });
   it("It updates the PM4ConfigOverrides", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -392,7 +404,7 @@ describe("Task component", () => {
    After childTask1 should redirect to childTask2
   */
   it("Task with display next assigned task checked with another pending task in same request should redirect to the next task of same request", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -468,7 +480,7 @@ describe("Task component", () => {
                         (DNAT)
   */
   it("Task with display next assigned task checked in subprocess and no pending task and status closed or open should redirect to parent requests", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -539,7 +551,7 @@ describe("Task component", () => {
    After childTask1 should redirect to parentTask2
   */
   it("Task with display next assigned task checked in different process request should redirect to the next task of parent request", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -614,7 +626,7 @@ describe("Task component", () => {
    After childTask1 (Not DNAT) should redirect to tasks list
   */
   it("Task with display next assigned task unchecked should redirect to tasks list", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -664,7 +676,7 @@ describe("Task component", () => {
    After parentTask1 and not pending tasks should redirect to same request
   */
   it("Process without pending task should redirect to request", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -721,7 +733,7 @@ describe("Task component", () => {
    After childTask1 and not pending tasks should redirect to parent Request
   */
   it("Subprocess without pending task should redirect to parent request", () => {
-    cy.intercept(
+    initializeTaskAndScreenIntercepts(
       "GET",
       "http://localhost:5173/api/1.0/tasks/1?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
       {
@@ -778,7 +790,7 @@ describe("Task component", () => {
 });
 
 function getTask(url, responseData) {
-  cy.intercept("GET", url, {
+  initializeTaskAndScreenIntercepts("GET", url, {
     id: responseData.id,
     advanceStatus: "completed",
     component: "task-screen",
