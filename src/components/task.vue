@@ -480,7 +480,11 @@ export default {
       return allowed ? this.parentRequest : this.requestId
     },
     processUpdated: _.debounce(function(data) {
-      if (data.event === 'ACTIVITY_ACTIVATED') {
+      if (
+        (data.event === "ACTIVITY_COMPLETED" ||
+          data.event === "ACTIVITY_ACTIVATED") &&
+        data.elementType === 'task'
+      ) {
         this.reload();
       }
       if (data.event === 'ACTIVITY_EXCEPTION') {
@@ -529,14 +533,12 @@ export default {
         '.ProcessUpdated',
         (data) => {
           if (
-            ['ACTIVITY_ACTIVATED'].includes(data.event) &&
-            !this.existsEventMessage(`${data.event}-${this.userId}-${this.taskId}`)
+            ['ACTIVITY_ACTIVATED'].includes(data.event)
           ) {
             this.closeTask(this.parentRequest);
           }
           if (
-            ["ACTIVITY_COMPLETED"].includes(data.event) &&
-            !this.existsEventMessage(`${data.event}-${this.userId}-${this.taskId}`)
+            ["ACTIVITY_COMPLETED"].includes(data.event)
           ) {
             if (this.task.process_request.status === 'COMPLETED') {
               this.processCompleted();
