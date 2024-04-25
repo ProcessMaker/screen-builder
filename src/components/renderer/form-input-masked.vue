@@ -47,10 +47,7 @@ export default {
       },
     },
     currencyValue() {
-      this.unformattedValue = parseFloat(
-        this.currencyInput.inputmask.unmaskedvalue().replace(',', '.')
-      );
-      this.$emit('input', this.unformattedValue || 0);
+      this.handleInput();
     },
   },
   methods: {
@@ -74,8 +71,16 @@ export default {
       // the decimal does not trigger an input event
       if (this.currencyValue !== event.target.value) {
         this.currencyValue = event.target.value;
+      } else {
+        this.handleInput();
       }
     },
+    handleInput() {
+      this.unformattedValue = parseFloat(
+        this.currencyInput.inputmask.unmaskedvalue().replace(',', '.')
+      );
+      this.$emit('input', this.unformattedValue || 0);
+    }
   },
   mounted() {
     this.loadMasks();
