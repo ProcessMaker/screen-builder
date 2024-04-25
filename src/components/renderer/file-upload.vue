@@ -284,6 +284,7 @@ export default {
           data_name: this.name,
           parent: null,
           row_id: null,
+          task_id: _.get(window, '_current_task_id', 0),
         },
         testChunks: false,
         // Setup our headers to deal with API calls
