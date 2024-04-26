@@ -116,12 +116,6 @@ export default {
     this.setPrefix();
     if (this.$refs['uploader']) {
       this.$refs['uploader'].$forceUpdate();
-      // Re-upload stored files;
-      // Files disappear when navigating between pages with the Page Navigation component
-      if (this.files.length > 0) {
-        this.$refs.uploader.uploader.addFiles(this.files);
-        this.uploading = false;
-      }
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
