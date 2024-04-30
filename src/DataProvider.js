@@ -207,10 +207,18 @@ export default {
 
   deleteFile(id, token = null) {
     let url = `files/${id}`;
-    if (token) {
-      url += `?token=${token}`;
+
+    const queryParams = {
+      token
+    };
+
+    const taskId = get(window, '_current_task_id', 0);
+
+    if (taskId) {
+      queryParams.task_id = taskId;
     }
-    return this.delete(url);
+
+    return this.delete(url, { params: queryParams });
   },
 
   download(url) {
