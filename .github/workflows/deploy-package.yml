@@ -2,6 +2,8 @@ name: Build Package Screen Builder
 on:
   pull_request:
     types: [opened, reopened, synchronize, edited, closed]
+  schedule:
+    - cron: '45 02 * * *'
   workflow_dispatch:  
 jobs:
   run_deploy:
