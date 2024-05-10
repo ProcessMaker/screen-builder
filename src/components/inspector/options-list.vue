@@ -483,7 +483,7 @@ export default {
     },
     getDataSourceList() {
       this.$dataProvider
-        .get('/data_sources')
+        .get('/data_sources?include=asset_types')
         .then(response => {
           let jsonData = response.data.data;
           // Map the data sources response to value/text items list
