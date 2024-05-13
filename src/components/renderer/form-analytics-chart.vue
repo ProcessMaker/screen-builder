@@ -11,7 +11,7 @@
         <b-col cols="12">
           <b-card-text>
             <b-embed v-if="!showChart" type="iframe" :src="graphic.link"></b-embed>
-            <img v-else src="../../assets/welcome_default.png" style="width:100%" :alt="$t('Welcome Default')" />
+            <img v-else src="../../assets/welcome_default.png" :style="{width:'100%', aspectRatio:21/9}" :alt="$t('Welcome Default')" />
           </b-card-text>
         </b-col>
       </div>
@@ -50,7 +50,7 @@ export default {
       window.open("/package-analytics-reporting", "_blank");
     },
     verifyChart() {
-      this.showChart = this.graphic.name === "PM Analytics Chart";
+      this.showChart = this.graphic.name === "PM Analytics Chart" || this.graphic.name === "PM Analytics Dashboard" || this.graphic.length === 0;
     }
   }
 };
