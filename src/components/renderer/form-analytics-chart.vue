@@ -10,7 +10,8 @@
       <div class="d-flex flex-wrap p-2">
         <b-col cols="12">
           <b-card-text>
-            <b-embed type="iframe" :src="graphic.link"></b-embed>
+            <b-embed v-if="!showChart" type="iframe" :src="graphic.link"></b-embed>
+            <img v-else src="../../assets/welcome_default.png" :style="{width:'100%', aspectRatio:21/9}" :alt="$t('Welcome Default')" />
           </b-card-text>
         </b-col>
       </div>
@@ -27,7 +28,8 @@ export default {
       graphic: [],
       customStyle: {
         "border-radius": "8px"
-      }
+      },
+      showChart: false,
     };
   },
   watch: {
@@ -41,10 +43,14 @@ export default {
     if (this.listChartOption && this.listChartOption.name) {
       this.graphic = this.listChartOption;
     }
+    this.verifyChart();
   },
   methods: {
     openExternalLink() {
       window.open("/package-analytics-reporting", "_blank");
+    },
+    verifyChart() {
+      this.showChart = this.graphic.name === "PM Analytics Chart" || this.graphic.name === "PM Analytics Dashboard" || this.graphic.length === 0;
     }
   }
 };
