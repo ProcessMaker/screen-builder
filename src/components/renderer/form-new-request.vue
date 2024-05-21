@@ -1,15 +1,17 @@
 <template>
   <div>
     <div v-if="Object.keys(processes).length && !loading" class="process-list">
-      <b-container fluid>
-        <div v-for="(process, index) in processes" :key="`process-${index}`">
-          <ProcessCard
-            v-if="hasEmptyStartEvents(process)"
-            :filter="filter"
-            :process="process"
-          />
-        </div>
-      </b-container>
+      <div class="row">
+        <template v-for="(process, index) in processes">
+          <div v-for="(event, indexE) in emptyStartEvents(process)" :key="`process-${index}-${indexE}`" class="col-sm-6">
+            <ProcessCard
+              :filter="filter"
+              :process="process"
+              :event="event"
+            />
+          </div>
+        </template>
+      </div>
     </div>
     <div v-else>
       <formEmpty link="" title="No Request to Start" url="" />
@@ -39,6 +41,12 @@ export default {
     this.$root.$on("dropdownSelectionStart", this.fetchData);
   },
   methods: {
+    emptyStartEvents(process) {
+      return process.startEvents.filter(
+        (event) =>
+          !event.eventDefinitions || event.eventDefinitions.length === 0
+      );
+    },
     hasEmptyStartEvents(process) {
       return !!process.events.find(
         (event) =>
