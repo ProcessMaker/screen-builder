@@ -1,49 +1,47 @@
 <template>
   <div>
-    <template v-for="event in emptyStartEvents">
-      <div :key="event.id" class="mb-3 card-request">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <span v-uni-id="event.id.toString()" class="card-info card-title">
-                {{ transformedName }}
-              </span>
-              <span class="card-info">
-                {{ event.name }}
-              </span>
-            </div>
-            <div class="d-flex align-items-center">
-              <button
-                :aria-expanded="ariaExpanded"
-                :aria-controls="getComputedId(process, event)"
-                class="btn btn-ellipsis btn-sm mr-1"
-                @click="showRequestDetails(process, event)"
-              >
-                <i class="fas fa-ellipsis-v"></i>
-              </button>
-              <button
-                v-uni-aria-describedby="event.id.toString()"
-                :href="getNewRequestLinkHref(process, event)"
-                class="btn btn-custom btn-sm"
-                @click.prevent="newRequestLink(process, event)"
-              >
-                {{ $t("Start") }}
-                <i class="fas fa-play mr-1 card-icon"></i>
-              </button>
-            </div>
+    <div class="mb-3 card-request">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <span v-uni-id="event.id.toString()" class="card-info card-title">
+              {{ transformedName }}
+            </span>
+            <span class="card-info">
+              {{ event.name }}
+            </span>
           </div>
-          <b-collapse
-            :id="getComputedId(process, event)"
-            :aria-hidden="ariaHidden"
-          >
-            <hr />
-            <p class="card-text text-muted card-description">
-              {{ process.description }}
-            </p>
-          </b-collapse>
+          <div class="d-flex align-items-center">
+            <button
+              :aria-expanded="ariaExpanded"
+              :aria-controls="getComputedId(process, event)"
+              class="btn btn-ellipsis btn-sm mr-1"
+              @click="showRequestDetails(process, event)"
+            >
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <button
+              v-uni-aria-describedby="event.id.toString()"
+              :href="getNewRequestLinkHref(process, event)"
+              class="btn btn-custom btn-sm"
+              @click.prevent="newRequestLink(process, event)"
+            >
+              {{ $t("Start") }}
+              <i class="fas fa-play mr-1 card-icon"></i>
+            </button>
+          </div>
         </div>
+        <b-collapse
+          :id="getComputedId(process, event)"
+          :aria-hidden="ariaHidden"
+        >
+          <hr />
+          <p class="card-text text-muted card-description">
+            {{ process.description }}
+          </p>
+        </b-collapse>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -54,7 +52,7 @@ const uniqIdsMixin = createUniqIdsMixin();
 
 export default {
   mixins: [uniqIdsMixin],
-  props: ["name", "description", "filter", "id", "process"],
+  props: ["name", "description", "filter", "id", "process", "event"],
   data() {
     return {
       disabled: false,
