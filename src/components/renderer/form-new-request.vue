@@ -33,8 +33,7 @@ export default {
       loaded: false,
       processes: {},
       perPage: 10,
-      page: 1,
-      chunk: 0,
+      page: 1
     };
   },
   mounted() {
