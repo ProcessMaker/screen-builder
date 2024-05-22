@@ -1,51 +1,64 @@
 <template>
   <div v-if="showTable">
-    <vuetable
-      ref="vuetable"
-      :data-manager="dataManager"
-      :sort-order="sortOrder"
-      :api-mode="false"
-      :fields="fields"
+    <filter-table
+      :headers="tableHeaders"
       :data="tableData"
-      :css="css"
-      data-path="data"
-      pagination-path="meta"
+      :unread="unreadColumnName"
+      :loading="shouldShowLoader"
     >
-      <template slot="ids" slot-scope="props">
-        <b-link
-          class="text-nowrap"
-          :href="openRequest(props.rowData, props.rowIndex)"
+      <template
+        v-for="(row, rowIndex) in data.data"
+        v-slot:[`row-${rowIndex}`]
+      >
+        <td
+          v-for="(header, colIndex) in tableHeaders"
+          :key="`${rowIndex}-${colIndex}`"
         >
-          #{{ props.rowData.id }}
-        </b-link>
-      </template>
-      <template slot="name" slot-scope="props">
-        <span v-uni-id="props.rowData.id.toString()">{{
-          props.rowData.name
-        }}</span>
-      </template>
-      <template slot="status" slot-scope="props">
-        <span>
-          <i :class="`fas fa-circle text-${props.rowData.status.color}`" />
-          {{ props.rowData.status.label }}
-        </span>
-      </template>
-      <template slot="actions" slot-scope="props">
-        <div class="actions">
-          <div class="popout">
-            <b-btn
-              v-b-tooltip.hover
-              v-uni-aria-describedby="props.rowData.id.toString()"
-              variant="link"
-              :href="openRequest(props.rowData, props.rowIndex)"
-              :title="$t('Open Request')"
+          <template v-if="containsHTML(getNestedPropertyValue(row, header))">
+            <div
+              :id="`element-${rowIndex}-${colIndex}`"
+              :class="{ 'pm-table-truncate': header.truncate }"
+              :style="{ maxWidth: header.width + 'px' }"
             >
-              <i class="fas fa-caret-square-right fa-lg fa-fw" />
-            </b-btn>
-          </div>
-        </div>
+              <span v-html="sanitize(getNestedPropertyValue(row, header))"></span>
+            </div>
+            <b-tooltip
+              v-if="header.truncate"
+              :target="`element-${rowIndex}-${colIndex}`"
+              custom-class="pm-table-tooltip"
+              @show="checkIfTooltipIsNeeded"
+            >
+              {{ sanitizeTooltip(getNestedPropertyValue(row, header)) }}
+            </b-tooltip>
+          </template>
+          <template v-else>
+            <template v-if="isComponent(row[header.field])">
+              <component
+                :is="row[header.field].component"
+                v-bind="row[header.field].props"
+              />
+            </template>
+            <template v-else>
+              <div
+                :id="`element-${rowIndex}-${colIndex}`"
+                :class="{ 'pm-table-truncate': header.truncate }"
+                :style="{ maxWidth: header.width + 'px' }"
+              >
+                {{ getNestedPropertyValue(row, header) }}
+                <b-tooltip
+                  v-if="header.truncate"
+                  :target="`element-${rowIndex}-${colIndex}`"
+                  custom-class="pm-table-tooltip"
+                  @show="checkIfTooltipIsNeeded"
+                >
+                  {{ getNestedPropertyValue(row, header) }}
+                </b-tooltip>
+              </div>
+            </template>
+          </template>
+        </td>
       </template>
-    </vuetable>
+    </filter-table>
   </div>
   <div v-else>
     <formEmpty link="Requests" title="No Requests to Show" :url="noDataUrl" />
@@ -78,7 +91,8 @@ export default {
           sortField: "id",
           direction: "desc"
         }
-      ]
+      ],
+      tableHeaders: [],
     };
   },
   computed: {
@@ -87,7 +101,7 @@ export default {
     }
   },
   mounted() {
-    this.setFields();
+    this.setupColumns();
     this.pmql = `requester = "${Processmaker.user.username}"`;
     this.fetch();
     this.$root.$on("dropdownSelectionRequest", this.fetchData);
@@ -158,39 +172,6 @@ export default {
           });
       });
     },
-    setFields() {
-      this.fields.push({
-        name: "__slot:ids",
-        field: "id",
-        sortField: "id",
-        sortable: true,
-        title: "#"
-      });
-
-      this.fields.push({
-        name: "__slot:name",
-        field: "name",
-        sortField: "name",
-        sortable: true,
-        title: () => this.$t("Name")
-      });
-
-      this.fields.push({
-        name: "__slot:status",
-        field: "status",
-        sortField: "status",
-        sortable: true,
-        title: () => this.$t("Status")
-      });
-
-      this.fields.push({
-        name: "__slot:actions",
-        title: ""
-      });
-      this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
-      });
-    },
     formatStatus(status) {
       let color = "";
       let label = "";
@@ -215,7 +196,7 @@ export default {
           color = "success";
           label = "In Progress";
       }
-      return { color, label };
+      return (`<span class="badge badge-${color} status-${color}"> ${label} </span>`);
     },
     openRequest(data, index) {
       return `/requests/${data.id}`;
@@ -249,7 +230,85 @@ export default {
       this.pmql = "";
       this.pmql = searchData;
       this.fetch();
-    }
+    },
+    setupColumns() {
+      const columns = this.getColumns();
+      this.tableHeaders = this.getColumns();
+
+      columns.forEach((column) => {
+        const field = {
+          title: () => this.$t(column.label),
+        };
+
+        switch (column.field) {
+          case "id":
+            field.name = "__slot:ids";
+            field.title = "#";
+            break;
+          case "participants":
+            field.name = "__slot:participants";
+            break;
+          case "name":
+            field.name = "__slot:name";
+            break;
+          case "case_title":
+            field.name = "__slot:case_title";
+            break;
+          default:
+            field.name = column.name || column.field;
+        }
+
+        if (!field.field) {
+          field.field = column.field;
+        }
+
+        if (column.format === "datetime") {
+          field.callback = "formatDateUser|datetime";
+        }
+
+        if (column.format === "date") {
+          field.callback = "formatDateUser|date";
+        }
+
+        if (column.sortable === true && !field.sortField) {
+          field.sortField = column.field;
+        }
+
+        this.fields.push(field);
+      });
+
+      this.fields.push({
+        name: "__slot:actions",
+        title: "",
+      });
+    },
+    getColumns() {
+      return [
+        {
+          label: "Case #",
+          field: "case_number",
+          sortable: true,
+          default: true,
+          width: 80,
+        },
+        {
+          label: "Case title",
+          field: "case_title",
+          sortable: true,
+          default: true,
+          truncate: true,
+          width: 220,
+        },
+        {
+          label: "Status",
+          field: "status",
+          sortable: true,
+          default: true,
+          width: 100,
+          filter_subject: { type: "Status" },
+        }
+      ];
+    },
   }
 };
 </script>
