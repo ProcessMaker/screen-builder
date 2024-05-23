@@ -395,7 +395,15 @@ export default {
         this.screen = this.task.interstitial_screen;
         this.loadNextAssignedTask(parentRequestId);
       } else if (!this.taskPreview) {
-        this.$emit('closed', this.task.id);
+        let { elementDestination } = this.task;
+
+        if (elementDestination === 'taskSource') {
+          elementDestination = null;
+        } else if (!elementDestination) {
+          elementDestination = sessionStorage.getItem('elementDestinationURL') ?? null;
+        }
+
+        this.$emit('closed', this.task.id, elementDestination);
       }
     },
     loadNextAssignedTask(requestId = null) {
