@@ -172,7 +172,7 @@
       <template v-if="listOption === 'My Tasks'">
         <FormTasks @tasksCount="getData"></FormTasks>
       </template>
-      <template v-if="listOption === 'My Requests'">
+      <template v-if="listOption === 'My Cases'">
         <FormRequests @requestsCount="getData"></FormRequests>
       </template>
       <template v-if="listOption === 'Start New Request'">
@@ -238,7 +238,7 @@ export default {
         if (listType === "requests_filter") {
           this.optionRequest = valueSelected;
           if (valueSelected === "by_me") {
-            this.title = "Request Started By Me";
+            this.title = "Cases Started By Me";
           }
           if (valueSelected === "as_participant") {
             this.title = "With Me as Participant";
