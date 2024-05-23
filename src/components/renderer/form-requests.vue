@@ -289,7 +289,8 @@ export default {
           field: "case_number",
           sortable: true,
           default: true,
-          width: 80,
+          width: 96,
+          fixed_width: 96
         },
         {
           label: "Case title",
@@ -297,14 +298,18 @@ export default {
           sortable: true,
           default: true,
           truncate: true,
-          width: 220,
+          width: 314,
+          fixed_width: 314,
+          resizable: false
         },
         {
           label: "Status",
           field: "status",
           sortable: true,
           default: true,
-          width: 100,
+          width: 113,
+          fixed_width: 314,
+          resizable: false,
           filter_subject: { type: "Status" },
         }
       ];
