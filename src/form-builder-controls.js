@@ -951,9 +951,9 @@ export default [
             label: "List Table",
             options: [
               { value: "My Tasks", content: "My Tasks" },
-              { value: "My Cases", content: "My Cases" },
+              { value: "My Requests", content: "My Cases" },
               {
-                value: "Start New Case",
+                value: "Start New Request",
                 content: "Start New Case"
               }
             ]
