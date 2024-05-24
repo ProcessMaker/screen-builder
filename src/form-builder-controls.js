@@ -951,10 +951,10 @@ export default [
             label: "List Table",
             options: [
               { value: "My Tasks", content: "My Tasks" },
-              { value: "My Requests", content: "My Requests" },
+              { value: "My Cases", content: "My Cases" },
               {
-                value: "Start New Request",
-                content: "Start New Request"
+                value: "Start New Case",
+                content: "Start New Case"
               }
             ]
           }
