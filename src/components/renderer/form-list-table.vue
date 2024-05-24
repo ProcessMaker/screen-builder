@@ -172,10 +172,10 @@
       <template v-if="listOption === 'My Tasks'">
         <FormTasks @tasksCount="getData"></FormTasks>
       </template>
-      <template v-if="listOption === 'My Cases'">
+      <template v-if="verifyListCase()">
         <FormRequests @requestsCount="getData"></FormRequests>
       </template>
-      <template v-if="listOption === 'Start New Request'">
+      <template v-if="verifyNewCase()">
         <FormNewRequest @startControl="getData"></FormNewRequest>
       </template>
     </div>
@@ -212,14 +212,26 @@ export default {
   },
   watch: {
     listOption() {
-      this.title = this.listOption;
+      this.title = this.checkTitle(this.listOption);
       this.dataControl = {};
     }
   },
   mounted() {
-    this.title = this.listOption;
+    this.title = this.checkTitle(this.listOption);
   },
   methods: {
+    /**
+     * Backward compatibility beacuse value is used as title
+     */
+    checkTitle(option) {
+      if (option === "Start New Request") {
+        return "Start New Case";
+      }
+      if (option === "My Requests") {
+        return "My Cases";
+      }
+      return option;
+    },
     getData(data) {
       this.dataControl = data.dataControls;
     },
@@ -313,6 +325,23 @@ export default {
         this.badgeVariant = "";
         this.showBadge = false;
       }
+    },
+    /**
+     * Verify backward compatibility for Start New Case
+     */
+    verifyNewCase() {
+      return (
+        this.listOption === "Start New Case" ||
+        this.listOption === "Start New Request"
+      );
+    },
+    /**
+     * Verify backward compatibility for List Cases
+     */
+    verifyListCase() {
+      return (
+        this.listOption === "My Cases" || this.listOption === "My Requests"
+      );
     }
   }
 };
