@@ -12,7 +12,7 @@
       </b-container>
     </div>
     <div v-else>
-      <formEmpty link="" title="No Request to Start" url="" />
+      <formEmpty link="" title="No Case to Start" url="" />
     </div>
   </div>
 </template>
