@@ -61,7 +61,7 @@
     </filter-table>
   </div>
   <div v-else>
-    <formEmpty link="Requests" title="No Requests to Show" :url="noDataUrl" />
+    <formEmpty link="Requests" title="No Cases to Show" :url="noDataUrl" />
   </div>
 </template>
 
