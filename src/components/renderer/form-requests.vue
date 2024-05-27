@@ -149,7 +149,8 @@ export default {
           .then((response) => {
             this.showTable = response.data.data.length !== 0;
             for (const record of response.data.data) {
-              // format Status
+              record.case_number = this.formatOpenCase(record, "case_number");
+              record.case_title = this.formatOpenCase(record, "case_title");
               record.status = this.formatStatus(record.status);
             }
             this.tableData = response.data;
@@ -196,9 +197,20 @@ export default {
           color = "success";
           label = "In Progress";
       }
-      return (`<span class="badge badge-${color} status-${color}"> ${label} </span>`);
+      return `<span class="badge badge-${color} status-${color}"> ${label} </span>`;
     },
-    openRequest(data, index) {
+    /**
+     * Add the formart to column to open a case in other tab
+     */
+    formatOpenCase(value, option) {
+      const attr = value;
+      if (option === "case_title") {
+        attr[option] = value.case_title_formatted || value.case_title || "";
+      }
+      return `<a href="${this.openRequest(value)}" class="text-nowrap"
+        target="_blank">${attr[option]}</a>`;
+    },
+    openRequest(data) {
       return `/requests/${data.id}`;
     },
     classDueDate(value) {
@@ -279,7 +291,7 @@ export default {
 
       this.fields.push({
         name: "__slot:actions",
-        title: "",
+        title: ""
       });
     },
     getColumns() {
@@ -310,10 +322,10 @@ export default {
           width: 113,
           fixed_width: 314,
           resizable: false,
-          filter_subject: { type: "Status" },
+          filter_subject: { type: "Status" }
         }
       ];
-    },
+    }
   }
 };
 </script>
