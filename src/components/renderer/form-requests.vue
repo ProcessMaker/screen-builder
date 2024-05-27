@@ -317,3 +317,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.pm-table-container {
+  height: 300px;
+}
+</style>
