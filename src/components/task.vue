@@ -380,23 +380,71 @@ export default {
         }
       });
     },
+    /**
+     * Closes the current task and performs necessary actions based on task properties.
+     * @param {string|null} parentRequestId - The parent request ID.
+     */
     closeTask(parentRequestId = null) {
-      if (this.hasErrors) {
-        this.$emit('error', this.requestId);
-        return;
-      }
+        const invoker = new TaskInvoker();
 
-      if (this.task.process_request.status === 'COMPLETED') {
-        this.loadNextAssignedTask(parentRequestId);
-      } else if (this.loadingButton) {
-        this.loadNextAssignedTask(parentRequestId);
-      } else if (this.task.allow_interstitial) {
-        this.task.interstitial_screen['_interstitial'] = true;
-        this.screen = this.task.interstitial_screen;
-        this.loadNextAssignedTask(parentRequestId);
-      } else if (!this.taskPreview) {
-        this.$emit('closed', this.task.id);
+        if (this.hasErrors) {
+            invoker.setCommand(new EmitErrorCommand(this));
+        }
+
+        if (this.shouldLoadNextTask()) {
+            invoker.setCommand(new LoadNextTaskCommand(this));
+        } else if (this.task.allow_interstitial) {
+            invoker.setCommand(new ShowInterstitialCommand(this));
+        } else if (!this.taskPreview) {
+            invoker.setCommand(new EmitClosedEventCommand(this));
+        }
+
+        invoker.executeCommands(parentRequestId);
+    },
+
+    /**
+     * Checks if the next task should be loaded.
+     * @returns {boolean} - True if the next task should be loaded, otherwise false.
+     */
+    shouldLoadNextTask() {
+        return this.task.process_request.status === 'COMPLETED' || this.loadingButton;
+    },
+    /**
+     * Shows the interstitial screen and loads the next assigned task.
+     * @param {string|null} parentRequestId - The parent request ID.
+     */
+    showInterstitial(parentRequestId) {
+      // Show the interstitial screen
+      this.task.interstitial_screen['_interstitial'] = true;
+      this.screen = this.task.interstitial_screen;
+
+      // Load the next assigned task
+      this.loadNextAssignedTask(parentRequestId);
+    },
+    /**
+     * Emits an error event.
+     */
+    emitError() {
+        this.$emit('error', this.requestId);
+    },
+    /**
+     * Emits a closed event.
+     */
+    emitClosedEvent() {
+      this.$emit('closed', this.task.id, this.getDestinationUrl());
+    },
+    /**
+     * Retrieves the destination URL for the closed event.
+     * @returns {string|null} - The destination URL.
+     */
+     getDestinationUrl() {
+      // If the element destination is 'taskSource', use the document referrer
+      if (this.task?.elementDestination === 'taskSource') {
+          return document.referrer;
       }
+      
+      // If element destination is not set, try to get it from sessionStorage
+      return this.task.elementDestination || sessionStorage.getItem('elementDestinationURL') || null;
     },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
@@ -617,4 +665,51 @@ export default {
     this.unsubscribeSocketListeners();
   },
 };
+// Command classes
+class Command {
+    constructor(receiver) {
+        this.receiver = receiver;
+    }
+
+    execute() {
+        throw new Error('execute method must be implemented');
+    }
+}
+
+class LoadNextTaskCommand extends Command {
+    execute(parentRequestId) {
+        this.receiver.loadNextAssignedTask(parentRequestId);
+    }
+}
+
+class ShowInterstitialCommand extends Command {
+    execute(parentRequestId) {
+        this.receiver.showInterstitial(parentRequestId);
+    }
+}
+class EmitErrorCommand extends Command {
+    execute() {
+        this.receiver.emitError();
+    }
+}
+class EmitClosedEventCommand extends Command {
+    execute() {
+        this.receiver.emitClosedEvent();
+    }
+}
+
+class TaskInvoker {
+    constructor() {
+        this.commands = [];
+    }
+
+    setCommand(command) {
+        this.commands.push(command);
+    }
+
+    executeCommands(parentRequestId) {
+        this.commands.forEach(command => command.execute(parentRequestId));
+        this.commands = []; // Clear the commands after execution
+    }
+}
 </script>
