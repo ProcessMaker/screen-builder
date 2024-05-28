@@ -31,51 +31,77 @@
         <td v-for="(header, colIndex) in tableHeaders"
           :key="`${rowIndex}-${colIndex}`"
         >
-          <template v-if="header.field === 'due_at'">
-            <span
-              :class="[
-                'badge',
-                'badge-' + row['color_badge'],
-                'due-' + row['color_badge'],
-              ]"
-            >
-              {{ formatRemainingTime(row.due_at) }}
-            </span>
-            <span>{{ getNestedPropertyValue(row, header) }}</span>
-          </template>
-          <template v-else-if="header.field === 'is_priority'">
-            <span>
-              <img
-                :src="
-                  row[header.field]
-                    ? '/img/priority.svg'
-                    : '/img/no-priority.svg'
-                "
-                :alt="row[header.field] ? 'priority' : 'no-priority'"
-                width="20"
-                height="20"
-                @click.prevent="
-                  togglePriority(row.id, !row[header.field])
-                "
-              />
-            </span>
-          </template>
-          <template v-else>
+          <template v-if="containsHTML(getNestedPropertyValue(row, header))">
             <div
               :id="`element-${rowIndex}-${colIndex}`"
               :class="{ 'pm-table-truncate': header.truncate }"
               :style="{ maxWidth: header.width + 'px' }"
             >
-              {{ getNestedPropertyValue(row, header) }}
-              <b-tooltip
-                v-if="header.truncate"
-                :target="`element-${rowIndex}-${colIndex}`"
-                custom-class="pm-table-tooltip"
-                @show="checkIfTooltipIsNeeded"
-              >
-                {{ getNestedPropertyValue(row, header) }}
-              </b-tooltip>
+              <span v-html="sanitize(getNestedPropertyValue(row, header))"></span>
             </div>
+            <b-tooltip
+              v-if="header.truncate"
+              :target="`element-${rowIndex}-${colIndex}`"
+              custom-class="pm-table-tooltip"
+              @show="checkIfTooltipIsNeeded"
+            >
+              {{ sanitizeTooltip(getNestedPropertyValue(row, header)) }}
+            </b-tooltip>
+          </template>
+          <template v-else>
+            <template v-if="isComponent(row[header.field])">
+              <component
+                :is="row[header.field].component"
+                v-bind="row[header.field].props"
+              >
+              </component>
+            </template>
+            <template v-else>
+              <template v-if="header.field === 'due_at'">
+                <span
+                  :class="[
+                    'badge',
+                    'badge-' + row['color_badge'],
+                    'due-' + row['color_badge'],
+                  ]"
+                >
+                  {{ formatRemainingTime(row.due_at) }}
+                </span>
+                <span>{{ getNestedPropertyValue(row, header) }}</span>
+              </template>
+              <template v-else-if="header.field === 'is_priority'">
+                <span>
+                  <img
+                    :src="
+                      row[header.field]
+                        ? '/img/priority.svg'
+                        : '/img/no-priority.svg'
+                    "
+                    :alt="row[header.field] ? 'priority' : 'no-priority'"
+                    width="20"
+                    height="20"
+                    @click.prevent="togglePriority(row.id, !row[header.field])"
+                  />
+                </span>
+              </template>
+              <template v-else>
+                <div
+                  :id="`element-${rowIndex}-${colIndex}`"
+                  :class="{ 'pm-table-truncate': header.truncate }"
+                  :style="{ maxWidth: header.width + 'px' }"
+                >
+                  {{ getNestedPropertyValue(row, header) }}
+                  <b-tooltip
+                    v-if="header.truncate"
+                    :target="`element-${rowIndex}-${colIndex}`"
+                    custom-class="pm-table-tooltip"
+                    @show="checkIfTooltipIsNeeded"
+                  >
+                    {{ getNestedPropertyValue(row, header) }}
+                  </b-tooltip>
+                </div>
+              </template>
+            </template>
           </template>
         </td>
       </template>
@@ -190,8 +216,9 @@ export default {
           .then((response) => {
             this.showTable = response.data.data.length !== 0;
             for (const record of response.data.data) {
-              // format Status
-              record.case_title = record.process_request.case_title;
+              record["case_title"] = this.formatCaseTitle(record.process_request, record);
+              record["color_badge"] = this.formatColorBadge(record["due_at"]);
+              record["element_name"] = this.formatActiveTask(record);
             }
             this.tableData = response.data;
             this.countResponse = this.tableData.meta.total;
@@ -216,6 +243,31 @@ export default {
           });
       });
     },
+    formatActiveTask(row) {
+      return `
+      <a href="${this.openTask(row)}"
+        data-cy="active-task-data"
+        class="text-nowrap">
+        ${row.element_name}
+      </a>`;
+    },
+    formatColorBadge(date) {
+      const days = this.remainingTime(date);
+      return days >= 0 ? "primary" : "danger";
+    },
+    formatCaseTitle(processRequest, record) {
+      return `
+      <a href="${this.openTask(processRequest, 1)}"
+         class="text-nowrap">
+         ${
+           processRequest.case_title_formatted ||
+           processRequest.case_title ||
+           record.case_title ||
+           ""
+         }
+      </a>`;
+    },
+    openTask() {},
     getColumns() {
       const columns = [
         {
@@ -386,6 +438,32 @@ export default {
       }
       return date.diff(this.now);
     },
+    sanitizeTooltip(html) {
+      let cleanHtml = html.replace(/<script(.*?)>[\s\S]*?<\/script>/gi, "");
+      cleanHtml = cleanHtml.replace(/<style(.*?)>[\s\S]*?<\/style>/gi, "");
+      cleanHtml = cleanHtml.replace(
+        /<(?!img|input|meta|time|button|select|textarea|datalist|progress|meter)[^>]*>/gi,
+        ""
+      );
+      cleanHtml = cleanHtml.replace(/\s+/g, " ");
+
+      return cleanHtml;
+    }
   }
 };
 </script>
+
+<style scoped>
+.due-danger {
+  background-color: rgba(237, 72, 88, 0.2);
+  color: rgba(237, 72, 88, 1);
+  font-weight: 600;
+  border-radius: 5px;
+}
+.due-primary {
+  background: rgba(205, 221, 238, 1);
+  color: rgba(86, 104, 119, 1);
+  font-weight: 600;
+  border-radius: 5px;
+}
+</style>
