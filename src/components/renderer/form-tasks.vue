@@ -1,48 +1,51 @@
 <template>
   <div v-if="showTable">
-    <vuetable
-      ref="vuetable"
-      :data-manager="dataManager"
-      :sort-order="sortOrder"
-      :api-mode="false"
-      :fields="fields"
+    <filter-table
+      :headers="tableHeaders"
       :data="tableData"
-      :css="css"
-      data-path="data"
-      pagination-path="meta"
+      :unread="unreadColumnName"
+      :loading="shouldShowLoader"
     >
-      <template slot="name" slot-scope="props">
-        <b-link
-          v-uni-id="props.rowData.id.toString()"
-          :href="onAction('edit', props.rowData, props.rowIndex)"
+      <template
+        v-for="(column, index) in tableHeaders"
+        v-slot:[column.field]
+      >
+        <div
+          :key="index"
+          style="display: inline-block"
         >
-          {{ props.rowData.element_name }}
-        </b-link>
+          <img
+            v-if="column.field === 'is_priority'"
+            src="../../assets/priority-header.svg"
+            alt="priority-header"
+            width="20"
+            height="20"
+          />
+          <span v-else>{{ $t(column.label) }}</span>
+        </div>
       </template>
-      <template slot="requestName" slot-scope="props">
-        <b-link
-          :href="onAction('showRequestSummary', props.rowData, props.rowIndex)"
+      <template
+        v-for="(row, rowIndex) in data.data"
+        v-slot:[`row-${rowIndex}`]
+      >
+        <td v-for="(header, colIndex) in tableHeaders"
+          :key="`${rowIndex}-${colIndex}`"
         >
-          #{{ props.rowData.process_request.id }}
-          {{ props.rowData.process_request.name }}
-        </b-link>
+          <template v-if="header.field === 'due_at'">
+            <span
+              :class="[
+                'badge',
+                'badge-' + row['color_badge'],
+                'due-' + row['color_badge'],
+              ]"
+            >
+              {{ formatRemainingTime(row.due_at) }}
+            </span>
+            <span>{{ getNestedPropertyValue(row, header) }}</span>
+          </template>
+        </td>
       </template>
-      <template slot="dueDate" slot-scope="props">
-        <span :class="classDueDate(props.rowData.due_at)">
-          {{ formatDate(props.rowData.due_at) }}
-        </span>
-      </template>
-      <template slot="completedDate" slot-scope="props">
-        <span class="text-dark">
-          {{ formatDate(props.rowData.completed_at) }}
-        </span>
-      </template>
-      <template slot="preview" slot-scope="props">
-        <span>
-          <i class="fa fa-eye" @click="previewTasks(props.rowData)" />
-        </span>
-      </template>
-    </vuetable>
+    </filter-table>
     <component :is="tasksPreview" ref="preview-sidebar" />
   </div>
   <div v-else>
@@ -71,6 +74,7 @@ export default {
       order_direction: "DESC",
       status: "",
       showTable: true,
+      tableHeaders: [],
       sortOrder: [
         {
           field: "ID",
@@ -88,7 +92,7 @@ export default {
     }
   },
   mounted() {
-    this.setFields();
+    this.setupColumns();
     this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
     this.fetch();
     this.$root.$on("dropdownSelectionTask", this.fetchData);
@@ -151,6 +155,10 @@ export default {
           )
           .then((response) => {
             this.showTable = response.data.data.length !== 0;
+            for (const record of response.data.data) {
+              // format Status
+              record.case_title = record.process_request.case_title;
+            }
             this.tableData = response.data;
             this.countResponse = this.tableData.meta.total;
             this.countOverdue = `${this.tableData.meta.in_overdue}`;
@@ -178,16 +186,27 @@ export default {
       const columns = [
         {
           label: "Task",
-          field: "task",
+          field: "element_name",
           sortable: true,
-          default: true
+          default: true,
+          width: 153,
         },
         {
-          label: "Request",
-          field: "request",
+          label: "Priority",
+          field: "is_priority",
+          sortable: false,
+          default: true,
+          width: 48,
+        },
+        {
+          label: "Case title",
+          field: "case_title",
+          name: "__slot:case_number",
           sortable: true,
-          default: true
-        }
+          default: true,
+          width: 314,
+          truncate: true,
+        },
       ];
 
       if (this.status === "CLOSED") {
@@ -195,19 +214,22 @@ export default {
           label: "Completed",
           field: "completed_at",
           sortable: true,
-          default: true
+          default: true,
+          width: 220,
         });
       } else {
         columns.push({
           label: "Due",
           field: "due_at",
           sortable: true,
-          default: true
+          default: true,
+          width: 220,
         });
       }
       return columns;
     },
-    setFields() {
+    setupColumns() {
+      this.tableHeaders = this.getColumns();
       const columns = this.getColumns();
 
       columns.forEach((column) => {
@@ -220,6 +242,10 @@ export default {
             field.name = "__slot:name";
             field.field = "element_name";
             field.sortField = "element_name";
+            break;
+          case "is_priority":
+            field.name = "__slot:is_priority";
+            field.field = "is_priority";
             break;
           case "request":
             field.name = "__slot:requestName";
@@ -253,10 +279,6 @@ export default {
       this.fields.push({
         name: "__slot:preview",
         title: ""
-      });
-
-      this.$nextTick(() => {
-        this.$refs.vuetable.normalizeFields();
       });
     },
     formatDate(value, format) {
@@ -311,7 +333,36 @@ export default {
       this.pmql = "";
       this.pmql = searchData;
       this.fetch();
-    }
+    },
+    sanitizeTooltip(html) {
+      let cleanHtml = html.replace(/<script(.*?)>[\s\S]*?<\/script>/gi, "");
+      cleanHtml = cleanHtml.replace(/<style(.*?)>[\s\S]*?<\/style>/gi, "");
+      cleanHtml = cleanHtml.replace(
+        /<(?!img|input|meta|time|button|select|textarea|datalist|progress|meter)[^>]*>/gi,
+        ""
+      );
+      cleanHtml = cleanHtml.replace(/\s+/g, " ");
+
+      return cleanHtml;
+    },
+    formatRemainingTime(date) {
+      const millisecondsPerDay = 1000 * 60 * 60 * 24;
+      const remaining = this.remainingTime(date);
+      const daysRemaining = Math.ceil(remaining / millisecondsPerDay);
+      if (daysRemaining <= 1 && daysRemaining >= -1) {
+        const hoursRemaining = Math.ceil(remaining / (1000 * 60 * 60));
+        return `${hoursRemaining}H`;
+      }
+
+      return `${daysRemaining}D`;
+    },
+    remainingTime(date) {
+      date = moment(date);
+      if (!date.isValid()) {
+        return 0;
+      }
+      return date.diff(this.now);
+    },
   }
 };
 </script>
