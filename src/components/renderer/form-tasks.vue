@@ -25,7 +25,7 @@
         </div>
       </template>
       <template
-        v-for="(row, rowIndex) in data.data"
+        v-for="(row, rowIndex) in tableData.data"
         v-slot:[`row-${rowIndex}`]
       >
         <td v-for="(header, colIndex) in tableHeaders"
@@ -42,6 +42,40 @@
               {{ formatRemainingTime(row.due_at) }}
             </span>
             <span>{{ getNestedPropertyValue(row, header) }}</span>
+          </template>
+          <template v-else-if="header.field === 'is_priority'">
+            <span>
+              <img
+                :src="
+                  row[header.field]
+                    ? '../../assets/priority.svg'
+                    : '../../assets/no-priority.svg'
+                "
+                :alt="row[header.field] ? 'priority' : 'no-priority'"
+                width="20"
+                height="20"
+                @click.prevent="
+                  togglePriority(row.id, !row[header.field])
+                "
+              />
+            </span>
+          </template>
+          <template v-else>
+            <div
+              :id="`element-${rowIndex}-${colIndex}`"
+              :class="{ 'pm-table-truncate': header.truncate }"
+              :style="{ maxWidth: header.width + 'px' }"
+            >
+              {{ getNestedPropertyValue(row, header) }}
+              <b-tooltip
+                v-if="header.truncate"
+                :target="`element-${rowIndex}-${colIndex}`"
+                custom-class="pm-table-tooltip"
+                @show="checkIfTooltipIsNeeded"
+              >
+                {{ getNestedPropertyValue(row, header) }}
+              </b-tooltip>
+            </div>
           </template>
         </td>
       </template>
@@ -333,17 +367,6 @@ export default {
       this.pmql = "";
       this.pmql = searchData;
       this.fetch();
-    },
-    sanitizeTooltip(html) {
-      let cleanHtml = html.replace(/<script(.*?)>[\s\S]*?<\/script>/gi, "");
-      cleanHtml = cleanHtml.replace(/<style(.*?)>[\s\S]*?<\/style>/gi, "");
-      cleanHtml = cleanHtml.replace(
-        /<(?!img|input|meta|time|button|select|textarea|datalist|progress|meter)[^>]*>/gi,
-        ""
-      );
-      cleanHtml = cleanHtml.replace(/\s+/g, " ");
-
-      return cleanHtml;
     },
     formatRemainingTime(date) {
       const millisecondsPerDay = 1000 * 60 * 60 * 24;
