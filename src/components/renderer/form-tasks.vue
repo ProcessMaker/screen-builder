@@ -48,8 +48,8 @@
               <img
                 :src="
                   row[header.field]
-                    ? '../../assets/priority.svg'
-                    : '../../assets/no-priority.svg'
+                    ? '/img/priority.svg'
+                    : '/img/no-priority.svg'
                 "
                 :alt="row[header.field] ? 'priority' : 'no-priority'"
                 width="20"
