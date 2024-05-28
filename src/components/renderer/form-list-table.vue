@@ -2,14 +2,10 @@
   <div class="card" :style="customStyle">
     <div class="card-header d-flex justify-content-between align-items-center">
       <template v-if="dataControl.showControl">
-        <div class="mb-1 mt-1">
-          <b-avatar
-            v-if="dataControl.showAvatar"
-            size="2em"
-            :variant="dataControl.variant"
-            :text="dataControl.count"
-            class="avatar-text"
-          ></b-avatar>
+        <div class="head-filter">
+          <b-badge class="badge-custom" pill :variant="dataControl.variant">
+            {{ dataControl.count }}
+          </b-badge>
           <p class="control-text mb-0" :style="dataControl.colorText">
             {{ $t(title) }}
           </p>
@@ -408,5 +404,16 @@ export default {
 
 .dropdown-item {
   padding: 10px 8px;
+}
+.head-filter {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  padding: 8px;
+  height: 24px;
+  align-items: center;
 }
 </style>
