@@ -437,12 +437,11 @@ export default {
      * Retrieves the destination URL for the closed event.
      * @returns {string|null} - The destination URL.
      */
-     getDestinationUrl() {
+    getDestinationUrl() {
       // If the element destination is 'taskSource', use the document referrer
       if (this.task?.elementDestination === 'taskSource') {
           return document.referrer;
       }
-      
       // If element destination is not set, try to get it from sessionStorage
       return this.task.elementDestination || sessionStorage.getItem('elementDestinationURL') || null;
     },
@@ -529,14 +528,14 @@ export default {
     activityAssigned() {
       // This may no longer be needed
     },
-    processCompleted() {
+    processCompleted(data = null) {
       let requestId;
       if (this.parentRequest) {
         requestId = this.getAllowedRequestId();
         this.$emit('completed', requestId);
       }
       if (requestId !== this.requestId) {
-        this.$emit('completed', this.requestId);
+        this.$emit('completed', this.requestId, data?.endEventDestination);
       }
     },
     getAllowedRequestId() {
