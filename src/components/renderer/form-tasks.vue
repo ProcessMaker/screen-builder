@@ -298,7 +298,7 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOption) {
-      if (selectedOption === "In Progress" || selectedOption === "all") {
+      if (selectedOption === "In Progress" || selectedOption === "View All") {
         this.filterDropdowns = "";
         this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
       }

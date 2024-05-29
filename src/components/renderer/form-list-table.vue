@@ -11,8 +11,8 @@
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
             <b-dropdown
-              variant="link"
-              right
+              variant="outline-secondary"
+              offset="-70"
               no-caret
             >
               <template #button-content>
@@ -43,8 +43,8 @@
         <template v-if="dataControl.dropdownShow === 'requests'">
           <div class="mr-4">
             <b-dropdown
-              variant="link"
-              right
+              variant="outline-secondary"
+              offset="-50"
               size="sm"
             >
               <template #button-content>
@@ -67,8 +67,8 @@
         <template v-if="dataControl.dropdownShow === 'tasks'">
           <div class="mr-4">
             <b-dropdown
-              variant="link"
-              right
+              variant="outline-secondary"
+              offset="-50"
               size="sm"
             >
               <template #button-content>
@@ -205,9 +205,7 @@ export default {
       this.typeSelected = listType;
       if (listType === "tasks") {
         this.$root.$emit("dropdownSelectionTask", valueSelected);
-        this.titleDropdown =
-          valueSelected === "View All" ? this.viewAll : valueSelected;
-        this.colorBadge();
+        this.titleDropdown = valueSelected;
       } else {
         if (listType === "requests_filter") {
           this.optionRequest = valueSelected;
@@ -219,9 +217,7 @@ export default {
           }
         }
         if (listType === "requests_dropdown") {
-          this.titleDropdown =
-            valueSelected === "View All" ? this.viewAll : valueSelected;
-          this.colorBadge();
+          this.titleDropdown = valueSelected;
           this.dropdownRequest = valueSelected;
         }
         combinedFilter.push(this.optionRequest);
@@ -318,8 +314,10 @@ export default {
   background-color: #f9f9f9;
 }
 
-.btn-outline-secondary {
+.btn-outline-secondary,
+.btn-outline-secondary:focus {
   border: none;
+  box-shadow: none;
 }
 
 .item-text {
@@ -334,7 +332,7 @@ export default {
 
 .dropdown-menu {
   padding: 0px;
-  width: 250px;
+  width: 180px;
   box-shadow: 0px 4px 8px 0px #0000001A;
   border-radius: 4px;
 }
@@ -348,11 +346,23 @@ export default {
   letter-spacing: -0.02em;
   text-align: left;
 }
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:not(:disabled):not(.disabled):active,
+.btn-outline-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-secondary.dropdown-toggle {
+    background: none;
+    color: #228fed;
+    border: none;
+    box-shadow: none;
+}
+
 .head-filter {
   display: flex;
   align-items: baseline;
   gap: 8px;
 }
+
 .badge {
   display: inline-flex;
   padding: 8px;
