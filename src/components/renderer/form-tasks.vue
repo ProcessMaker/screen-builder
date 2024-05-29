@@ -256,16 +256,31 @@ export default {
       return days >= 0 ? "primary" : "danger";
     },
     formatCaseTitle(processRequest, record) {
+      const draftBadge = this.verifyDraft(record);
       return `
-      <a href="${this.openTask(processRequest, 1)}"
-         class="text-nowrap">
-         ${
-           processRequest.case_title_formatted ||
-           processRequest.case_title ||
-           record.case_title ||
-           ""
-         }
-      </a>`;
+        ${draftBadge}
+        <a href="${this.openTask(processRequest, 1)}" class="text-nowrap">
+         ${this.getCaseTitle(processRequest, record)}
+        </a>`;
+    },
+    getCaseTitle(process, record) {
+      return (
+        process.case_title_formatted ||
+        process.case_title ||
+        record.case_title ||
+        ""
+      );
+    },
+    verifyDraft(record) {
+      let draftBadge = "";
+      if (record.draft && record.status !== "CLOSED") {
+        draftBadge = `
+          <span class ="badge badge-warning status-warnig">
+            ${this.$t("Draft")}
+          </span>
+        `;
+      }
+      return draftBadge;
     },
     openTask() {},
     getColumns() {
