@@ -62,7 +62,7 @@
                   :class="[
                     'badge',
                     'badge-' + row['color_badge'],
-                    'due-' + row['color_badge'],
+                    'due-' + row['color_badge']
                   ]"
                 >
                   {{ formatRemainingTime(row.due_at) }}
@@ -72,11 +72,7 @@
               <template v-else-if="header.field === 'is_priority'">
                 <span>
                   <img
-                    :src="
-                      row[header.field]
-                        ? '/img/priority.svg'
-                        : '/img/no-priority.svg'
-                    "
+                    :src="getImgPriority(row[header.field])"
                     :alt="row[header.field] ? 'priority' : 'no-priority'"
                     width="20"
                     height="20"
@@ -259,7 +255,7 @@ export default {
       const draftBadge = this.verifyDraft(record);
       return `
         ${draftBadge}
-        <a href="${this.openTask(processRequest, 1)}" class="text-nowrap">
+        <a href="${this.openTask(record)}" class="text-nowrap">
          ${this.getCaseTitle(processRequest, record)}
         </a>`;
     },
@@ -282,7 +278,9 @@ export default {
       }
       return draftBadge;
     },
-    openTask() {},
+    openTask(data) {
+      return `/tasks/${data.id}/edit`;
+    },
     getColumns() {
       const columns = [
         {
@@ -291,6 +289,8 @@ export default {
           sortable: true,
           default: true,
           width: 153,
+          fixed_width: 153,
+          resizable: false
         },
         {
           label: "Priority",
@@ -298,6 +298,8 @@ export default {
           sortable: false,
           default: true,
           width: 48,
+          fixed_width: 48,
+          resizable: false
         },
         {
           label: "Case title",
@@ -307,7 +309,9 @@ export default {
           default: true,
           width: 314,
           truncate: true,
-        },
+          fixed_width: 314,
+          resizable: false
+        }
       ];
 
       if (this.status === "CLOSED") {
@@ -317,6 +321,8 @@ export default {
           sortable: true,
           default: true,
           width: 220,
+          fixed_width: 220,
+          resizable: false
         });
       } else {
         columns.push({
@@ -325,6 +331,8 @@ export default {
           sortable: true,
           default: true,
           width: 220,
+          fixed_width: 220,
+          resizable: false
         });
       }
       return columns;
@@ -463,6 +471,16 @@ export default {
       cleanHtml = cleanHtml.replace(/\s+/g, " ");
 
       return cleanHtml;
+    },
+    getImgPriority(data) {
+      return data ? "/img/priority.svg" : "/img/no-priority.svg";
+    },
+    togglePriority(taskId, isPriority) {
+      ProcessMaker.apiClient
+        .put(`tasks/${taskId}/setPriority`, { is_priority: isPriority })
+        .then(() => {
+          this.fetch();
+        });
     }
   }
 };
