@@ -466,4 +466,7 @@ export default {
   font-weight: 600;
   border-radius: 5px;
 }
+.pm-table-container {
+  height: 300px;
+}
 </style>
