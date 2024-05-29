@@ -380,6 +380,7 @@ export default {
   height: 300px;
   overflow: auto;
   background-color: #f9f9f9;
+  padding: 0;
 }
 
 .btn-outline-secondary {
