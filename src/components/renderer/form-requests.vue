@@ -85,6 +85,7 @@ export default {
       orderDirection: "DESC",
       additionalParams: "",
       showTable: true,
+      pmqlSearch: "",
       sortOrder: [
         {
           field: "id",
@@ -114,6 +115,10 @@ export default {
 
         if (this.pmql !== undefined) {
           pmql = this.pmql;
+        }
+
+        if (this.pmqlSearch) {
+          pmql = pmql + "AND" + this.pmqlSearch;
         }
 
         let { filter } = this;
@@ -224,23 +229,23 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOptions) {
-      if (selectedOptions[0] === "by_me" && selectedOptions[1] !== "all") {
+      if (selectedOptions[0] === "by_me" && selectedOptions[1] !== "View All") {
         this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "${selectedOptions[1]}")`;
       }
       if (
         selectedOptions[0] === "as_participant" &&
-        selectedOptions[1] !== "all"
+        selectedOptions[1] !== "View All"
       ) {
         this.pmql = `(status = "${selectedOptions[1]}") AND (participant = "${Processmaker.user.username}")`;
       }
-      if (selectedOptions[1] === "all") {
+      if (selectedOptions[1] === "View All") {
         this.pmql = `(user_id = ${ProcessMaker.user.id}) AND ((status = "In Progress") OR (status = "Completed"))`;
       }
       this.fetch();
     },
     fetchSearch(searchData) {
-      this.pmql = "";
-      this.pmql = searchData;
+      this.pmqlSearch = "";
+      this.pmqlSearch = searchData;
       this.fetch();
     },
     setupColumns() {

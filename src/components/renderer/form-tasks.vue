@@ -135,6 +135,7 @@ export default {
       status: "",
       showTable: true,
       tableHeaders: [],
+      pmqlSearch: "",
       sortOrder: [
         {
           field: "ID",
@@ -153,7 +154,7 @@ export default {
   },
   mounted() {
     this.setupColumns();
-    this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
+    this.pmql = `(user_id = ${ProcessMaker.user.id})`;
     this.fetch();
     this.$root.$on("dropdownSelectionTask", this.fetchData);
     this.$root.$on("searchTask", this.fetchSearch);
@@ -173,6 +174,10 @@ export default {
 
         if (this.pmql !== undefined) {
           pmql = this.pmql;
+        }
+
+        if (this.pmqlSearch) {
+          pmql = pmql + "AND" + this.pmqlSearch;
         }
 
         if (this.filterDropdowns !== undefined) {
@@ -421,9 +426,13 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOption) {
-      if (selectedOption === "In Progress" || selectedOption === "all") {
-        this.filterDropdowns = "";
-        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
+      this.filterDropdowns = "";
+      this.pmql = `(user_id = ${ProcessMaker.user.id})`
+      if (selectedOption === "Self-service") {
+        this.pmql = this.pmql + `AND (status = "Self Service")`;
+      }
+      if (selectedOption === "In Progress") {
+        this.pmql = this.pmql + `AND (status = "In Progress")`;
       }
       if (selectedOption === "Overdue") {
         this.filterDropdowns = "overdue=true";
@@ -431,8 +440,8 @@ export default {
       this.fetch();
     },
     fetchSearch(searchData) {
-      this.pmql = "";
-      this.pmql = searchData;
+      this.pmqlSearch = "";
+      this.pmqlSearch = searchData;
       this.fetch();
     },
     formatRemainingTime(date) {
