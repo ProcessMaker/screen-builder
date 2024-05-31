@@ -260,7 +260,7 @@ export default {
       const draftBadge = this.verifyDraft(record);
       return `
         ${draftBadge}
-        <a href="${this.openTask(record)}" class="text-nowrap">
+        <a href="${this.openRequest(processRequest)}" class="text-nowrap">
          ${this.getCaseTitle(processRequest, record)}
         </a>`;
     },
@@ -285,6 +285,9 @@ export default {
     },
     openTask(data) {
       return `/tasks/${data.id}/edit`;
+    },
+    openRequest(data) {
+      return `/requests/${data.id}`;
     },
     getColumns() {
       const columns = [
