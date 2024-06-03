@@ -419,7 +419,7 @@ export default {
       this.pmql = `(user_id = ${ProcessMaker.user.id})`
       this.advancedFilter = "";
       if (selectedOption === "Self-service") {
-        this.advancedFilter = `&advanced_filter=(${encodeURIComponent('{"subject":{"type":"Status"},"operator":"=","value":"Self Service"}')})`;
+        this.advancedFilter = `&advanced_filter=[${encodeURIComponent('{"subject":{"type":"Status","value":"status"},"operator":"=","value":"Self Service"}')}]`;
       }
       if (selectedOption === "In Progress") {
         this.pmql = this.pmql + `AND (status = "In Progress")`;
