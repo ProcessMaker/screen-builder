@@ -139,6 +139,7 @@ export default {
           direction: "DESC"
         }
       ],
+      advancedFilter: "",
       tasksPreview:
         (window.SharedComponents && window.SharedComponents.TasksHome) || {}
     };
@@ -210,9 +211,12 @@ export default {
         ProcessMaker.apiClient
           .get(
             `tasks?page=${this.page}&include=process,processRequest,processRequest.user,user,data` +
-              `&pmql=${encodeURIComponent(pmql)}&per_page=${
-                this.perPage
-              }${filterParams}${this.getSortParam()}&non_system=true&${filterDropdowns}`
+              `&pmql=${encodeURIComponent(pmql)}
+              &per_page=${this.perPage}
+              ${filterParams}
+              ${this.getSortParam()}
+              ${this.advancedFilter}
+              &non_system=true&${filterDropdowns}`
           )
           .then((response) => {
             this.showTable = response.data.data.length !== 0;
@@ -439,8 +443,10 @@ export default {
     fetchData(selectedOption) {
       this.filterDropdowns = "";
       this.pmql = `(user_id = ${ProcessMaker.user.id})`
+      this.advancedFilter = "";
       if (selectedOption === "Self-service") {
-        this.pmql = this.pmql + `AND (status = "Self Service")`;
+        this.pmql = "";
+        this.advancedFilter = `&advanced_filter=[${encodeURIComponent('{"subject":{"type":"Status","value":"status"},"operator":"=","value":"Self Service"}')}]`;
       }
       if (selectedOption === "In Progress") {
         this.pmql = this.pmql + `AND (status = "In Progress")`;
