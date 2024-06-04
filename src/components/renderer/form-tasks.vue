@@ -5,6 +5,8 @@
       :data="tableData"
       :unread="unreadColumnName"
       :loading="shouldShowLoader"
+      @table-row-mouseover="handleRowMouseover"
+      @table-row-mouseleave="handleRowMouseleave"
     >
       <template
         v-for="(column, index) in tableHeaders"
@@ -102,6 +104,31 @@
         </td>
       </template>
     </filter-table>
+    <component
+      :is="taskTooltip"
+      v-show="isTooltipVisible"
+      :position="rowPosition"
+    >
+      <template v-slot:task-tooltip-body>
+        <div @mouseover="clearHideTimer" @mouseleave="hideTooltip">
+          <slot
+            name="tooltip"
+            :tooltip-row-data="tooltipRowData"
+            :preview-tasks="previewTasks"
+          >
+            <span>
+              <b-button
+                class="icon-button"
+                variant="light"
+                @click="previewTasks(tooltipRowData)"
+              >
+                <i class="fas fa-eye" />
+              </b-button>
+            </span>
+          </slot>
+        </div>
+      </template>
+    </component>
     <component :is="tasksPreview" ref="preview-sidebar" />
   </div>
   <div v-else>
@@ -141,7 +168,14 @@ export default {
       ],
       advancedFilter: "",
       tasksPreview:
-        (window.SharedComponents && window.SharedComponents.TasksHome) || {}
+        (window.SharedComponents && window.SharedComponents.TasksHome) || {},
+      taskTooltip:
+        (window.SharedComponents && window.SharedComponents.TaskTooltip) || {},
+      rowPosition: {},
+      ellipsisShow: false,
+      isTooltipVisible: false,
+      disableRuleTooltip: false,
+      hiderTimer: null
     };
   },
   computed: {
@@ -499,6 +533,65 @@ export default {
         .then(() => {
           this.fetch();
         });
+    },
+    handleRowMouseover(row) {
+      debugger;
+      if (this.ellipsisShow) {
+        this.isTooltipVisible = !this.disableRuleTooltip;
+        this.clearHideTimer();
+        return;
+      }
+      this.clearHideTimer();
+
+      const tableContainer = document.getElementById("table-container");
+      const rectTableContainer = tableContainer.getBoundingClientRect();
+      const topAdjust = rectTableContainer.top;
+
+      let elementHeight = 28;
+
+      this.isTooltipVisible = !this.disableRuleTooltip;
+      this.tooltipRowData = row;
+
+      const rowElement = document.getElementById(`row-${row.id}`);
+      let yPosition = 0;
+
+      const rect = rowElement.getBoundingClientRect();
+      yPosition = rect.top + window.scrollY;
+
+      const selectedFiltersBar = document.querySelector(
+        ".selected-filters-bar"
+      );
+      const selectedFiltersBarHeight = selectedFiltersBar
+        ? selectedFiltersBar.offsetHeight
+        : 0;
+
+      elementHeight -= selectedFiltersBarHeight;
+
+      const rightBorderX = rect.right;
+
+      const bottomBorderY = yPosition - topAdjust - elementHeight + 100;
+
+      this.rowPosition = {
+        x: rightBorderX,
+        y: bottomBorderY
+      };
+    },
+    handleRowMouseleave() {
+      this.startHideTimer();
+    },
+    startHideTimer() {
+      this.hideTimer = setTimeout(() => {
+        this.hideTooltip();
+      }, 500);
+    },
+    clearHideTimer() {
+      clearTimeout(this.hideTimer);
+    },
+    hideTooltip() {
+      if (this.ellipsisShow) {
+        return;
+      }
+      this.isTooltipVisible = false;
     }
   }
 };
