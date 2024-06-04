@@ -212,7 +212,12 @@ export default {
       let { endpoint } = this;
 
       if (this.requestFiles) {
-        this.filesInfo.push(_.get(this.requestFiles, this.fileDataName, null));
+        const fileInfo = this.requestFiles?.[this.fileDataName];
+
+        if (fileInfo) {
+          this.filesInfo.push(fileInfo);
+        }
+
         return;
       }
 
@@ -247,22 +252,16 @@ export default {
         })
         .catch((error) => {
           const alert = document.querySelector(".alert-danger");
+          const defaultMessage = this.$t(
+            "Something went wrong and the file cannot be previewed or downloaded."
+          );
+          const message = error?.response?.data?.message || defaultMessage;
 
-          if (!alert) {
-            let message = this.$t(
-              "Something went wrong and the file cannot be previewed or downloaded."
-            );
-
-            if (error?.response?.data?.message) {
-              message = error.response.data.message;
-            }
-
-            if (
-              error?.response?.status === 404 ||
-              error?.response?.data?.message
-            ) {
-              window.ProcessMaker.alert(message, "danger");
-            }
+          if (
+            !alert &&
+            (error?.response?.status === 404 || error?.response?.data?.message)
+          ) {
+            window.ProcessMaker.alert(message, "danger");
           }
         });
     },
