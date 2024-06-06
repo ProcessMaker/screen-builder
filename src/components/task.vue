@@ -436,16 +436,25 @@ export default {
      * @returns {string|null} - The destination URL.
      */
     getDestinationUrl() {
-      // If the element destination is 'taskSource', use the document referrer
-      if (this.task?.elementDestination === "taskSource") {
-        return document.referrer;
+      // If the element destination type is 'taskSource', use the document referrer
+      if (this.task?.elementDestination?.type === "taskSource") {
+        return document.referrer || null;
       }
-      // If element destination is not set, try to get it from sessionStorage
-      return (
-        this.task.elementDestination?.url ||
-        sessionStorage.getItem("elementDestinationURL") ||
-        null
-      );
+
+      // If element destination URL is available, return it
+      const elementDestinationUrl = this.task?.elementDestination?.value;
+      if (elementDestinationUrl) {
+        return elementDestinationUrl;
+      }
+
+      // If no element destination URL, try to get it from sessionStorage
+      const sessionStorageUrl = sessionStorage.getItem("elementDestinationURL");
+      if (sessionStorageUrl) {
+        return sessionStorageUrl;
+      }
+
+      // If none of the above conditions are met, return null
+      return null;
     },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
