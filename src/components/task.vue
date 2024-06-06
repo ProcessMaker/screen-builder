@@ -430,7 +430,6 @@ export default {
      * Emits a closed event.
      */
     emitClosedEvent() {
-      debugger;
       this.$emit('closed', this.task.id, this.getDestinationUrl());
     },
     /**
@@ -438,7 +437,6 @@ export default {
      * @returns {string|null} - The destination URL.
      */
     getDestinationUrl() {
-      debugger;
       // If the element destination is 'taskSource', use the document referrer
       if (this.task?.elementDestination === "taskSource") {
         return document.referrer;
@@ -614,7 +612,11 @@ export default {
       try {
         // Verify if is not anotherProcess type
         if (data.endEventDestination.type !== "anotherProcess") {
-          this.$emit("completed", this.requestId, data?.endEventDestination);
+          this.$emit(
+            "completed",
+            this.requestId,
+            data?.endEventDestination.value
+          );
           return;
         }
         // Parse endEventDestination from the provided data
