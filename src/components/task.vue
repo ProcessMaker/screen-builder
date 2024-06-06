@@ -385,7 +385,6 @@ export default {
      * @param {string|null} parentRequestId - The parent request ID.
      */
     closeTask(parentRequestId = null) {
-      debugger;
       if (this.hasErrors) {
         this.emitError();
       }
