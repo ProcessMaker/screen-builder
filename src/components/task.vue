@@ -295,7 +295,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
+      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
