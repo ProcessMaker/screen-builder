@@ -56,7 +56,7 @@
     "@fortawesome/fontawesome-free": "^5.6.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@panter/vue-i18next": "^0.15.2",
-    "@processmaker/vue-form-elements": "0.52.1",
+    "@processmaker/vue-form-elements": "0.53.0",
     "@processmaker/vue-multiselect": "2.3.0",
     "@storybook/addon-essentials": "^7.6.13",
     "@storybook/addon-interactions": "^7.6.13",
@@ -115,7 +115,7 @@
   },
   "peerDependencies": {
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/vue-form-elements": "0.52.1",
+    "@processmaker/vue-form-elements": "0.53.0",
     "i18next": "^15.0.8",
     "vue": "^2.6.12",
     "vuex": "^3.1.1"
