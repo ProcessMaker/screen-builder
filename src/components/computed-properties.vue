@@ -189,12 +189,10 @@ export default {
         {
           label: this.$t("Name"),
           key: "property",
-          isMain: true,
         },
         {
           label: this.$t("Type"),
           key: "type",
-          isMain: false,
         },
       ],
       monacoOptions: {

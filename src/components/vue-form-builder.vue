@@ -610,7 +610,6 @@ export default {
         {
           label: this.$t("Name"),
           key: "name",
-          isMain: true,
         },
       ],
       config,
