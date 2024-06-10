@@ -295,7 +295,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
+      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -385,21 +385,17 @@ export default {
      * @param {string|null} parentRequestId - The parent request ID.
      */
     closeTask(parentRequestId = null) {
-        const invoker = new TaskInvoker();
+      if (this.hasErrors) {
+        this.emitError();
+      }
 
-        if (this.hasErrors) {
-            invoker.setCommand(new EmitErrorCommand(this));
-        }
-
-        if (this.shouldLoadNextTask()) {
-            invoker.setCommand(new LoadNextTaskCommand(this));
-        } else if (this.task.allow_interstitial) {
-            invoker.setCommand(new ShowInterstitialCommand(this));
-        } else if (!this.taskPreview) {
-            invoker.setCommand(new EmitClosedEventCommand(this));
-        }
-
-        invoker.executeCommands(parentRequestId);
+      if (this.shouldLoadNextTask()) {
+        this.loadNextAssignedTask(parentRequestId);
+      } else if (this.task.allow_interstitial) {
+        this.showInterstitial(parentRequestId);
+      } else if (!this.taskPreview) {
+        this.emitClosedEvent();
+      }
     },
 
     /**
@@ -407,7 +403,9 @@ export default {
      * @returns {boolean} - True if the next task should be loaded, otherwise false.
      */
     shouldLoadNextTask() {
-        return this.task.process_request.status === 'COMPLETED' || this.loadingButton;
+      return (
+        this.task.process_request.status === "COMPLETED" || this.loadingButton
+      );
     },
     /**
      * Shows the interstitial screen and loads the next assigned task.
@@ -425,7 +423,7 @@ export default {
      * Emits an error event.
      */
     emitError() {
-        this.$emit('error', this.requestId);
+      this.$emit('error', this.requestId);
     },
     /**
      * Emits a closed event.
@@ -438,12 +436,25 @@ export default {
      * @returns {string|null} - The destination URL.
      */
     getDestinationUrl() {
-      // If the element destination is 'taskSource', use the document referrer
-      if (this.task?.elementDestination === 'taskSource') {
-          return document.referrer;
+      // If the element destination type is 'taskSource', use the document referrer
+      if (this.task?.elementDestination?.type === "taskSource") {
+        return document.referrer || null;
       }
-      // If element destination is not set, try to get it from sessionStorage
-      return this.task.elementDestination || sessionStorage.getItem('elementDestinationURL') || null;
+
+      // If element destination URL is available, return it
+      const elementDestinationUrl = this.task?.elementDestination?.value;
+      if (elementDestinationUrl) {
+        return elementDestinationUrl;
+      }
+
+      // If no element destination URL, try to get it from sessionStorage
+      const sessionStorageUrl = sessionStorage.getItem("elementDestinationURL");
+      if (sessionStorageUrl) {
+        return sessionStorageUrl;
+      }
+
+      // If none of the above conditions are met, return null
+      return null;
     },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
@@ -535,7 +546,112 @@ export default {
         this.$emit('completed', requestId);
       }
       if (requestId !== this.requestId) {
-        this.$emit('completed', this.requestId, data?.endEventDestination);
+        this.processCompletedRedirect(data, this.userId, this.requestId);
+      }
+    },
+    /**
+     * Makes an API call with retry logic.
+     * @param {Function} apiCall - The API call to be made.
+     * @param {number} retries - The number of retry attempts.
+     * @param {number} delay - The delay between retries in milliseconds.
+     * @returns {Promise} - The response from the API call.
+     */
+    // eslint-disable-next-line consistent-return
+    async retryApiCall(apiCall, retries = 3, delay = 1000) {
+      for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const response = await apiCall();
+          return response;
+        } catch (error) {
+          if (attempt === retries - 1) {
+            throw error;
+          }
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((resolve) => {
+            setTimeout(resolve, delay);
+          });
+        }
+      }
+    },
+    /**
+     * Gets the next request by posting to the specified endpoint.
+     * @param {string} processId - The process ID.
+     * @param {string} startEvent - The start event.
+     * @returns {Promise} - The response from the API call.
+     */
+    getNextRequest(processId, startEvent) {
+      return window.ProcessMaker.apiClient.post(
+        `/process_events/${processId}?event=${startEvent}`,
+        {}
+      );
+    },
+
+    /**
+     * Gets the tasks for the specified process request ID.
+     * @param {string} processRequestId - The process request ID.
+     * @returns {Promise} - The response from the API call.
+     */
+    getTasks(processRequestId) {
+      return window.ProcessMaker.apiClient.get(
+        `tasks?process_request_id=${processRequestId}&page=1&per_page=1`
+      );
+    },
+    /**
+     * Parses a JSON string and returns the result.
+     * @param {string} jsonString - The JSON string to parse.
+     * @returns {object|null} - The parsed object or null if parsing fails.
+     */
+    parseJsonSafely(jsonString) {
+      try {
+        return JSON.parse(jsonString);
+      } catch (error) {
+        console.error("Invalid JSON string:", error);
+        return null;
+      }
+    },
+    /**
+     * Handles the process completion and redirects the user based on the task assignment.
+     * @param {object} data - The data object containing endEventDestination.
+     * @param {string} userId - The ID of the current user.
+     * @param {string} requestId - The ID of the current request.
+     */
+    async processCompletedRedirect(data, userId, requestId) {
+      try {
+        // Verify if is not anotherProcess type
+        if (data.endEventDestination.type !== "anotherProcess") {
+          this.$emit(
+            "completed",
+            this.requestId,
+            data?.endEventDestination.value
+          );
+          return;
+        }
+        // Parse endEventDestination from the provided data
+        const endEventDestination = this.parseJsonSafely(
+          data.endEventDestination.value
+        );
+        // Get the next request using retry logic
+        const nextRequest = await this.retryApiCall(() =>
+          this.getNextRequest(
+            endEventDestination.processId,
+            endEventDestination.startEvent
+          )
+        );
+        // Get the tasks for the next request using retry logic
+        const response = await this.retryApiCall(() =>
+          this.getTasks(nextRequest.data.id)
+        );
+        // Handle the first task from the response
+        const firstTask = response.data.data[0];
+        if (firstTask && firstTask.user_id === userId) {
+          this.$emit("completed", requestId, `/tasks/${firstTask.id}/edit`);
+        } else {
+          this.$emit("completed", requestId);
+        }
+      } catch (error) {
+        console.error("Error processing completed redirect:", error);
+        this.$emit("completed", requestId);
       }
     },
     getAllowedRequestId() {
@@ -561,7 +677,6 @@ export default {
           this.processCompleted(data);
         }
       );
-
       this.addSocketListener(
         `updated-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
@@ -664,51 +779,4 @@ export default {
     this.unsubscribeSocketListeners();
   },
 };
-// Command classes
-class Command {
-    constructor(receiver) {
-        this.receiver = receiver;
-    }
-
-    execute() {
-        throw new Error('execute method must be implemented');
-    }
-}
-
-class LoadNextTaskCommand extends Command {
-    execute(parentRequestId) {
-        this.receiver.loadNextAssignedTask(parentRequestId);
-    }
-}
-
-class ShowInterstitialCommand extends Command {
-    execute(parentRequestId) {
-        this.receiver.showInterstitial(parentRequestId);
-    }
-}
-class EmitErrorCommand extends Command {
-    execute() {
-        this.receiver.emitError();
-    }
-}
-class EmitClosedEventCommand extends Command {
-    execute() {
-        this.receiver.emitClosedEvent();
-    }
-}
-
-class TaskInvoker {
-    constructor() {
-        this.commands = [];
-    }
-
-    setCommand(command) {
-        this.commands.push(command);
-    }
-
-    executeCommands(parentRequestId) {
-        this.commands.forEach(command => command.execute(parentRequestId));
-        this.commands = []; // Clear the commands after execution
-    }
-}
 </script>
