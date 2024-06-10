@@ -23,26 +23,34 @@
     </div>
 
     <SortableList
+      :fields="fields"
       :items="items"
       :filtered-items="filteredItems"
+      :inline-edit="inlineEdit"
       @ordered="$emit('ordered', $event)"
       @item-edit="$emit('item-edit', $event)"
       @item-delete="$emit('item-delete', $event)"
-    />
+    >
+      <template #options>
+        <slot name="options"></slot>
+      </template>
+    </SortableList>
   </div>
 </template>
 
 <script>
-import SortableList from './sortableList/SortableList.vue'
+import SortableList from './sortableList/SortableList.vue';
 
 export default {
   name: 'Sortable',
   components: {
-    SortableList
+    SortableList,
   },
   props: {
+    fields: { type: Array, required: true },
     items: { type: Array, required: true },
     filterKey: { type: String, required: true },
+    inlineEdit: { type: Boolean, default: true },
   },
   data() {
     return {
@@ -54,7 +62,7 @@ export default {
           this.$set(item, "order", index + 1);
         }
         return item;
-      })
+      }),
     };
   },
   watch: {
