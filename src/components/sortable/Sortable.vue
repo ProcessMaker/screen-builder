@@ -15,6 +15,7 @@
         <button
           type="button"
           class="btn sortable-btn-new"
+          v-bind="dataTestActions?.btnNew"
           @click="$emit('add-page', $event)"
         >
           <i class="fa fa-plus"></i>
@@ -51,6 +52,10 @@ export default {
     items: { type: Array, required: true },
     filterKey: { type: String, required: true },
     inlineEdit: { type: Boolean, default: true },
+    dataTestActions: {
+      type: Object,
+      default: () => ({ btnNew: { 'data-test': 'sortable-btn-new' } }),
+    },
   },
   data() {
     return {

@@ -20,6 +20,7 @@
         :items="current"
         filter-key="name"
         :inline-edit="false"
+        :data-test-actions="{ btnNew: { 'data-cy': 'calcs-add-property' } }"
         @item-edit="editProperty"
         @item-delete="deleteProperty"
         @add-page="displayFormProperty"
