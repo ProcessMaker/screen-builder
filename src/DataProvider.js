@@ -173,7 +173,7 @@ export default {
    * @param {object} params
    * @returns {object}
    */
-  getDataSource(dataSourceId, params) {
+  getDataSource(dataSourceId, params, nonce = null) {
     // keep backwards compatibility
     if (
       !window.ProcessMaker.screen.cacheEnabled &&
@@ -190,7 +190,7 @@ export default {
         pmds_data: JSON.stringify(params.data)
       }
     }).then((response) => {
-      return response;
+      return [response, nonce];
     });
   },
 
@@ -246,7 +246,7 @@ export default {
   },
 
   getCollectionRecords(collectionId, options, nonce = null) {
-    options.useCache = window.ProcessMaker.screen.cacheEnabled;
+    options.useCache = window.ProcessMaker?.screen?.cacheEnabled;
 
     return this.get(
       `/collections/${collectionId}/records${this.authQueryString()}`,
