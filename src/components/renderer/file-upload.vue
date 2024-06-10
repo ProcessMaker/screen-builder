@@ -116,12 +116,6 @@ export default {
     this.setPrefix();
     if (this.$refs['uploader']) {
       this.$refs['uploader'].$forceUpdate();
-      // Re-upload stored files;
-      // Files disappear when navigating between pages with the Page Navigation component
-      if (this.files.length > 0) {
-        this.$refs.uploader.uploader.addFiles(this.files);
-        this.uploading = false;
-      }
     }
 
     this.disabled = _.get(window, 'ProcessMaker.isSelfService', false);
@@ -284,6 +278,7 @@ export default {
           data_name: this.name,
           parent: null,
           row_id: null,
+          task_id: _.get(window, '_current_task_id', 0),
         },
         testChunks: false,
         // Setup our headers to deal with API calls

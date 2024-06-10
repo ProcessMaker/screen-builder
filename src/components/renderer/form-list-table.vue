@@ -14,19 +14,27 @@
             {{ $t(title) }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
-            <b-dropdown variant="outline-secondary" no-caret>
+            <b-dropdown
+              variant="outline-secondary"
+              right
+              no-caret
+            >
               <template #button-content>
                 <i class="fas fa-caret-down" />
               </template>
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_filter', 'by_me')"
               >
-                {{ $t("As Requester") }}
+                <span class="item-text">
+                  {{ $t("As Requester") }}
+                </span>
               </b-dropdown-item>
               <b-dropdown-item
                 @click="handleDropdownSelection('requests_filter', 'as_participant')"
               >
-                {{ $t("As Participant") }}
+                <span class="item-text">
+                  {{ $t("As Participant") }}
+                </span>
               </b-dropdown-item>
             </b-dropdown>
           </template>
@@ -38,68 +46,92 @@
       <div class="ml-auto d-flex align-items-center">
         <template v-if="dataControl.dropdownShow === 'requests'">
           <div class="mr-4">
-            <b-dropdown variant="outline-secondary" size="sm">
+            <b-dropdown
+              variant="outline-secondary"
+              size="sm"
+            >
               <template #button-content>
-                <span>
+                <span class="text-capitalize">
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
+                    class="mr-2"
                     :variant="badgeVariant"
                   />
                   {{ $t(titleDropdown) }}
                 </span>
               </template>
               <b-dropdown-item
-                variant="success"
-                @click="
-                  handleDropdownSelection('requests_dropdown', 'In Progress')
-                "
-              >
-                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
-              </b-dropdown-item>
-              <b-dropdown-item
-                variant="primary"
-                @click="
-                  handleDropdownSelection('requests_dropdown', 'Completed')
-                "
-              >
-                <i class="fas fa-circle mr-2" />{{ $t("Completed") }}
-              </b-dropdown-item>
-              <b-dropdown-item
                 @click="handleDropdownSelection('requests_dropdown', 'all')"
               >
-                {{ $t("View All") }}
+                <span class="item-text">
+                  {{ $t("View All") }}
+                </span>
+              </b-dropdown-item>
+              <b-dropdown-item
+                @click="handleDropdownSelection('requests_dropdown', 'Completed')"
+              >
+                <span class="item-text">
+                  <i
+                    class="fas fa-circle mr-2 text-primary" 
+                  />
+                  {{ $t("Completed") }}
+                </span>
+              </b-dropdown-item>
+              <b-dropdown-item
+                @click="handleDropdownSelection('requests_dropdown', 'In Progress')"
+              >
+                <span class="item-text">
+                  <i
+                    class="fas fa-circle mr-2 text-success"
+                  />
+                  {{ $t("In Progress") }}
+                </span>
               </b-dropdown-item>
             </b-dropdown>
           </div>
         </template>
         <template v-if="dataControl.dropdownShow === 'tasks'">
           <div class="mr-4">
-            <b-dropdown variant="outline-secondary" size="sm">
+            <b-dropdown
+              variant="outline-secondary"
+              size="sm"
+            >
               <template #button-content>
-                <span>
+                <span class="text-capitalize">
                   <b-icon
                     v-if="showBadge"
                     icon="circle-fill"
+                    class="mr-2"
                     :variant="badgeVariant"
                   />
                   {{ $t(titleDropdown) }}
                 </span>
               </template>
-              <b-dropdown-item
-                variant="warning"
-                @click="handleDropdownSelection('tasks', 'In Progress')"
-              >
-                <i class="fas fa-circle mr-2" />{{ $t("In Progress") }}
+              <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
+                <span class="item-text">
+                  {{ $t("View All") }}
+                </span>
               </b-dropdown-item>
               <b-dropdown-item
-                variant="danger"
                 @click="handleDropdownSelection('tasks', 'Overdue')"
               >
-                <i class="fas fa-circle mr-2" />{{ $t("Overdue") }}
+                <span class="item-text">
+                <i
+                  class="fas fa-circle mr-2 text-danger"
+                />
+                {{ $t("Overdue") }}
+                </span>
               </b-dropdown-item>
-              <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
-                {{ $t("View All") }}
+              <b-dropdown-item
+                @click="handleDropdownSelection('tasks', 'In Progress')"
+              >
+                <span class="item-text">
+                  <i
+                    class="fas fa-circle mr-2 text-warning"
+                  />
+                  {{ $t("In Progress") }}
+                </span>
               </b-dropdown-item>
             </b-dropdown>
           </div>
@@ -249,7 +281,8 @@ export default {
     },
     clearSearch(listType) {
       this.searchCriteria = "";
-      this.toggleInput(listType);
+      this.performSearch(listType);
+      this.showInput = !this.showInput;
     },
     /**
      * Set the badge's color of the filter selected
@@ -326,5 +359,25 @@ export default {
 
 .btn-outline-secondary {
   border: none;
+}
+
+.item-text {
+  color: #42526E;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: -0.02em;
+  text-align: left;
+}
+
+.dropdown-menu {
+  padding: 10px;
+  width: 211px;
+  box-shadow: 0px 10px 20px 4px #00000021;
+}
+
+.dropdown-item {
+  padding: 10px 8px;
 }
 </style>

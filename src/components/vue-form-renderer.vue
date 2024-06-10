@@ -18,6 +18,7 @@
       :test-screen-definition="testScreenDefinition || false"
       class="p-0"
       :loop-context="loopContext"
+      @after-submit="afterSubmit"
       @submit="submit"
     />
   </div>
@@ -246,8 +247,11 @@ export default {
         node.$children.forEach((child) => this.registerCustomFunctions(child));
       }
     },
-    submit(eventData, loading = false) {
-      this.$emit("submit", this.data, loading);
+    afterSubmit() {
+      this.$emit('after-submit', ...arguments);
+    },
+    submit(eventData, loading = false, buttonInfo = null) {
+      this.$emit("submit", this.data, loading, buttonInfo);
     },
     parseCss() {
       const containerSelector = `.${this.containerClass}`;

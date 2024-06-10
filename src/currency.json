@@ -368,7 +368,7 @@
    {
      "code": "INR",
      "name": "Indian Rupee",
-     "format": "#,##,###.##",
+     "format": "#,###.##",
      "symbol": "₹"
    },
    {

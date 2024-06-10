@@ -145,7 +145,16 @@ export default {
         return 'MUSTACHE: ' + e.message;
       }
     },
-    async submitForm(eventData, loading = false) {
+    async submitForm(eventData, loading = false, buttonInfo = null) {
+      const event = {
+        name: 'after-submit',
+        validation: true
+      };
+      this.$emit('after-submit', event, ...arguments);
+      if (event.validation === false) {
+        this.$emit('submit', this.vdata, loading, buttonInfo);
+        return;
+      }
       await this.validateNow(findRootScreen(this));
       this.hasSubmitted(true);
       if (!this.valid__ || this.disableSubmit__) {
@@ -155,7 +164,7 @@ export default {
         // if the form is not valid the data is not emitted
         return;
       }
-      this.$emit('submit', this.vdata, loading);
+      this.$emit('submit', this.vdata, loading, buttonInfo);
     },
     resetValue(safeDotName, variableName) {
       this.setValue(safeDotName, null);
