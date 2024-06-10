@@ -15,50 +15,27 @@
     @hidden="displayTableList"
   >
     <template v-if="displayList">
-      <div class="d-flex align-items-end flex-column mb-3">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-cy="calcs-add-property"
-          @click.stop="displayFormProperty"
-        >
-          <i class="fas fa-plus" /> {{ $t("Property") }}
-        </button>
-      </div>
-      <div class="card card-body table-card">
-        <b-table
-          :css="css"
-          :fields="fields"
-          :items="current"
-          :empty-text="$t('No Data Available')"
-          data-cy="calcs-table"
-        >
-          <template #cell(__actions)="{ item }">
-            <div class="actions">
-              <div class="popout">
-                <b-btn
-                  v-b-tooltip.hover
-                  variant="link"
-                  :title="$t('Edit')"
-                  data-cy="calcs-table-edit"
-                  @click="editProperty(item)"
-                >
-                  <i class="fas fa-edit fa-lg fa-fw" />
-                </b-btn>
-                <b-btn
-                  v-b-tooltip.hover
-                  variant="link"
-                  :title="$t('Delete')"
-                  data-cy="calcs-table-remove"
-                  @click="deleteProperty(item)"
-                >
-                  <i class="fas fa-trash-alt fa-lg fa-fw" />
-                </b-btn>
-              </div>
-            </div>
-          </template>
-        </b-table>
-      </div>
+      <Sortable
+        :fields="fields"
+        :items="current"
+        filter-key="name"
+        :inline-edit="false"
+        @item-edit="editProperty"
+        @item-delete="deleteProperty"
+        @add-page="displayFormProperty"
+      >
+        <template #options>
+          <button
+            v-b-tooltip="{ customClass: 'bypass-btn-tooltip' }"
+            title="Unbypass Calc"
+            class="btn"
+          >
+            <i class="fas fa-sign-in-alt"></i>
+          </button>
+          <div class="sortable-item-vr"></div>
+        </template>
+      </Sortable>
+
       <template slot="modal-footer">
         <span />
       </template>
@@ -168,12 +145,14 @@ import { FormInput, FormTextArea } from "@processmaker/vue-form-elements";
 import MonacoEditor from "vue-monaco";
 import Validator from "@chantouchsek/validatorjs";
 import FocusErrors from "../mixins/focusErrors";
+import Sortable from './sortable/Sortable.vue';
 
 export default {
   components: {
     FormInput,
     FormTextArea,
-    MonacoEditor
+    MonacoEditor,
+    Sortable,
   },
   mixins: [FocusErrors],
   props: ["value"],
@@ -208,18 +187,15 @@ export default {
       },
       fields: [
         {
-          label: this.$t("Property Name"),
-          key: "property"
+          label: this.$t("Name"),
+          key: "property",
+          isMain: true,
         },
         {
-          label: this.$t("Description"),
-          key: "name"
+          label: this.$t("Type"),
+          key: "type",
+          isMain: false,
         },
-        {
-          key: "__actions",
-          label: "",
-          class: "text-right"
-        }
       ],
       monacoOptions: {
         automaticLayout: true,
@@ -399,5 +375,17 @@ export default {
 
 .editor-border.is-invalid {
   border-color: #dc3545;
+}
+
+.bypass-btn-tooltip::v-deep {
+  & .tooltip-inner {
+    background-color: #EBEEF2 !important;
+    color: #444444 !important;
+  }
+
+  & .arrow:before {
+    border-top-color: #EBEEF2 !important;
+    border-bottom-color: #EBEEF2 !important;
+  }
 }
 </style>
