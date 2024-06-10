@@ -39,6 +39,7 @@
       :vdata="value"
       :_parent="_parent"
       :_initial-page="currentPage"
+      @after-submit="afterSubmit"
       @submit="submit"
       @asyncWatcherTriggered="onAsyncWatcherOn"
       @asyncWatcherCompleted="onAsyncWatcherOff"
@@ -108,6 +109,9 @@ export default {
     },
     setCurrentPage(page) {
       this.$refs.component.setCurrentPage(page);
+    },
+    afterSubmit() {
+      this.$emit('after-submit', ...arguments);
     }
   }
 };

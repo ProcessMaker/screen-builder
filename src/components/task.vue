@@ -30,6 +30,7 @@
             :key="refreshScreen"
             :loop-context="loopContext"
             @update="onUpdate"
+            @after-submit="afterSubmit"
             @submit="submit"
           />
         </div>
@@ -46,6 +47,7 @@
             :watchers="screen.watchers"
             :data="requestData"
             :type="screen.type"
+            @after-submit="afterSubmit"
             @submit="submit"
           />
         </div>
@@ -96,7 +98,9 @@ export default {
     beforeLoadTask: { type: Function, default: defaultBeforeLoadTask },
     initialLoopContext: { type: String, default: "" },
     taskPreview: { type: Boolean, default: false },
-    loading: { type: Number, default: null }
+    loading: { type: Number, default: null },
+    alwaysAllowEditing: { type: Boolean, default: false },
+    disableInterstitial: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -115,7 +119,7 @@ export default {
       hasErrors: false,
       refreshScreen: 0,
       redirecting: null,
-      loadingButton: false
+      loadingButton: false,
     };
   },
   watch: {
@@ -194,7 +198,9 @@ export default {
         }
         if (this.taskPreview && this.task.status === "CLOSED") {
           this.task.interstitial_screen['_interstitial'] = false;
-          this.task.screen.config = this.disableForm(this.task.screen.config);
+          if (!this.alwaysAllowEditing) {
+            this.task.screen.config = this.disableForm(this.task.screen.config);
+          }
           this.screen = this.task.screen;
         }
       }
@@ -223,7 +229,7 @@ export default {
           }
           this.renderComponent = component;
         }
-      },
+      }
     },
   },
   computed: {
@@ -289,7 +295,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
+      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -324,6 +330,15 @@ export default {
         this.resetScreenState();
         this.requestData = _.get(this.task, 'request_data', {});
         this.loopContext = _.get(this.task, "loop_context", "");
+
+        if (this.task.draft) {
+          this.requestData = _.merge(
+            {},
+            this.requestData,
+            this.task.draft.data
+          );
+        }
+
         this.refreshScreen++;
       }
 
@@ -433,7 +448,10 @@ export default {
       }
       return 'card-header text-capitalize text-white ' + header;
     },
-    submit(formData = null, loading = false) {
+    afterSubmit() {
+      this.$emit('after-submit', ...arguments);
+    },
+    submit(formData = null, loading = false, buttonInfo = null) {
       //single click
       if (this.disabled) {
         return;
@@ -449,9 +467,9 @@ export default {
       } else {
         this.loadingButton = false;
       }
-      this.$emit('submit', this.task, loading);
+      this.$emit('submit', this.task, loading, buttonInfo);
 
-      if (this.task && this.task.allow_interstitial && !this.loadingButton) {
+      if (this.task?.allow_interstitial && !this.loadingButton && !this.disableInterstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
