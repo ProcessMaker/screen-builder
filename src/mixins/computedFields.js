@@ -21,7 +21,6 @@ export default {
           // Create a new function with the expression and bind the data context
           // eslint-disable-next-line no-new-func
           value = new Function(expression).bind(data);
-          // value = new Function(expression).bind(data)();
           return { result: value(), error: null };
         }
 
