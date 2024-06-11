@@ -28,13 +28,14 @@
       :items="items"
       :filtered-items="filteredItems"
       :inline-edit="inlineEdit"
+      :disable-key="disableKey"
       :data-test-actions="dataTestActions"
       @ordered="$emit('ordered', $event)"
       @item-edit="$emit('item-edit', $event)"
       @item-delete="$emit('item-delete', $event)"
     >
-      <template #options>
-        <slot name="options"></slot>
+      <template #options="{ item }">
+        <slot name="options" :item="item"></slot>
       </template>
     </SortableList>
   </div>
@@ -52,6 +53,7 @@ export default {
     fields: { type: Array, required: true },
     items: { type: Array, required: true },
     filterKey: { type: String, required: true },
+    disableKey: { type: String, default: null },
     inlineEdit: { type: Boolean, default: true },
     dataTestActions: {
       type: Object,

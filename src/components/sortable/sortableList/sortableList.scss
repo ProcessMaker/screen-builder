@@ -77,6 +77,10 @@ $border-color: #cdddee;
       margin: 9px 0;
       border-right: 1px solid $border-color;
     }
+
+    &-disabled > .sortable-item-prop {
+      color: rgba(85, 98, 113, 0.5);
+    }
   }
 }
 
