@@ -22,7 +22,11 @@
         :data-order="item.order"
         :data-test="`item-${item.order}`"
         :title="item.name"
-        class="sortable-list-tr sortable-item"
+        :class="[
+          'sortable-list-tr',
+          'sortable-item',
+          { 'sortable-item-disabled': isDisabled(item) },
+        ]"
         draggable="true"
         @dragstart="(event) => dragStart(event, item.order)"
         @dragenter="(event) => dragEnter(event, item.order)"
@@ -69,7 +73,7 @@
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
-            <slot name="options"></slot>
+            <slot name="options" :item="item"></slot>
             <button
               class="btn"
               title="Delete"
@@ -93,6 +97,7 @@ export default {
     items: { type: Array, required: true },
     filteredItems: { type: Array, required: true },
     inlineEdit: { type: Boolean, default: true },
+    disableKey: { type: String, default: null },
     dataTestActions: { type: Object, required: true },
   },
   data() {
@@ -222,6 +227,9 @@ export default {
     },
     dragOver(event) {
       event.preventDefault();
+    },
+    isDisabled(item) {
+      return this.disableKey ? item[this.disableKey] : false;
     },
   },
 }

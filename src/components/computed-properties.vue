@@ -19,6 +19,7 @@
         :fields="fields"
         :items="current"
         filter-key="name"
+        disable-key="byPass"
         :inline-edit="false"
         :data-test-actions="{
           tableBox: { 'data-cy': 'calcs-table' },
@@ -30,13 +31,15 @@
         @item-delete="deleteProperty"
         @add-page="displayFormProperty"
       >
-        <template #options>
+        <template #options="{ item }">
           <button
             v-b-tooltip="{ customClass: 'bypass-btn-tooltip' }"
-            title="Unbypass Calc"
+            :title="item.byPass ? 'Unbypass Calc' : 'Bypass Calc'"
             class="btn"
+            @click="toggleBypass(item.id)"
           >
-            <i class="fas fa-sign-in-alt"></i>
+            <i v-show="!item.byPass" class="fas fa-sign-out-alt"></i>
+            <i v-show="item.byPass" class="fas fa-sign-in-alt"></i>
           </button>
           <div class="sortable-item-vr"></div>
         </template>
@@ -238,9 +241,14 @@ export default {
       this.value.forEach((item) => {
         this.numberItem++;
         item.id = this.numberItem;
+
+        if (!Object.hasOwn(item, 'byPass')) {
+          item.byPass = false;
+        }
       });
+
       this.current = this.value;
-    }
+    },
   },
   created() {
     Validator.register(
@@ -314,6 +322,13 @@ export default {
         this.focusFirstCalculatedPropertiesError();
       }
     },
+    toggleBypass(itemId) {
+      this.current = this.current.map((item) =>
+        item.id === itemId ? { ...item, byPass: !item.byPass } : item,
+      );
+
+      this.$emit("input", this.current);
+    },
     saveProperty() {
       if (this.add.id === 0) {
         this.numberItem++;
@@ -322,7 +337,8 @@ export default {
           property: this.add.property,
           name: this.add.name,
           formula: this.add.formula,
-          type: this.add.type
+          type: this.add.type,
+          byPass: false,
         });
       } else {
         this.current.forEach((item) => {
