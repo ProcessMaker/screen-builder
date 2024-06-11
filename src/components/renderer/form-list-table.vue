@@ -2,21 +2,17 @@
   <div class="card" :style="customStyle">
     <div class="card-header d-flex justify-content-between align-items-center">
       <template v-if="dataControl.showControl">
-        <div class="mb-1 mt-1">
-          <b-avatar
-            v-if="dataControl.showAvatar"
-            size="2em"
-            :variant="dataControl.variant"
-            :text="dataControl.count"
-            class="avatar-text"
-          ></b-avatar>
+        <div class="head-filter">
+          <b-badge class="badge-custom" pill :variant="dataControl.variant">
+            {{ dataControl.count }}
+          </b-badge>
           <p class="control-text mb-0" :style="dataControl.colorText">
             {{ $t(title) }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
             <b-dropdown
               variant="outline-secondary"
-              right
+              offset="-70"
               no-caret
             >
               <template #button-content>
@@ -48,44 +44,21 @@
           <div class="mr-4">
             <b-dropdown
               variant="outline-secondary"
+              offset="-50"
               size="sm"
             >
               <template #button-content>
                 <span class="text-capitalize">
-                  <b-icon
-                    v-if="showBadge"
-                    icon="circle-fill"
-                    class="mr-2"
-                    :variant="badgeVariant"
-                  />
                   {{ $t(titleDropdown) }}
                 </span>
               </template>
               <b-dropdown-item
-                @click="handleDropdownSelection('requests_dropdown', 'all')"
+                v-for="option in requestFilterDropdown"
+                :key="option"
+                @click="handleDropdownSelection('requests_dropdown', option)"
               >
                 <span class="item-text">
-                  {{ $t("View All") }}
-                </span>
-              </b-dropdown-item>
-              <b-dropdown-item
-                @click="handleDropdownSelection('requests_dropdown', 'Completed')"
-              >
-                <span class="item-text">
-                  <i
-                    class="fas fa-circle mr-2 text-primary" 
-                  />
-                  {{ $t("Completed") }}
-                </span>
-              </b-dropdown-item>
-              <b-dropdown-item
-                @click="handleDropdownSelection('requests_dropdown', 'In Progress')"
-              >
-                <span class="item-text">
-                  <i
-                    class="fas fa-circle mr-2 text-success"
-                  />
-                  {{ $t("In Progress") }}
+                  {{ $t(option) }}
                 </span>
               </b-dropdown-item>
             </b-dropdown>
@@ -95,42 +68,21 @@
           <div class="mr-4">
             <b-dropdown
               variant="outline-secondary"
+              offset="-50"
               size="sm"
             >
               <template #button-content>
                 <span class="text-capitalize">
-                  <b-icon
-                    v-if="showBadge"
-                    icon="circle-fill"
-                    class="mr-2"
-                    :variant="badgeVariant"
-                  />
                   {{ $t(titleDropdown) }}
                 </span>
               </template>
-              <b-dropdown-item @click="handleDropdownSelection('tasks', 'all')">
-                <span class="item-text">
-                  {{ $t("View All") }}
-                </span>
-              </b-dropdown-item>
               <b-dropdown-item
-                @click="handleDropdownSelection('tasks', 'Overdue')"
+                v-for="option in taskFilterDropdown"
+                :key="option"
+                @click="handleDropdownSelection('tasks', option)"
               >
                 <span class="item-text">
-                <i
-                  class="fas fa-circle mr-2 text-danger"
-                />
-                {{ $t("Overdue") }}
-                </span>
-              </b-dropdown-item>
-              <b-dropdown-item
-                @click="handleDropdownSelection('tasks', 'In Progress')"
-              >
-                <span class="item-text">
-                  <i
-                    class="fas fa-circle mr-2 text-warning"
-                  />
-                  {{ $t("In Progress") }}
+                {{ $t(option) }}
                 </span>
               </b-dropdown-item>
             </b-dropdown>
@@ -172,10 +124,10 @@
       <template v-if="listOption === 'My Tasks'">
         <FormTasks @tasksCount="getData"></FormTasks>
       </template>
-      <template v-if="listOption === 'My Requests'">
+      <template v-if="verifyListCase()">
         <FormRequests @requestsCount="getData"></FormRequests>
       </template>
-      <template v-if="listOption === 'Start New Request'">
+      <template v-if="verifyNewCase()">
         <FormNewRequest @startControl="getData"></FormNewRequest>
       </template>
     </div>
@@ -202,24 +154,46 @@ export default {
       searchCriteria: "",
       showInput: false,
       pmql: "",
-      badgeVariant: "",
       typeSelected: "",
       showBadge: false,
       customStyle: {
         "border-radius": "8px"
-      }
+      },
+      taskFilterDropdown: [
+        "Self-service",
+        "In Progress",
+        "Overdue",
+        "View All"
+      ],
+      requestFilterDropdown: [
+        "View All",
+        "Completed",
+        "In Progress",
+      ]
     };
   },
   watch: {
     listOption() {
-      this.title = this.listOption;
+      this.title = this.checkTitle(this.listOption);
       this.dataControl = {};
     }
   },
   mounted() {
-    this.title = this.listOption;
+    this.title = this.checkTitle(this.listOption);
   },
   methods: {
+    /**
+     * Backward compatibility beacuse value is used as title
+     */
+    checkTitle(option) {
+      if (option === "Start New Request") {
+        return "Start New Case";
+      }
+      if (option === "My Requests") {
+        return "My Cases";
+      }
+      return option;
+    },
     getData(data) {
       this.dataControl = data.dataControls;
     },
@@ -231,23 +205,19 @@ export default {
       this.typeSelected = listType;
       if (listType === "tasks") {
         this.$root.$emit("dropdownSelectionTask", valueSelected);
-        this.titleDropdown =
-          valueSelected === "all" ? this.viewAll : valueSelected;
-        this.colorBadge();
+        this.titleDropdown = valueSelected;
       } else {
         if (listType === "requests_filter") {
           this.optionRequest = valueSelected;
           if (valueSelected === "by_me") {
-            this.title = "Request Started By Me";
+            this.title = "Cases Started By Me";
           }
           if (valueSelected === "as_participant") {
             this.title = "With Me as Participant";
           }
         }
         if (listType === "requests_dropdown") {
-          this.titleDropdown =
-            valueSelected === "all" ? this.viewAll : valueSelected;
-          this.colorBadge();
+          this.titleDropdown = valueSelected;
           this.dropdownRequest = valueSelected;
         }
         combinedFilter.push(this.optionRequest);
@@ -285,34 +255,21 @@ export default {
       this.showInput = !this.showInput;
     },
     /**
-     * Set the badge's color of the filter selected
+     * Verify backward compatibility for Start New Case
      */
-    colorBadge() {
-      if (this.titleDropdown === "In Progress") {
-        if (this.typeSelected === "tasks") {
-          this.badgeVariant = "warning";
-        }
-        if (this.typeSelected === "requests_dropdown") {
-          this.badgeVariant = "success";
-        }
-        this.showBadge = true;
-      }
-      if (this.titleDropdown === "Overdue") {
-        this.badgeVariant = "danger";
-        this.showBadge = true;
-      }
-      if (this.titleDropdown === "Overdue") {
-        this.badgeVariant = "danger";
-        this.showBadge = true;
-      }
-      if (this.titleDropdown === "Completed") {
-        this.badgeVariant = "primary";
-        this.showBadge = true;
-      }
-      if (this.titleDropdown === "View All" || this.titleDropdown === "all") {
-        this.badgeVariant = "";
-        this.showBadge = false;
-      }
+    verifyNewCase() {
+      return (
+        this.listOption === "Start New Case" ||
+        this.listOption === "Start New Request"
+      );
+    },
+    /**
+     * Verify backward compatibility for List Cases
+     */
+    verifyListCase() {
+      return (
+        this.listOption === "My Cases" || this.listOption === "My Requests"
+      );
     }
   }
 };
@@ -355,10 +312,13 @@ export default {
   height: 300px;
   overflow: auto;
   background-color: #f9f9f9;
+  padding: 0;
 }
 
-.btn-outline-secondary {
+.btn-outline-secondary,
+.btn-outline-secondary:focus {
   border: none;
+  box-shadow: none;
 }
 
 .item-text {
@@ -372,12 +332,42 @@ export default {
 }
 
 .dropdown-menu {
-  padding: 10px;
-  width: 211px;
-  box-shadow: 0px 10px 20px 4px #00000021;
+  padding: 0px;
+  width: 180px;
+  box-shadow: 0px 4px 8px 0px #0000001A;
+  border-radius: 4px;
 }
 
 .dropdown-item {
-  padding: 10px 8px;
+  padding: 13px 12px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 21.79px;
+  letter-spacing: -0.02em;
+  text-align: left;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:not(:disabled):not(.disabled):active,
+.btn-outline-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-secondary.dropdown-toggle {
+    background: none;
+    color: #228fed;
+    border: none;
+    box-shadow: none;
+}
+
+.head-filter {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 8px;
+  height: 24px;
+  align-items: center;
 }
 </style>
