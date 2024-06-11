@@ -18,18 +18,17 @@ export default {
         const safeDotName = this.safeDotName(computed.property);
         const code = `
 
-        let value = this.evaluateExpression(${formula}, ${type});
+        const evaluatedExpression = this.evaluateExpression(${formula}, ${type});
           // Handle errors if any
-          if (value.error) {
+          if (evaluatedExpression.error) {
             if (${logsEnabled}) {
-              this.customErrorLog(${name}, value.error);
+              this.customErrorLog(${name}, evaluatedExpression.error);
             }
           } else {
             // Add non-defined computed attributes
-            value = this.addNonDefinedComputedAttributes(value.result);
-
+            const value = this.addNonDefinedComputedAttributes(evaluatedExpression.result);
             // Set the value
-            this.setValue(name, value.result, this.vdata);
+            this.setValue(${name}, value, this.vdata);
 
             // Log the successful calculation if logging is enabled
             if (${logsEnabled}) {
@@ -37,7 +36,7 @@ export default {
             }
 
             // Return the result
-            return value.result;
+            return value;
           }
         `;
         this.addComputed(screen, safeDotName, code, "");

@@ -20,15 +20,15 @@ export default {
         } else {
           // Create a new function with the expression and bind the data context
           // eslint-disable-next-line no-new-func
-          const func = new Function(expression).bind(data);
+          value = new Function(expression).bind(data);
           // value = new Function(expression).bind(data)();
-          return { result: func(), error: null };
+          return { result: value(), error: null };
         }
 
         if (value instanceof Date) {
           value = value.toISOString();
         }
-        return value;
+        return { result: value, error: null };
       } catch (error) {
         // Catch any errors and return them
         return { result: null, error };
@@ -47,7 +47,7 @@ export default {
         "background-color: rgba(255, 0, 0, 0.1); color: red; padding: 2px 4px; border-radius: 3px;";
       // start console log group
       console.groupCollapsed(
-        `%c${errorIcon} %cCalc "${name}" has %cFailed`,
+        `%c${errorIcon} %cCalc "${name}" has %cFAILED`,
         style,
         "background-color: rgba(255, 0, 0, 0.1)",
         style
