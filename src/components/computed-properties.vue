@@ -20,7 +20,12 @@
         :items="current"
         filter-key="name"
         :inline-edit="false"
-        :data-test-actions="{ btnNew: { 'data-cy': 'calcs-add-property' } }"
+        :data-test-actions="{
+          tableBox: { 'data-cy': 'calcs-table' },
+          btnNew: { 'data-cy': 'calcs-add-property' },
+          btnEdit: { 'data-cy': 'calcs-table-edit' },
+          btnDelete: { 'data-cy': 'calcs-table-remove' },
+        }"
         @item-edit="editProperty"
         @item-delete="deleteProperty"
         @add-page="displayFormProperty"
