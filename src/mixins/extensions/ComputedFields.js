@@ -10,7 +10,6 @@ export default {
      * }
      */
     computedFields(screen, definition, logsEnabled = true) {
-      debugger;
       // For each computed field defined
       definition.computed.forEach((computed) => {
         const formula = JSON.stringify(computed.formula);
