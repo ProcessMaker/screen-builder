@@ -1,6 +1,10 @@
 <template>
   <div class="row mt-3">
-    <div class="p-0 border rounded-lg sortable-list" @dragover="dragOver">
+    <div
+      class="p-0 border rounded-lg sortable-list"
+      v-bind="dataTestActions.tableBox"
+      @dragover="dragOver"
+    >
       <div class="sortable-list-tr">
         <div class="sortable-list-td"></div>
         <div
@@ -59,6 +63,7 @@
               v-else
               class="btn"
               title="Edit"
+              v-bind="dataTestActions.btnEdit"
               @click.stop="onClick(item, index)"
             >
               <i class="fas fa-edit"></i>
@@ -68,6 +73,7 @@
             <button
               class="btn"
               title="Delete"
+              v-bind="dataTestActions.btnDelete"
               @click="$emit('item-delete', item)"
             >
               <i class="fas fa-trash-alt"></i>
@@ -87,6 +93,7 @@ export default {
     items: { type: Array, required: true },
     filteredItems: { type: Array, required: true },
     inlineEdit: { type: Boolean, default: true },
+    dataTestActions: { type: Object, required: true },
   },
   data() {
     return {

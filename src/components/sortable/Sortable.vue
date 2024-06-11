@@ -15,7 +15,7 @@
         <button
           type="button"
           class="btn sortable-btn-new"
-          v-bind="dataTestActions?.btnNew"
+          v-bind="dataTestActions.btnNew"
           @click="$emit('add-page', $event)"
         >
           <i class="fa fa-plus"></i>
@@ -28,6 +28,7 @@
       :items="items"
       :filtered-items="filteredItems"
       :inline-edit="inlineEdit"
+      :data-test-actions="dataTestActions"
       @ordered="$emit('ordered', $event)"
       @item-edit="$emit('item-edit', $event)"
       @item-delete="$emit('item-delete', $event)"
@@ -54,7 +55,12 @@ export default {
     inlineEdit: { type: Boolean, default: true },
     dataTestActions: {
       type: Object,
-      default: () => ({ btnNew: { 'data-test': 'sortable-btn-new' } }),
+      default: () => ({
+        tableBox: { 'data-test': 'sortable-table-box' },
+        btnNew: { 'data-test': 'sortable-btn-new' },
+        btnEdit: { 'data-test': 'sortable-btn-edit' },
+        btnDelete: { 'data-test': 'sortable-btn-remove' },
+      }),
     },
   },
   data() {
