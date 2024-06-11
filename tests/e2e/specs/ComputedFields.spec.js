@@ -30,6 +30,35 @@ describe("Computed fields", () => {
     });
   });
 
+  it("Make sure that calc log was displayed with success result", () => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.stub(win.console, "log").as("consoleLog");
+        cy.stub(win.console, "error").as("consoleError");
+      }
+    });
+
+    cy.loadFromJson("FOUR-5139.json", 0);
+    // Enter preview mode
+    cy.get("[data-cy=mode-preview]").click();
+
+    cy.get("@consoleLog").should("be.calledWith", "%c✅ %cCalc \"loop_1\" has %cRUN");
+  });
+  it("Make sure that calc log was displayed with ERROR result", () => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.stub(win.console, "log").as("consoleLog");
+        cy.stub(win.console, "groupCollapsed").as("groupCollapsed");
+      }
+    });
+
+    cy.loadFromJson("FOUR-5139-calcError.json", 0);
+    // Enter preview mode
+    cy.get("[data-cy=mode-preview]").click();
+
+    cy.get("@groupCollapsed").should("be.calledWith", "%c❌ %cCalc \"loop_1\" has %cFAILED");
+  });
+
   it("CRUD of computed fields", () => {
     cy.visit("/");
 
