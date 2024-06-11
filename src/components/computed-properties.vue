@@ -36,6 +36,7 @@
             v-b-tooltip="{ customClass: 'bypass-btn-tooltip' }"
             :title="item.byPass ? 'Unbypass Calc' : 'Bypass Calc'"
             class="btn"
+            data-test="calcs-bypass"
             @click="toggleBypass(item.id)"
           >
             <i v-show="!item.byPass" class="fas fa-sign-out-alt"></i>
