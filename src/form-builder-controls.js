@@ -23,6 +23,7 @@ import {
   BWrapperComponent,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
+import LinkButton from "./components/renderer/link-button.vue";
 
 import {
   bgcolorProperty,
@@ -42,7 +43,9 @@ import {
   buttonTypeEvent,
   tooltipProperty,
   LoadingSubmitButtonProperty,
-  LabelSubmitButtonProperty
+  LabelSubmitButtonProperty,
+  linkTypeEvent,
+  InputUrlLinkProperty
 } from './form-control-common-properties';
 
 export default [
@@ -988,6 +991,60 @@ export default [
             label: "Chart"
           }
         }
+      ]
+    }
+  },
+  {
+    editorComponent: LinkButton,
+    editorBinding: "LinkButton",
+    rendererComponent: LinkButton,
+    rendererBinding: "LinkButton",
+    control: {
+      popoverContent: "Add an action to submit your form or update a field",
+      group: 'Content Fields',
+      order: 6.0,
+      label: "Submit Button",
+      component: "LinkButton",
+      "editor-component": "LinkButton",
+      "editor-control": "LinkButton",
+      config: {
+        label: "New Submit",
+        icon: "fas fa-chart-area",
+        variant: "primary",
+        event: "link"
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The label describes the button\'s text',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'name',
+          config: {
+            label: 'Variable Name',
+            name: 'Variable Name',
+            helper: 'A variable name is a symbolic name to reference information.',
+            validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|not_in:' + javascriptReservedKeywords,
+
+          },         
+        },
+        linkTypeEvent,
+        InputUrlLinkProperty,
+        LabelSubmitButtonProperty,
+        {
+          type: 'FormInput',
+          field: 'fieldValue',
+          config: {
+            label: 'Value',
+            helper: 'The value being submitted',
+          },
+        },
+        buttonVariantStyleProperty
       ]
     }
   }
