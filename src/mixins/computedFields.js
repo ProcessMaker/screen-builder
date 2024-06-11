@@ -9,7 +9,6 @@ export default {
         // Monitor if variable belongs to data (defined variables) or
         // vdata (external variables)in this way the event is not
         // executed again when the variable is update
-        console.log('start, evaluateExpression!');
         const data = this.getDataReference(null, () => {
           throw new Error(
             "You are not allowed to set properties from inside an expression"
@@ -29,7 +28,6 @@ export default {
         if (value instanceof Date) {
           value = value.toISOString();
         }
-        console.log('end-evaluateExpression!');
         return value;
       } catch (error) {
         // Catch any errors and return them
