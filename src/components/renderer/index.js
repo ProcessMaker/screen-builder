@@ -18,3 +18,4 @@ export { default as FormListTable } from "./form-list-table.vue";
 export { default as FormAnalyticsChart } from "./form-analytics-chart.vue";
 export { default as FormRequests } from "./form-requests.vue";
 export { default as FormTasks } from "./form-tasks.vue";
+export { default as LinkButton } from "./link-button.vue";
