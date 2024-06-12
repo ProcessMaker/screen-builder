@@ -34,7 +34,7 @@
         <template #options="{ item }">
           <button
             v-b-tooltip="{ customClass: 'bypass-btn-tooltip' }"
-            :title="item.byPass ? 'Unbypass Calc' : 'Bypass Calc'"
+            :title="item.byPass ? $t('Unbypass Calc') : $t('Bypass Calc')"
             class="btn"
             data-test="calcs-bypass"
             @click="toggleBypass(item.id)"
@@ -52,29 +52,36 @@
     </template>
 
     <template v-else>
-      <required />
-      <form-input
-        ref="property"
-        v-model="add.property"
-        :label="$t('Property Name') + ' *'"
-        name="property"
-        :error="errors.property"
-        class="mb-3"
-        data-cy="calcs-property-name"
-        required
-        aria-required="true"
-      />
-      <form-text-area
-        ref="name"
-        v-model="add.name"
-        :label="$t('Description') + ' *'"
-        name="name"
-        :error="errors.name"
-        class="mb-3"
-        data-cy="calcs-property-description"
-        required
-        aria-required="true"
-      />
+      <b-container>
+        <b-row class="p-0">
+          <b-col class="pl-0">
+            <form-input
+              ref="property"
+              v-model="add.property"
+              :label="$t('Property Name') + ' *'"
+              name="property"
+              :error="errors.property"
+              class="mb-3"
+              data-cy="calcs-property-name"
+              required
+              aria-required="true"
+            />
+          </b-col>
+          <b-col class="pr-0">
+            <form-text-area
+              ref="name"
+              v-model="add.name"
+              :label="$t('Description') + ' *'"
+              name="name"
+              :error="errors.name"
+              class="mb-3"
+              data-cy="calcs-property-description"
+              required
+              aria-required="true"
+            />
+          </b-col>
+        </b-row>
+      </b-container>
       <div class="form-group mb-3" style="position: relative">
         <label v-show="isJS">{{ $t("Formula") + " *" }}</label>
         <div class="float-right">
