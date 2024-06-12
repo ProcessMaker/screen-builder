@@ -48,8 +48,7 @@
             data-test="calcs-bypass"
             @click="toggleBypass(item.id)"
           >
-            <i v-show="!item.byPass" class="fas fa-sign-out-alt"></i>
-            <i v-show="item.byPass" class="fas fa-sign-in-alt"></i>
+            <img :src="getByPassIcon(item)" alt="Bypass" width="24" />
           </button>
           <div class="sortable-item-vr"></div>
         </template>
@@ -388,7 +387,13 @@ export default {
     },
     editorMounted(editor) {
       this.monacoEditor = editor;
-    }
+    },
+    getByPassIcon(item) {
+      return new URL(
+        `../assets/icons/${item.byPass ? 'Unbypass' : 'Bypass'}.svg`,
+        import.meta.url,
+      ).href;
+    },
   }
 };
 </script>
