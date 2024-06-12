@@ -368,16 +368,18 @@
       :ok-title="$t('DONE')"
       ok-only
       ok-variant="secondary"
-      header-class = "modal-header-custom"
+      header-class="modal-header-custom"
     >
-    <template #modal-title>
-      <h5 class="modal-title">{{ $t('Edit Pages') }}</h5>
-      <span class="modal-subtitle">{{ $t('Change pages order and name') }}</span>
-    </template>
-    <template #modal-header-close="{ close }">
-      <button type="button" aria-label="Close" class="close"  @click="close()">×</button>
-    </template>
+      <template #modal-title>
+        <h5 class="modal-title">{{ $t('Edit Pages') }}</h5>
+        <span class="modal-subtitle">{{ $t('Change pages order and name') }}</span>
+      </template>
+      <template #modal-header-close="{ close }">
+        <button type="button" aria-label="Close" class="close">×</button>
+      </template>
+
       <Sortable
+        :fields="fields"
         :items="config"
         filter-key="name"
         @item-edit="() => {}"
@@ -604,6 +606,12 @@ export default {
       editPageIndex: null,
       editPageName: "",
       originalPageName: null,
+      fields: [
+        {
+          label: this.$t("Name"),
+          key: "name",
+        },
+      ],
       config,
       confirmMessage: "",
       pageDelete: 0,

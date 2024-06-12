@@ -59,6 +59,12 @@ export default {
 // Preview the component
 export const Preview = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Page 1", order: 1 },
@@ -73,6 +79,12 @@ export const Preview = {
 // User can reorder items
 export const UserCanReorderItems = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Page 1", order: 1 },
@@ -122,6 +134,12 @@ export const UserCanReorderItems = {
 // User can filter by text
 export const UserCanFilterByText = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Zeus", order: 1 },
@@ -170,6 +188,12 @@ export const UserCanFilterByText = {
 // User can sort with filter by text
 export const UserCanSortWithFilterByText = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Zeus", order: 1 },
@@ -238,6 +262,12 @@ export const UserCanSortWithFilterByText = {
 // User can reorder items that does not have an order
 export const UserCanReorderItemsThatDoesNotHaveAnOrder = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Page 1" },

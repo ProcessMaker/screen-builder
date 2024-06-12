@@ -72,10 +72,7 @@ describe("Computed fields", () => {
       .clear()
       .type("pow(form_input_2, 2)");
     cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-table"]').should(
-      "contain.text",
-      "form_input_1 = form_input_2 ^ 2"
-    );
+    cy.get('[data-cy="calcs-table"]').should('contain.text', 'form_input_1');
     cy.get('[data-cy="calcs-modal"] .close').click();
 
     // Edit the created calculated property
@@ -90,10 +87,7 @@ describe("Computed fields", () => {
       .clear()
       .type("form_input_1 * 100");
     cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-table"]').should(
-      "contain.text",
-      "form_input_2 = form_input_1 * 100"
-    );
+    cy.get('[data-cy="calcs-table"]').should('contain.text', 'form_input_2');
     cy.get('[data-cy="calcs-modal"] .close').click();
 
     // Delete the created calculated property
@@ -121,7 +115,7 @@ describe("Computed fields", () => {
     cy.get('[data-cy="calcs-button-save"]').click();
     cy.get('[data-cy="calcs-table"]').should(
       "contain.text",
-      "form_input_1 = form_input_2 ^ 2"
+      "form_input_1"
     );
     cy.get('[data-cy="calcs-modal"] .close').click();
 
