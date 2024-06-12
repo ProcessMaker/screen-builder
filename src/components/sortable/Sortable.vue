@@ -15,6 +15,7 @@
         <button
           type="button"
           class="btn sortable-btn-new"
+          v-bind="dataTestActions.btnNew"
           @click="$emit('add-page', $event)"
         >
           <i class="fa fa-plus"></i>
@@ -23,26 +24,46 @@
     </div>
 
     <SortableList
+      :fields="fields"
       :items="items"
       :filtered-items="filteredItems"
+      :inline-edit="inlineEdit"
+      :disable-key="disableKey"
+      :data-test-actions="dataTestActions"
       @ordered="$emit('ordered', $event)"
       @item-edit="$emit('item-edit', $event)"
       @item-delete="$emit('item-delete', $event)"
-    />
+    >
+      <template #options="{ item }">
+        <slot name="options" :item="item"></slot>
+      </template>
+    </SortableList>
   </div>
 </template>
 
 <script>
-import SortableList from './sortableList/SortableList.vue'
+import SortableList from './sortableList/SortableList.vue';
 
 export default {
   name: 'Sortable',
   components: {
-    SortableList
+    SortableList,
   },
   props: {
+    fields: { type: Array, required: true },
     items: { type: Array, required: true },
     filterKey: { type: String, required: true },
+    disableKey: { type: String, default: null },
+    inlineEdit: { type: Boolean, default: true },
+    dataTestActions: {
+      type: Object,
+      default: () => ({
+        tableBox: { 'data-test': 'sortable-table-box' },
+        btnNew: { 'data-test': 'sortable-btn-new' },
+        btnEdit: { 'data-test': 'sortable-btn-edit' },
+        btnDelete: { 'data-test': 'sortable-btn-remove' },
+      }),
+    },
   },
   data() {
     return {
@@ -54,7 +75,7 @@ export default {
           this.$set(item, "order", index + 1);
         }
         return item;
-      })
+      }),
     };
   },
   watch: {

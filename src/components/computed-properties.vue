@@ -15,79 +15,73 @@
     @hidden="displayTableList"
   >
     <template v-if="displayList">
-      <div class="d-flex align-items-end flex-column mb-3">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-cy="calcs-add-property"
-          @click.stop="displayFormProperty"
-        >
-          <i class="fas fa-plus" /> {{ $t("Property") }}
-        </button>
-      </div>
-      <div class="card card-body table-card">
-        <b-table
-          :css="css"
-          :fields="fields"
-          :items="current"
-          :empty-text="$t('No Data Available')"
-          data-cy="calcs-table"
-        >
-          <template #cell(__actions)="{ item }">
-            <div class="actions">
-              <div class="popout">
-                <b-btn
-                  v-b-tooltip.hover
-                  variant="link"
-                  :title="$t('Edit')"
-                  data-cy="calcs-table-edit"
-                  @click="editProperty(item)"
-                >
-                  <i class="fas fa-edit fa-lg fa-fw" />
-                </b-btn>
-                <b-btn
-                  v-b-tooltip.hover
-                  variant="link"
-                  :title="$t('Delete')"
-                  data-cy="calcs-table-remove"
-                  @click="deleteProperty(item)"
-                >
-                  <i class="fas fa-trash-alt fa-lg fa-fw" />
-                </b-btn>
-              </div>
-            </div>
-          </template>
-        </b-table>
-      </div>
+      <Sortable
+        :fields="fields"
+        :items="current"
+        filter-key="name"
+        disable-key="byPass"
+        :inline-edit="false"
+        :data-test-actions="{
+          tableBox: { 'data-cy': 'calcs-table' },
+          btnNew: { 'data-cy': 'calcs-add-property' },
+          btnEdit: { 'data-cy': 'calcs-table-edit' },
+          btnDelete: { 'data-cy': 'calcs-table-remove' },
+        }"
+        @item-edit="editProperty"
+        @item-delete="deleteProperty"
+        @add-page="displayFormProperty"
+      >
+        <template #options="{ item }">
+          <button
+            v-b-tooltip="{ customClass: 'bypass-btn-tooltip' }"
+            :title="item.byPass ? $t('Unbypass Calc') : $t('Bypass Calc')"
+            class="btn"
+            data-test="calcs-bypass"
+            @click="toggleBypass(item.id)"
+          >
+            <i v-show="!item.byPass" class="fas fa-sign-out-alt"></i>
+            <i v-show="item.byPass" class="fas fa-sign-in-alt"></i>
+          </button>
+          <div class="sortable-item-vr"></div>
+        </template>
+      </Sortable>
+
       <template slot="modal-footer">
         <span />
       </template>
     </template>
 
     <template v-else>
-      <required />
-      <form-input
-        ref="property"
-        v-model="add.property"
-        :label="$t('Property Name') + ' *'"
-        name="property"
-        :error="errors.property"
-        class="mb-3"
-        data-cy="calcs-property-name"
-        required
-        aria-required="true"
-      />
-      <form-text-area
-        ref="name"
-        v-model="add.name"
-        :label="$t('Description') + ' *'"
-        name="name"
-        :error="errors.name"
-        class="mb-3"
-        data-cy="calcs-property-description"
-        required
-        aria-required="true"
-      />
+      <b-container>
+        <b-row class="p-0">
+          <b-col class="pl-0">
+            <form-input
+              ref="property"
+              v-model="add.property"
+              :label="$t('Property Name') + ' *'"
+              name="property"
+              :error="errors.property"
+              class="mb-3"
+              data-cy="calcs-property-name"
+              required
+              aria-required="true"
+            />
+          </b-col>
+          <b-col class="pr-0">
+            <form-text-area
+              ref="name"
+              v-model="add.name"
+              :label="$t('Description') + ' *'"
+              name="name"
+              :error="errors.name"
+              class="mb-3"
+              data-cy="calcs-property-description"
+              required
+              aria-required="true"
+            />
+          </b-col>
+        </b-row>
+      </b-container>
       <div class="form-group mb-3" style="position: relative">
         <label v-show="isJS">{{ $t("Formula") + " *" }}</label>
         <div class="float-right">
@@ -168,12 +162,14 @@ import { FormInput, FormTextArea } from "@processmaker/vue-form-elements";
 import MonacoEditor from "vue-monaco";
 import Validator from "@chantouchsek/validatorjs";
 import FocusErrors from "../mixins/focusErrors";
+import Sortable from './sortable/Sortable.vue';
 
 export default {
   components: {
     FormInput,
     FormTextArea,
-    MonacoEditor
+    MonacoEditor,
+    Sortable,
   },
   mixins: [FocusErrors],
   props: ["value"],
@@ -208,18 +204,13 @@ export default {
       },
       fields: [
         {
-          label: this.$t("Property Name"),
-          key: "property"
+          label: this.$t("Name"),
+          key: "property",
         },
         {
-          label: this.$t("Description"),
-          key: "name"
+          label: this.$t("Type"),
+          key: "type",
         },
-        {
-          key: "__actions",
-          label: "",
-          class: "text-right"
-        }
       ],
       monacoOptions: {
         automaticLayout: true,
@@ -258,9 +249,14 @@ export default {
       this.value.forEach((item) => {
         this.numberItem++;
         item.id = this.numberItem;
+
+        if (!Object.hasOwn(item, 'byPass')) {
+          item.byPass = false;
+        }
       });
+
       this.current = this.value;
-    }
+    },
   },
   created() {
     Validator.register(
@@ -334,6 +330,13 @@ export default {
         this.focusFirstCalculatedPropertiesError();
       }
     },
+    toggleBypass(itemId) {
+      this.current = this.current.map((item) =>
+        item.id === itemId ? { ...item, byPass: !item.byPass } : item,
+      );
+
+      this.$emit("input", this.current);
+    },
     saveProperty() {
       if (this.add.id === 0) {
         this.numberItem++;
@@ -342,7 +345,8 @@ export default {
           property: this.add.property,
           name: this.add.name,
           formula: this.add.formula,
-          type: this.add.type
+          type: this.add.type,
+          byPass: false,
         });
       } else {
         this.current.forEach((item) => {
@@ -399,5 +403,17 @@ export default {
 
 .editor-border.is-invalid {
   border-color: #dc3545;
+}
+
+.bypass-btn-tooltip::v-deep {
+  & .tooltip-inner {
+    background-color: #EBEEF2 !important;
+    color: #444444 !important;
+  }
+
+  & .arrow:before {
+    border-top-color: #EBEEF2 !important;
+    border-bottom-color: #EBEEF2 !important;
+  }
 }
 </style>

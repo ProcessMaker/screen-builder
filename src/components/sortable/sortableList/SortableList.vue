@@ -1,51 +1,85 @@
 <template>
   <div class="row mt-3">
-    <div class="col p-0 border rounded-lg sortable-list">
-      <div class="sortable-list-header">
-        <div class="sortable-item-icon"></div>
-        <div class="sortable-list-title">PAGE NAME</div>
-      </div>
-      <div class="sortable-container" @dragover="dragOver">
+    <div
+      class="p-0 border rounded-lg sortable-list"
+      v-bind="dataTestActions.tableBox"
+      @dragover="dragOver"
+    >
+      <div class="sortable-list-tr">
+        <div class="sortable-list-td"></div>
         <div
-          v-for="(item, index) in sortedItems"
-          :key="index"
-          :data-order="item.order"
-          :data-test="`item-${item.order}`"
-          :title="item.name"
-          draggable="true"
-          @dragstart="(event) => dragStart(event, item.order)"
-          @dragenter="(event) => dragEnter(event, item.order)"
-          @dragend="dragEnd"
-          class="sortable-item sortable-draggable"
+          v-for="field in fields"
+          :key="field.key"
+          class="sortable-list-td sortable-list-header"
         >
+          {{ field.label }}
+        </div>
+        <div class="sortable-list-td"></div>
+      </div>
+      <div
+        v-for="(item, index) in sortedItems"
+        :key="`item-${index}`"
+        :data-order="item.order"
+        :data-test="`item-${item.order}`"
+        :title="item.name"
+        :class="[
+          'sortable-list-tr',
+          'sortable-item',
+          { 'sortable-item-disabled': isDisabled(item) },
+        ]"
+        draggable="true"
+        @dragstart="(event) => dragStart(event, item.order)"
+        @dragenter="(event) => dragEnter(event, item.order)"
+        @dragend="dragEnd"
+      >
+        <div class="sortable-list-td">
           <div class="sortable-item-icon">
             <i class="fas fa-bars"></i>
           </div>
-          <div class="rounded sortable-item-name">
-            <b-form-input
-              v-if="editRowIndex === index"
-              v-model="newName"
-              type="text"
-              autofocus
-              required
-              :state="validateState(newName, item)"
-              :error="validateError(newName, item)"
-              @blur.stop="onBlur(newName, item)"
-              @keydown.enter.stop="onBlur(newName, item)"
-              @keydown.esc.stop="onCancel(item)"
-              @focus="onFocus(item)"
-            />
-            <span v-else>{{ item.name }}</span>
-          </div>
+        </div>
+        <div
+          v-for="field in fields"
+          :key="field.key"
+          class="sortable-list-td sortable-item-prop"
+        >
+          <b-form-input
+            v-if="editRowIndex === index"
+            v-model="newName"
+            type="text"
+            autofocus
+            required
+            :state="validateState(newName, item)"
+            :error="validateError(newName, item)"
+            @blur.stop="onBlur(newName, item)"
+            @keydown.enter.stop="onBlur(newName, item)"
+            @keydown.esc.stop="onCancel(item)"
+            @focus="onFocus(item)"
+          />
+          <span v-else>{{ item[field.key] }}</span>
+        </div>
+
+        <div class="sortable-list-td">
           <div class="border rounded-lg sortable-item-action">
             <button v-if="editRowIndex === index" class="btn">
               <i class="fas fa-check"></i>
             </button>
-            <button v-else class="btn" @click.stop="onClick(item, index)">
+            <button
+              v-else
+              class="btn"
+              title="Edit"
+              v-bind="dataTestActions.btnEdit"
+              @click.stop="onClick(item, index)"
+            >
               <i class="fas fa-edit"></i>
             </button>
             <div class="sortable-item-vr"></div>
-            <button class="btn" @click="$emit('item-delete', item)">
+            <slot name="options" :item="item"></slot>
+            <button
+              class="btn"
+              title="Delete"
+              v-bind="dataTestActions.btnDelete"
+              @click="$emit('item-delete', item)"
+            >
               <i class="fas fa-trash-alt"></i>
             </button>
           </div>
@@ -59,8 +93,12 @@
 export default {
   name: 'SortableList',
   props: {
+    fields: { type: Array, required: true },
     items: { type: Array, required: true },
     filteredItems: { type: Array, required: true },
+    inlineEdit: { type: Boolean, default: true },
+    disableKey: { type: String, default: null },
+    dataTestActions: { type: Object, required: true },
   },
   data() {
     return {
@@ -77,7 +115,7 @@ export default {
         this.refreshSort &&
         [...this.filteredItems].sort((a, b) => a.order - b.order);
       return sortedItems;
-    }
+    },
   },
   methods: {
     validateState(name, item) {
@@ -120,6 +158,11 @@ export default {
       this.editRowIndex = null;
     },
     onClick(item, index) {
+      if (!this.inlineEdit) {
+        this.$emit("item-edit", item);
+        return;
+      }
+
       this.editRowIndex = index;
       this.$emit("item-edit", item);
     },
@@ -184,6 +227,9 @@ export default {
     },
     dragOver(event) {
       event.preventDefault();
+    },
+    isDisabled(item) {
+      return this.disableKey ? item[this.disableKey] : false;
     },
   },
 }

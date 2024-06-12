@@ -2,44 +2,57 @@ $border-color: #cdddee;
 
 .sortable {
   &-list {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid $border-color !important;
-
-    &-header {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid $border-color;
-    }
-
-    &-title {
-      padding-left: 16px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #566877;
-    }
-  }
-
-  &-container {
-    display: flex;
+    display: table;
     flex-direction: column;
     width: 100%;
-    height: 340px;
-    overflow-x: auto;
+    border: 1px solid $border-color !important;
+
+    &-tr {
+      display: table-row;
+
+      &:last-child > .sortable-list-td {
+        border-bottom: none;
+      }
+    }
+
+    &-td {
+      display: table-cell;
+      border-bottom: 1px solid $border-color;
+
+      &:first-child {
+        width: 9%;
+      }
+
+      &:nth-child(2) {
+        width: 40%;
+      }
+
+      &:not(:first-child):not(:nth-child(2)):not(:last-child) {
+        width: auto;
+      }
+
+      &:last-child {
+        width: 1%;
+        white-space: nowrap;
+      }
+    }
+
+    &-header {
+      padding: 16px 0 16px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #566877;
+      text-transform: uppercase;
+    }
   }
 
   &-item {
-    display: flex;
-    align-items: center;
-    height: 56px;
-    border-bottom: 1px solid $border-color;
     cursor: move;
 
     &-icon {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 64px;
       height: 56px;
     }
 
@@ -47,8 +60,7 @@ $border-color: #cdddee;
       color: #6A7888;
     }
 
-    &-name {
-      flex-grow: 1;
+    &-prop {
       padding: 8px 16px;
       font-size: 15px;
       color: #556271;
@@ -64,6 +76,10 @@ $border-color: #cdddee;
       height: 22px;
       margin: 9px 0;
       border-right: 1px solid $border-color;
+    }
+
+    &-disabled > .sortable-item-prop {
+      color: rgba(85, 98, 113, 0.5);
     }
   }
 }
