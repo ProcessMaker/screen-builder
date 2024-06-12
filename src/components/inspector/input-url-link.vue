@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <div v-if="event === 'link'" style="padding-top: 0px">
-      <form-input
-        v-model="linkUrl"
-        type="text"
-        class="mb-3"
-        :label="$t('URL Link')"
-        :helper="$t('Type here the URL link. Mustache syntax is supported.')"
-      />
-    </div>
+  <div v-if="event === 'link'" style="padding-top: 0px">
+    <form-input
+      v-model="linkUrl"
+      type="text"
+      class="mb-3"
+      :label="$t('URL Link')"
+      :helper="$t('Type here the URL link. Mustache syntax is supported.')"
+    />
   </div>
 </template>
 
