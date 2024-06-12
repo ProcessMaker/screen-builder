@@ -1,4 +1,19 @@
 describe("Computed fields", () => {
+  function setupConsoleStubs(stubs) {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        Object.entries(stubs).forEach(([method, alias]) => {
+          cy.stub(win.console, method).as(alias);
+        });
+      }
+    });
+  }
+
+  function loadAndPreview(jsonFile) {
+    cy.loadFromJson(jsonFile, 0);
+    cy.get("[data-cy=mode-preview]").click();
+  }
+
   it("Make sure new rows can be added to the loop, even with a javascript-driven computed field", () => {
     cy.visit("/");
     cy.loadFromJson("FOUR-5139.json", 0);
@@ -28,6 +43,18 @@ describe("Computed fields", () => {
         }
       ]
     });
+  });
+
+  it("Make sure that calc log was displayed with success result", () => {
+    setupConsoleStubs({ log: "consoleLog", error: "consoleError" });
+    loadAndPreview("FOUR-5139.json");
+    cy.get("@consoleLog").should("be.calledWith", "%c✅ %cCalc \"loop_1\" has %cRUN");
+  });
+
+  it("Make sure that calc log was displayed with ERROR result", () => {
+    setupConsoleStubs({ log: "consoleLog", groupCollapsed: "groupCollapsed" });
+    loadAndPreview("FOUR-5139-calcError.json");
+    cy.get("@groupCollapsed").should("be.calledWith", "%c❌ %cCalc \"loop_1\" has %cFAILED");
   });
 
   it("CRUD of computed fields", () => {

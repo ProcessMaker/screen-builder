@@ -9,7 +9,7 @@ export default {
      *   this.setValueAsync("calcProperty", value, this.vdata);
      * }
      */
-    computedFields(screen, definition) {
+    computedFields(screen, definition, logsEnabled = true) {
       // For each computed field defined
       definition.computed.forEach((computed) => {
         const formula = JSON.stringify(computed.formula);
@@ -17,10 +17,28 @@ export default {
         const name = JSON.stringify(computed.property);
         const safeDotName = this.safeDotName(computed.property);
         const code = `
-        let value = this.evaluateExpression(${formula}, ${type});
-        value = this.addNonDefinedComputedAttributes(value);
-        this.setValue(${name}, value, this.vdata);
-        return value;`;
+
+        const evaluatedExpression = this.evaluateExpression(${formula}, ${type});
+          // Handle errors if any
+          if (evaluatedExpression.error) {
+            if (${logsEnabled}) {
+              this.customErrorLog(${name}, evaluatedExpression.error);
+            }
+          } else {
+            // Add non-defined computed attributes
+            const value = this.addNonDefinedComputedAttributes(evaluatedExpression.result);
+            // Set the value
+            this.setValue(${name}, value, this.vdata);
+
+            // Log the successful calculation if logging is enabled
+            if (${logsEnabled}) {
+              this.customSuccessLog(${name});
+            }
+
+            // Return the result
+            return value;
+          }
+        `;
         this.addComputed(screen, safeDotName, code, "");
         // required to enable reactivity of computed field
         this.addWatch(screen, safeDotName, "");
