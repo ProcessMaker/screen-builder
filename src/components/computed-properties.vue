@@ -3,7 +3,6 @@
     id="computed-properties"
     ref="modal"
     size="lg"
-    :title="$t('Calculated Properties')"
     content-class="p-3"
     header-class="m-0 p-0 mb-3"
     body-class="m-0 p-0"
@@ -14,6 +13,16 @@
     data-cy="calcs-modal"
     @hidden="displayTableList"
   >
+    <template #modal-title>
+      <h5 class="modal-title">{{ $t('Calculated Properties') }}</h5>
+      <small v-show="!displayList" class="modal-subtitle mb-n2">
+        {{
+          $t(
+            'Perform mathematical calculations offering quick, convenient, and accurate operations, enhancing user efficiency and usability.',
+          )
+        }}
+      </small>
+    </template>
     <template v-if="displayList">
       <Sortable
         :fields="fields"
@@ -52,36 +61,35 @@
     </template>
 
     <template v-else>
-      <b-container>
-        <b-row class="p-0">
-          <b-col class="pl-0">
-            <form-input
-              ref="property"
-              v-model="add.property"
-              :label="$t('Property Name') + ' *'"
-              name="property"
-              :error="errors.property"
-              class="mb-3"
-              data-cy="calcs-property-name"
-              required
-              aria-required="true"
-            />
-          </b-col>
-          <b-col class="pr-0">
-            <form-text-area
-              ref="name"
-              v-model="add.name"
-              :label="$t('Description') + ' *'"
-              name="name"
-              :error="errors.name"
-              class="mb-3"
-              data-cy="calcs-property-description"
-              required
-              aria-required="true"
-            />
-          </b-col>
-        </b-row>
-      </b-container>
+      <b-row>
+        <b-col>
+          <form-input
+            ref="property"
+            v-model="add.property"
+            :label="$t('Property Name') + ' *'"
+            name="property"
+            :error="errors.property"
+            class="mb-3 calcs-input"
+            data-cy="calcs-property-name"
+            required
+            aria-required="true"
+          />
+        </b-col>
+        <b-col>
+          <form-text-area
+            ref="name"
+            v-model="add.name"
+            :label="$t('Description') + ' *'"
+            name="name"
+            :error="errors.name"
+            class="mb-3 calcs-input"
+            data-cy="calcs-property-description"
+            required
+            aria-required="true"
+          />
+        </b-col>
+      </b-row>
+
       <div class="form-group mb-3" style="position: relative">
         <label v-show="isJS">{{ $t("Formula") + " *" }}</label>
         <div class="float-right">
@@ -99,7 +107,7 @@
             data-cy="calcs-switch-javascript"
             @click="switchExpressionType('javascript')"
           >
-            <i class="fab fa-js-square" />
+            <i class="fab fa-js-square fa-lg"></i>
           </a>
         </div>
 
@@ -114,6 +122,7 @@
           data-cy="calcs-property-formula"
           required
           aria-required="true"
+          class="calcs-input-formula"
         />
         <div
           v-show="isJS"
@@ -386,15 +395,15 @@ export default {
 
 <style lang="scss" scoped>
 .editor {
-  height: 8.5em;
+  height: 430px;
   z-index: 0;
 }
 
 .editor-border {
-  border: 1px solid #ced4da;
+  border: 1px solid #CDDDEE;
   border-radius: 4px;
   overflow: hidden;
-  height: 8.8em;
+  height: 430px;
   position: absolute;
   pointer-events: none;
   width: 100%;
@@ -414,6 +423,35 @@ export default {
   & .arrow:before {
     border-top-color: #EBEEF2 !important;
     border-bottom-color: #EBEEF2 !important;
+  }
+}
+
+.modal-subtitle {
+  color: #556271;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.calcs-input::v-deep {
+  & > .form-control {
+    height: 86px;
+    border-color: #CDDDEE;
+  }
+
+  & > input.form-control {
+    padding-bottom: 52px;
+  }
+
+  & > textarea.form-control {
+    resize: none;
+  }
+}
+
+.calcs-input-formula::v-deep {
+  & > textarea.form-control {
+    height: 430px !important;
+    border-color: #CDDDEE;
+    resize: none;
   }
 }
 </style>
