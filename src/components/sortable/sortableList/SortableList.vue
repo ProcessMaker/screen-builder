@@ -18,7 +18,7 @@
       </div>
       <div
         v-for="(item, index) in sortedItems"
-        :key="index"
+        :key="`item-${index}`"
         :data-order="item.order"
         :data-test="`item-${item.order}`"
         :title="item.name"
