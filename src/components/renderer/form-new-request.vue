@@ -1,20 +1,23 @@
 <template>
   <div>
-    <div v-if="Object.keys(processes).length && !loading" class="process-list">
+    <div
+      v-if="Object.keys(processes).length && !loading"
+      class="process-list p-4"
+    >
       <div class="row">
         <template v-for="(process, index) in processes">
-          <div v-for="(event, indexE) in emptyStartEvents(process)" :key="`process-${index}-${indexE}`" class="col-sm-6">
-            <ProcessCard
-              :filter="filter"
-              :process="process"
-              :event="event"
-            />
+          <div
+            v-for="(event, indexE) in emptyStartEvents(process)"
+            :key="`process-${index}-${indexE}`"
+            class="col-sm-6"
+          >
+            <ProcessCard :filter="filter" :process="process" :event="event" />
           </div>
         </template>
       </div>
     </div>
     <div v-else>
-      <formEmpty link="" title="No Request to Start" url="" />
+      <formEmpty link="" title="No Case to Start" url="" />
     </div>
   </div>
 </template>
