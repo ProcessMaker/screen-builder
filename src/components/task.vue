@@ -428,33 +428,38 @@ export default {
     /**
      * Emits a closed event.
      */
-    emitClosedEvent() {
-      this.$emit('closed', this.task.id, this.getDestinationUrl());
+    async emitClosedEvent() {
+      this.$emit("closed", this.task.id, await this.getDestinationUrl());
     },
     /**
      * Retrieves the destination URL for the closed event.
      * @returns {string|null} - The destination URL.
      */
-    getDestinationUrl() {
-      // If the element destination type is 'taskSource', use the document referrer
-      if (this.task?.elementDestination?.type === "taskSource") {
+    async getDestinationUrl() {
+      if (this.task?.elementDestination?.type !== "taskSource") {
+        return null;
+      }
+
+      try {
+        const params = {
+          processRequestId: this.requestId,
+          status: "ACTIVE",
+          userId: this.userId
+        };
+
+        // Get the tasks for the next request using retry logic
+        const response = await this.retryApiCall(() => this.getTasks(params));
+
+        const firstTask = response.data.data[0];
+        if (firstTask?.user_id === this.userId) {
+          return `/tasks/${firstTask.id}/edit`;
+        }
+
         return document.referrer || null;
+      } catch (error) {
+        console.error("Error in getDestinationUrl:", error);
+        return null;
       }
-
-      // If element destination URL is available, return it
-      const elementDestinationUrl = this.task?.elementDestination?.value;
-      if (elementDestinationUrl) {
-        return elementDestinationUrl;
-      }
-
-      // If no element destination URL, try to get it from sessionStorage
-      const sessionStorageUrl = sessionStorage.getItem("elementDestinationURL");
-      if (sessionStorageUrl) {
-        return sessionStorageUrl;
-      }
-
-      // If none of the above conditions are met, return null
-      return null;
     },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
@@ -589,13 +594,28 @@ export default {
 
     /**
      * Gets the tasks for the specified process request ID.
-     * @param {string} processRequestId - The process request ID.
+     * @param {object} params - The query params.
      * @returns {Promise} - The response from the API call.
      */
-    getTasks(processRequestId) {
-      return window.ProcessMaker.apiClient.get(
-        `tasks?process_request_id=${processRequestId}&page=1&per_page=1`
-      );
+
+    getTasks(params) {
+      const queryParams = {
+        user_id: this.userId,
+        process_request_id: params.processRequestId,
+        page: params.page,
+        per_page: params.perPage,
+        status: params.status
+      };
+
+      const queryString = Object.entries(queryParams)
+        .filter(([, value]) => value !== undefined && value !== null)
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+        )
+        .join("&");
+
+      return window.ProcessMaker.apiClient.get(`tasks?${queryString}`);
     },
     /**
      * Parses a JSON string and returns the result.
@@ -638,10 +658,15 @@ export default {
             endEventDestination.startEvent
           )
         );
+
+        const params = {
+          processRequestId: nextRequest.data.id,
+          status: "ACTIVE",
+          page: 1,
+          perPage: 1
+        };
         // Get the tasks for the next request using retry logic
-        const response = await this.retryApiCall(() =>
-          this.getTasks(nextRequest.data.id)
-        );
+        const response = await this.retryApiCall(() => this.getTasks(params));
         // Handle the first task from the response
         const firstTask = response.data.data[0];
         if (firstTask && firstTask.user_id === userId) {
