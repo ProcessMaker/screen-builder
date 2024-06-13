@@ -243,4 +243,26 @@ describe("Computed fields", () => {
 
     cy.focused().should("have.attr", "class", "inputarea"); // Monaco should be focused
   });
+  it("Make sure that test calc was not bypassed ", () => {
+    cy.visit("/");
+    cy.loadFromJson("byPassFalse.json", 0);
+
+    // Enter preview mode
+    cy.get("[data-cy=mode-preview]").click();
+    cy.get('[data-cy="screen-field-test"]').should(
+      "contain.value",
+      "Hello World"
+    );
+  });
+  it("Make sure that test calc was bypassed ", () => {
+    cy.visit("/");
+    cy.loadFromJson("byPassTrue.json", 0);
+
+    // Enter preview mode
+    cy.get("[data-cy=mode-preview]").click();
+    cy.get('[data-cy="screen-field-test"]').should(
+      "not.contain.value",
+      "Hello World"
+    );
+  });
 });
