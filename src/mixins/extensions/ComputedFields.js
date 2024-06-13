@@ -12,12 +12,15 @@ export default {
     computedFields(screen, definition, logsEnabled = true) {
       // For each computed field defined
       definition.computed.forEach((computed) => {
+        if (computed.byPass) {
+          // If the computed field has bypass set to true, skip it
+          return;
+        }
         const formula = JSON.stringify(computed.formula);
         const type = JSON.stringify(computed.type);
         const name = JSON.stringify(computed.property);
         const safeDotName = this.safeDotName(computed.property);
         const code = `
-
         const evaluatedExpression = this.evaluateExpression(${formula}, ${type});
           // Handle errors if any
           if (evaluatedExpression.error) {
