@@ -435,32 +435,46 @@ export default {
      * Retrieves the destination URL for the closed event.
      * @returns {string|null} - The destination URL.
      */
+    // eslint-disable-next-line consistent-return
     async getDestinationUrl() {
-      if (this.task?.elementDestination?.type !== "taskSource") {
+      const { elementDestination } = this.task || {};
+
+      if (!elementDestination) {
         return null;
       }
 
-      try {
-        const params = {
-          processRequestId: this.requestId,
-          status: "ACTIVE",
-          userId: this.userId
-        };
+      if (elementDestination.type === "taskSource") {
+        try {
+          const params = {
+            processRequestId: this.requestId,
+            status: "ACTIVE",
+            userId: this.userId,
+          };
 
-        // Get the tasks for the next request using retry logic
-        const response = await this.retryApiCall(() => this.getTasks(params));
+          const response = await this.retryApiCall(() => this.getTasks(params));
+          console.log("tasks-response", response);
 
-        const firstTask = response.data.data[0];
-        if (firstTask?.user_id === this.userId) {
-          return `/tasks/${firstTask.id}/edit`;
+          const firstTask = response.data.data[0];
+          if (firstTask?.user_id === this.userId) {
+            return `/tasks/${firstTask.id}/edit`;
+          }
+
+          return document.referrer || null;
+        } catch (error) {
+          console.error("Error in getDestinationUrl:", error);
+          return null;
         }
-
-        return document.referrer || null;
-      } catch (error) {
-        console.error("Error in getDestinationUrl:", error);
-        return null;
       }
+
+      const elementDestinationUrl = elementDestination.value;
+      if (elementDestinationUrl) {
+        return elementDestinationUrl;
+      }
+
+      const sessionStorageUrl = sessionStorage.getItem("elementDestinationURL");
+      return sessionStorageUrl || null;
     },
+
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
         requestId = this.requestId;
