@@ -98,7 +98,7 @@ export default {
   },
   computed: {
     noDataUrl() {
-      return `${window.ProcessMaker?.app?.url}/requests`;
+      return `${window.ProcessMaker?.app?.url}/cases`;
     }
   },
   mounted() {
@@ -167,7 +167,7 @@ export default {
               variant: "primary",
               textColor: "text-primary",
               colorText: "color: #1572C2",
-              url: "/requests",
+              url: "/cases",
               dropdownShow: "requests"
             };
             const tasksDropdown = [];
