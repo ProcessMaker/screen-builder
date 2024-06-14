@@ -23,6 +23,7 @@
           <vue-form-renderer
             ref="renderer"
             v-model="requestData"
+            :class="{ loading }"
             :config="screen.config"
             :computed="screen.computed"
             :custom-css="screen.custom_css"
@@ -120,6 +121,7 @@ export default {
       refreshScreen: 0,
       redirecting: null,
       loadingButton: false,
+      loading: false,
     };
   },
   watch: {
@@ -319,6 +321,9 @@ export default {
           })
           .catch(() => {
             this.hasErrors = true;
+          })
+          .finally(() => {
+            this.loading = false;
           });
       });
     },
@@ -620,3 +625,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.loading {
+  pointer-events: none;
+}
+</style>
