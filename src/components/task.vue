@@ -23,7 +23,7 @@
           <vue-form-renderer
             ref="renderer"
             v-model="requestData"
-            :class="{ loading }"
+            :class="{ loading: loadingTask }"
             :config="screen.config"
             :computed="screen.computed"
             :custom-css="screen.custom_css"
@@ -121,7 +121,7 @@ export default {
       refreshScreen: 0,
       redirecting: null,
       loadingButton: false,
-      loading: false,
+      loadingTask: false,
     };
   },
   watch: {
@@ -323,7 +323,7 @@ export default {
             this.hasErrors = true;
           })
           .finally(() => {
-            this.loading = false;
+            this.loadingTask = false;
           });
       });
     },
