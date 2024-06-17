@@ -131,4 +131,29 @@ describe('Calcs list Drag&Drop', () => {
 
     cy.get('@secondRow').should('have.class', 'sortable-item-disabled');
   });
+
+  it('should enlarge the source code field', () => {
+    clickTopBarCalcs();
+
+    cy.get('[data-cy="calcs-table"] [data-test="item-1"]').eq(0).as('firstRow');
+
+    cy.get('@firstRow').contains('first_name_calc');
+
+    cy.get('@firstRow').find('[data-cy="calcs-table-edit"]').click();
+
+    cy.get('[data-cy="calcs-modal"] .modal-dialog').as('calcsModal');
+    cy.get('@calcsModal').should('be.visible');
+
+    cy.get('@calcsModal').should('have.class', 'modal-lg');
+
+    cy.get('[data-test="calcs-enlarge-source-code"]').as('enlargeSourceCode');
+
+    cy.get('@enlargeSourceCode').click();
+
+    cy.get('@calcsModal').should('have.class', 'modal-xl');
+
+    cy.get('@enlargeSourceCode').click();
+
+    cy.get('@calcsModal').should('have.class', 'modal-lg');
+  });
 });
