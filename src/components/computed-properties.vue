@@ -480,4 +480,8 @@ export default {
     display: none;
   }
 }
+
+.btn[data-test='calcs-enlarge-source-code'] {
+  border-color: #CDDDEE;
+}
 </style>
