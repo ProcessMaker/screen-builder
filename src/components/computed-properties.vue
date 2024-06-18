@@ -315,6 +315,7 @@ export default {
     },
     displayTableList() {
       this.emptyForm();
+      this.modalSize = 'lg';
       this.displayList = true;
     },
     displayFormProperty() {
