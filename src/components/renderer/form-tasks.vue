@@ -209,7 +209,7 @@ export default {
 
         if (this.pmqlSearch) {
         console.log("still here");
-          pmql =  (pmql ? pmql + " AND " : "") + this.pmqlSearch;
+          pmql = (pmql ? pmql + " AND " : "") + this.pmqlSearch;
         }
 
         if (this.filterDropdowns !== undefined) {
