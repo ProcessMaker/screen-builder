@@ -55,7 +55,7 @@
             @keydown.esc.stop="onCancel(item)"
             @focus="onFocus(item)"
           />
-          <span v-else>{{ item[field.key] }}</span>
+          <span v-else>{{ getItemValue(item, field.key) }}</span>
         </div>
 
         <div class="sortable-list-td">
@@ -118,6 +118,15 @@ export default {
     },
   },
   methods: {
+    /** Get the value of a nested field in an object
+     * @param {Object} item - The object to get the value from
+     * @param {String} fieldKey - The key of the field to get the value from
+     *
+     * @returns {String} The value of the field
+     */
+    getItemValue(item, fieldKey) {
+      return fieldKey.split('.').reduce((obj, key) => obj[key] || '', item);
+    },
     validateState(name, item) {
       const isEmpty = !name?.trim();
       const isDuplicated = this.items
@@ -232,7 +241,7 @@ export default {
       return this.disableKey ? item[this.disableKey] : false;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped src="./sortableList.scss"></style>
