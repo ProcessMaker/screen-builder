@@ -3,13 +3,18 @@
     ref="modal"
     size="lg"
     id="watchers-popup"
-    :title="$t('Watchers')"
     @hidden="displayList"
     hide-footer
     header-close-content="&times;"
     no-close-on-backdrop
     data-cy="watchers-modal"
   >
+    <template #modal-title>
+      {{ $t('Watchers') }}
+      <small class="d-block my-2 modal-subtitle">
+        {{ $t('Manage your active watchers for this screen') }}
+      </small>
+    </template>
     <template v-if="enableList">
       <watchers-list
         v-model="current"
@@ -167,3 +172,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.modal-subtitle {
+  color: #556271;
+  font-size: 1rem;
+  font-weight: 400;
+}
+</style>
