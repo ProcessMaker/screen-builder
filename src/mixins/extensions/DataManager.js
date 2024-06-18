@@ -8,19 +8,24 @@ export default {
         const { component } = v.element;
         const dataFormat = v.config.dataFormat || null;
         const safeDotName = this.safeDotName(v.name);
-        this.addData(
-          screen,
-          safeDotName,
-          `
+        let code;
+        if (component === "FormCheckbox") {
+          code = `
+            this.getValue(${JSON.stringify(v.name)}, this.vdata)
+          `;
+        } else {
+          code = `
             this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
             this.getValue(${JSON.stringify(v.name)}, data) || 
             this.initialValue(
               '${component}',
               '${dataFormat}',
-              ${JSON.stringify(v.config)})
-          `,
-          v.name
-        );
+              ${JSON.stringify(v.config)}
+            )
+          `;
+        }
+
+        this.addData(screen, safeDotName, code, v.name);
         this.addWatch(
           screen,
           `vdata.${v.name}`,
