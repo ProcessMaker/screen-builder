@@ -208,7 +208,8 @@ export default {
         }
 
         if (this.pmqlSearch) {
-          pmql =  pmql ? pmql + "AND" : "" + this.pmqlSearch;
+        console.log("still here");
+          pmql =  (pmql ? pmql + " AND " : "") + this.pmqlSearch;
         }
 
         if (this.filterDropdowns !== undefined) {
@@ -483,7 +484,7 @@ export default {
         this.advancedFilter = `&advanced_filter=[${encodeURIComponent('{"subject":{"type":"Status","value":"status"},"operator":"=","value":"Self Service"}')}]`;
       }
       if (selectedOption === "In Progress") {
-        this.pmql = this.pmql + `AND (status = "In Progress")`;
+        this.pmql = this.pmql + ` AND (status = "In Progress")`;
       }
       if (selectedOption === "Overdue") {
         this.filterDropdowns = "overdue=true";
