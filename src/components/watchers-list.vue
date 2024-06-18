@@ -1,67 +1,47 @@
 <template>
-  <div>
-    <b-row class="mb-3">
-      <b-col>
-        <basic-search v-model="filter" @submit="search">
-          <template slot="buttons">
-            <b-btn class="text-nowrap" variant="secondary" @click.stop="displayFormProperty" data-cy="watchers-add-watcher">
-              <i class="fas fa-plus" />
-              {{ $t('Watcher') }}
-            </b-btn>
-          </template>
-        </basic-search>
-      </b-col>
-    </b-row>
-
-    <div class="card card-body table-card watchers-list">
-      <b-table
-        :items="filtered"
-        :fields="fields"
-        :empty-text="$t('No Data Available')"
-        data-cy="watchers-table"
-        sort-icon-left
+  <Sortable
+    :fields="fields"
+    :items="value"
+    filter-key="name"
+    disable-key="byPass"
+    :inline-edit="false"
+    :data-test-actions="{
+      tableBox: { 'data-cy': 'watchers-table' },
+      btnNew: { 'data-cy': 'watchers-add-watcher' },
+      btnEdit: { 'data-cy': 'watchers-table-edit' },
+      btnDelete: { 'data-cy': 'watchers-table-remove' },
+    }"
+    @item-edit="editProperty"
+    @item-delete="deleteProperty"
+    @add-page="displayFormProperty"
+    @ordered="$emit('ordered', $event)"
+  >
+    <template #options="{ item }">
+      <button
+        v-b-tooltip="{ customClass: 'bypass-btn-tooltip' }"
+        :title="item.byPass ? $t('Unbypass Watcher') : $t('Bypass Watcher')"
+        class="btn"
+        data-test="watchers-bypass"
+        @click.prevent="$emit('toggle-bypass', item.uid)"
       >
-        <template #cell(actions)="{item}">
-          <div class="actions">
-            <div class="popout">
-              <b-btn
-                variant="link"
-                @click="editProperty(item)"
-                v-b-tooltip.hover
-                :title="$t('Edit')"
-                data-cy="watchers-table-edit"
-              >
-                <i class="fas fa-edit fa-lg fa-fw"/>
-              </b-btn>
-              <b-btn
-                variant="link"
-                @click="deleteProperty(item)"
-                v-b-tooltip.hover
-                :title="$t('Delete')"
-                data-cy="watchers-table-remove"
-              >
-                <i class="fas fa-trash-alt fa-lg fa-fw"/>
-              </b-btn>
-            </div>
-          </div>
-        </template>
-      </b-table>
-    </div>
-    <template slot="modal-footer">
-      <span />
+        <img :src="getByPassIcon(item)" alt="Bypass" width="24" />
+      </button>
+      <div class="sortable-item-vr"></div>
     </template>
-  </div>
+  </Sortable>
 </template>
 
 <script>
 import BasicSearch from './basic-search';
 import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
+import Sortable from './sortable/Sortable.vue';
 
 export default {
   components: {
     BasicSearch,
     FormInput,
     FormTextArea,
+    Sortable,
   },
   props: {
     value: {
@@ -90,7 +70,6 @@ export default {
         {
           label: this.$t('Name'),
           key: 'name',
-          tdClass: 'break-word',
         },
         {
           label: this.$t('Watching Variable'),
@@ -99,39 +78,15 @@ export default {
         {
           label: this.$t('Output Variable'),
           key: 'output_variable',
-          tdClass: 'break-word',
         },
         {
           label: this.$t('Source'),
           key: 'script.title',
         },
-        {
-          key: 'actions',
-          label: '',
-        },
       ],
     };
   },
-  computed: {
-    filtered() {
-      const list = this.getValuesWithOutputVarsNames(this.value);
-
-      if (!this.filter) {
-        return list;
-      }
-      const filtered = [];
-      list.forEach(item => {
-        if (Object.keys(item).find(key => typeof item[key] === 'string' ? item[key].indexOf(this.filter)>=0 : false)) {
-          filtered.push(item);
-        }
-      });
-      return filtered;
-    },
-  },
   methods: {
-    search() {
-
-    },
     displayFormProperty() {
       this.$emit('display-form');
     },
@@ -141,36 +96,26 @@ export default {
     deleteProperty(item) {
       this.$emit('delete-form', item);
     },
-    getValuesWithOutputVarsNames(values) {
-      let list = values.map(watcher => {
-        let newItem = Object.assign({}, watcher);
-        // If watcher is a data source, extract the output vars
-        if (newItem.script && newItem.script.id && newItem.script.id.substr(0, 11) === 'data_source') {
-          let scriptConfig = JSON.parse(newItem.script_configuration);
-          let vars = (scriptConfig && scriptConfig.dataMapping)
-            ? scriptConfig.dataMapping.map(mapping => mapping.key).join(', ')
-            : '';
-
-          // var names string won't have more than 50 characters to avoid distorting the UI
-          const maxLen = 50;
-          newItem.output_variable = vars.length > maxLen
-            ? vars.substr(0, maxLen) + '...'
-            : vars;
-        }
-        return newItem;
-      });
-      return list;
+    getByPassIcon(item) {
+      return new URL(
+        `../assets/icons/${item.byPass ? 'Unbypass' : 'Bypass'}.svg`,
+        import.meta.url,
+      ).href;
     },
   },
 };
 </script>
 
-<style>
-.watchers-list .break-word {
-  word-break: break-word;
-}
+<style lang="scss" scoped>
+.bypass-btn-tooltip::v-deep {
+  & .tooltip-inner {
+    background-color: #EBEEF2 !important;
+    color: #444444 !important;
+  }
 
-.watchers-list .table {
-  margin-bottom: 0;
+  & .arrow:before {
+    border-top-color: #EBEEF2 !important;
+    border-bottom-color: #EBEEF2 !important;
+  }
 }
 </style>
