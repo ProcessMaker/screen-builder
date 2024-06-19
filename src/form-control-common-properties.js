@@ -1,7 +1,5 @@
 import Tooltip from './components/inspector/tooltip';
 import DeviceVisibility from './components/inspector/device-visibility';
-import { config } from 'chai';
-import { required } from 'vuelidate/lib/validators';
 
 export const bgcolorProperty = {
   type: 'ColorSelect',
