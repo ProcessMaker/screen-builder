@@ -45,6 +45,37 @@ describe("Form Input", () => {
       form_input_1: 123
     });
   });
+  it("Data type Integer with 0 value (required)", () => {
+    cy.visit("/");
+    cy.openAcordeon("collapse-1");
+    cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
+    cy.get("[data-cy=controls-FormButton]")
+      .contains("Submit Button")
+      .drag("[data-cy=screen-element-container]", { position: "bottom" });
+
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
+    cy.setMultiselect("[data-cy=inspector-dataFormat]", "Integer");
+    cy.get("[data-cy=add-rule]").click();
+    cy.setMultiselect("[data-cy=select-rule]", "Required");
+    cy.get("[data-cy=save-rule]").click();
+    cy.get("[data-cy=mode-preview]").click();
+    cy.get("[data-cy=preview-content] [name=form_input_1]").type("0");
+    cy.get(
+      '[data-cy=preview-content] [name="Default"] > :nth-child(2) > .form-group > .btn'
+    ).click();
+    cy.get(
+      "[data-cy=preview-content] [data-cy='screen-field-form_input_1']"
+    ).should("not.have.class", "is-invalid");
+    cy.get("[data-cy=preview-content] [name=form_input_1]").clear();
+    cy.get(
+      '[data-cy=preview-content] [name="Default"] > :nth-child(2) > .form-group > .btn'
+    ).click();
+    cy.get(
+      "[data-cy=preview-content] [data-cy='screen-field-form_input_1']"
+    ).should("have.class", "is-invalid");
+  });
   it("Data type Currency", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-1");
@@ -59,6 +90,30 @@ describe("Form Input", () => {
     cy.assertPreviewData({
       form_input_1: 1234
     });
+  });
+  it("Data type Currency with 0 value (required)", () => {
+    cy.visit("/");
+    cy.openAcordeon("collapse-1");
+    cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
+    cy.get("[data-cy=controls-FormButton]")
+      .contains("Submit Button")
+      .drag("[data-cy=screen-element-container]", { position: "bottom" });
+
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
+    cy.setMultiselect("[data-cy=inspector-dataFormat]", "Currency");
+    cy.get("[data-cy=add-rule]").click();
+    cy.setMultiselect("[data-cy=select-rule]", "Required");
+    cy.get("[data-cy=save-rule]").click();
+    cy.get("[data-cy=mode-preview]").click();
+    cy.get("[data-cy=preview-content] [name=form_input_1]").type("0");
+    cy.get(
+      '[data-cy=preview-content] [name="Default"] > :nth-child(2) > .form-group > .btn'
+    ).click();
+    cy.get(
+      "[data-cy=preview-content] [data-cy='screen-field-form_input_1']"
+    ).should("not.have.class", "is-invalid");
   });
   it("Data type Currency with initial data", () => {
     cy.visit("/");
