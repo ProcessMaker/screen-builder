@@ -1,6 +1,7 @@
 .sortable {
   &-box {
     font-family: "Open Sans", sans-serif !important;
+    overflow-x: auto;
   }
 
   &-search-box {
