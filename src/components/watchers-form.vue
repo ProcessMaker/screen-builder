@@ -701,6 +701,7 @@ export default {
 
         if (!this.config.uid) {
           this.config.uid = _.uniqueId(new Date().getTime());
+          this.config.byPass = false;
         }
 
         this.save();

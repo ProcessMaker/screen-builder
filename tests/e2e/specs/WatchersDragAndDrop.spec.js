@@ -5,17 +5,35 @@ describe('Watchers list Drag&Drop', () => {
     cy.get('[data-cy="topbar-watchers"]').click();
   };
 
+  const aliasRowByIndex = (index, aliasName) => {
+    cy.get(`[data-cy="watchers-table"] [data-test="item-${index}"]`)
+      .eq(0)
+      .as(aliasName);
+  };
+
+  const performDragAndDrop = (sourceAlias, targetAlias, sourceContent, targetContent) => {
+    cy.get(sourceAlias).contains(sourceContent);
+    cy.get(targetAlias).contains(targetContent);
+
+    dragAndDrop(sourceAlias, targetAlias);
+  };
+
+  const verifyWatcherNameByIndex = (index, expectedName) => {
+    cy.get(`[data-cy="watchers-table"] [data-test="item-${index}"]`)
+      .eq(0)
+      .contains(expectedName);
+  };
+
   const extraWatchers = ['watcher_06', 'watcher_07', 'watcher_08'];
 
   beforeEach(() => {
     cy.visit('/');
 
     cy.loadFromJson('FOUR-13457.json', 0);
+    clickTopBarWatchers();
   });
 
   it('should create 3 extra watchers', () => {
-    clickTopBarWatchers();
-
     extraWatchers.forEach((watcher) => {
       cy.get('[data-cy="watchers-add-watcher"]').click();
       cy.get('[data-cy="watchers-watcher-name"]').type(`watcher_${watcher}`);
@@ -38,58 +56,41 @@ describe('Watchers list Drag&Drop', () => {
   });
 
   it('should drag and drop first row to third row', () => {
-    clickTopBarWatchers();
+    aliasRowByIndex(1, 'firstRow');
+    aliasRowByIndex(3, 'thirdRow');
 
-    cy.get('[data-cy="watchers-table"] [data-test="item-1"]').eq(0).as('firstRow');
-    cy.get('[data-cy="watchers-table"] [data-test="item-3"]').eq(0).as('thirdRow');
+    performDragAndDrop('@firstRow', '@thirdRow', 'watcher_first_name', 'watcher_full_name');
 
-    cy.get('@firstRow').contains('watcher_first_name');
-    cy.get('@thirdRow').contains('watcher_full_name');
-
-    dragAndDrop('@firstRow', '@thirdRow');
-
-    cy.get('[data-cy="watchers-table"] [data-test="item-1"]').eq(0).contains('watcher_last_name');
-    cy.get('[data-cy="watchers-table"] [data-test="item-3"]').eq(0).contains('watcher_first_name');
+    verifyWatcherNameByIndex(1, 'watcher_last_name');
+    verifyWatcherNameByIndex(3, 'watcher_first_name');
   });
 
   it('should drag and drop second row to last row', () => {
-    clickTopBarWatchers();
+    aliasRowByIndex(2, 'secondRow');
+    aliasRowByIndex(5, 'lastRow');
 
-    cy.get('[data-cy="watchers-table"] [data-test="item-2"]').eq(0).as('secondRow');
-    cy.get('[data-cy="watchers-table"] [data-test="item-5"]').eq(0).as('lastRow');
+    performDragAndDrop('@secondRow', '@lastRow', 'watcher_last_name', 'watcher_05');
 
-    cy.get('@secondRow').contains('watcher_last_name');
-    cy.get('@lastRow').contains('watcher_05');
-
-    dragAndDrop('@secondRow', '@lastRow');
-
-    cy.get('[data-cy="watchers-table"] [data-test="item-2"]').eq(0).contains('watcher_full_name');
-    cy.get('[data-cy="watchers-table"] [data-test="item-5"]').eq(0).contains('watcher_last_name');
+    verifyWatcherNameByIndex(2, 'watcher_full_name');
+    verifyWatcherNameByIndex(5, 'watcher_last_name');
   });
 
   it('should drag and drop last row to first row', () => {
-    clickTopBarWatchers();
+    aliasRowByIndex(5, 'lastRow');
+    aliasRowByIndex(1, 'firstRow');
 
-    cy.get('[data-cy="watchers-table"] [data-test="item-5"]').eq(0).as('lastRow');
-    cy.get('[data-cy="watchers-table"] [data-test="item-1"]').eq(0).as('firstRow');
+    performDragAndDrop('@lastRow', '@firstRow', 'watcher_05', 'watcher_first_name');
 
-    cy.get('@lastRow').contains('watcher_05');
-    cy.get('@firstRow').contains('watcher_first_name');
-
-    dragAndDrop('@lastRow', '@firstRow');
-
-    cy.get('[data-cy="watchers-table"] [data-test="item-5"]').eq(0).contains('watcher_email');
-    cy.get('[data-cy="watchers-table"] [data-test="item-1"]').eq(0).contains('watcher_05');
+    verifyWatcherNameByIndex(5, 'watcher_email');
+    verifyWatcherNameByIndex(1, 'watcher_05');
   });
 
   it('should drag and drop to sort in ascending mode', () => {
-    clickTopBarWatchers();
-
-    cy.get('[data-cy="watchers-table"] [data-test="item-1"]').eq(0).as('firstRow');
-    cy.get('[data-cy="watchers-table"] [data-test="item-2"]').eq(0).as('secondRow');
-    cy.get('[data-cy="watchers-table"] [data-test="item-3"]').eq(0).as('thirdRow');
-    cy.get('[data-cy="watchers-table"] [data-test="item-4"]').eq(0).as('fourthRow');
-    cy.get('[data-cy="watchers-table"] [data-test="item-5"]').eq(0).as('lastRow');
+    aliasRowByIndex(1, 'firstRow');
+    aliasRowByIndex(2, 'secondRow');
+    aliasRowByIndex(3, 'thirdRow');
+    aliasRowByIndex(4, 'fourthRow');
+    aliasRowByIndex(5, 'lastRow');
 
     cy.get('@firstRow').contains('first_name');
     cy.get('@secondRow').contains('last_name');
@@ -108,9 +109,7 @@ describe('Watchers list Drag&Drop', () => {
   });
 
   it('should edit the name of the first calc', () => {
-    clickTopBarWatchers();
-
-    cy.get('[data-cy="watchers-table"] [data-test="item-1"]').eq(0).as('firstRow');
+    aliasRowByIndex(1, 'firstRow');
 
     cy.get('@firstRow').contains('watcher_first_name');
 
@@ -123,10 +122,7 @@ describe('Watchers list Drag&Drop', () => {
   });
 
   it('should delete the third calc', () => {
-    clickTopBarWatchers();
-
-    cy.get('[data-cy="watchers-table"] [data-test="item-3"]').eq(0).as('thirdRow');
-
+    aliasRowByIndex(3, 'thirdRow');
     cy.get('@thirdRow').contains('watcher_full_name');
 
     cy.get('@thirdRow').find('[data-cy="watchers-table-remove"]').click();
@@ -135,9 +131,7 @@ describe('Watchers list Drag&Drop', () => {
   });
 
   it('should bypass the second calc', () => {
-    clickTopBarWatchers();
-
-    cy.get('[data-cy="watchers-table"] [data-test="item-2"]').eq(0).as('secondRow');
+    aliasRowByIndex(2, 'secondRow');
 
     cy.get('@secondRow').contains('watcher_last_name');
 

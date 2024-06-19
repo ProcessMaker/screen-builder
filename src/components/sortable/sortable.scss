@@ -7,6 +7,10 @@
     display: flex;
     align-items: center;
     border-color: #cdddee !important;
+
+    & > input.form-control:focus {
+      border: 0 none !important;
+    }
   }
 
   &-search-icon {

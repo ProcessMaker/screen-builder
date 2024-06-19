@@ -68,6 +68,7 @@ export default {
         input_data: '',
         script_configuration: '',
         synchronous: false,
+        byPass: false,
       },
     };
   },
@@ -88,18 +89,11 @@ export default {
         }
 
         // If watcher is a data source, extract the output vars
-        if (
-          newItem.script &&
-          newItem.script.id &&
-          newItem.script.id.substr(0, 11) === 'data_source'
-        ) {
+        if (newItem?.script?.id?.substr(0, 11) === 'data_source') {
           const scriptConfig = JSON.parse(newItem.script_configuration);
-          const vars =
-            scriptConfig && scriptConfig.dataMapping
-              ? scriptConfig.dataMapping
-                  .map((mapping) => mapping.key)
-                  .join(', ')
-              : '';
+          const vars = scriptConfig?.dataMapping
+            ? scriptConfig.dataMapping.map((mapping) => mapping.key).join(', ')
+            : '';
 
           // var names string won't have more than 50 characters to avoid distorting the UI
           const maxLen = 50;
