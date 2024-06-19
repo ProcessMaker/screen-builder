@@ -117,3 +117,14 @@ export const validateImage = (downloadedFilename) => {
     expect(buffer.length).to.be.gt(1000);
   });
 };
+
+export const dragAndDrop = (source, target) => {
+  const dataTransfer = new DataTransfer();
+
+  cy.get(source).trigger('dragstart', { dataTransfer });
+  cy.get(target)
+    .trigger('dragenter')
+    .trigger('dragover', { dataTransfer })
+    .trigger('drop', { dataTransfer });
+  cy.get(source).trigger('dragend');
+};

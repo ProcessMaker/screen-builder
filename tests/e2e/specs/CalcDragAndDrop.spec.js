@@ -1,17 +1,8 @@
+import { dragAndDrop } from '../support/utils';
+
 describe('Calcs list Drag&Drop', () => {
   const clickTopBarCalcs = () => {
     cy.get('[data-cy="topbar-calcs"]').click();
-  };
-
-  const dragAndDrop = (source, target) => {
-    const dataTransfer = new DataTransfer();
-
-    cy.get(source).trigger('dragstart', { dataTransfer });
-    cy.get(target)
-      .trigger('dragenter')
-      .trigger('dragover', { dataTransfer })
-      .trigger('drop', { dataTransfer });
-    cy.get(source).trigger('dragend');
   };
 
   beforeEach(() => {
