@@ -27,7 +27,7 @@
       <Sortable
         :fields="fields"
         :items="current"
-        filter-key="name"
+        filter-key="name,type"
         disable-key="byPass"
         :inline-edit="false"
         :data-test-actions="{

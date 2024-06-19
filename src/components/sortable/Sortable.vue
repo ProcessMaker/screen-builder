@@ -99,10 +99,23 @@ export default {
     },
     filterItems(searchValue, items) {
       const cleanSearch = this.clearSearch(searchValue);
-      return items.filter((item) => item[this.filterKey].toLowerCase().includes(cleanSearch));
+      const filterKeys = this.filterKey.split(',');
+
+      return items.filter((item) =>
+        filterKeys.some((key) => {
+          const keyParts = key.split('.');
+
+          return keyParts.length > 1
+            ? keyParts
+                .reduce((obj, keyPart) => obj[keyPart], item)
+                ?.toLowerCase()
+                .includes(cleanSearch)
+            : item[key]?.toLowerCase().includes(cleanSearch);
+        }),
+      );
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped src="./sortable.scss"></style>
