@@ -18,8 +18,13 @@ export default {
   ],
   computed: {
     classColor() {
-      return `btn btn-${this.variant}`;
+      return `text-${this.variant}`;
     }
   }
 };
 </script>
+<style scoped>
+a {
+  text-decoration: underline;
+}
+</style>

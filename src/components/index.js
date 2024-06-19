@@ -74,9 +74,7 @@ export {
   tooltipProperty,
   deviceVisibilityProperty,
   LoadingSubmitButtonProperty,
-  LabelSubmitButtonProperty,
-  linkTypeEvent,
-  InputUrlLinkProperty
+  LabelSubmitButtonProperty
 } from "../form-control-common-properties";
 
 // Export our named exports

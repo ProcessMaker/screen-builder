@@ -13,6 +13,7 @@ export default [
       'initiallyChecked',
       'screen',
       'multipleUpload',
+      'linkUrl'
     ],
     open: true,
   },
