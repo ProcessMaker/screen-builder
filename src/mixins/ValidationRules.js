@@ -161,7 +161,7 @@ export const regex = (expression) => helpers.withParams({expression}, (value) =>
 });
 
 export const required = (value) => {
-  return value instanceof Array  ? value.length > 0 : !isNil(value) && value !== '';
+  return value instanceof Array  ? value.length > 0 : !isNil(value) && value !== '' && value !== false;;
 };
 
 export const requiredIf = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
