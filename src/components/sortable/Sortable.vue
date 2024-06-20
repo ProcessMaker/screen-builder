@@ -15,7 +15,7 @@
         <button
           type="button"
           class="btn sortable-btn-new"
-          v-bind="dataTestActions.btnNew"
+          v-bind="testActions.btnNew"
           @click="$emit('add-page', $event)"
         >
           <i class="fa fa-plus"></i>
@@ -29,7 +29,7 @@
       :filtered-items="filteredItems"
       :inline-edit="inlineEdit"
       :disable-key="disableKey"
-      :data-test-actions="dataTestActions"
+      :data-test-actions="testActions"
       @ordered="$emit('ordered', $event)"
       @item-edit="$emit('item-edit', $event)"
       @item-delete="$emit('item-delete', $event)"
@@ -57,12 +57,7 @@ export default {
     inlineEdit: { type: Boolean, default: true },
     dataTestActions: {
       type: Object,
-      default: () => ({
-        tableBox: { 'data-test': 'sortable-table-box' },
-        btnNew: { 'data-test': 'sortable-btn-new' },
-        btnEdit: { 'data-test': 'sortable-btn-edit' },
-        btnDelete: { 'data-test': 'sortable-btn-remove' },
-      }),
+      default: () => ({}),
     },
   },
   data() {
@@ -76,7 +71,18 @@ export default {
         }
         return item;
       }),
+      defaultTestActions: {
+        tableBox: { 'data-test': 'sortable-table-box' },
+        btnNew: { 'data-test': 'sortable-btn-new' },
+        btnEdit: { 'data-test': 'sortable-btn-edit' },
+        btnDelete: { 'data-test': 'sortable-btn-remove' },
+      },
     };
+  },
+  computed: {
+    testActions() {
+      return { ...this.defaultTestActions, ...this.dataTestActions };
+    },
   },
   watch: {
     search(value) {
@@ -99,10 +105,23 @@ export default {
     },
     filterItems(searchValue, items) {
       const cleanSearch = this.clearSearch(searchValue);
-      return items.filter((item) => item[this.filterKey].toLowerCase().includes(cleanSearch));
+      const filterKeys = this.filterKey.split(',');
+
+      return items.filter((item) =>
+        filterKeys.some((key) => {
+          const keyParts = key.split('.');
+
+          return keyParts.length > 1
+            ? keyParts
+                .reduce((obj, keyPart) => obj[keyPart], item)
+                ?.toLowerCase()
+                .includes(cleanSearch)
+            : item[key]?.toLowerCase().includes(cleanSearch);
+        }),
+      );
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped src="./sortable.scss"></style>
