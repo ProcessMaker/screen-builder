@@ -1,12 +1,17 @@
 .sortable {
   &-box {
     font-family: "Open Sans", sans-serif !important;
+    overflow-x: auto;
   }
 
   &-search-box {
     display: flex;
     align-items: center;
     border-color: #cdddee !important;
+
+    & > input.form-control:focus {
+      border: 0 none !important;
+    }
   }
 
   &-search-icon {
