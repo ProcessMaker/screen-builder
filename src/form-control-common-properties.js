@@ -1,6 +1,5 @@
 import Tooltip from './components/inspector/tooltip';
 import DeviceVisibility from './components/inspector/device-visibility';
-import { config } from 'chai';
 
 export const bgcolorProperty = {
   type: 'ColorSelect',
@@ -247,33 +246,6 @@ export const buttonTypeEvent = {
       },
     ],
   },
-};
-
-export const linkTypeEvent = {
-  type: 'FormMultiselect',
-  field: 'event',
-  config: {
-    label: 'Type',
-    helper: 'Choose whether the button should submit the form or redirected an URL',
-    options: [
-      {
-        value: 'button',
-        content: 'Submit Button'
-      },
-      {
-        value: 'link',
-        content: 'Link URL'
-      }
-    ]
-  }
-};
-
-export const InputUrlLinkProperty = {
-  type: "inputUrlLink",
-  field: "inputUrlLink",
-  config: {
-    label: "Link URL"
-  }
 };
 
 export const tooltipProperty = {

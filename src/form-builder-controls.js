@@ -43,9 +43,7 @@ import {
   buttonTypeEvent,
   tooltipProperty,
   LoadingSubmitButtonProperty,
-  LabelSubmitButtonProperty,
-  linkTypeEvent,
-  InputUrlLinkProperty
+  LabelSubmitButtonProperty
 } from './form-control-common-properties';
 
 export default [
@@ -996,22 +994,23 @@ export default [
   },
   {
     editorComponent: LinkButton,
-    editorBinding: "LinkButton",
+    editorBinding: 'LinkButton',
     rendererComponent: LinkButton,
     rendererBinding: "LinkButton",
+    
     control: {
       popoverContent: "Add an action to submit your form or update a field",
       group: 'Content Fields',
       order: 6.0,
-      label: "Submit Button",
+      label: "Link URL",
       component: "LinkButton",
       "editor-component": "LinkButton",
       "editor-control": "LinkButton",
       config: {
-        label: "New Submit",
-        icon: "fas fa-chart-area",
+        label: "New Link",
+        icon: "fas fa-link",
         variant: "primary",
-        event: "link"
+        event: "link",
       },
       inspector: [
         {
@@ -1024,25 +1023,11 @@ export default [
         },
         {
           type: 'FormInput',
-          field: 'name',
+          field: 'linkUrl',
           config: {
-            label: 'Variable Name',
-            name: 'Variable Name',
-            helper: 'A variable name is a symbolic name to reference information.',
-            validation: 'regex:/^(?:[A-Za-z])(?:[0-9A-Z_.a-z])*(?<![.])$/|not_in:' + javascriptReservedKeywords,
-
+            label: 'Link URL',
+            helper: 'Type here the URL link. Mustache syntax is supported.',
           },         
-        },
-        linkTypeEvent,
-        InputUrlLinkProperty,
-        LabelSubmitButtonProperty,
-        {
-          type: 'FormInput',
-          field: 'fieldValue',
-          config: {
-            label: 'Value',
-            helper: 'The value being submitted',
-          },
         },
         buttonVariantStyleProperty
       ]
