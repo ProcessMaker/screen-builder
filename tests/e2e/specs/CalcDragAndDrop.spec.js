@@ -144,15 +144,9 @@ describe('Calcs list Drag&Drop', () => {
     cy.get('[data-cy="calcs-modal"] .modal-dialog').as('calcsModal');
     cy.get('@calcsModal').should('be.visible');
 
-    cy.get('@calcsModal').should('have.class', 'modal-lg');
-
-    cy.get('[data-test="calcs-enlarge-source-code"]').as('enlargeSourceCode');
-
-    cy.get('@enlargeSourceCode').click();
-
     cy.get('@calcsModal').should('have.class', 'modal-xl');
 
-    cy.get('@enlargeSourceCode').click();
+    cy.get('[data-cy="calcs-button-save"]').click();
 
     cy.get('@calcsModal').should('have.class', 'modal-lg');
   });

@@ -91,17 +91,7 @@
 
       <div class="form-group mb-3" style="position: relative">
         <div class="d-flex justify-content-between mb-1">
-          <div class="d-flex align-items-center">
-            <button
-              class="btn btn-sm btn-outline-light mr-1 text-secondary shadow-sm"
-              data-test="calcs-enlarge-source-code"
-              @click.prevent="toggleModalSize"
-            >
-              <i class="fas fa-expand"></i>
-            </button>
-
-            <label class="m-0">{{ $t('Formula') + ' *' }}</label>
-          </div>
+          <label class="m-0">{{ $t('Formula') + ' *' }}</label>
 
           <div>
             <a
@@ -239,7 +229,6 @@ export default {
       },
       monacoEditor: null,
       errors: {},
-      modalSize: "lg",
     };
   },
   computed: {
@@ -263,7 +252,10 @@ export default {
     },
     isJS() {
       return this.add.type === "javascript";
-    }
+    },
+    modalSize() {
+      return this.displayList ? 'lg' : 'xl';
+    },
   },
   watch: {
     value() {
@@ -315,7 +307,6 @@ export default {
     },
     displayTableList() {
       this.emptyForm();
-      this.modalSize = 'lg';
       this.displayList = true;
     },
     displayFormProperty() {
@@ -408,9 +399,6 @@ export default {
         import.meta.url,
       ).href;
     },
-    toggleModalSize() {
-      this.modalSize = this.modalSize === 'lg' ? 'xl' : 'lg';
-    },
   }
 };
 </script>
@@ -480,9 +468,5 @@ export default {
   & > label {
     display: none;
   }
-}
-
-.btn[data-test='calcs-enlarge-source-code'] {
-  border-color: #CDDDEE;
 }
 </style>
