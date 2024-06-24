@@ -99,33 +99,27 @@ describe("Watchers", () => {
     cy.get('[data-cy="watchers-modal"] .close').click();
   });
 
-  it("Ensure that a watch is not bypassed", () => {
+  function runWatcherTest(bypass) {
     cy.setupFormInput("user.name");
-    cy.createWatcher();
+    cy.createWatcher(bypass);
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=preview-content] [name=form_input_2]").clear().type("name");
     cy.get("#watchers-synchronous").should("not.exist");
     cy.wait(3000);
-    cy.assertPreviewData({
+    const expectedData = {
       form_input_2: "name",
       user: {
-        name: "Steve"
+        name: bypass ? "" : "Steve"
       }
-    });
+    };
+    cy.assertPreviewData(expectedData);
+  }
+
+  it("Ensure that a watch is not bypassed", () => {
+    runWatcherTest(false);
   });
 
   it("Ensure that a watch is bypassed", () => {
-    cy.setupFormInput("user.name");
-    cy.createWatcher(true);
-    cy.get("[data-cy=mode-preview]").click();
-    cy.get("[data-cy=preview-content] [name=form_input_2]").clear().type("name");
-    cy.get("#watchers-synchronous").should("not.exist");
-    cy.wait(3000);
-    cy.assertPreviewData({
-      form_input_2: "name",
-      user: {
-        name: ""
-      }
-    });
+    runWatcherTest(true);
   });
 });
