@@ -20,7 +20,7 @@ export default {
       if (definition.watchers) {
         screen.mixins.push(watchersMixin);
         definition.watchers.filter(this.filterWatchers).forEach((watcher) => {
-          if (watcher.byPass) {
+          if (watcher?.byPass) {
             // If the watcher has bypass set to true, skip it
             return;
           }
