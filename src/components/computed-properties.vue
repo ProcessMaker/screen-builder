@@ -2,7 +2,7 @@
   <b-modal
     id="computed-properties"
     ref="modal"
-    size="lg"
+    :size="modalSize"
     content-class="p-3"
     header-class="m-0 p-0 mb-3"
     body-class="m-0 p-0"
@@ -15,7 +15,7 @@
   >
     <template #modal-title>
       <h5 class="modal-title">{{ $t('Calculated Properties') }}</h5>
-      <small v-show="!displayList" class="modal-subtitle mb-n2">
+      <small v-show="!displayList" class="modal-subtitle my-2">
         {{
           $t(
             'Perform mathematical calculations offering quick, convenient, and accurate operations, enhancing user efficiency and usability.',
@@ -90,24 +90,27 @@
       </b-row>
 
       <div class="form-group mb-3" style="position: relative">
-        <label v-show="isJS">{{ $t("Formula") + " *" }}</label>
-        <div class="float-right">
-          <a
-            class="btn btn-sm"
-            :class="expressionTypeClass"
-            data-cy="calcs-switch-formula"
-            @click="switchExpressionType('expression')"
-          >
-            <i class="fas fa-square-root-alt" />
-          </a>
-          <a
-            class="btn btn-sm"
-            :class="javascriptTypeClass"
-            data-cy="calcs-switch-javascript"
-            @click="switchExpressionType('javascript')"
-          >
-            <i class="fab fa-js-square fa-lg"></i>
-          </a>
+        <div class="d-flex justify-content-between mb-1">
+          <label class="m-0">{{ $t('Formula') + ' *' }}</label>
+
+          <div>
+            <a
+              class="btn btn-sm"
+              :class="expressionTypeClass"
+              data-cy="calcs-switch-formula"
+              @click="switchExpressionType('expression')"
+            >
+              <i class="fas fa-square-root-alt" />
+            </a>
+            <a
+              class="btn btn-sm"
+              :class="javascriptTypeClass"
+              data-cy="calcs-switch-javascript"
+              @click="switchExpressionType('javascript')"
+            >
+              <i class="fab fa-js-square fa-lg"></i>
+            </a>
+          </div>
         </div>
 
         <form-text-area
@@ -115,7 +118,6 @@
           ref="formula"
           v-model="add.formula"
           rows="5"
-          :label="$t('Formula') + ' *'"
           name="formula"
           :error="errors.formula"
           data-cy="calcs-property-formula"
@@ -226,7 +228,7 @@ export default {
         minimap: false
       },
       monacoEditor: null,
-      errors: {}
+      errors: {},
     };
   },
   computed: {
@@ -250,7 +252,10 @@ export default {
     },
     isJS() {
       return this.add.type === "javascript";
-    }
+    },
+    modalSize() {
+      return this.displayList ? 'lg' : 'xl';
+    },
   },
   watch: {
     value() {
@@ -432,6 +437,7 @@ export default {
 }
 
 .modal-subtitle {
+  display: block;
   color: #556271;
   font-size: 1rem;
   font-weight: 400;
@@ -454,9 +460,13 @@ export default {
 
 .calcs-input-formula::v-deep {
   & > textarea.form-control {
-    height: 430px !important;
+    height: 430px;
     border-color: #CDDDEE;
     resize: none;
+  }
+
+  & > label {
+    display: none;
   }
 }
 </style>
