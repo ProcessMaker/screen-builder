@@ -1,4 +1,5 @@
 import { Parser } from "expr-eval";
+import CustomLog from '../customLogs';
 
 export default {
   methods: {
@@ -39,22 +40,7 @@ export default {
      * @param {string} message - The error message.
      */
     customErrorLog(name, message) {
-      // Unicode character for the common error icon
-      const errorIcon = "\u274C"; // Heavy multiplication X
-      // Create the error message with a background similar to console.error
-      const style =
-        "background-color: rgba(255, 0, 0, 0.1); color: red; padding: 2px 4px; border-radius: 3px;";
-      // start console log group
-      console.groupCollapsed(
-        `%c${errorIcon} %cCalc "${name}" has %cFAILED`,
-        style,
-        "background-color: rgba(255, 0, 0, 0.1)",
-        style
-      );
-      // Log the message
-      console.log(`%c${message}`, style);
-      // End the console group
-      console.groupEnd();
+      CustomLog.error('Calc', name, message);
     },
 
     /**
@@ -62,18 +48,7 @@ export default {
      * @param {string} name - The name of the calculation.
      */
     customSuccessLog(name) {
-      // Unicode character for the success icon
-      const successIcon = "\u2705"; // Checkmark
-      // Create the success message with a green background
-      const style =
-        "background-color: rgba(0, 128, 0, 0.1); color: green; padding: 1px 1px; border-radius: 3px;";
-      // Log the styled success message with an icon
-      console.log(
-        `%c${successIcon} %cCalc "${name}" has %cRUN`,
-        style,
-        "background-color: rgba(0, 128, 0, 0.1)",
-        style
-      );
-    }
+      CustomLog.success('Calc', name);
+    },
   }
 };
