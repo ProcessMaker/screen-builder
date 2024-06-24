@@ -1,5 +1,6 @@
 import Mustache from 'mustache';
 import _ from 'lodash';
+import CustomLog from '../customLogs';
 
 const broadcastEvent = '.Illuminate\\\\Notifications\\\\Events\\\\BroadcastNotificationCreated';
 
@@ -44,7 +45,7 @@ export default {
           // Data Source
           const requestId = _.get(this.vdata, '_request.id', null);
           const params = { config: JSON.parse(config), data: this.vdata };
-          
+
           this.$dataProvider.postDataSource(scriptId, requestId, params).then(response => {
             this.$emit('asyncWatcherCompleted');
             complete(response.data);
@@ -67,6 +68,7 @@ export default {
           });
         }
       }).then((response) => {
+        CustomLog.success('Watcher', watcher.name);
         // If watcher has an output variable and is a script
         if (watcher.output_variable && (watcher.script_key || '').length === 0) {
           this.setValue(watcher.output_variable, response, this.vdata);
@@ -94,6 +96,7 @@ export default {
         }
         return response;
       }).catch(error => {
+        CustomLog.error('Watcher', watcher.name, error.message);
         const message = _.get(error, 'response.data.message', error.message);
         if (watcher.synchronous) {
           this.$parent.$refs.watchersSynchronous.error(message);
