@@ -23,7 +23,7 @@
           <vue-form-renderer
             ref="renderer"
             v-model="requestData"
-            :class="{ loading: loadingTask }"
+            :class="{ loading: loadingTask || loadingListeners }"
             :config="screen.config"
             :computed="screen.computed"
             :custom-css="screen.custom_css"
@@ -122,18 +122,13 @@ export default {
       redirecting: null,
       loadingButton: false,
       loadingTask: false,
+      loadingListeners: true,
     };
   },
   watch: {
     initialScreenId: {
       handler() {
         this.screenId = this.initialScreenId;
-      },
-    },
-
-    initialTaskId: {
-      handler() {
-        this.taskId = this.initialTaskId;
       },
     },
 
@@ -163,16 +158,6 @@ export default {
       },
     },
 
-    taskId: {
-      handler() {
-        if (this.taskId) {
-          if (!this.task || this.task.id !== this.taskId) {
-            this.loadTask();
-          }
-        }
-      },
-    },
-
     requestId: {
       handler() {
         if (this.requestId) {
@@ -182,30 +167,6 @@ export default {
           this.unsubscribeSocketListeners();
         }
       },
-    },
-
-    task: {
-      handler() {
-        if (!this.screen) {
-          // if no current screen show the interstitial screen if exists
-          this.screen = this.task && this.task.interstitial_screen;
-        }
-        this.taskId = this.task.id;
-        this.nodeId = this.task.element_id;
-        this.listenForParentChanges();
-        if (this.task.process_request.status === 'COMPLETED') {
-          if (!this.taskPreview) {
-            this.$emit('completed', this.task.process_request.id);
-          }
-        }
-        if (this.taskPreview && this.task.status === "CLOSED") {
-          this.task.interstitial_screen['_interstitial'] = false;
-          if (!this.alwaysAllowEditing) {
-            this.task.screen.config = this.disableForm(this.task.screen.config);
-          }
-          this.screen = this.task.screen;
-        }
-      }
     },
 
     value: {
@@ -308,6 +269,7 @@ export default {
           .getTasks(url)
           .then((response) => {
             this.task = response.data;
+            this.linkTask();
             this.checkTaskStatus();
             if (
               window.PM4ConfigOverrides
@@ -326,6 +288,22 @@ export default {
             this.loadingTask = false;
           });
       });
+    },
+    linkTask() {
+      this.nodeId = this.task.element_id;
+      this.listenForParentChanges();
+      if (this.task.process_request.status === 'COMPLETED') {
+        if (!this.taskPreview) {
+          this.$emit('completed', this.task.process_request.id);
+        }
+      }
+      if (this.taskPreview && this.task.status === "CLOSED") {
+        this.task.interstitial_screen['_interstitial'] = false;
+        if (!this.alwaysAllowEditing) {
+          this.task.screen.config = this.disableForm(this.task.screen.config);
+        }
+        this.screen = this.task.screen;
+      }
     },
     prepareTask() {
       // If the immediate task status is completed and we are waiting with a loading button,
@@ -426,6 +404,7 @@ export default {
               this.emitIfTaskCompleted(requestId);
             }
             this.taskId = task.id;
+            this.loadTask();
             this.nodeId = task.element_id;
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
@@ -504,17 +483,18 @@ export default {
     },
     processUpdated: _.debounce(function(data) {
       if (
-        (data.event === "ACTIVITY_COMPLETED" ||
-          data.event === "ACTIVITY_ACTIVATED") &&
-        data.elementType === 'task'
+        data.event === "ACTIVITY_ACTIVATED"
+        && data.elementType === 'task'
       ) {
+        this.taskId = data.tokenId;
         this.reload();
       }
       if (data.event === 'ACTIVITY_EXCEPTION') {
         this.$emit('error', this.requestId);
       }
-    }, 300),
+    }, 100),
     initSocketListeners() {
+      this.loadingListeners = false;
       this.addSocketListener(
         `completed-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
@@ -619,6 +599,7 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
+    this.loadTask();
   },
   destroyed() {
     this.unsubscribeSocketListeners();
