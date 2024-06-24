@@ -75,7 +75,7 @@ export default {
     const endpoint = get(
       window,
       "PM4ConfigOverrides.getTasksEndpoint",
-      "/tasks"
+      "/api/1.1/tasks"
     );
     const promises = [];
     const hasIncludeScreen = params.match(/include=.*,screen,/);
