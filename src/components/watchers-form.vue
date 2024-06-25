@@ -744,7 +744,7 @@ export default {
 }
 
 .editor {
-  height: 8.5em;
+  height: 375px;
   z-index: 0;
 }
 

@@ -316,6 +316,24 @@ describe("Watchers", () => {
       }
     });
   });
+  it("should enlarge the source code field", () => {
+    cy.visit("/");
+    // Create
+    cy.get('[data-cy="topbar-watchers"]').click();
+    cy.get('[data-cy="watchers-add-watcher"]').click();
+    cy.get('[data-cy="watchers-watcher-name"]').clear().type("Watcher test");
+    cy.setMultiselect('[data-cy="watchers-watcher-variable"]', "form_input_2");
+    cy.get('[data-cy="watchers-accordion-source"]').click({
+      waitForAnimations: true
+    });
+    cy.get('[data-cy="watchers-modal"] .modal-dialog').as("watcherModal");
+    cy.get("@watcherModal").should("be.visible");
+
+    cy.get("@watcherModal").should("have.class", "modal-xl");
+    cy.get('[data-cy="watchers-button-cancel"]').click();
+
+    cy.get("@watcherModal").should("have.class", "modal-lg");
+  });
   it("Test asynchronous watcher", () => {
     // Mock script response
 
