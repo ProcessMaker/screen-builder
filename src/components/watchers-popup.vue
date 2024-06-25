@@ -1,7 +1,7 @@
 <template>
   <b-modal
     ref="modal"
-    size="lg"
+    :size="modalSize"
     id="watchers-popup"
     @hidden="displayList"
     hide-footer
@@ -71,6 +71,11 @@ export default {
         byPass: false,
       },
     };
+  },
+  computed: {
+    modalSize() {
+      return this.enableList ? "lg" : "xl";
+    },
   },
   watch: {
     value: {
