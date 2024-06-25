@@ -8,7 +8,6 @@ export default class CustomLog {
     const logStatus = `%c${status}`;
 
     if (status === 'RUN') {
-      console.log('Hello');
       console.log(`${logPrefix} ${logStatus}`, style, transparentStyle, style);
     } else if (status === 'FAILED') {
       console.groupCollapsed(`${logPrefix} ${logStatus}`, style, transparentStyle, style);
