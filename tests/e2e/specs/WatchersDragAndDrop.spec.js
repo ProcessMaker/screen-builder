@@ -6,9 +6,7 @@ describe('Watchers list Drag&Drop', () => {
   };
 
   const aliasRowByIndex = (index, aliasName) => {
-    cy.get(`[data-cy="watchers-table"] [data-test="item-${index}"]`)
-      .eq(0)
-      .as(aliasName);
+    cy.get(`[data-cy="watchers-table"] [data-test="item-${index}"]`).eq(0).as(aliasName);
   };
 
   const performDragAndDrop = (sourceAlias, targetAlias, sourceContent, targetContent) => {
@@ -19,9 +17,7 @@ describe('Watchers list Drag&Drop', () => {
   };
 
   const verifyWatcherNameByIndex = (index, expectedName) => {
-    cy.get(`[data-cy="watchers-table"] [data-test="item-${index}"]`)
-      .eq(0)
-      .contains(expectedName);
+    cy.get(`[data-cy="watchers-table"] [data-test="item-${index}"]`).eq(0).contains(expectedName);
   };
 
   const extraWatchers = ['watcher_06', 'watcher_07', 'watcher_08'];
@@ -42,17 +38,11 @@ describe('Watchers list Drag&Drop', () => {
         waitForAnimations: true,
       });
       cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
-      cy.setVueComponentValue(
-        '[data-cy="watchers-watcher-input_data"]',
-        `{"${watcher}":"{{${watcher}}}"}`,
-      );
+      cy.setVueComponentValue('[data-cy="watchers-watcher-input_data"]', `{"${watcher}":"{{${watcher}}}"}`);
       cy.get('[data-cy="watchers-button-save"]').click();
     });
 
-    cy.get('[data-cy="watchers-table"] > .sortable-item').should(
-      'have.length',
-      8,
-    );
+    cy.get('[data-cy="watchers-table"] > .sortable-item').should('have.length', 8);
   });
 
   it('should drag and drop first row to third row', () => {
@@ -140,5 +130,87 @@ describe('Watchers list Drag&Drop', () => {
     cy.get('@secondRow').find('[data-test="watchers-bypass"]').click();
 
     cy.get('@secondRow').should('have.class', 'sortable-item-disabled');
+  });
+
+  const createAndRunWatcher = (stubs, intercepts, assertion) => {
+    intercepts();
+
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        stubs.forEach((stub) => {
+          cy.stub(win.console, stub.name).as(stub.alias);
+        });
+      },
+    });
+
+    cy.openAcordeon('collapse-1');
+    cy.get('[data-cy=controls-FormInput]').drag('[data-cy=screen-drop-zone]', {
+      position: 'bottom',
+    });
+    cy.get('[data-cy="topbar-watchers"]').click();
+    cy.get('[data-cy="watchers-add-watcher"]').click();
+    cy.get('[data-cy="watchers-watcher-name"]').clear().type('Watcher test');
+    cy.setMultiselect('[data-cy="watchers-watcher-variable"]', 'form_input_1');
+    cy.get('.custom-switch:has([data-cy="watchers-watcher-synchronous"]) label').click();
+    cy.get('[data-cy="watchers-accordion-source"]').click({
+      waitForAnimations: true,
+    });
+    cy.setMultiselect('[data-cy="watchers-watcher-source"]', 'Test Script');
+    cy.setVueComponentValue('[data-cy="watchers-watcher-input_data"]', '{"form_input_2":"{{form_input_2}}"}');
+    cy.get('[data-cy="watchers-accordion-output"]').click({
+      waitForAnimations: true,
+    });
+    cy.get('[data-cy="watchers-watcher-output_variable"]').clear().type('user');
+    cy.get('[data-cy="watchers-button-save"]').click();
+    cy.get('[data-cy="watchers-table"]').should('contain.text', 'Watcher test');
+    cy.get('[data-cy="watchers-modal"] .close').click();
+
+    cy.get('[data-cy=mode-preview]').click();
+    cy.get('[data-cy=preview-content] [name=form_input_1]').clear().type('name');
+    cy.get('#watchers-synchronous').should('be.visible');
+    cy.wait(2000);
+
+    assertion();
+  };
+
+  it('should display a custom log of SUCCESS type', () => {
+    const intercepts = () => {
+      cy.intercept(
+        'POST',
+        '/api/1.0/scripts/execute/1',
+        JSON.stringify({
+          output: {
+            name: 'Steve',
+          },
+        }),
+      );
+    };
+
+    createAndRunWatcher([{ name: 'log', alias: 'consoleLog' }], intercepts, () => {
+      cy.get('#watchers-synchronous').should('not.exist');
+      cy.assertPreviewData({
+        form_input_1: 'name',
+        user: {
+          name: 'Steve',
+        },
+      });
+      cy.get('@consoleLog').should('be.calledWith', '%c✅ %cWatcher "Watcher test" has %cRUN');
+    });
+  });
+
+  it('should display a custom log of ERROR type', () => {
+    const intercepts = () => {
+      cy.intercept('POST', '/api/1.0/scripts/execute/1', {
+        statusCode: 403,
+        body: JSON.stringify({
+          exception: 'Exception',
+          message: 'Test exception response',
+        }),
+      });
+    };
+
+    createAndRunWatcher([{ name: 'groupCollapsed', alias: 'consoleGroupCollapsed' }], intercepts, () => {
+      cy.get('@consoleGroupCollapsed').should('be.calledWith', '%c❌ %cWatcher "Watcher test" has %cFAILED');
+    });
   });
 });
