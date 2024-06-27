@@ -336,6 +336,7 @@ export default {
           default: true,
           width: 153,
           fixed_width: 153,
+          truncate: true,
           resizable: false
         },
         {
@@ -381,6 +382,12 @@ export default {
           resizable: false
         });
       }
+      columns.push({
+        label: "",
+        field: "options",
+        sortable: false,
+        width: 10
+      });
       return columns;
     },
     setupColumns() {
