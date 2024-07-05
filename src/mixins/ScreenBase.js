@@ -328,6 +328,7 @@ export default {
       debouncedValuesQueue.forEach((args) => {
         this.setValue(...args);
       });
+      debouncedValuesQueue = 0;
     }, 210);
     this.setValueDebounced = (...args) => {
       debouncedValuesQueue.push(args);
