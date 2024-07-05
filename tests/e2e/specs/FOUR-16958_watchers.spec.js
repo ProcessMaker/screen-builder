@@ -3,7 +3,7 @@ describe("FOUR-16958_watchers ", () => {
     cy.visit("/");
   });
 
-  it("Verify that wacther clean data works", () => {
+  it("Verify that watcher clean data from the watcher works", () => {
      // Mock script response
 
      cy.intercept(
