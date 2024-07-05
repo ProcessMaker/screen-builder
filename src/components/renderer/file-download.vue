@@ -212,7 +212,12 @@ export default {
       let { endpoint } = this;
 
       if (this.requestFiles) {
-        this.filesInfo.push(_.get(this.requestFiles, this.fileDataName, null));
+        const fileInfo = this.requestFiles?.[this.fileDataName];
+
+        if (fileInfo) {
+          this.filesInfo.push(fileInfo);
+        }
+
         return;
       }
 
@@ -229,20 +234,36 @@ export default {
         }
       }
 
-      this.$dataProvider.get(endpoint).then((response) => {
-        const fileInfo = response.data.data
-          ? _.get(response, "data.data.0", null)
-          : _.get(response, "data", null);
-        if (fileInfo) {
-          if (typeof this.value === "number" && this.filesInfo.length > 0) {
-            this.filesInfo[0] = fileInfo;
+      this.$dataProvider
+        .get(endpoint)
+        .then((response) => {
+          const fileInfo = response.data.data
+            ? _.get(response, "data.data.0", null)
+            : _.get(response, "data", null);
+          if (fileInfo) {
+            if (typeof this.value === "number" && this.filesInfo.length > 0) {
+              this.filesInfo[0] = fileInfo;
+            } else {
+              this.filesInfo.push(fileInfo);
+            }
           } else {
-            this.filesInfo.push(fileInfo);
+            console.log(this.$t("File ID does not exist"));
           }
-        } else {
-          console.log(this.$t("File ID does not exist"));
-        }
-      });
+        })
+        .catch((error) => {
+          const alert = document.querySelector(".alert-danger");
+          const defaultMessage = this.$t(
+            "Something went wrong and the file cannot be previewed or downloaded."
+          );
+          const message = error?.response?.data?.message || defaultMessage;
+
+          if (
+            !alert &&
+            (error?.response?.status === 404 || error?.response?.data?.message)
+          ) {
+            window.ProcessMaker.alert(message, "danger");
+          }
+        });
     },
     setFilesInfoFromCollectionValue() {
       const files = this.value
