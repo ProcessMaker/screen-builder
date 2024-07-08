@@ -385,6 +385,9 @@ export default {
       if (!requestId) {
         requestId = this.requestId;
       }
+      if (!this.userId) {
+        return;
+      }
       const timestamp = !window.Cypress ? `&t=${Date.now()}` : "";
       const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${timestamp}`;
       return this.$dataProvider
