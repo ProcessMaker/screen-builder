@@ -86,4 +86,7 @@ $border-color: #cdddee;
 
 .dragging {
   box-shadow: 0 1px 5px 0 rgba(86, 104, 119, 0.4);
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
 }
