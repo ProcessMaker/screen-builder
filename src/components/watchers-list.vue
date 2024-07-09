@@ -15,6 +15,7 @@
     @item-delete="deleteProperty"
     @add-page="displayFormProperty"
     @ordered="$emit('ordered', $event)"
+    :searchProperties= "searchProperties"
   >
     <template #options="{ item }">
       <button
@@ -84,6 +85,7 @@ export default {
           key: 'script.title',
         },
       ],
+      searchProperties: ['name', 'output_variable', 'watching', 'script.title'],
     };
   },
   methods: {
