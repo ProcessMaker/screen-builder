@@ -8,14 +8,8 @@
       @table-row-mouseover="handleRowMouseover"
       @table-row-mouseleave="handleRowMouseleave"
     >
-      <template
-        v-for="(column, index) in tableHeaders"
-        v-slot:[column.field]
-      >
-        <div
-          :key="index"
-          style="display: inline-block"
-        >
+      <template v-for="(column, index) in tableHeaders" #[column.field]>
+        <div :key="index" style="display: inline-block">
           <img
             v-if="column.field === 'is_priority'"
             src="../../assets/priority-header.svg"
@@ -26,11 +20,9 @@
           <span v-else>{{ $t(column.label) }}</span>
         </div>
       </template>
-      <template
-        v-for="(row, rowIndex) in tableData.data"
-        v-slot:[`row-${rowIndex}`]
-      >
-        <td v-for="(header, colIndex) in tableHeaders"
+      <template v-for="(row, rowIndex) in tableData.data" #[`row-${rowIndex}`]>
+        <td
+          v-for="(header, colIndex) in tableHeaders"
           :key="`${rowIndex}-${colIndex}`"
         >
           <template v-if="containsHTML(getNestedPropertyValue(row, header))">
@@ -39,7 +31,9 @@
               :class="{ 'pm-table-truncate': header.truncate }"
               :style="{ maxWidth: header.width + 'px' }"
             >
-              <span v-html="sanitize(getNestedPropertyValue(row, header))"></span>
+              <span
+                v-html="sanitize(getNestedPropertyValue(row, header))"
+              ></span>
             </div>
             <b-tooltip
               v-if="header.truncate"
@@ -109,7 +103,7 @@
       v-show="isTooltipVisible"
       :position="rowPosition"
     >
-      <template v-slot:task-tooltip-body>
+      <template #task-tooltip-body>
         <div @mouseover="clearHideTimer" @mouseleave="hideTooltip">
           <slot
             name="tooltip"
@@ -185,7 +179,7 @@ export default {
   },
   mounted() {
     this.setupColumns();
-    this.pmql = `(user_id = ${ProcessMaker.user.id})`;
+    this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "In Progress")`;
     this.fetch();
     this.$root.$on("dropdownSelectionTask", this.fetchData);
     this.$root.$on("searchTask", this.fetchSearch);
@@ -208,7 +202,7 @@ export default {
         }
 
         if (this.pmqlSearch) {
-          pmql = pmql + "AND" + this.pmqlSearch;
+          pmql = `${pmql} AND ${this.pmqlSearch}`;
         }
 
         if (this.filterDropdowns !== undefined) {
@@ -336,6 +330,7 @@ export default {
           default: true,
           width: 153,
           fixed_width: 153,
+          truncate: true,
           resizable: false
         },
         {
@@ -381,6 +376,12 @@ export default {
           resizable: false
         });
       }
+      columns.push({
+        label: "",
+        field: "options",
+        sortable: false,
+        width: 10
+      });
       return columns;
     },
     setupColumns() {
@@ -476,16 +477,19 @@ export default {
     },
     fetchData(selectedOption) {
       this.filterDropdowns = "";
-      this.pmql = `(user_id = ${ProcessMaker.user.id})`
+      this.pmql = `(user_id = ${ProcessMaker.user.id})`;
       this.advancedFilter = "";
       if (selectedOption === "Self-service") {
         this.pmql = "";
-        this.advancedFilter = `&advanced_filter=[${encodeURIComponent('{"subject":{"type":"Status","value":"status"},"operator":"=","value":"Self Service"}')}]`;
+        this.advancedFilter = `&advanced_filter=[${encodeURIComponent(
+          '{"subject":{"type":"Status","value":"status"},"operator":"=","value":"Self Service"}'
+        )}]`;
       }
-      if (selectedOption === "In Progress") {
-        this.pmql = this.pmql + `AND (status = "In Progress")`;
+      if (selectedOption === "In Progress" || selectedOption === "View All") {
+        this.pmql += ` AND (status = "In Progress")`;
       }
       if (selectedOption === "Overdue") {
+        this.pmql += ` AND (status = "In Progress")`;
         this.filterDropdowns = "overdue=true";
       }
       this.fetch();
@@ -535,7 +539,6 @@ export default {
         });
     },
     handleRowMouseover(row) {
-      debugger;
       if (this.ellipsisShow) {
         this.isTooltipVisible = !this.disableRuleTooltip;
         this.clearHideTimer();
