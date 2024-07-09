@@ -70,6 +70,18 @@ $border-color: #cdddee;
       display: flex;
       margin: 0 16px;
       border-color: $border-color !important;
+
+      &-btn-tooltip::v-deep {
+        & .tooltip-inner {
+          background-color: #EBEEF2 !important;
+          color: #444444 !important;
+        }
+
+        & .arrow:before {
+          border-top-color: #EBEEF2 !important;
+          border-bottom-color: #EBEEF2 !important;
+        }
+      }
     }
 
     &-vr {
