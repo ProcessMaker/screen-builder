@@ -116,8 +116,6 @@ export default {
      * @returns {Array} - The filtered items.
      */
     filterItems(searchValue, items, searchProperties) {
-      console.log('filterItems', searchValue, searchProperties);
-
       const cleanSearch = this.clearSearch(searchValue).toLowerCase();
 
       return items.filter((item) => {
