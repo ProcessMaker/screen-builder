@@ -253,10 +253,11 @@ export const UserCanSortWithFilterByText = {
     const items = canvas.getAllByTestId(/item-\d+/);
     expect(items[0]).toHaveTextContent("Zeus");
     expect(items[1]).toHaveTextContent("Poseidon");
-    expect(items[2]).toHaveTextContent("Hephaïstus");
+    expect(items[2]).toHaveTextContent("Hera");
     expect(items[3]).toHaveTextContent("Athena");
-    expect(items[4]).toHaveTextContent("Hera");
-
+    expect(items[4]).toHaveTextContent("Hephaïstus");
+   
+   
     // Drag "Athena" to "Hera" position
     await dragAndDrop(canvas.getByTitle("Athena"), canvas.getByTitle("Hera"));
 
