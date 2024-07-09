@@ -181,6 +181,7 @@ export default {
       this.draggedItem = order;
       // add dragging class to the element
       event.target.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'move';
     },
     dragEnter(event, order) {
       this.draggedOverItem = order;
