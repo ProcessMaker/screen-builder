@@ -61,7 +61,10 @@ export default {
     },
     searchProperties: {
       type: Array,
-      default: []
+      required: false,
+      default: function() {
+        return []; // Return a new instance of the array
+      }
     }
   },
   data() {
