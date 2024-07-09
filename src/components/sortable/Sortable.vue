@@ -116,16 +116,31 @@ export default {
      * @returns {Array} - The filtered items.
      */
     filterItems(searchValue, items, searchProperties) {
+      console.log('filterItems', searchValue, searchProperties);
+
       const cleanSearch = this.clearSearch(searchValue).toLowerCase();
+
       return items.filter((item) => {
-        return searchProperties.some((property) => {
-          const value = this.getPropertyValue(item, property);
-          if (value) {
-            const valueString = value.toString().toLowerCase();
-            return valueString.includes(cleanSearch);
-          }
-          return false;
-        });
+        return this.propertyMatchesSearch(item, searchProperties, cleanSearch);
+      });
+    },
+
+    /**
+     * Checks if any of the specified properties of an item match the cleaned search value as a substring.
+     *
+     * @param {Object} item - The item object to check.
+     * @param {Array} properties - The properties to search within each item.
+     * @param {string} cleanSearch - The cleaned and lowercase search value.
+     * @returns {boolean} - True if any property matches the search value, otherwise false.
+     */
+    propertyMatchesSearch(item, properties, cleanSearch) {
+      return properties.some((property) => {
+        const value = this.getPropertyValue(item, property);
+        if (value && typeof value === 'string') {
+          const normalizedValue = value.toLowerCase();
+          return normalizedValue.includes(cleanSearch);
+        }
+        return false;
       });
     },
 
@@ -138,7 +153,7 @@ export default {
      */
     getPropertyValue(obj, path) {
       const parts = path.split('.');
-      return parts.reduce((acc, curr) => acc?.[curr], obj);
+      return parts.reduce((acc, curr) => acc && acc[curr], obj);
     },
 
     /**
@@ -148,7 +163,7 @@ export default {
      * @returns {string} - The cleaned search value.
      */
     clearSearch(searchValue) {
-      return searchValue.replace(/[^\w\s]/gi, '').trim();
+      return searchValue.trim();
     },
   },
 };

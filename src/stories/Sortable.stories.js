@@ -31,6 +31,7 @@ export default {
         @sorted="sorted"
         @item-edit="editPage"
         @item-delete="deletePage"
+        :searchProperties= "['name']"
       />
     `,
     data() {
