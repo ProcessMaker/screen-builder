@@ -452,7 +452,6 @@ export default {
           };
 
           const response = await this.retryApiCall(() => this.getTasks(params));
-          console.log("tasks-response", response);
 
           const firstTask = response.data.data[0];
           if (firstTask?.user_id === this.userId) {
