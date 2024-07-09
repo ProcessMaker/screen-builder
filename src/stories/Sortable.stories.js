@@ -147,7 +147,9 @@ export const UserCanFilterByText = {
       { name: "Hera", order: 2 },
       { name: "Poseidon", order: 3 },
       { name: "Athena", order: 4 },
-      { name: "Hephaïstus", order: 5 }
+      { name: "Hephaïstus", order: 5 },
+      { name: "newTotalLeave", order: 5 },
+      { name: "newLeaveRemaining", order: 5 },
     ]
   },
   play: async ({ canvasElement, step }) => {
@@ -170,7 +172,7 @@ export const UserCanFilterByText = {
       await userEvent.type(search, "a");
       const items = canvas.getAllByTestId(/item-\d+/);
       await waitFor(() => {
-        expect(items).toHaveLength(3);
+        expect(items).toHaveLength(5);
       });
     });
 
@@ -181,6 +183,14 @@ export const UserCanFilterByText = {
       const items = canvas.getAllByTestId(/item-\d+/);
       await waitFor(() => {
         expect(items).toHaveLength(1);
+      });
+    });
+    await step("Type 'new'", async () => {
+      await userEvent.clear(search);
+      await userEvent.type(search, "new");
+      const items = canvas.getAllByTestId(/item-\d+/);
+      await waitFor(() => {
+        expect(items).toHaveLength(2);
       });
     });
   }
