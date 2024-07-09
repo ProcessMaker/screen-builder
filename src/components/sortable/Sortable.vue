@@ -151,7 +151,7 @@ export default {
      */
     getPropertyValue(obj, path) {
       const parts = path.split('.');
-      return parts.reduce((acc, curr) => acc?[curr], obj);
+      return parts.reduce((acc, curr) => acc?.[curr], obj);
     },
 
     /**
