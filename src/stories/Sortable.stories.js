@@ -256,8 +256,7 @@ export const UserCanSortWithFilterByText = {
     expect(items[2]).toHaveTextContent("Hera");
     expect(items[3]).toHaveTextContent("Athena");
     expect(items[4]).toHaveTextContent("Hephaïstus");
-   
-   
+ 
     // Drag "Athena" to "Hera" position
     await dragAndDrop(canvas.getByTitle("Athena"), canvas.getByTitle("Hera"));
 
