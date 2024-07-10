@@ -328,6 +328,12 @@ export default {
           fixed_width: 314,
           resizable: false,
           filter_subject: { type: "Status" }
+        },
+        {
+          label: "",
+          field: "options",
+          sortable: false,
+          width: 10
         }
       ];
     }
