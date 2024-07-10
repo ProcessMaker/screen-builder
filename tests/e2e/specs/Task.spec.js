@@ -36,7 +36,7 @@ describe("Task component", () => {
   it("Task inside a Request", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -91,7 +91,7 @@ describe("Task component", () => {
   it("Completes the Task", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -153,7 +153,7 @@ describe("Task component", () => {
           .then(function () {
             initializeTaskAndScreenIntercepts(
               "GET",
-              "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+              "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
               {
                 id: 1,
                 advanceStatus: "completed",
@@ -170,7 +170,7 @@ describe("Task component", () => {
   it("Progresses to the interstitial screen", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -324,7 +324,7 @@ describe("Task component", () => {
             });
             initializeTaskAndScreenIntercepts(
               "GET",
-              "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+              "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
               { body: completedBodyRequest }
             );
             cy.reload();
@@ -340,7 +340,7 @@ describe("Task component", () => {
   it("It updates the PM4ConfigOverrides", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -406,7 +406,7 @@ describe("Task component", () => {
   it("Task with display next assigned task checked with another pending task in same request should redirect to the next task of same request", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -436,7 +436,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask1
         );
 
@@ -462,7 +462,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask2.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask2.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask2
         );
 
@@ -482,7 +482,7 @@ describe("Task component", () => {
   it("Task with display next assigned task checked in subprocess and no pending task and status closed or open should redirect to parent requests", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -513,7 +513,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask1
         );
 
@@ -532,7 +532,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask2.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask2.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask2
         );
 
@@ -553,7 +553,7 @@ describe("Task component", () => {
   it("Task with display next assigned task checked in different process request should redirect to the next task of parent request", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -583,7 +583,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask1
         );
 
@@ -608,7 +608,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask2.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask2.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask2
         );
 
@@ -628,7 +628,7 @@ describe("Task component", () => {
   it("Task with display next assigned task unchecked should redirect to tasks list", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -658,7 +658,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask1
         );
 
@@ -678,7 +678,7 @@ describe("Task component", () => {
   it("Process without pending task should redirect to request", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -708,7 +708,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask1
         );
 
@@ -735,7 +735,7 @@ describe("Task component", () => {
   it("Subprocess without pending task should redirect to parent request", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
-      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -772,7 +772,7 @@ describe("Task component", () => {
         };
 
         getTask(
-          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`,
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
           responseDataTask1
         );
 
