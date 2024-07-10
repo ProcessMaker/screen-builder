@@ -67,7 +67,7 @@
               v-else
               v-b-tooltip="{ customClass: 'sortable-item-action-btn-tooltip' }"
               class="btn"
-              title="Edit"
+              :title="$t('Edit')"
               v-bind="dataTestActions.btnEdit"
               @click.stop="onClick(item, index)"
             >
@@ -78,7 +78,7 @@
             <button
               v-b-tooltip="{ customClass: 'sortable-item-action-btn-tooltip' }"
               class="btn"
-              title="Delete"
+              :title="$t('Delete')"
               v-bind="dataTestActions.btnDelete"
               @click="$emit('item-delete', item)"
             >
