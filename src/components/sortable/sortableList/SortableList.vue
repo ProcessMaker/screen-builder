@@ -10,11 +10,14 @@
         <div
           v-for="field in fields"
           :key="field.key"
-          class="sortable-list-td sortable-list-header"
+          class="sortable-list-td"
         >
-          {{ field.label }}
+          <span class="sortable-list-separator">&nbsp;</span>
+          <span class="sortable-list-header">{{ field.label }}</span>
         </div>
-        <div class="sortable-list-td"></div>
+        <div class="sortable-list-td">
+          <span class="sortable-list-separator">&nbsp;</span>
+        </div>
       </div>
       <div
         v-for="(item, index) in sortedItems"
