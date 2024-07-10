@@ -122,6 +122,7 @@
     </div>
     <div class="card-body list-table">
       <template v-if="listOption === 'My Tasks'">
+        <Recommendations :dashboard="true" />
         <FormTasks @tasksCount="getData"></FormTasks>
       </template>
       <template v-if="verifyListCase()">
@@ -139,8 +140,12 @@ import FormTasks from "./form-tasks.vue";
 import FormRequests from "./form-requests.vue";
 import FormNewRequest from "./form-new-request.vue";
 
+const Recommendations = (resolve) => {
+  resolve(window.SharedComponents?.Recommendations || { template: "<span></span>" });
+};
+
 export default {
-  components: { FormTasks, FormRequests, FormNewRequest },
+  components: { FormTasks, FormRequests, FormNewRequest, Recommendations },
   mixins: [],
   props: ["listOption"],
   data() {
