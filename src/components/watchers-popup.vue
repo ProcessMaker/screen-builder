@@ -23,7 +23,19 @@
         @delete-form="confirmRemoval"
         @toggle-bypass="toggleBypass"
         @ordered="$emit('input', $event)"
-      />
+      />  
+
+      <div class="d-flex justify-content-end mt-3 mr-1">
+        <div class="d-flex align-items-end">
+          <button
+            class="btn btn-secondary ml-3 text-uppercase"
+            data-cy="calcs-button-close"
+            @click="$refs.modal.hide()"
+          >
+            {{ $t("Done") }}
+          </button>
+        </div>
+      </div>
     </template>
     <template v-else>
       <required />
@@ -74,7 +86,7 @@ export default {
   },
   computed: {
     modalSize() {
-      return this.enableList ? "lg" : "xl";
+      return "xl";
     },
   },
   watch: {
