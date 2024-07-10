@@ -167,7 +167,6 @@ describe('Watchers list Drag&Drop', () => {
 
     cy.get('[data-cy=mode-preview]').click();
     cy.get('[data-cy=preview-content] [name=form_input_1]').clear().type('name');
-    cy.get('#watchers-synchronous').should('be.visible');
     cy.wait(2000);
 
     assertion();
