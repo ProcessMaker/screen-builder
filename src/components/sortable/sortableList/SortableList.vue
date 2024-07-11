@@ -55,7 +55,7 @@
             @keydown.esc.stop="onCancel(item)"
             @focus="onFocus(item)"
           />
-          <span v-else>{{ getItemValue(item, field.key) }}</span>
+          <span v-else>{{ getItemValue(item, field.key, field.cb) }}</span>
         </div>
 
         <div class="sortable-list-td">
@@ -123,11 +123,15 @@ export default {
     /** Get the value of a nested field in an object
      * @param {Object} item - The object to get the value from
      * @param {String} fieldKey - The key of the field to get the value from
+     * @param {Function} cb - Callback function to apply to the value
      *
      * @returns {String} The value of the field
      */
-    getItemValue(item, fieldKey) {
-      return fieldKey.split('.').reduce((obj, key) => obj[key] || '', item);
+    getItemValue(item, fieldKey, cb = null) {
+      return fieldKey.split('.').reduce((obj, key) => {
+        if (!obj[key]) return '';
+        return cb instanceof Function ? cb(obj[key]) : obj[key];
+      }, item);
     },
     validateState(name, item) {
       const isEmpty = !name?.trim();
