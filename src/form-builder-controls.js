@@ -23,6 +23,7 @@ import {
   BWrapperComponent,
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
+import LinkButton from "./components/renderer/link-button.vue";
 
 import {
   bgcolorProperty,
@@ -988,6 +989,47 @@ export default [
             label: "Chart"
           }
         }
+      ]
+    }
+  },
+  {
+    editorComponent: LinkButton,
+    editorBinding: 'LinkButton',
+    rendererComponent: LinkButton,
+    rendererBinding: "LinkButton",
+    
+    control: {
+      popoverContent: "Add an action to submit your form or update a field",
+      group: 'Content Fields',
+      order: 6.0,
+      label: "Link URL",
+      component: "LinkButton",
+      "editor-component": "LinkButton",
+      "editor-control": "LinkButton",
+      config: {
+        label: "New Link",
+        icon: "fas fa-link",
+        variant: "primary",
+        event: "link",
+      },
+      inspector: [
+        {
+          type: 'FormInput',
+          field: 'label',
+          config: {
+            label: 'Label',
+            helper: 'The label describes the button\'s text',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'linkUrl',
+          config: {
+            label: 'Link URL',
+            helper: 'Type here the URL link. Mustache syntax is supported.',
+          },         
+        },
+        buttonVariantStyleProperty
       ]
     }
   }
