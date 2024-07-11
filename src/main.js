@@ -270,8 +270,8 @@ window.Echo = {
   }
 };
 
+// Setup axios
 window.axios = axios.create({
-  baseURL: "/api/1.0/",
   adapter: cacheAdapterEnhancer(axios.getAdapter(axios.defaults.adapter), {
     enabledByDefault: window.ProcessMaker.screen.cacheEnabled,
     cacheFlag: "useCache",
@@ -280,6 +280,31 @@ window.axios = axios.create({
       max: 100
     })
   })
+});
+
+// Setup api versions
+const apiVersionConfig = [
+  { version: "1.0", baseURL: "/api/1.0/" },
+  { version: "1.1", baseURL: "/api/1.1/" },
+];
+
+window.axios.defaults.baseURL = apiVersionConfig[0].baseURL;
+window.axios.interceptors.request.use((config) => {
+  if (typeof config.url !== "string" || !config.url) {
+    throw new Error("Invalid URL in the request configuration");
+  }
+
+  apiVersionConfig.forEach(({ version, baseURL }) => {
+    const versionPrefix = `/api/${version}/`;
+    if (config.url.startsWith(versionPrefix)) {
+      // eslint-disable-next-line no-param-reassign
+      config.baseURL = baseURL;
+      // eslint-disable-next-line no-param-reassign
+      config.url = config.url.replace(versionPrefix, "");
+    }
+  });
+
+  return config;
 });
 
 const searchParams = new URLSearchParams(window.location.search);
