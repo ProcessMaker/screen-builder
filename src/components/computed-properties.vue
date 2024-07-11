@@ -40,6 +40,7 @@
         @item-edit="editProperty"
         @item-delete="deleteProperty"
         @add-page="displayFormProperty"
+        :searchProperties= "searchProperties"
       >
         <template #options="{ item }">
           <button
@@ -250,6 +251,7 @@ export default {
       },
       monacoEditor: null,
       errors: {},
+      searchProperties: ['property', 'type'],
     };
   },
   computed: {

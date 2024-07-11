@@ -31,6 +31,7 @@ export default {
         @sorted="sorted"
         @item-edit="editPage"
         @item-delete="deletePage"
+        :searchProperties= "['name']"
       />
     `,
     data() {
@@ -146,7 +147,9 @@ export const UserCanFilterByText = {
       { name: "Hera", order: 2 },
       { name: "Poseidon", order: 3 },
       { name: "Athena", order: 4 },
-      { name: "Hephaïstus", order: 5 }
+      { name: "Hephaïstus", order: 5 },
+      { name: "newTotalLeave", order: 5 },
+      { name: "newLeaveRemaining", order: 5 },
     ]
   },
   play: async ({ canvasElement, step }) => {
@@ -169,7 +172,7 @@ export const UserCanFilterByText = {
       await userEvent.type(search, "a");
       const items = canvas.getAllByTestId(/item-\d+/);
       await waitFor(() => {
-        expect(items).toHaveLength(3);
+        expect(items).toHaveLength(5);
       });
     });
 
@@ -180,6 +183,14 @@ export const UserCanFilterByText = {
       const items = canvas.getAllByTestId(/item-\d+/);
       await waitFor(() => {
         expect(items).toHaveLength(1);
+      });
+    });
+    await step("Type 'new'", async () => {
+      await userEvent.clear(search);
+      await userEvent.type(search, "new");
+      const items = canvas.getAllByTestId(/item-\d+/);
+      await waitFor(() => {
+        expect(items).toHaveLength(2);
       });
     });
   }
@@ -246,16 +257,22 @@ export const UserCanSortWithFilterByText = {
     expect(items[3]).toHaveTextContent("Athena");
     expect(items[4]).toHaveTextContent("Hera");
 
-    // Drag "Athena" to "Hera" position
-    await dragAndDrop(canvas.getByTitle("Athena"), canvas.getByTitle("Hera"));
-
-    // Check the new order
+    await dragAndDrop(
+      canvas.getByTitle("Hephaïstus"),
+      canvas.getByTitle("Athena")
+    );
+    await dragAndDrop(
+      canvas.getByTitle("Hephaïstus"),
+      canvas.getByTitle("Hera")
+    );
+ 
+    // // Check the new order
     const itemsOrder = canvas.getAllByTestId(/item-\d+/);
-    expect(itemsOrder[0]).toHaveAttribute("data-order", "1");
-    expect(itemsOrder[1]).toHaveAttribute("data-order", "2");
-    expect(itemsOrder[2]).toHaveAttribute("data-order", "3");
-    expect(itemsOrder[3]).toHaveAttribute("data-order", "4");
-    expect(itemsOrder[4]).toHaveAttribute("data-order", "5");
+    await expect(itemsOrder[0]).toHaveAttribute("data-order", "1");
+    await expect(itemsOrder[1]).toHaveAttribute("data-order", "2");
+    await expect(itemsOrder[2]).toHaveAttribute("data-order", "3");
+    await expect(itemsOrder[3]).toHaveAttribute("data-order", "4");
+    await expect(itemsOrder[4]).toHaveAttribute("data-order", "5");
   }
 };
 
