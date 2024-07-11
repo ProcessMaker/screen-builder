@@ -47,6 +47,7 @@ import FormListTable from "./renderer/form-list-table.vue";
 import FormAnalyticsChart from "./renderer/form-analytics-chart.vue";
 import accordions from "@/components/accordions";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
+import { LinkButton } from "./renderer";
 import "../assets/css/tabs.css";
 
 const rendererComponents = {
@@ -161,6 +162,7 @@ export default {
 
     Vue.use(Vuex);
     Vue.component("FormListTable", FormListTable);
+    Vue.component("LinkButton", LinkButton);
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,
