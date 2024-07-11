@@ -59,6 +59,13 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    searchProperties: {
+      type: Array,
+      required: false,
+      default: function() {
+        return []; // Return a new instance of the array
+      }
+    }
   },
   data() {
     return {
@@ -86,39 +93,75 @@ export default {
   },
   watch: {
     search(value) {
-      this.filteredItems = this.filterItems(value, this.items);
+      this.filteredItems = this.filterItems(value, this.items, this.searchProperties);
     },
     items: {
       handler(newItems) {
         this.filteredItems = [...newItems];
 
         if (this.search.length > 0) {
-          this.filteredItems = this.filterItems(this.search, newItems);
+          this.filteredItems = this.filterItems(this.search, newItems, this.searchProperties);
         }
       },
       deep: true,
     },
   },
   methods: {
-    clearSearch(value) {
-      return value.trim().toLowerCase();
+    /**
+     * Filters items by searching within specified properties, including nested properties, considering substrings.
+     *
+     * @param {string} searchValue - The value to search for within item properties.
+     * @param {Array} items - The collection of items to filter.
+     * @param {Array} searchProperties - The properties to search within each item.
+     * @returns {Array} - The filtered items.
+     */
+    filterItems(searchValue, items, searchProperties) {
+      const cleanSearch = this.clearSearch(searchValue).toLowerCase();
+
+      return items.filter((item) => {
+        return this.propertyMatchesSearch(item, searchProperties, cleanSearch);
+      });
     },
-    filterItems(searchValue, items) {
-      const cleanSearch = this.clearSearch(searchValue);
-      const filterKeys = this.filterKey.split(',');
 
-      return items.filter((item) =>
-        filterKeys.some((key) => {
-          const keyParts = key.split('.');
+    /**
+     * Checks if any of the specified properties of an item match the cleaned search value as a substring.
+     *
+     * @param {Object} item - The item object to check.
+     * @param {Array} properties - The properties to search within each item.
+     * @param {string} cleanSearch - The cleaned and lowercase search value.
+     * @returns {boolean} - True if any property matches the search value, otherwise false.
+     */
+    propertyMatchesSearch(item, properties, cleanSearch) {
+      return properties.some((property) => {
+        const value = this.getPropertyValue(item, property);
+        if (value && typeof value === 'string') {
+          const normalizedValue = value.toLowerCase();
+          return normalizedValue.includes(cleanSearch);
+        }
+        return false;
+      });
+    },
 
-          return keyParts.length > 1
-            ? keyParts
-                .reduce((obj, keyPart) => obj[keyPart], item)
-                ?.toLowerCase()
-                .includes(cleanSearch)
-            : item[key]?.toLowerCase().includes(cleanSearch);
-        }),
-      );
+    /**
+     * Retrieves the value of a nested property within an object.
+     *
+     * @param {Object} obj - The object from which to retrieve the property value.
+     * @param {string} path - The path to the nested property, e.g., "item.title".
+     * @returns {*} - The value of the nested property if found, otherwise undefined.
+     */
+    getPropertyValue(obj, path) {
+      const parts = path.split('.');
+      return parts.reduce((acc, curr) => acc?.[curr], obj);
+    },
+
+    /**
+     * Cleans the search value by removing unwanted characters and trimming spaces.
+     *
+     * @param {string} searchValue - The value to be cleaned.
+     * @returns {string} - The cleaned search value.
+     */
+    clearSearch(searchValue) {
+      return searchValue.trim();
     },
   },
 };
