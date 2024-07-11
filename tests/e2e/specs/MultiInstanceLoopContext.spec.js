@@ -5,7 +5,7 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
   beforeEach(() => {
     cy.intercept(
       "GET",
-      "http://localhost:5173/api/1.0/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,requestData,loopContext,bpmnTagName,interstitial,definition,userRequestPermission,elementDestination",
       {
         id: 1,
         advanceStatus: "open",
@@ -33,6 +33,11 @@ describe("FOUR-3375 FileUpload inside MultiInstance Task", () => {
         },
         user_request_permission: [{ process_request_id: 1, allowed: true }]
       }
+    );
+    cy.intercept(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1/screen?include=screen,nested",
+      Screens.screens[0]
     );
 
     cy.visit("/?scenario=TaskMultiInstance", {

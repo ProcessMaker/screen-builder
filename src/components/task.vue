@@ -23,6 +23,7 @@
           <vue-form-renderer
             ref="renderer"
             v-model="requestData"
+            :class="{ loading: loadingTask || loadingListeners }"
             :config="screen.config"
             :computed="screen.computed"
             :custom-css="screen.custom_css"
@@ -120,18 +121,14 @@ export default {
       refreshScreen: 0,
       redirecting: null,
       loadingButton: false,
+      loadingTask: false,
+      loadingListeners: true,
     };
   },
   watch: {
     initialScreenId: {
       handler() {
         this.screenId = this.initialScreenId;
-      },
-    },
-
-    initialTaskId: {
-      handler() {
-        this.taskId = this.initialTaskId;
       },
     },
 
@@ -161,16 +158,6 @@ export default {
       },
     },
 
-    taskId: {
-      handler() {
-        if (this.taskId) {
-          if (!this.task || this.task.id !== this.taskId) {
-            this.loadTask();
-          }
-        }
-      },
-    },
-
     requestId: {
       handler() {
         if (this.requestId) {
@@ -180,30 +167,6 @@ export default {
           this.unsubscribeSocketListeners();
         }
       },
-    },
-
-    task: {
-      handler() {
-        if (!this.screen) {
-          // if no current screen show the interstitial screen if exists
-          this.screen = this.task && this.task.interstitial_screen;
-        }
-        this.taskId = this.task.id;
-        this.nodeId = this.task.element_id;
-        this.listenForParentChanges();
-        if (this.task.process_request.status === 'COMPLETED') {
-          if (!this.taskPreview) {
-            this.$emit('completed', this.task.process_request.id);
-          }
-        }
-        if (this.taskPreview && this.task.status === "CLOSED") {
-          this.task.interstitial_screen['_interstitial'] = false;
-          if (!this.alwaysAllowEditing) {
-            this.task.screen.config = this.disableForm(this.task.screen.config);
-          }
-          this.screen = this.task.screen;
-        }
-      }
     },
 
     value: {
@@ -295,7 +258,7 @@ export default {
       }
     },
     loadTask() {
-      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission`;
+      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -306,6 +269,7 @@ export default {
           .getTasks(url)
           .then((response) => {
             this.task = response.data;
+            this.linkTask();
             this.checkTaskStatus();
             if (
               window.PM4ConfigOverrides
@@ -319,8 +283,27 @@ export default {
           })
           .catch(() => {
             this.hasErrors = true;
+          })
+          .finally(() => {
+            this.loadingTask = false;
           });
       });
+    },
+    linkTask() {
+      this.nodeId = this.task.element_id;
+      this.listenForParentChanges();
+      if (this.task.process_request.status === 'COMPLETED') {
+        if (!this.taskPreview) {
+          this.$emit('completed', this.task.process_request.id);
+        }
+      }
+      if (this.taskPreview && this.task.status === "CLOSED") {
+        this.task.interstitial_screen['_interstitial'] = false;
+        if (!this.alwaysAllowEditing) {
+          this.task.screen.config = this.disableForm(this.task.screen.config);
+        }
+        this.screen = this.task.screen;
+      }
     },
     prepareTask() {
       // If the immediate task status is completed and we are waiting with a loading button,
@@ -380,27 +363,106 @@ export default {
         }
       });
     },
+    /**
+     * Closes the current task and performs necessary actions based on task properties.
+     * @param {string|null} parentRequestId - The parent request ID.
+     */
     closeTask(parentRequestId = null) {
       if (this.hasErrors) {
-        this.$emit('error', this.requestId);
-        return;
+        this.emitError();
       }
 
-      if (this.task.process_request.status === 'COMPLETED') {
-        this.loadNextAssignedTask(parentRequestId);
-      } else if (this.loadingButton) {
+      if (this.shouldLoadNextTask()) {
         this.loadNextAssignedTask(parentRequestId);
       } else if (this.task.allow_interstitial) {
-        this.task.interstitial_screen['_interstitial'] = true;
-        this.screen = this.task.interstitial_screen;
-        this.loadNextAssignedTask(parentRequestId);
+        this.showInterstitial(parentRequestId);
       } else if (!this.taskPreview) {
-        this.$emit('closed', this.task.id);
+        this.emitClosedEvent();
       }
     },
+
+    /**
+     * Checks if the next task should be loaded.
+     * @returns {boolean} - True if the next task should be loaded, otherwise false.
+     */
+    shouldLoadNextTask() {
+      return (
+        this.task.process_request.status === "COMPLETED" || this.loadingButton
+      );
+    },
+    /**
+     * Shows the interstitial screen and loads the next assigned task.
+     * @param {string|null} parentRequestId - The parent request ID.
+     */
+    showInterstitial(parentRequestId) {
+      // Show the interstitial screen
+      this.task.interstitial_screen['_interstitial'] = true;
+      this.screen = this.task.interstitial_screen;
+
+      // Load the next assigned task
+      this.loadNextAssignedTask(parentRequestId);
+    },
+    /**
+     * Emits an error event.
+     */
+    emitError() {
+      this.$emit('error', this.requestId);
+    },
+    /**
+     * Emits a closed event.
+     */
+    async emitClosedEvent() {
+      this.$emit("closed", this.task.id, await this.getDestinationUrl());
+    },
+    /**
+     * Retrieves the destination URL for the closed event.
+     * @returns {string|null} - The destination URL.
+     */
+    // eslint-disable-next-line consistent-return
+    async getDestinationUrl() {
+      const { elementDestination } = this.task || {};
+
+      if (!elementDestination) {
+        return null;
+      }
+
+      if (elementDestination.type === "taskSource") {
+        try {
+          const params = {
+            processRequestId: this.requestId,
+            status: "ACTIVE",
+            userId: this.userId,
+          };
+
+          const response = await this.retryApiCall(() => this.getTasks(params));
+
+          const firstTask = response.data.data[0];
+          if (firstTask?.user_id === this.userId) {
+            return `/tasks/${firstTask.id}/edit`;
+          }
+
+          return document.referrer || null;
+        } catch (error) {
+          console.error("Error in getDestinationUrl:", error);
+          return null;
+        }
+      }
+
+      const elementDestinationUrl = elementDestination.value;
+      if (elementDestinationUrl) {
+        return elementDestinationUrl;
+      }
+
+      const sessionStorageUrl = sessionStorage.getItem("elementDestinationURL");
+      return sessionStorageUrl || null;
+    },
+
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
         requestId = this.requestId;
+      }
+      if (!this.userId) {
+        return;
       }
       const timestamp = !window.Cypress ? `&t=${Date.now()}` : "";
       const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${timestamp}`;
@@ -421,6 +483,7 @@ export default {
               this.emitIfTaskCompleted(requestId);
             }
             this.taskId = task.id;
+            this.loadTask();
             this.nodeId = task.element_id;
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
@@ -481,14 +544,139 @@ export default {
     activityAssigned() {
       // This may no longer be needed
     },
-    processCompleted() {
+    processCompleted(data = null) {
       let requestId;
       if (this.parentRequest) {
         requestId = this.getAllowedRequestId();
         this.$emit('completed', requestId);
       }
       if (requestId !== this.requestId) {
-        this.$emit('completed', this.requestId);
+        this.processCompletedRedirect(data, this.userId, this.requestId);
+      }
+    },
+    /**
+     * Makes an API call with retry logic.
+     * @param {Function} apiCall - The API call to be made.
+     * @param {number} retries - The number of retry attempts.
+     * @param {number} delay - The delay between retries in milliseconds.
+     * @returns {Promise} - The response from the API call.
+     */
+    // eslint-disable-next-line consistent-return
+    async retryApiCall(apiCall, retries = 3, delay = 1000) {
+      for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const response = await apiCall();
+          return response;
+        } catch (error) {
+          if (attempt === retries - 1) {
+            throw error;
+          }
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((resolve) => {
+            setTimeout(resolve, delay);
+          });
+        }
+      }
+    },
+    /**
+     * Gets the next request by posting to the specified endpoint.
+     * @param {string} processId - The process ID.
+     * @param {string} startEvent - The start event.
+     * @returns {Promise} - The response from the API call.
+     */
+    getNextRequest(processId, startEvent) {
+      return window.ProcessMaker.apiClient.post(
+        `/process_events/${processId}?event=${startEvent}`,
+        {}
+      );
+    },
+
+    /**
+     * Gets the tasks for the specified process request ID.
+     * @param {object} params - The query params.
+     * @returns {Promise} - The response from the API call.
+     */
+
+    getTasks(params) {
+      const queryParams = {
+        user_id: this.userId,
+        process_request_id: params.processRequestId,
+        page: params.page,
+        per_page: params.perPage,
+        status: params.status
+      };
+
+      const queryString = Object.entries(queryParams)
+        .filter(([, value]) => value !== undefined && value !== null)
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+        )
+        .join("&");
+
+      return window.ProcessMaker.apiClient.get(`tasks?${queryString}`);
+    },
+    /**
+     * Parses a JSON string and returns the result.
+     * @param {string} jsonString - The JSON string to parse.
+     * @returns {object|null} - The parsed object or null if parsing fails.
+     */
+    parseJsonSafely(jsonString) {
+      try {
+        return JSON.parse(jsonString);
+      } catch (error) {
+        console.error("Invalid JSON string:", error);
+        return null;
+      }
+    },
+    /**
+     * Handles the process completion and redirects the user based on the task assignment.
+     * @param {object} data - The data object containing endEventDestination.
+     * @param {string} userId - The ID of the current user.
+     * @param {string} requestId - The ID of the current request.
+     */
+    async processCompletedRedirect(data, userId, requestId) {
+      try {
+        // Verify if is not anotherProcess type
+        if (data.endEventDestination.type !== "anotherProcess") {
+          this.$emit(
+            "completed",
+            this.requestId,
+            data?.endEventDestination.value
+          );
+          return;
+        }
+        // Parse endEventDestination from the provided data
+        const endEventDestination = this.parseJsonSafely(
+          data.endEventDestination.value
+        );
+        // Get the next request using retry logic
+        const nextRequest = await this.retryApiCall(() =>
+          this.getNextRequest(
+            endEventDestination.processId,
+            endEventDestination.startEvent
+          )
+        );
+
+        const params = {
+          processRequestId: nextRequest.data.id,
+          status: "ACTIVE",
+          page: 1,
+          perPage: 1
+        };
+        // Get the tasks for the next request using retry logic
+        const response = await this.retryApiCall(() => this.getTasks(params));
+        // Handle the first task from the response
+        const firstTask = response.data.data[0];
+        if (firstTask && firstTask.user_id === userId) {
+          this.$emit("completed", requestId, `/tasks/${firstTask.id}/edit`);
+        } else {
+          this.$emit("completed", requestId);
+        }
+      } catch (error) {
+        console.error("Error processing completed redirect:", error);
+        this.$emit("completed", requestId);
       }
     },
     getAllowedRequestId() {
@@ -498,14 +686,19 @@ export default {
       return allowed ? this.parentRequest : this.requestId
     },
     processUpdated: _.debounce(function(data) {
-      if (data.event === 'ACTIVITY_ACTIVATED') {
+      if (
+        data.event === "ACTIVITY_ACTIVATED"
+        && data.elementType === 'task'
+      ) {
+        this.taskId = data.tokenId;
         this.reload();
       }
       if (data.event === 'ACTIVITY_EXCEPTION') {
         this.$emit('error', this.requestId);
       }
-    }, 300),
+    }, 100),
     initSocketListeners() {
+      this.loadingListeners = false;
       this.addSocketListener(
         `completed-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
@@ -514,7 +707,6 @@ export default {
           this.processCompleted(data);
         }
       );
-
       this.addSocketListener(
         `updated-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
@@ -547,14 +739,12 @@ export default {
         '.ProcessUpdated',
         (data) => {
           if (
-            ['ACTIVITY_ACTIVATED'].includes(data.event) &&
-            !this.existsEventMessage(`${data.event}-${this.userId}-${this.taskId}`)
+            ['ACTIVITY_ACTIVATED'].includes(data.event)
           ) {
             this.closeTask(this.parentRequest);
           }
           if (
-            ["ACTIVITY_COMPLETED"].includes(data.event) &&
-            !this.existsEventMessage(`${data.event}-${this.userId}-${this.taskId}`)
+            ["ACTIVITY_COMPLETED"].includes(data.event)
           ) {
             if (this.task.process_request.status === 'COMPLETED') {
               this.processCompleted();
@@ -612,9 +802,16 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
+    this.loadTask();
   },
   destroyed() {
     this.unsubscribeSocketListeners();
   },
 };
 </script>
+
+<style scoped>
+.loading {
+  pointer-events: none;
+}
+</style>
