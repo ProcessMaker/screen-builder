@@ -220,6 +220,16 @@ export default {
         {
           label: this.$t("Type"),
           key: "type",
+          cb: (value) => {
+            switch (value) {
+              case 'expression':
+                return 'Formula';
+              case 'javascript':
+                return 'JavaScript';
+              default:
+                return value;
+            }
+          },
         },
       ],
       monacoOptions: {
