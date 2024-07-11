@@ -18,13 +18,14 @@ $border-color: #cdddee;
     &-td {
       display: table-cell;
       border-bottom: 1px solid $border-color;
+      white-space: nowrap;
 
       &:first-child {
-        width: 9%;
+        width: 60px;
       }
 
       &:nth-child(2) {
-        width: 40%;
+        width: 30%;
       }
 
       &:not(:first-child):not(:nth-child(2)):not(:last-child) {
@@ -43,6 +44,14 @@ $border-color: #cdddee;
       font-weight: 700;
       color: #566877;
       text-transform: uppercase;
+      display: inline-block;
+      white-space: normal;
+    }
+    &-separator {
+      border-left: 1px solid $border-color;
+      display: inline-block;
+      padding: 0.5rem 0rem;
+      width: 1px;
     }
   }
 

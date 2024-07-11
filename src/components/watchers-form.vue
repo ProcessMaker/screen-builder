@@ -341,14 +341,14 @@
 
     <div class="d-flex justify-content-end mt-3">
       <button
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-secondary text-uppercase"
         data-cy="watchers-button-cancel"
         @click.stop="displayTableList"
       >
         {{ $t("Cancel") }}
       </button>
       <button
-        class="btn btn-secondary ml-3"
+        class="btn btn-secondary ml-3 text-uppercase"
         data-cy="watchers-button-save"
         @click="validateDataAndSave"
       >

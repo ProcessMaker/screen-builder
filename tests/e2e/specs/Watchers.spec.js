@@ -332,7 +332,8 @@ describe("Watchers", () => {
     cy.get("@watcherModal").should("have.class", "modal-xl");
     cy.get('[data-cy="watchers-button-cancel"]').click();
 
-    cy.get("@watcherModal").should("have.class", "modal-lg");
+    // Watcher list is also xl because it has many columns
+    cy.get("@watcherModal").should("have.class", "modal-xl");
   });
   it("Test asynchronous watcher", () => {
     // Mock script response
