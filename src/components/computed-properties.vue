@@ -7,7 +7,7 @@
     header-class="m-0 p-0 mb-3"
     body-class="m-0 p-0"
     title-class="m-0"
-    footer-class="m-0 p-0"
+    footer-class="m-0 p-0 border-0"
     no-close-on-backdrop
     header-close-content="&times;"
     data-cy="calcs-modal"
@@ -25,6 +25,7 @@
     </template>
     <template v-if="displayList">
       <Sortable
+        class="mb-3"
         :fields="fields"
         :items="current"
         filter-key="name,type"
@@ -55,7 +56,15 @@
       </Sortable>
 
       <template slot="modal-footer">
-        <span />
+        <div class="d-flex align-items-end">
+          <button
+            class="btn btn-secondary ml-3 text-uppercase"
+            data-cy="calcs-button-close"
+            @click="$refs.modal.hide()"
+          >
+            {{ $t("Done") }}
+          </button>
+        </div>
       </template>
     </template>
 
@@ -148,14 +157,14 @@
       <template slot="modal-footer">
         <div class="d-flex align-items-end">
           <button
-            class="btn btn-outline-secondary"
+            class="btn btn-outline-secondary text-uppercase"
             data-cy="calcs-button-cancel"
             @click="displayTableList"
           >
             {{ $t("Cancel") }}
           </button>
           <button
-            class="btn btn-secondary ml-3"
+            class="btn btn-secondary ml-3 text-uppercase"
             data-cy="calcs-button-save"
             @click="validateData"
           >
