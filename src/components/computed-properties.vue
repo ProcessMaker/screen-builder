@@ -183,6 +183,8 @@ import Validator from "@chantouchsek/validatorjs";
 import FocusErrors from "../mixins/focusErrors";
 import Sortable from './sortable/Sortable.vue';
 
+const globalObject = typeof window === 'undefined' ? global : window;
+
 export default {
   components: {
     FormInput,
@@ -403,6 +405,16 @@ export default {
       this.displayList = false;
     },
     deleteProperty(item) {
+      globalObject.ProcessMaker.confirmModal(
+        this.$t('Are you sure you want to delete the calc ?'),
+        this.$t('If you do, you wont be able to recover the calc configuration.'),
+        '',
+        () => {
+          this.remove(item);
+        }
+      );
+    },
+    remove(item) {
       this.current = this.current.filter((val) => {
         return val.id !== item.id;
       });
