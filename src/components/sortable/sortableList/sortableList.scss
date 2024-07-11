@@ -70,6 +70,18 @@ $border-color: #cdddee;
       display: flex;
       margin: 0 16px;
       border-color: $border-color !important;
+
+      &-btn-tooltip::v-deep {
+        & .tooltip-inner {
+          background-color: #EBEEF2 !important;
+          color: #444444 !important;
+        }
+
+        & .arrow:before {
+          border-top-color: #EBEEF2 !important;
+          border-bottom-color: #EBEEF2 !important;
+        }
+      }
     }
 
     &-vr {
@@ -86,4 +98,7 @@ $border-color: #cdddee;
 
 .dragging {
   box-shadow: 0 1px 5px 0 rgba(86, 104, 119, 0.4);
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
 }

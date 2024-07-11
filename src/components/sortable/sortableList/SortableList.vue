@@ -65,8 +65,9 @@
             </button>
             <button
               v-else
+              v-b-tooltip="{ customClass: 'sortable-item-action-btn-tooltip' }"
               class="btn"
-              title="Edit"
+              :title="$t('Edit')"
               v-bind="dataTestActions.btnEdit"
               @click.stop="onClick(item, index)"
             >
@@ -75,8 +76,9 @@
             <div class="sortable-item-vr"></div>
             <slot name="options" :item="item"></slot>
             <button
+              v-b-tooltip="{ customClass: 'sortable-item-action-btn-tooltip' }"
               class="btn"
-              title="Delete"
+              :title="$t('Delete')"
               v-bind="dataTestActions.btnDelete"
               @click="$emit('item-delete', item)"
             >
@@ -181,6 +183,9 @@ export default {
       this.draggedItem = order;
       // add dragging class to the element
       event.target.classList.add('dragging');
+      if (event?.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'move';
+      }
     },
     dragEnter(event, order) {
       this.draggedOverItem = order;
