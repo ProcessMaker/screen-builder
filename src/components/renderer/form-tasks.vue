@@ -308,7 +308,7 @@ export default {
       let draftBadge = "";
       if (record.draft && record.status !== "CLOSED") {
         draftBadge = `
-          <span class ="badge badge-warning status-warnig">
+          <span class ="badge badge-warning status-warning">
             ${this.$t("Draft")}
           </span>
         `;
