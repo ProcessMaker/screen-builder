@@ -52,7 +52,6 @@ export default {
   props: {
     fields: { type: Array, required: true },
     items: { type: Array, required: true },
-    filterKey: { type: String, required: true },
     disableKey: { type: String, default: null },
     inlineEdit: { type: Boolean, default: true },
     dataTestActions: {
@@ -62,10 +61,10 @@ export default {
     searchProperties: {
       type: Array,
       required: false,
-      default: function() {
+      default() {
         return []; // Return a new instance of the array
-      }
-    }
+      },
+    },
   },
   data() {
     return {

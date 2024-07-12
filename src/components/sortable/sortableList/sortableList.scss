@@ -25,7 +25,8 @@ $border-color: #cdddee;
       }
 
       &:nth-child(2) {
-        width: 30%;
+        min-width: 30%;
+        width: auto;
       }
 
       &:not(:first-child):not(:nth-child(2)):not(:last-child) {
