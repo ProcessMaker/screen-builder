@@ -2,44 +2,66 @@ $border-color: #cdddee;
 
 .sortable {
   &-list {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid $border-color !important;
-
-    &-header {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid $border-color;
-    }
-
-    &-title {
-      padding-left: 16px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #566877;
-    }
-  }
-
-  &-container {
-    display: flex;
+    display: table;
     flex-direction: column;
     width: 100%;
-    height: 340px;
-    overflow-x: auto;
+    border: 1px solid $border-color !important;
+
+    &-tr {
+      display: table-row;
+
+      &:last-child > .sortable-list-td {
+        border-bottom: none;
+      }
+    }
+
+    &-td {
+      display: table-cell;
+      border-bottom: 1px solid $border-color;
+      white-space: nowrap;
+
+      &:first-child {
+        width: 60px;
+      }
+
+      &:nth-child(2) {
+        width: 30%;
+      }
+
+      &:not(:first-child):not(:nth-child(2)):not(:last-child) {
+        width: auto;
+      }
+
+      &:last-child {
+        width: 1%;
+        white-space: nowrap;
+      }
+    }
+
+    &-header {
+      padding: 16px 0 16px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #566877;
+      text-transform: uppercase;
+      display: inline-block;
+      white-space: normal;
+    }
+    &-separator {
+      border-left: 1px solid $border-color;
+      display: inline-block;
+      padding: 0.5rem 0rem;
+      width: 1px;
+    }
   }
 
   &-item {
-    display: flex;
-    align-items: center;
-    height: 56px;
-    border-bottom: 1px solid $border-color;
     cursor: move;
 
     &-icon {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 64px;
       height: 56px;
     }
 
@@ -47,8 +69,7 @@ $border-color: #cdddee;
       color: #6A7888;
     }
 
-    &-name {
-      flex-grow: 1;
+    &-prop {
       padding: 8px 16px;
       font-size: 15px;
       color: #556271;
@@ -58,6 +79,18 @@ $border-color: #cdddee;
       display: flex;
       margin: 0 16px;
       border-color: $border-color !important;
+
+      &-btn-tooltip::v-deep {
+        & .tooltip-inner {
+          background-color: #EBEEF2 !important;
+          color: #444444 !important;
+        }
+
+        & .arrow:before {
+          border-top-color: #EBEEF2 !important;
+          border-bottom-color: #EBEEF2 !important;
+        }
+      }
     }
 
     &-vr {
@@ -65,9 +98,16 @@ $border-color: #cdddee;
       margin: 9px 0;
       border-right: 1px solid $border-color;
     }
+
+    &-disabled > .sortable-item-prop {
+      color: rgba(85, 98, 113, 0.5);
+    }
   }
 }
 
 .dragging {
   box-shadow: 0 1px 5px 0 rgba(86, 104, 119, 0.4);
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
 }

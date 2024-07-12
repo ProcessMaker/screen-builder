@@ -31,6 +31,7 @@ export default {
         @sorted="sorted"
         @item-edit="editPage"
         @item-delete="deletePage"
+        :searchProperties= "['name']"
       />
     `,
     data() {
@@ -59,6 +60,12 @@ export default {
 // Preview the component
 export const Preview = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Page 1", order: 1 },
@@ -73,6 +80,12 @@ export const Preview = {
 // User can reorder items
 export const UserCanReorderItems = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Page 1", order: 1 },
@@ -122,13 +135,21 @@ export const UserCanReorderItems = {
 // User can filter by text
 export const UserCanFilterByText = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Zeus", order: 1 },
       { name: "Hera", order: 2 },
       { name: "Poseidon", order: 3 },
       { name: "Athena", order: 4 },
-      { name: "Hephaïstus", order: 5 }
+      { name: "Hephaïstus", order: 5 },
+      { name: "newTotalLeave", order: 5 },
+      { name: "newLeaveRemaining", order: 5 },
     ]
   },
   play: async ({ canvasElement, step }) => {
@@ -151,7 +172,7 @@ export const UserCanFilterByText = {
       await userEvent.type(search, "a");
       const items = canvas.getAllByTestId(/item-\d+/);
       await waitFor(() => {
-        expect(items).toHaveLength(3);
+        expect(items).toHaveLength(5);
       });
     });
 
@@ -164,12 +185,26 @@ export const UserCanFilterByText = {
         expect(items).toHaveLength(1);
       });
     });
+    await step("Type 'new'", async () => {
+      await userEvent.clear(search);
+      await userEvent.type(search, "new");
+      const items = canvas.getAllByTestId(/item-\d+/);
+      await waitFor(() => {
+        expect(items).toHaveLength(2);
+      });
+    });
   }
 };
 
 // User can sort with filter by text
 export const UserCanSortWithFilterByText = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Zeus", order: 1 },
@@ -222,22 +257,34 @@ export const UserCanSortWithFilterByText = {
     expect(items[3]).toHaveTextContent("Athena");
     expect(items[4]).toHaveTextContent("Hera");
 
-    // Drag "Athena" to "Hera" position
-    await dragAndDrop(canvas.getByTitle("Athena"), canvas.getByTitle("Hera"));
-
-    // Check the new order
+    await dragAndDrop(
+      canvas.getByTitle("Hephaïstus"),
+      canvas.getByTitle("Athena")
+    );
+    await dragAndDrop(
+      canvas.getByTitle("Hephaïstus"),
+      canvas.getByTitle("Hera")
+    );
+ 
+    // // Check the new order
     const itemsOrder = canvas.getAllByTestId(/item-\d+/);
-    expect(itemsOrder[0]).toHaveAttribute("data-order", "1");
-    expect(itemsOrder[1]).toHaveAttribute("data-order", "2");
-    expect(itemsOrder[2]).toHaveAttribute("data-order", "3");
-    expect(itemsOrder[3]).toHaveAttribute("data-order", "4");
-    expect(itemsOrder[4]).toHaveAttribute("data-order", "5");
+    await expect(itemsOrder[0]).toHaveAttribute("data-order", "1");
+    await expect(itemsOrder[1]).toHaveAttribute("data-order", "2");
+    await expect(itemsOrder[2]).toHaveAttribute("data-order", "3");
+    await expect(itemsOrder[3]).toHaveAttribute("data-order", "4");
+    await expect(itemsOrder[4]).toHaveAttribute("data-order", "5");
   }
 };
 
 // User can reorder items that does not have an order
 export const UserCanReorderItemsThatDoesNotHaveAnOrder = {
   args: {
+    fields: [
+      {
+        label: "Name",
+        key: "name",
+      },
+    ],
     filterKey: "name",
     items: [
       { name: "Page 1" },
