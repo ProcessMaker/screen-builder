@@ -381,7 +381,7 @@
       <Sortable
         :fields="fields"
         :items="config"
-        filter-key="name"
+        :search-properties="searchProperties"
         @item-edit="() => {}"
         @item-delete="confirmDelete"
         @add-page="$bvModal.show('addPageModal')"
@@ -629,7 +629,8 @@ export default {
       editorContentKey: 0,
       cancelledJobs: [],
       collapse: {},
-      groupOrder: {}
+      groupOrder: {},
+      searchProperties: ['name'],
     };
   },
   computed: {
