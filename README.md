@@ -2,8 +2,9 @@
 
 `@processmaker/screen-builder` is a VueJS powered Screen Builder that produces compatible JSON for our vue-form-renderer.
 
-- [Project setup](#project-setup)
-- [Testing](#testing)
+- [ProcessMaker Screen Builder](#processmaker-screen-builder)
+  - [Project setup](#project-setup)
+  - [Testing](#testing)
 
 ## Project setup
 
@@ -17,8 +18,8 @@ cd screen-builder
 Install dependencies using NPM, then run the local development server:
 
 ```bash
-npm i
-npm run serve
+npm ci
+npm run dev
 ```
 
 ## Testing
