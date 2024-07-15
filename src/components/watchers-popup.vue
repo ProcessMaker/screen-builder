@@ -1,17 +1,41 @@
 <template>
   <b-modal
     ref="modal"
-    size="lg"
+    :size="modalSize"
     id="watchers-popup"
-    :title="$t('Watchers')"
     @hidden="displayList"
     hide-footer
     header-close-content="&times;"
     no-close-on-backdrop
     data-cy="watchers-modal"
   >
+    <template #modal-title>
+      {{ $t('Watchers') }}
+      <small class="d-block my-2 modal-subtitle">
+        {{ $t('Manage your active watchers for this screen') }}
+      </small>
+    </template>
     <template v-if="enableList">
-      <watchers-list v-model="current" @display-form="displayForm" @edit-form="edit" @delete-form="confirmRemoval"/>
+      <watchers-list
+        v-model="current"
+        @display-form="displayForm"
+        @edit-form="edit"
+        @delete-form="confirmRemoval"
+        @toggle-bypass="toggleBypass"
+        @ordered="$emit('input', $event)"
+      />  
+
+      <div class="d-flex justify-content-end mt-3 mr-1">
+        <div class="d-flex align-items-end">
+          <button
+            class="btn btn-secondary ml-3 text-uppercase"
+            data-cy="calcs-button-close"
+            @click="$refs.modal.hide()"
+          >
+            {{ $t("Done") }}
+          </button>
+        </div>
+      </div>
     </template>
     <template v-else>
       <required />
@@ -37,34 +61,75 @@ export default {
     WatchersList,
     WatchersForm,
   },
-  props: ['value'],
+  props: {
+    value: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       enableList: true,
       current: [],
       add: {
-        uid:'',
-        name:'',
-        variable:'',
-        script_id:'',
-        script_key:'',
-        input_data:'',
-        script_configuration:'',
-        synchronous:false,
+        uid: '',
+        name: '',
+        variable: '',
+        script_id: '',
+        script_key: '',
+        input_data: '',
+        script_configuration: '',
+        synchronous: false,
+        byPass: false,
       },
     };
+  },
+  computed: {
+    modalSize() {
+      return "xl";
+    },
   },
   watch: {
     value: {
       handler(value) {
-        this.current = value;
+        this.current = this.getValuesWithOutputVarsNames(value);
       },
     },
   },
-  computed: {
-
-  },
   methods: {
+    getValuesWithOutputVarsNames(values) {
+      const list = values.map((watcher) => {
+        const newItem = { ...watcher };
+
+        if (!Object.hasOwn(newItem, 'byPass')) {
+          newItem.byPass = false;
+        }
+
+        // If watcher is a data source, extract the output vars
+        if (newItem?.script?.id?.substr(0, 11) === 'data_source') {
+          const scriptConfig = JSON.parse(newItem.script_configuration);
+          const vars = scriptConfig?.dataMapping
+            ? scriptConfig.dataMapping.map((mapping) => mapping.key).join(', ')
+            : '';
+
+          // var names string won't have more than 50 characters to avoid distorting the UI
+          const maxLen = 50;
+          newItem.output_variable =
+            vars.length > maxLen ? `${vars.substr(0, maxLen)}...` : vars;
+        }
+
+        return newItem;
+      });
+
+      return list;
+    },
+    toggleBypass(itemUid) {
+      this.current = this.current.map((item) =>
+        item.uid === itemUid ? { ...item, byPass: !item.byPass } : item,
+      );
+
+      this.$emit('input', this.current);
+    },
     show() {
       this.$refs.modal.show();
     },
@@ -118,3 +183,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.modal-subtitle {
+  color: #556271;
+  font-size: 1rem;
+  font-weight: 400;
+}
+</style>

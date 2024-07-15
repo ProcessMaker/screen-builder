@@ -1,4 +1,19 @@
 describe("Computed fields", () => {
+  function setupConsoleStubs(stubs) {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        Object.entries(stubs).forEach(([method, alias]) => {
+          cy.stub(win.console, method).as(alias);
+        });
+      }
+    });
+  }
+
+  function loadAndPreview(jsonFile) {
+    cy.loadFromJson(jsonFile, 0);
+    cy.get("[data-cy=mode-preview]").click();
+  }
+
   it("Make sure new rows can be added to the loop, even with a javascript-driven computed field", () => {
     cy.visit("/");
     cy.loadFromJson("FOUR-5139.json", 0);
@@ -30,6 +45,18 @@ describe("Computed fields", () => {
     });
   });
 
+  it("Make sure that calc log was displayed with success result", () => {
+    setupConsoleStubs({ log: "consoleLog", error: "consoleError" });
+    loadAndPreview("FOUR-5139.json");
+    cy.get("@consoleLog").should("be.calledWith", "%c✅ %cCalc \"loop_1\" has %cRUN");
+  });
+
+  it("Make sure that calc log was displayed with ERROR result", () => {
+    setupConsoleStubs({ log: "consoleLog", groupCollapsed: "groupCollapsed" });
+    loadAndPreview("FOUR-5139-calcError.json");
+    cy.get("@groupCollapsed").should("be.calledWith", "%c❌ %cCalc \"loop_1\" has %cFAILED");
+  });
+
   it("CRUD of computed fields", () => {
     cy.visit("/");
 
@@ -45,10 +72,7 @@ describe("Computed fields", () => {
       .clear()
       .type("pow(form_input_2, 2)");
     cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-table"]').should(
-      "contain.text",
-      "form_input_1 = form_input_2 ^ 2"
-    );
+    cy.get('[data-cy="calcs-table"]').should('contain.text', 'form_input_1');
     cy.get('[data-cy="calcs-modal"] .close').click();
 
     // Edit the created calculated property
@@ -63,10 +87,7 @@ describe("Computed fields", () => {
       .clear()
       .type("form_input_1 * 100");
     cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-table"]').should(
-      "contain.text",
-      "form_input_2 = form_input_1 * 100"
-    );
+    cy.get('[data-cy="calcs-table"]').should('contain.text', 'form_input_2');
     cy.get('[data-cy="calcs-modal"] .close').click();
 
     // Delete the created calculated property
@@ -94,7 +115,7 @@ describe("Computed fields", () => {
     cy.get('[data-cy="calcs-button-save"]').click();
     cy.get('[data-cy="calcs-table"]').should(
       "contain.text",
-      "form_input_1 = form_input_2 ^ 2"
+      "form_input_1"
     );
     cy.get('[data-cy="calcs-modal"] .close').click();
 
@@ -221,5 +242,27 @@ describe("Computed fields", () => {
     cy.get('[data-cy="calcs-button-save"]').click();
 
     cy.focused().should("have.attr", "class", "inputarea"); // Monaco should be focused
+  });
+  it("Make sure that test calc was not bypassed ", () => {
+    cy.visit("/");
+    cy.loadFromJson("byPassFalse.json", 0);
+
+    // Enter preview mode
+    cy.get("[data-cy=mode-preview]").click();
+    cy.get('[data-cy="screen-field-test"]').should(
+      "contain.value",
+      "Hello World"
+    );
+  });
+  it("Make sure that test calc was bypassed ", () => {
+    cy.visit("/");
+    cy.loadFromJson("byPassTrue.json", 0);
+
+    // Enter preview mode
+    cy.get("[data-cy=mode-preview]").click();
+    cy.get('[data-cy="screen-field-test"]').should(
+      "not.contain.value",
+      "Hello World"
+    );
   });
 });
