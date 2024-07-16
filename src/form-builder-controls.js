@@ -999,7 +999,7 @@ export default [
     rendererBinding: "LinkButton",
     
     control: {
-      popoverContent: "Add an action to submit your form or update a field",
+      popoverContent: "Add a URL where this link should redirect",
       group: 'Content Fields',
       order: 6.0,
       label: "Link URL",
