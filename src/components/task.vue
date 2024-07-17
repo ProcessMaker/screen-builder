@@ -604,18 +604,12 @@ export default {
         process_request_id: params.processRequestId,
         page: params.page,
         per_page: params.perPage,
-        status: params.status
+        status: params.status,
       };
 
-      const queryString = Object.entries(queryParams)
-        .filter(([, value]) => value !== undefined && value !== null)
-        .map(
-          ([key, value]) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-        )
-        .join("&");
+      const queryString = new URLSearchParams(queryParams).toString();
 
-      return window.ProcessMaker.apiClient.get(`tasks?${queryString}`);
+      return this.$dataProvider.getTasks(`?${queryString}`);
     },
     /**
      * Parses a JSON string and returns the result.
@@ -690,7 +684,6 @@ export default {
         data.event === "ACTIVITY_ACTIVATED"
         && data.elementType === 'task'
       ) {
-        this.taskId = data.tokenId;
         this.reload();
       }
       if (data.event === 'ACTIVITY_EXCEPTION') {
