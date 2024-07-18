@@ -684,8 +684,13 @@ export default {
         data.event === "ACTIVITY_ACTIVATED"
         && data.elementType === 'task'
       ) {
+        if (!this.task.elementDestination?.type) {
+          this.taskId = data.taskId;
+        }
+
         this.reload();
       }
+
       if (data.event === 'ACTIVITY_EXCEPTION') {
         this.$emit('error', this.requestId);
       }
