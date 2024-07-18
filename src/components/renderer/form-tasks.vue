@@ -1,7 +1,7 @@
 <template>
   <div v-if="showTable">
     <filter-table
-      ref="form-task"
+      table-name="form-tasks"
       :headers="tableHeaders"
       :data="tableData"
       :unread="unreadColumnName"

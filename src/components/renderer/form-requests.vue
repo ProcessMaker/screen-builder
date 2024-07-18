@@ -1,7 +1,7 @@
 <template>
   <div v-if="showTable">
     <filter-table
-      ref="form-case"
+      table-name="form-cases"
       :headers="tableHeaders"
       :data="tableData"
       :unread="unreadColumnName"
