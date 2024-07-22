@@ -237,6 +237,7 @@ export default {
     },
     isComputedVariable(name, definition) {
       return definition.computed && definition.computed.some(computed => {
+        if (!definition.computed) return false;
         // Check if the first part of an element's name (up to the first `.`)
         // matches the name of a computed property.
         const regex = new RegExp(`^${computed.property}(\\.|$)`, 'i');
