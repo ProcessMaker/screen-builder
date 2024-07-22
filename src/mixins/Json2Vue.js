@@ -236,7 +236,7 @@ export default {
       return name && typeof name === 'string' && name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/);
     },
     isComputedVariable(name, definition) {
-      return definition.computed && definition.computed.some(computed => {
+      return definition?.computed?.some(computed => {
         // add byPass computed property validation
         if (computed?.byPass) return false;
         // Check if the first part of an element'ßs name (up to the first `.`)
