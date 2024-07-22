@@ -237,11 +237,10 @@ export default {
     },
     isComputedVariable(name, definition) {
       return definition.computed && definition.computed.some(computed => {
-        if (computed?.byPass) {
-          return false;
-        }
-        // Check if the first part of an element's name (up to the first `.`)
-        // matches the name of a computed property.
+        // add byPass computed property validation
+        if (computed?.byPass) return false;
+        // Check if the first part of an element'ßs name (up to the first `.`)
+        // matches the name of a computed propertåy.
         const regex = new RegExp(`^${computed.property}(\\.|$)`, 'i');
         return regex.test(name);
       });
