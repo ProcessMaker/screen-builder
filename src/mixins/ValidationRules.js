@@ -1,6 +1,6 @@
 import { helpers } from 'vuelidate/lib/validators';
 import moment from 'moment';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 
 import {
   minLength,
@@ -161,7 +161,7 @@ export const regex = (expression) => helpers.withParams({expression}, (value) =>
 });
 
 export const required = (value) => {
-  return value instanceof Array ? value.length > 0 : !!value;
+  return value instanceof Array  ? value.length > 0 : !isNil(value) && value !== '' && value !== false;
 };
 
 export const requiredIf = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
