@@ -271,7 +271,6 @@ export default {
               dropdownShow: "tasks"
             };
             this.$emit("tasksCount", { dataControls, tasksDropdown });
-            this.$refs["form-task"].resetToOriginalWidths();
           })
           .catch(() => {
             this.tableData = [];
