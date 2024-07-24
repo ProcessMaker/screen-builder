@@ -315,8 +315,12 @@ export default {
 
 .list-table {
   height: 300px;
-  overflow: auto;
+  overflow: hidden;
   background-color: #f9f9f9;
+  padding: 0 13.5px 0 0;
+}
+.list-table:hover {
+  overflow: auto;
   padding: 0;
 }
 
