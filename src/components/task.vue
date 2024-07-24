@@ -420,7 +420,7 @@ export default {
      */
     // eslint-disable-next-line consistent-return
     async getDestinationUrl() {
-      const { elementDestination } = this.task || {};
+      const { elementDestination, allow_interstitial: allowInterstitial } = this.task || {};
 
       if (!elementDestination) {
         return null;
@@ -437,7 +437,7 @@ export default {
           const response = await this.retryApiCall(() => this.getTasks(params));
 
           const firstTask = response.data.data[0];
-          if (firstTask?.user_id === this.userId) {
+          if (allowInterstitial && firstTask?.user_id === this.userId) {
             return `/tasks/${firstTask.id}/edit`;
           }
 
@@ -487,6 +487,8 @@ export default {
             this.nodeId = task.element_id;
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
+          } else if (!this.taskPreview) {
+            this.emitClosedEvent();
           }
         });
     },
@@ -602,20 +604,14 @@ export default {
       const queryParams = {
         user_id: this.userId,
         process_request_id: params.processRequestId,
-        page: params.page,
-        per_page: params.perPage,
-        status: params.status
+        page: params.page || 1,
+        per_page: params.perPage || 1,
+        status: params.status,
       };
 
-      const queryString = Object.entries(queryParams)
-        .filter(([, value]) => value !== undefined && value !== null)
-        .map(
-          ([key, value]) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-        )
-        .join("&");
+      const queryString = new URLSearchParams(queryParams).toString();
 
-      return window.ProcessMaker.apiClient.get(`tasks?${queryString}`);
+      return this.$dataProvider.getTasks(`?${queryString}`);
     },
     /**
      * Parses a JSON string and returns the result.
@@ -690,9 +686,13 @@ export default {
         data.event === "ACTIVITY_ACTIVATED"
         && data.elementType === 'task'
       ) {
-        this.taskId = data.tokenId;
+        if (!this.task.elementDestination?.type) {
+          this.taskId = data.taskId;
+        }
+
         this.reload();
       }
+
       if (data.event === 'ACTIVITY_EXCEPTION') {
         this.$emit('error', this.requestId);
       }
