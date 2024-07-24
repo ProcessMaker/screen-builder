@@ -102,6 +102,7 @@ export default {
     loading: { type: Number, default: null },
     alwaysAllowEditing: { type: Boolean, default: false },
     disableInterstitial: { type: Boolean, default: false },
+    waitLoadingListeners: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -122,7 +123,7 @@ export default {
       redirecting: null,
       loadingButton: false,
       loadingTask: false,
-      loadingListeners: true,
+      loadingListeners: this.waitLoadingListeners,
     };
   },
   watch: {
@@ -258,6 +259,10 @@ export default {
       }
     },
     loadTask() {
+      if (!this.taskId) {
+        return;
+      }
+
       const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
