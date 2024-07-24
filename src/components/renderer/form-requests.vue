@@ -170,7 +170,6 @@ export default {
             };
             const tasksDropdown = [];
             this.$emit("requestsCount", { dataControls, tasksDropdown });
-            this.$refs["form-case"].resetToOriginalWidths();
           })
           .catch(() => {
             this.tableData = [];
