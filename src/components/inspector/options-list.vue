@@ -227,7 +227,7 @@
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
       <pmql-input
-        :search-type="'collections'"
+        :search-type="'collections_w_mustaches'"
         class="mb-1"
         :input-label="'PMQL'"
         v-model="pmqlQuery"

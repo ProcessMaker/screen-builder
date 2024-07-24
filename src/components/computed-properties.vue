@@ -408,7 +408,7 @@ export default {
     deleteProperty(item) {
       globalObject.ProcessMaker.confirmModal(
         this.$t('Are you sure you want to delete the calc ?'),
-        this.$t('If you do, you wont be able to recover the calc configuration.'),
+        this.$t('If you do, you won’t be able to recover the Calc configuration.'),
         '',
         () => {
           this.remove(item);
