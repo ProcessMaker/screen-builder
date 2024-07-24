@@ -1,15 +1,13 @@
 <template>
   <div v-if="showTable">
     <filter-table
+      table-name="form-cases"
       :headers="tableHeaders"
       :data="tableData"
       :unread="unreadColumnName"
       :loading="shouldShowLoader"
     >
-      <template
-        v-for="(row, rowIndex) in data.data"
-        v-slot:[`row-${rowIndex}`]
-      >
+      <template v-for="(row, rowIndex) in data.data" #[`row-${rowIndex}`]>
         <td
           v-for="(header, colIndex) in tableHeaders"
           :key="`${rowIndex}-${colIndex}`"
@@ -172,6 +170,7 @@ export default {
             };
             const tasksDropdown = [];
             this.$emit("requestsCount", { dataControls, tasksDropdown });
+            this.$refs["form-case"].resetToOriginalWidths();
           })
           .catch(() => {
             this.tableData = [];
@@ -249,24 +248,17 @@ export default {
       this.fetch();
     },
     setupColumns() {
-      const columns = this.getColumns();
-      this.tableHeaders = this.getColumns();
+      const columnsCases = this.getColumnsCases();
+      this.tableHeaders = this.getColumnsCases();
 
-      columns.forEach((column) => {
+      columnsCases.forEach((column) => {
         const field = {
-          title: () => this.$t(column.label),
+          title: () => this.$t(column.label)
         };
 
         switch (column.field) {
-          case "id":
-            field.name = "__slot:ids";
-            field.title = "#";
-            break;
-          case "participants":
-            field.name = "__slot:participants";
-            break;
-          case "name":
-            field.name = "__slot:name";
+          case "case_number":
+            field.name = "__slot:case_number";
             break;
           case "case_title":
             field.name = "__slot:case_title";
@@ -293,13 +285,8 @@ export default {
 
         this.fields.push(field);
       });
-
-      this.fields.push({
-        name: "__slot:actions",
-        title: ""
-      });
     },
-    getColumns() {
+    getColumnsCases() {
       return [
         {
           label: "Case #",
@@ -324,7 +311,7 @@ export default {
           sortable: true,
           default: true,
           width: 113,
-          fixed_width: 314,
+          fixed_width: 113,
           filter_subject: { type: "Status" }
         },
         {

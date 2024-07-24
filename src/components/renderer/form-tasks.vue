@@ -1,6 +1,7 @@
 <template>
   <div v-if="showTable">
     <filter-table
+      table-name="form-tasks"
       :headers="tableHeaders"
       :data="tableData"
       :unread="unreadColumnName"
@@ -270,6 +271,7 @@ export default {
               dropdownShow: "tasks"
             };
             this.$emit("tasksCount", { dataControls, tasksDropdown });
+            this.$refs["form-task"].resetToOriginalWidths();
           })
           .catch(() => {
             this.tableData = [];
@@ -308,7 +310,7 @@ export default {
       let draftBadge = "";
       if (record.draft && record.status !== "CLOSED") {
         draftBadge = `
-          <span class ="badge badge-warning status-warnig">
+          <span class ="badge badge-warning status-warning">
             ${this.$t("Draft")}
           </span>
         `;
@@ -381,9 +383,9 @@ export default {
     },
     setupColumns() {
       this.tableHeaders = this.getColumns();
-      const columns = this.getColumns();
+      const columnsTasks = this.getColumns();
 
-      columns.forEach((column) => {
+      columnsTasks.forEach((column) => {
         const field = {
           title: () => this.$t(column.label)
         };
