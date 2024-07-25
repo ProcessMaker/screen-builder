@@ -170,7 +170,6 @@ export default {
             };
             const tasksDropdown = [];
             this.$emit("requestsCount", { dataControls, tasksDropdown });
-            this.$refs["form-case"].resetToOriginalWidths();
           })
           .catch(() => {
             this.tableData = [];
@@ -303,8 +302,7 @@ export default {
           default: true,
           truncate: true,
           width: 314,
-          fixed_width: 314,
-          resizable: false
+          fixed_width: 314
         },
         {
           label: "Status",
@@ -313,7 +311,6 @@ export default {
           default: true,
           width: 113,
           fixed_width: 113,
-          resizable: false,
           filter_subject: { type: "Status" }
         },
         {
