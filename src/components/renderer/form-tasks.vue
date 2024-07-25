@@ -271,7 +271,6 @@ export default {
               dropdownShow: "tasks"
             };
             this.$emit("tasksCount", { dataControls, tasksDropdown });
-            this.$refs["form-task"].resetToOriginalWidths();
           })
           .catch(() => {
             this.tableData = [];
@@ -332,8 +331,7 @@ export default {
           default: true,
           width: 153,
           fixed_width: 153,
-          truncate: true,
-          resizable: false
+          truncate: true
         },
         {
           label: "Priority",
@@ -341,8 +339,7 @@ export default {
           sortable: false,
           default: true,
           width: 48,
-          fixed_width: 48,
-          resizable: false
+          fixed_width: 48
         },
         {
           label: "Case title",
@@ -352,8 +349,7 @@ export default {
           default: true,
           width: 314,
           truncate: true,
-          fixed_width: 314,
-          resizable: false
+          fixed_width: 314
         }
       ];
 
@@ -364,8 +360,7 @@ export default {
           sortable: true,
           default: true,
           width: 220,
-          fixed_width: 220,
-          resizable: false
+          fixed_width: 220
         });
       } else {
         columns.push({
@@ -374,8 +369,7 @@ export default {
           sortable: true,
           default: true,
           width: 220,
-          fixed_width: 220,
-          resizable: false
+          fixed_width: 220
         });
       }
       columns.push({
