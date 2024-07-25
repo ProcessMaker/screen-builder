@@ -177,7 +177,7 @@ describe("Computed fields", () => {
     });
   });
 
-  it.only("The user should not be able to change a FormDatePicker assigned to a computed property", () => {
+  it("The user should not be able to change a FormDatePicker assigned to a computed property", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-1");
     // Add an input field
