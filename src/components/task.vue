@@ -488,8 +488,8 @@ export default {
               this.emitIfTaskCompleted(requestId);
             }
             this.taskId = task.id;
-            this.loadTask();
             this.nodeId = task.element_id;
+            this.loadTask();
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
           } else if (!this.taskPreview) {
