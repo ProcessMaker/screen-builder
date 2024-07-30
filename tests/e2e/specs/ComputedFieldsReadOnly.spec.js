@@ -3,6 +3,7 @@ import { waitUntilElementIsVisible } from "../support/utils";
 describe("Computed fields", () => {
   it("The user should not be able to change a FormInput assigned to a computed property", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -143,6 +144,7 @@ describe("Computed fields", () => {
 
   it("The user should not be able to change a FormTextArea assigned to a computed property", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     // Add an input field
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
@@ -218,6 +220,7 @@ describe("Computed fields", () => {
 
   it("The user should not be able to change a FormSelectList assigned to a computed property", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
     // Add an input field
     cy.get("[data-cy=controls-FormSelectList]").drag(
       "[data-cy=screen-drop-zone]",
@@ -272,6 +275,7 @@ describe("Computed fields", () => {
 
   it("The user should not be able to change an input assigned to a sub property of a computed property", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-1");
 
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
