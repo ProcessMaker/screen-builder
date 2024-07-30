@@ -14,7 +14,21 @@ jobs:
 
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
+
+      - uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ github.event.pull_request.body }}
+          regex: 'ci:vue-form-elements:(.*?)[\s\n\r]'
+          flags: 's'
+
+      - name: debug
+        run: echo got '${{ steps.regex-match.outputs.group1 }}'
+      
+      - name: Checkout 🛎
+        run: git clone --depth 1 -b ${{ steps.regex-match.outputs.group1 }} https://github.com/ProcessMaker/vue-form-elements
+        if: ${{ steps.regex-match.outputs.match != null }}
 
       - name: Setup node env 🏗
         uses: actions/setup-node@master
@@ -22,9 +36,18 @@ jobs:
           node-version: 20
           check-latest: true
           cache: 'npm'
+      
+      - name: Install vue-form-elements dependencies 
+        if: ${{ steps.regex-match.outputs.match != null }}
+        working-directory: vue-form-elements
+        run: npm ci && npm run build-bundle
 
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
+
+      - name: Link vue-form-elements
+        if: ${{ steps.regex-match.outputs.match != null }}
+        run: npm link ./vue-form-elements
 
 #      - name: Run linter 👀
 #        run: npm run lint
