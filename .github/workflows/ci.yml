@@ -16,15 +16,37 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@master
 
+      - uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ github.event.pull_request.body }}
+          regex: 'ci:vue-form-elements:(.*?)[\s\n\r]'
+      
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+        if: ${{ steps.regex-match.outputs.match != null }}
+        with:
+          repository: ProcessMaker/vue-form-elements
+          path: vue-form-elements
+          ref: ${{ steps.regex-match.outputs.group1 }}
+
       - name: Setup node env 🏗
         uses: actions/setup-node@master
         with:
           node-version: 20
           check-latest: true
           cache: 'npm'
+      
+      - name: Install vue-form-elements dependencies 
+        if: ${{ steps.regex-match.outputs.match != null }}
+        working-directory: vue-form-elements
+        run: npm ci && npm run build-bundle
 
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
+
+      - name: Link vue-form-elements
+        run: npm link ../vue-form-elements
 
 #      - name: Run linter 👀
 #        run: npm run lint
