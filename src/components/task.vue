@@ -688,7 +688,7 @@ export default {
     },
     processUpdated: _.debounce(function(data) {
       if (
-        data.event === "ACTIVITY_ACTIVATED"
+        ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
         && data.elementType === 'task'
       ) {
         if (!this.task.elementDestination?.type) {
