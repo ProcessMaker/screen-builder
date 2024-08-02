@@ -1,5 +1,6 @@
 <template>
   <div v-if="showTable">
+    <Recommendations :dashboard="true" />
     <filter-table
       table-name="form-tasks"
       :headers="tableHeaders"
@@ -137,8 +138,15 @@ import datatableMixin from "../../mixins/datatable";
 import formEmpty from "./form-empty-table.vue";
 
 const uniqIdsMixin = createUniqIdsMixin();
+
+const Recommendations = (resolve) => {
+  resolve(
+    window.SharedComponents?.Recommendations || { template: "<span></span>" }
+  );
+};
+
 export default {
-  components: { formEmpty },
+  components: { formEmpty, Recommendations },
   mixins: [uniqIdsMixin, datatableMixin],
   data() {
     return {
@@ -162,10 +170,8 @@ export default {
         }
       ],
       advancedFilter: "",
-      tasksPreview:
-        (window.SharedComponents && window.SharedComponents.TasksHome) || {},
-      taskTooltip:
-        (window.SharedComponents && window.SharedComponents.TaskTooltip) || {},
+      tasksPreview: window.SharedComponents?.TasksHome || {},
+      taskTooltip: window.SharedComponents?.TaskTooltip || {},
       rowPosition: {},
       ellipsisShow: false,
       isTooltipVisible: false,
@@ -535,6 +541,7 @@ export default {
         });
     },
     handleRowMouseover(row) {
+      debugger;
       if (this.ellipsisShow) {
         this.isTooltipVisible = !this.disableRuleTooltip;
         this.clearHideTimer();
@@ -568,7 +575,11 @@ export default {
 
       const rightBorderX = rect.right;
 
-      const bottomBorderY = yPosition - topAdjust - elementHeight + 100;
+      let bottomBorderY = yPosition - topAdjust - elementHeight + 100;
+
+      if (document.getElementsByClassName("recommendation").length > 0) {
+        bottomBorderY += 60;
+      }
 
       this.rowPosition = {
         x: rightBorderX,
