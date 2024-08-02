@@ -455,6 +455,7 @@ export default {
 
       const elementDestinationUrl = elementDestination.value;
       if (elementDestinationUrl) {
+        // Save the referring URL to sessionStorage for future verification
         sessionStorage.setItem('sessionUrlActionBlocker', document.referrer);
         return elementDestinationUrl;
       }
@@ -808,7 +809,7 @@ export default {
      *
      * @returns {boolean} Returns false if the 'sessionUrlActionBlocker' was found and handled, true otherwise.
      */
-    hasUrlActionBloker() {
+    hasUrlActionBlocker() {
       // Retrieve the 'sessionUrlActionBlocker' value from sessionStorage
       const redirectedFrom = sessionStorage.getItem("sessionUrlActionBlocker");
 
@@ -832,7 +833,7 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    if (!this.hasUrlActionBloker()) {
+    if (!this.hasUrlActionBlocker()) {
       this.loadTask();
     }
   },
