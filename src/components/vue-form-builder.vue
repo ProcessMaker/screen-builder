@@ -648,9 +648,12 @@ export default {
       const excludedLabels = [""];
 
       const filtered = this.controls.filter((control) => {
-        return control.label
-          .toLowerCase()
-          .includes(this.filterQuery.toLowerCase());
+        let filter = this.filterQuery.toLowerCase();
+        let result = control.label.toLowerCase(filter).includes();
+        if (control.group.toLowerCase().includes(filter)) {
+          result = true;
+        }
+        return result;
       });
 
       return filtered;
