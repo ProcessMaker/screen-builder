@@ -541,7 +541,6 @@ export default {
         });
     },
     handleRowMouseover(row) {
-      debugger;
       if (this.ellipsisShow) {
         this.isTooltipVisible = !this.disableRuleTooltip;
         this.clearHideTimer();
