@@ -691,7 +691,7 @@ export default {
         data.event === "ACTIVITY_ACTIVATED"
         && data.elementType === 'task'
       ) {
-        if (!this.task.elementDestination?.type) {
+        if (!this.task?.elementDestination?.type) {
           this.taskId = data.taskId;
         }
 
