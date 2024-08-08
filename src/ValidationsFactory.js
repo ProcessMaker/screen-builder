@@ -406,8 +406,6 @@ function ValidationsFactory(element, options) {
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
     return new PageNavigateValidations(element, options);
   }
-  console.log("Validations Factory element", element);
-  console.log("Validations Factory options", options);
   return new FormElementValidations(element, options);
 }
 
