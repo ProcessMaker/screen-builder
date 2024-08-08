@@ -240,6 +240,10 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
+    // Disable validations if field is hidden
+    if (!this.isVisible()) {
+      return;
+    }
     if (this.element.config && this.element.config.readonly) {
       //readonly elements do not need validation
       return;
@@ -402,6 +406,8 @@ function ValidationsFactory(element, options) {
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
     return new PageNavigateValidations(element, options);
   }
+  console.log("Validations Factory element", element);
+  console.log("Validations Factory options", options);
   return new FormElementValidations(element, options);
 }
 
