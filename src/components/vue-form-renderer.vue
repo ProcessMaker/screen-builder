@@ -10,7 +10,7 @@
     <screen-renderer
       ref="renderer"
       :value="data"
-      :_parent="_parent"
+      :_parent="_parent || data._parent"
       :definition="definition"
       :current-page="currentPage"
       data-cy="screen-renderer"
