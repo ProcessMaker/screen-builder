@@ -11,6 +11,9 @@
         <td
           v-for="(header, colIndex) in tableHeaders"
           :key="`${rowIndex}-${colIndex}`"
+          :class="{
+            'pm-table-filter-applied-tbody': header.sortAsc || header.sortDesc
+          }"
         >
           <template v-if="containsHTML(getNestedPropertyValue(row, header))">
             <div
@@ -24,6 +27,10 @@
               v-if="header.truncate"
               :target="`element-${rowIndex}-${colIndex}`"
               custom-class="pm-table-tooltip"
+              placement="topright"
+              trigger="hover"
+              boundary="viewport"
+              :delay="{ show: 0, hide: 0 }"
               @show="checkIfTooltipIsNeeded"
             >
               {{ sanitizeTooltip(getNestedPropertyValue(row, header)) }}
@@ -47,6 +54,10 @@
                   v-if="header.truncate"
                   :target="`element-${rowIndex}-${colIndex}`"
                   custom-class="pm-table-tooltip"
+                  placement="topright"
+                  trigger="hover"
+                  boundary="viewport"
+                  :delay="{ show: 0, hide: 0 }"
                   @show="checkIfTooltipIsNeeded"
                 >
                   {{ getNestedPropertyValue(row, header) }}
@@ -91,7 +102,7 @@ export default {
           direction: "desc"
         }
       ],
-      tableHeaders: [],
+      tableHeaders: []
     };
   },
   computed: {
@@ -210,8 +221,9 @@ export default {
       if (option === "case_title") {
         attr[option] = value.case_title_formatted || value.case_title || "";
       }
-      return `<a href="${this.openRequest(value)}" class="text-nowrap"
-        target="_blank">${attr[option]}</a>`;
+      return `
+        <a href="${this.openRequest(value)}" class="text-nowrap custom-wrap"
+          target="_blank">${attr[option]}</a>`;
     },
     openRequest(data) {
       return `/requests/${data.id}`;
