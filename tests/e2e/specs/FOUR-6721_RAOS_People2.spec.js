@@ -343,11 +343,6 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
   it("Test performance of RAOS 1.0.0 People Screen render complete and start to get data sources", () => {
     cy.loadFromJson("RAOS_1.0.0_-_People_2.json", 7);
 
-    // Wait screen configuration to load
-    cy.wait("@DataSourceOne");
-    cy.wait("@DataSourceTwo");
-    cy.wait("@DataSourceTwo");
-
     // set initial data to test the screen
     cy.setPreviewDataInput(initialData);
 
@@ -383,11 +378,6 @@ describe("FOUR-6721 RAOS 1.0.0 Screens", () => {
 
   it("Test performance of RAOS 1.0.0 People Screen render complete and wait for all data sources to load", () => {
     cy.loadFromJson("RAOS_1.0.0_-_People_2.json", 7);
-
-    // Wait screen configuration to load
-    cy.wait("@DataSourceOne");
-    cy.wait("@DataSourceTwo");
-    cy.wait("@DataSourceTwo");
 
     // set initial data to test the screen
     cy.setPreviewDataInput(initialData);
