@@ -10,11 +10,7 @@
             {{ $t(title) }}
           </p>
           <template v-if="dataControl.dropdownShow === 'requests'">
-            <b-dropdown
-              variant="outline-secondary"
-              offset="-70"
-              no-caret
-            >
+            <b-dropdown variant="outline-secondary" offset="-70" no-caret>
               <template #button-content>
                 <i class="fas fa-caret-down" />
               </template>
@@ -26,7 +22,9 @@
                 </span>
               </b-dropdown-item>
               <b-dropdown-item
-                @click="handleDropdownSelection('requests_filter', 'as_participant')"
+                @click="
+                  handleDropdownSelection('requests_filter', 'as_participant')
+                "
               >
                 <span class="item-text">
                   {{ $t("As Participant") }}
@@ -42,11 +40,7 @@
       <div class="ml-auto d-flex align-items-center">
         <template v-if="dataControl.dropdownShow === 'requests'">
           <div class="mr-4">
-            <b-dropdown
-              variant="outline-secondary"
-              offset="-50"
-              size="sm"
-            >
+            <b-dropdown variant="outline-secondary" offset="-50" size="sm">
               <template #button-content>
                 <span class="text-capitalize">
                   {{ $t(titleDropdown) }}
@@ -66,11 +60,7 @@
         </template>
         <template v-if="dataControl.dropdownShow === 'tasks'">
           <div class="mr-4">
-            <b-dropdown
-              variant="outline-secondary"
-              offset="-50"
-              size="sm"
-            >
+            <b-dropdown variant="outline-secondary" offset="-50" size="sm">
               <template #button-content>
                 <span class="text-capitalize">
                   {{ $t(titleDropdown) }}
@@ -82,7 +72,7 @@
                 @click="handleDropdownSelection('tasks', option)"
               >
                 <span class="item-text">
-                {{ $t(option) }}
+                  {{ $t(option) }}
                 </span>
               </b-dropdown-item>
             </b-dropdown>
@@ -122,7 +112,6 @@
     </div>
     <div class="card-body list-table">
       <template v-if="listOption === 'My Tasks'">
-        <Recommendations :dashboard="true" />
         <FormTasks @tasksCount="getData"></FormTasks>
       </template>
       <template v-if="verifyListCase()">
@@ -140,12 +129,8 @@ import FormTasks from "./form-tasks.vue";
 import FormRequests from "./form-requests.vue";
 import FormNewRequest from "./form-new-request.vue";
 
-const Recommendations = (resolve) => {
-  resolve(window.SharedComponents?.Recommendations || { template: "<span></span>" });
-};
-
 export default {
-  components: { FormTasks, FormRequests, FormNewRequest, Recommendations },
+  components: { FormTasks, FormRequests, FormNewRequest },
   mixins: [],
   props: ["listOption"],
   data() {
@@ -170,11 +155,7 @@ export default {
         "Overdue",
         "View All"
       ],
-      requestFilterDropdown: [
-        "View All",
-        "Completed",
-        "In Progress",
-      ]
+      requestFilterDropdown: ["View All", "Completed", "In Progress"]
     };
   },
   watch: {
@@ -331,8 +312,8 @@ export default {
 }
 
 .item-text {
-  color: #42526E;
-  font-family: 'Open Sans', sans-serif;
+  color: #42526e;
+  font-family: "Open Sans", sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 21px;
@@ -343,13 +324,13 @@ export default {
 .dropdown-menu {
   padding: 0px;
   width: 180px;
-  box-shadow: 0px 4px 8px 0px #0000001A;
+  box-shadow: 0px 4px 8px 0px #0000001a;
   border-radius: 4px;
 }
 
 .dropdown-item {
   padding: 13px 12px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 21.79px;
@@ -361,10 +342,10 @@ export default {
 .btn-outline-secondary:not(:disabled):not(.disabled):active,
 .btn-outline-secondary:not(:disabled):not(.disabled).active,
 .show > .btn-outline-secondary.dropdown-toggle {
-    background: none;
-    color: #228fed;
-    border: none;
-    box-shadow: none;
+  background: none;
+  color: #228fed;
+  border: none;
+  box-shadow: none;
 }
 
 .head-filter {
