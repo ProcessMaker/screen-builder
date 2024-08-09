@@ -38,6 +38,17 @@ Vue.component("Required", {
   template: '<div class="text-right"><small>* = Required</small></div>'
 });
 
+// Mock PmqlInput for test/standalone
+Vue.component("PmqlInput", {
+  props: {
+    value: {
+      type: String,
+      default: ""
+    }
+  },
+  template: '<div>PMQL: {{ value }}</div>'
+});
+
 const store = new Vuex.Store({
   modules: {
     globalErrorsModule,
