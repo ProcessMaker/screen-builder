@@ -545,6 +545,10 @@ export default {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
+      if (this.task.bpmn_tag_name === 'manualTask') {
+        this.checkTaskStatus();
+        this.reload();
+      }
     },
     onUpdate(data) {
       this.$emit('input', data);
@@ -690,7 +694,7 @@ export default {
     },
     processUpdated: _.debounce(function(data) {
       if (
-        data.event === "ACTIVITY_ACTIVATED"
+        ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
         && data.elementType === 'task'
       ) {
         if (!this.task.elementDestination?.type) {

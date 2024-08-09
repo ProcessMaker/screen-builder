@@ -13,18 +13,52 @@ jobs:
         containers: [0, 1, 2, 3, 4]
 
     steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@master
+      - name: Checkout screen builder
+        uses: actions/checkout@v4
 
+      - uses: actions-ecosystem/action-regex-match@v2
+        id: install-vfe
+        with:
+          text: ${{ github.event.pull_request.body }}
+          regex: 'ci:vue-form-elements:([^\s]+)'
+      
+      - name: set-vfe-branch
+        run: |
+          export VFE_BRANCH=''
+          if [[ ${{ contains(github.event.pull_request.body, 'ci:next') }} ]]; then
+            export VFE_BRANCH=next
+          fi
+          if [[ ${{ steps.install-vfe.outputs.match != '' }} ]]; then
+            export VFE_BRANCH=${{ steps.install-vfe.outputs.group1 }}
+          fi
+          echo "VFE_BRANCH=${VFE_BRANCH}" >> $GITHUB_ENV
+      
+      - name: Checkout vue-form-elements
+        if: ${{ env.VFE_BRANCH != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ProcessMaker/vue-form-elements
+          path: vue-form-elements
+          ref: ${{ env.VFE_BRANCH }}
+      
       - name: Setup node env 🏗
         uses: actions/setup-node@master
         with:
           node-version: 20
           check-latest: true
           cache: 'npm'
+      
+      - name: Install vue-form-elements dependencies 
+        if: ${{ env.VFE_BRANCH != '' }}
+        working-directory: vue-form-elements
+        run: npm ci && npm run build-bundle
 
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
+
+      - name: Link vue-form-elements
+        if: ${{ env.VFE_BRANCH != '' }}
+        run: npm link ./vue-form-elements
 
 #      - name: Run linter 👀
 #        run: npm run lint
