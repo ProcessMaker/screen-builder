@@ -455,6 +455,8 @@ export default {
 
       const elementDestinationUrl = elementDestination.value;
       if (elementDestinationUrl) {
+        // Save the referring URL to sessionStorage for future verification
+        sessionStorage.setItem('sessionUrlActionBlocker', document.referrer);
         return elementDestinationUrl;
       }
 
@@ -801,6 +803,30 @@ export default {
         requestIdNode.setAttribute('content', this.requestId);
       }
     },
+    /**
+     * Checks for the presence of a URL action blocker in sessionStorage and handles it.
+     *
+     * This method retrieves the 'sessionUrlActionBlocker' value from sessionStorage,
+     * and if present, removes it and emits a 'closed' event with the task id and 
+     * the source of the redirection. It returns false if the blocker was handled, 
+     * and true otherwise.
+     *
+     * @returns {boolean} Returns false if the 'sessionUrlActionBlocker' was found and handled, true otherwise.
+     */
+    hasUrlActionBlocker() {
+      // Retrieve the 'sessionUrlActionBlocker' value from sessionStorage
+      const redirectedFrom = sessionStorage.getItem("sessionUrlActionBlocker");
+
+      if (redirectedFrom) {
+        // Remove 'sessionUrlActionBlocker' from sessionStorage after retrieving its value
+        sessionStorage.removeItem("sessionUrlActionBlocker");
+
+        // Emit a 'closed' event with the task id and the source of the redirection
+        this.$emit("closed", this.task?.id, redirectedFrom);
+        return true;
+      }
+      return false;
+    },
 
   },
   mounted() {
@@ -811,7 +837,9 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    this.loadTask();
+    if (!this.hasUrlActionBlocker()) {
+      this.loadTask();
+    }
   },
   destroyed() {
     this.unsubscribeSocketListeners();
