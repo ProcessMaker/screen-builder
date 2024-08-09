@@ -85,14 +85,13 @@ describe("Select List Cache", () => {
     });
 
     cy.loadFromJson("loop_select_list.json", 0);
-    cy.wait("@getDataSource"); // designer call
     cy.get("[data-cy=mode-preview]").click();
     cy.wait("@getDataSource");
     cy.wait("@getDataSource");
     cy.wait("@getDataSource");
     cy.wait("@getDataSource");
     cy.wait("@getDataSource");
-    cy.get("@getDataSource.all").should("have.length", 6);
+    cy.get("@getDataSource.all").should("have.length", 5);
   });
 
   it("Cached - Verify number of service calls for loop that contains a multiselect list", () => {
@@ -105,15 +104,14 @@ describe("Select List Cache", () => {
     });
 
     cy.loadFromJson("loop_select_list.json", 0);
-    cy.wait("@getDataSource"); // get data source from designer
     cy.wait(5000);
     cy.get("[data-cy=mode-preview]").click();
     cy.wait("@getDataSource");
-    cy.get("@getDataSource.all").should("have.length", 2);
+    cy.get("@getDataSource.all").should("have.length", 1);
     // testing cacheTimeout
     cy.wait(5000);
     cy.get("[data-cy=mode-preview]").click();
     cy.wait("@getDataSource");
-    cy.get("@getDataSource.all").should("have.length", 3);
+    cy.get("@getDataSource.all").should("have.length", 2);
   });
 });
