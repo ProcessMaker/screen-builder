@@ -240,6 +240,10 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
+    // Disable validations if field is hidden
+    if (!this.isVisible()) {
+      return;
+    }
     if (this.element.config && this.element.config.readonly) {
       //readonly elements do not need validation
       return;
