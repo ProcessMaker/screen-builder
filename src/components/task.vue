@@ -559,16 +559,31 @@ export default {
     activityAssigned() {
       // This may no longer be needed
     },
+    /**
+     * Handles the completion of a process and checks whether a redirect to another request is needed.
+     * 
+     * @param {Object|null} data - Optional data associated with the completed process. Defaults to null.
+     */
     processCompleted(data = null) {
-      let requestId;
-      if (this.parentRequest) {
-        requestId = this.getAllowedRequestId();
-        this.$emit('completed', requestId);
-      }
-      if (requestId !== this.requestId) {
-        this.processCompletedRedirect(data, this.userId, this.requestId);
+      // Retrieve the allowed request ID if there is a parent request, otherwise set it to null
+      const requestId = this.parentRequest ? this.getAllowedRequestId() : null;
+
+      // Check if a redirect to another request is needed
+      if (this.shouldRedirectToAnotherRequest(requestId)) {
+          // Process the completion with a redirect if necessary
+          this.processCompletedRedirect(data, this.userId, this.requestId);
       }
     },
+    /**
+     * Determines if a redirect to another request is required.
+     * 
+     * @param {string|null} requestId - The request ID to evaluate for redirection. Can be null.
+     * @returns {boolean} - Returns true if the requestId is valid and different from the current requestId, indicating a redirect is needed.
+     */
+    shouldRedirectToAnotherRequest(requestId) {
+        return requestId && requestId !== this.requestId;
+    },
+
     /**
      * Makes an API call with retry logic.
      * @param {Function} apiCall - The API call to be made.
