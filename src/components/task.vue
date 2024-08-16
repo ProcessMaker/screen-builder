@@ -484,7 +484,7 @@ export default {
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              this.$emit('redirect', task.id, true);
+              // this.$emit('redirect', task.id, true);
               return;
             } else {
               this.emitIfTaskCompleted(requestId);
@@ -677,9 +677,12 @@ export default {
         // Handle the first task from the response
         const firstTask = response.data.data[0];
         if (firstTask && firstTask.user_id === userId) {
-          this.$emit("completed", requestId, `/tasks/${firstTask.id}/edit`);
+          // this.$emit("completed", requestId, `/tasks/${firstTask.id}/edit`);
+          // window.location.href = `/tasks/${firstTask.id}/edit`;
+          this.redirectToTask(firstTask.id);
         } else {
-          this.$emit("completed", requestId);
+          // this.$emit("completed", requestId);
+          this.redirectToRequest(requestId);
         }
       } catch (error) {
         console.error("Error processing completed redirect:", error);
@@ -691,6 +694,12 @@ export default {
       const permission = permissions.find(item => item.process_request_id === this.parentRequest)
       const allowed = permission && permission.allowed;
       return allowed ? this.parentRequest : this.requestId
+    },
+    redirectToTask(tokenId) {
+      this.$emit('redirect', tokenId);
+    },
+    redirectToRequest(requestId) {
+      window.location.href = `/requests/${requestId}`;
     },
     processUpdated: _.debounce(function(data) {
       if (
@@ -724,6 +733,14 @@ export default {
         '.ProcessUpdated',
         (data) => {
           this.processUpdated(data);
+        }
+      );
+      this.addSocketListener(
+        `redirect-${this.requestId}`,
+        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
+        '.RedirectTo',
+        (data) => {
+          console.log(data);
         }
       );
 
