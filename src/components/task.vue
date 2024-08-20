@@ -163,6 +163,7 @@ export default {
       handler() {
         if (this.requestId) {
           this.setMetaValue();
+          console.log('init socket');
           this.initSocketListeners();
         } else {
           this.unsubscribeSocketListeners();
@@ -701,22 +702,22 @@ export default {
     redirectToRequest(requestId) {
       window.location.href = `/requests/${requestId}`;
     },
-    processUpdated: _.debounce(function(data) {
-      if (
-        ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
-        && data.elementType === 'task'
-      ) {
-        if (!this.task.elementDestination?.type) {
-          this.taskId = data.taskId;
-        }
+    // processUpdated: _.debounce(function(data) {
+    //   if (
+    //     ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
+    //     && data.elementType === 'task'
+    //   ) {
+    //     if (!this.task.elementDestination?.type) {
+    //       this.taskId = data.taskId;
+    //     }
 
-        this.reload();
-      }
+    //     this.reload();
+    //   }
 
-      if (data.event === 'ACTIVITY_EXCEPTION') {
-        this.$emit('error', this.requestId);
-      }
-    }, 100),
+    //   if (data.event === 'ACTIVITY_EXCEPTION') {
+    //     this.$emit('error', this.requestId);
+    //   }
+    // }, 100),
     initSocketListeners() {
       this.loadingListeners = false;
       this.addSocketListener(
@@ -724,7 +725,8 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessCompleted',
         (data) => {
-          this.processCompleted(data);
+          console.log('ProcessCompleted', data);
+          // this.processCompleted(data);
         }
       );
       this.addSocketListener(
@@ -732,15 +734,31 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessUpdated',
         (data) => {
-          this.processUpdated(data);
+          console.log('ProcessUpdated', data);
+          // this.processUpdated(data);
+
         }
       );
+      // v2 redirect to listener
       this.addSocketListener(
         `redirect-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.RedirectTo',
         (data) => {
+          debugger;
           console.log(data);
+          console.log('previous task', this.task);
+          switch (data.method) {
+            case 'javascript:redirectToTask':
+              
+              if (data?.params[0]?.tokenId) {
+                this.loadTask(data.params[0].tokenId)
+                this.taskId = data.params[0].tokenId;
+                this.reload();
+              //   // window.location.href = data.params[0].payloadUrl;
+              }
+              break;
+          }
         }
       );
 
