@@ -718,7 +718,7 @@ describe("Task component", () => {
       }
     );
 
-    cy.socketEvent("ProcessMaker\\Events\\ProcessUpdated", {
+    cy.socketEvent("ProcessMaker\\Events\\RedirectTo", {
       requestId: 1,
       event: "ACTIVITY_COMPLETED"
     });

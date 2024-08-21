@@ -759,6 +759,7 @@ export default {
               break;
             default:
               console.warn('redirect', data);
+              window.location.href = `/requests/${this.requestId}`;
           }
         }
       );
