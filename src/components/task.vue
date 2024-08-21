@@ -564,9 +564,6 @@ export default {
         requestId = this.getAllowedRequestId();
         this.$emit('completed', requestId);
       }
-      if (requestId !== this.requestId) {
-        this.processCompletedRedirect(data, this.userId, this.requestId);
-      }
     },
     /**
      * Makes an API call with retry logic.
@@ -648,11 +645,11 @@ export default {
       try {
         // Verify if is not anotherProcess type
         if (data.endEventDestination.type !== "anotherProcess") {
-          this.$emit(
-            "completed",
-            this.requestId,
-            data?.endEventDestination.value
-          );
+          if (data?.endEventDestination.value) {
+            window.location.href = data?.endEventDestination.value;
+          } else {
+            window.location.href = `/requests/${this.requestId}`;
+          }
           return;
         }
         // Parse endEventDestination from the provided data
@@ -702,24 +699,7 @@ export default {
     redirectToRequest(requestId) {
       window.location.href = `/requests/${requestId}`;
     },
-    // processUpdated: _.debounce(function(data) {
-    //   if (
-    //     ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
-    //     && data.elementType === 'task'
-    //   ) {
-    //     if (!this.task.elementDestination?.type) {
-    //       this.taskId = data.taskId;
-    //     }
-
-    //     this.reload();
-    //   }
-
-    //   if (data.event === 'ACTIVITY_EXCEPTION') {
-    //     this.$emit('error', this.requestId);
-    //   }
-    // }, 100),
     initSocketListeners() {
-      this.loadingListeners = false;
       this.addSocketListener(
         `completed-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
@@ -745,22 +725,42 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.RedirectTo',
         (data) => {
-          debugger;
-          console.log(data);
-          console.log('previous task', this.task);
           switch (data.method) {
             case 'javascript:redirectToTask':
-              
               if (data?.params[0]?.tokenId) {
-                this.loadTask(data.params[0].tokenId)
+                this.loadingTask = true;
+                this.loadTask(data.params[0].tokenId);
                 this.taskId = data.params[0].tokenId;
                 this.reload();
-              //   // window.location.href = data.params[0].payloadUrl;
               }
               break;
+            case 'javascript:processUpdated':
+              if (
+                ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
+                && data.elementType === 'task'
+              ) {
+                if (!this.task.elementDestination?.type) {
+                  this.taskId = data.taskId;
+                }
+                this.reload();
+              }
+              if (data.event === 'ACTIVITY_EXCEPTION') {
+                this.$emit('error', this.requestId);
+              }
+              break;
+            case 'javascript:processCompletedRedirect':
+              this.processCompletedRedirect(
+                data.params[0],
+                this.userId,
+                this.requestId
+              );
+              break;
+            default:
+              console.warn('redirect', data);
           }
         }
       );
+      this.loadingListeners = false;
 
       // We might have missed an event before initSocketListeners
       // was called so reload to check if there's a task waiting
@@ -872,9 +872,7 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    if (!this.hasUrlActionBlocker()) {
-      this.loadTask();
-    }
+    this.loadTask();
   },
   destroyed() {
     this.unsubscribeSocketListeners();
