@@ -448,7 +448,7 @@ export default {
             return `/tasks/${firstTask.id}/edit`;
           }
 
-          return document.referrer || null;
+          return this.getSessionRedirectUrl();
         } catch (error) {
           console.error("Error in getDestinationUrl:", error);
           return null;
@@ -465,7 +465,27 @@ export default {
       const sessionStorageUrl = sessionStorage.getItem("elementDestinationURL");
       return sessionStorageUrl || null;
     },
+    /**
+     * Retrieves the URL from the session storage or the document referrer.
+     *
+     * This method is used to determine the source of the redirection when the task is claimed.
+     * It retrieves the 'sessionUrlSelfService' value from sessionStorage, and if present, removes it.
+     * If the value is not found, it returns the document referrer.
+     *
+     * @returns {string|null} - The URL from the session storage or the document referrer.
+     */
+    getSessionRedirectUrl() {
+      const urlSelfService = sessionStorage.getItem('sessionUrlSelfService');
 
+      if (urlSelfService) {
+        // Remove 'sessionUrlSelfService' from sessionStorage after retrieving its value
+        sessionStorage.removeItem('sessionUrlSelfService');
+        // Emit the source of the redirection
+        return urlSelfService;
+      }
+
+      return document.referrer || null;
+    },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
         requestId = this.requestId;
@@ -832,8 +852,8 @@ export default {
      * Checks for the presence of a URL action blocker in sessionStorage and handles it.
      *
      * This method retrieves the 'sessionUrlActionBlocker' value from sessionStorage,
-     * and if present, removes it and emits a 'closed' event with the task id and 
-     * the source of the redirection. It returns false if the blocker was handled, 
+     * and if present, removes it and emits a 'closed' event with the task id and
+     * the source of the redirection. It returns false if the blocker was handled,
      * and true otherwise.
      *
      * @returns {boolean} Returns false if the 'sessionUrlActionBlocker' was found and handled, true otherwise.
