@@ -676,11 +676,8 @@ export default {
         // Handle the first task from the response
         const firstTask = response.data.data[0];
         if (firstTask && firstTask.user_id === userId) {
-          // this.$emit("completed", requestId, `/tasks/${firstTask.id}/edit`);
-          // window.location.href = `/tasks/${firstTask.id}/edit`;
           this.redirectToTask(firstTask.id);
         } else {
-          // this.$emit("completed", requestId);
           this.redirectToRequest(requestId);
         }
       } catch (error) {
