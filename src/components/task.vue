@@ -165,7 +165,6 @@ export default {
       handler() {
         if (this.requestId) {
           this.setMetaValue();
-          console.log('init socket');
           this.initSocketListeners();
         } else {
           this.unsubscribeSocketListeners();
@@ -702,15 +701,6 @@ export default {
       window.location.href = `/requests/${requestId}`;
     },
     initSocketListeners() {
-      this.addSocketListener(
-        `completed-${this.requestId}`,
-        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-        '.ProcessCompleted',
-        (data) => {
-          console.log('ProcessCompleted', data);
-          // this.processCompleted(data);
-        }
-      );
       this.addSocketListener(
         `updated-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
