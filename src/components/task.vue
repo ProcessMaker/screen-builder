@@ -780,13 +780,13 @@ export default {
      */
     handleRedirect(data) {
       switch (data.method) {
-        case 'javascript:redirectToTask':
+        case 'redirectToTask':
           this.handleRedirectToTask(data);
           break;
-        case 'javascript:processUpdated':
+        case 'processUpdated':
           this.handleProcessUpdated(data);
           break;
-        case 'javascript:processCompletedRedirect':
+        case 'processCompletedRedirect':
           this.processCompletedRedirect(
             data.params[0],
             this.userId,
