@@ -427,7 +427,6 @@ export default {
      */
     // eslint-disable-next-line consistent-return
     async getDestinationUrl() {
-      debugger;
       const { elementDestination, allow_interstitial: allowInterstitial } = this.task || {};
 
       if (!elementDestination) {
