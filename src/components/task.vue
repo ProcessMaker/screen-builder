@@ -7,15 +7,16 @@
   >
     <template v-if="screen">
       <b-overlay
-          :show="disabled"
+          :show="disabled || isSelfService"
           id="overlay-background"
-          variant="white"
+          :variant="isSelfService ? 'white' : 'transparent'"
+          :blur="null"
           cardStyles="pointer-events: none;pointer-events: none;inset: 1px"
           rounded="sm"
       >
       <template #overlay>
         <div class="text-center">
-          <p>Please claim this task to continue.</p>
+          <p v-if="isSelfService">Please claim this task to continue.</p>
         </div>
       </template>
       <div class="card card-body border-top-0 h-100" :class="screenTypeClass">
@@ -124,6 +125,7 @@ export default {
       loadingButton: false,
       loadingTask: false,
       loadingListeners: this.waitLoadingListeners,
+      isSelfService: false,
     };
   },
   watch: {
@@ -360,12 +362,12 @@ export default {
       }
       this.prepareTask();
     },
-    disableForSelfService() {
+    setSelfService() {
       this.$nextTick(() => {
         if (window.ProcessMaker.isSelfService) {
-          this.disabled = true;
+          this.isSelfService = true;
         } else {
-          this.disabled = false;
+          this.isSelfService = false;
         }
       });
     },
@@ -491,8 +493,8 @@ export default {
               this.emitIfTaskCompleted(requestId);
             }
             this.taskId = task.id;
-            this.loadTask();
             this.nodeId = task.element_id;
+            this.loadTask();
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
           } else if (!this.taskPreview) {
@@ -553,7 +555,7 @@ export default {
     },
     onUpdate(data) {
       this.$emit('input', data);
-      this.disableForSelfService();
+      this.setSelfService();
     },
     activityAssigned() {
       // This may no longer be needed
@@ -714,9 +716,9 @@ export default {
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
         '.ProcessUpdated',
         (data) => {
-          console.log('ProcessUpdated', data);
-          // this.processUpdated(data);
-
+          if (data.event === 'ACTIVITY_EXCEPTION') {
+            this.$emit('error', this.requestId);
+          }
         }
       );
       // v2 redirect to listener
