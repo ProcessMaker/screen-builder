@@ -427,6 +427,7 @@ export default {
      */
     // eslint-disable-next-line consistent-return
     async getDestinationUrl() {
+      debugger;
       const { elementDestination, allow_interstitial: allowInterstitial } = this.task || {};
 
       if (!elementDestination) {
@@ -805,9 +806,10 @@ export default {
      * @param {Object} data - The event data containing the tokenId of the task.
      */
     handleRedirectToTask(data) {
+
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
-        this.loadTask(data.params[0].tokenId);
+        // this.loadTask(data.params[0].tokenId);
         this.taskId = data.params[0].tokenId;
         this.reload();
       }
