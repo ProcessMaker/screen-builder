@@ -262,6 +262,7 @@ export default {
       }
     },
     loadTask() {
+      debugger;
       if (!this.taskId) {
         return;
       }
@@ -487,7 +488,7 @@ export default {
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              // this.$emit('redirect', task.id, true);
+              this.$emit('redirect', task.id, true);
               return;
             } else {
               this.emitIfTaskCompleted(requestId);
@@ -731,6 +732,7 @@ export default {
             case 'javascript:redirectToTask':
               if (data?.params[0]?.tokenId) {
                 this.loadingTask = true;
+                debugger;
                 this.loadTask(data.params[0].tokenId);
                 this.taskId = data.params[0].tokenId;
                 this.reload();
