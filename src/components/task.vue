@@ -262,7 +262,6 @@ export default {
       }
     },
     loadTask() {
-      debugger;
       if (!this.taskId) {
         return;
       }
