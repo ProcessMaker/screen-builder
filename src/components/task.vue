@@ -808,7 +808,6 @@ export default {
 
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
-        // this.loadTask(data.params[0].tokenId);
         this.taskId = data.params[0].tokenId;
         this.reload();
       }
