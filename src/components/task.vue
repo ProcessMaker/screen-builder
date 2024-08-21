@@ -717,67 +717,6 @@ export default {
     redirectToRequest(requestId) {
       window.location.href = `/requests/${requestId}`;
     },
-    // initSocketListeners() {
-    //   this.addSocketListener(
-    //     `updated-${this.requestId}`,
-    //     `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-    //     '.ProcessUpdated',
-    //     (data) => {
-    //       if (data.event === 'ACTIVITY_EXCEPTION') {
-    //         this.$emit('error', this.requestId);
-    //       }
-    //     }
-    //   );
-    //   // v2 redirect to listener
-    //   this.addSocketListener(
-    //     `redirect-${this.requestId}`,
-    //     `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-    //     '.RedirectTo',
-    //     (data) => {
-    //       switch (data.method) {
-    //         case 'javascript:redirectToTask':
-    //           if (data?.params[0]?.tokenId) {
-    //             this.loadingTask = true;
-    //             this.loadTask(data.params[0].tokenId);
-    //             this.taskId = data.params[0].tokenId;
-    //             this.reload();
-    //           }
-    //           break;
-    //         case 'javascript:processUpdated':
-    //           if (
-    //             ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
-    //             && data.elementType === 'task'
-    //           ) {
-    //             if (!this.task.elementDestination?.type) {
-    //               this.taskId = data.taskId;
-    //             }
-    //             this.reload();
-    //           }
-    //           if (data.event === 'ACTIVITY_EXCEPTION') {
-    //             this.$emit('error', this.requestId);
-    //           }
-    //           break;
-    //         case 'javascript:processCompletedRedirect':
-    //           this.processCompletedRedirect(
-    //             data.params[0],
-    //             this.userId,
-    //             this.requestId
-    //           );
-    //           break;
-    //         default:
-    //           console.warn('redirect', data);
-    //           window.location.href = `/requests/${this.requestId}`;
-    //       }
-    //     }
-    //   );
-    //   this.loadingListeners = false;
-
-    //   // We might have missed an event before initSocketListeners
-    //   // was called so reload to check if there's a task waiting
-    //   if (!this.taskId) {
-    //     this.reload();
-    //   }
-    // },
     /**
      * Initializes socket listeners for process updates and redirects.
      * This method sets up listeners to handle specific events and reloads
