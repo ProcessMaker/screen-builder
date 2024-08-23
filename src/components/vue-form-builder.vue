@@ -650,6 +650,10 @@ export default {
       let filter = this.filterQuery.toLowerCase();
       const filtered = this.controls.filter((control) => {
         let result = control.label.toLowerCase().includes(filter);
+        if (!control.group) {
+          // If the group is not defined
+          control.group = 'Advanced';
+        }
         if (control.group.toLowerCase().includes(filter)) {
           result = true;
         }
