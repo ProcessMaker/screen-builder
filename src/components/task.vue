@@ -585,9 +585,6 @@ export default {
         requestId = this.getAllowedRequestId();
         this.$emit('completed', requestId);
       }
-      if (requestId !== this.requestId) {
-        this.processCompletedRedirect(data, this.userId, this.requestId);
-      }
     },
     /**
      * Makes an API call with retry logic.
@@ -669,11 +666,11 @@ export default {
       try {
         // Verify if is not anotherProcess type
         if (data.endEventDestination.type !== "anotherProcess") {
-          this.$emit(
-            "completed",
-            this.requestId,
-            data?.endEventDestination.value
-          );
+          if (data?.endEventDestination.value) {
+            window.location.href = data?.endEventDestination.value;
+          } else {
+            window.location.href = `/requests/${this.requestId}`;
+          }
           return;
         }
         // Parse endEventDestination from the provided data
@@ -699,9 +696,9 @@ export default {
         // Handle the first task from the response
         const firstTask = response.data.data[0];
         if (firstTask && firstTask.user_id === userId) {
-          this.$emit("completed", requestId, `/tasks/${firstTask.id}/edit`);
+          this.redirectToTask(firstTask.id);
         } else {
-          this.$emit("completed", requestId);
+          this.redirectToRequest(requestId);
         }
       } catch (error) {
         console.error("Error processing completed redirect:", error);
@@ -714,47 +711,139 @@ export default {
       const allowed = permission && permission.allowed;
       return allowed ? this.parentRequest : this.requestId
     },
-    processUpdated: _.debounce(function(data) {
-      if (
-        ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
-        && data.elementType === 'task'
-      ) {
-        if (!this.task?.elementDestination?.type) {
-          this.taskId = data.taskId;
-        }
-
-        this.reload();
-      }
-
-      if (data.event === 'ACTIVITY_EXCEPTION') {
-        this.$emit('error', this.requestId);
-      }
-    }, 100),
+    redirectToTask(tokenId) {
+      this.$emit('redirect', tokenId);
+    },
+    redirectToRequest(requestId) {
+      window.location.href = `/requests/${requestId}`;
+    },
+    /**
+     * Initializes socket listeners for process updates and redirects.
+     * This method sets up listeners to handle specific events and reloads
+     * the task if necessary.
+     */
     initSocketListeners() {
+      this.addProcessUpdateListener();
+      this.addRedirectListener();
       this.loadingListeners = false;
-      this.addSocketListener(
-        `completed-${this.requestId}`,
-        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-        '.ProcessCompleted',
-        (data) => {
-          this.processCompleted(data);
-        }
-      );
-      this.addSocketListener(
-        `updated-${this.requestId}`,
-        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
-        '.ProcessUpdated',
-        (data) => {
-          this.processUpdated(data);
-        }
-      );
 
-      // We might have missed an event before initSocketListeners
-      // was called so reload to check if there's a task waiting
+      // Reload to check if there's a task waiting, in case an event was missed
       if (!this.taskId) {
         this.reload();
       }
     },
+
+    /**
+     * Adds a socket listener for process updates.
+     * Listens for specific events related to the process and triggers appropriate actions.
+     */
+    addProcessUpdateListener() {
+      this.addSocketListener(
+        `updated-${this.requestId}`,
+        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
+        '.ProcessUpdated',
+        (data) => this.handleProcessUpdate(data)
+      );
+    },
+
+    /**
+     * Handles process update events.
+     * Emits an error if an activity exception event is detected.
+     *
+     * @param {Object} data - The event data received from the socket listener.
+     */
+    handleProcessUpdate(data) {
+      if (data.event === 'ACTIVITY_EXCEPTION') {
+        this.$emit('error', this.requestId);
+        window.location.href = `/requests/${this.requestId}`;
+      }
+    },
+
+    /**
+     * Adds a socket listener for redirect events.
+     * Listens for specific redirect actions and handles them according to the method provided.
+     */
+    addRedirectListener() {
+      this.addSocketListener(
+        `redirect-${this.requestId}`,
+        `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
+        '.RedirectTo',
+        (data) => this.handleRedirect(data)
+      );
+    },
+
+    /**
+     * Handles redirect events based on the method provided in the event data.
+     * Calls specific handlers for different redirect methods or falls back to a default redirect.
+     *
+     * @param {Object} data - The event data received from the socket listener.
+     */
+    handleRedirect(data) {
+      switch (data.method) {
+        case 'redirectToTask':
+          this.handleRedirectToTask(data);
+          break;
+        case 'processUpdated':
+          this.handleProcessUpdated(data);
+          break;
+        case 'processCompletedRedirect':
+          this.processCompletedRedirect(
+            data.params[0],
+            this.userId,
+            this.requestId
+          );
+          break;
+        default:
+          this.handleDefaultRedirect(data);
+      }
+    },
+
+    /**
+     * Handles the 'redirectToTask' event by loading the specified task.
+     * Updates the current task ID and reloads the task data.
+     *
+     * @param {Object} data - The event data containing the tokenId of the task.
+     */
+    handleRedirectToTask(data) {
+
+      if (data?.params[0]?.tokenId) {
+        this.loadingTask = true;
+        this.taskId = data.params[0].tokenId;
+        this.reload();
+      }
+    },
+
+    /**
+     * Handles the 'processUpdated' event by checking the event type and updating the task if necessary.
+     * Reloads the task data if the event is relevant.
+     *
+     * @param {Object} data - The event data containing the process update information.
+     */
+    handleProcessUpdated(data) {
+      if (
+        ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
+        && data.elementType === 'task'
+      ) {
+        if (!this.task.elementDestination?.type) {
+          this.taskId = data.taskId;
+        }
+        this.reload();
+      }
+      if (data.event === 'ACTIVITY_EXCEPTION') {
+        this.$emit('error', this.requestId);
+      }
+    },
+
+    /**
+     * Handles the default redirect action by logging a warning and redirecting the user to the request page.
+     *
+     * @param {Object} data - The event data that triggered the default redirect.
+     */
+    handleDefaultRedirect(data) {
+      console.warn('redirect', data);
+      window.location.href = `/requests/${this.requestId}`;
+    },
+
     existsEventMessage(id, data) {
       if (sessionStorage.getItem(id)) {
         return true;
@@ -859,9 +948,7 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    if (!this.hasUrlActionBlocker()) {
-      this.loadTask();
-    }
+    this.loadTask();
   },
   destroyed() {
     this.unsubscribeSocketListeners();
