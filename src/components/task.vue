@@ -804,10 +804,15 @@ export default {
      *
      * @param {Object} data - The event data containing the tokenId of the task.
      */
-    handleRedirectToTask(data) {
-
+    async handleRedirectToTask(data) {
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
+        // Check if interstitial tasks are allowed for this task.
+        if (!this.task.allow_interstitial) {
+           // The getDestinationUrl() function is called asynchronously to retrieve the URL
+          window.location.href = await this.getDestinationUrl();
+          return;
+        }
         this.nodeId = data.params[0].nodeId;
         this.taskId = data.params[0].tokenId;
         this.reload();
