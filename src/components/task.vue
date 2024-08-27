@@ -813,6 +813,7 @@ export default {
           window.location.href = await this.getDestinationUrl();
           return;
         }
+        this.nodeId = data.params[0].nodeId;
         this.taskId = data.params[0].tokenId;
         this.reload();
       }
