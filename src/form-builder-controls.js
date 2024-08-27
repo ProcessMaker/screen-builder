@@ -1048,7 +1048,7 @@ export default [
       'editor-component': 'FormCollectionRecordControl',
       'editor-control': 'FormCollectionRecordControl',
       config: {
-        name: '',
+        name: 'Collection Record Control',
         icon: 'fas fa-database',
         label: 'New Collection Record Control',
         editable: false,
@@ -1072,7 +1072,7 @@ export default [
         },
         {
           type: "FormMultiselect",
-          field: "listOption",
+          field: "modeOption",
           config: {
             label: "Mode",
             options: [

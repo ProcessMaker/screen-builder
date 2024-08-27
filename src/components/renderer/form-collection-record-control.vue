@@ -16,13 +16,14 @@
       :_parent="_parent"
     /> -->
     <vue-form-renderer
-                class="form-collection-record-control"
-                :placeholder="'aqui placeholder'"
-                v-model="data" 
-                :config="validatedConfig" 
-                :computed="computed" 
-                :custom-css="customCss" 
-                :watchers="watchers"/>
+        ref="collectionRecordControl"
+        class="form-collection-record-control"
+        :placeholder="placeholder"
+        v-model="data" 
+        :config="validatedConfig" 
+        :computed="computed" 
+        :custom-css="customCss" 
+        :watchers="watchers"/>
   </template>
   
   <script>
@@ -50,6 +51,10 @@
       _parent: null,
       ancestorScreens: {type: Array, default: () => []},
       record: null,
+      modeOption: {
+        type: String,
+        default: "Edit"
+      },
     },
     data() {
       return {
@@ -61,6 +66,12 @@
         watchers: [],
         screenTitle: null,
         collection: null,
+        collectionMode: "edit",
+        allData: {},
+        selCollectionId: null,
+        selRecordId: null,
+        screenCollectionId: null,
+        placeholder: "Select a collection"
       };
     },
     computed: {
@@ -77,9 +88,9 @@
           });
         },
       },
-      placeholder() {
-        return this.screen ? '' : this.$t('Select a screen to nest');
-      },
+    //   placeholder() {
+    //     return this.screen ? '' : this.$t('Select a collection');
+    //   },
     },
     methods: {
       isSubmitButton(item) {
@@ -164,6 +175,8 @@
         return this.$refs.nestedScreen.errors;
       },
       loadRecordCollection(collectionId, recordId) {
+        this.selCollectionId = collectionId;
+        this.selRecordId = recordId;
         // window.ProcessMaker.apiClient
         // // .get(`collections/${screen.collectionId}/records/6/edit`)
         // .get(`collections/2/records/6/edit`)
@@ -186,40 +199,48 @@
         // });
 
         this.$dataProvider.getCollectionRecordsView(collectionId, recordId).then((response) => {
-            console.log("del provider: ", response.data);
+            console.log("del provider: ", response);
+            this.placeholder = "";
             const respData = response.data;
-            this.localData = respData;
+            const viewScreen = response.collection.read_screen_id;
+            const editScreen = response.collection.update_screen_id;
 
+            this.screenCollectionId = this.collectionMode === 'View' ? viewScreen : editScreen;
+   
+            console.log("update_or_view_screen_id: ", this.screenCollectionId);
+            this.loadScreen(this.screenCollectionId);
+            this.localData = respData;
+            
         });
       }
     },
     watch: {
       screen(screen) {
         console.log("watch screen: ", this.screen);
-        // console.log("screenTitle: ", this.screenTitle);
-        // console.log("data:", this.data);
-        // console.log("validatedConfig:", this.validatedConfig);
-        // console.log("ancestorScreens: ", this.ancestorScreens);
-        // console.log("computed: ", this.computed);
-        // console.log("customCSS: ", this.customCSS);
-        // console.log("watchers: ", this.watchers);
-        // console.log("cssErrors: ", this.cssErrors);
-        // console.log("_parent: ", this._parent);
-        // console.log("placeholder: ", this.placeholder);
 
         //this.loadScreen(screen.collectionId);
         //this.loadRecordCollection(screen.collectionId);
         this.collection = screen.collectionId;
       },
       record(record) {
-        console.log("collection", this.collection,"record id: ", record);
+        //console.log("collection", this.collection,"record id: ", record);
         //this.loadScreen(screen.collectionId);
-        this.loadRecordCollection(this.collection, record);
+        if(record) {
+            this.loadRecordCollection(this.collection, record);
+        }
+      },
+      modeOption(val) {
+        console.log("valor Mode:", val);
+        // if(val === 'View') {
+
+        // }
+        this.collectionMode = val;
+        this.loadRecordCollection(this.selCollectionId, this.selRecordId);
       }
     },
     mounted() {
       console.log("screen: ", this.screen);
-      this.loadScreen(90);
+      //this.loadScreen(90);
       //this.loadRecordCollection();
     },
   };
