@@ -297,7 +297,8 @@
         class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
         <b-card-body class="p-0 h-100 overflow-auto">
-          <template v-for="accordion in accordions">
+        <screen-templates v-if="showTemplatesPanel" ref="screenTemplates" v-model="templates" @close-templates-panel="$emit('close-templates-panel')"/>
+          <template v-else v-for="accordion in accordions">
             <b-button
               v-if="
                 getInspectorFields(accordion) &&
@@ -488,6 +489,7 @@ import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 import TabsBar from "./TabsBar.vue";
 import Sortable from './sortable/Sortable.vue';
+import ScreenTemplates from './screen-templates.vue';
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -555,6 +557,7 @@ export default {
     ...renderer,
     PagesDropdown,
     Sortable,
+    ScreenTemplates,
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -580,7 +583,11 @@ export default {
     },
     processId: {
       default: 0
-    }
+    },
+    showTemplatesPanel: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -1265,6 +1272,7 @@ export default {
       });
     },
     inspect(element = {}) {
+      this.$emit('close-templates-panel');
       this.inspection = element;
       this.selected = element;
       const defaultAccordion = this.accordions.find(
