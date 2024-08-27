@@ -567,7 +567,7 @@ export default {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
-      if (this.task.bpmn_tag_name === 'manualTask') {
+      if (this.task?.bpmn_tag_name === 'manualTask') {
         this.checkTaskStatus();
         this.reload();
       }
