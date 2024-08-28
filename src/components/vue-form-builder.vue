@@ -297,7 +297,15 @@
         class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
         <b-card-body class="p-0 h-100 overflow-auto">
-        <screen-templates v-if="showTemplatesPanel" ref="screenTemplates" v-model="templates" @close-templates-panel="$emit('close-templates-panel')"/>
+        <screen-templates
+          v-if="myTemplatesData && showTemplatesPanel"
+          ref="screenTemplates"
+          v-model="templates"
+          :my-templates-data="myTemplatesData"
+          :shared-templates-data="sharedTemplatesData"
+          @close-templates-panel="$emit('close-templates-panel')"
+          @show-shared-templates="$emit('show-shared-templates')"
+        />
           <template v-else v-for="accordion in accordions">
             <b-button
               v-if="
@@ -587,6 +595,12 @@ export default {
     showTemplatesPanel: {
       type: Boolean,
       default: false
+    },
+    myTemplatesData: {
+      type: Array,
+    },
+    sharedTemplatesData: {
+      type: Array,
     },
   },
   data() {
