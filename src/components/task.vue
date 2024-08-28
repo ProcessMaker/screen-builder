@@ -261,6 +261,7 @@ export default {
       }
     },
     loadTask() {
+      debugger;
       if (!this.taskId) {
         return;
       }
@@ -803,6 +804,7 @@ export default {
      * @param {Object} data - The event data containing the tokenId of the task.
      */
     async handleRedirectToTask(data) {
+      debugger;
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
