@@ -516,8 +516,6 @@ export default {
             this.loadTask();
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
-          } else if (!this.taskPreview) {
-            this.emitClosedEvent();
           }
         });
     },
@@ -827,8 +825,11 @@ export default {
      * @param {Object} redirectData - The redirect data object.
      */
     isSameUser(currentTask, redirectData) {
-      return (currentTask.user?.id === redirectData.params[0].userId)
-        && (currentTask.elementDestination?.type === 'taskSource');
+      const userIdMatch = currentTask.user?.id === redirectData.params[0].userId;
+      const typeMatch = currentTask.elementDestination?.type === null 
+                      || currentTask.elementDestination?.type === 'taskSource';
+      
+      return userIdMatch && typeMatch;
     },
 
     /**
