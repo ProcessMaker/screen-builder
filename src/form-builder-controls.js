@@ -1055,13 +1055,23 @@ export default [
       },
       inspector: [
         {
-          type: "CollectionSelectList",
+          type: "collectionRecordsList",
           field: "screen",
           config: {
             label: 'Collection Name',
             helper: 'Select a collection',
           }
         },
+        // {
+        //   type: 'ScreenSelector',
+        //   field: 'screen',
+        //   config: {
+        //     label: 'Screen',
+        //     name: 'SelectScreen',
+        //     'validate-nested': false,
+        //     helper: 'Select a screen',
+        //   },
+        // },
         {
           type: 'FormInput',
           field: 'record',

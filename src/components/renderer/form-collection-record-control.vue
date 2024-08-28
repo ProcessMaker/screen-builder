@@ -19,7 +19,8 @@
         ref="collectionRecordControl"
         class="form-collection-record-control"
         :placeholder="placeholder"
-        v-model="data" 
+        v-model="data"
+        mode="preview" 
         :config="validatedConfig" 
         :computed="computed" 
         :custom-css="customCss" 
@@ -28,6 +29,7 @@
   
   <script>
   import VueFormRenderer from '../vue-form-renderer.vue';
+  import CollectionRecordsList from '../inspector/collection-records-list.vue'
   
   const globalObject = typeof window === 'undefined'
     ? global
@@ -42,11 +44,14 @@
   
   export default {
     components:{
-      VueFormRenderer
+      VueFormRenderer,
+      CollectionRecordsList
     },
     props: {
       name: String,
-      screen: Number,
+      screen: {
+        type: [Number, Object],
+        },
       validationData: null,
       _parent: null,
       ancestorScreens: {type: Array, default: () => []},
@@ -239,9 +244,11 @@
       }
     },
     mounted() {
-      console.log("screen: ", this.screen);
+      //console.log("screen: ", this.screen);
       //this.loadScreen(90);
       //this.loadRecordCollection();
+      console.log("CARGA MOUNTED colelction: ", this.selCollectionId, " record: ", this.selRecordId);
+      
     },
   };
   </script>
