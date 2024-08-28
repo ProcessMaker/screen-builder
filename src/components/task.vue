@@ -483,8 +483,8 @@ export default {
         // Emit the source of the redirection
         return urlSelfService;
       }
-
-      return document.referrer || null;
+      // If the task has not an origin source it should re redirected top the tasks List as default.
+      return document.referrer || '/tasks';
     },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
