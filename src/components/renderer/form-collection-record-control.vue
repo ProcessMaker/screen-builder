@@ -1,20 +1,4 @@
 <template>
-    <!-- <vue-form-renderer
-      v-if="!ancestorScreens.includes(screenTitle)"
-      ref="nestedScreen"
-      class="form-nested-screen"
-      :placeholder="placeholder"
-      v-model="data"
-      :config="validatedConfig"
-      :ancestor-screens="[...ancestorScreens, screenTitle]"
-      mode="preview"
-      :computed="computed"
-      :custom-css="customCSS"
-      :watchers="watchers"
-      debug-context="Nested Screen"
-      @css-errors="cssErrors = $event"
-      :_parent="_parent"
-    /> -->
     <vue-form-renderer
         ref="collectionRecordControl"
         class="form-collection-record-control"
@@ -49,14 +33,18 @@
     },
     props: {
       name: String,
-      screen: {
-        type: [Number, Object],
+    //   screen: {
+    //     type: [Number, Object],
+    //     },
+        
+        collection: {
+            type: Object,
         },
       validationData: null,
       _parent: null,
       ancestorScreens: {type: Array, default: () => []},
       record: null,
-      modeOption: {
+      listOption: {
         type: String,
         default: "Edit"
       },
@@ -70,13 +58,11 @@
         customCSS: null,
         watchers: [],
         screenTitle: null,
-        collection: null,
-        collectionMode: "edit",
-        allData: {},
-        selCollectionId: null,
-        selRecordId: null,
+        collectionMode: "Edit",
+        selCollectionId: Number,
+        selRecordId: Number,
         screenCollectionId: null,
-        placeholder: "Select a collection"
+        placeholder: "Select a collection",
       };
     },
     computed: {
@@ -182,26 +168,6 @@
       loadRecordCollection(collectionId, recordId) {
         this.selCollectionId = collectionId;
         this.selRecordId = recordId;
-        // window.ProcessMaker.apiClient
-        // // .get(`collections/${screen.collectionId}/records/6/edit`)
-        // .get(`collections/2/records/6/edit`)
-        // .then((response) => {
-        //   const respData = response.data;
-        //   this.validationData = respData;
-        //   console.log("RESPONSE COLLECTION API: ", this.validationData);
-        // });
-        // this.$dataProvider.getCollections().then((response) => {
-        //     console.log("del provider: ", response.data);
-        //     // this.collections = [
-        //     //   { value: null, text: this.$t("Select a collection") },
-        //     //   ...response.data.data.map((collection) => {
-        //     //     return {
-        //     //       text: collection.name,
-        //     //       value: collection.id
-        //     //     };
-        //     //   })
-        //     // ];
-        // });
 
         this.$dataProvider.getCollectionRecordsView(collectionId, recordId).then((response) => {
             console.log("del provider: ", response);
@@ -220,34 +186,41 @@
       }
     },
     watch: {
-      screen(screen) {
-        console.log("watch screen: ", this.screen);
+    //   screen(screen) {
+    //     console.log("watch screen: ", this.screen);
+
+    //     //this.loadScreen(screen.collectionId);
+    //     //this.loadRecordCollection(screen.collectionId);
+    //     this.collection = screen.collectionId;
+    //   },
+      collection(collection) {
+        console.log("watch collection: ", this.collection);
 
         //this.loadScreen(screen.collectionId);
         //this.loadRecordCollection(screen.collectionId);
-        this.collection = screen.collectionId;
+        this.selCollectionId = collection.collectionId;
       },
       record(record) {
         //console.log("collection", this.collection,"record id: ", record);
         //this.loadScreen(screen.collectionId);
         if(record) {
-            this.loadRecordCollection(this.collection, record);
+            this.selRecordId = record;
+            this.loadRecordCollection(this.selCollectionId, record);
         }
       },
-      modeOption(val) {
-        console.log("valor Mode:", val);
-        // if(val === 'View') {
-
-        // }
+      listOption(val) {
         this.collectionMode = val;
         this.loadRecordCollection(this.selCollectionId, this.selRecordId);
       }
     },
     mounted() {
+        if(this.collection && this.record){
+            this.loadRecordCollection(this.collection.collectionId, this.record);
+        }
       //console.log("screen: ", this.screen);
       //this.loadScreen(90);
       //this.loadRecordCollection();
-      console.log("CARGA MOUNTED colelction: ", this.selCollectionId, " record: ", this.selRecordId);
+      //console.log("CARGA MOUNTED colelction: ", this.selCollectionId, " record: ", this.selRecordId);
       
     },
   };
