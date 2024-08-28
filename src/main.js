@@ -266,6 +266,13 @@ window.Echo = {
       }, 1000);
     });
   },
+  eventMocksNext(event, response) {
+    this.listeners.forEach((listener) => {
+      setTimeout(() => {
+        listener.callback(response);
+      }, 1000);
+    });
+  },
   private() {
     return {
       notification(callback) {
