@@ -808,7 +808,7 @@ export default {
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
-        if (this.task && !this.task.allow_interstitial) {
+        if (this.task && !(this.task.allow_interstitial || this.isSameUser(this.task, data))) {
            // The getDestinationUrl() function is called asynchronously to retrieve the URL
           window.location.href = await this.getDestinationUrl();
           return;
@@ -817,6 +817,16 @@ export default {
         this.taskId = data.params[0].tokenId;
         this.reload();
       }
+    },
+
+    /**
+     * Checks if the current task and the redirect data belong to the same user.
+     *
+     * @param {Object} currentTask - The current task object.
+     * @param {Object} redirectData - The redirect data object.
+     */
+    isSameUser(currentTask, redirectData) {
+      return currentTask.user?.id === redirectData.params[0].userId;
     },
 
     /**
