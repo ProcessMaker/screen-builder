@@ -821,12 +821,14 @@ export default {
 
     /**
      * Checks if the current task and the redirect data belong to the same user.
+     * and the destination is taskSource.
      *
      * @param {Object} currentTask - The current task object.
      * @param {Object} redirectData - The redirect data object.
      */
     isSameUser(currentTask, redirectData) {
-      return currentTask.user?.id === redirectData.params[0].userId;
+      return (currentTask.user?.id === redirectData.params[0].userId)
+        && (currentTask.elementDestination?.type === 'taskSource');
     },
 
     /**
