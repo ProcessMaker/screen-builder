@@ -808,7 +808,7 @@ export default {
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
-        if (!this.task.allow_interstitial) {
+        if (this.task && !this.task.allow_interstitial) {
            // The getDestinationUrl() function is called asynchronously to retrieve the URL
           window.location.href = await this.getDestinationUrl();
           return;
