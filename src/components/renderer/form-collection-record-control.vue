@@ -3,7 +3,7 @@
         ref="collectionRecordControl"
         class="form-collection-record-control"
         :placeholder="placeholder"
-        v-model="data"
+        v-model="localData"
         mode="preview" 
         :config="validatedConfig" 
         :computed="computed" 
@@ -42,7 +42,6 @@
         },
       validationData: null,
       _parent: null,
-      ancestorScreens: {type: Array, default: () => []},
       record: null,
       listOption: {
         type: String,
@@ -51,7 +50,8 @@
     },
     data() {
       return {
-        // localData: {form_input_1: "jajaja", form_input_2: "lalala"},
+        //localData: {carBrand: "jajaja", year: "123"},
+        //localDatax: {carBrand: "jajaja", year: "123"},
         localData: {},
         config: defaultConfig,
         computed: [],
@@ -69,16 +69,18 @@
       validatedConfig() {
         return this.config && this.config[0] ? this.config : defaultConfig;
       },
-      data: {
-        get() {
-          return this.validationData || this.localData;
-        },
-        set(data) {
-          Object.keys(data).forEach((variable) => {
-            this.validationData && this.$set(this.validationData, variable, data[variable]);
-          });
-        },
-      },
+    //   data: {
+    //     get() {
+    //     console.log("En computed get data this.validationData: ", this.validationData, " this.localData: ", this.localData);
+    //       return this.validationData || this.localData || this.localDatax;
+    //     },
+    //     set(data) {
+    //         console.log("Esto es data en set computed data: ", data);
+    //       Object.keys(data).forEach((variable) => {
+    //         this.validationData && this.$set(this.validationData, variable, data[variable]);
+    //       });
+    //     },
+    //   },
     //   placeholder() {
     //     return this.screen ? '' : this.$t('Select a collection');
     //   },
@@ -149,15 +151,15 @@
                 this.disableForm(this.config);
               }
   
-              if (this.ancestorScreens.includes(this.screenTitle)) {
-                globalObject.ProcessMaker.alert(`Rendering of nested "${this.screenTitle}" screen was disallowed to prevent loop.`, 'warning');
-              } else {
-                if (!globalObject['nestedScreens']) {
-                  globalObject['nestedScreens'] = {};
-                }
-                globalObject.nestedScreens['id_' + id] = this.config;
-                this.$root.$emit('nested-screen-updated');
-              }
+            //   if (this.ancestorScreens.includes(this.screenTitle)) {
+            //     globalObject.ProcessMaker.alert(`Rendering of nested "${this.screenTitle}" screen was disallowed to prevent loop.`, 'warning');
+            //   } else {
+            //     if (!globalObject['nestedScreens']) {
+            //       globalObject['nestedScreens'] = {};
+            //     }
+            //     globalObject.nestedScreens['id_' + id] = this.config;
+            //     this.$root.$emit('nested-screen-updated');
+            //   }
             });
         }
       },
@@ -170,9 +172,9 @@
         this.selRecordId = recordId;
 
         this.$dataProvider.getCollectionRecordsView(collectionId, recordId).then((response) => {
-            console.log("del provider: ", response);
             this.placeholder = "";
             const respData = response.data;
+            console.log("Response data: ", respData);
             const viewScreen = response.collection.read_screen_id;
             const editScreen = response.collection.update_screen_id;
 
