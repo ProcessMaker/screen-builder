@@ -16,6 +16,7 @@ export default [
       'linkUrl',
       'collection',
       'record',
+      'displayMode',
     ],
     open: true,
   },

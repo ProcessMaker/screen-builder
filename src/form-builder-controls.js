@@ -1073,13 +1073,13 @@ export default [
         },
         {
           type: "FormMultiselect",
-          field: "listOption",
+          field: "displayMode",
           config: {
             label: "Mode",
             options: [
               { value: "Edit", content: "Edit" },
               { value: "View", content: "View" },
-            ]
+            ],
           }
         },
         {
