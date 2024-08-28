@@ -23,6 +23,16 @@
         sharedTemplatesSelected: false,
       };
     },
+    watch: {
+      sharedTemplatesData() {
+        if (this.sharedTemplatesData !== null) {
+          console.log('SHARED TEMPLATES DATA NOT NULL', this.sharedTemplatesData);
+        this.sharedTemplatesSelected = true;
+        this.myTemplatesSelected = false;
+        console.log('sharedTemplatesData in screen-templates', this.sharedTemplatesData);
+        }
+      },
+    },
     methods: {
       showMyTemplates() {
         this.myTemplatesSelected = true;
@@ -31,9 +41,6 @@
       },
       showSharedTemplates() {
         this.$emit('show-shared-templates');
-        this.sharedTemplatesSelected = true;
-        this.myTemplatesSelected = false;
-        console.log('sharedTemplatesData in screen-templates', this.sharedTemplatesData);
       },
     },
     mounted() {
