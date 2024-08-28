@@ -1050,39 +1050,30 @@ export default [
       config: {
         name: 'Collection Record Control',
         icon: 'fas fa-database',
-        label: 'New Collection Record Control',
-        editable: false,
+        label: 'Collection Record Control',
       },
       inspector: [
         {
           type: "collectionRecordsList",
-          field: "screen",
+          field: "collection",
           config: {
             label: 'Collection Name',
             helper: 'Select a collection',
+            value: '',
           }
         },
-        // {
-        //   type: 'ScreenSelector',
-        //   field: 'screen',
-        //   config: {
-        //     label: 'Screen',
-        //     name: 'SelectScreen',
-        //     'validate-nested': false,
-        //     helper: 'Select a screen',
-        //   },
-        // },
         {
           type: 'FormInput',
           field: 'record',
           config: {
             label: 'Record ID',
             helper: 'Supports Mustache Variable and the Collection Record',
+            value: '',
           },
         },
         {
           type: "FormMultiselect",
-          field: "modeOption",
+          field: "listOption",
           config: {
             label: "Mode",
             options: [

@@ -13,7 +13,9 @@ export default [
       'initiallyChecked',
       'screen',
       'multipleUpload',
-      'linkUrl'
+      'linkUrl',
+      'collection',
+      'record',
     ],
     open: true,
   },
