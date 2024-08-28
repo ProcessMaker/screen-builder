@@ -289,20 +289,17 @@ export default {
   },
 
   getCollectionRecordsView(collectionId, recordId) {
-    console.log("query: ", `/collections/${collectionId}/records/${recordId}`);
     return this.get(
       `/collections/${collectionId}/records/${recordId}`
     )
       .then((response) => {
         const data = response ? response.data : null;
-        console.log("respuesta OK: ", data);
         if (!data) {
           throw new Error(i18next.t("No data returned"));
         }
         return data;
       })
       .catch((error) => {
-        console.log("catch error");
         if (error.response && error.response.status === 404) {
           const data = { data: [] };
           return data;
