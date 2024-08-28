@@ -516,8 +516,6 @@ export default {
             this.loadTask();
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
-          } else if (!this.taskPreview) {
-            this.emitClosedEvent();
           }
         });
     },
