@@ -18,7 +18,7 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop v-if="uploaderLoaded" class="form-control-file">
+      <uploader-drop v-if="uploaderLoaded && screenType !== 'conversational-forms'" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
         <uploader-btn
           :attrs="nativeButtonAttrs"
@@ -32,6 +32,21 @@
         </uploader-btn>
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
+
+      <!-- When the screen type is a conversational form, render the conversational form file upload ui -->
+      <uploader-drop v-if="uploaderLoaded && screenType === 'conversational-forms'" class="form-control-file"> 
+        <uploader-btn
+          :attrs="nativeButtonAttrs"
+          :class="{disabled: disabled}"
+          tabindex="0"
+          v-on:keyup.native="browse"
+          :aria-label="$attrs['aria-label']"
+          class="btn btn-conversational-forms"
+        >
+        <i class="far fa-image mr-3"></i> {{ $t('Add File/Photo') }}
+        </uploader-btn>
+      </uploader-drop>
+      
       <uploader-list>
         <template slot-scope = "{ fileList }">
           <ul v-if="uploading">
@@ -93,7 +108,7 @@ const ignoreErrors = [
 export default {
   components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
-  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload'],
+  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload', 'screenType'],
   updated() {
     this.removeDefaultClasses();
   },
@@ -335,6 +350,7 @@ export default {
     },
     setRequestFiles() {
       _.set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
+      console.log("!!!!!! SET REQUEST FILES", this.valueToSend());
       this.$emit('input', this.valueToSend());
     },
     valueToSend() {
@@ -526,6 +542,7 @@ export default {
         this.$set(this.nativeFiles, id, rootFile);
         this.addToFiles(fileInfo);
       } else {
+        console.log("!!!!!! FILE UPLOADED", name);
         this.$emit('input', name);
       }
     },
@@ -597,5 +614,15 @@ export default {
 .required {
   color: red;
   font-size: 0.8em;
+}
+
+.btn-conversational-forms {
+  background-color: #EAF2FF;
+  border: 1px solid #81AFFF;
+  color: #81AFFF;
+  width: 100%;
+  text-transform: capitalize;
+  margin: -47px 0 0 0;
+  padding: 10px;
 }
 </style>
