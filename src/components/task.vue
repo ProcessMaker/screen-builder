@@ -825,8 +825,11 @@ export default {
      * @param {Object} redirectData - The redirect data object.
      */
     isSameUser(currentTask, redirectData) {
-      return (currentTask.user?.id === redirectData.params[0].userId)
-        && (currentTask.elementDestination?.type === 'taskSource');
+      const userIdMatch = currentTask.user?.id === redirectData.params[0].userId;
+      const typeMatch = currentTask.elementDestination?.type === null 
+                      || currentTask.elementDestination?.type === 'taskSource';
+      
+      return userIdMatch && typeMatch;
     },
 
     /**
