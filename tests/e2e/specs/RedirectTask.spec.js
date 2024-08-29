@@ -40,7 +40,6 @@ describe("Redirect Task ", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
 
     
@@ -52,7 +51,6 @@ describe("Redirect Task ", () => {
       }],
       method: "redirectToTask"
     });
-    cy.wait(2000);
     cy.url().should("eq", "http://localhost:5173/tasks");
   });
   it("On Task Completed (Submitting Task) - processLaunchpad", () => {
@@ -81,7 +79,6 @@ describe("Redirect Task ", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     
     cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
@@ -92,7 +89,6 @@ describe("Redirect Task ", () => {
       }],
       method: "redirectToTask"
     });
-    cy.wait(2000);
     cy.url().should("eq", "http://localhost:5173/process-browser/7?categorySelected=-1");
   });
   it("On Task Completed (Submitting Task) - homepageDashboard", () => {
@@ -121,7 +117,6 @@ describe("Redirect Task ", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     
     cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
@@ -132,7 +127,6 @@ describe("Redirect Task ", () => {
       }],
       method: "redirectToTask"
     });
-    cy.wait(2000);
     cy.url().should("eq", "http://localhost:5173/");
   });
   it("On Task Completed (Submitting Task) - customDashboard", () => {
@@ -161,7 +155,6 @@ describe("Redirect Task ", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     
     cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
@@ -172,7 +165,6 @@ describe("Redirect Task ", () => {
       }],
       method: "redirectToTask"
     });
-    cy.wait(2000);
     cy.url().should("eq", "http://localhost:5173/home/customize-ui/dashboards/eHEXsFrIwmClHoTRnMvOdMKSPbR3HalSFxaIHYxNh67UrtloUiuDBh5N8NrMoQVP");
   });
   it("On Task Completed (Submitting Task) - externalURL", () => {
@@ -201,7 +193,6 @@ describe("Redirect Task ", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     
     cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
@@ -212,7 +203,6 @@ describe("Redirect Task ", () => {
       }],
       method: "redirectToTask"
     });
-    cy.wait(2000);
     cy.url().should("eq", "http://localhost:5173/about");
   });
   it("On Task Completed (Submitting Task) - taskSource (redirect to task list if the next user is not assigned to the same user)" , () => {
@@ -467,8 +457,6 @@ describe("Redirect Task ", () => {
     
     
     cy.visit("/?scenario=TaskRedirect", {});
-
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     
     cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
@@ -479,7 +467,6 @@ describe("Redirect Task ", () => {
       }],
       method: "redirectToTask"
     });
-    cy.wait(2000);
     cy.url().should("eq", "http://localhost:5173/tasks");
   });
   it("On Task Completed (Submitting Task) - taskSource (redirect to task list if the next user is not assigned to the same user)" , () => {
@@ -747,7 +734,7 @@ describe("Redirect Task ", () => {
       method: "redirectToTask"
     });
     cy.wait(2000);
-    cy.url().should("eq", "http://localhost:5173/task");
+    cy.url().should("eq", "http://localhost:5173/tasks");
   });
   it("On Task Completed (Submitting Task) - taskSource (redirect to prvious page if the next task is not assigned to the same user)" , () => {
     initializeTaskAndScreenIntercepts(
@@ -1005,7 +992,6 @@ describe("Redirect Task ", () => {
         sessionStorage.setItem('sessionUrlSelfService', "http://localhost:5173/about");
       } 
     });
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     
     cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
@@ -1016,7 +1002,6 @@ describe("Redirect Task ", () => {
       }],
       method: "redirectToTask"
     });
-    cy.wait(2000);
     cy.url().should("eq", "http://localhost:5173/about");
   });
   localStorage.setItem("key1", "blue");
