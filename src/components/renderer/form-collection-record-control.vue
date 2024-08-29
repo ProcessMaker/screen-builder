@@ -10,7 +10,6 @@
     :custom-css="customCss"
     :watchers="watchers"
   />
-  
 </template>
 
 <script>
@@ -33,15 +32,15 @@ export default {
   },
   props: {
     name: String,
-    collection: {
-      type: Object
-    },
     validationData: null,
     _parent: null,
     record: null,
     displayMode: {
       type: String,
       default: "Edit"
+    },
+    collection: {
+      type: Object
     },
   },
   data() {
@@ -156,9 +155,8 @@ export default {
         })
         .catch(() => {
           this.localData = {};
-          globalObject.ProcessMaker.alert(this.$t('Record was not found'), "danger");
+          globalObject.ProcessMaker.alert(this.$t('This content does not exist. We could not locate indicated data'), "danger");
         });;
-        
     },
   },
   watch: {
@@ -168,13 +166,9 @@ export default {
       }
     },
     record(record) {
-      if (record && this.collection) {
-        if (!isNaN(record) && record > 0) {
-          this.selRecordId = record;
-          this.loadRecordCollection(this.selCollectionId, record);
-        } else {
-          this.localData = {};
-        }
+      if (record && !isNaN(record) && record > 0 && this.collection) {
+        this.selRecordId = record;
+        this.loadRecordCollection(this.selCollectionId, record);
       } else {
         this.localData = {};
       }

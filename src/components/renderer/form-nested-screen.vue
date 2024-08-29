@@ -156,22 +156,10 @@ export default {
   },
   watch: {
     screen(screen) {
-      console.log("watch screen: ", this.screen);
-      console.log("screenTitle: ", this.screenTitle);
-      console.log("data:", this.data);
-      console.log("validatedConfig:", this.validatedConfig);
-      console.log("ancestorScreens: ", this.ancestorScreens);
-      console.log("computed: ", this.computed);
-      console.log("customCSS: ", this.customCSS);
-      console.log("watchers: ", this.watchers);
-      console.log("cssErrors: ", this.cssErrors);
-      console.log("_parent: ", this._parent);
-      console.log("placeholder: ", this.placeholder);
       this.loadScreen(screen);
     },
   },
   mounted() {
-    console.log("screen: ", this.screen);
     this.loadScreen(this.screen);
   },
 };
