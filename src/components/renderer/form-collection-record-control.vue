@@ -10,6 +10,7 @@
     :custom-css="customCss"
     :watchers="watchers"
   />
+  
 </template>
 
 <script>
@@ -148,12 +149,17 @@ export default {
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
           this.screenCollectionId =
-            this.collectionMode === "View" ? viewScreen : editScreen;
-          console.log("this.screenCollectionId : ", this.screenCollectionId);
+            this.displayMode === "View" ? viewScreen : editScreen;
+
           this.loadScreen(this.screenCollectionId);
           this.localData = respData;
-        });
-    }
+        })
+        .catch(() => {
+          this.localData = {};
+          globalObject.ProcessMaker.alert(this.$t('Record was not found'), "danger");
+        });;
+        
+    },
   },
   watch: {
     collection(collection) {
@@ -162,21 +168,26 @@ export default {
       }
     },
     record(record) {
-      if (record) {
-        this.selRecordId = record;
-        this.loadRecordCollection(this.selCollectionId, record);
+      if (record && this.collection) {
+        if (!isNaN(record) && record > 0) {
+          this.selRecordId = record;
+          this.loadRecordCollection(this.selCollectionId, record);
+        } else {
+          this.localData = {};
+        }
+      } else {
+        this.localData = {};
       }
     },
     displayMode(val) {
-      this.collectionMode = val;
       this.loadRecordCollection(this.selCollectionId, this.selRecordId);
-    }
+    },
   },
   mounted() {
     if (this.collection && this.record) {
       this.loadRecordCollection(this.collection.collectionId, this.record);
     }
-  }
+  },
 };
 </script>
 
