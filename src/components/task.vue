@@ -483,8 +483,8 @@ export default {
         // Emit the source of the redirection
         return urlSelfService;
       }
-
-      return document.referrer || null;
+      // If the task has not an origin source it should re redirected top the tasks List as default.
+      return document.referrer || '/tasks';
     },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
@@ -516,8 +516,6 @@ export default {
             this.loadTask();
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
-          } else if (!this.taskPreview) {
-            this.emitClosedEvent();
           }
         });
     },
@@ -567,7 +565,7 @@ export default {
         this.task.interstitial_screen['_interstitial'] = true;
         this.screen = this.task.interstitial_screen;
       }
-      if (this.task.bpmn_tag_name === 'manualTask') {
+      if (this.task?.bpmn_tag_name === 'manualTask') {
         this.checkTaskStatus();
         this.reload();
       }
@@ -804,13 +802,34 @@ export default {
      *
      * @param {Object} data - The event data containing the tokenId of the task.
      */
-    handleRedirectToTask(data) {
-
+    async handleRedirectToTask(data) {
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
+        // Check if interstitial tasks are allowed for this task.
+        if (this.task && !(this.task.allow_interstitial || this.isSameUser(this.task, data))) {
+           // The getDestinationUrl() function is called asynchronously to retrieve the URL
+          window.location.href = await this.getDestinationUrl();
+          return;
+        }
+        this.nodeId = data.params[0].nodeId;
         this.taskId = data.params[0].tokenId;
         this.reload();
       }
+    },
+
+    /**
+     * Checks if the current task and the redirect data belong to the same user.
+     * and the destination is taskSource.
+     *
+     * @param {Object} currentTask - The current task object.
+     * @param {Object} redirectData - The redirect data object.
+     */
+    isSameUser(currentTask, redirectData) {
+      const userIdMatch = currentTask.user?.id === redirectData.params[0].userId;
+      const typeMatch = currentTask.elementDestination?.type === null 
+                      || currentTask.elementDestination?.type === 'taskSource';
+      
+      return userIdMatch && typeMatch;
     },
 
     /**
