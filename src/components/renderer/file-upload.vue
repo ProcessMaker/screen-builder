@@ -18,7 +18,7 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop v-if="uploaderLoaded" class="form-control-file">
+      <uploader-drop v-if="uploaderLoaded && !isConversationalForm" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
         <uploader-btn
           :attrs="nativeButtonAttrs"
@@ -32,7 +32,51 @@
         </uploader-btn>
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
-      <uploader-list>
+
+      <!-- Render the conversational form file upload UI when the screen type is conversational forms -->
+      <uploader-drop 
+        v-if="uploaderLoaded && isConversationalForm" 
+        class="form-control-file"
+      > 
+        <uploader-btn
+          v-if="canAddFiles"
+          :attrs="nativeButtonAttrs"
+          :class="{disabled: disabled}"
+          tabindex="0"
+          v-on:keyup.native="browse"
+          :aria-label="$attrs['aria-label']"
+          class="btn btn-convo-form-upload"
+        >
+          <i class="far fa-image mr-2"></i> {{ $t('Add File/Photo') }}
+        </uploader-btn>
+      </uploader-drop>
+
+      <uploader-list v-if="isConversationalForm">
+        <template v-slot="{ fileList }">
+          <ul v-if="uploading" class="convo-forms-upload-progress">
+            <li v-for="file in fileList" :key="file.id">
+              <uploader-file :file="file" list/>
+            </li>
+          </ul>
+          <ul v-else>
+            <li v-for="(file, i) in files" :key="file.id" :data-cy="file.id">
+              <span class="convo-forms-filename text-truncate">
+                <i :class="getFileIconClass(file)" class="mr-2"></i>
+                {{ nativeFiles[file.id].name }}
+              </span>
+              <b-btn 
+                variant="outline" 
+                @click="removeFile(file)" 
+                v-b-tooltip.hover :title="$t('Delete')"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </b-btn>
+            </li>
+          </ul>
+        </template>
+      </uploader-list>
+      
+      <uploader-list v-else>
         <template slot-scope = "{ fileList }">
           <ul v-if="uploading">
             <li v-for="file in fileList" :key="file.id">
@@ -93,7 +137,7 @@ const ignoreErrors = [
 export default {
   components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
-  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload'],
+  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload', 'screenType'],
   updated() {
     this.removeDefaultClasses();
   },
@@ -208,6 +252,12 @@ export default {
     fileDataName() {
       return this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
     },
+    isConversationalForm() {
+      return this.screenType === 'conversational-forms';
+    },
+    canAddFiles() {
+      return this.files.length === 0 || (this.files.length > 0 && this.multipleUpload);
+    }
   },
   watch: {
     filesData: {
@@ -335,6 +385,7 @@ export default {
     },
     setRequestFiles() {
       _.set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
+      console.log("!!!!!! SET REQUEST FILES", this.valueToSend());
       this.$emit('input', this.valueToSend());
     },
     valueToSend() {
@@ -526,6 +577,7 @@ export default {
         this.$set(this.nativeFiles, id, rootFile);
         this.addToFiles(fileInfo);
       } else {
+        console.log("!!!!!! FILE UPLOADED", name);
         this.$emit('input', name);
       }
     },
@@ -589,6 +641,11 @@ export default {
           : null;
       }
     },
+    getFileIconClass(file) {
+      return this.nativeFiles[file.id].fileType.includes('image/') 
+        ? 'far fa-image' 
+        : 'far fa-file';
+    },
   },
 };
 </script>
@@ -597,5 +654,25 @@ export default {
 .required {
   color: red;
   font-size: 0.8em;
+}
+
+/* Button styling for conversational form file upload */
+.btn-convo-form-upload {
+  background-color: #EAF2FF;
+  border: 1px solid #81AFFF;
+  color: #81AFFF;
+  width: 100%;
+  padding: 12px 10px;
+  text-transform: capitalize;
+  position: absolute;
+  top: 0;
+  z-index: 3;
+}
+
+/* Styling for the file name in conversational forms */
+.convo-forms-filename {
+  width: 70%;
+  display: inline-block;
+  vertical-align: middle;
 }
 </style>
