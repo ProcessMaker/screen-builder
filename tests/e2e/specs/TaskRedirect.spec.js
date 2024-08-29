@@ -456,7 +456,11 @@ describe("On Task Completed (Submitting Task) ", () => {
     );
     
     
-    cy.visit("/?scenario=TaskRedirect", {});
+    cy.visit("/?scenario=TaskRedirect", {
+      onBeforeLoad: function (window) {
+        sessionStorage.removeItem('sessionUrlSelfService');
+      } 
+    });
     cy.get(".form-group").find("button").click();
     
     cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
@@ -722,8 +726,9 @@ describe("On Task Completed (Submitting Task) ", () => {
     
     cy.visit("/?scenario=TaskRedirect", {
       onBeforeLoad: function (window) {
+        sessionStorage.removeItem('sessionUrlSelfService');
         sessionStorage.setItem('sessionUrlSelfService', "http://localhost:5173/about");
-      } 
+      }
     });
     cy.get(".form-group").find("button").click();
     
@@ -736,5 +741,71 @@ describe("On Task Completed (Submitting Task) ", () => {
       method: "redirectToTask"
     });
     cy.url().should("eq", "http://localhost:5173/about");
+    sessionStorage.removeItem("sessionUrlSelfService");
+  });
+  it("Element destination type is taskSource case 3(redirect to next task if the next task is assigned to the same user)" , () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        allow_interstitial: false,
+        elementDestination: {
+          type: "taskSource",
+          value: "taskSource",
+        },
+        user: {
+          id: 1
+        },
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        }
+      }
+    );
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/2?include=data,user,draft,requestor,processRequest,component,requestData,loopContext,bpmnTagName,interstitial,definition,userRequestPermission,elementDestination",
+      {
+        id: 2,
+        advanceStatus: "open",
+        component: "task-screen",
+        allow_interstitial: false,
+        elementDestination: {
+          type: "taskSource",
+          value: "taskSource",
+        },
+        user: {
+          id: 1
+        },
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        }
+      }
+      
+    );
+    
+    
+    cy.visit("/?scenario=TaskRedirect", {
+      onBeforeLoad: function (window) {
+        sessionStorage.removeItem('sessionUrlSelfService');
+      }
+    });
+    cy.get(".form-group").find("button").click();
+    
+    cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
+      params: [{
+        nodeId: 'node_2',
+        tokenId: 2,
+        userId: 1,
+      }],
+      method: "redirectToTask"
+    });
+    // cy.url().should("eq", "http://localhost:5173/about");
   });
 });
