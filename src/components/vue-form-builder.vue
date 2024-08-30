@@ -296,73 +296,78 @@
         no-body
         class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
-        <b-card-body class="p-0 h-100 overflow-auto">
-        <screen-templates
-          v-if="myTemplatesData && showTemplatesPanel"
-          ref="screenTemplates"
-          v-model="templates"
-          :my-templates-data="myTemplatesData"
-          :shared-templates-data="sharedTemplatesData"
-          @close-templates-panel="$emit('close-templates-panel')"
-          @show-shared-templates="$emit('show-shared-templates')"
-        />
-          <template v-else v-for="accordion in accordions">
-            <b-button
-              v-if="
-                getInspectorFields(accordion) &&
-                getInspectorFields(accordion).length > 0
-              "
-              :key="`${accordionName(accordion)}-button`"
-              variant="outline"
-              class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-              :data-cy="`accordion-${accordionName(accordion).replace(
-                ' ',
-                ''
-              )}`"
-              :accordion-name="`accordion-${accordionName(accordion).replace(
-                ' ',
-                ''
-              )}`"
-              :is-open="accordion.open ? '1' : '0'"
-              @click="toggleAccordion(accordion)"
-            >
-              <i class="fas fa-cog mr-2" />
-              {{ $t(accordionName(accordion)) }}
-              <i
-                class="fas fa-angle-down ml-auto"
-                :class="{ 'fas fa-angle-right': !accordion.open }"
-              />
-            </b-button>
-            <b-collapse
-              :id="accordionName(accordion)"
-              :key="`${accordionName(accordion)}-collapse`"
-              v-model="accordion.open"
-            >
-              <component
-                :is="item.type"
-                v-for="(item, index) in getInspectorFields(accordion)"
-                :key="index"
-                v-model="inspection.config[item.field]"
-                :data-cy="'inspector-' + (item.field || item.config.name)"
-                v-bind="item.config"
-                :field-name="item.field"
-                :field-accordion="`accordion-${accordionName(accordion).replace(
+        <div v-if="myTemplatesData && showTemplatesPanel">
+          <b-card-body class="p-2 h-100 overflow-auto">
+            <screen-templates
+              ref="screenTemplates"
+              v-model="templates"
+              :my-templates-data="myTemplatesData"
+              :shared-templates-data="sharedTemplatesData"
+              @close-templates-panel="$emit('close-templates-panel')"
+              @show-shared-templates="$emit('show-shared-templates')"
+            />
+          </b-card-body>
+        </div>
+        <div v-else>
+          <b-card-body class="p-0 h-100 overflow-auto">
+            <template v-for="accordion in accordions">
+              <b-button
+                v-if="
+                  getInspectorFields(accordion) &&
+                  getInspectorFields(accordion).length > 0
+                "
+                :key="`${accordionName(accordion)}-button`"
+                variant="outline"
+                class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+                :data-cy="`accordion-${accordionName(accordion).replace(
                   ' ',
                   ''
                 )}`"
-                :builder="builder"
-                :form-config="config"
-                :screen-type="screenType"
-                :current-page="currentPage"
-                :selected-control="selected"
-                class="border-bottom m-0 p-4"
-                @focusout.native="updateState"
-                @update-state="updateState"
-                @setName="inspection.config.name = $event"
-              />
-            </b-collapse>
-          </template>
-        </b-card-body>
+                :accordion-name="`accordion-${accordionName(accordion).replace(
+                  ' ',
+                  ''
+                )}`"
+                :is-open="accordion.open ? '1' : '0'"
+                @click="toggleAccordion(accordion)"
+              >
+                <i class="fas fa-cog mr-2" />
+                {{ $t(accordionName(accordion)) }}
+                <i
+                  class="fas fa-angle-down ml-auto"
+                  :class="{ 'fas fa-angle-right': !accordion.open }"
+                />
+              </b-button>
+              <b-collapse
+                :id="accordionName(accordion)"
+                :key="`${accordionName(accordion)}-collapse`"
+                v-model="accordion.open"
+              >
+                <component
+                  :is="item.type"
+                  v-for="(item, index) in getInspectorFields(accordion)"
+                  :key="index"
+                  v-model="inspection.config[item.field]"
+                  :data-cy="'inspector-' + (item.field || item.config.name)"
+                  v-bind="item.config"
+                  :field-name="item.field"
+                  :field-accordion="`accordion-${accordionName(accordion).replace(
+                    ' ',
+                    ''
+                  )}`"
+                  :builder="builder"
+                  :form-config="config"
+                  :screen-type="screenType"
+                  :current-page="currentPage"
+                  :selected-control="selected"
+                  class="border-bottom m-0 p-4"
+                  @focusout.native="updateState"
+                  @update-state="updateState"
+                  @setName="inspection.config.name = $event"
+                />
+              </b-collapse>
+            </template>  
+          </b-card-body>
+        </div>
       </b-card>
     </b-col>
 
@@ -497,7 +502,7 @@ import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 import TabsBar from "./TabsBar.vue";
 import Sortable from './sortable/Sortable.vue';
-import ScreenTemplates from './screen-templates.vue';
+import ScreenTemplates from './ScreenTemplates.vue';
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
