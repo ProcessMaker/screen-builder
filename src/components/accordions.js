@@ -17,6 +17,7 @@ export default [
       'collection',
       'record',
       'displayMode',
+      'submitCollectionCheck',
     ],
     open: true,
   },
