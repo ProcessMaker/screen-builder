@@ -443,7 +443,7 @@ export default {
           };
 
           const response = await this.retryApiCall(() => this.getTasks(params));
-
+          debugger;
           const firstTask = response.data.data[0];
           if (allowInterstitial && firstTask?.user_id === this.userId) {
             return `/tasks/${firstTask.id}/edit`;
