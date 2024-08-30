@@ -1084,8 +1084,9 @@ export default [
         },
         {
           type: 'FormCheckbox',
-          field: 'editable',
+          field: 'submitCollectionCheck',
           config: {
+            initiallyChecked: true,
             label: 'Update collection on submit',
           },
         },
