@@ -770,22 +770,43 @@ describe("On Task Completed (Submitting Task) ", () => {
       "GET",
       "http://localhost:5173/api/1.1/tasks/2?include=data,user,draft,requestor,processRequest,component,requestData,loopContext,bpmnTagName,interstitial,definition,userRequestPermission,elementDestination",
       {
-        id: 2,
-        advanceStatus: "open",
-        component: "task-screen",
-        allow_interstitial: false,
-        elementDestination: {
-          type: "taskSource",
-          value: "taskSource",
-        },
-        user: {
-          id: 1
-        },
-        screen: SingleScreen.screens[0],
-        process_request: {
-          id: 1,
-          status: "ACTIVE"
-        }
+        "data": [
+            {
+                "id": 585,
+                "uuid": "9ce21eaf-0991-495c-9f11-2e47b409acd5",
+                "user_id": 1,
+                "process_id": 7,
+                "process_request_id": 194,
+                "subprocess_request_id": null,
+                "element_id": "node_117",
+                "element_type": "task",
+                "element_name": "Form Task 222",
+                "status": "ACTIVE",
+                "element_index": 0,
+                "subprocess_start_event_id": null,
+                "completed_at": null,
+                "due_at": "2024-09-01T16:45:13+00:00",
+                "due_notified": 0,
+                "initiated_at": null,
+                "riskchanges_at": "2024-08-31T18:45:13+00:00",
+                "created_at": "2024-08-29T16:45:13+00:00",
+                "updated_at": "2024-08-29T16:45:13+00:00",
+                "version_id": 63,
+                "version_type": "ProcessMaker\\Models\\ScreenVersion",
+                "is_self_service": 0,
+                "self_service_groups": [],
+                "token_properties": [],
+                "is_priority": false,
+                "is_actionbyemail": false,
+                "user_viewed_at": null,
+                "advanceStatus": "open",
+                "draft": null,
+                "assignable_users": [
+                    3
+                ],
+                "can_view_parent_request": false,
+            }
+        ]
       }
       
     );
@@ -806,6 +827,6 @@ describe("On Task Completed (Submitting Task) ", () => {
       }],
       method: "redirectToTask"
     });
-    // cy.url().should("eq", "http://localhost:5173/about");
+    cy.url().should("eq", "http://localhost:5173/?scenario=TaskRedirect");
   });
 });
