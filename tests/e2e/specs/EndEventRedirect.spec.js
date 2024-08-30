@@ -14,6 +14,46 @@ function initializeTaskAndScreenIntercepts(method, url, response) {
   );
 }
 describe("End Event Redirect (Process completed) ", () => {
+  it("Element destination type is summaryScreen", () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        allow_interstitial: false,
+        elementDestination: {
+          type: 'taskList',
+          value: 'http://localhost:5173/tasks',
+        },
+        user: {
+          id: 1
+        },
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        }
+      }
+    );
+
+    cy.visit("/?scenario=TaskRedirect", {});
+
+    cy.get(".form-group").find("button").click();
+
+    
+    cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
+      params: [{
+        endEventDestination: {
+          type:"summaryScreen",
+          value: null
+        }
+      }],
+      method: "processCompletedRedirect"
+    });
+    cy.url().should("eq", "http://localhost:5173/requests/1");
+  });
   it("Element destination type is taskList", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
