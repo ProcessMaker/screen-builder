@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-2 d-flex justify-content-between">
+    <div class="d-flex justify-content-between">
       <h6 class="pt-2">Select a Template</h6>
       <button class="panel-close-btn" @click="$emit('close-templates-panel')"><i class="fas fa-times"></i></button>
     </div>
@@ -8,11 +8,34 @@
       <b-button @click="showMyTemplates" class="d-inline default-template-btn px-1" :class="{ 'my-templates-selected': myTemplatesSelected }">My Templates</b-button>
       <b-button @click="showSharedTemplates" class="d-inline default-template-btn" :class="{ 'shared-templates-selected': sharedTemplatesSelected }">Shared Templates</b-button>
     </div>
+    <div class="d-flex justify-content-center">
+      <div v-if="myTemplatesSelected" class="d-flex justify-content-center p-0">
+        <screen-template-card
+          v-for="template in myTemplatesData"
+          :key="template.id"
+          :template="template"
+          @template-selected="handleSelectedTemplate"
+        />
+      </div>
+      <div v-if="sharedTemplatesSelected" class="d-flex justify-content-center p-0">
+        <screen-template-card
+          v-for="template in sharedTemplatesData"
+          :key="template.id"
+          :template="template"
+          @template-selected="handleSelectedTemplate"
+        />
+      </div>
+    </div>
   </div>
 </template>
   
 <script>
+  import ScreenTemplateCard from './ScreenTemplateCard.vue';
+
   export default {
+    components: {
+      ScreenTemplateCard,
+    },
     mounted() {
         console.log('screen-templates component mounted');
     },
