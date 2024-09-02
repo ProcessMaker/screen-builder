@@ -3,12 +3,13 @@
     ref="collectionRecordControl"
     class="form-collection-record-control"
     :placeholder="placeholder"
-    v-model="localData"
+    v-model="data"
     mode="preview"
     :config="validatedConfig"
     :computed="computed"
     :custom-css="customCss"
     :watchers="watchers"
+    :_parent="_parent"
   />
 </template>
 
@@ -61,7 +62,17 @@ export default {
   computed: {
     validatedConfig() {
       return this.config && this.config[0] ? this.config : defaultConfig;
-    }
+    },
+    data: {
+      get() {
+        return this.localData;
+      },
+      set(data) {
+        Object.keys(data).forEach((variable) => {
+          this.validationData && this.$set(this.validationData, variable, data[variable]);
+        });
+      },
+    },
   },
   methods: {
     isSubmitButton(item) {
@@ -144,7 +155,7 @@ export default {
         .then((response) => {
           this.placeholder = "";
           const respData = response.data;
-
+          //ld = {};
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
           this.screenCollectionId =
