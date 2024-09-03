@@ -13,6 +13,7 @@
       @upload-start="start"
       @file-removed="removed"
       @file-success="fileUploaded"
+      @file-error="fileError"
       @file-added="addFile"
       :class="{'was-validated': required}"
     >
@@ -502,6 +503,10 @@ export default {
       if (['Enter', 'Space'].includes(e.code)) {
         e.target.click();
       }
+    },
+    fileError(rootFile, file, message, chunk)
+    {
+      this.$emit('file-error', message);
     },
     fileUploaded(rootFile, file, message) {
       this.uploading = false;
