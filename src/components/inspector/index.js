@@ -1,5 +1,6 @@
 export { default as CollectionSelectList } from "./collection-select-list.vue";
 export { default as CollectionRecordsList } from "./collection-records-list.vue";
+export { default as CollectionDisplayMode } from "./collection-display-mode.vue";
 export { default as ColorSelect } from "./color-select.vue";
 export { default as ColumnSetup } from "./column-setup.vue";
 export { default as ContainerColumns } from "./container-columns.vue";
