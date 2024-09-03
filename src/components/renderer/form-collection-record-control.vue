@@ -15,7 +15,6 @@
 
 <script>
 import VueFormRenderer from "../vue-form-renderer.vue";
-import CollectionRecordsList from "../inspector/collection-records-list.vue";
 
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -29,7 +28,6 @@ const defaultConfig = [
 export default {
   components: {
     VueFormRenderer,
-    CollectionRecordsList
   },
   props: {
     name: String,
@@ -38,7 +36,7 @@ export default {
     record: null,
     displayMode: {
       type: String,
-      default: "Edit"
+      default: ""
     },
     collection: {
       type: Object
@@ -52,11 +50,13 @@ export default {
       customCSS: null,
       watchers: [],
       screenTitle: null,
-      collectionMode: "Edit",
+      //collectionMode: "Edit",
       selCollectionId: Number,
       selRecordId: Number,
       screenCollectionId: null,
-      placeholder: "Select a collection"
+      placeholder: "Select a collection",
+      screenType: null,
+      lastDisplayMode: null,
     };
   },
   computed: {
@@ -155,11 +155,15 @@ export default {
         .then((response) => {
           this.placeholder = "";
           const respData = response.data;
-          //ld = {};
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
-          this.screenCollectionId =
-            this.displayMode === "View" ? viewScreen : editScreen;
+          if(this.screenType === "display") {
+            this.screenCollectionId = viewScreen;
+          } else {
+            this.screenCollectionId =
+              this.displayMode === "View" ? viewScreen : editScreen;
+          }
+          console.log("carga Screen: ", this.displayMode);
 
           this.loadScreen(this.screenCollectionId);
           this.localData = respData;
@@ -185,10 +189,23 @@ export default {
       }
     },
     displayMode(val) {
-      this.loadRecordCollection(this.selCollectionId, this.selRecordId);
+      console.log("watcher en collection record displayMode: ", val);
+      
+      this.lastDisplayMode = val;
+      //this.displayMode = val
+      if (this.collection && this.record) {
+        this.loadRecordCollection(this.selCollectionId, this.selRecordId);
+      }
+      
     },
   },
   mounted() {
+    console.log("carga mounted: ", this.displayMode);
+    this.$root.$emit("display-mode-changed", this.displayMode);
+    this.$root.$on("collection-mode", (mode) => {
+      this.screenType = mode;
+      console.log("mounted: ", mode);
+    });
     if (this.collection && this.record) {
       this.loadRecordCollection(this.collection.collectionId, this.record);
     }
