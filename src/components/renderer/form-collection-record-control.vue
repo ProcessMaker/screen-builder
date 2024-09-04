@@ -36,14 +36,6 @@ export default {
     validationData: null,
     _parent: null,
     record: null,
-    // displayMode: {
-    //   type: Object,
-    //   default: null
-    // },
-    // displayMode: {
-    //   type: String,
-    //   default: "Edit"
-    // },
     collection: {
       type: Object
     },
