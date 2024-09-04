@@ -16,7 +16,7 @@ export default [
       'linkUrl',
       'collection',
       'record',
-      'displayMode',
+      'collectionmode',
       'submitCollectionCheck',
     ],
     open: true,
