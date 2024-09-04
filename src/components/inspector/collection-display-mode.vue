@@ -9,16 +9,18 @@
         data-cy="inspector-collection"
       />
     </div>
+    <div class="mt-2" v-if="modeId !== 'View'">
+      <b-form-checkbox v-model="submitCollectionCheck">
+      {{  $t("Update collection on submit") }}
+      </b-form-checkbox>
+    </div>
   </div>
 </template>
 
 <script>
-
 import ScreenVariableSelector from "../screen-variable-selector.vue";
 
-const CONFIG_FIELDS = [
-  "modeId"
-];
+const CONFIG_FIELDS = ["modeId", "submitCollectionCheck"];
 export default {
   components: {
     ScreenVariableSelector
@@ -28,7 +30,8 @@ export default {
     return {
       fields: [],
       modeId: null,
-      displayOptions: [],
+      submitCollectionCheck: true,
+      displayOptions: []
     };
   },
   mounted() {
@@ -56,6 +59,9 @@ export default {
         this.getFields();
       }
     },
+    submitCollectionCheck(newValue) {
+      this.submitCollectionCheck = newValue;
+    },
     screenType: {
       handler() {
         this.getFields();
@@ -75,7 +81,7 @@ export default {
         { value: "Edit", text: "Edit" },
         { value: "View", text: "View" }
       ];
-    },
+    }
   }
 };
 </script>

@@ -44,7 +44,8 @@ import {
   buttonTypeEvent,
   tooltipProperty,
   LoadingSubmitButtonProperty,
-  LabelSubmitButtonProperty
+  LabelSubmitButtonProperty,
+  updateCollectionOnSubmit,
 } from './form-control-common-properties';
 
 export default [
@@ -1077,14 +1078,6 @@ export default [
           config: {
             label: "Mode",
           }
-        },
-        {
-          type: 'FormCheckbox',
-          field: 'submitCollectionCheck',
-          config: {
-            initiallyChecked: true,
-            label: 'Update collection on submit',
-          },
         },
       ],
     },
