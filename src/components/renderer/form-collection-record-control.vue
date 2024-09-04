@@ -63,7 +63,8 @@ export default {
       selRecordId: Number,
       selDisplayMode: String,
       screenCollectionId: null,
-      placeholder: "Select a collection"
+      placeholder: "Select a collection",
+      screenType: "",
     };
   },
   computed: {
@@ -128,7 +129,6 @@ export default {
       });
     },
     loadScreen(id) {
-      console.log("llama a loadScreen con id: ",id);
       this.config = defaultConfig;
       this.computed = [];
       this.customCSS = null;
@@ -166,12 +166,10 @@ export default {
           const respData = response.data;
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
-          //console.log("selDisplayMode load: ", this.selDisplayMode);
-          console.log("modeId load: ", modeId);
-          this.screenCollectionId =
-            //this.displayMode === "View" ? viewScreen : editScreen;
-            //this.selDisplayMode === "View" ? viewScreen : editScreen;
-            this.selDisplayMode === "View" ? viewScreen : editScreen;
+            //Choose screen id regarding of the display Mode
+            this.screenCollectionId =
+              this.selDisplayMode === "View" ? viewScreen : editScreen;
+          
 
           this.loadScreen(this.screenCollectionId);
           this.localData = respData;
@@ -197,21 +195,13 @@ export default {
       }
     },
     collectionmode(collectionmode) {
-      //console.log("CRC watch colectionmode val: ", collectionmode);
       if(collectionmode) {
         this.selDisplayMode = collectionmode.modeId;
       }
-      //this.selDisplayMode = displayMode.displayMode;
-      //this.displayMode = displayMode.displayMode;
       this.loadRecordCollection(this.selCollectionId, this.selRecordId, this.selDisplayMode);
     },
   },
   mounted() {
-    //console.log("CRC mounted displayMode: ", this.displayMode);
-    // this.$nextTick(() => {
-    //   this.$root.$emit("change-mode-inspector", this.displayMode);
-    // });
-    
     if (this.collection && this.record) {
       this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);
     }
