@@ -1071,17 +1071,6 @@ export default [
             value: '',
           },
         },
-        // {
-        //   type: "FormMultiselect",
-        //   field: "displayMode",
-        //   config: {
-        //     label: "Mode",
-        //     options: [
-        //       { value: "Edit", content: "Edit" },
-        //       { value: "View", content: "View" },
-        //     ],
-        //   }
-        // },
         {
           type: "collectionDisplayMode",
           field: "collectionmode",
