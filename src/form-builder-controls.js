@@ -1084,7 +1084,7 @@ export default [
         // },
         {
           type: "collectionDisplayMode",
-          field: "displayMode",
+          field: "collectionmode",
           config: {
             label: "Mode",
           }

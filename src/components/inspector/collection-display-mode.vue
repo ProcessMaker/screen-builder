@@ -1,26 +1,24 @@
 <template>
   <div>
     <div>
-      <label for="collectionMode">{{ $t("Mode") }}</label>
+      <label for="collectionmode">{{ $t("Mode") }}</label>
       <b-form-select
-        id="collectionMode"
-        v-model="displayMode"
-        :options="optionsList"
+        id="collectionmode"
+        v-model="modeId"
+        :options="displayOptions"
         data-cy="inspector-collection"
-        @change="changeMode"
       />
     </div>
   </div>
 </template>
 
 <script>
-import { debounce } from "lodash";
+
 import ScreenVariableSelector from "../screen-variable-selector.vue";
 
 const CONFIG_FIELDS = [
-  "displayMode"
+  "modeId"
 ];
-
 export default {
   components: {
     ScreenVariableSelector
@@ -28,56 +26,73 @@ export default {
   props: ["value", "screenType"],
   data() {
     return {
-      optionsList : [],
       fields: [],
-      labelField: null,
-      valueField: null,
-      displayMode: null
+      modeId: null,
+      displayOptions: [],
     };
   },
-  created() {
-    this.onDebouncedPmqlChange = debounce((pmql) => {
-      this.onPmqlChange(pmql);
-    }, 1000);
-  },
   mounted() {
-    let mode = "";
-    console.log("mounted collection display mode: ", this.displayMode);
-    if(this.screenType === "display") {
-      this.getModeDisplay();
-      mode = "View";
-    } else {
-      mode = "Edit"
-      this.getModeForm();
+    //console.log("value mounted: ", this.value);
+    //console.log("CDM Mounted dispalyMode: ", this.displayMode);
+    //this.getModes();
+    // this.$root.$on("change-mode-inspector", (val) => {
+    //   console.log("CDM $on val: ", val);
+    //   this.displayMode = val;
+    // });
+    //if (this.modeId) {
+      this.getFields();
+    //}
+  },
+  computed: {
+    options() {
+      console.log("CDM computed options");
+      return Object.fromEntries(
+        CONFIG_FIELDS.map((field) => [field, this[field]])
+      );
     }
-    this.$root.$emit("collection-mode", this.screenType);
-    this.$root.$on("display-mode-changed", (newMode) => {
-      console.log("carga $on en display mode: ", newMode);
-      this.displayMode = newMode;
-    });
   },
   watch: {
-    displayMode(val) {
-      console.log("watch en collection display mode: ", val);
-      this.displayMode = val;
+    value: {
+      handler(value) {
+        if (!value) {
+          return;
+        }
+        CONFIG_FIELDS.forEach((field) => (this[field] = value[field]));
+      },
+      immediate: true
+    },
+    modeId: {
+      handler() {
+        this.getFields();
+      }
+    },
+    options: {
+      handler() {
+        this.$emit("input", this.options);
+        console.log("CDM handler watcher options: ", this.options);
+      },
+      deep: true
     }
   },
   methods: {
-    changeMode(newMode) {
-      this.$emit("input", newMode);
+    getFields() {
+      // if (!this.modeId) {
+      //   return;
+      // }
+      //this.fields = [{value: "Edit", text: "Edit"},{value: "View", text: "View"}];
+      this.displayOptions = [{value: "Edit", text: "Edit"},{value: "View", text: "View"}];
     },
-    getModeDisplay() {
-        //this.displayMode = "View";
-        this.optionsList = [
-          { value: "View", text: "View" }
-        ];
-    },
-    getModeForm() {
-        this.optionsList = [
-          { value: "View", text: "View" },
-          { value: "Edit", text: "Edit" },
-        ];
-    },
+    // changeMode(newMode) {
+    //   console.log("CDM changeMode emit newMode: ", newMode);
+    //   this.auxData = newMode;
+    //   this.$emit("input", newMode);
+    // },
+    // getModes() {
+    //     if(!this.displayMode) {
+
+    //     }
+    //     this.displayOptions = ["Edit", "View"];
+    // },
   }
 };
 </script>

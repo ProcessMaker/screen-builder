@@ -15,6 +15,7 @@
 
 <script>
 import VueFormRenderer from "../vue-form-renderer.vue";
+import CollectionRecordsList from "../inspector/collection-records-list.vue";
 
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -28,17 +29,25 @@ const defaultConfig = [
 export default {
   components: {
     VueFormRenderer,
+    CollectionRecordsList
   },
   props: {
     name: String,
     validationData: null,
     _parent: null,
     record: null,
-    displayMode: {
-      type: String,
-      default: ""
-    },
+    // displayMode: {
+    //   type: Object,
+    //   default: null
+    // },
+    // displayMode: {
+    //   type: String,
+    //   default: "Edit"
+    // },
     collection: {
+      type: Object
+    },
+    collectionmode: {
       type: Object
     },
   },
@@ -50,13 +59,11 @@ export default {
       customCSS: null,
       watchers: [],
       screenTitle: null,
-      //collectionMode: "Edit",
       selCollectionId: Number,
       selRecordId: Number,
+      selDisplayMode: String,
       screenCollectionId: null,
-      placeholder: "Select a collection",
-      screenType: null,
-      lastDisplayMode: null,
+      placeholder: "Select a collection"
     };
   },
   computed: {
@@ -121,6 +128,7 @@ export default {
       });
     },
     loadScreen(id) {
+      console.log("llama a loadScreen con id: ",id);
       this.config = defaultConfig;
       this.computed = [];
       this.customCSS = null;
@@ -146,9 +154,10 @@ export default {
       this.$refs.nestedScreen.isValid();
       return this.$refs.nestedScreen.errors;
     },
-    loadRecordCollection(collectionId, recordId) {
+    loadRecordCollection(collectionId, recordId, modeId) {
       this.selCollectionId = collectionId;
       this.selRecordId = recordId;
+      this.selDisplayMode = modeId;
 
       this.$dataProvider
         .getCollectionRecordsView(collectionId, recordId)
@@ -157,13 +166,12 @@ export default {
           const respData = response.data;
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
-          if(this.screenType === "display") {
-            this.screenCollectionId = viewScreen;
-          } else {
-            this.screenCollectionId =
-              this.displayMode === "View" ? viewScreen : editScreen;
-          }
-          console.log("carga Screen: ", this.displayMode);
+          //console.log("selDisplayMode load: ", this.selDisplayMode);
+          console.log("modeId load: ", modeId);
+          this.screenCollectionId =
+            //this.displayMode === "View" ? viewScreen : editScreen;
+            //this.selDisplayMode === "View" ? viewScreen : editScreen;
+            this.selDisplayMode === "View" ? viewScreen : editScreen;
 
           this.loadScreen(this.screenCollectionId);
           this.localData = respData;
@@ -183,31 +191,29 @@ export default {
     record(record) {
       if (record && !isNaN(record) && record > 0 && this.collection) {
         this.selRecordId = record;
-        this.loadRecordCollection(this.selCollectionId, record);
+        this.loadRecordCollection(this.selCollectionId, record, this.collectionmode);
       } else {
         this.localData = {};
       }
     },
-    displayMode(val) {
-      console.log("watcher en collection record displayMode: ", val);
-      
-      this.lastDisplayMode = val;
-      //this.displayMode = val
-      if (this.collection && this.record) {
-        this.loadRecordCollection(this.selCollectionId, this.selRecordId);
+    collectionmode(collectionmode) {
+      //console.log("CRC watch colectionmode val: ", collectionmode);
+      if(collectionmode) {
+        this.selDisplayMode = collectionmode.modeId;
       }
-      
+      //this.selDisplayMode = displayMode.displayMode;
+      //this.displayMode = displayMode.displayMode;
+      this.loadRecordCollection(this.selCollectionId, this.selRecordId, this.selDisplayMode);
     },
   },
   mounted() {
-    console.log("carga mounted: ", this.displayMode);
-    this.$root.$emit("display-mode-changed", this.displayMode);
-    this.$root.$on("collection-mode", (mode) => {
-      this.screenType = mode;
-      console.log("mounted: ", mode);
-    });
+    //console.log("CRC mounted displayMode: ", this.displayMode);
+    // this.$nextTick(() => {
+    //   this.$root.$emit("change-mode-inspector", this.displayMode);
+    // });
+    
     if (this.collection && this.record) {
-      this.loadRecordCollection(this.collection.collectionId, this.record);
+      this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);
     }
   },
 };
