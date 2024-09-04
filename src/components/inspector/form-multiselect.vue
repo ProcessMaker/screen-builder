@@ -68,7 +68,7 @@ export default {
       );
       return selectedOption ? selectedOption.content : null;
     }
-  },
+  }
 };
 </script>
 

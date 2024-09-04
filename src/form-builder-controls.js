@@ -45,7 +45,6 @@ import {
   tooltipProperty,
   LoadingSubmitButtonProperty,
   LabelSubmitButtonProperty,
-  updateCollectionOnSubmit,
 } from './form-control-common-properties';
 
 export default [
