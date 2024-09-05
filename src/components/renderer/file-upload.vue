@@ -504,9 +504,22 @@ export default {
         e.target.click();
       }
     },
-    fileError(rootFile, file, message, chunk)
+    fileError(rootFile, file, messages, chunk)
     {
-      this.$emit('file-error', message);
+      let displayMessage = '';
+      try {
+        const messagesArray = JSON.parse(messages);
+        displayMessage = messagesArray.join(', ');
+      }
+      catch (e) {
+        displayMessage = messages;
+      }
+
+      if (displayMessage.length > 0) {
+        window.ProcessMaker.alert(`${this.$t('File Upload Error:')}  ${displayMessage}`, 'danger');
+      }
+
+      this.$emit('file-error', messages);
     },
     fileUploaded(rootFile, file, message) {
       this.uploading = false;
