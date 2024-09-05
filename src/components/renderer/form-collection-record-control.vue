@@ -174,7 +174,6 @@ export default {
             this.screenCollectionId =
               this.selDisplayMode === "View" ? viewScreen : editScreen;
           
-
           this.loadScreen(this.screenCollectionId);
           this.localData = respData;
         })
