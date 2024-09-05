@@ -57,6 +57,7 @@ export default {
       screenCollectionId: null,
       placeholder: "Select a collection",
       screenType: "",
+      hasMustache: false,
     };
   },
   computed: {
@@ -65,12 +66,19 @@ export default {
     },
     data: {
       get() {
+        if(this.hasMustache) {
+          this.clearDataObject();
+        }
         return this.localData;
       },
       set(data) {
         Object.keys(data).forEach((variable) => {
           this.validationData && this.$set(this.validationData, variable, data[variable]);
         });
+
+        if (this.collection) {
+          this.$set(this.collection, 'data', Array.isArray(data) ? data : [data]);
+        }
       },
     },
   },
@@ -142,6 +150,10 @@ export default {
         });
       }
     },
+    callbackRecord() {
+      this.hasMustache = true;
+      this.loadRecordCollection(this.selCollectionId, 1, this.selDisplayMode);
+    },
     errors() {
       this.$refs.nestedScreen.isValid();
       return this.$refs.nestedScreen.errors;
@@ -171,6 +183,16 @@ export default {
           globalObject.ProcessMaker.alert(this.$t('This content does not exist. We could not locate indicated data'), "danger");
         });;
     },
+    isMustache(record) {
+      return /\{\{.*\}\}/.test(record);
+    },
+    clearDataObject() {
+      Object.keys(this.localData).forEach(key => {
+        if (key !== "id") {
+          this.localData[key] = "";
+        }
+      });
+    },
   },
   watch: {
     collection(collection) {
@@ -179,10 +201,14 @@ export default {
       }
     },
     record(record) {
+      this.hasMustache = false;
       if (record && !isNaN(record) && record > 0 && this.collection) {
         this.selRecordId = record;
         this.loadRecordCollection(this.selCollectionId, record, this.collectionmode);
       } else {
+        if (this.isMustache(record)) {
+          this.callbackRecord();
+        }
         this.localData = {};
       }
     },
