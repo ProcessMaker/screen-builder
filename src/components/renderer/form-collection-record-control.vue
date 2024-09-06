@@ -69,8 +69,8 @@ export default {
         if(this.hasMustache) {
           this.clearDataObject();
         }
-        return this.localData;
-      },
+                return this.localData;
+              },
       set(data) {
         Object.keys(data).forEach((variable) => {
           this.validationData && this.$set(this.validationData, variable, data[variable]);
@@ -78,6 +78,7 @@ export default {
 
         if (this.collection) {
           this.$set(this.collection, 'data', Array.isArray(data) ? data : [data]);
+          this.$set(this.collection, 'screen', this.screenCollectionId);
         }
       },
     },
