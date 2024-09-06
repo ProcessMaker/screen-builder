@@ -664,9 +664,7 @@ export default {
   width: 100%;
   padding: 12px 10px;
   text-transform: capitalize;
-  position: absolute;
-  top: 0;
-  z-index: 3;
+  margin: 0;
 }
 
 /* Styling for the file name in conversational forms */
