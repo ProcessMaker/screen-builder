@@ -519,6 +519,7 @@ export default {
         window.ProcessMaker.alert(`${this.$t('File Upload Error:')}  ${displayMessage}`, 'danger');
       }
 
+      window.onbeforeunload = function() {};
       this.$emit('file-error', messages);
     },
     fileUploaded(rootFile, file, message) {
