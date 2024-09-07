@@ -43,6 +43,12 @@ export default {
     _initialPage: {
       default: 0,
     },
+    pepepepe: Object
+  },
+  mounted() {
+    if(this.pepepepe){
+      this.$root.$emit("pepe-input", this.pepepepe);
+    }
   },
   computed: {
     ...mapState("globalErrorsModule", {
@@ -164,7 +170,7 @@ export default {
         // if the form is not valid the data is not emitted
         return;
       }
-      this.$emit('submit', this.vdata, loading, buttonInfo);
+      this.$emit('submit', this.vdata, loading, buttonInfo);;
     },
     resetValue(safeDotName, variableName) {
       this.setValue(safeDotName, null);
