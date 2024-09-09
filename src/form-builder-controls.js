@@ -1036,7 +1036,7 @@ export default [
   },
   {
     control: {
-      popoverContent: "Clipboard Control: Manage copied elements by dragging them to your desired location. Click to view and paste previously copied items.",
+      popoverContent: "Drag and paste copied elements to your desired location.",
       order: 1.0,
       group: 'Clipboard',
       label: 'Drag & Paste',
