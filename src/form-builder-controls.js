@@ -54,7 +54,7 @@ export default [
     rendererBinding: 'FormHtmlEditor',
     control: {
       popoverContent: "Use a Rich Text Editor to add HTML-formatted",
-      order: 1.0,
+      order: 2.0,
       group: 'Content Fields',
       label: 'Rich Text',
       component: 'FormHtmlViewer',
@@ -96,7 +96,7 @@ export default [
     rendererBinding: 'FormMaskedInput',
     control: {
       popoverContent: "Collect a string of text and format it as one of several data types",
-      order: 1.0,
+      order: 2.0,
       group: 'Input Fields',
       label: 'Line Input',
       component: 'FormInput',
@@ -127,6 +127,7 @@ export default [
       ],
     },
   },
+
   {
     editorComponent: FormTextArea,
     editorBinding: 'FormTextArea',
@@ -134,7 +135,7 @@ export default [
     rendererBinding: 'FormTextArea',
     control: {
       popoverContent: "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
-      order: 4.0,
+      order: 5.0,
       group: 'Input Fields',
       label: 'Textarea',
       component: 'FormTextArea',
@@ -192,7 +193,7 @@ export default [
     rendererBinding: 'FormSelectList',
     control: {
       popoverContent: "Collect options from a list, as radio butttons or dropdowns",
-      order: 2.0,
+      order: 3.0,
       group: 'Input Fields',
       label: 'Select List',
       component: 'FormSelectList',
@@ -247,7 +248,7 @@ export default [
     rendererBinding: 'FormCheckbox',
     control: {
       popoverContent: "Add a checkbox or toggle for true/false responses",
-      order: 6.0,
+      order: 7.0,
       group: 'Input Fields',
       label: 'Checkbox',
       component: 'FormCheckbox',
@@ -289,7 +290,7 @@ export default [
     rendererBinding: 'FormDatePicker',
     control: {
       popoverContent: "Collect a date or date/time",
-      order: 5.0,
+      order: 6.0,
       group: 'Input Fields',
       label: 'Date Picker',
       component: 'FormDatePicker',
@@ -343,7 +344,7 @@ export default [
     rendererBinding: 'FormButton',
     control: {
       popoverContent: "Add special buttons that link between subpages within this Form",
-      order: 1.0,
+      order: 2.0,
       group: 'Navigation',
       label: 'Page Navigation',
       component: 'FormButton',
@@ -378,7 +379,7 @@ export default [
     rendererBinding: 'FormMultiColumn',
     control: {
       popoverContent: "Organize and group your content in columns",
-      order: 2.0,
+      order: 3.0,
       group: 'Content Fields',
       label: 'Multicolumn / Table',
       component: 'FormMultiColumn',
@@ -423,7 +424,7 @@ export default [
     rendererBinding: 'FormLoop',
     control: {
       popoverContent: "Add a repeatable section of content",
-      order: 5.0,
+      order: 6.0,
       group: 'Content Fields',
       label: 'Loop',
       component: 'FormLoop',
@@ -459,7 +460,7 @@ export default [
     rendererBinding: 'FormRecordList',
     control: {
       popoverContent: "Format content in a table structure and allow for adding rows",
-      order: 4.0,
+      order: 5.0,
       group: 'Content Fields',
       label: 'Record List',
       component: 'FormRecordList',
@@ -522,7 +523,7 @@ export default [
     rendererBinding: 'FormImage',
     control: {
       popoverContent: "Upload an image to your screen",
-      order: 3.0,
+      order: 4.0,
       group: 'Content Fields',
       label: 'Image',
       component: 'FormImage',
@@ -589,7 +590,7 @@ export default [
     rendererBinding: 'FormAvatar',
     control: {
       popoverContent: "User avatar",
-      order: 3.0,
+      order: 4.0,
       group: 'Dashboards',
       label: 'User Avatar',
       component: 'FormAvatar',
@@ -633,7 +634,7 @@ export default [
     rendererBinding: 'FormButton',
     control: {
       popoverContent: "Add an action to submit your form or update a field",
-      order: 3.0,
+      order: 4.0,
       group: 'Input Fields',
       label: 'Submit Button',
       component: 'FormButton',
@@ -694,7 +695,7 @@ export default [
     rendererBinding: 'FormNestedScreen',
     control: {
       popoverContent: "Add and reuse another Form within this Form",
-      order: 6.0,
+      order: 7.0,
       group: 'Content Fields',
       label: 'Nested Screen',
       component: 'FormNestedScreen',
@@ -729,7 +730,7 @@ export default [
     control: {
       group: "Files",
       popoverContent: "Collect files uploaded into the Form",
-      order: 1.0,
+      order: 2.0,
       label: 'File Upload',
       component: 'FileUpload',
       'editor-component': 'FileUpload',
@@ -781,7 +782,7 @@ export default [
     builderBinding: 'FileDownload',
     control: {
       popoverContent: "Offer a File download",
-      order: 2.0,
+      order: 3.0,
       group: "Files",
       label: 'File Download',
       component: 'FileDownload',
@@ -817,7 +818,7 @@ export default [
     builderBinding: 'BFormComponent',
     control: {
       popoverContent: "Add one of several Bootstrap Vue components",
-      order: 1.0,
+      order: 2.0,
       group: 'Advanced',
       label: 'Bootstrap Component',
       component: 'BFormComponent',
@@ -871,7 +872,7 @@ export default [
     builderBinding: 'BWrapperComponent',
     control: {
       popoverContent: "Wrap an existing subpage within this Form into a Bootstrap Vue component",
-      order: 2.0,
+      order: 3.0,
       group: 'Advanced',
       label: 'Bootstrap Wrapper',
       component: 'BWrapperComponent',
@@ -970,7 +971,7 @@ export default [
     rendererBinding: "FormAnalyticsChart",
     control: {
       popoverContent: "Add a chart from the Analytics Reports",
-      order: 6.0,
+      order: 7.0,
       group: 'Dashboards',
       label: "Analytics Chart",
       component: "FormAnalyticsChart",
@@ -1001,7 +1002,7 @@ export default [
     control: {
       popoverContent: "Add a URL where this link should redirect",
       group: 'Content Fields',
-      order: 6.0,
+      order: 7.0,
       label: "Link URL",
       component: "LinkButton",
       "editor-component": "LinkButton",
@@ -1032,5 +1033,19 @@ export default [
         buttonVariantStyleProperty
       ]
     }
-  }
+  },
+  {
+    control: {
+      popoverContent: "Clipboard Control: Manage copied elements by dragging them to your desired location. Click to view and paste previously copied items.",
+      order: 1.0,
+      group: 'Clipboard',
+      label: 'Drag & Paste',
+      component: "Clipboard",
+      config: {
+        icon: 'fa fa-clipboard',
+      },
+      inspector: [],
+    },
+  },
+
 ];
