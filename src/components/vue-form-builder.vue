@@ -468,7 +468,8 @@ import {
   FormCheckbox,
   FormDatePicker,
   FormHtmlEditor,
-  FormHtmlViewer
+  FormHtmlViewer,
+  FormGrid
 } from "@processmaker/vue-form-elements";
 import Validator from "@chantouchsek/validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
@@ -546,13 +547,14 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
+    FormGrid,
     RequiredCheckbox,
     MultipleUploadsCheckbox,
     defaultValueEditor,
     ...inspector,
     ...renderer,
     PagesDropdown,
-    Sortable,
+    Sortable
   },
   mixins: [HasColorProperty, testing],
   props: {
