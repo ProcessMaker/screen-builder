@@ -43,11 +43,11 @@ export default {
     _initialPage: {
       default: 0,
     },
-    pepepepe: Object
+    taskdraft: Object
   },
   mounted() {
-    if(this.pepepepe){
-      this.$root.$emit("pepe-input", this.pepepepe);
+    if(this.taskdraft){
+      this.$root.$emit("taskdraft-input", this.taskdraft);
     }
   },
   computed: {

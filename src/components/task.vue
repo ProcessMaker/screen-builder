@@ -31,7 +31,7 @@
             :watchers="screen.watchers"
             :key="refreshScreen"
             :loop-context="loopContext"
-            :pepepepe="this.task"
+            :taskdraft="this.task"
             @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
@@ -321,9 +321,8 @@ export default {
         this.resetScreenState();
         this.requestData = _.get(this.task, 'request_data', {});
         this.loopContext = _.get(this.task, "loop_context", "");
-        console.log("ANTES MERGE resquestData: ",this.requestData);
+
         if (this.task.draft) {
-          console.log("MERGE this.task.draft.data: ",this.task.draft.data);
           this.requestData = _.merge(
             {},
             this.requestData,
@@ -452,7 +451,6 @@ export default {
 
           return this.getSessionRedirectUrl();
         } catch (error) {
-          console.error("Error in getDestinationUrl:", error);
           return null;
         }
       }
