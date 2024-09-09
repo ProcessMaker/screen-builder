@@ -42,7 +42,7 @@ export default {
     collectionmode: {
       type: Object
     },
-    pepepepe: Object,
+    taskdraft: Object,
   },
   data() {
     return {
@@ -77,7 +77,6 @@ export default {
       set(data) {
         Object.keys(data).forEach((variable) => {
           this.validationData && this.$set(this.validationData, variable, data[variable]);
-          console.log("SET this.validationData: ", this.validationData);
         });
 
         if (this.collection) {
@@ -181,26 +180,11 @@ export default {
           
           this.loadScreen(this.screenCollectionId);
 
-          // if(Object.values(this.flagDraft).every(value => value === null || value === "")) {
-          //   console.log("es null");
-          //   this.localData = respData;
-          // } else {
-          //   console.log("NO es null");
-          //   this.localData = this.flagDraft;
-          // }
-          console.log("API this.ValidationData: ", this.validationData);
-          console.log("API this.localData: ", respData);
-          console.log("this.taskDraft.draft.data: ", this.taskDraft);
-          if (this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === ''){
-            console.log("this.taskDraft?.draft?.data es NULO o vacio");
-          }
+          //This section validates if Collection has draft data
           if(this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '') {
-            console.log("draft llega null y se aplica BD");
             this.localData = respData;
           }else{
-            console.log("draft llega lleno y se reemplaza por BD");
             this.localData = this.taskDraft.draft.data;
-            console.log("DRAAAFT: ", this.taskDraft.draft.data)
           }
           
         })
@@ -246,15 +230,9 @@ export default {
     },
   },
   mounted() {
-    // this.$root.$on("pepe-input", (val)=>{
-    //   console.log("recibe pepepepe por emit: ", val);
-    //   //this.pepepepe = val;
-    // });
-    // console.log("prop pepepepe: ", this.pepepepe);
-    this.$root.$on("pepe-input", (val)=>{
-          this.taskDraft = val;
-          console.log("llega pepe-input emit: ", this.taskDraft);
-        });
+    this.$root.$on("taskdraft-input", (val)=>{
+      this.taskDraft = val;
+    });
 
     if (this.collection && this.record) {
       this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);

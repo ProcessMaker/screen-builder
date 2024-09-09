@@ -18,7 +18,7 @@
       :test-screen-definition="testScreenDefinition || false"
       class="p-0"
       :loop-context="loopContext"
-      :pepepepe="pepepepe"
+      :taskdraft="taskdraft"
       @after-submit="afterSubmit"
       @submit="submit"
     />
@@ -62,7 +62,7 @@ export default {
     "showErrors",
     "testScreenDefinition",
     "deviceScreen",
-    "pepepepe"
+    "taskdraft"
   ],
   data() {
     return {
