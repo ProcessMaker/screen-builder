@@ -6,7 +6,7 @@ describe("Date Picker", () => {
     // The timezone is UTC. We set it to UTC in package.json `TZ=UTC`
     cy.clock(new Date(2024, 0, 0, 0, 0, 0), ['Date']);
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
 
     // Set the User's timezone to Los Angeles. This is what DatePicker will use
     cy.window().then((win) => {

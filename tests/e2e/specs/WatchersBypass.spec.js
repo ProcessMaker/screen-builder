@@ -74,7 +74,7 @@ describe("Watchers", () => {
 
   Cypress.Commands.add('setupFormInput', (inputName) => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", { position: "bottom" });
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-element-container]", { position: "top" });
     cy.get("[data-cy=screen-element-container]").last().click();

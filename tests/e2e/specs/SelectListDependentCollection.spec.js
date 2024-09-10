@@ -79,7 +79,7 @@ describe("select list dependent collection", () => {
   });
 
   it("Configure collection select list", () => {
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormSelectList]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
