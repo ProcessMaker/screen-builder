@@ -7,7 +7,10 @@ describe("Add Clipboard Section to Control Menu", () => {
     // Step 1: Navigate to the homepage
     cy.visit("/");
 
-    // Step 2: Verify that the Clipboard section is visible in the control menu
+    // Step 2: Open the clipboard acordeon
+    cy.openAcordeon("collapse-1");
+
+    // Step 3: Verify that the Clipboard section is visible in the control menu
     cy.contains("Clipboard").should("be.visible");
   });
 
@@ -18,8 +21,8 @@ describe("Add Clipboard Section to Control Menu", () => {
     // Step 1: Navigate to the homepage
     cy.visit("/");
 
-    // Step 2: Open all accordions in the control menu
-    cy.openAllAcordeon();
+    // Step 2: Open the clipboard acordeon
+    cy.openAcordeon("collapse-1");
 
     // Step 3: Verify that the Clipboard accordion exists and is visible
     cy.get('[data-cy="controls-Clipboard"]').should("exist").should("be.visible");
@@ -32,8 +35,8 @@ describe("Add Clipboard Section to Control Menu", () => {
     // Step 1: Navigate to the homepage
     cy.visit("/");
 
-    // Step 2: Open all accordions in the control menu
-    cy.openAllAcordeon();
+    // Step 2: Open the clipboard acordeon
+    cy.openAcordeon("collapse-1");
 
     // Step 3: Click to open the Clipboard accordion
     cy.get('[data-cy="controls-Clipboard"]').click();
