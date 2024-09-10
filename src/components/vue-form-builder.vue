@@ -247,24 +247,9 @@
                     <clipboard-button
                       :index="index"
                       :config="element.config"
-                      :isInClipboard="isInClipboard"
+                      :isInClipboard="false"
                       @addToClipboard="addToClipboard"
                     />
-                    <!-- <button
-                      class="btn btn-sm btn-outline-secondary mr-2"
-                      :title="$t('Remove from clipboard')"
-                       style="background-color: #FFFFFF;"
-                    >
-                      <i class="fas fa-minus" />
-                    </button>
-                    <button
-                      class="btn btn-sm btn-success mr-2"
-                      :title="$t('Add to clipboard')"
-                      @click="addToClipboard(index)"
-                    >
-                      <i class="fas fa-plus" />
-                    </button> -->
-
                     <button
                       class="btn btn-sm btn-secondary mr-2"
                       :title="$t('Copy Control')"
@@ -1193,13 +1178,9 @@ export default {
       console.log('index', index);
       console.log('isInClipboard', this.config[this.currentPage].items[index]);
 
-      // const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
-      
-      const item  = this.config[this.currentPage].items[index];
-      this.config[this.currentPage].items[index].config['isInClipboard'] = true;
-      console.log('items', this.config[this.currentPage].items[index]);
-      // this.updateState();
-      // this.config[this.currentPage].items.push(duplicate);
+      const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+      this.$store.dispatch("clipboardModule/addToClipboard", duplicate);
+      console.log('clipboardModule/clipboardItems', this.$store.getters["clipboardModule/clipboardItems"])
     },
 
     openEditPageModal(index) {
