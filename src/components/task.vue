@@ -826,9 +826,9 @@ export default {
      */
     isSameUser(currentTask, redirectData) {
       const userIdMatch = currentTask.user?.id === redirectData.params[0].userId;
-      const typeMatch = currentTask.elementDestination?.type === null 
+      const typeMatch = currentTask.elementDestination?.type === null
                       || currentTask.elementDestination?.type === 'taskSource';
-      
+
       return userIdMatch && typeMatch;
     },
 
@@ -839,6 +839,17 @@ export default {
      * @param {Object} data - The event data containing the process update information.
      */
     handleProcessUpdated(data) {
+      const elementDestinationValue = this.task.elementDestination?.value;
+
+      if (
+        elementDestinationValue &&
+        data?.params[0]?.tokenId === this.taskId &&
+        data?.params[0]?.requestStatus === 'ACTIVE'
+      ) {
+        window.location.href = elementDestinationValue;
+        return;
+      }
+
       if (
         ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
         && data.elementType === 'task'
