@@ -56,8 +56,8 @@ const data = {
 
 beforeEach(() => {
   cy.visit("/");
+  cy.openAcordeon("collapse-3");
   cy.openAcordeon("collapse-2");
-  cy.openAcordeon("collapse-1");
   cy.wait(200);
   cy.get("[data-cy=controls-FormRecordList]").drag(
     "[data-cy=screen-drop-zone]",

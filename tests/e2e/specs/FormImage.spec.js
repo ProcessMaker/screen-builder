@@ -1,7 +1,7 @@
 describe("Form Image", () => {
   it("Upload image to show", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-3");
     cy.get("[data-cy=controls-FormImage]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -22,7 +22,7 @@ describe("Form Image", () => {
 
   it("Image by variable", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-3");
     cy.get("[data-cy=controls-FormImage]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

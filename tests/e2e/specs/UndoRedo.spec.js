@@ -1,7 +1,7 @@
 describe("Undo and Redo", () => {
   it("Can Undo", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -14,7 +14,7 @@ describe("Undo and Redo", () => {
 
   it("Can Redo", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

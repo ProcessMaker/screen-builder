@@ -6,7 +6,7 @@ describe.skip("Wrong Configuration Errors", () => {
         cy.stub(win.console, "error").as("consoleError");
       }
     });
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -27,7 +27,7 @@ describe.skip("Wrong Configuration Errors", () => {
         cy.stub(win.console, "error").as("consoleError");
       }
     });
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
