@@ -7,7 +7,6 @@
       :style="removeButtonStyle"
       @click="removeFromClipboard"
     >
-    {{isInClipboard}}
       <i class="fas fa-minus"></i>
     </button>
 
