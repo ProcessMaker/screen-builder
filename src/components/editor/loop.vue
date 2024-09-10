@@ -218,18 +218,6 @@ export default {
       this.items.splice(index, 1);
       this.$emit("update-state");
     },
-    // addToClipboard(index){
-    //   const duplicate = _.cloneDeep(this.items[index]);
-    //   this.$store.dispatch("clipboardModule/addToClipboard", duplicate);
-    // },
-    // removeFromClipboard(index) {
-    //   const item = this.items[index];
-    //   this.$store.dispatch("clipboardModule/removeFromClipboard", item);
-    // },
-    // // Check if the item is in the clipboard
-    // isInClipboard(index) {
-    //   return this.$store.getters["clipboardModule/isInClipboard"](this.items[index]);
-    // },
     duplicateItem(index) {
       const duplicate = _.cloneDeep(this.items[index]);
       this.items.push(duplicate);
