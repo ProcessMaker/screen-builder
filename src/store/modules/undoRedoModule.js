@@ -45,6 +45,7 @@ const undoRedoModule = {
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
+      debugger;
       if (newState.config === getters.currentState) {
         return;
       }

@@ -157,6 +157,7 @@
               swapThreshold: 0.5
             }"
             @input="updateConfig"
+            @change="onChange"
           >
             <div
               v-for="(element, index) in config[tabPage].items"
@@ -189,6 +190,13 @@
                   />
                   {{ element.config.name || element.label || $t("Field Name") }}
                   <div class="ml-auto">
+                    <clipboard-button
+                      :index="index"
+                      :config="element.config"
+                      :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      @addToClipboard="addToClipboard(config[currentPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
+                    />
                     <button
                       v-if="isAiSection(element) && aiPreview(element)"
                       data-test="apply-ai-btn"
@@ -247,8 +255,9 @@
                     <clipboard-button
                       :index="index"
                       :config="element.config"
-                      :isInClipboard="false"
-                      @addToClipboard="addToClipboard"
+                      :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      @addToClipboard="addToClipboard(config[currentPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
                     />
                     <button
                       class="btn btn-sm btn-secondary mr-2"
@@ -480,6 +489,7 @@ import {
 } from "@processmaker/vue-form-elements";
 import Validator from "@chantouchsek/validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
+import OnChangeDraggable from "../mixins/Clipboard";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
@@ -563,7 +573,7 @@ export default {
     Sortable,
     ClipboardButton,
   },
-  mixins: [HasColorProperty, testing],
+  mixins: [HasColorProperty, testing, OnChangeDraggable],
   props: {
     renderControls: {
       type: Boolean,
@@ -641,9 +651,11 @@ export default {
     };
   },
   computed: {
-    isInClipboard() {
-      return this.config[this.currentPage].items[0].isInClipboard === true;
+    // Get clipboard items from Vuex store
+    clipboardItems() {
+      return this.$store.getters["clipboardModule/clipboardItems"];
     },
+    
     sortedPages() {
       return [...this.config].sort((a, b) => a.order - b.order);
     },
@@ -720,12 +732,10 @@ export default {
   watch: {
     config: {
       handler() {
-        debugger;
         this.checkForCaptchaInLoops();
         this.$emit("change", this.config);
       },
       deep: true,
-       immediate: true,
     },
     currentPage() {
       this.inspect();
@@ -1174,15 +1184,24 @@ export default {
       const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
       this.config[this.currentPage].items.push(duplicate);
     },
-    addToClipboard(index){
-      console.log('index', index);
-      console.log('isInClipboard', this.config[this.currentPage].items[index]);
+    // addToClipboard(index){
+    //   console.log('index', index);
+    //   console.log('isInClipboard', this.config[this.currentPage].items[index]);
 
-      const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
-      this.$store.dispatch("clipboardModule/addToClipboard", duplicate);
-      console.log('clipboardModule/clipboardItems', this.$store.getters["clipboardModule/clipboardItems"])
-    },
-
+    //   const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+    //   this.$store.dispatch("clipboardModule/addToClipboard", duplicate);
+    //   console.log('clipboardItems', this.clipboardItems);
+    //   // console.log('isInClipboard', this.isInClipboard);
+    // },
+    // removeFromClipboard(index) {
+    //   console.log('removeFromClipboard', index);
+    //   const item = this.config[this.currentPage].items[index];
+    //   this.$store.dispatch("clipboardModule/removeFromClipboard", item);
+    // },
+    // // Check if the item is in the clipboard
+    // isInClipboard(index) {
+    //   return this.$store.getters["clipboardModule/isInClipboard"](this.config[this.currentPage].items[index]);
+    // },
     openEditPageModal(index) {
       this.editPageIndex = index;
       const pageName = this.config[index].name;

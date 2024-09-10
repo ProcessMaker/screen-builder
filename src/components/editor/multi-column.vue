@@ -11,6 +11,7 @@
             :value="items[index]"
             group="controls"
             @input="updateContainerConfig($event, index)"
+            @change="onChange"
           >
             <div
               v-for="(element, row) in item"
@@ -43,6 +44,13 @@
                     />
                     {{ element.config.name || $t("Variable Name") }}
                     <div class="ml-auto">
+                      <clipboard-button
+                        :index="index"
+                        :config="element.config"
+                        :isInClipboard="isInClipboard(items[row][index])"
+                        @addToClipboard="addToClipboard(items[row][index])"
+                        @removeFromClipboard="removeFromClipboard(items[row][index])"
+                      />
                       <button
                         v-if="isAiSection(element) && aiPreview(element)"
                         class="btn btn-sm btn-primary mr-2"
@@ -100,6 +108,13 @@
                     />
                     {{ element.config.name || $t("Variable Name") }}
                     <div class="ml-auto">
+                      <clipboard-button
+                        :index="index"
+                        :config="element.config"
+                        :isInClipboard="isInClipboard(items[row][index])"
+                        @addToClipboard="addToClipboard(items[row][index])"
+                        @removeFromClipboard="removeFromClipboard(items[row][index])"
+                      />
                       <button
                         class="btn btn-sm btn-secondary mr-2"
                         :title="$t('Copy Control')"
@@ -156,8 +171,9 @@ import {
   FormTextArea
 } from "@processmaker/vue-form-elements";
 import { HasColorProperty } from "@/mixins";
+import { Clipboard } from "@/mixins";
 import * as renderer from "@/components/renderer";
-
+import ClipboardButton from '../ClipboardButton.vue';
 const defaultColumnWidth = 1;
 
 export default {
@@ -171,9 +187,10 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
+    ClipboardButton,
     ...renderer
   },
-  mixins: [HasColorProperty],
+  mixins: [HasColorProperty, Clipboard],
   props: ["value", "name", "config", "selected", "validationErrors"],
   data() {
     return {
@@ -223,6 +240,19 @@ export default {
     hasError(element) {
       return this.validationErrors.some(({ item }) => item === element);
     },
+    // addToClipboard(index, col){
+    //   const duplicate = _.cloneDeep(this.items[col][index]);
+    //   this.$store.dispatch("clipboardModule/addToClipboard", duplicate);
+    // },
+    // removeFromClipboard(index, col) {
+    //   const item = this.items[col][index];
+    //   this.$store.dispatch("clipboardModule/removeFromClipboard", item);
+    // },
+    // // Check if the item is in the clipboard
+    // isInClipboard(index, col) {
+    //   return this.$store.getters["clipboardModule/isInClipboard"](this.items[col][index]);
+    // },
+    
     updateContainerConfig(config, index) {
       this.items[index] = config;
       this.$emit("update-state");

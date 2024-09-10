@@ -1,6 +1,6 @@
 <template>
   <div class="column-draggable" :selector="config.customCssSelector">
-    <draggable style="min-height: 80px" :list="items" group="controls">
+    <draggable style="min-height: 80px" :list="items" group="controls" @change="onChange">
       <div
         v-for="(element, index) in items"
         :key="index"
@@ -28,6 +28,13 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <div class="ml-auto">
+                <clipboard-button
+                  :index="index"
+                  :config="element.config"
+                  :isInClipboard="isInClipboard(items[index])"
+                  @addToClipboard="addToClipboard(items[index])"
+                  @removeFromClipboard="removeFromClipboard(items[index])"
+                />
                 <button
                   v-if="isAiSection(element) && aiPreview(element)"
                   class="btn btn-sm btn-primary mr-2"
@@ -83,6 +90,13 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <div class="ml-auto">
+                <clipboard-button
+                  :index="index"
+                  :config="element.config"
+                  :isInClipboard="isInClipboard(items[index])"
+                  @addToClipboard="addToClipboard(items[index])"
+                  @removeFromClipboard="removeFromClipboard(items[index])"
+                />
                 <button
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
@@ -136,6 +150,8 @@ import {
   FormTextArea
 } from "@processmaker/vue-form-elements";
 import { HasColorProperty } from "@/mixins";
+import { Clipboard } from "@/mixins";
+import ClipboardButton from '../ClipboardButton.vue';
 import * as renderer from "@/components/renderer";
 
 export default {
@@ -149,9 +165,10 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
+    ClipboardButton,
     ...renderer
   },
-  mixins: [HasColorProperty],
+  mixins: [HasColorProperty, Clipboard],
   props: ["value", "name", "config", "selected", "validationErrors"],
   data() {
     return {
@@ -201,6 +218,18 @@ export default {
       this.items.splice(index, 1);
       this.$emit("update-state");
     },
+    // addToClipboard(index){
+    //   const duplicate = _.cloneDeep(this.items[index]);
+    //   this.$store.dispatch("clipboardModule/addToClipboard", duplicate);
+    // },
+    // removeFromClipboard(index) {
+    //   const item = this.items[index];
+    //   this.$store.dispatch("clipboardModule/removeFromClipboard", item);
+    // },
+    // // Check if the item is in the clipboard
+    // isInClipboard(index) {
+    //   return this.$store.getters["clipboardModule/isInClipboard"](this.items[index]);
+    // },
     duplicateItem(index) {
       const duplicate = _.cloneDeep(this.items[index]);
       this.items.push(duplicate);
