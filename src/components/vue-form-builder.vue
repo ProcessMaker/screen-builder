@@ -244,6 +244,27 @@
                   />
                   {{ element.config.name || $t("Variable Name") }}
                   <div class="ml-auto">
+                    <clipboard-button
+                      :index="index"
+                      :config="element.config"
+                      :isInClipboard="isInClipboard"
+                      @addToClipboard="addToClipboard"
+                    />
+                    <!-- <button
+                      class="btn btn-sm btn-outline-secondary mr-2"
+                      :title="$t('Remove from clipboard')"
+                       style="background-color: #FFFFFF;"
+                    >
+                      <i class="fas fa-minus" />
+                    </button>
+                    <button
+                      class="btn btn-sm btn-success mr-2"
+                      :title="$t('Add to clipboard')"
+                      @click="addToClipboard(index)"
+                    >
+                      <i class="fas fa-plus" />
+                    </button> -->
+
                     <button
                       class="btn btn-sm btn-secondary mr-2"
                       :title="$t('Copy Control')"
@@ -253,7 +274,7 @@
                     </button>
                     <button
                       class="btn btn-sm btn-danger"
-                      :title="$t('Delete Control')"
+                      :title="$t('Delete Controldddddd')"
                       @click="deleteItem(index)"
                     >
                       <i class="far fa-trash-alt text-light" />
@@ -488,7 +509,7 @@ import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 import TabsBar from "./TabsBar.vue";
 import Sortable from './sortable/Sortable.vue';
-
+import ClipboardButton from './ClipboardButton.vue';
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -555,6 +576,7 @@ export default {
     ...renderer,
     PagesDropdown,
     Sortable,
+    ClipboardButton,
   },
   mixins: [HasColorProperty, testing],
   props: {
@@ -634,6 +656,9 @@ export default {
     };
   },
   computed: {
+    isInClipboard() {
+      return this.config[this.currentPage].items[0].isInClipboard === true;
+    },
     sortedPages() {
       return [...this.config].sort((a, b) => a.order - b.order);
     },
@@ -710,10 +735,12 @@ export default {
   watch: {
     config: {
       handler() {
+        debugger;
         this.checkForCaptchaInLoops();
         this.$emit("change", this.config);
       },
-      deep: true
+      deep: true,
+       immediate: true,
     },
     currentPage() {
       this.inspect();
@@ -1162,6 +1189,19 @@ export default {
       const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
       this.config[this.currentPage].items.push(duplicate);
     },
+    addToClipboard(index){
+      console.log('index', index);
+      console.log('isInClipboard', this.config[this.currentPage].items[index]);
+
+      // const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+      
+      const item  = this.config[this.currentPage].items[index];
+      this.config[this.currentPage].items[index].config['isInClipboard'] = true;
+      console.log('items', this.config[this.currentPage].items[index]);
+      // this.updateState();
+      // this.config[this.currentPage].items.push(duplicate);
+    },
+
     openEditPageModal(index) {
       this.editPageIndex = index;
       const pageName = this.config[index].name;
