@@ -240,19 +240,6 @@ export default {
     hasError(element) {
       return this.validationErrors.some(({ item }) => item === element);
     },
-    // addToClipboard(index, col){
-    //   const duplicate = _.cloneDeep(this.items[col][index]);
-    //   this.$store.dispatch("clipboardModule/addToClipboard", duplicate);
-    // },
-    // removeFromClipboard(index, col) {
-    //   const item = this.items[col][index];
-    //   this.$store.dispatch("clipboardModule/removeFromClipboard", item);
-    // },
-    // // Check if the item is in the clipboard
-    // isInClipboard(index, col) {
-    //   return this.$store.getters["clipboardModule/isInClipboard"](this.items[col][index]);
-    // },
-    
     updateContainerConfig(config, index) {
       this.items[index] = config;
       this.$emit("update-state");
