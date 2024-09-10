@@ -49,11 +49,11 @@ export default {
   methods: {
     // Method to handle adding to clipboard
     addToClipboard(index) {
-      this.$emit('addToClipboard', index);
+      this.$emit('addToClipboard');
     },
     // Method to handle removing from clipboard
     removeFromClipboard() {
-      this.$emit('remove-from-clipboard');
+      this.$emit('removeFromClipboard');
     },
   },
 };
