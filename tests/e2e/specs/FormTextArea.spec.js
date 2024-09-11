@@ -1,7 +1,7 @@
 describe("Form Text Area Field", () => {
   it("Default properties", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -17,7 +17,7 @@ describe("Form Text Area Field", () => {
   });
   it("Variable properties", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -37,7 +37,7 @@ describe("Form Text Area Field", () => {
   });
   it("Read Only", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -58,7 +58,7 @@ describe("Form Text Area Field", () => {
   // Configuration
   it("Placeholder", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -75,7 +75,7 @@ describe("Form Text Area Field", () => {
   });
   it("Helper Text", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -91,7 +91,7 @@ describe("Form Text Area Field", () => {
   });
   it("Rich Text", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -107,7 +107,7 @@ describe("Form Text Area Field", () => {
   });
   it("Rows", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -124,7 +124,7 @@ describe("Form Text Area Field", () => {
   });
   it("Default Value", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -141,7 +141,7 @@ describe("Form Text Area Field", () => {
   });
   it("CSS Selector Name", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -159,7 +159,7 @@ describe("Form Text Area Field", () => {
   });
   it("Aria Label", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -176,7 +176,7 @@ describe("Form Text Area Field", () => {
   });
   it("Tab Order", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormTextArea]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
