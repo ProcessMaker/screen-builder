@@ -2,7 +2,7 @@ describe("Default values", () => {
   it("Check visible", () => {
     cy.visit("/");
     cy.setPreviewDataInput({ name: "world" });
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -17,7 +17,7 @@ describe("Default values", () => {
   it("Check hidden", () => {
     cy.visit("/");
     cy.setPreviewDataInput({ name: "" });
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -32,7 +32,7 @@ describe("Default values", () => {
   it("Check dynamic visibility rule", () => {
     cy.visit("/");
     cy.setPreviewDataInput({ name: "" });
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

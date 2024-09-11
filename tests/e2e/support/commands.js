@@ -288,6 +288,7 @@ Cypress.Commands.add("openAcordeon", (name) => {
 });
 
 Cypress.Commands.add("openAllAcordeon", () => {
+  cy.openAcordeon("collapse-6");
   cy.openAcordeon("collapse-5");
   cy.openAcordeon("collapse-4");
   cy.openAcordeon("collapse-3");

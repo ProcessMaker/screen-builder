@@ -5,7 +5,7 @@ moment.tz.setDefault("UTC");
 describe("Date Picker", () => {
   beforeEach(() => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.window().then((win) => {
       win.ProcessMaker.user.timezone = "UTC";
     });
