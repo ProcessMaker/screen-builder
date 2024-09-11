@@ -527,12 +527,13 @@ const defaultConfig = [
 ];
 
 const defaultGroupOrder = {
-  "Input Fields" : 1.0,
-  "Content Fields" : 2.0,
-  "Dashboards" : 2.5,
-  "Navigation" : 3.0,
-  "Files" : 4.0,
-  "Advanced" : 5.0,
+  "Clipboard": 1.0,
+  "Input Fields" : 2.0,
+  "Content Fields" : 3.0,
+  "Dashboards" : 3.5,
+  "Navigation" : 4.0,
+  "Files" : 5.0,
+  "Advanced" : 6.0,
 };
 
 const DEFAULT_GROUP = "Advanced";
@@ -700,7 +701,6 @@ export default {
           return orderA - orderB;
         });
       });
-
       return grouped;
     },
     showToolbar() {
