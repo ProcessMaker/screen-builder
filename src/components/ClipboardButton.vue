@@ -6,6 +6,7 @@
       :title="removeTitle"
       :style="removeButtonStyle"
       @click="removeFromClipboard"
+      data-cy="removeFromClipboard"
     >
       <i class="fas fa-minus"></i>
     </button>
@@ -15,6 +16,7 @@
       class="btn btn-sm btn-success mr-2"
       :title="addTitle"
       @click="addToClipboard(index)"
+      data-cy="addToClipboard"
     >
       <i class="fas fa-plus"></i>
     </button>
