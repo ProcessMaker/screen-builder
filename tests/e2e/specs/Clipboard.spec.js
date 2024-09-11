@@ -2,7 +2,7 @@ describe("Clipboard Button Actions", () => {
 
   it("Should display an empty drop zone message when no elements are present", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeonByLabel("Clipboard");
     cy.get("[data-cy=screen-drop-zone]").should(
       "contain.text",
       "Place your controls here."
@@ -11,7 +11,7 @@ describe("Clipboard Button Actions", () => {
 
   it("Should allow adding and removing an input field to/from the clipboard", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeonByLabel("Input Fields");
 
     // Step 1: Dragging FormInput control to screen drop zone
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
@@ -34,8 +34,8 @@ describe("Clipboard Button Actions", () => {
 
   it("Should allow adding and removing a multi-column form to/from the clipboard", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-3");  // Open the multi-column controls section
-    cy.openAcordeon("collapse-2");  // Open the form controls section
+    cy.openAcordeonByLabel("Content Fields");  // Open the multi-column controls section
+    cy.openAcordeonByLabel("Input Fields");  // Open the form controls section
 
     // Step 1: Dragging FormMultiColumn control to screen drop zone
     cy.get("[data-cy=controls-FormMultiColumn]").drag(
@@ -79,7 +79,7 @@ describe("Clipboard Button Actions", () => {
 
   it("Should allow adding and removing a loop form to/from the clipboard", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-3");
+    cy.openAcordeonByLabel("Content Fields");
     // Step 1: Dragging FormLoop control to screen drop zone
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -90,7 +90,7 @@ describe("Clipboard Button Actions", () => {
     cy.get("[data-cy=inspector-add]").click();
 
     // Step 2: Add an input field in the Loop layout
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeonByLabel("Input Fields"); 
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container] .column-draggable div",
       { position: "bottom" }
