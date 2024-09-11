@@ -1,7 +1,7 @@
 describe("Default values", () => {
   it("Basic default value", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -22,7 +22,7 @@ describe("Default values", () => {
 
   it('Text Input Default value if the variable has the next format "people.firstName"', () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -46,7 +46,7 @@ describe("Default values", () => {
 
   it('Select List- Default if the variable has the next format "numbers.int"', () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormSelectList]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -83,7 +83,7 @@ describe("Default values", () => {
 
   it("Javascript default value", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.setPreviewDataInput({ name: "world" });
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -107,7 +107,7 @@ describe("Default values", () => {
   });
   it("Initially checked checkbox", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormCheckbox]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -125,7 +125,7 @@ describe("Default values", () => {
   });
   it("Dynamic Basic default value", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -158,7 +158,7 @@ describe("Default values", () => {
   });
   it("Dynamic Javascript default value", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
