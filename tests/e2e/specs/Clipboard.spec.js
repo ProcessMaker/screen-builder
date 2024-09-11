@@ -79,7 +79,7 @@ describe("Clipboard Button Actions", () => {
 
   it("Should allow adding and removing a loop form to/from the clipboard", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-3");
     // Step 1: Dragging FormLoop control to screen drop zone
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -90,7 +90,7 @@ describe("Clipboard Button Actions", () => {
     cy.get("[data-cy=inspector-add]").click();
 
     // Step 2: Add an input field in the Loop layout
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container] .column-draggable div",
       { position: "bottom" }

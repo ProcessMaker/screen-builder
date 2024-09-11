@@ -194,6 +194,8 @@
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      :addTitle="$t('Add to clipboard')"
+                      :removeTitle="$t('Remove from clipboard')"
                       @addToClipboard="addToClipboard(config[currentPage].items[index])"
                       @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
                     />
@@ -256,6 +258,8 @@
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      :addTitle="$t('Add to clipboard')"
+                      :removeTitle="$t('Remove from clipboard')"
                       @addToClipboard="addToClipboard(config[currentPage].items[index])"
                       @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
                     />
