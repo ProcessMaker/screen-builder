@@ -4,7 +4,6 @@
       v-if="isInClipboard"
       class="btn btn-sm btn-outline-secondary mr-2 remove-btn"
       :title="removeTitle"
-      :style="removeButtonStyle"
       @click="removeFromClipboard"
       data-cy="removeFromClipboard"
     >
@@ -40,11 +39,8 @@ export default {
   },
   data() {
     return {
-      addTitle: 'Add to clipboard',
-      removeTitle: 'Remove from clipboard',
-      removeButtonStyle: {
-        backgroundColor: '#FFFFFF',
-      },
+      addTitle: this.$t('Add to clipboard'),
+      removeTitle: this.$t('Remove from clipboard'),
     };
   },
 
