@@ -268,7 +268,7 @@
                     </button>
                     <button
                       class="btn btn-sm btn-danger"
-                      :title="$t('Delete Controldddddd')"
+                      :title="$t('Delete Control')"
                       @click="deleteItem(index)"
                     >
                       <i class="far fa-trash-alt text-light" />
