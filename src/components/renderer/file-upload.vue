@@ -34,12 +34,46 @@
       </uploader-drop>
 
       <!-- Render the conversational form file upload UI when the screen type is conversational forms -->
+      <uploader-list v-if="isConversationalForm" class="cf-uploader-list">
+        <template v-slot="{ fileList }">
+          <ul v-if="uploading" class="convo-forms-upload-progress">
+            <li v-for="file in fileList" :key="file.id">
+              <uploader-file :file="file" list/>
+            </li>
+          </ul>
+          <ul v-else>
+            <li v-for="(file, i) in files" :key="file.id" :data-cy="file.id" class="cf-file-upload-list">
+              <span class="convo-forms-filename text-truncate">
+                <i :class="getFileIconClass(file)" class="mr-2"></i>
+                {{ nativeFiles[file.id].name }}
+              </span>
+              <b-btn 
+                variant="outline" 
+                @click="removeFile(file)" 
+                v-b-tooltip.hover :title="$t('Delete')"
+                class="pr-0"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </b-btn>
+            </li>
+          </ul>
+        </template>
+      </uploader-list>
+
       <uploader-drop 
         v-if="uploaderLoaded && isConversationalForm" 
         class="form-control-file"
       > 
+
+      <b-button 
+          v-if="!required"
+          @click="cfSkipFileUpload"
+          class="btn cf-skip-btn mb-3" 
+      >
+          <i class="fas fa-arrow-left mr-2"></i> {{ $t('Skip Uploading') }}
+      </b-button>
         <uploader-btn
-          v-if="canAddFiles"
+          v-if="files.length == 0 || !this.multipleUpload"
           :attrs="nativeButtonAttrs"
           :class="{disabled: disabled}"
           tabindex="0"
@@ -49,32 +83,21 @@
         >
           <i class="far fa-image mr-2"></i> {{ $t('Add File/Photo') }}
         </uploader-btn>
+        <uploader-btn 
+          v-else-if="files.length !== 0 && multipleUpload"
+          :attrs="nativeButtonAttrs"
+          :class="{disabled: disabled}"
+          tabindex="0"
+          v-on:keyup.native="browse"
+          :aria-label="$attrs['aria-label']"
+          class="btn btn-convo-multiupload"
+        >
+        <i class="fas fa-plus mr-2"></i> {{ $t('Add another') }}
+        </uploader-btn>
+        <b-button v-if="files.length !== 0" class="cf-file-upload-submit" variant="primary" @click="emitConversationalFormSubmit" :aria-label="$t('Submit')">  
+          <i class="fas fa-paper-plane"></i> <span v-if="files.length !== 0 && multipleUpload">{{ $t('Send All') }}</span>
+        </b-button>
       </uploader-drop>
-
-      <uploader-list v-if="isConversationalForm">
-        <template v-slot="{ fileList }">
-          <ul v-if="uploading" class="convo-forms-upload-progress">
-            <li v-for="file in fileList" :key="file.id">
-              <uploader-file :file="file" list/>
-            </li>
-          </ul>
-          <ul v-else>
-            <li v-for="(file, i) in files" :key="file.id" :data-cy="file.id">
-              <span class="convo-forms-filename text-truncate">
-                <i :class="getFileIconClass(file)" class="mr-2"></i>
-                {{ nativeFiles[file.id].name }}
-              </span>
-              <b-btn 
-                variant="outline" 
-                @click="removeFile(file)" 
-                v-b-tooltip.hover :title="$t('Delete')"
-              >
-                <i class="fas fa-trash-alt"></i>
-              </b-btn>
-            </li>
-          </ul>
-        </template>
-      </uploader-list>
       
       <uploader-list v-else>
         <template slot-scope = "{ fileList }">
@@ -255,9 +278,6 @@ export default {
     isConversationalForm() {
       return this.screenType === 'conversational-forms';
     },
-    canAddFiles() {
-      return this.files.length === 0 || (this.files.length > 0 && this.multipleUpload);
-    }
   },
   watch: {
     filesData: {
@@ -646,6 +666,12 @@ export default {
         ? 'far fa-image' 
         : 'far fa-file';
     },
+    emitConversationalFormSubmit($event) {
+      this.$emit('cf-submit', $event);
+    },
+    cfSkipFileUpload() {
+      this.$emit('cf-skip-file-upload');
+    }
   },
 };
 </script>
@@ -667,10 +693,50 @@ export default {
   margin: 0;
 }
 
+.btn-convo-multiupload {
+  background: #fff;
+  color: #20242A;
+  border: 1px solid #D7DDE5;
+  font-size: 12px;
+  width: 57%;
+  padding: 7px;
+  border-radius: 8px;
+  margin: 0;
+  text-transform: capitalize;
+  margin-right: 30px;
+}
+
+.cf-file-upload-submit {
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  text-transform: capitalize;
+  padding: 7px;
+}
+
 /* Styling for the file name in conversational forms */
 .convo-forms-filename {
-  width: 70%;
+  width: 88%;
   display: inline-block;
   vertical-align: middle;
 }
+
+.cf-uploader-list {
+  margin-bottom: 14px;
+}
+.cf-file-upload-list {
+  color: #20242A;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #F3F5F7;
+}
+
+.cf-skip-btn {
+    background-color: #FFF;
+    border: 1px solid #D7DDE5;
+    color: #20242A;
+    width: 100%;
+    padding: 12px 10px;
+    box-shadow: 0px 12px 24px -12px #0000001F;
+}
+
 </style>
