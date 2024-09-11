@@ -36,13 +36,18 @@ export default {
       type: Boolean,
       required: true,
     },
+    addTitle: {
+      type: String,
+      required: false,
+      default: 'Add to clipboard',
+    },
+    removeTitle: {
+      type: String,
+      required: false,
+      default: 'Remove from clipboard',
+    }
   },
-  data() {
-    return {
-      addTitle: this.$t('Add to clipboard'),
-      removeTitle: this.$t('Remove from clipboard'),
-    };
-  },
+
 
   methods: {
     // Method to handle adding to clipboard

@@ -23,6 +23,8 @@ export const InClipboard = Template.bind({});
 InClipboard.args = {
   isInClipboard: true,
   index: 1,
+  addTitle: 'Add to clipboard',
+  removeTitle: 'Remove from clipboard',
   addToClipboard: () => {},
   removeFromClipboard: () => {},
 };
