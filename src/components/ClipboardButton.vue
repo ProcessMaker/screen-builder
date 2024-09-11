@@ -2,7 +2,7 @@
     <!-- Conditionally render buttons based on clipboardContent -->
     <button
       v-if="isInClipboard"
-      class="btn btn-sm btn-outline-secondary mr-2"
+      class="btn btn-sm btn-outline-secondary mr-2 remove-btn"
       :title="removeTitle"
       :style="removeButtonStyle"
       @click="removeFromClipboard"
@@ -13,7 +13,7 @@
 
     <button
       v-else
-      class="btn btn-sm btn-success mr-2"
+      class="btn btn-sm btn-success mr-2 add-btn"
       :title="addTitle"
       @click="addToClipboard(index)"
       data-cy="addToClipboard"
@@ -62,5 +62,15 @@ export default {
 </script>
 
 <style scoped>
-/* Add any specific styles here */
+.remove-btn {
+  background-color: #FFFFFF;
+  color: #596372;
+}
+.remove-btn:hover {
+  background-color: #f8f9fa; 
+  color: #596372;
+}
+.add-btn {
+  background-color: #0CA442;
+}
 </style>
