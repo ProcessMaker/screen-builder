@@ -11,7 +11,7 @@ describe("Clipboard Button Actions", () => {
 
   it("Should allow adding and removing an input field to/from the clipboard", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
 
     // Step 1: Dragging FormInput control to screen drop zone
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
@@ -34,8 +34,8 @@ describe("Clipboard Button Actions", () => {
 
   it("Should allow adding and removing a multi-column form to/from the clipboard", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");  // Open the multi-column controls section
-    cy.openAcordeon("collapse-1");  // Open the form controls section
+    cy.openAcordeon("collapse-3");  // Open the multi-column controls section
+    cy.openAcordeon("collapse-2");  // Open the form controls section
 
     // Step 1: Dragging FormMultiColumn control to screen drop zone
     cy.get("[data-cy=controls-FormMultiColumn]").drag(
