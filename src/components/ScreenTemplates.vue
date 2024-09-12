@@ -1,12 +1,32 @@
 <template>
-  <div>
+  <div data-cy="screen-templates-section">
     <div class="d-flex justify-content-between">
       <h6 class="pt-2">Select a Template</h6>
-      <button class="panel-close-btn" @click="$emit('close-templates-panel')"><i class="fas fa-times"></i></button>
+      <button
+        class="panel-close-btn"
+        @click="$emit('close-templates-panel')"
+        data-cy="close-templates-section"
+      >
+        <i class="fas fa-times"></i>
+      </button>
     </div>
     <div class="d-flex m-2 template-tabs justify-content-center">
-      <b-button @click="showMyTemplates" class="d-inline default-template-btn px-1" :class="{ 'my-templates-selected': myTemplatesSelected }">My Templates</b-button>
-      <b-button @click="showSharedTemplates" class="d-inline default-template-btn" :class="{ 'shared-templates-selected': sharedTemplatesSelected }">Shared Templates</b-button>
+      <b-button
+        @click="showMyTemplates"
+        class="d-inline default-template-btn px-1"
+        :class="{ 'my-templates-selected': myTemplatesSelected }"
+        data-cy="my-templates-tab"
+      >
+        My Templates
+      </b-button>
+      <b-button
+        @click="showSharedTemplates"
+        class="d-inline default-template-btn"
+        :class="{ 'shared-templates-selected': sharedTemplatesSelected }"
+        data-cy="shared-templates-tab"
+      >
+        Shared Templates
+      </b-button>
     </div>
     <div class="d-flex justify-content-center">
       <div v-if="myTemplatesSelected" class="d-flex justify-content-center p-0">
