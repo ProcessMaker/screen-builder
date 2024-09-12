@@ -15,7 +15,6 @@ it("Closes the screen template panel when X button is clicked", () => {
     "be.visible"
   );
   cy.get("[data-cy=close-templates-section]").click();
-  cy.wait(2000);
   cy.get("[data-cy=screen-templates-section]").should(
     "not.exist"
   );
