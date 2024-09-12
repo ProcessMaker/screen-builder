@@ -78,7 +78,6 @@ it("Is hidden when an Inspector Panel should open", () => {
     position: "bottom"
   });
   cy.get("[data-cy=screen-element-container]").click();
-  // cy.get("[data-cy=accordion-Advanced]").click();
 
   cy.get("[data-cy=screen-templates-section]").should(
     "not.exist"
