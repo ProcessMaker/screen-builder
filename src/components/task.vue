@@ -260,7 +260,7 @@ export default {
         this.loadNextAssignedTask();
       }
     },
-    loadTask() {
+    loadTask(mounting = false) {
       if (!this.taskId) {
         return;
       }
@@ -276,7 +276,7 @@ export default {
           .getTasks(url)
           .then((response) => {
             this.task = response.data;
-            this.linkTask();
+            this.linkTask(mounting);
             this.checkTaskStatus();
             if (
               window.PM4ConfigOverrides
@@ -296,12 +296,27 @@ export default {
           });
       });
     },
-    linkTask() {
+    linkTask(mounting) {
       this.nodeId = this.task.element_id;
       this.listenForParentChanges();
       if (this.task.process_request.status === 'COMPLETED') {
         if (!this.taskPreview) {
           this.$emit('completed', this.task.process_request.id);
+          // When the process ends before the request is opened
+          if (mounting) {
+            // get end event element destination config
+            window.ProcessMaker.apiClient.get(`/requests/${this.requestId}/end-event-destination`)
+              .then((response) => {
+                if (!response.data?.data?.endEventDestination) {
+                  // by default it goes to summary
+                  window.location.href = `/requests/${this.requestId}`;
+                  return;
+                }
+
+                // process the end event destination
+                this.processCompletedRedirect(response.data.data, this.userId, this.requestId);
+              });
+          }
         }
       }
       if (this.taskPreview && this.task.status === "CLOSED") {
@@ -483,8 +498,8 @@ export default {
         // Emit the source of the redirection
         return urlSelfService;
       }
-
-      return document.referrer || null;
+      // If the task has not an origin source it should re redirected top the tasks List as default.
+      return document.referrer || '/tasks';
     },
     loadNextAssignedTask(requestId = null) {
       if (!requestId) {
@@ -516,8 +531,6 @@ export default {
             this.loadTask();
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
-          } else if (!this.taskPreview) {
-            this.emitClosedEvent();
           }
         });
     },
@@ -808,7 +821,7 @@ export default {
       if (data?.params[0]?.tokenId) {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
-        if (!this.task.allow_interstitial) {
+        if (this.task && !(this.task.allow_interstitial || this.isSameUser(this.task, data))) {
            // The getDestinationUrl() function is called asynchronously to retrieve the URL
           window.location.href = await this.getDestinationUrl();
           return;
@@ -820,12 +833,38 @@ export default {
     },
 
     /**
+     * Checks if the current task and the redirect data belong to the same user.
+     * and the destination is taskSource.
+     *
+     * @param {Object} currentTask - The current task object.
+     * @param {Object} redirectData - The redirect data object.
+     */
+    isSameUser(currentTask, redirectData) {
+      const userIdMatch = currentTask.user?.id === redirectData.params[0].userId;
+      const typeMatch = currentTask.elementDestination?.type === null
+                      || currentTask.elementDestination?.type === 'taskSource';
+
+      return userIdMatch && typeMatch;
+    },
+
+    /**
      * Handles the 'processUpdated' event by checking the event type and updating the task if necessary.
      * Reloads the task data if the event is relevant.
      *
      * @param {Object} data - The event data containing the process update information.
      */
     handleProcessUpdated(data) {
+      const elementDestinationValue = this.task.elementDestination?.value;
+
+      if (
+        elementDestinationValue &&
+        data?.params[0]?.tokenId === this.taskId &&
+        data?.params[0]?.requestStatus === 'ACTIVE'
+      ) {
+        window.location.href = elementDestinationValue;
+        return;
+      }
+
       if (
         ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
         && data.elementType === 'task'
@@ -954,7 +993,7 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    this.loadTask();
+    this.loadTask(true);
   },
   destroyed() {
     this.unsubscribeSocketListeners();
