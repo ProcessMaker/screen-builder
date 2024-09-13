@@ -286,6 +286,12 @@ Cypress.Commands.add("openAcordeon", (name) => {
     force: true
   });
 });
+Cypress.Commands.add("openAcordeonByLabel", (label) => {
+  cy.get(`button`).contains(label).click({
+    waitForAnimations: true,
+    force: true
+  });
+});
 
 Cypress.Commands.add("openAllAcordeon", () => {
   cy.openAcordeon("collapse-6");
