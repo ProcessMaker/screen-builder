@@ -302,7 +302,6 @@
           <b-card-body class="p-2 h-100 overflow-auto">
             <screen-templates
               ref="screenTemplates"
-              :my-templates-data="myTemplatesData"
               :shared-templates-data="sharedTemplatesData"
               @close-templates-panel="closeTemplatesPanel"
               @show-shared-templates="$emit('show-shared-templates')"
@@ -601,9 +600,6 @@ export default {
     showTemplatesPanel: {
       type: Boolean,
       default: false
-    },
-    myTemplatesData: {
-      type: Array,
     },
     sharedTemplatesData: {
       type: Array,
