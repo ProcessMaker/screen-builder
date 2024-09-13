@@ -260,7 +260,7 @@ export default {
         this.loadNextAssignedTask();
       }
     },
-    loadTask() {
+    loadTask(mounting = false) {
       if (!this.taskId) {
         return;
       }
@@ -276,7 +276,7 @@ export default {
           .getTasks(url)
           .then((response) => {
             this.task = response.data;
-            this.linkTask();
+            this.linkTask(mounting);
             this.checkTaskStatus();
             if (
               window.PM4ConfigOverrides
@@ -296,12 +296,27 @@ export default {
           });
       });
     },
-    linkTask() {
+    linkTask(mounting) {
       this.nodeId = this.task.element_id;
       this.listenForParentChanges();
       if (this.task.process_request.status === 'COMPLETED') {
         if (!this.taskPreview) {
           this.$emit('completed', this.task.process_request.id);
+          // When the process ends before the request is opened
+          if (mounting) {
+            // get end event element destination config
+            window.ProcessMaker.apiClient.get(`/requests/${this.requestId}/end-event-destination`)
+              .then((response) => {
+                if (!response.data.data.endEventDestination) {
+                  // by default it goes to summary
+                  window.location.href = `/requests/${this.requestId}`;
+                  return;
+                }
+
+                // process the end event destination
+                this.processCompletedRedirect(response.data.data, this.userId, this.requestId);
+              });
+          }
         }
       }
       if (this.taskPreview && this.task.status === "CLOSED") {
@@ -978,7 +993,7 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    this.loadTask();
+    this.loadTask(true);
   },
   destroyed() {
     this.unsubscribeSocketListeners();
