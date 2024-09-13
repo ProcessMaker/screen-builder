@@ -112,8 +112,6 @@
           :screen="screen"
           title="Default"
           :render-controls="displayBuilder"
-          :show-templates-panel="showTemplatesPanel"
-          :reshow-templates-panel="reshowTemplatesPanel"
           @change="updateConfig"
         >
           <default-loading-spinner />
@@ -448,8 +446,6 @@ export default {
         }
       },
       showTemplatesPanel: false,
-      reshowTemplatesPanel: false,
-      myTemplatesData: null,
       sharedTemplatesData: null,
     };
   },
@@ -704,10 +700,7 @@ export default {
       this.$refs.watchersPopup.show();
     },
     openTemplatesPanel() {
-      this.showTemplatesPanel = true;
-      this.reshowTemplatesPanel = true;
-      this.$emit('update-templates-panel', this.showTemplatesPanel);
-      window.ProcessMaker.EventBus.$emit("open-templates-panel");
+      this.$refs.builder.openTemplatesPanel();
     },
     openComputedProperties() {
       this.$refs.computedProperties.show();
