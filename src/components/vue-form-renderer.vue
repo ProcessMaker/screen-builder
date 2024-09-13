@@ -180,6 +180,13 @@ export default {
     this.scrollable = Scrollparent(this.$el);
 
     this.containerObserver.observe(this.$refs.formRendererContainer);
+    
+    ProcessMaker.EventBus.$on(
+      "save-clipboard",
+      (items) => {  
+        this.saveClipboarToLocalStorage(items);
+      },
+    );
   },
   methods: {
     ...mapActions("globalErrorsModule", [
@@ -362,7 +369,10 @@ export default {
       // Control coordinates
       const controlEl = entries[0].target.getBoundingClientRect();
       this.parseCss();
-    }
+    },
+    saveClipboarToLocalStorage(items){
+      localStorage.setItem("savedClipboard", JSON.stringify(items));
+    },
   }
 };
 </script>
