@@ -804,7 +804,6 @@ export default {
       this.updateProgress(progress, nonce);
     });
     this.$root.$on("update-clipboard", () => {
-      console.log('update-clipboard', this.clipboardItems);
       ProcessMaker.EventBus.$emit("save-clipboard", this.clipboardItems);
     });
     this.setGroupOrder(defaultGroupOrder);
