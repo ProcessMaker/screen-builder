@@ -519,7 +519,11 @@ export default {
         });
       }
       return warnings;
-    }
+    },
+     // Get clipboard items from Vuex store
+    clipboardItems() {
+      return this.$store.getters["clipboardModule/clipboardItems"];
+    },
   },
   created() {
     this.updateDataInput = debounce(this.updateDataInput, 1000);
@@ -602,6 +606,7 @@ export default {
       const savedWatchers = localStorage.getItem("savedWatchers");
       const customCSS = localStorage.getItem("customCSS");
       const computed = localStorage.getItem("computed");
+      const savedClipboard = localStorage.getItem("savedClipboard");  
 
       if (savedConfig) {
         const config = JSON.parse(savedConfig);
@@ -620,6 +625,11 @@ export default {
 
       if (computed) {
         this.computed = JSON.parse(computed);
+      }
+      if(savedClipboard) {
+        const clipboardsItems = JSON.parse(savedClipboard);
+
+        this.$store.dispatch("clipboardModule/addToClipboard", clipboardsItems);
       }
     },
     saveToLocalStorage() {

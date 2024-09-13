@@ -33,6 +33,7 @@ export default {
     addToClipboard(item) {
       const duplicate = _.cloneDeep(item); // Create a deep copy of the item
       this.$store.dispatch("clipboardModule/addToClipboard", duplicate); // Dispatch action to add item to the Vuex store
+      this.$root.$emit('update-clipboard');
     },
 
     /**
@@ -43,6 +44,7 @@ export default {
      */
     removeFromClipboard(item) {
       this.$store.dispatch("clipboardModule/removeFromClipboard", item); // Dispatch action to remove item from the Vuex store
+      this.$root.$emit('update-clipboard');
     },
 
     /**
