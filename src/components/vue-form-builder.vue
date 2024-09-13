@@ -1125,7 +1125,6 @@ export default {
     },
     openTemplatesPanel() {
       this.showTemplatesPanel = true;
-
     },
     closeTemplatesPanel() {
       this.showTemplatesPanel = false;
