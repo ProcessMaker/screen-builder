@@ -40,9 +40,9 @@ export default {
   mounted() {
   },
   methods: {
-    selectTemplate() {
-      this.$emit("template-selected", this.template.id);
-    },
+    // selectTemplate() {
+    //   this.$emit("template-selected", this.template.id);
+    // },
   },
 };
 </script>

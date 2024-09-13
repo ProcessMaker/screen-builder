@@ -29,7 +29,11 @@
       </b-button>
     </div>
     <div class="d-flex justify-content-center">
-      <div v-if="myTemplatesSelected" class="d-flex justify-content-center p-0" data-cy="my-templates-list">
+      <div
+        v-if="myTemplatesSelected"
+        class="d-flex justify-content-center p-0"
+        data-cy="my-templates-list"
+      >
         <screen-template-card
           v-for="template in myTemplatesData"
           :key="template.id"
@@ -37,7 +41,11 @@
           @template-selected="handleSelectedTemplate"
         />
       </div>
-      <div v-if="sharedTemplatesSelected" class="d-flex justify-content-center p-0">
+      <div
+        v-if="sharedTemplatesSelected"
+        class="d-flex justify-content-center p-0"
+        data-cy="shared-templates-list"
+      >
         <screen-template-card
           v-for="template in sharedTemplatesData"
           :key="template.id"
@@ -89,10 +97,7 @@
           "templates/screen?is_public=0",
         )
         .then((response) => {
-          console.log('my templates response', response);
-          console.log('my templatesresponse.data.data', response.data.data);
           this.myTemplatesData = response.data.data;
-          console.log('myTemplatesData in screen-templates.vue', this.myTemplatesData);
         })
         .catch((error) => {
           console.error(error);
@@ -104,10 +109,7 @@
           "templates/screen?is_public=1",
         )
         .then((response) => {
-          console.log('shared templates response', response);
-          console.log('shared templatesresponse.data.data', response.data.data);
           this.sharedTemplatesData = response.data.data;
-          console.log('sharedTemplatesData in screen-templates.vue', this.sharedTemplatesData);
         })
         .catch((error) => {
           console.error(error);
@@ -117,7 +119,9 @@
         console.log('hit handleSelectedTemplate');
       },
       showSharedTemplates() {
-        this.$emit('show-shared-templates');
+        this.myTemplatesSelected = false;
+        this.sharedTemplatesSelected = true;
+        this.fetchSharedTemplates();
       },
     },
     mounted() {
