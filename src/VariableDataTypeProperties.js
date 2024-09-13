@@ -30,7 +30,7 @@ function dataTypeFactory(options) {
 function dataFormatFactory() {
 
   return {
-    type: SelectDataTypeMask,
+    type: 'SelectDataTypeMask',
     field: 'dataMask',
     config: {
       label: 'Data Format',

@@ -634,7 +634,6 @@ export default {
       }
       if(savedClipboard) {
         const clipboardsItems = JSON.parse(savedClipboard);
-        console.log('this.clipboardItems', this.clipboardItems);
         this.$store.dispatch("clipboardModule/addToClipboard", clipboardsItems);
       }
     },
