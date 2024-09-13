@@ -803,6 +803,9 @@ export default {
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
     });
+    this.$root.$on("update-clipboard", () => {
+      ProcessMaker.EventBus.$emit("save-clipboard", this.clipboardItems);
+    });
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
