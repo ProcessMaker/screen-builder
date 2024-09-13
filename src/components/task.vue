@@ -307,7 +307,7 @@ export default {
             // get end event element destination config
             window.ProcessMaker.apiClient.get(`/requests/${this.requestId}/end-event-destination`)
               .then((response) => {
-                if (!response.data.data.endEventDestination) {
+                if (!response.data?.data?.endEventDestination) {
                   // by default it goes to summary
                   window.location.href = `/requests/${this.requestId}`;
                   return;
