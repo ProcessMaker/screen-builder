@@ -552,12 +552,6 @@ export default {
     });
 
     this.loadFromLocalStorage();
-    ProcessMaker.EventBus.$on(
-      "save-clipboard",
-      (items) => {  
-        this.saveClipboarToLocalStorage(items);
-      },
-    );
   },
   methods: {
     ...mapMutations("globalErrorsModule", { setStoreMode: "setMode" }),
@@ -634,11 +628,9 @@ export default {
       }
       if(savedClipboard) {
         const clipboardsItems = JSON.parse(savedClipboard);
+
         this.$store.dispatch("clipboardModule/addToClipboard", clipboardsItems);
       }
-    },
-    saveClipboarToLocalStorage(items){
-      localStorage.setItem("savedClipboard", JSON.stringify(items));
     },
     saveToLocalStorage() {
       localStorage.setItem("savedConfig", JSON.stringify(this.config));
