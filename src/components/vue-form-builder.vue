@@ -157,6 +157,7 @@
               swapThreshold: 0.5
             }"
             @input="updateConfig"
+            @change="onChange"
           >
             <div
               v-for="(element, index) in config[tabPage].items"
@@ -189,6 +190,15 @@
                   />
                   {{ element.config.name || element.label || $t("Field Name") }}
                   <div class="ml-auto">
+                    <clipboard-button
+                      :index="index"
+                      :config="element.config"
+                      :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      :addTitle="$t('Add to clipboard')"
+                      :removeTitle="$t('Remove from clipboard')"
+                      @addToClipboard="addToClipboard(config[currentPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
+                    />
                     <button
                       v-if="isAiSection(element) && aiPreview(element)"
                       data-test="apply-ai-btn"
@@ -244,6 +254,15 @@
                   />
                   {{ element.config.name || $t("Variable Name") }}
                   <div class="ml-auto">
+                    <clipboard-button
+                      :index="index"
+                      :config="element.config"
+                      :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      :addTitle="$t('Add to clipboard')"
+                      :removeTitle="$t('Remove from clipboard')"
+                      @addToClipboard="addToClipboard(config[currentPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
+                    />
                     <button
                       class="btn btn-sm btn-secondary mr-2"
                       :title="$t('Copy Control')"
@@ -474,6 +493,7 @@ import {
 } from "@processmaker/vue-form-elements";
 import Validator from "@chantouchsek/validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
+import Clipboard from "../mixins/Clipboard";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
@@ -488,7 +508,7 @@ import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 import TabsBar from "./TabsBar.vue";
 import Sortable from './sortable/Sortable.vue';
-
+import ClipboardButton from './ClipboardButton.vue';
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -556,8 +576,9 @@ export default {
     ...renderer,
     PagesDropdown,
     Sortable,
+    ClipboardButton,
   },
-  mixins: [HasColorProperty, testing],
+  mixins: [HasColorProperty, testing, Clipboard],
   props: {
     renderControls: {
       type: Boolean,
@@ -635,6 +656,11 @@ export default {
     };
   },
   computed: {
+    // Get clipboard items from Vuex store
+    clipboardItems() {
+      return this.$store.getters["clipboardModule/clipboardItems"];
+    },
+    
     sortedPages() {
       return [...this.config].sort((a, b) => a.order - b.order);
     },
@@ -713,7 +739,7 @@ export default {
         this.checkForCaptchaInLoops();
         this.$emit("change", this.config);
       },
-      deep: true
+      deep: true,
     },
     currentPage() {
       this.inspect();
