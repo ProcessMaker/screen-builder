@@ -52,10 +52,9 @@ const clipboardModule = {
     /**
      * Adds an items to the clipboard.
      * @param {Object} state - The state of the module.
-     * @param {any} item - The items to add.
+     * @param {any} items - The items to add.
      */
     ADD_TO_CLIPBOARD(state, items) {
-      debugger
       // Check if the input is an array, if not, wrap it as an array
       const itemsToAdd = Array.isArray(items) ? items : [items];
 
