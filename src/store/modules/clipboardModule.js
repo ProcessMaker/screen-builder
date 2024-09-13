@@ -50,12 +50,21 @@ const clipboardModule = {
    */
   mutations: {
     /**
-     * Adds an item to the clipboard.
+     * Adds an items to the clipboard.
      * @param {Object} state - The state of the module.
-     * @param {any} item - The item to add.
+     * @param {any} item - The items to add.
      */
-    ADD_TO_CLIPBOARD(state, item) {
-      state.clipboard.push(item);
+    ADD_TO_CLIPBOARD(state, items) {
+      debugger
+      // Check if the input is an array, if not, wrap it as an array
+      const itemsToAdd = Array.isArray(items) ? items : [items];
+
+      // Add each item only if it's not already in the clipboard
+      itemsToAdd.forEach(item => {
+        if (!state.clipboard.some(clipboardItem => clipboardItem.uuid === item.uuid)) {
+          state.clipboard.push(item);
+        }
+      });
     },
 
     /**
@@ -85,6 +94,9 @@ const clipboardModule = {
    * Actions are used to commit mutations and can contain asynchronous operations.
    */
   actions: {
+    addToClipboard({ commit }, items) {
+      commit('ADD_TO_CLIPBOARD', items);
+    },
     /**
      * Adds an item to the clipboard by committing the corresponding mutation.
      * @param {Object} context - The context object containing commit.
