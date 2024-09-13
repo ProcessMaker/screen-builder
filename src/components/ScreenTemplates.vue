@@ -34,7 +34,14 @@
         class="d-flex justify-content-center p-0"
         data-cy="my-templates-list"
       >
+        <b-card-body
+          v-if="noMyTemplatesFound"
+          class="p-2 h-100 overflow-auto"
+        >
+          <h5>No templates found.</h5>
+        </b-card-body>
         <screen-template-card
+          v-else
           v-for="template in myTemplatesData"
           :key="template.id"
           :template="template"
@@ -46,7 +53,14 @@
         class="d-flex justify-content-center p-0"
         data-cy="shared-templates-list"
       >
+        <b-card-body
+          v-if="noSharedTemplatesFound"
+          class="p-2 h-100 overflow-auto"
+        >
+          <h5>No templates found.</h5>
+        </b-card-body>
         <screen-template-card
+          v-else
           v-for="template in sharedTemplatesData"
           :key="template.id"
           :template="template"
@@ -73,17 +87,9 @@
         sharedTemplatesData: null,
         myTemplatesSelected: true,
         sharedTemplatesSelected: false,
+        noMyTemplatesFound: false,
+        noSharedTemplatesFound: false,
       };
-    },
-    watch: {
-      sharedTemplatesData() {
-        if (this.sharedTemplatesData !== null) {
-          console.log('SHARED TEMPLATES DATA NOT NULL', this.sharedTemplatesData);
-        this.sharedTemplatesSelected = true;
-        this.myTemplatesSelected = false;
-        console.log('sharedTemplatesData in screen-templates', this.sharedTemplatesData);
-        }
-      },
     },
     methods: {
       showMyTemplates() {
@@ -98,6 +104,9 @@
         )
         .then((response) => {
           this.myTemplatesData = response.data.data;
+          if (this.myTemplatesData.length === 0 || this.myTemplatesData === undefined) {
+            this.noMyTemplatesFound = true;
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -110,6 +119,9 @@
         )
         .then((response) => {
           this.sharedTemplatesData = response.data.data;
+          if (this.sharedTemplatesData.length === 0 || this.sharedTemplatesData === undefined) {
+            this.noSharedTemplatesFound = true;
+          }
         })
         .catch((error) => {
           console.error(error);
