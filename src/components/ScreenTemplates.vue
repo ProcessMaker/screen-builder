@@ -1,5 +1,8 @@
 <template>
-  <div data-cy="screen-templates-section">
+  <div
+    class="screen-templates-container"
+    data-cy="screen-templates-section"
+  >
     <div class="d-flex justify-content-between">
       <h6 class="pt-2">Select a Template</h6>
       <button
@@ -28,44 +31,48 @@
         Shared Templates
       </b-button>
     </div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center cards-container">
       <div
         v-if="myTemplatesSelected"
         class="d-flex justify-content-center p-0"
         data-cy="my-templates-list"
       >
-        <b-card-body
-          v-if="noMyTemplatesFound"
-          class="p-2 h-100 overflow-auto"
-        >
-          <h5>No templates found.</h5>
-        </b-card-body>
-        <screen-template-card
-          v-else
-          v-for="template in myTemplatesData"
-          :key="template.id"
-          :template="template"
-          @template-selected="handleSelectedTemplate"
-        />
+        <b-card-group>
+          <b-card-body
+            v-if="noMyTemplatesFound"
+            class="p-2 h-100 overflow-auto"
+          >
+            <h5>No templates found.</h5>
+          </b-card-body>
+          <screen-template-card
+            v-else
+            v-for="template in myTemplatesData"
+            :key="template.id"
+            :template="template"
+            @template-selected="handleSelectedTemplate"
+          />
+        </b-card-group>
       </div>
       <div
         v-if="sharedTemplatesSelected"
         class="d-flex justify-content-center p-0"
         data-cy="shared-templates-list"
       >
-        <b-card-body
-          v-if="noSharedTemplatesFound"
-          class="p-2 h-100 overflow-auto"
-        >
-          <h5>No templates found.</h5>
-        </b-card-body>
-        <screen-template-card
-          v-else
-          v-for="template in sharedTemplatesData"
-          :key="template.id"
-          :template="template"
-          @template-selected="handleSelectedTemplate"
-        />
+        <b-card-group>
+          <b-card-body
+            v-if="noSharedTemplatesFound"
+            class="p-2 h-100 overflow-auto"
+          >
+            <h5>No templates found.</h5>
+          </b-card-body>
+          <screen-template-card
+            v-else
+            v-for="template in sharedTemplatesData"
+            :key="template.id"
+            :template="template"
+            @template-selected="handleSelectedTemplate"
+          />
+        </b-card-group>
       </div>
     </div>
   </div>
@@ -143,11 +150,22 @@
 </script>
 
 <style lang="scss" scoped>
+.cards-container {
+  //display: block;
+  //flex-direction: column;
+  height: 100%;
+  overflow-x: scroll;
+}
+
   .panel-close-btn {
     background-color: transparent;
     border: none;
     color: #596372;
   }
+
+//.template-cards {
+// display: block;
+//}
 
   .template-tabs {
     padding: 4px;
@@ -164,7 +182,6 @@
     padding-left: 0px;
     padding-right: 0px;
     text-transform: none;
-    box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05), 0px 2px 4px -2px rgba(0, 0, 0, 0.05), 0px 1px 2px -1px rgb(0, 0, 0, 0.05), 0px 1px 0px -1px rgb(0, 0, 0, 0.05);
   }
 
   .my-templates-selected {
@@ -176,6 +193,7 @@
     font-size: 12px;
     padding-left: 0px;
     padding-right: 0px;
+    box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05), 0px 2px 4px -2px rgba(0, 0, 0, 0.05), 0px 1px 2px -1px rgb(0, 0, 0, 0.05), 0px 1px 0px -1px rgb(0, 0, 0, 0.05);
   }
 
   .shared-templates-selected {
@@ -187,6 +205,7 @@
     font-size: 12px;
     padding-left: 0px;
     padding-right: 0px;
+    box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05), 0px 2px 4px -2px rgba(0, 0, 0, 0.05), 0px 1px 2px -1px rgb(0, 0, 0, 0.05), 0px 1px 0px -1px rgb(0, 0, 0, 0.05);
   }
 
 </style>
