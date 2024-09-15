@@ -296,9 +296,8 @@
         no-body
         class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
-        <!--ADD NO TEMPLATES TO SHOW OPTION AND LOADING OPTION-->
         <div v-if="showTemplatesPanel">
-          <b-card-body class="p-2 h-100 overflow-auto">
+          <b-card-body class="p-2 h-100 overflow-auto screen-templates-column">
             <screen-templates
               ref="screenTemplates"
               :shared-templates-data="sharedTemplatesData"
@@ -1556,6 +1555,10 @@ $side-bar-font-size: 0.875rem;
 .inspector-column {
   max-width: 265px;
   font-size: $side-bar-font-size;
+}
+
+.screen-templates-column {
+  overflow-y: auto;
 }
 
 .form-control-ghost {

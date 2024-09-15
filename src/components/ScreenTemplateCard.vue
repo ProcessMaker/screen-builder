@@ -2,11 +2,21 @@
   <div>
     <b-card
       img-top
-      style="max-width: 20rem;"
-      class="mb-2 p-0"
+      class="mb-2 screenbuilder-template-card"
     >
-      <img class="thumbnail-image" v-if="thumbnail" :src="thumbnail" :alt="`${template.name}`"/>
-      <i v-else class="fas fa-palette thumbnail-icon"></i>
+      <div
+        v-if="thumbnail"
+        class="thumbnail-container thumbnail-image-container"
+      >
+        <img class="thumbnail-image" :src="thumbnail" :alt="`${template.name}`"/>
+      </div>
+      <div
+        v-else
+        class="thumbnail-container thumbnail-icon-container d-flex align-items-center justify-content-center"
+      >
+        <i class="p-4 fas fa-palette thumbnail-icon"></i>
+      </div>
+      <hr class="card-divider">
       <b-card-body>
         <div class="template-details">
           <span class="template-name d-block pt-1">{{ template.name }}</span>
@@ -49,11 +59,27 @@ export default {
 
 <style lang="scss" scoped>
 
-.screen-template-card {
-  // border: none;
+.screenbuilder-template-card {
+  width: 225px;
+  margin: 8px;
+  border: 1px solid #D7DDE5;
+  border-radius: 8px;
+  box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05), 0px 2px 4px -2px rgba(0, 0, 0, 0.05);;
 }
 
+.card-divider {
+  width: 100%;
+  margin: 0px;
+  background-color: #D7DDE5;
+}
 
+// .thumbnail-container {
+//   width: 247px;
+//   height: 133px;
+//   border: 2px solid #CDDDEE;
+//   border-radius: 7px;
+//   background-color: #fff;
+// }
 
 .thumbnail-container:hover,
 .thumbnail-container.active {
@@ -63,6 +89,12 @@ export default {
 
 .thumbnail-image {
   width: 100%;
+  border-radius: 8px 8px 0px 0px;
+}
+
+.thumbnail-image-container {
+  border-radius: 8px;
+  padding: 0px !important;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -74,19 +106,21 @@ export default {
 }
 
 .template-details {
-  color: #556271;
+  padding: 10px;
 }
 
 .template-name {
   font-size: 14px;
   font-weight: 600;
-  line-height: 24px;
+  line-height: 20px;
+  color: #2F343B;
 }
 
 .template-description {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 400;
   line-height: 18px;
+  color: #4E5663;
 }
 
 </style>
