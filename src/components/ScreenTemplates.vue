@@ -45,7 +45,6 @@
           v-for="template in myTemplatesData"
           :key="template.id"
           :template="template"
-          @template-selected="handleSelectedTemplate"
         />
       </div>
       <div
@@ -64,7 +63,6 @@
           v-for="template in sharedTemplatesData"
           :key="template.id"
           :template="template"
-          @template-selected="handleSelectedTemplate"
         />
       </div>
     </div>
@@ -126,9 +124,6 @@
         .catch((error) => {
           console.error(error);
         });
-      },
-      handleSelectedTemplate() {
-        console.log('hit handleSelectedTemplate');
       },
       showSharedTemplates() {
         this.myTemplatesSelected = false;
