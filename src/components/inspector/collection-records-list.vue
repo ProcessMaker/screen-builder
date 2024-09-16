@@ -7,7 +7,6 @@
         v-model="collectionId"
         :options="collections"
         data-cy="inspector-collection"
-        @change="resetFields"
       />
     </div>
   </div>
@@ -20,10 +19,7 @@ import ScreenVariableSelector from "../screen-variable-selector.vue";
 
 const CONFIG_FIELDS = [
   "collectionId",
-  "labelField",
-  "valueField",
   "pmql",
-  "unique",
   "dataRecordList"
 ];
 
@@ -32,18 +28,15 @@ export default {
     MustacheHelper,
     ScreenVariableSelector
   },
-  props: ["value", "record-pmql"],
+  props: ["value"],
   data() {
     return {
       collections: [],
       fields: [],
       collectionId: null,
-      labelField: null,
-      valueField: null,
       pmql: "",
       unique: false,
       dataRecordList: [],
-      pmqlrec: null,
     };
   },
   computed: {
@@ -92,18 +85,13 @@ export default {
   },
   methods: {
     onCollectionChange() {
-      //console.log("consulta nuevamente con pmql: ", this.pmqlrec);
       let param = {params:{pmql:this.pmql}};
+      const validParam = this.validatePmqlString(param.params.pmql) ? param : null;
       this.$dataProvider
-        .getCollectionRecordsList(this.collectionId, param)
+        .getCollectionRecordsList(this.collectionId, validParam)
         .then((response) => {
           this.dataRecordList = response.data;
-          //this.$emit('collection-change', this.dataRecordList);
         });
-    },
-    resetFields() {
-      this.labelField = null;
-      this.valueField = null;
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
@@ -117,6 +105,10 @@ export default {
           })
         ];
       });
+    },
+    validatePmqlString(pmql) {
+      const pmqlRegex = /^[a-zA-Z_][a-zA-Z0-9_]*\s*(=|<|>|<=|>=|!=)\s*('[^']*'|[0-9]+)$/;
+      return pmqlRegex.test(pmql);
     },
     getFields() {
       if (!this.collectionId) {
