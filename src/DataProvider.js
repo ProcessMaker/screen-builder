@@ -221,7 +221,6 @@ export default {
     if (authParams) {
       query = `?${new URLSearchParams(authParams).toString()}`;
     }
-
     return query;
   },
 
@@ -283,6 +282,48 @@ export default {
         if (error.response && error.response.status === 404) {
           const data = { data: [] };
           return [data, nonce];
+        }
+        throw error;
+      });
+  },
+
+  getCollectionRecordsList(collectionId, options = null) {
+
+    return this.get(
+      `/collections/${collectionId}/records${this.authQueryString()}`,
+      options
+    )
+      .then((response) => {
+        const data = response ? response.data : null;
+        if (!data) {
+          throw new Error(i18next.t("No data returned"));
+        }
+        return data;
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          const data = { data: [] };
+          return [data, nonce];
+        }
+        throw error;
+      });
+  },
+
+  getCollectionRecordsView(collectionId, recordId) {
+    return this.get(
+      `/collections/${collectionId}/records/${recordId}`
+    )
+      .then((response) => {
+        const data = response ? response.data : null;
+        if (!data) {
+          throw new Error(i18next.t("No data returned"));
+        }
+        return data;
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          const data = { data: [] };
+          return data;
         }
         throw error;
       });
