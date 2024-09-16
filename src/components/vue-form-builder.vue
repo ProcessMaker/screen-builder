@@ -296,14 +296,15 @@
         no-body
         class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
       >
-        <div v-if="myTemplatesData && showTemplatesPanel">
+        <!--ADD NO TEMPLATES TO SHOW OPTION AND LOADING OPTION-->
+        <div v-if="showTemplatesPanel & !hideTemplatesPanel">
+        <!--{{ templatesPanelComp }}-->
           <b-card-body class="p-2 h-100 overflow-auto">
             <screen-templates
               ref="screenTemplates"
-              v-model="templates"
               :my-templates-data="myTemplatesData"
               :shared-templates-data="sharedTemplatesData"
-              @close-templates-panel="$emit('close-templates-panel')"
+              @close-templates-panel="closeTemplatesPanel"
               @show-shared-templates="$emit('show-shared-templates')"
             />
           </b-card-body>
@@ -657,9 +658,14 @@ export default {
       collapse: {},
       groupOrder: {},
       searchProperties: ['name'],
+      hideTemplatesPanel: false,
     };
   },
   computed: {
+  // templatesPanelComp() {
+  //   console.log('SHOWTEMPLATESPANEL =', this.showTemplatesPanel);
+  //   console.log('HIDETEMPLATESPANEL =', this.hideTemplatesPanel);
+  // },
     sortedPages() {
       return [...this.config].sort((a, b) => a.order - b.order);
     },
@@ -1291,7 +1297,7 @@ export default {
       });
     },
     inspect(element = {}) {
-      this.$emit('close-templates-panel');
+      this.closeTemplatesPanel();
       this.inspection = element;
       this.selected = element;
       const defaultAccordion = this.accordions.find(
@@ -1425,7 +1431,10 @@ export default {
       this.updateState();
       this.inspect(clone);
     },
-
+    closeTemplatesPanel() {
+      this.hideTemplatesPanel = true;
+      window.ProcessMaker.EventBus.$emit("close-templates-panel");
+    },
   }
 };
 </script>

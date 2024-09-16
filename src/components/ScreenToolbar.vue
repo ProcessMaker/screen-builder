@@ -22,6 +22,15 @@
         {{ $t("Redo") }}
       </b-button>
       <b-button
+        class="screen-toolbar-button"
+        variant="link"
+        data-cy="screen-templates"
+        @click="$emit('open-templates')"
+      >
+        <i class="fas fa-palette" />
+        {{ $t("Templates") }}
+      </b-button>
+      <b-button
         type="button"
         class="screen-toolbar-button"
         variant="link"

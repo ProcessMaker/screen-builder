@@ -52,6 +52,7 @@
             <screen-toolbar
               @undo="$refs.builder.undo()"
               @redo="$refs.builder.redo()"
+              @open-templates="openTemplatesPanel"
               @open-calc="openComputedProperties"
               @open-customCss="openCustomCSS"
               @open-watchers="openWatchersPopup"
@@ -111,6 +112,8 @@
           :screen="screen"
           title="Default"
           :render-controls="displayBuilder"
+          :show-templates-panel="showTemplatesPanel"
+          :reshow-templates-panel="reshowTemplatesPanel"
           @change="updateConfig"
         >
           <default-loading-spinner />
@@ -443,7 +446,11 @@ export default {
         minimap: {
           enabled: false
         }
-      }
+      },
+      showTemplatesPanel: false,
+      reshowTemplatesPanel: false,
+      myTemplatesData: null,
+      sharedTemplatesData: null,
     };
   },
   computed: {
@@ -695,6 +702,12 @@ export default {
     },
     openWatchersPopup() {
       this.$refs.watchersPopup.show();
+    },
+    openTemplatesPanel() {
+      this.showTemplatesPanel = true;
+      this.reshowTemplatesPanel = true;
+      this.$emit('update-templates-panel', this.showTemplatesPanel);
+      window.ProcessMaker.EventBus.$emit("open-templates-panel");
     },
     openComputedProperties() {
       this.$refs.computedProperties.show();
