@@ -10,7 +10,7 @@
       :name="name"
       class="form-control"
       :class="classList"
-      :type="inputType"
+      type="text"
       @change="onChange"
     />
     <input
@@ -21,7 +21,7 @@
       :name="name"
       class="form-control"
       :class="classList"
-      :type="inputType"
+      :type="dataType"
       :maxlength="maxlength"
       @change="onChange"
     />
@@ -229,7 +229,8 @@ export default {
       inputType: '',
       iconBtn: '',
       labelBtn: '',
-      errorEncryptedField: ''
+      errorEncryptedField: '',
+      concealExecuted: false,
     };
   },
   computed: {
@@ -249,7 +250,16 @@ export default {
         return null;
       }
       return node.content;
-    }
+    },
+    mode() {
+      return this.$root.$children[0].mode;
+    },
+    inStandAloneMode() {
+      return this.mode === 'preview' && window.exampleScreens !== undefined;
+    },
+    inPreviewMode() {
+      return this.mode === 'preview' && this.requestId === null;
+    },
   },
   watch: {
     value(value) {
@@ -258,9 +268,22 @@ export default {
       }
     },
     localValue(value) {
-      // To Do: Add logic for the encrypted fields
-      if (value !== this.value) {
-        this.$emit("input", this.convertToData(value));
+      if (!this.encryptedConfig?.encrypted) {
+        // Normal behaviour
+        if (value !== this.value) {
+          this.$emit("input", this.convertToData(value));
+        }
+      } else {
+        // Encrypted field behaviour
+        if (!this.concealExecuted) {
+          if (value !== this.value) {
+            this.$emit("input", this.convertToData(value));
+          }
+        } else {
+          if (uuidValidate(value)) {
+            this.$emit("input", value);
+          }
+        }
       }
     }
   },
@@ -277,6 +300,7 @@ export default {
         this.inputType = "password";
         this.iconBtn = "fas fa-eye";
         this.labelBtn = this.$t("Reveal");
+        this.concealExecuted = true;
         this.componentConfig.readonly = true;
       } else {
         this.inputType = "text";
@@ -285,8 +309,8 @@ export default {
         this.componentConfig.readonly = false;
       }
     } else {
-        this.inputType = this.dataType;
-      }
+      this.inputType = this.dataType;
+    }
   },
   methods: {
     onChange() {
@@ -358,47 +382,68 @@ export default {
         dateTime: ["####-##-## ##:##"]
       };
     },
+    afterEncrypt(encryptedValue) {
+      // Change controls appearance
+      this.inputType = "password";
+      this.iconBtn = "fas fa-eye";
+      this.labelBtn = this.$t("Reveal");
+      this.concealExecuted = true;
+      this.componentConfig.readonly = true;
+      this.errorEncryptedField = "";
+
+      // Assign uuid from encrypted data
+      this.localValue = encryptedValue;
+    },
+    afterDecrypt(decryptedValue) {
+      // Change controls appearance
+      this.inputType = this.dataType;
+      this.iconBtn = "fas fa-eye-slash";
+      this.labelBtn = this.$t("Conceal");
+      this.componentConfig.readonly = false;
+
+      // Assign value decrypted
+      this.localValue = decryptedValue;
+    },
     concealOrReveal() {
       // Execute only if "encrypted" attribute is enabled
       if (this.encryptedConfig?.encrypted) {
         if (this.inputType === "text") {
           if (this.localValue !== "") {
-            // Build data to send
-            const dataToEncrypt = {
-              request_id: this.requestId,
-              field_name: this.name,
-              plain_text: this.localValue,
-              screen_id: this.$root.task?.screen?.screen_id
-            };
+            if (this.inStandAloneMode || !this.inPreviewMode) {
+              // Build data to send
+              const dataToEncrypt = {
+                request_id: this.requestId,
+                field_name: this.name,
+                plain_text: this.localValue,
+                screen_id: this.$root.task?.screen?.screen_id
+              };
 
-            // Call endpoint to encrypt data
-            window.ProcessMaker.apiClient
-              .post("encrypted_data/encryptText", dataToEncrypt)
-              .then((response) => {
-                // Change controls appearance
-                this.inputType = "password";
-                this.iconBtn = "fas fa-eye";
-                this.labelBtn = this.$t("Reveal");
-                this.componentConfig.readonly = true;
-                this.errorEncryptedField = "";
-
-                // Assign uuid from encrypted data
-                this.localValue = response;
-              })
-              .catch((err) => {
-                const { data } = err.response;
-                if (data.message) {
-                  this.errorEncryptedField = data.message;
-                }
-              });
+              // Call endpoint to encrypt data
+              window.ProcessMaker.apiClient
+                .post("encrypted_data/encryptText", dataToEncrypt)
+                .then((response) => {
+                  const v = response?.data !== undefined ? response?.data : response;
+                  this.afterEncrypt(v);
+                })
+                .catch((err) => {
+                  const { data } = err.response;
+                  if (data.message) {
+                    this.errorEncryptedField = data.message;
+                  }
+                });
+            } else {
+              const response = this.localValue;
+              this.afterEncrypt(response);
+            }
           } else {
             this.errorEncryptedField = this.$t(
               "The current value is empty but a value is required. Please provide a valid value."
             );
           }
         } else {
-          // Build data to send
-          const dataToDecrypt = {
+          if (this.inStandAloneMode || !this.inPreviewMode) {
+            // Build data to send
+            const dataToDecrypt = {
               request_id: this.requestId,
               field_name: this.name,
               screen_id: this.$root.task?.screen?.screen_id
@@ -408,14 +453,8 @@ export default {
             window.ProcessMaker.apiClient
               .post("encrypted_data/decryptText", dataToDecrypt)
               .then((response) => {
-                // Change controls appearance
-                this.inputType = this.dataType;
-                this.iconBtn = "fas fa-eye-slash";
-                this.labelBtn = this.$t("Conceal");
-                this.componentConfig.readonly = false;
-
-                // Assign value decrypted
-                this.localValue = response;
+                const v = response?.data !== undefined ? response?.data : response;
+                this.afterDecrypt(v);
               })
               .catch((err) => {
                 const { data } = err.response;
@@ -423,9 +462,13 @@ export default {
                   this.errorEncryptedField = data.message;
                 }
               });
+          } else {
+            const response = this.localValue;
+            this.afterDecrypt(response);
+          }
         }
       }
-    }
+    },
   }
 };
 </script>
