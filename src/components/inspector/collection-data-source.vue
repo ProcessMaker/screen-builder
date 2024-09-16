@@ -50,7 +50,7 @@
   <script>
 
   import CollectionRecordsList from "./collection-records-list.vue"
-  import CollectionDisplayMode from "./collection-display-mode.vue"
+
   const CONFIG_FIELDS = [
     "collectionFields",
     "pmql",
@@ -59,8 +59,7 @@
   ];
   export default {
     components: {
-      CollectionRecordsList,
-      CollectionDisplayMode
+      CollectionRecordsList
     },
     props: ["value", "screenType"],
     data() {
