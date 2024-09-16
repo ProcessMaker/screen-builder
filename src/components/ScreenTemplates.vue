@@ -1,7 +1,7 @@
 <template>
   <div data-cy="screen-templates-section">
     <div class="d-flex justify-content-between">
-      <h6 class="pt-2">Select a Template</h6>
+      <h6 class="pt-2">{{ $t("Select a Template") }}</h6>
       <button
         class="panel-close-btn"
         @click="$emit('close-templates-panel')"
@@ -17,7 +17,7 @@
         :class="{ 'my-templates-selected': myTemplatesSelected }"
         data-cy="my-templates-tab"
       >
-        My Templates
+        {{ $t("My Templates") }}
       </b-button>
       <b-button
         @click="showSharedTemplates"
@@ -25,24 +25,44 @@
         :class="{ 'shared-templates-selected': sharedTemplatesSelected }"
         data-cy="shared-templates-tab"
       >
-        Shared Templates
+        {{ $t("Shared Templates") }}
       </b-button>
     </div>
     <div class="d-flex justify-content-center">
-      <div v-if="myTemplatesSelected" class="d-flex justify-content-center p-0">
+      <div
+        v-if="myTemplatesSelected"
+        class="d-flex justify-content-center p-0"
+        data-cy="my-templates-list"
+      >
+        <b-card-body
+          v-if="noMyTemplatesFound"
+          class="p-2 h-100 overflow-auto"
+        >
+          <h5>{{ $t("No templates found.") }}</h5>
+        </b-card-body>
         <screen-template-card
+          v-else
           v-for="template in myTemplatesData"
           :key="template.id"
           :template="template"
-          @template-selected="handleSelectedTemplate"
         />
       </div>
-      <div v-if="sharedTemplatesSelected" class="d-flex justify-content-center p-0">
+      <div
+        v-if="sharedTemplatesSelected"
+        class="d-flex justify-content-center p-0"
+        data-cy="shared-templates-list"
+      >
+        <b-card-body
+          v-if="noSharedTemplatesFound"
+          class="p-2 h-100 overflow-auto"
+        >
+          <h5>{{ $t("No templates found.") }}</h5>
+        </b-card-body>
         <screen-template-card
+          v-else
           v-for="template in sharedTemplatesData"
           :key="template.id"
           :template="template"
-          @template-selected="handleSelectedTemplate"
         />
       </div>
     </div>
@@ -59,38 +79,60 @@
     mounted() {
         console.log('screen-templates component mounted');
     },
-    props: ['myTemplatesData', 'sharedTemplatesData'],
     data() {
       return {
+        myTemplatesData: null,
+        sharedTemplatesData: null,
         myTemplatesSelected: true,
         sharedTemplatesSelected: false,
+        noMyTemplatesFound: false,
+        noSharedTemplatesFound: false,
       };
-    },
-    watch: {
-      sharedTemplatesData() {
-        if (this.sharedTemplatesData !== null) {
-          console.log('SHARED TEMPLATES DATA NOT NULL', this.sharedTemplatesData);
-        this.sharedTemplatesSelected = true;
-        this.myTemplatesSelected = false;
-        console.log('sharedTemplatesData in screen-templates', this.sharedTemplatesData);
-        }
-      },
     },
     methods: {
       showMyTemplates() {
         this.myTemplatesSelected = true;
         this.sharedTemplatesSelected = false;
-        console.log('myTemplatesData in screen-templates', this.myTemplatesData);
+        this.fetchMyTemplates();
+      },
+      fetchMyTemplates() {
+        ProcessMaker.apiClient
+        .get(
+          "templates/screen?is_public=0",
+        )
+        .then((response) => {
+          this.myTemplatesData = response.data.data;
+          if (this.myTemplatesData.length === 0 || this.myTemplatesData === undefined) {
+            this.noMyTemplatesFound = true;
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      },
+      fetchSharedTemplates() {
+      ProcessMaker.apiClient
+        .get(
+          "templates/screen?is_public=1",
+        )
+        .then((response) => {
+          this.sharedTemplatesData = response.data.data;
+          if (this.sharedTemplatesData.length === 0 || this.sharedTemplatesData === undefined) {
+            this.noSharedTemplatesFound = true;
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       },
       showSharedTemplates() {
-        this.$emit('show-shared-templates');
+        this.myTemplatesSelected = false;
+        this.sharedTemplatesSelected = true;
+        this.fetchSharedTemplates();
       },
     },
     mounted() {
       this.showMyTemplates();
-      this.$on('shared-templates-loaded', () => {
-      console.log('Shared templates data received in screen-templates');
-    });
     }
   };
 </script>
