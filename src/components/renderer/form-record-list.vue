@@ -17,13 +17,8 @@
     </div>
     <div v-if="!value && !tableData.data">
       {{ $t("This record list is empty or contains no data.") }}
-      <!-- <p>this.collectionData Empty value:{{ this.collectionData }}</p> -->
     </div>
     <template v-else>
-        <!-- <p>tableFields:{{ tableFields }}</p><br>
-        <p>this.collectionData:{{ this.collectionData }}</p> -->
-        <!-- <p>tableData.data:{{ tableData.data }}</p> -->
-        <!-- <p>this.collectionData:{{ this.collectionData }}</p> -->
         <b-table
           ref="vuetable"
           :per-page="perPage"
@@ -253,23 +248,6 @@ export default {
     };
   },
   computed: {
-    // col: {
-    //   get() {
-    //     console.log("en Record List DATA GET");
-    //     return null;
-    //   },
-    //   set(data) {
-    //     // Object.keys(data).forEach((variable) => {
-    //     //   this.validationData && this.$set(this.validationData, variable, data[variable]);
-    //     // });
-
-    //     // if (this.collection) {
-    //     //   this.$set(this.collection, 'data', Array.isArray(data) ? data : [data]);
-    //     //   this.$set(this.collection, 'screen', this.screenCollectionId);
-    //     // }
-    //     console.log("en Record List DATA SET: ", data);
-    //   },
-    // },
     popupConfig() {
       const config = [];
       config[this.form] = this.formConfig[this.form];
@@ -303,14 +281,10 @@ export default {
       console.log("refs vuetable not exists");
     },
     tableData() {
-     // const value = this.value || [];
-      // const from = this.paginatorPage - 1;
-
       const value = Object.keys(this.collectionData).length !== 0 ? this.collectionData : (this.value || []);
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
-      //console.log("value: ",value);
       const data = {
         total: value.length,
         per_page: this.perPage,
@@ -323,7 +297,6 @@ export default {
         data: value,
         lastSortConfig: false
       };
-      //console.log("data: ",data);
       return data;
     },
     // The fields used for our vue table
@@ -342,12 +315,6 @@ export default {
     }
   },
   watch: {
-    // source(source) {
-    //   console.log("En watch source: ", source);
-    // },
-    collectionFields(collectionFields) {
-      //console.log("escucha COL desde Record List");
-    },
     "tableData.total": {
       deep: true,
       handler(total) {
@@ -369,9 +336,6 @@ export default {
     if(this.source?.collectionFields?.dataRecordList) {
       this.setCollectionIntoList(this.source.collectionFields.dataRecordList);
     }
-    console.log("collectionData: ", this.collectionData);
-    console.log("tableData: ", this.tableData);
-    console.log("LLEGA SOURCE: ", this.source);
   },
   methods: {
     setCollectionIntoList(array) {
@@ -379,20 +343,18 @@ export default {
 
       array.forEach((row) => {
         if (row.hasOwnProperty('data')) {
-          const dataObject = row.data; // Accedemos al objeto dentro de "data"
+          const dataObject = row.data;
           const extracted = {};
 
-          // Recorremos las llaves y valores de "data"
           for (const [key, value] of Object.entries(dataObject)) {
-            extracted[key] = value; // Almacenamos cada llave y valor en el objeto "extracted"
+            extracted[key] = value;
           }
 
-          result.push(extracted); // Agregamos el objeto con las llaves y valores al array de resultados
+          result.push(extracted);
         }
       });
-
+      //sets Collection result(columns and rows) into this.collectionData
       this.collectionData = result;
-      //this.tableData.data = result;
     },
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
