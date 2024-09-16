@@ -40,20 +40,12 @@ export default {
   mounted() {
   },
   methods: {
-    // selectTemplate() {
-    //   this.$emit("template-selected", this.template.id);
-    // },
+    
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
-.screen-template-card {
-  // border: none;
-}
-
-
 
 .thumbnail-container:hover,
 .thumbnail-container.active {
