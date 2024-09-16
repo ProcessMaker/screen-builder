@@ -10,10 +10,7 @@
         />
       </div>
       <div class="mt-2" v-if="sourceOptions === 'Collection'">
-         <!-- <CollectionRecordsList :value="'abc'"/> -->
-         <!-- <CollectionRecordsList 
-         v-model="col"
-         @collection-change="handleCollectionChange"/> -->
+
          <CollectionRecordsList 
          v-model="collectionFields"
          :record-pmql="pmql"/>
@@ -32,20 +29,36 @@
       <small class="form-text text-muted">{{
         $t("Advanced data search")
       }}</small>
+        <label for="collectionsource">{{ $t("Data Selection") }}</label>
+
+        <b-form-select
+          id="dataselectionsource"
+          v-model="dataSelectionOptions"
+          :options="dataSelectionDisplayOptions"
+          data-cy="inspector-collection-data-selection"
+        />
+        <small class="form-text text-muted">{{
+        $t("The user can select specific data to be stored into a variable")
+      }}</small>
+
+        <label>{{ $t("Variable to store selection") }}</label>
+        <b-input id="storeSelection" name="storeSelection" aria-placeholder="Variable name"></b-input>
+
       </div>
     </div>
   </template>
   <script>
-  //import ScreenVariableSelector from "../screen-variable-selector.vue";
+
   import CollectionRecordsList from "./collection-records-list.vue"
   import CollectionDisplayMode from "./collection-display-mode.vue"
   const CONFIG_FIELDS = [
     "collectionFields",
-    "pmql"
+    "pmql",
+    "sourceOptions"
+
   ];
   export default {
     components: {
-      //ScreenVariableSelector
       CollectionRecordsList,
       CollectionDisplayMode
     },
@@ -53,22 +66,25 @@
     data() {
       return {
         fields: [],
-        sourceOptions: null,
+        sourceOptions: "Variable",
         submitCollectionCheck: true,
         sourceDisplayOptions: [],
         collectionFields: [],
         pmql: null,
-        mod: String,
+        sourceDisplayOptions: [
+        {
+          text: this.$t('Variable'),
+          value: 'Variable',
+        },
+        {
+          text: this.$t('Collection'),
+          value: 'Collection',
+        },
+      ]
       };
-    },
-    mounted() {
-      this.getFields();
     },
     computed: {
       options() {
-        // console.log("en compute oiptions nuevo data source retorna: ", Object.fromEntries(
-        //   CONFIG_FIELDS.map((field) => [field, this[field]])
-        // ));
         return Object.fromEntries(
           CONFIG_FIELDS.map((field) => [field, this[field]])
         );
@@ -80,24 +96,17 @@
           if (!value) {
             return;
           }
-          //console.log("en value nuevo data source: ", value);
           CONFIG_FIELDS.forEach((field) => (this[field] = value[field]));
         },
         immediate: true
       },
       sourceOptions: {
         handler() {
-          //console.log("En handler sourceOptions")
-        }
-      },
-      collectionFields: {
-        handler(newCol) {
-            console.log("handler col: ", newCol);
+           
         }
       },
       pmql: {
         handler(newPmql) {
-            //console.log("handler pmql: ", newPmql);
             this.$root.$emit("change-pmql", newPmql);
         }
       },
@@ -106,28 +115,10 @@
       },
       options: {
         handler() {
-            //console.log("EMit nuevo data sources: ", this.options);
           this.$emit("input", this.options);
         },
         deep: true
       }
     },
-    methods: {
-    handleModeChange(value) {
-      //console.log('Mode cambió:', value);
-      // Aquí puedes manejar el cambio en el componente B
-    },
-    // handleCollectionChange(value) {
-    //   //console.log('Collection cambió:', value);
-    //   this.collectionFields = value;
-    //   // Aquí puedes manejar el cambio en el componente B
-    // },
-      getFields() {
-        this.sourceDisplayOptions = [
-          { value: "Variable", text: "Variable" },
-          { value: "Collection", text: "Collection" }
-        ];
-      }
-    }
   };
   </script>
