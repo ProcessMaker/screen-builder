@@ -1,7 +1,7 @@
 <template>
   <div data-cy="screen-templates-section">
     <div class="d-flex justify-content-between">
-      <h6 class="pt-2">Select a Template</h6>
+      <h6 class="pt-2">{{ $t("Select a Template") }}</h6>
       <button
         class="panel-close-btn"
         @click="$emit('close-templates-panel')"
@@ -17,7 +17,7 @@
         :class="{ 'my-templates-selected': myTemplatesSelected }"
         data-cy="my-templates-tab"
       >
-        My Templates
+        {{ $t("My Templates") }}
       </b-button>
       <b-button
         @click="showSharedTemplates"
@@ -25,7 +25,7 @@
         :class="{ 'shared-templates-selected': sharedTemplatesSelected }"
         data-cy="shared-templates-tab"
       >
-        Shared Templates
+        {{ $t("Shared Templates") }}
       </b-button>
     </div>
     <div class="d-flex justify-content-center">
@@ -38,7 +38,7 @@
           v-if="noMyTemplatesFound"
           class="p-2 h-100 overflow-auto"
         >
-          <h5>No templates found.</h5>
+          <h5>{{ $t("No templates found.") }}</h5>
         </b-card-body>
         <screen-template-card
           v-else
@@ -57,7 +57,7 @@
           v-if="noSharedTemplatesFound"
           class="p-2 h-100 overflow-auto"
         >
-          <h5>No templates found.</h5>
+          <h5>{{ $t("No templates found.") }}</h5>
         </b-card-body>
         <screen-template-card
           v-else
