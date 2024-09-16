@@ -330,7 +330,7 @@
               v-model="accordion.open"
             >
               <component
-                v-if="shouldShow(item,accordion)"
+                v-if="shouldShow(item)"
                 :is="item.type"
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :key="index"
