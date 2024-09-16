@@ -15,68 +15,73 @@
         </button>
       </div>
     </div>
-    <div v-if="!value">
+    <div v-if="!value && !tableData.data">
       {{ $t("This record list is empty or contains no data.") }}
+      <!-- <p>this.collectionData Empty value:{{ this.collectionData }}</p> -->
     </div>
     <template v-else>
-      <b-table
-        ref="vuetable"
-        :per-page="perPage"
-        :data-manager="dataManager"
-        :fields="tableFields"
-        :items="tableData.data"
-        :sort-compare-options="{ numeric: false }"
-        :sort-null-last="true"
-        sort-icon-left
-        :css="css"
-        :empty-text="$t('No Data Available')"
-        :current-page="currentPage"
-        data-cy="table"
-      >
-        <template #cell()="{ index, field, item }">
-          <template v-if="isFiledownload(field, item)">
-            <span href="#" @click="downloadFile(item, field.key, index)">{{
-              mustache(field.key, item)
-            }}</span>
+        <!-- <p>tableFields:{{ tableFields }}</p><br>
+        <p>this.collectionData:{{ this.collectionData }}</p> -->
+        <!-- <p>tableData.data:{{ tableData.data }}</p> -->
+        <!-- <p>this.collectionData:{{ this.collectionData }}</p> -->
+        <b-table
+          ref="vuetable"
+          :per-page="perPage"
+          :data-manager="dataManager"
+          :fields="tableFields"
+          :items="tableData.data"
+          :sort-compare-options="{ numeric: false }"
+          :sort-null-last="true"
+          sort-icon-left
+          :css="css"
+          :empty-text="$t('No Data Available')"
+          :current-page="currentPage"
+          data-cy="table"
+        >
+          <template #cell()="{ index, field, item }">
+            <template v-if="isFiledownload(field, item)">
+              <span href="#" @click="downloadFile(item, field.key, index)">{{
+                mustache(field.key, item)
+              }}</span>
+            </template>
+            <template v-else-if="isImage(field, item)">
+              <img :src="mustache(field.key, item)" style="record-list-image" />
+            </template>
+            <template v-else-if="isWebEntryFile(field, item)">
+              {{ formatIfWebEntryFile(field, item) }}
+            </template>
+            <template v-else>
+              {{ formatIfDate(mustache(field.key, item)) }}
+            </template>
+  
           </template>
-          <template v-else-if="isImage(field, item)">
-            <img :src="mustache(field.key, item)" style="record-list-image" />
-          </template>
-          <template v-else-if="isWebEntryFile(field, item)">
-            {{ formatIfWebEntryFile(field, item) }}
-          </template>
-          <template v-else>
-            {{ formatIfDate(mustache(field.key, item)) }}
-          </template>
-
-        </template>
-        <template #cell(__actions)="{ index, item }">
-          <div class="actions">
-            <div
-              class="btn-group btn-group-sm"
-              role="group"
-              aria-label="Actions"
-            >
-              <button
-                class="btn btn-primary"
-                :title="$t('Edit')"
-                data-cy="edit-row"
-                @click="showEditForm(index, item.row_id)"
+          <template #cell(__actions)="{ index, item }">
+            <div class="actions">
+              <div
+                class="btn-group btn-group-sm"
+                role="group"
+                aria-label="Actions"
               >
-                <i class="fas fa-edit" />
-              </button>
-              <button
-                class="btn btn-danger"
-                :title="$t('Delete')"
-                data-cy="remove-row"
-                @click="showDeleteConfirmation(index, item.row_id)"
-              >
-                <i class="fas fa-trash-alt" />
-              </button>
+                <button
+                  class="btn btn-primary"
+                  :title="$t('Edit')"
+                  data-cy="edit-row"
+                  @click="showEditForm(index, item.row_id)"
+                >
+                  <i class="fas fa-edit" />
+                </button>
+                <button
+                  class="btn btn-danger"
+                  :title="$t('Delete')"
+                  data-cy="remove-row"
+                  @click="showDeleteConfirmation(index, item.row_id)"
+                >
+                  <i class="fas fa-trash-alt" />
+                </button>
+              </div>
             </div>
-          </div>
-        </template>
-      </b-table>
+          </template>
+        </b-table>
       <b-pagination
         v-if="tableData.total > perPage"
         v-model="currentPage"
@@ -211,7 +216,8 @@ export default {
     "formConfig",
     "formComputed",
     "formWatchers",
-    "_perPage"
+    "_perPage",
+    "source"
   ],
   data() {
     return {
@@ -242,10 +248,28 @@ export default {
         }
       },
       initFormValues: {},
-      currentRowIndex: null
+      currentRowIndex: null,
+      collectionData: {}
     };
   },
   computed: {
+    // col: {
+    //   get() {
+    //     console.log("en Record List DATA GET");
+    //     return null;
+    //   },
+    //   set(data) {
+    //     // Object.keys(data).forEach((variable) => {
+    //     //   this.validationData && this.$set(this.validationData, variable, data[variable]);
+    //     // });
+
+    //     // if (this.collection) {
+    //     //   this.$set(this.collection, 'data', Array.isArray(data) ? data : [data]);
+    //     //   this.$set(this.collection, 'screen', this.screenCollectionId);
+    //     // }
+    //     console.log("en Record List DATA SET: ", data);
+    //   },
+    // },
     popupConfig() {
       const config = [];
       config[this.form] = this.formConfig[this.form];
@@ -279,11 +303,14 @@ export default {
       console.log("refs vuetable not exists");
     },
     tableData() {
-      const value = this.value || [];
+     // const value = this.value || [];
+      // const from = this.paginatorPage - 1;
+
+      const value = Object.keys(this.collectionData).length !== 0 ? this.collectionData : (this.value || []);
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
-
+      //console.log("value: ",value);
       const data = {
         total: value.length,
         per_page: this.perPage,
@@ -296,6 +323,7 @@ export default {
         data: value,
         lastSortConfig: false
       };
+      //console.log("data: ",data);
       return data;
     },
     // The fields used for our vue table
@@ -314,6 +342,12 @@ export default {
     }
   },
   watch: {
+    // source(source) {
+    //   console.log("En watch source: ", source);
+    // },
+    collectionFields(collectionFields) {
+      //console.log("escucha COL desde Record List");
+    },
     "tableData.total": {
       deep: true,
       handler(total) {
@@ -322,7 +356,7 @@ export default {
           this.currentPage > totalPages ? totalPages : this.currentPage;
         this.currentPage = this.currentPage == 0 ? 1 : this.currentPage;
       }
-    }
+    },
   },
   mounted() {
     if (this._perPage) {
@@ -332,8 +366,34 @@ export default {
       this.updateRowDataNamePrefix,
       100
     );
+    if(this.source?.collectionFields?.dataRecordList) {
+      this.setCollectionIntoList(this.source.collectionFields.dataRecordList);
+    }
+    console.log("collectionData: ", this.collectionData);
+    console.log("tableData: ", this.tableData);
+    console.log("LLEGA SOURCE: ", this.source);
   },
   methods: {
+    setCollectionIntoList(array) {
+      const result = [];
+
+      array.forEach((row) => {
+        if (row.hasOwnProperty('data')) {
+          const dataObject = row.data; // Accedemos al objeto dentro de "data"
+          const extracted = {};
+
+          // Recorremos las llaves y valores de "data"
+          for (const [key, value] of Object.entries(dataObject)) {
+            extracted[key] = value; // Almacenamos cada llave y valor en el objeto "extracted"
+          }
+
+          result.push(extracted); // Agregamos el objeto con las llaves y valores al array de resultados
+        }
+      });
+
+      this.collectionData = result;
+      //this.tableData.data = result;
+    },
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
@@ -377,7 +437,6 @@ export default {
       } else if (this.addItem) {
         rowId = this.addItem.row_id;
       }
-
       this.$root.$emit("set-upload-data-name", this, index, rowId);
     },
     getTableFieldsFromDataSource() {
