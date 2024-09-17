@@ -29,8 +29,20 @@
               v-model="selected"
               name="apply-options"
             >
-              <div v-for="option in applyOptions" :key="option.value">
-                <i :class="option.icon"></i>
+            <div class="row row-cols-3 icons-row">
+              <div
+                v-for="option in applyOptions"
+                :key="option.value"
+                class="col apply-options-container d-flex align-items-baseline flex-column"
+              >
+                <div class="icon-container">
+                  <div v-if="option.value === 'Css'">
+                    <css-icon />
+                  </div>
+                  <div v-else>
+                    <i :class="option.icon"></i>
+                  </div>
+                </div>
                 <b-form-checkbox
                   class="option-checkbox"
                   :value="option.value"
@@ -38,8 +50,8 @@
                   {{ option.text }}
                 </b-form-checkbox>
               </div>
+            </div>
             </b-form-checkbox-group>
-
             <hr class="bottom-card-divider">
             <div class="apply-btn-container d-flex justify-content-end">
               <button
@@ -68,8 +80,12 @@
 </template>
 
 <script>
+import CssIcon from './CssIcon.vue';
 
 export default {
+  components: {
+    CssIcon,
+  },
   mixins: [],
   props: ['template'],
   data() {
@@ -77,9 +93,9 @@ export default {
       showApplyOptions: false,
       selected: [],
       applyOptions: [
-        { text: 'CSS', value: 'css', icon: 'fp-css-icon' },
-        { text: 'Fields', value: 'fields', icon: 'fp-fields-icon' },
-        { text: 'Layout', value: 'layout', icon: 'fp-layout-icon' },
+        { text: 'CSS', value: 'Css' },
+        { text: 'Fields', value: 'Fields', icon: 'fp-fields-icon' },
+        { text: 'Layout', value: 'Layout', icon: 'fp-layout-icon' },
       ],
     };
   },
@@ -112,6 +128,10 @@ export default {
 
 <style lang="scss" scoped>
 
+.fp-fields-icon, .fp-layout-icon {
+  color: #EAF2FF;
+}
+
 .screenbuilder-template-card {
   width: 225px;
   margin: 8px;
@@ -126,14 +146,6 @@ export default {
   margin: 0px;
   background-color: #D7DDE5;
 }
-
-// .thumbnail-container {
-//   width: 247px;
-//   height: 133px;
-//   border: 2px solid #CDDDEE;
-//   border-radius: 7px;
-//   background-color: #fff;
-// }
 
 .thumbnail-container:hover,
 .thumbnail-container.active {
@@ -181,13 +193,31 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-left: 10px;
+}
+
+.icons-row {
+  margin-right: -5px !important;
+  margin-left: -5px !important;
+}
+
+.apply-options-container {
+    padding: 5px;
 }
 
 .apply-options-group i {
-  margin-bottom: 5px;
   display: block;
-  font-size: 50px;
+  font-size: 58px;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 76px;
+  border: 0.7px solid #D7DDE5;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
 .option-checkbox {
@@ -196,7 +226,8 @@ export default {
 
 .bottom-card-divider {
   width: 90%;
-  background-color: #E9ECF1
+  background-color: #E9ECF1;
+  margin-top: 0px;
 }
 
 .apply-btn-container {
