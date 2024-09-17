@@ -20,7 +20,7 @@
         :class="{ 'my-templates-selected': myTemplatesSelected }"
         data-cy="my-templates-tab"
       >
-      {{ $t("My Templates") }}
+        {{ $t("My Templates") }}
       </b-button>
       <b-button
         @click="showSharedTemplates"
@@ -28,7 +28,7 @@
         :class="{ 'shared-templates-selected': sharedTemplatesSelected }"
         data-cy="shared-templates-tab"
       >
-      {{ $t("Shared Templates") }}
+        {{ $t("Shared Templates") }}
       </b-button>
     </div>
     <div class="d-flex justify-content-center cards-container">
