@@ -3,6 +3,7 @@
     <b-card
       img-top
       class="mb-2 screenbuilder-template-card"
+      @click="showDetails"
     >
       <div
         v-if="thumbnail"
@@ -17,11 +18,49 @@
         <i class="p-4 fas fa-palette thumbnail-icon"></i>
       </div>
       <hr class="card-divider">
-      <b-card-body>
+      <b-card-body class="p-1">
         <div class="template-details">
           <span class="template-name d-block pt-1">{{ template.name }}</span>
           <span class="template-description d-block">{{ template.description }}</span>
         </div>
+        <b-collapse v-model="showApplyOptions">
+            <b-form-checkbox-group
+              class="apply-options-group p-2"
+              v-model="selected"
+              name="apply-options"
+            >
+              <div v-for="option in applyOptions" :key="option.value">
+                <i :class="option.icon"></i>
+                <b-form-checkbox
+                  class="option-checkbox"
+                  :value="option.value"
+                >
+                  {{ option.text }}
+                </b-form-checkbox>
+              </div>
+            </b-form-checkbox-group>
+
+            <hr class="bottom-card-divider">
+            <div class="apply-btn-container d-flex justify-content-end">
+              <button
+                type="button"
+                size="sm"
+                class="btn btn-outline-secondary card-btn"
+                @click="onCancel"
+              >
+                {{ $t("Cancel") }}
+              </button>
+              <button
+                :disabled="!selected.length"
+                type="button"
+                size="sm"
+                class="btn btn-primary ml-2 card-btn"
+                @click="onApply"
+              >
+                {{ $t("Apply") }}
+              </button>
+            </div>
+        </b-collapse>
       </b-card-body>
     </b-card>
     
@@ -35,6 +74,13 @@ export default {
   props: ['template'],
   data() {
     return {
+      showApplyOptions: false,
+      selected: [],
+      applyOptions: [
+        { text: 'CSS', value: 'css', icon: 'fp-css-icon' },
+        { text: 'Fields', value: 'fields', icon: 'fp-fields-icon' },
+        { text: 'Layout', value: 'layout', icon: 'fp-layout-icon' },
+      ],
     };
   },
   computed: {
@@ -50,9 +96,16 @@ export default {
   mounted() {
   },
   methods: {
-    // selectTemplate() {
-    //   this.$emit("template-selected", this.template.id);
-    // },
+    showDetails() {
+      this.showApplyOptions = !this.showApplyOptions;
+    },
+    onApply() {
+      // TODO: apply selected options
+    },
+    onCancel() {
+      this.showApplyOptions = false;
+      this.selected = [];
+    }
   },
 };
 </script>
@@ -64,7 +117,8 @@ export default {
   margin: 8px;
   border: 1px solid #D7DDE5;
   border-radius: 8px;
-  box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05), 0px 2px 4px -2px rgba(0, 0, 0, 0.05);;
+  box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05), 0px 2px 4px -2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
 .card-divider {
@@ -121,6 +175,39 @@ export default {
   font-weight: 400;
   line-height: 18px;
   color: #4E5663;
+}
+
+.apply-options-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 10px;
+}
+
+.apply-options-group i {
+  margin-bottom: 5px;
+  display: block;
+  font-size: 50px;
+}
+
+.option-checkbox {
+  font-size: 12px;
+}
+
+.bottom-card-divider {
+  width: 90%;
+  background-color: #E9ECF1
+}
+
+.apply-btn-container {
+  padding: 0px 10px 10px 0px;
+}
+
+.card-btn {
+  font-size: 14px;
+  text-transform: none;
+  border-radius: 8px;
+  padding: 5px 10px;
 }
 
 </style>
