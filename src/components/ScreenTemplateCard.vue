@@ -11,6 +11,7 @@
         <div class="template-details">
           <span class="template-name d-block pt-1">{{ template.name }}</span>
           <span class="template-description d-block">{{ template.description }}</span>
+          <b-button @click="applyTemplate">Apply</b-button>
         </div>
       </b-card-body>
     </b-card>
@@ -22,7 +23,7 @@
 
 export default {
   mixins: [],
-  props: ['template'],
+  props: ['template', 'screenId'],
   data() {
     return {
     };
@@ -40,7 +41,13 @@ export default {
   mounted() {
   },
   methods: {
-    
+    applyTemplate() {
+      console.log('apply template', this.template, this.screenId);
+      ProcessMaker.apiClient.post(`/template/screen/${this.template.id}/apply`, {
+        screenId: this.screenId,
+        templateOptions: ['CSS'],
+      });
+    }
   },
 };
 </script>

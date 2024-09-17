@@ -45,6 +45,7 @@
           v-for="template in myTemplatesData"
           :key="template.id"
           :template="template"
+          :screen-id="screenId"
         />
       </div>
       <div
@@ -76,6 +77,7 @@
     components: {
       ScreenTemplateCard,
     },
+    props: ['screenId'],
     mounted() {
         console.log('screen-templates component mounted');
     },
@@ -130,6 +132,12 @@
         this.sharedTemplatesSelected = true;
         this.fetchSharedTemplates();
       },
+      applyTemplate(template) {
+        console.log('apply template', template, this);
+        // ProcessMaker.apiClient.post(`/template/screen/${template.id}/apply`, {
+        //   screenId: 
+        // })
+      }
     },
     mounted() {
       this.showMyTemplates();
