@@ -145,10 +145,7 @@
 
 <style lang="scss" scoped>
 .cards-container {
-  //display: block;
-  //flex-direction: column;
   height: 100%;
-  overflow-x: scroll;
 }
 
   .panel-close-btn {
@@ -156,10 +153,6 @@
     border: none;
     color: #596372;
   }
-
-//.template-cards {
-// display: block;
-//}
 
   .template-tabs {
     padding: 4px;
