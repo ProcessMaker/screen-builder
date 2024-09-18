@@ -50,9 +50,11 @@
   <script>
 
   import CollectionRecordsList from "./collection-records-list.vue"
+  import { cloneDeep } from "lodash";
 
   const CONFIG_FIELDS = [
     "collectionFields",
+    "collectionFieldsColumns",
     "pmql",
     "sourceOptions"
 
@@ -69,6 +71,7 @@
         submitCollectionCheck: true,
         sourceDisplayOptions: [],
         collectionFields: [],
+        collectionFieldsColumns: [],
         pmql: null,
         sourceDisplayOptions: [
         {
@@ -81,6 +84,33 @@
         },
       ]
       };
+    },
+    mounted() {
+      this.$root.$on("collection-columns", (optionList) => {
+          console.log("llega a CDS y se ve como esta collectionFields: ", this.collectionFields);
+          this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
+          this.changeCollectionColumns(optionList);
+      });
+    },
+    methods: {
+      changeCollectionColumns(columnsSelected) {
+          // Crear un array con los keys (content) de columnsSelected para facilitar la comparación
+            let selectedKeys = columnsSelected.map(column => column.content);
+            let dataObject = {};
+          // Iterar sobre dataRecordList en collectionFields
+          this.collectionFieldsColumns.dataRecordList.forEach(record => {
+            dataObject = record.data;
+
+            // Recorrer cada key de dataObject y eliminar aquellas que no están en selectedKeys
+            Object.keys(dataObject).forEach(key => {
+              if (!selectedKeys.includes(key)) {
+                delete dataObject[key]; // Eliminar el key que no hace match
+              }
+            });
+          });
+          console.log("asi queda collectionfieldsColumns" , this.collectionFieldsColumns);
+          console.log("asi queda collectionfields" , this.collectionFields);
+        }
     },
     computed: {
       options() {
@@ -100,8 +130,20 @@
         immediate: true
       },
       sourceOptions: {
-        handler() {
-           
+        handler(changOption) {
+          console.log("cambia dropdown en CDS: ", changOption);
+           this.$root.$emit("record-list-option", changOption);
+        }
+      },
+      collectionFields: {
+        handler(collectionFieldsData) {
+          console.log("cambia dropdown en collectionFields: ", collectionFieldsData);
+           this.$root.$emit("record-list-collection", collectionFieldsData);
+        }
+      },
+      collectionFieldsColumns: {
+        handler(collectionFieldsDataColumns) {
+          console.log("cambio collectionFieldsColumns: ", collectionFieldsDataColumns);
         }
       },
       pmql: {
