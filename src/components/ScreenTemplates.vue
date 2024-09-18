@@ -49,6 +49,7 @@
             v-for="template in myTemplatesData"
             :key="template.id"
             :template="template"
+            :screen-id="screenId"
           />
         </b-card-group>
       </div>
@@ -83,6 +84,7 @@
     components: {
       ScreenTemplateCard,
     },
+    props: ['screenId'],
     mounted() {
     },
     data() {
