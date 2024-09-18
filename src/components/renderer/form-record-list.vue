@@ -333,9 +333,13 @@ export default {
       this.updateRowDataNamePrefix,
       100
     );
-    console.log("SOOOOURCE: ", this.source);
-    if(this.source?.collectionFieldsColumns?.dataRecordList) {
-      this.setCollectionIntoList(this.source.collectionFieldsColumns.dataRecordList);
+
+    const dataRecordList = this.source?.collectionFieldsColumns?.dataRecordList?.length
+      ? this.source.collectionFieldsColumns.dataRecordList
+      : this.source?.collectionFields?.dataRecordList;
+
+    if (dataRecordList) {
+      this.setCollectionIntoList(dataRecordList);
     }
   },
   methods: {
