@@ -35,9 +35,10 @@
           v-model="optionContentCollection"
           :options="collectionOptions"
           data-cy="inspector-collection-columns"
+          @change="handleColumnSelection"
           />
-          <label for="option-label-column">{{ $t('Label') }}</label>
-          <b-form-input id="option-label-column" v-model="optionValueCollection" :classs="optionKeyClass" />
+          <label v-show="!hideLabelAll" for="option-label-column">{{ $t('Label') }}</label>
+          <b-form-input v-show="!hideLabelAll" id="option-label-column" v-model="optionValueCollection" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
           </div>
@@ -276,7 +277,8 @@ export default {
       },
       showPopup: false,
       isCollection: false,
-      collectionOptions: []
+      collectionOptions: [],
+      hideLabelAll: false
     };
   },
   watch: {
@@ -370,6 +372,27 @@ export default {
     });
   },
   methods: {
+    handleColumnSelection() {
+      console.log("optionContentCollection: ", this.optionContentCollection);
+      console.log("this.collectionOptions: ", this.collectionOptions);
+      if (this.optionContentCollection === "all") {
+        //this.applyAllColumnsSelected();
+        this.optionsList = [];
+        this.hideLabelAll = true;
+        this.collectionOptions.forEach(option => {
+          if(option.value !== "all") {
+            this.optionsList.push({
+              content: option.value,
+              key: option.value
+            });
+          }
+        });
+        console.log("Asi queda this.optionsList: ", this.optionsList);
+      }
+    },
+    applyAllColumnsSelected() {
+      console.log("this.collectionOptions: ", this.collectionOptions);
+    },
     getCollectionColumns(collection) {
       this.collectionOptions = [{ text: "All columns", value: "all" }];
       const [firstRecord] = collection?.dataRecordList || [];
@@ -494,6 +517,9 @@ export default {
               [this.keyFieldCollection]: this.optionValueCollection,
             }
           );
+          console.log("OPTIONS push: ", this.optionsList);
+          this.optionsList = this.optionsList.filter(option => option["content"] !== "all");
+          console.log("OPTIONS Despuesd push: ", this.optionsList);
         } else {
           this.optionsList.push(
           {
