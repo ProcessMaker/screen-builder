@@ -18,6 +18,7 @@
           {{ $t('Edit Column') }}
         </div>
         <div v-if="!isCollection" class="card-body p-2">
+        <p>en variable: {{ isCollection }}</p>
           <label class="mt-3" for="option-content">{{ $t('Column Header') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
           <label for="option-value">{{ $t('Value') }}</label>
@@ -27,6 +28,7 @@
           </div>
         </div>
         <div v-else class="card-body p-2">
+          <p>en collection: {{ isCollection }}</p>
           <label class="mt-3" for="option-content">{{ $t('Column') }}</label>
           <b-form-select
           id="columnCollection"
@@ -34,7 +36,7 @@
           :options="collectionOptions"
           data-cy="inspector-collection-columns"
           />
-          <label for="option-label-column">{{ $t('Value') }}</label>
+          <label for="option-label-column">{{ $t('Label') }}</label>
           <b-form-input id="option-label-column" v-model="optionValueCollection" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
@@ -79,11 +81,26 @@
                   <div v-else class="card-header">
                     {{ $t('Edit Option') }}
                   </div>
-                  <div class="card-body p-2">
+                  <div v-if="!isCollection" class="card-body p-2">
                     <label class="mt-3" for="option-content">{{ $t('Column Header') }}</label>
                     <b-form-input id="option-content" v-model="optionContent"/>
                     <label for="option-value">{{ $t('Value') }}</label>
                     <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+                    <div v-if="optionError" class="invalid-feedback d-block text-right">
+                      <div>{{ optionError }}</div>
+                    </div>
+                  </div>
+                  <div v-else class="card-body p-2">
+                    <label class="mt-3" for="option-content-collection">{{ $t('Column') }}</label>
+                    <!-- <b-form-input id="option-content-collection" v-model="optionContentCollection"/> -->
+                    <b-form-select
+                    id="columnCollection"
+                    v-model="optionContentCollection"
+                    :options="collectionOptions"
+                    data-cy="inspector-collection-columns"
+                    />
+                    <label for="option-value-collection">{{ $t('Value') }}</label>
+                    <b-form-input id="option-value-collection" v-model="optionValueCollection" :classs="optionKeyClass" />
                     <div v-if="optionError" class="invalid-feedback d-block text-right">
                       <div>{{ optionError }}</div>
                     </div>
@@ -93,7 +110,7 @@
                     <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="editIndex=null">
                       {{ $t('Cancel') }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+                    <button type="button" class="btn btn-sm btn-secondary" @click="isCollection ? addOptionCollection() : addOption()">
                       {{ $t('Update') }}
                     </button>
                   </div>
@@ -289,7 +306,6 @@ export default {
       this.dataName = '';
     },
     dataObjectOptions(dataObjectOptions) {
-      console.log("en dataObjectOptions emit: ", dataObjectOptions);
       this.$emit('change', dataObjectOptions);
     },
   },
@@ -343,8 +359,11 @@ export default {
   },
   mounted() {
     this.initData();
+    //console.log("MOUNTED EN ColSetup isCollection: ", this.isCollection);
     this.$root.$on("record-list-option", (val) => {
+      console.log("EN MOUNTED EN recibe emit record-list-option: ", val);
       this.isCollection = (val === "Collection") ? true : false;
+      console.log("EN MOUNTED EN recibe emit this.isCollection: ", this.isCollection);
     });
     this.$root.$on("record-list-collection", (collectionData) => {
       this.getCollectionColumns(collectionData);
@@ -427,6 +446,7 @@ export default {
       this.showJsonEditor = false;
     },
     showEditOption(index) {
+      console.log("edita index: ", index);
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
@@ -434,8 +454,11 @@ export default {
       this.optionContentCollection = this.optionsList[index][this.valueField];
       this.optionValueCollection = this.optionsList[index][this.keyFieldCollection];
       this.optionError = '';
+      console.log("en edit this.optionContentCollection: ", this.optionContentCollection);
+      console.log("en edit this.optionValueCollection: ", this.optionValueCollection);
     },
     showAddOption() {
+      console.log("en CS showAddOption this.isCollection: ", this.isCollection);
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
@@ -485,13 +508,22 @@ export default {
         }
       }
       else {
-        console.log("en else");
-        if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
-          this.optionError = 'An item with the same key already exists';
-          return;
+        console.log("en else Add: ", this.isCollection);
+        if(!this.isCollection) {
+          if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
+            this.optionError = 'An item with the same key already exists';
+            return;
+          }
+          this.optionsList[this.editIndex][this.keyField] = this.optionValue;
+          this.optionsList[this.editIndex][this.valueField] = this.optionContent;
+        } else {
+          if (this.optionsList.find((item, index) => { return item[that.keyFieldCollection] === this.optionValueCollection && index !== this.editIndex ; })) {
+            //this.optionError = 'An item with the same key already exists';
+            //return;
+          }
+          this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionValueCollection;
+          this.optionsList[this.editIndex][this.valueField] = this.optionContentCollection;
         }
-        this.optionsList[this.editIndex][this.keyField] = this.optionValue;
-        this.optionsList[this.editIndex][this.valueField] = this.optionContent;
       }
 
       this.jsonError = '';
@@ -500,12 +532,73 @@ export default {
       this.optionError = '';
       this.editIndex = null;
     },
+    addOptionCollection() {
+      const that = this;
+      if (this.optionsList === undefined) {
+        this.initData();
+      }
 
+      if (this.optionCardType === 'insert') {
+        if(this.isCollection) {
+          if (this.optionsList.find(item => { return item[that.keyFieldCollection] === this.optionValueCollection; })) {
+            this.optionError = 'An item with the same key already exists';
+            return;
+          }
+        } else {
+          if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
+            this.optionError = 'An item with the same key already exists';
+            return;
+          }
+        }
+        
+        if(this.isCollection) {
+          this.optionsList.push(
+            {
+              [this.valueField]: this.optionContentCollection,
+              [this.keyFieldCollection]: this.optionValueCollection,
+            }
+          );
+        } else {
+          this.optionsList.push(
+          {
+            [this.valueField]: this.optionContent,
+            [this.keyField]: this.optionValue,
+          }
+        );
+        }
+        if(this.isCollection) {
+          console.log("envia columnas seleccionadas a CDS: ", this.optionsList);
+          this.$root.$emit("collection-columns", this.optionsList);
+        }
+      }
+      else {
+        console.log("en else AddCollection");
+        if(!this.isCollection) {
+          if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
+            this.optionError = 'An item with the same key already exists';
+            return;
+          }
+          this.optionsList[this.editIndex][this.keyField] = this.optionValue;
+          this.optionsList[this.editIndex][this.valueField] = this.optionContent;
+        } else {
+          this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionValueCollection;
+          this.optionsList[this.editIndex][this.valueField] = this.optionContentCollection;
+          this.$root.$emit("collection-columns", this.optionsList);
+        }
+      }
+
+      this.jsonError = '';
+      this.jsonData = JSON.stringify(this.optionsList);
+      this.showOptionCard = false;
+      this.optionError = '';
+      this.editIndex = null;
+    },
     deleteOption() {
       this.optionsList.splice(this.removeIndex, 1);
       this.jsonData = JSON.stringify(this.optionsList);
       this.showRemoveWarning = false;
       this.removeIndex = null;
+      this.$root.$emit("collection-columns", this.optionsList);
     },
 
     removeOption(index) {

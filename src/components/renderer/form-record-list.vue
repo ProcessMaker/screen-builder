@@ -334,6 +334,7 @@ export default {
       100
     );
 
+
     const dataRecordList = this.source?.collectionFieldsColumns?.dataRecordList?.length
       ? this.source.collectionFieldsColumns.dataRecordList
       : this.source?.collectionFields?.dataRecordList;
