@@ -3,7 +3,7 @@
     <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
-          <label for="data-sources"><b>{{ $t('Column') }}</b></label>
+          <label for="data-sources"><b>{{ $t('Columnx') }}</b></label>
         </div>
         <div class="col-2">
           <a @click="showAddOption" class="fas fa-plus-square"/>
@@ -17,11 +17,25 @@
         <div v-else class="card-header">
           {{ $t('Edit Column') }}
         </div>
-        <div class="card-body p-2">
+        <div v-if="!isCollection" class="card-body p-2">
           <label class="mt-3" for="option-content">{{ $t('Column Header') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
           <label for="option-value">{{ $t('Value') }}</label>
           <b-form-input id="option-value" v-model="optionValue" :classs="optionKeyClass" />
+          <div v-if="optionError" class="invalid-feedback d-block text-right">
+            <div>{{ optionError }}</div>
+          </div>
+        </div>
+        <div v-else class="card-body p-2">
+          <label class="mt-3" for="option-content">{{ $t('Column') }}</label>
+          <b-form-select
+          id="columnCollection"
+          v-model="optionContentCollection"
+          :options="collectionOptions"
+          data-cy="inspector-collection-columns"
+          />
+          <label for="option-label-column">{{ $t('Value') }}</label>
+          <b-form-input id="option-label-column" v-model="optionValueCollection" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
           </div>
@@ -219,6 +233,8 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
+      optionValueCollection: '',
+      optionContentCollection: '',
       showRenderAs: false,
       renderAs: 'dropdown',
       allowMultiSelect: false,
@@ -242,6 +258,8 @@ export default {
         automaticLayout: true,
       },
       showPopup: false,
+      isCollection: false,
+      collectionOptions: []
     };
   },
   watch: {
@@ -271,6 +289,7 @@ export default {
       this.dataName = '';
     },
     dataObjectOptions(dataObjectOptions) {
+      console.log("en dataObjectOptions emit: ", dataObjectOptions);
       this.$emit('change', dataObjectOptions);
     },
   },
@@ -283,6 +302,9 @@ export default {
     },
     keyField() {
       return this.key || 'value';
+    },
+    keyFieldCollection() {
+      return this.key || 'key';
     },
     valueField() {
       return this.value || 'content';
@@ -321,8 +343,26 @@ export default {
   },
   mounted() {
     this.initData();
+    this.$root.$on("record-list-option", (val) => {
+      this.isCollection = (val === "Collection") ? true : false;
+    });
+    this.$root.$on("record-list-collection", (collectionData) => {
+      this.getCollectionColumns(collectionData);
+    });
   },
   methods: {
+    getCollectionColumns(collection) {
+      this.collectionOptions = [{ text: "All columns", value: "all" }];
+      const [firstRecord] = collection?.dataRecordList || [];
+
+      if (firstRecord?.data) {
+        const dataObject = firstRecord.data;
+
+        for (const [key, value] of Object.entries(dataObject)) {
+          this.collectionOptions.push({ text: key, value: key });
+        }
+      }
+    },
     initData() {
       this.dataSource = this.options.dataSource;
       this.jsonData = this.options.jsonData;
@@ -391,12 +431,16 @@ export default {
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
       this.optionValue = this.optionsList[index][this.keyField];
+      this.optionContentCollection = this.optionsList[index][this.valueField];
+      this.optionValueCollection = this.optionsList[index][this.keyFieldCollection];
       this.optionError = '';
     },
     showAddOption() {
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
+      this.optionContentCollection = '';
+      this.optionValueCollection = '';
       this.showOptionCard = true;
       this.optionError = '';
       this.editIndex = null;
@@ -408,18 +452,40 @@ export default {
       }
 
       if (this.optionCardType === 'insert') {
-        if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
-          this.optionError = 'An item with the same key already exists';
-          return;
+        if(this.isCollection) {
+          if (this.optionsList.find(item => { return item[that.keyFieldCollection] === this.optionValueCollection; })) {
+            this.optionError = 'An item with the same key already exists';
+            return;
+          }
+        } else {
+          if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
+            this.optionError = 'An item with the same key already exists';
+            return;
+          }
         }
-        this.optionsList.push(
+        
+        if(this.isCollection) {
+          this.optionsList.push(
+            {
+              [this.valueField]: this.optionContentCollection,
+              [this.keyFieldCollection]: this.optionValueCollection,
+            }
+          );
+        } else {
+          this.optionsList.push(
           {
             [this.valueField]: this.optionContent,
             [this.keyField]: this.optionValue,
           }
         );
+        }
+        if(this.isCollection) {
+          console.log("envia columnas seleccionadas a CDS: ", this.optionsList);
+          this.$root.$emit("collection-columns", this.optionsList);
+        }
       }
       else {
+        console.log("en else");
         if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
           this.optionError = 'An item with the same key already exists';
           return;
