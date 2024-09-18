@@ -94,23 +94,27 @@
     },
     methods: {
       changeCollectionColumns(columnsSelected) {
-          // Crear un array con los keys (content) de columnsSelected para facilitar la comparación
-            let selectedKeys = columnsSelected.map(column => column.content);
-            let dataObject = {};
-          // Iterar sobre dataRecordList en collectionFields
-          this.collectionFieldsColumns.dataRecordList.forEach(record => {
-            dataObject = record.data;
+        let selectedKeys = columnsSelected.map(column => column.content);
+        let dataObject = {};
 
-            // Recorrer cada key de dataObject y eliminar aquellas que no están en selectedKeys
-            Object.keys(dataObject).forEach(key => {
-              if (!selectedKeys.includes(key)) {
-                delete dataObject[key]; // Eliminar el key que no hace match
+        this.collectionFieldsColumns.dataRecordList.forEach(record => {
+          dataObject = record.data;
+
+          Object.keys(dataObject).forEach(key => {
+            if (!selectedKeys.includes(key)) {
+              delete dataObject[key];
+            } else {
+              const matchingColumn = columnsSelected.find(column => column.content === key);
+              
+              // Rename header from collection columns whit new labels(only for display)
+              if (matchingColumn && matchingColumn.key !== key) {
+                dataObject[matchingColumn.key] = dataObject[key];
+                delete dataObject[key];
               }
-            });
+            }
           });
-          console.log("asi queda collectionfieldsColumns" , this.collectionFieldsColumns);
-          console.log("asi queda collectionfields" , this.collectionFields);
-        }
+        });
+      }
     },
     computed: {
       options() {
