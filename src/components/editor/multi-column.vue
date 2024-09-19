@@ -11,7 +11,6 @@
             :value="items[index]"
             group="controls"
             @input="updateContainerConfig($event, index)"
-            @change="onChange"
           >
             <div
               v-for="(element, row) in item"
