@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 /**
  * Vuex module for managing clipboard state.
  */
@@ -60,6 +62,9 @@ const clipboardModule = {
 
       // Add each item only if it's not already in the clipboard
       itemsToAdd.forEach(item => {
+        if (!item.uuid) {
+          item.uuid = uuidv4();
+        }
         if (!state.clipboard.some(clipboardItem => clipboardItem.uuid === item.uuid)) {
           state.clipboard.push(item);
         }

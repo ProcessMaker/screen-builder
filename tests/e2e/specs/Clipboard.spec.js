@@ -81,9 +81,7 @@ describe("Clipboard Button Actions", () => {
     cy.visit("/");
     cy.openAcordeonByLabel("Content Fields");
     // Step 1: Dragging FormLoop control to screen drop zone
-    cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
-      position: "bottom"
-    });
+    cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]");
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=inspector-name]").clear().type("rows");
     cy.get("[data-cy=inspector-source]").select("existing");

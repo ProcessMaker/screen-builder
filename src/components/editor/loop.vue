@@ -1,6 +1,6 @@
 <template>
   <div class="column-draggable" :selector="config.customCssSelector">
-    <draggable style="min-height: 80px" :list="items" group="controls" @change="onChange">
+    <draggable style="min-height: 80px" :list="items" group="controls">
       <div
         v-for="(element, index) in items"
         :key="index"
