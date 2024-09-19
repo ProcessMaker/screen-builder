@@ -303,7 +303,7 @@ export default {
     // The fields used for our vue table
     tableFields() {
       const fields = this.getTableFieldsFromDataSource();
-
+      console.log("esto retorna la llamada a this.getTableFieldsFromDataSource fields: ", fields);
       if (this.editable && !this.selfReferenced) {
         fields.push(jsonOptionsActionsColumn);
       }
@@ -413,17 +413,29 @@ export default {
       this.$root.$emit("set-upload-data-name", this, index, rowId);
     },
     getTableFieldsFromDataSource() {
+      console.log("entra a getTableFieldsFromDataSource this.fields: ", this.fields);
       const { jsonData, key, value, dataName } = this.fields;
-
-      const convertToVuetableFormat = (option) => {
-        // let slot = '__filedownload';
-        return {
-          key: option[key || "value"],
-          sortable: true,
-          label: option[value || "content"],
-          tdClass: "table-column"
+      let convertToVuetableFormat = {};
+      if(this.source?.sourceOptions === "Collection") {
+          convertToVuetableFormat = (option) => {
+          return {
+            key: option[key || "content"],
+            sortable: true,
+            label: option[value || "key"],
+            tdClass: "table-column"
+          };
         };
-      };
+      } else {
+          convertToVuetableFormat = (option) => {
+          return {
+            key: option[key || "value"],
+            sortable: true,
+            label: option[value || "content"],
+            tdClass: "table-column"
+          };
+        };
+      }
+      console.log("jsonData: ", jsonData, " dataName:", dataName);
 
       return this.getValidFieldData(jsonData, dataName).map(
         convertToVuetableFormat
