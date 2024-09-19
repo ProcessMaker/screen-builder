@@ -1109,6 +1109,7 @@ export default {
       });
     },
     updateState() {
+      this.replaceClipboardContent(this.config);
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage
