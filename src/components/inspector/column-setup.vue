@@ -361,11 +361,8 @@ export default {
   },
   mounted() {
     this.initData();
-    //console.log("MOUNTED EN ColSetup isCollection: ", this.isCollection);
     this.$root.$on("record-list-option", (val) => {
-      console.log("EN MOUNTED EN recibe emit record-list-option: ", val);
       this.isCollection = (val === "Collection") ? true : false;
-      console.log("EN MOUNTED EN recibe emit this.isCollection: ", this.isCollection);
     });
     this.$root.$on("record-list-collection", (collectionData) => {
       this.getCollectionColumns(collectionData);
@@ -373,10 +370,7 @@ export default {
   },
   methods: {
     handleColumnSelection() {
-      console.log("optionContentCollection: ", this.optionContentCollection);
-      console.log("this.collectionOptions: ", this.collectionOptions);
       if (this.optionContentCollection === "all") {
-        //this.applyAllColumnsSelected();
         this.optionsList = [];
         this.hideLabelAll = true;
         this.collectionOptions.forEach(option => {
@@ -387,11 +381,7 @@ export default {
             });
           }
         });
-        console.log("Asi queda this.optionsList: ", this.optionsList);
       }
-    },
-    applyAllColumnsSelected() {
-      console.log("this.collectionOptions: ", this.collectionOptions);
     },
     getCollectionColumns(collection) {
       this.collectionOptions = [{ text: "All columns", value: "all" }];
@@ -469,7 +459,6 @@ export default {
       this.showJsonEditor = false;
     },
     showEditOption(index) {
-      console.log("edita index: ", index);
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
@@ -477,11 +466,8 @@ export default {
       this.optionContentCollection = this.optionsList[index][this.valueField];
       this.optionValueCollection = this.optionsList[index][this.keyFieldCollection];
       this.optionError = '';
-      console.log("en edit this.optionContentCollection: ", this.optionContentCollection);
-      console.log("en edit this.optionValueCollection: ", this.optionValueCollection);
     },
     showAddOption() {
-      console.log("en CS showAddOption this.isCollection: ", this.isCollection);
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
@@ -517,9 +503,7 @@ export default {
               [this.keyFieldCollection]: this.optionValueCollection,
             }
           );
-          console.log("OPTIONS push: ", this.optionsList);
           this.optionsList = this.optionsList.filter(option => option["content"] !== "all");
-          console.log("OPTIONS Despuesd push: ", this.optionsList);
         } else {
           this.optionsList.push(
           {
@@ -529,12 +513,10 @@ export default {
         );
         }
         if(this.isCollection) {
-          console.log("envia columnas seleccionadas a CDS: ", this.optionsList);
           this.$root.$emit("collection-columns", this.optionsList);
         }
       }
       else {
-        console.log("en else Add: ", this.isCollection);
         if(!this.isCollection) {
           if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
             this.optionError = 'An item with the same key already exists';
@@ -593,12 +575,10 @@ export default {
         );
         }
         if(this.isCollection) {
-          console.log("envia columnas seleccionadas a CDS: ", this.optionsList);
           this.$root.$emit("collection-columns", this.optionsList);
         }
       }
       else {
-        console.log("en else AddCollection");
         if(!this.isCollection) {
           if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
             this.optionError = 'An item with the same key already exists';
