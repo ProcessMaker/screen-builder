@@ -3,7 +3,7 @@
     <div v-if="!showJsonEditor &&  dataSource === dataSourceValues.provideData">
       <div class="row">
         <div class="col-10">
-          <label for="data-sources"><b>{{ $t('Columnx') }}</b></label>
+          <label for="data-sources"><b>{{ $t('Column') }}</b></label>
         </div>
         <div class="col-2">
           <a @click="showAddOption" class="fas fa-plus-square"/>
@@ -18,7 +18,6 @@
           {{ $t('Edit Column') }}
         </div>
         <div v-if="!isCollection" class="card-body p-2">
-        <p>en variable: {{ isCollection }}</p>
           <label class="mt-3" for="option-content">{{ $t('Column Header') }}</label>
           <b-form-input id="option-content" v-model="optionContent"/>
           <label for="option-value">{{ $t('Value') }}</label>
@@ -28,7 +27,6 @@
           </div>
         </div>
         <div v-else class="card-body p-2">
-          <p>en collection: {{ isCollection }}</p>
           <label class="mt-3" for="option-content">{{ $t('Column') }}</label>
           <b-form-select
           id="columnCollection"
@@ -278,7 +276,7 @@ export default {
       showPopup: false,
       isCollection: false,
       collectionOptions: [],
-      hideLabelAll: false
+      hideLabelAll: false,
     };
   },
   watch: {

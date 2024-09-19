@@ -78,7 +78,7 @@
           </template>
         </b-table>
       <b-pagination
-        v-if="tableData.total > perPage"
+        v-if="tableData.total > perPage && (perPage !== 0)"
         v-model="currentPage"
         data-cy="table-pagination"
         :total-rows="tableData.total"
@@ -212,7 +212,8 @@ export default {
     "formComputed",
     "formWatchers",
     "_perPage",
-    "source"
+    "source",
+    "paginationOption"
   ],
   data() {
     return {
@@ -341,6 +342,10 @@ export default {
 
     if (dataRecordList) {
       this.setCollectionIntoList(dataRecordList);
+    }
+
+    if (this.paginationOption != null) {
+      this.perPage = this.paginationOption;
     }
   },
   methods: {

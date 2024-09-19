@@ -47,6 +47,7 @@ export default [
     },
     fields: [
       'fields',
+      'paginationOption',
       { name: 'options', hideFor: 'FormMultiColumn' },
     ],
     open: false,
