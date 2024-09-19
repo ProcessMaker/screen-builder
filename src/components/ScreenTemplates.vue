@@ -71,6 +71,7 @@
             v-for="template in sharedTemplatesData"
             :key="template.id"
             :template="template"
+            :screen-id="screenId"
             :currentScreenPage="currentScreenPage"
           />
         </b-card-group>
