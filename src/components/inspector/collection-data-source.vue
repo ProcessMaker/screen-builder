@@ -86,11 +86,9 @@
       };
     },
     mounted() {
-     // console.log("MOUNTED EN CDS this.sourceOption: ", this.sourceOptions);
       this.$root.$emit("record-list-option", this.sourceOptions);
       this.$root.$on("collection-columns", (optionList) => {
-        console.log("llega a CDS optionLISTTTT: ", optionList);
-        //console.log("llega a CDS y se ve como esta collectionFields: ", this.collectionFields);
+
         this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
           this.changeCollectionColumns(optionList);
       });
@@ -138,19 +136,17 @@
       },
       sourceOptions: {
         handler(changeOption) {
-          console.log("cambia sourceOptions dropdown en CDS: ", changeOption);
            this.$root.$emit("record-list-option", changeOption);
         }
       },
       collectionFields: {
         handler(collectionFieldsData) {
-          console.log("cambia dropdown en collectionFields: ", collectionFieldsData);
            this.$root.$emit("record-list-collection", collectionFieldsData);
         }
       },
       collectionFieldsColumns: {
         handler(collectionFieldsDataColumns) {
-          console.log("cambio collectionFieldsColumns: ", collectionFieldsDataColumns);
+
         }
       },
       pmql: {
