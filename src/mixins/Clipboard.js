@@ -39,6 +39,13 @@ export default {
     },
 
     /**
+     * Generate a unique UUID for the specified item.
+     */
+    generateUUID() {
+      return uuidv4(); // Generate a unique identifier using UUID v4
+    },
+
+    /**
      * Add a UUID to each element in the screen configuration.
      *
      * @param array screenConfig 
