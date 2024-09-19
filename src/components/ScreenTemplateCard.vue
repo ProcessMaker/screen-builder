@@ -87,7 +87,7 @@ export default {
     CssIcon,
   },
   mixins: [],
-  props: ['template', 'screenId'],
+  props: ['template', 'screenId', 'currentScreenPage'],
   data() {
     return {
       showApplyOptions: false,
@@ -120,6 +120,7 @@ export default {
         .post(`/template/screen/${this.template.id}/apply`, {
           screenId: this.screenId,
           templateOptions: this.selected,
+          currentScreenPage: this.currentScreenPage,
         })
         .then((response) => {
           ProcessMaker.alert(this.$t("The template options have been applied."), "success");

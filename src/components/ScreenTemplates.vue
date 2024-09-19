@@ -50,6 +50,7 @@
             :key="template.id"
             :template="template"
             :screen-id="screenId"
+            :currentScreenPage="currentScreenPage"
           />
         </b-card-group>
       </div>
@@ -70,6 +71,7 @@
             v-for="template in sharedTemplatesData"
             :key="template.id"
             :template="template"
+            :currentScreenPage="currentScreenPage"
           />
         </b-card-group>
       </div>
@@ -84,7 +86,7 @@
     components: {
       ScreenTemplateCard,
     },
-    props: ['screenId'],
+    props: ['screenId', 'currentScreenPage'],
     mounted() {
     },
     data() {
