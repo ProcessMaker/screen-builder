@@ -72,6 +72,7 @@
                       customClass: 'custom-popover',
                       boundaryPadding: 16
                     }"
+                    :data-control="controls.indexOf(element)"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
                     class="gray-text"
@@ -157,7 +158,6 @@
               swapThreshold: 0.5
             }"
             @input="updateConfig"
-            @change="onChange"
           >
             <div
               v-for="(element, index) in config[tabPage].items"
@@ -773,6 +773,7 @@ export default {
     }
   },
   created() {
+    this.addUuidToElements(this.config);
     this.$store.dispatch("undoRedoModule/pushState", {
       config: JSON.stringify(this.config),
       currentPage: this.currentPage
@@ -924,6 +925,7 @@ export default {
       accordion.open = true;
     },
     migrateConfig(config = this.config) {
+      this.addUuidToElements(config);
       config.forEach((page) => this.replaceFormText(page.items));
       config.forEach((page) => this.migrateFormSubmit(page.items));
       config.forEach((page) => this.updateFieldNameValidation(page.items));
@@ -1307,6 +1309,7 @@ export default {
     // This will ensure each control in the editor has it's own config and it's not shared
     cloneControl(control) {
       const copy = {
+        uuid: this.generateUUID(),
         config: JSON.parse(JSON.stringify(control.config)),
         inspector: JSON.parse(JSON.stringify(control.inspector)),
         component: control.component,

@@ -1,29 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import _ from "lodash";
 
+const clipboardComponentName = "Clipboard";
+
 export default {
   methods: {
-    /**
-     * Handles the change event, ensuring that the added element has a unique UUID.
-     * 
-     * @param {Object} added - The added item object containing the `element`.
-     * @returns {void}
-     */
-    onChange({ added }) {
-      if (!added || !added.element) {
-        console.error('Invalid item or element passed to onChange');
-        return; // Prevent further execution if the element is invalid
-      }
-      const element = added.element;
-
-      // Ensure element does not already have a UUID or generate a new one if missing
-      if (!element.uuid) {
-        element.uuid = uuidv4(); // Assign a unique identifier to the element
-      } else {
-        console.warn('Element already has a UUID:', element.uuid);
-      }
-    },
-
     /**
      * Adds a deep-cloned item to the clipboard, ensuring the original item is unmodified.
      * 
@@ -55,6 +36,26 @@ export default {
      */
     isInClipboard(item) {
       return this.$store.getters["clipboardModule/isInClipboard"](item); // Use Vuex getter to check if item exists in the clipboard
+    },
+
+    /**
+     * Add a UUID to each element in the screen configuration.
+     *
+     * @param array screenConfig 
+     */
+    addUuidToElements(screenConfig) {
+      const replaceInPage = (page) => {
+        page.items.forEach((item, index) => {
+          if (!item.uuid) {
+            item.uuid = this.generateUUID();
+          }
+          if (item.items) {
+            replaceInPage(item);
+          }
+        });
+      }
+
+      screenConfig.forEach((item) => replaceInPage(item));
     },
   },
 };
