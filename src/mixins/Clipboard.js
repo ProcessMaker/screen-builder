@@ -99,5 +99,13 @@ export default {
       }
       screenConfig.forEach((item) => replaceInPage(item));
     },
+
+    /**
+     * Clear the clipboard
+     */
+    clearClipboard() {
+      this.$store.dispatch("clipboardModule/clearClipboard"); // Dispatch action to clear clipboard from the Vuex store
+      this.$root.$emit('update-clipboard');
+    },
   },
 };
