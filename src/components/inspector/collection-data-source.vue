@@ -7,6 +7,7 @@
           v-model="sourceOptions"
           :options="sourceDisplayOptions"
           data-cy="inspector-collection-data-source"
+          @change="displayOptionChange"
         />
       </div>
       <div class="mt-2" v-if="sourceOptions === 'Collection'">
@@ -93,6 +94,10 @@
       });
     },
     methods: {
+      displayOptionChange() {
+        this.collectionFields = [];
+        this.collectionFieldsColumns = [];
+      },
       collectionChanged(data) {
         if (Array.isArray(data)) {
             const [firstItem] = data;

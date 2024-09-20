@@ -335,7 +335,6 @@ export default {
       100
     );
 
-
     const dataRecordList = this.source?.collectionFieldsColumns?.dataRecordList?.length
       ? this.source.collectionFieldsColumns.dataRecordList
       : this.source?.collectionFields?.dataRecordList;
@@ -348,7 +347,7 @@ export default {
       this.perPage = this.paginationOption;
     }
 
-    this.$root.$emit("record-list-option", this.source.sourceOptions);
+    this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
     setCollectionIntoList(array) {
