@@ -347,6 +347,8 @@ export default {
     if (this.paginationOption != null) {
       this.perPage = this.paginationOption;
     }
+
+    this.$root.$emit("record-list-option", this.source.sourceOptions);
   },
   methods: {
     setCollectionIntoList(array) {
