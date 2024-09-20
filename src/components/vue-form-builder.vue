@@ -107,6 +107,7 @@
         :pages="config"
         :is-multi-page="showToolbar"
         @tab-opened="currentPage = $event"
+        @clearClipboard="clearClipboard"
       >
         <template #tabs-start>
           <pages-dropdown
@@ -115,6 +116,7 @@
             @addPage="$bvModal.show('addPageModal')"
             @clickPage="onClick"
             @seeAllPages="$bvModal.show('openSortable')"
+            @clipboard="openClipboard"
           />
         </template>
         <template #default="{ currentPage: tabPage }">
@@ -656,6 +658,9 @@ export default {
     };
   },
   computed: {
+    pagesAndClipboard() {
+      return [...this.config, [{name:"Clipboard", items: []}]];
+    },
     // Get clipboard items from Vuex store
     clipboardItems() {
       return this.$store.getters["clipboardModule/clipboardItems"];
@@ -810,6 +815,9 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    openClipboard() {
+      this.$refs.tabsBar.openPageByIndex(-1);
+    },
     isCurrentPageEmpty(currentPage) {
       return this.config[currentPage]?.items?.length === 0;
     },

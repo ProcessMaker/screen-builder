@@ -58,6 +58,14 @@
         </div>
       </template>
     </b-tab>
+    <b-tab
+      class="h-100 w-100"
+      @click="clipboard"
+    >
+      <template #title>
+        {{ $t('Clear Clipboard') }}
+      </template>
+    </b-tab>
     <template #tabs-end>
       <div
         v-if="tabsListOverflow"
@@ -170,6 +178,9 @@ export default {
     this.checkTabsOverflow();
   },
   methods: {
+    clipboard() {
+      this.$emit('clearClipboard');
+    },
     tabOpened() {
       const pageIndex = this.localOpenedPages[this.activeTab];
       this.$emit("tab-opened", pageIndex);
