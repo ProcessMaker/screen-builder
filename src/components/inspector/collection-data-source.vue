@@ -13,7 +13,8 @@
 
          <CollectionRecordsList 
          v-model="collectionFields"
-         :record-pmql="pmql"/>
+         :record-pmql="pmql"
+         @change="collectionChanged"/>
 
          <pmql-input
         v-model="pmql"
@@ -92,6 +93,15 @@
       });
     },
     methods: {
+      collectionChanged(data) {
+        if (Array.isArray(data)) {
+            const [firstItem] = data;
+            const collectionId = firstItem?.collection_id;
+            if(collectionId !== this.collectionFields.collectionId) {
+              this.$root.$emit("collection-changed", true);
+            }
+        }
+      },
       changeCollectionColumns(columnsSelected) {
         let selectedKeys = columnsSelected.map(column => column.content);
         let dataObject = {};

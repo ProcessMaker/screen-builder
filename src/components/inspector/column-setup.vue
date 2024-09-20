@@ -102,11 +102,6 @@
                     <div v-if="optionError" class="invalid-feedback d-block text-right">
                       <div>{{ optionError }}</div>
                     </div>
-                    <div class="col-12">
-                      <input type="checkbox"  v-model="sortable">
-                      Sortable
-                    </div>
-
                   </div>
 
                   <div class="card-footer text-right p-2">
@@ -281,8 +276,7 @@ export default {
       showPopup: false,
       isCollection: null,
       collectionOptions: [],
-      hideLabelAll: false,
-      sortable: true,
+      hideLabelAll: false
     };
   },
   watch: {
@@ -373,6 +367,11 @@ export default {
     });
     this.$root.$on("record-list-collection", (collectionData) => {
       this.getCollectionColumns(collectionData);
+    });
+    this.$root.$on("collection-changed", (change) => {
+      if(change) {
+        this.optionsList = [];
+      }
     });
   },
   methods: {
