@@ -36,7 +36,7 @@
                 class="col apply-options-container d-flex align-items-baseline flex-column"
               >
                 <div class="icon-container">
-                  <div v-if="option.value === 'Css'">
+                  <div v-if="option.value === 'CSS'">
                     <css-icon />
                   </div>
                   <div v-else>
@@ -67,7 +67,7 @@
                 type="button"
                 size="sm"
                 class="btn btn-primary ml-2 card-btn"
-                @click="onApply"
+                @click="applyTemplate"
               >
                 {{ $t("Apply") }}
               </button>
@@ -87,13 +87,13 @@ export default {
     CssIcon,
   },
   mixins: [],
-  props: ['template'],
+  props: ['template', 'screenId', 'currentScreenPage'],
   data() {
     return {
       showApplyOptions: false,
       selected: [],
       applyOptions: [
-        { text: 'CSS', value: 'Css' },
+        { text: 'CSS', value: 'CSS' },
         { text: 'Fields', value: 'Fields', icon: 'fp-fields-icon' },
         { text: 'Layout', value: 'Layout', icon: 'fp-layout-icon' },
       ],
@@ -115,8 +115,21 @@ export default {
     showDetails() {
       this.showApplyOptions = !this.showApplyOptions;
     },
-    onApply() {
-      // TODO: apply selected options
+    applyTemplate() {
+      ProcessMaker.apiClient
+        .post(`/template/screen/${this.template.id}/apply`, {
+          screenId: this.screenId,
+          templateOptions: this.selected,
+          currentScreenPage: this.currentScreenPage,
+        })
+        .then((response) => {
+          ProcessMaker.alert(this.$t("The template options have been applied."), "success");
+          window.location.reload();
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || error.message;
+          ProcessMaker.alert(errorMessage, "danger");
+        });
     },
     onCancel() {
       this.showApplyOptions = false;
