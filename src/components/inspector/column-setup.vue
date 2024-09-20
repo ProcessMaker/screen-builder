@@ -46,7 +46,7 @@
           <button type="button" class="btn btn-sm btn-outline-secondary mr-2" @click="showOptionCard=false">
             {{ $t('Cancel') }}
           </button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addOption()">
+          <button type="button" class="btn btn-sm btn-secondary" @click="isCollection ? addOptionCollection() : addOption()">
             {{ $t('Save') }}
           </button>
         </div>
@@ -490,54 +490,25 @@ export default {
       }
 
       if (this.optionCardType === 'insert') {
-        if(this.isCollection) {
-          if (this.optionsList.find(item => { return item[that.keyFieldCollection] === this.optionContentCollection; })) {
-            this.optionError = 'An item with the same key already exists';
-            return;
-          }
-        } else {
-          if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
-            this.optionError = 'An item with the same key already exists';
-            return;
-          }
+        if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
+          this.optionError = 'An item with the same key already exists';
+          return;
         }
-        
-        if(this.isCollection) {
-          this.optionsList.push(
-            {
-              [this.keyFieldCollection]: this.optionContentCollection,
-              [this.valueField]: this.optionValueCollection,
-            }
-          );
-          this.optionsList = this.optionsList.filter(option => option["content"] !== "all");
-        } else {
-          this.optionsList.push(
+
+        this.optionsList.push(
           {
             [this.valueField]: this.optionContent,
             [this.keyField]: this.optionValue,
           }
         );
-        }
-        if(this.isCollection) {
-          this.$root.$emit("collection-columns", this.optionsList);
-        }
       }
       else {
-        if(!this.isCollection) {
-          if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
-            this.optionError = 'An item with the same key already exists';
-            return;
-          }
-          this.optionsList[this.editIndex][this.keyField] = this.optionValue;
-          this.optionsList[this.editIndex][this.valueField] = this.optionContent;
-        } else {
-          if (this.optionsList.find((item, index) => { return item[that.keyFieldCollection] === this.optionValueCollection && index !== this.editIndex ; })) {
-            //this.optionError = 'An item with the same key already exists';
-            //return;
-          }
-          this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionContentCollection;
-          this.optionsList[this.editIndex][this.valueField] = this.optionValueCollection;
+        if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex; })) {
+          this.optionError = 'An item with the same key already exists';
+          return;
         }
+        this.optionsList[this.editIndex][this.keyField] = this.optionValue;
+        this.optionsList[this.editIndex][this.valueField] = this.optionContent;
       }
 
       this.jsonError = '';
@@ -553,50 +524,24 @@ export default {
       }
 
       if (this.optionCardType === 'insert') {
-        if(this.isCollection) {
-          if (this.optionsList.find(item => { return item[that.keyFieldCollection] === this.optionValueCollection; })) {
-            this.optionError = 'An item with the same key already exists';
-            return;
-          }
-        } else {
-          if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
-            this.optionError = 'An item with the same key already exists';
-            return;
-          }
+        if (this.optionsList.find(item => { return item[that.keyFieldCollection] === this.optionContentCollection; })) {
+          this.optionError = 'An item with the same key already exists';
+          return;
         }
-        
-        if(this.isCollection) {
-          this.optionsList.push(
-            {
-              [this.keyFieldCollection]: this.optionContentCollection,
-              [this.valueField]: this.optionValueCollection,
-            }
-          );
-        } else {
-          this.optionsList.push(
+
+        this.optionsList.push(
           {
-            [this.valueField]: this.optionContent,
-            [this.keyField]: this.optionValue,
+            [this.keyFieldCollection]: this.optionContentCollection,
+            [this.valueField]: this.optionValueCollection,
           }
         );
-        }
-        if(this.isCollection) {
-          this.$root.$emit("collection-columns", this.optionsList);
-        }
+
+        this.sendOptionList(this.optionsList);
       }
       else {
-        if(!this.isCollection) {
-          if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
-            this.optionError = 'An item with the same key already exists';
-            return;
-          }
-          this.optionsList[this.editIndex][this.keyField] = this.optionValue;
-          this.optionsList[this.editIndex][this.valueField] = this.optionContent;
-        } else {
-          this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionContentCollection;
-          this.optionsList[this.editIndex][this.valueField] = this.optionValueCollection;
-          this.$root.$emit("collection-columns", this.optionsList);
-        }
+        this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionContentCollection;
+        this.optionsList[this.editIndex][this.valueField] = this.optionValueCollection;
+        this.sendOptionList(this.optionsList);
       }
 
       this.jsonError = '';
@@ -610,20 +555,21 @@ export default {
       this.jsonData = JSON.stringify(this.optionsList);
       this.showRemoveWarning = false;
       this.removeIndex = null;
-      this.$root.$emit("collection-columns", this.optionsList);
+      this.sendOptionList(this.optionsList);
     },
-
     removeOption(index) {
       this.removeIndex = index;
       this.showRemoveWarning = true;
     },
-
     expandEditor() {
       this.showPopup = true;
     },
     closePopup() {
       this.showPopup = false;
     },
+    sendOptionList(optionsList) {
+      this.$root.$emit("collection-columns", optionsList);
+    }
   },
 };
 </script>
