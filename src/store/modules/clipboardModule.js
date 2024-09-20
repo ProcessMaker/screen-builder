@@ -98,15 +98,15 @@ const clipboardModule = {
    * Actions are used to commit mutations and can contain asynchronous operations.
    */
   actions: {
-    addToClipboard({ commit }, items) {
-      commit('ADD_TO_CLIPBOARD', items);
-    },
     /**
      * Adds an item to the clipboard by committing the corresponding mutation.
      * @param {Object} context - The context object containing commit.
      * @param {any} item - The item to add to the clipboard.
      */
     addToClipboard({ commit }, item) {
+      if (!item) {
+        throw new Error('Item is missing');
+      }
       commit('ADD_TO_CLIPBOARD', item);
     },
 

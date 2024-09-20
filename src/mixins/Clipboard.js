@@ -64,5 +64,40 @@ export default {
 
       screenConfig.forEach((item) => replaceInPage(item));
     },
+
+    /**
+     * Find { component: "Clipboard" } and replace with the clipboard content.
+     */
+    replaceClipboardContent(screenConfig) {
+      if (
+        !screenConfig
+        || screenConfig instanceof Array === false
+      ) {
+        throw new Error("Expected a screen configuration array");
+      }
+
+      // Navigate each page and replace the clipboard component with the clipboard content
+      const replaceUuids = (item) => {
+        item.uuid = this.generateUUID();
+        if (item.items) {
+          item.items.forEach(replaceUuids);
+        }
+      }
+      const replaceInPage = (page) => {
+        page.items.forEach((item, index) => {
+          if (item.component === clipboardComponentName) {
+            // clone clipboard content to avoid modifying the original
+            const clipboardContent = _.cloneDeep(this.$store.getters["clipboardModule/clipboardItems"]);
+            // replace uuids in clipboard content
+            clipboardContent.forEach(replaceUuids);
+            page.items.splice(index, 1, ...clipboardContent);
+          }
+          if (item.items) {
+            replaceInPage(item);
+          }
+        });
+      }
+      screenConfig.forEach((item) => replaceInPage(item));
+    },
   },
 };
