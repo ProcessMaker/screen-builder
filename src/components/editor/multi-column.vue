@@ -46,11 +46,11 @@
                       <clipboard-button
                         :index="index"
                         :config="element.config"
-                        :isInClipboard="isInClipboard(items[row][index])"
+                        :isInClipboard="isInClipboard(element)"
                         :addTitle="$t('Add to clipboard')"
                         :removeTitle="$t('Remove from clipboard')"
-                        @addToClipboard="addToClipboard(items[row][index])"
-                        @removeFromClipboard="removeFromClipboard(items[row][index])"
+                        @addToClipboard="addToClipboard(element)"
+                        @removeFromClipboard="removeFromClipboard(element)"
                       />
                       <button
                         v-if="isAiSection(element) && aiPreview(element)"
@@ -112,11 +112,11 @@
                       <clipboard-button
                         :index="index"
                         :config="element.config"
-                        :isInClipboard="isInClipboard(items[row][index])"
+                        :isInClipboard="isInClipboard(element)"
                         :addTitle="$t('Add to clipboard')"
                         :removeTitle="$t('Remove from clipboard')"
-                        @addToClipboard="addToClipboard(items[row][index])"
-                        @removeFromClipboard="removeFromClipboard(items[row][index])"
+                        @addToClipboard="addToClipboard(element)"
+                        @removeFromClipboard="removeFromClipboard(element)"
                       />
                       <button
                         class="btn btn-sm btn-secondary mr-2"
