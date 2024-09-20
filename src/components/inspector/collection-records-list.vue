@@ -92,6 +92,7 @@ export default {
         .then((response) => {
           this.dataRecordList = response.data;
         });
+      this.$emit('change', this.dataRecordList);
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
