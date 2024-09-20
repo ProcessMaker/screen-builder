@@ -220,6 +220,7 @@
 import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
+import { cloneDeep } from "lodash";
 
 export default {
   components: {
@@ -278,9 +279,10 @@ export default {
         automaticLayout: true,
       },
       showPopup: false,
-      isCollection: false,
+      isCollection: null,
       collectionOptions: [],
       hideLabelAll: false,
+      sortable: true,
     };
   },
   watch: {
@@ -364,7 +366,10 @@ export default {
   mounted() {
     this.initData();
     this.$root.$on("record-list-option", (val) => {
-      this.isCollection = (val === "Collection") ? true : false;
+      this.$nextTick(()=>{
+        this.isCollection = (val === "Collection") ? true : false;
+      });
+      
     });
     this.$root.$on("record-list-collection", (collectionData) => {
       this.getCollectionColumns(collectionData);

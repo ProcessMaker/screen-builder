@@ -86,9 +86,7 @@
       };
     },
     mounted() {
-      this.$root.$emit("record-list-option", this.sourceOptions);
       this.$root.$on("collection-columns", (optionList) => {
-
         this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
           this.changeCollectionColumns(optionList);
       });
@@ -142,11 +140,6 @@
       collectionFields: {
         handler(collectionFieldsData) {
            this.$root.$emit("record-list-collection", collectionFieldsData);
-        }
-      },
-      collectionFieldsColumns: {
-        handler(collectionFieldsDataColumns) {
-
         }
       },
       pmql: {
