@@ -180,4 +180,53 @@ describe("Clipboard Drag and Paste", () => {
     cy.get('[data-cy="screen-element-container"]').click();
   });
 
+  it("Copy two input element to clipboard", () => {
+    cy.window().then((win) => {
+      // Clear storage to remove any previous clipboard items
+      win.localStorage.clear();
+
+      // Step 1: Visit the homepage and open the 'Input Fields' accordion
+      cy.visit("/");
+      cy.openAcordeonByLabel("Input Fields");
+
+      // Step 2: Drag FormInput control to the screen's drop zone
+      cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
+        position: "bottom"
+      });
+
+      // Step 3: Click on the screen element container to select it
+      cy.get('[data-cy="screen-element-container"]').click();
+
+      // Step 4: Copy the selected element to the clipboard
+      cy.get('[data-cy="addToClipboard"]').should("be.visible");
+      cy.get('[data-cy="addToClipboard"]').click();
+      cy.get('[data-cy="addToClipboard"]').should("not.exist");
+
+      // Step 5: Drag a second FormInput control to the screen's drop zone
+      cy.get("[data-cy=controls-FormInput]").drag("[data-cy=editor-content]", {
+      });
+
+      // Step 6: Click on the screen element container to select it
+      cy.get('[data-cy="screen-element-container"]').eq(1).click();
+
+      // Step 7: Copy the selected element to the clipboard
+      cy.get('[data-cy="addToClipboard"]').should("be.visible");
+      cy.get('[data-cy="addToClipboard"]').click();
+      cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    });
+  });
+
+  it("Paste clipboard items to a different screen", () => {
+    // Step 1: Visit the homepage and open the 'Clipboard' accordion
+    cy.visit("/");
+    cy.openAcordeonByLabel("Clipboard");
+
+    // Step 2: Drag clipboard item to the screen's drop zone
+    cy.get('[data-cy="controls-Clipboard"]').drag('[data-cy=screen-drop-zone]');
+
+    // Step 3: Verify that there are two input elements pasted
+    cy.get('[data-cy="screen-element-container"]').should('have.length', 2);
+    cy.get('[data-cy="screen-element-container"]').eq(0).find('input').should('exist');
+    cy.get('[data-cy="screen-element-container"]').eq(1).find('input').should('exist');
+  });
 });
