@@ -335,24 +335,109 @@ export default {
       100
     );
 
-    const dataRecordList = this.source?.collectionFieldsColumns?.dataRecordList?.length
-      ? this.source.collectionFieldsColumns.dataRecordList
-      : this.source?.collectionFields?.dataRecordList;
+    // const dataRecordList = this.source?.collectionFieldsColumns?.dataRecordList?.length
+    //   ? this.source.collectionFieldsColumns.dataRecordList
+    //   : this.source?.collectionFields?.dataRecordList;
 
-    if (dataRecordList) {
-      this.setCollectionIntoList(dataRecordList);
-    }
+    // if (dataRecordList) {
+    //   this.setCollectionIntoList(dataRecordList);
+    // }
 
     if (this.paginationOption != null) {
       this.perPage = this.paginationOption;
     }
-
+    console.log("source", this.source);
+    console.log("los fields: ", this.fields);
+    if(this.source?.sourceOptions === "Collection") {
+      this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
+    }
+    
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    onCollectionChange(collectionId,pmql) {
+      let param = {params:{pmql:pmql}};
+      let filasColeccion = [];
+      //const validParam = this.validatePmqlString(param.params.pmql) ? param : null;
+      this.$dataProvider
+        .getCollectionRecordsList(collectionId, param)
+        .then((response) => {
+          //this.dataRecordList = response.data;
+          console.log("response.data: ", response.data);
+          //this.setCollectionIntoList(response.data);
+          filasColeccion = response.data;
+          //this.setCollectionIntoList(response.data);
+
+          this.changeCollectionColumns(filasColeccion,this.fields);
+        });
+      //this.$emit('change', this.dataRecordList);
+      this.$emit('change', this.field);
+    },
+    // changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
+    //   console.log("en changeCollectionColumns collectionFieldsColumns: ",collectionFieldsColumns,  "columnsSelected:", columnsSelected);
+    //   let selectedKeys = columnsSelected.optionsList.map(column => column.content);
+    //   console.log("selectedKeys: ", selectedKeys);
+    
+    //     let colFields = collectionFieldsColumns.data.forEach(record => {
+    //       let dataObject = record.data;
+
+    //       if (dataObject && typeof dataObject === 'object') {
+    //         Object.keys(dataObject).forEach(key => {
+    //           if (!selectedKeys.includes(key)) {
+    //             delete dataObject[key];
+    //           } else {
+    //             const matchingColumn = columnsSelected.find(column => column.content === key);
+
+    //             if (matchingColumn && matchingColumn.key !== key) {
+    //               dataObject[matchingColumn.key] = dataObject[key];
+    //               delete dataObject[key];
+    //             }
+    //           }
+    //         });
+    //       } 
+    //     });
+
+    //     console.log("Esto deberia ser lo que renderiza la tabla: ", colFields);
+    //     this.setCollectionIntoList(colFields);
+        
+    // },
+    changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
+      console.log("en changeCollectionColumns collectionFieldsColumns: ",collectionFieldsColumns,  "columnsSelected:", columnsSelected);
+      
+      // Obtener el optionsList de fieldsColumns
+      const optionsList = columnsSelected.optionsList;
+
+      // Iterar sobre collectionFieldsColumns
+      collectionFieldsColumns.forEach(column => {
+        let dataObject = column.data; // Acceder al objeto "data"
+
+        // Crear un nuevo objeto para almacenar los keys que hagan match
+        let newDataObject = {};
+
+        // Iterar sobre los keys del objeto "data"
+        Object.keys(dataObject).forEach(dataKey => {
+          // Buscar si el key de "data" coincide con algún "content" en optionsList
+          const matchingOption = optionsList.find(option => option.content === dataKey);
+
+          if (matchingOption) {
+            // Si hay coincidencia, renombrar el key en "data" con el valor de "key" de optionsList
+            newDataObject[matchingOption.key] = dataObject[dataKey];
+          }
+        });
+
+        // Reemplazar el dataObject original por el nuevo dataObject con los keys actualizados
+        column.data = newDataObject;
+      });
+
+      //console.log(collectionFieldsColumns);
+
+         console.log("Esto deberia ser lo que renderiza la tabla: ", collectionFieldsColumns);
+        this.setCollectionIntoList(collectionFieldsColumns);
+        
+    },
     setCollectionIntoList(array) {
       const result = [];
-
+      console.log("array: ", array);
       array.forEach((row) => {
         if (row.hasOwnProperty('data')) {
           const dataObject = row.data;
@@ -367,6 +452,7 @@ export default {
       });
       //sets Collection result(columns and rows) into this.collectionData
       this.collectionData = result;
+      console.log("esto es collectionData: ", this.collectionData);
     },
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);

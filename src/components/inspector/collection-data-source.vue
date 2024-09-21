@@ -88,14 +88,14 @@
       };
     },
     mounted() {
-      this.$root.$on("collection-columns", (optionList) => {
-        this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
-        this.$nextTick(() => {
-          if (this.collectionFieldsColumns?.dataRecordList?.length) {
-            this.changeCollectionColumns(optionList);
-          } 
-        });
-      });     
+      // this.$root.$on("collection-columns", (optionList) => {
+      //   this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
+      //   this.$nextTick(() => {
+      //     if (this.collectionFieldsColumns?.dataRecordList?.length) {
+      //       this.changeCollectionColumns(optionList);
+      //     } 
+      //   });
+      // });     
     },
     methods: {
       displayOptionChange() {
