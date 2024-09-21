@@ -97,6 +97,8 @@
       displayOptionChange() {
         this.collectionFields = [];
         this.collectionFieldsColumns = [];
+        //window.ProcessMaker.EventBus.$emit('reset-multiselect');
+        this.$root.$emit("collection-changed", true);
       },
       collectionChanged(data) {
         if (Array.isArray(data)) {
