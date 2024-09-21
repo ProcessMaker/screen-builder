@@ -303,7 +303,7 @@ export default {
       .catch((error) => {
         if (error.response && error.response.status === 404) {
           const data = { data: [] };
-          return [data, nonce];
+          return [data];
         }
         throw error;
       });
