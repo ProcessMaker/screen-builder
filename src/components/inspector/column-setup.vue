@@ -373,6 +373,11 @@ export default {
         this.optionsList = [];
       }
     });
+    this.$root.$on("option-source-changed", (change) => {
+      if(change) {
+        this.optionsList = [];
+      }
+    });
   },
   methods: {
     handleColumnSelection() {
