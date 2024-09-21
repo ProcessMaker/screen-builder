@@ -74,10 +74,11 @@ export default {
     }, 1000);
   },
   mounted() {
-    this.$root.$on("change-pmql", (val) => {
-      this.pmql = val;
-      this.onCollectionChange();
-    });
+    // comentado
+    // this.$root.$on("change-pmql", (val) => {
+    //   this.pmql = val;
+    //   this.onCollectionChange();
+    // });
     this.getCollections();
     if (this.collectionId) {
       this.getFields();

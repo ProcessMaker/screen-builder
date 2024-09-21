@@ -88,6 +88,7 @@
       };
     },
     mounted() {
+      // comentado
       // this.$root.$on("collection-columns", (optionList) => {
       //   this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
       //   this.$nextTick(() => {
@@ -166,11 +167,12 @@
         },
         deep: true
       },
-      pmql: {
-        handler(newPmql) {
-            this.$root.$emit("change-pmql", newPmql);
-        }
-      },
+      //comentado
+      // pmql: {
+      //   handler(newPmql) {
+      //       this.$root.$emit("change-pmql", newPmql);
+      //   }
+      // },
       submitCollectionCheck(newValue) {
         this.submitCollectionCheck = newValue;
       },
