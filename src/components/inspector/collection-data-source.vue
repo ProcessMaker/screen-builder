@@ -90,14 +90,17 @@
     mounted() {
       this.$root.$on("collection-columns", (optionList) => {
         this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
-          this.changeCollectionColumns(optionList);
-      });
+        this.$nextTick(() => {
+          if (this.collectionFieldsColumns?.dataRecordList?.length) {
+            this.changeCollectionColumns(optionList);
+          } 
+        });
+      });     
     },
     methods: {
       displayOptionChange() {
         this.collectionFields = [];
         this.collectionFieldsColumns = [];
-        //window.ProcessMaker.EventBus.$emit('reset-multiselect');
         this.$root.$emit("collection-changed", true);
       },
       collectionChanged(data) {
@@ -111,25 +114,28 @@
       },
       changeCollectionColumns(columnsSelected) {
         let selectedKeys = columnsSelected.map(column => column.content);
-        let dataObject = {};
+        
+        //if (this.collectionFieldsColumns && Array.isArray(this.collectionFieldsColumns.dataRecordList)) {
+        if (Array.isArray(this.collectionFieldsColumns?.dataRecordList)) {
+          this.collectionFieldsColumns.dataRecordList.forEach(record => {
+            let dataObject = record.data;
 
-        this.collectionFieldsColumns.dataRecordList.forEach(record => {
-          dataObject = record.data;
+            if (dataObject && typeof dataObject === 'object') {
+              Object.keys(dataObject).forEach(key => {
+                if (!selectedKeys.includes(key)) {
+                  delete dataObject[key];
+                } else {
+                  const matchingColumn = columnsSelected.find(column => column.content === key);
 
-          Object.keys(dataObject).forEach(key => {
-            if (!selectedKeys.includes(key)) {
-              delete dataObject[key];
-            } else {
-              const matchingColumn = columnsSelected.find(column => column.content === key);
-              
-              // Rename header from collection columns whit new labels(only for display)
-              if (matchingColumn && matchingColumn.key !== key) {
-                dataObject[matchingColumn.key] = dataObject[key];
-                delete dataObject[key];
-              }
-            }
+                  if (matchingColumn && matchingColumn.key !== key) {
+                    dataObject[matchingColumn.key] = dataObject[key];
+                    delete dataObject[key];
+                  }
+                }
+              });
+            } 
           });
-        });
+        }
       }
     },
     computed: {
@@ -157,7 +163,8 @@
       collectionFields: {
         handler(collectionFieldsData) {
            this.$root.$emit("record-list-collection", collectionFieldsData);
-        }
+        },
+        deep: true
       },
       pmql: {
         handler(newPmql) {
