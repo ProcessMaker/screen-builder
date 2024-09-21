@@ -540,7 +540,7 @@ export default {
             [this.valueField]: this.optionValueCollection,
           }
         );
-
+        this.optionsList = this.optionsList.filter(option => option["content"] !== "all");
         this.sendOptionList(this.optionsList);
       }
       else {
