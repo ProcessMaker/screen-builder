@@ -36,11 +36,10 @@ export default {
     validationData: null,
     _parent: null,
     record: null,
-    displayMode: {
-      type: String,
-      default: "Edit"
-    },
     collection: {
+      type: Object
+    },
+    collectionmode: {
       type: Object
     },
   },
@@ -52,11 +51,13 @@ export default {
       customCSS: null,
       watchers: [],
       screenTitle: null,
-      collectionMode: "Edit",
       selCollectionId: Number,
       selRecordId: Number,
+      selDisplayMode: String,
       screenCollectionId: null,
-      placeholder: "Select a collection"
+      placeholder: "Select a collection",
+      screenType: "",
+      hasMustache: false,
     };
   },
   computed: {
@@ -65,12 +66,20 @@ export default {
     },
     data: {
       get() {
-        return this.localData;
-      },
+        if(this.hasMustache) {
+          this.clearDataObject();
+        }
+                return this.localData;
+              },
       set(data) {
         Object.keys(data).forEach((variable) => {
           this.validationData && this.$set(this.validationData, variable, data[variable]);
         });
+
+        if (this.collection) {
+          this.$set(this.collection, 'data', Array.isArray(data) ? data : [data]);
+          this.$set(this.collection, 'screen', this.screenCollectionId);
+        }
       },
     },
   },
@@ -142,25 +151,30 @@ export default {
         });
       }
     },
+    callbackRecord() {
+      this.hasMustache = true;
+      this.loadRecordCollection(this.selCollectionId, 1, this.selDisplayMode);
+    },
     errors() {
       this.$refs.nestedScreen.isValid();
       return this.$refs.nestedScreen.errors;
     },
-    loadRecordCollection(collectionId, recordId) {
+    loadRecordCollection(collectionId, recordId, modeId) {
       this.selCollectionId = collectionId;
       this.selRecordId = recordId;
+      this.selDisplayMode = modeId;
 
       this.$dataProvider
         .getCollectionRecordsView(collectionId, recordId)
         .then((response) => {
           this.placeholder = "";
           const respData = response.data;
-          //ld = {};
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
-          this.screenCollectionId =
-            this.displayMode === "View" ? viewScreen : editScreen;
-
+            //Choose screen id regarding of the display Mode
+            this.screenCollectionId =
+              this.selDisplayMode === "View" ? viewScreen : editScreen;
+          
           this.loadScreen(this.screenCollectionId);
           this.localData = respData;
         })
@@ -168,6 +182,16 @@ export default {
           this.localData = {};
           globalObject.ProcessMaker.alert(this.$t('This content does not exist. We could not locate indicated data'), "danger");
         });;
+    },
+    isMustache(record) {
+      return /\{\{.*\}\}/.test(record);
+    },
+    clearDataObject() {
+      Object.keys(this.localData).forEach(key => {
+        if (key !== "id") {
+          this.localData[key] = "";
+        }
+      });
     },
   },
   watch: {
@@ -177,20 +201,27 @@ export default {
       }
     },
     record(record) {
+      this.hasMustache = false;
       if (record && !isNaN(record) && record > 0 && this.collection) {
         this.selRecordId = record;
-        this.loadRecordCollection(this.selCollectionId, record);
+        this.loadRecordCollection(this.selCollectionId, record, this.collectionmode);
       } else {
+        if (this.isMustache(record)) {
+          this.callbackRecord();
+        }
         this.localData = {};
       }
     },
-    displayMode(val) {
-      this.loadRecordCollection(this.selCollectionId, this.selRecordId);
+    collectionmode(collectionmode) {
+      if(collectionmode) {
+        this.selDisplayMode = collectionmode.modeId;
+      }
+      this.loadRecordCollection(this.selCollectionId, this.selRecordId, this.selDisplayMode);
     },
   },
   mounted() {
     if (this.collection && this.record) {
-      this.loadRecordCollection(this.collection.collectionId, this.record);
+      this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);
     }
   },
 };
