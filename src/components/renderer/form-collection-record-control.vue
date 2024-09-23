@@ -42,6 +42,7 @@ export default {
     collectionmode: {
       type: Object
     },
+    taskdraft: Object,
   },
   data() {
     return {
@@ -58,6 +59,8 @@ export default {
       placeholder: "Select a collection",
       screenType: "",
       hasMustache: false,
+      flagDraft: {},
+      taskDraft: {}
     };
   },
   computed: {
@@ -69,8 +72,8 @@ export default {
         if(this.hasMustache) {
           this.clearDataObject();
         }
-                return this.localData;
-              },
+        return this.localData;
+      },
       set(data) {
         Object.keys(data).forEach((variable) => {
           this.validationData && this.$set(this.validationData, variable, data[variable]);
@@ -176,7 +179,14 @@ export default {
               this.selDisplayMode === "View" ? viewScreen : editScreen;
           
           this.loadScreen(this.screenCollectionId);
-          this.localData = respData;
+
+          //This section validates if Collection has draft data
+          if(this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '') {
+            this.localData = respData;
+          }else{
+            this.localData = this.taskDraft.draft.data;
+          }
+          
         })
         .catch(() => {
           this.localData = {};
@@ -220,6 +230,10 @@ export default {
     },
   },
   mounted() {
+    this.$root.$on("taskdraft-input", (val)=>{
+      this.taskDraft = val;
+    });
+
     if (this.collection && this.record) {
       this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);
     }
