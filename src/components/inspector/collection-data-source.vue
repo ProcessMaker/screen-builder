@@ -9,6 +9,9 @@
           data-cy="inspector-collection-data-source"
           @change="displayOptionChange"
         />
+        <small class="form-text text-muted">{{
+        $t("A record list can display the data of a defined variable or a collection")
+      }}</small>
       </div>
       <div class="mt-2" v-if="sourceOptions === 'Collection'">
 
@@ -29,7 +32,7 @@
       >
       </pmql-input>
       <small class="form-text text-muted">{{
-        $t("Advanced data search")
+        $t("Leave this field empty to show all the records of the collection")
       }}</small>
         <label for="collectionsource">{{ $t("Data Selection") }}</label>
 
@@ -91,6 +94,7 @@
       displayOptionChange() {
         this.collectionFields = [];
         this.collectionFieldsColumns = [];
+        this.pmql = null;
         this.$root.$emit("collection-changed", true);
       },
       collectionChanged(data) {
