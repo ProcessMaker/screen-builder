@@ -35,7 +35,7 @@
           data-cy="inspector-collection-columns"
           @change="handleColumnSelection"
           />
-          <label v-show="!hideLabelAll" for="option-label-column">{{ $t('Column Label') }}</label>
+          <label v-show="!hideLabelAll" for="option-label-column">{{ $t('Column Labelx') }}</label>
           <b-form-input v-show="!hideLabelAll" id="option-label-column" v-model="optionContentCollection" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
@@ -541,12 +541,10 @@ export default {
           }
         );
         this.optionsList = this.optionsList.filter(option => option["content"] !== "all");
-        this.sendOptionList(this.optionsList);
       }
       else {
         this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionContentCollection;
         this.optionsList[this.editIndex][this.valueField] = this.optionValueCollection;
-        this.sendOptionList(this.optionsList);
       }
 
       this.jsonError = '';
@@ -560,7 +558,6 @@ export default {
       this.jsonData = JSON.stringify(this.optionsList);
       this.showRemoveWarning = false;
       this.removeIndex = null;
-      this.sendOptionList(this.optionsList);
     },
     removeOption(index) {
       this.removeIndex = index;
@@ -572,9 +569,6 @@ export default {
     closePopup() {
       this.showPopup = false;
     },
-    sendOptionList(optionsList) {
-      this.$root.$emit("collection-columns", optionsList);
-    }
   },
 };
 </script>

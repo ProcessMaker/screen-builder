@@ -87,17 +87,6 @@
       ]
       };
     },
-    mounted() {
-      // comentado
-      // this.$root.$on("collection-columns", (optionList) => {
-      //   this.collectionFieldsColumns = _.cloneDeep(this.collectionFields);
-      //   this.$nextTick(() => {
-      //     if (this.collectionFieldsColumns?.dataRecordList?.length) {
-      //       this.changeCollectionColumns(optionList);
-      //     } 
-      //   });
-      // });     
-    },
     methods: {
       displayOptionChange() {
         this.collectionFields = [];
@@ -116,7 +105,6 @@
       changeCollectionColumns(columnsSelected) {
         let selectedKeys = columnsSelected.map(column => column.content);
         
-        //if (this.collectionFieldsColumns && Array.isArray(this.collectionFieldsColumns.dataRecordList)) {
         if (Array.isArray(this.collectionFieldsColumns?.dataRecordList)) {
           this.collectionFieldsColumns.dataRecordList.forEach(record => {
             let dataObject = record.data;
@@ -167,12 +155,11 @@
         },
         deep: true
       },
-      //comentado
-      // pmql: {
-      //   handler(newPmql) {
-      //       this.$root.$emit("change-pmql", newPmql);
-      //   }
-      // },
+      pmql: {
+        handler(newPmql) {
+            this.$root.$emit("change-pmql", newPmql);
+        }
+      },
       submitCollectionCheck(newValue) {
         this.submitCollectionCheck = newValue;
       },

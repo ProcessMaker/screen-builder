@@ -349,7 +349,6 @@ export default {
     onCollectionChange(collectionId,pmql) {
       let param = {params:{pmql:pmql}};
       let rowsCollection = [];
-
       this.$dataProvider
         .getCollectionRecordsList(collectionId, param)
         .then((response) => {
