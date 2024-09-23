@@ -35,7 +35,7 @@
           data-cy="inspector-collection-columns"
           @change="handleColumnSelection"
           />
-          <label v-show="!hideLabelAll" for="option-label-column">{{ $t('Column Labelx') }}</label>
+          <label v-show="!hideLabelAll" for="option-label-column">{{ $t('Column Label') }}</label>
           <b-form-input v-show="!hideLabelAll" id="option-label-column" v-model="optionContentCollection" :classs="optionKeyClass" />
           <div v-if="optionError" class="invalid-feedback d-block text-right">
             <div>{{ optionError }}</div>
