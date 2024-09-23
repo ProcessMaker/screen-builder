@@ -13,7 +13,11 @@ export default [
       'initiallyChecked',
       'screen',
       'multipleUpload',
-      'linkUrl'
+      'linkUrl',
+      'collection',
+      'record',
+      'displayMode',
+      'submitCollectionCheck',
     ],
     open: true,
   },

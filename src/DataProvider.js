@@ -286,5 +286,25 @@ export default {
         }
         throw error;
       });
+  },
+
+  getCollectionRecordsView(collectionId, recordId) {
+    return this.get(
+      `/collections/${collectionId}/records/${recordId}`
+    )
+      .then((response) => {
+        const data = response ? response.data : null;
+        if (!data) {
+          throw new Error(i18next.t("No data returned"));
+        }
+        return data;
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          const data = { data: [] };
+          return data;
+        }
+        throw error;
+      });
   }
 };
