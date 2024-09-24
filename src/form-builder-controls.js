@@ -488,12 +488,21 @@ export default [
           },
         },
         {
+          type: 'collectionDataSource',
+          field: 'source',
+          config: {
+            label: 'Source of Record List',
+            helper: 'A record list can display the data of a defined variable or a collection'
+          }
+        },
+        {
           type: 'FormCheckbox',
           field: 'editable',
           config: {
             label: 'Editable?',
             helper: 'Should records be editable/removable and can new records be added',
           },
+          if: 'hideControl'
         },
         {
           type: 'ColumnSetup',
@@ -510,6 +519,7 @@ export default [
             label: 'Record Form',
             helper: 'The form to use for adding/editing records',
           },
+          if: 'hideControl'
         },
         colorProperty,
         bgcolorProperty,
