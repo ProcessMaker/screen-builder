@@ -76,7 +76,6 @@ export default {
   mounted() {
     this.$root.$on("change-pmql", (val) => {
       this.pmql = val;
-      this.onCollectionChange();
     });
     this.getCollections();
     if (this.collectionId) {
