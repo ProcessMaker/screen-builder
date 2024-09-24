@@ -85,10 +85,8 @@ export default {
   },
   methods: {
     onCollectionChange() {
-      let param = {params:{pmql:this.pmql}};
-      const validParam = this.validatePmqlString(param.params.pmql) ? param : null;
       this.$dataProvider
-        .getCollectionRecordsList(this.collectionId, validParam)
+        .getCollectionRecordsList(this.collectionId)
         .then((response) => {
           this.dataRecordList = response.data;
         });
@@ -105,10 +103,6 @@ export default {
           })
         ];
       });
-    },
-    validatePmqlString(pmql) {
-      const pmqlRegex = /^[a-zA-Z_][a-zA-Z0-9_]*\s*(=|<|>|<=|>=|!=)\s*('[^']*'|[0-9]+)$/;
-      return pmqlRegex.test(pmql);
     },
     getFields() {
       if (!this.collectionId) {

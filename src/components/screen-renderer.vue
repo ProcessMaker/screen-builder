@@ -39,6 +39,7 @@
       :vdata="value"
       :_parent="_parent || value._parent"
       :_initial-page="currentPage"
+      :taskdraft="taskdraft"
       @after-submit="afterSubmit"
       @submit="submit"
       @asyncWatcherTriggered="onAsyncWatcherOn"
@@ -70,6 +71,7 @@ export default {
       type: String,
       default: ""
     },
+    taskdraft: Object
   },
   data() {
     return {
