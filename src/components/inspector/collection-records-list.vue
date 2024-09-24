@@ -7,7 +7,6 @@
         v-model="collectionId"
         :options="collections"
         data-cy="inspector-collection"
-        @change="resetFields"
       />
     </div>
   </div>
@@ -20,10 +19,8 @@ import ScreenVariableSelector from "../screen-variable-selector.vue";
 
 const CONFIG_FIELDS = [
   "collectionId",
-  "labelField",
-  "valueField",
   "pmql",
-  "unique"
+  "dataRecordList"
 ];
 
 export default {
@@ -37,10 +34,9 @@ export default {
       collections: [],
       fields: [],
       collectionId: null,
-      labelField: null,
-      valueField: null,
       pmql: "",
-      unique: false
+      unique: false,
+      dataRecordList: [],
     };
   },
   computed: {
@@ -70,7 +66,7 @@ export default {
         this.$emit("input", this.options);
       },
       deep: true
-    }
+    },
   },
   created() {
     this.onDebouncedPmqlChange = debounce((pmql) => {
@@ -78,15 +74,22 @@ export default {
     }, 1000);
   },
   mounted() {
+    this.$root.$on("change-pmql", (val) => {
+      this.pmql = val;
+      this.onCollectionChange();
+    });
     this.getCollections();
     if (this.collectionId) {
       this.getFields();
     }
   },
   methods: {
-    resetFields() {
-      this.labelField = null;
-      this.valueField = null;
+    onCollectionChange() {
+      this.$dataProvider
+        .getCollectionRecordsList(this.collectionId)
+        .then((response) => {
+          this.dataRecordList = response.data;
+        });
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
@@ -119,6 +122,8 @@ export default {
               };
             })
           ];
+
+          this.onCollectionChange();
         });
     },
     onNLQConversion(pmql) {
