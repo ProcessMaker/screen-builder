@@ -13,7 +13,7 @@
         <i class="fas fa-times"></i>
       </button>
     </div>
-    <div class="d-flex m-2 template-tabs justify-content-center">
+    <div class="d-flex template-tabs justify-content-center">
       <b-button
         @click="showMyTemplates"
         class="d-inline default-template-btn px-1"
@@ -163,6 +163,8 @@
     padding: 4px;
     background-color: #E9ECF1;
     border-radius: 8px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .default-template-btn {
