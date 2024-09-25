@@ -146,11 +146,7 @@
         this.$root.$emit("collection-changed", true);
       },
       collectionChanged(data) {
-        // review posible remove
-        //console.log("revisar this.collectionFields: ", this.collectionFields);
-        
         if (Array.isArray(data)) {
-          //console.log("Array data valid from change : ", data);
             const [firstItem] = data;
             const collectionId = firstItem?.collection_id;
             if(collectionId !== this.collectionFields.collectionId) {
@@ -158,33 +154,7 @@
             }
         }
       },
-      // changeCollectionColumns(columnsSelected) {
-      //   let selectedKeys = columnsSelected.map(column => column.content);
-        
-      //   if (Array.isArray(this.collectionFieldsColumns?.dataRecordList)) {
-      //     this.collectionFieldsColumns.dataRecordList.forEach(record => {
-      //       let dataObject = record.data;
-
-      //       if (dataObject && typeof dataObject === 'object') {
-      //         Object.keys(dataObject).forEach(key => {
-      //           if (!selectedKeys.includes(key)) {
-      //             delete dataObject[key];
-      //           } else {
-      //             const matchingColumn = columnsSelected.find(column => column.content === key);
-
-      //             if (matchingColumn && matchingColumn.key !== key) {
-      //               dataObject[matchingColumn.key] = dataObject[key];
-      //               delete dataObject[key];
-      //             }
-      //           }
-      //         });
-      //       } 
-      //     });
-      //   }
-      // }
       getCollectionColumns(records) {
-        // comentado 
-        // this.collectionOptions = [{ text: "All columns", value: "all" }];
         const [firstRecord] = records?.dataRecordList || [];
 
         if (firstRecord?.data) {
@@ -239,9 +209,6 @@
         },
         deep: true
       },
-      // dataSelectionOption(option) {
-      //   this.dataSelectionOption =
-      // }
     },
   };
   </script>

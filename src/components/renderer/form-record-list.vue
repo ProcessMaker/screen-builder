@@ -324,34 +324,23 @@ export default {
         fields.push(jsonOptionsActionsColumn);
       }
 
-      // Agregar la columna de radio buttons solo si simpleRecord es true
-      // if (this.source.dataSelectionOptions) {
-      //   fields.unshift({ key: '__radio', label: '' });
-      // }
-
-      // Añadir la columna de radio buttons si la condición se cumple
-      if (this.source.dataSelectionOptions === 'single-field' || this.source.dataSelectionOptions === 'single-record') {
+      // Adds radio buttons or checkbox to the table depending selected option
+      if (['single-field', 'single-record'].includes(this.source?.dataSelectionOptions)) {
         fields.unshift({
-          key: 'radio', // Llave para identificar la columna
-          label: '', // Puedes dejarlo vacío o personalizarlo
+          key: 'radio',
+          label: '',
           sortable: false,
         });
       }
 
-      if (this.source.dataSelectionOptions === 'multiple-records') {
+      if (this.source?.dataSelectionOptions === 'multiple-records') {
         fields.unshift({
-          key: 'checkbox', // Llave para identificar la columna
-          label: '', // Puedes dejarlo vacío o personalizarlo
+          key: 'checkbox',
+          label: '',
           sortable: false,
         });
       }
-
-      // Agregamos columna al inicio dependiendo de la opción de selección
-      // if (this.source.dataSelectionOptions === 'single-field' || 
-      //     this.source.dataSelectionOptions === 'multiple-records') {
-      //   fields.unshift({ key: 'selection', label: '' });
-      // }
-
+      
       return fields;
     },
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
@@ -369,21 +358,8 @@ export default {
         this.currentPage = this.currentPage == 0 ? 1 : this.currentPage;
       }
     },
-    // selectedRecord(newVal) {
-    //   const selectedRow = this.tableData.data.find(item => item.row_id === newVal);
-    //   if (selectedRow) {
-    //     const valueOfColumn = selectedRow.carBrand; // Reemplaza 'columnName' por la columna que te interesa
-    //     console.log('Valor de la columna seleccionada:', valueOfColumn);
-    //   }
-    // },
-    // selectedRows(newRows) {
-    //   if (newRows.length) {
-    //     this.handleMultipleSelection();
-    //   }
-    // }
   },
   mounted() {
-    console.log("poderoso SOURCE: ", this.source);
     if (this._perPage) {
       this.perPage = this._perPage;
     }
@@ -403,27 +379,16 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
-    //onRadioChange(selectedItem) {
     onRadioChange(selectedItem) {
-      // Este método captura los datos de la fila seleccionada
-      //console.log('Fila seleccionada:', selectedItem);
-      //this.$emit('row-selected', selectedItem); // Puedes emitir un evento si necesitas capturarlo en el componente padre
-      //const selectedRow = this.tableData.data.find(item => item.row_id === selectedItem);
-      //console.log("selectedRow: ", selectedRow);
-      // if (selectedRow) {
-      //   const valueOfColumn = selectedRow.carBrand; // Reemplaza 'columnName' por la columna que te interesa
-      //   console.log('Valor de la columna seleccionada:', valueOfColumn);
-      // }
       if(this.source.singleField) {
         const valueOfColumn = selectedItem[this.source.singleField];
-        console.log('Valor de la columna seleccionada:', valueOfColumn);
+        // TODO: Save this valueOfColumn into CUSTOM STORE variable required in next ticket
       } else {
-        console.log('Valor de la fila:', selectedItem);
+        // TODO: Save the entire ROW into CUSTOM STORE variable required in next ticket
       }
     },
     handleMultipleSelection() {
-      console.log('Filas seleccionadas (checkbox):', this.selectedRows);
-      // Aquí puedes emitir un evento o hacer cualquier otra acción
+      // TODO: Save this.selectedRows into CUSTOM STORE variable required in next ticket
     },
     onCollectionChange(collectionId,pmql) {
       let param = {params:{pmql:pmql}};
