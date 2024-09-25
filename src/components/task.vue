@@ -31,6 +31,7 @@
             :watchers="screen.watchers"
             :key="refreshScreen"
             :loop-context="loopContext"
+            :taskdraft="this.task"
             @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
@@ -260,7 +261,7 @@ export default {
         this.loadNextAssignedTask();
       }
     },
-    loadTask() {
+    loadTask(mounting = false) {
       if (!this.taskId) {
         return;
       }
@@ -276,7 +277,7 @@ export default {
           .getTasks(url)
           .then((response) => {
             this.task = response.data;
-            this.linkTask();
+            this.linkTask(mounting);
             this.checkTaskStatus();
             if (
               window.PM4ConfigOverrides
@@ -296,12 +297,27 @@ export default {
           });
       });
     },
-    linkTask() {
+    linkTask(mounting) {
       this.nodeId = this.task.element_id;
       this.listenForParentChanges();
       if (this.task.process_request.status === 'COMPLETED') {
         if (!this.taskPreview) {
           this.$emit('completed', this.task.process_request.id);
+          // When the process ends before the request is opened
+          if (mounting) {
+            // get end event element destination config
+            window.ProcessMaker.apiClient.get(`/requests/${this.requestId}/end-event-destination`)
+              .then((response) => {
+                if (!response.data?.data?.endEventDestination) {
+                  // by default it goes to summary
+                  window.location.href = `/requests/${this.requestId}`;
+                  return;
+                }
+
+                // process the end event destination
+                this.processCompletedRedirect(response.data.data, this.userId, this.requestId);
+              });
+          }
         }
       }
       if (this.taskPreview && this.task.status === "CLOSED") {
@@ -450,7 +466,6 @@ export default {
 
           return this.getSessionRedirectUrl();
         } catch (error) {
-          console.error("Error in getDestinationUrl:", error);
           return null;
         }
       }
@@ -826,9 +841,9 @@ export default {
      */
     isSameUser(currentTask, redirectData) {
       const userIdMatch = currentTask.user?.id === redirectData.params[0].userId;
-      const typeMatch = currentTask.elementDestination?.type === null 
+      const typeMatch = currentTask.elementDestination?.type === null
                       || currentTask.elementDestination?.type === 'taskSource';
-      
+
       return userIdMatch && typeMatch;
     },
 
@@ -839,6 +854,17 @@ export default {
      * @param {Object} data - The event data containing the process update information.
      */
     handleProcessUpdated(data) {
+      const elementDestinationValue = this.task.elementDestination?.value;
+
+      if (
+        elementDestinationValue &&
+        data?.params[0]?.tokenId === this.taskId &&
+        data?.params[0]?.requestStatus === 'ACTIVE'
+      ) {
+        window.location.href = elementDestinationValue;
+        return;
+      }
+
       if (
         ['ACTIVITY_ACTIVATED', 'ACTIVITY_COMPLETED'].includes(data.event)
         && data.elementType === 'task'
@@ -967,7 +993,7 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    this.loadTask();
+    this.loadTask(true);
   },
   destroyed() {
     this.unsubscribeSocketListeners();
