@@ -84,7 +84,9 @@
     "collectionFieldsColumns",
     "pmql",
     "sourceOptions",
-    "variableStore"
+    "variableStore",
+    "dataSelectionOptions",
+    "singleField"
 
   ];
   export default {
@@ -236,7 +238,10 @@
           this.$emit("input", this.options);
         },
         deep: true
-      }
+      },
+      // dataSelectionOption(option) {
+      //   this.dataSelectionOption =
+      // }
     },
   };
   </script>
