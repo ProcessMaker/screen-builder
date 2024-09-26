@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 /**
  * ClipboardManager class to handle saving to and loading from
  * localStorage and the server.
