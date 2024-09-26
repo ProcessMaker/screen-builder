@@ -106,7 +106,7 @@
         ref="tabsBar"
         :pages="config"
         :is-multi-page="showToolbar"
-        show-clipboard="true"
+        :show-clipboard="true"
         @tab-opened="currentPage = $event"
         @clearClipboard="clearClipboard"
       >
