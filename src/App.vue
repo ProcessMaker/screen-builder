@@ -626,11 +626,6 @@ export default {
       if (computed) {
         this.computed = JSON.parse(computed);
       }
-      if(savedClipboard) {
-        const clipboardsItems = JSON.parse(savedClipboard);
-
-        this.$store.dispatch("clipboardModule/addToClipboard", clipboardsItems);
-      }
     },
     saveToLocalStorage() {
       localStorage.setItem("savedConfig", JSON.stringify(this.config));

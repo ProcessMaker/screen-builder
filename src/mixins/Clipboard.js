@@ -66,6 +66,26 @@ export default {
     },
 
     /**
+     * Setup or update UUID for the item and its children.
+     *
+     * @param {*} item Control item in the screen configuration
+     */
+    updateUuids(item) {
+      item.uuid = this.generateUUID();
+      if (item.items) {
+        item.items.forEach(item => {
+          if (item instanceof Array) {
+            // multi-column each item in the column
+            item.forEach(this.updateUuids)
+          } else {
+            // loop through children
+            this.updateUuids(item);
+          }
+        })
+      }
+    },
+
+    /**
      * Find { component: "Clipboard" } and replace with the clipboard content.
      */
     replaceClipboardContent(screenConfig) {
@@ -76,20 +96,13 @@ export default {
         throw new Error("Expected a screen configuration array");
       }
 
-      // Navigate each page and replace the clipboard component with the clipboard content
-      const replaceUuids = (item) => {
-        item.uuid = this.generateUUID();
-        if (item.items) {
-          item.items.forEach(replaceUuids);
-        }
-      }
       const replaceInPage = (page) => {
         page.items.forEach((item, index) => {
           if (item.component === clipboardComponentName) {
             // clone clipboard content to avoid modifying the original
             const clipboardContent = _.cloneDeep(this.$store.getters["clipboardModule/clipboardItems"]);
             // replace uuids in clipboard content
-            clipboardContent.forEach(replaceUuids);
+            clipboardContent.forEach(this.updateUuids);
             page.items.splice(index, 1, ...clipboardContent);
           }
           if (item.items) {
