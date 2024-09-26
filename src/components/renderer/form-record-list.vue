@@ -46,7 +46,7 @@
               <b-form-checkbox 
               v-model="selectedRows" 
               :value="item" 
-              @change="handleMultipleSelection()"/>
+              @change="onMultipleSelectionChange()"/>
             </template>
             <template v-if="isFiledownload(field, item)">
               <span href="#" @click="downloadFile(item, field.key, index)">{{
@@ -262,6 +262,13 @@ export default {
       collectionData: {},
       selectedRow: null,
       selectedRows: [], 
+      output: {
+        fields: {
+          carBrand: "",
+          year: null
+        }
+      },
+      onlyObject: {}
     };
   },
   computed: {
@@ -379,16 +386,19 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    componentOutput(data) {
+      this.$emit('input',  data);
+    },
     onRadioChange(selectedItem) {
       if(this.source.singleField) {
         const valueOfColumn = selectedItem[this.source.singleField];
-        // TODO: Save this valueOfColumn into CUSTOM STORE variable required in next ticket
+        this.componentOutput(valueOfColumn);
       } else {
-        // TODO: Save the entire ROW into CUSTOM STORE variable required in next ticket
+        this.componentOutput(selectedItem);
       }
     },
-    handleMultipleSelection() {
-      // TODO: Save this.selectedRows into CUSTOM STORE variable required in next ticket
+    onMultipleSelectionChange() {
+      this.componentOutput(this.selectedRows);
     },
     onCollectionChange(collectionId,pmql) {
       let param = {params:{pmql:pmql}};
