@@ -59,6 +59,7 @@
       </template>
     </b-tab>
     <b-tab
+      v-if="showClipboard"
       class="h-100 w-100"
       @click="clipboard"
     >
@@ -123,6 +124,13 @@ export default {
     isMultiPage: {
       type: Boolean,
       default: true
+    },
+    /**
+     * Show clipboard tab
+     */
+    showClipboard: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
