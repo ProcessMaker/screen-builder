@@ -83,7 +83,7 @@ export default {
 
     // Extract screen_version from params.
     const screenVersionMatch = params.match(/screen_version=([^&]+)/);
-    const screenVersion = screenVersionMatch ? screenVersionMatch[1] : "";
+    const screenVersion = screenVersionMatch ? screenVersionMatch[1] : null;
 
     // remove params ?...
     promises.push(
@@ -91,10 +91,16 @@ export default {
     );
     // Get the screen from a separated cached endpoint
     if (hasIncludeScreen) {
-      const screenEndpoint = `${(endpoint + params).replace(
+      let screenEndpoint = `${(endpoint + params).replace(
         /\?.+$/,
         ""
-      )}/screen?include=screen${hasIncludeNested ? ",nested" : ""}&screen_version=${screenVersion}`;
+      )}/screen?include=screen${hasIncludeNested ? ",nested" : ""}`;
+
+      // Append screen_version only if screenVersion is not empty.
+      if (screenVersion) {
+        screenEndpoint += `&screen_version=${screenVersion}`;
+      }
+
       promises.push(this.get(screenEndpoint));
     }
     // Await for both promises to resolve
