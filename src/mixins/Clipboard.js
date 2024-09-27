@@ -4,6 +4,11 @@ import _ from "lodash";
 const clipboardComponentName = "Clipboard";
 
 export default {
+  data() {
+    return {
+      showClipboard: false,
+    };
+  },
   methods: {
     /**
      * Adds a deep-cloned item to the clipboard, ensuring the original item is unmodified.
@@ -119,6 +124,13 @@ export default {
     clearClipboard() {
       this.$store.dispatch("clipboardModule/clearClipboard"); // Dispatch action to clear clipboard from the Vuex store
       this.$root.$emit('update-clipboard');
+    },
+
+    /**
+     * Close Clipboard
+     */
+    closeClipboard() {
+      this.showClipboard = false;
     },
   },
 };

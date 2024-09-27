@@ -8,7 +8,8 @@
         no-body
         class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       >
-        <b-input-group size="sm" style="height: 42px">
+      [{{currentPage}}]
+      <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend>
             <span
               class="input-group-text rounded-0 border-left-0 border-top-0 border-bottom-0"
@@ -106,9 +107,10 @@
         ref="tabsBar"
         :pages="config"
         :is-multi-page="showToolbar"
-        :show-clipboard="true"
+        :show-clipboard="showClipboard"
         @tab-opened="currentPage = $event"
-        @clearClipboard="clearClipboard"
+        @close-clipboard="closeClipboard"
+        @clear-clipboard="clearClipboard"
       >
         <template #tabs-start>
           <pages-dropdown
@@ -155,7 +157,7 @@
             data-cy="editor-content"
             class="h-100"
             ghost-class="form-control-ghost"
-            :value="config[tabPage].items"
+            :value="extendedPages[tabPage].items"
             v-bind="{
               group: { name: 'controls' },
               swapThreshold: 0.5
@@ -163,7 +165,7 @@
             @input="updateConfig"
           >
             <div
-              v-for="(element, index) in config[tabPage].items"
+              v-for="(element, index) in extendedPages[tabPage].items"
               :key="index"
               class="control-item mt-4 mb-4"
               :class="{
@@ -196,11 +198,11 @@
                     <clipboard-button
                       :index="index"
                       :config="element.config"
-                      :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      :isInClipboard="isInClipboard(extendedPages[currentPage].items[index])"
                       :addTitle="$t('Add to clipboard')"
                       :removeTitle="$t('Remove from clipboard')"
-                      @addToClipboard="addToClipboard(config[currentPage].items[index])"
-                      @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
+                      @addToClipboard="addToClipboard(extendedPages[currentPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(extendedPages[currentPage].items[index])"
                     />
                     <button
                       v-if="isAiSection(element) && aiPreview(element)"
@@ -260,11 +262,11 @@
                     <clipboard-button
                       :index="index"
                       :config="element.config"
-                      :isInClipboard="isInClipboard(config[currentPage].items[index])"
+                      :isInClipboard="isInClipboard(extendedPages[currentPage].items[index])"
                       :addTitle="$t('Add to clipboard')"
                       :removeTitle="$t('Remove from clipboard')"
-                      @addToClipboard="addToClipboard(config[currentPage].items[index])"
-                      @removeFromClipboard="removeFromClipboard(config[currentPage].items[index])"
+                      @addToClipboard="addToClipboard(extendedPages[currentPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(extendedPages[currentPage].items[index])"
                     />
                     <button
                       class="btn btn-sm btn-secondary mr-2"
@@ -364,7 +366,7 @@
                   ''
                 )}`"
                 :builder="builder"
-                :form-config="config"
+                :form-config="extendedPages"
                 :screen-type="screenType"
                 :current-page="currentPage"
                 :selected-control="selected"
@@ -617,7 +619,13 @@ export default {
       config[0].name = this.title;
     }
 
+    const clipboardPage = {
+      name: this.$t("Clipboard"),
+      items: this.$store.getters["clipboardModule/clipboardItems"],
+    };
+
     return {
+      clipboardPage,
       showAddPageValidations: false,
       openedPages: [0],
       currentPage: 0,
@@ -660,6 +668,12 @@ export default {
   },
   computed: {
     // Get clipboard items from Vuex store
+    extendedPages() {
+      return [
+        ...this.config,
+        this.clipboardPage,
+      ];
+    },
     clipboardItems() {
       return this.$store.getters["clipboardModule/clipboardItems"];
     },
@@ -811,7 +825,10 @@ export default {
   },
   methods: {
     openClipboard() {
-      this.$refs.tabsBar.openPageByIndex(-1);
+      this.showClipboard = true;
+      this.$nextTick(() => {
+        this.$refs.tabsBar.openClipboard();
+      });
     },
     isCurrentPageEmpty(currentPage) {
       return this.config[currentPage]?.items?.length === 0;
