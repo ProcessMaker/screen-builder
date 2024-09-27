@@ -64,13 +64,6 @@
           v-model="quantityRecords"
           />
         </div>
-
-        <label class="mt-3">{{ $t("Variable to store selection") }}</label>
-        <b-input 
-          id="variable-store-selection"
-          v-model="variableStore"
-          placeholder="Variable Name"/>
-
       </div>
     </div>
   </template>
