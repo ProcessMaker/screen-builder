@@ -321,6 +321,9 @@ export default {
         data: value,
         lastSortConfig: false
       };
+      console.log("this.value: ", this.value);
+      console.log("this.collectionData: ", this.collectionData);
+      console.log("tableData: ", data);
       return data;
     },
     // The fields used for our vue table
@@ -390,8 +393,9 @@ export default {
       this.$emit('input',  data);
     },
     onRadioChange(selectedItem) {
-      if(this.source.singleField) {
+      if(this.source?.singleField) {
         const valueOfColumn = selectedItem[this.source.singleField];
+        console.log("valueOfColumn: ", valueOfColumn);
         this.componentOutput(valueOfColumn);
       } else {
         this.componentOutput(selectedItem);
