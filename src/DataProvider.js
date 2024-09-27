@@ -81,6 +81,10 @@ export default {
     const hasIncludeScreen = params.match(/include=.*,screen,/);
     const hasIncludeNested = params.match(/include=.*,nested,/);
 
+    // Extract screen_version from params.
+    const screenVersionMatch = params.match(/screen_version=([^&]+)/);
+    const screenVersion = screenVersionMatch ? screenVersionMatch[1] : "";
+
     // remove params ?...
     promises.push(
       this.get(endpoint + params.replace(/,screen,|,nested,/g, ","))
@@ -90,7 +94,7 @@ export default {
       const screenEndpoint = `${(endpoint + params).replace(
         /\?.+$/,
         ""
-      )}/screen?include=screen${hasIncludeNested ? ",nested" : ""}`;
+      )}/screen?include=screen${hasIncludeNested ? ",nested" : ""}&screen_version=${screenVersion}`;
       promises.push(this.get(screenEndpoint));
     }
     // Await for both promises to resolve

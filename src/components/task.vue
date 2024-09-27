@@ -94,6 +94,7 @@ export default {
     initialRequestId: { type: Number, default: null },
     initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
+    screenVersion: { type: Number, default: null },
     userId: { type: Number, default: null },
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
@@ -265,7 +266,7 @@ export default {
         return;
       }
 
-      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
+      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination&screen_version=${this.screenVersion}`;
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
