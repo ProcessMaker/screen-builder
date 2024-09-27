@@ -261,14 +261,7 @@ export default {
       currentRowIndex: null,
       collectionData: {},
       selectedRow: null,
-      selectedRows: [], 
-      output: {
-        fields: {
-          carBrand: "",
-          year: null
-        }
-      },
-      onlyObject: {}
+      selectedRows: []
     };
   },
   computed: {
@@ -305,10 +298,14 @@ export default {
       console.log("refs vuetable not exists");
     },
     tableData() {
-      const value = Object.keys(this.collectionData).length !== 0 ? this.collectionData : (this.value || []);
+      const value = Array.isArray(this.collectionData) && this.collectionData.length
+        ? this.collectionData
+        : (Array.isArray(this.value) ? this.value : []);
+
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
+
       const data = {
         total: value.length,
         per_page: this.perPage,
@@ -321,10 +318,8 @@ export default {
         data: value,
         lastSortConfig: false
       };
-      console.log("this.value: ", this.value);
-      console.log("this.collectionData: ", this.collectionData);
-      console.log("tableData: ", data);
       return data;
+      
     },
     // The fields used for our vue table
     tableFields() {
@@ -395,7 +390,6 @@ export default {
     onRadioChange(selectedItem) {
       if(this.source?.singleField) {
         const valueOfColumn = selectedItem[this.source.singleField];
-        console.log("valueOfColumn: ", valueOfColumn);
         this.componentOutput(valueOfColumn);
       } else {
         this.componentOutput(selectedItem);
