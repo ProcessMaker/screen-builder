@@ -81,16 +81,26 @@ export default {
     const hasIncludeScreen = params.match(/include=.*,screen,/);
     const hasIncludeNested = params.match(/include=.*,nested,/);
 
+    // Extract screen_version from params.
+    const screenVersionMatch = params.match(/screen_version=([^&]+)/);
+    const screenVersion = screenVersionMatch ? screenVersionMatch[1] : null;
+
     // remove params ?...
     promises.push(
       this.get(endpoint + params.replace(/,screen,|,nested,/g, ","))
     );
     // Get the screen from a separated cached endpoint
     if (hasIncludeScreen) {
-      const screenEndpoint = `${(endpoint + params).replace(
+      let screenEndpoint = `${(endpoint + params).replace(
         /\?.+$/,
         ""
       )}/screen?include=screen${hasIncludeNested ? ",nested" : ""}`;
+
+      // Append screen_version only if screenVersion is not empty.
+      if (screenVersion) {
+        screenEndpoint += `&screen_version=${screenVersion}`;
+      }
+
       promises.push(this.get(screenEndpoint));
     }
     // Await for both promises to resolve
