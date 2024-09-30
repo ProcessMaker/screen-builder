@@ -11,6 +11,7 @@ import FileUpload from './components/renderer/file-upload';
 import FileDownload from './components/renderer/file-download';
 import FormListTable from './components/renderer/form-list-table';
 import FormAnalyticsChart from "./components/renderer/form-analytics-chart";
+import FormCollectionRecordControl from './components/renderer/form-collection-record-control.vue';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -1076,5 +1077,52 @@ export default [
         buttonVariantStyleProperty
       ]
     }
+  },
+  {
+    editorComponent: FormCollectionRecordControl,
+    editorBinding: 'FormCollectionRecordControl',
+    rendererComponent: FormCollectionRecordControl,
+    rendererBinding: 'FormCollectionRecordControl',
+    control: {
+      popoverContent: "Create a Collection Record Control",
+      order: 7.0,
+      group: 'Content Fields',
+      label: 'Collection Record Control',
+      component: 'FormCollectionRecordControl',
+      'editor-component': 'FormCollectionRecordControl',
+      'editor-control': 'FormCollectionRecordControl',
+      config: {
+        name: 'Collection Record Control',
+        icon: 'fas fa-database',
+        label: 'Collection Record Control',
+      },
+      inspector: [
+        {
+          type: "collectionRecordsList",
+          field: "collection",
+          config: {
+            label: 'Collection Name',
+            helper: 'Select a collection',
+            value: '',
+          }
+        },
+        {
+          type: 'FormInput',
+          field: 'record',
+          config: {
+            label: 'Record ID',
+            helper: 'Supports Mustache Variable and the Collection Record',
+            value: '',
+          },
+        },
+        {
+          type: "collectionDisplayMode",
+          field: "collectionmode",
+          config: {
+            label: "Mode",
+          }
+        },
+      ],
+    },
   }
 ];
