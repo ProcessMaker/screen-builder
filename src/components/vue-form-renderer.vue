@@ -181,12 +181,8 @@ export default {
 
     this.containerObserver.observe(this.$refs.formRendererContainer);
     
-    ProcessMaker.EventBus.$on(
-      "save-clipboard",
-      (items) => {  
-        this.saveClipboarToLocalStorage(items);
-      },
-    );
+    // Initialize the clipboard module
+    this.$store.dispatch('clipboardModule/initializeClipboard');
   },
   methods: {
     ...mapActions("globalErrorsModule", [

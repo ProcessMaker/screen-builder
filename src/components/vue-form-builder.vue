@@ -106,6 +106,7 @@
         ref="tabsBar"
         :pages="config"
         :is-multi-page="showToolbar"
+        :show-clipboard="true"
         @tab-opened="currentPage = $event"
         @clearClipboard="clearClipboard"
       >
@@ -658,9 +659,6 @@ export default {
     };
   },
   computed: {
-    pagesAndClipboard() {
-      return [...this.config, [{name:"Clipboard", items: []}]];
-    },
     // Get clipboard items from Vuex store
     clipboardItems() {
       return this.$store.getters["clipboardModule/clipboardItems"];
@@ -808,9 +806,6 @@ export default {
     });
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
-    });
-    this.$root.$on("update-clipboard", () => {
-      ProcessMaker.EventBus.$emit("save-clipboard", this.clipboardItems);
     });
     this.setGroupOrder(defaultGroupOrder);
   },
@@ -1117,6 +1112,7 @@ export default {
       });
     },
     updateState() {
+      // paste the clipboard items into the current page
       this.replaceClipboardContent(this.config);
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
@@ -1200,6 +1196,7 @@ export default {
     },
     duplicateItem(index) {
       const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+      this.updateUuids(duplicate);
       this.config[this.currentPage].items.push(duplicate);
     },
     openEditPageModal(index) {
