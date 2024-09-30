@@ -9,6 +9,7 @@
       :show-labels="false"
       :options="options.map(option => option.value)"
       :custom-label="getLabelFromValue"
+      data-cy="inspector-eventData"
     >
       <template slot="noResult">
         {{ $t('No elements found. Consider changing the search query.') }}
