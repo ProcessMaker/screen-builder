@@ -1,12 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
+import ClipboardManager from './ClipboardManager';
 
 /**
- * Vuex module for managing clipboard state.
+ * Vuex module for managing clipboard state with localStorage synchronization.
  */
 const clipboardModule = {
   /**
    * Indicates that this module is namespaced, which means
-   * all its state, mutations, actions, and getters will be 
+   * all its state, mutations, actions, and getters will be
    * scoped to this module.
    */
   namespaced: true,
@@ -17,7 +18,10 @@ const clipboardModule = {
    */
   state() {
     return {
-      clipboard: [],  // Array to store clipboard content
+      /**
+       * @type {Array} Array to store clipboard items.
+       */
+      clipboard: [],
     };
   },
 
@@ -33,14 +37,13 @@ const clipboardModule = {
     clipboardItems: state => state.clipboard,
 
     /**
-     * Checks if an item with a specific id is present in the clipboard.
+     * Checks if an item with a specific uuid is present in the clipboard.
      * @param {Object} state - The state of the module.
-     * @param {Object} item - The item to check (it can contain an id or any unique property).
-     * @returns {boolean} True if the item with the same id is in the clipboard, false otherwise.
+     * @returns {Function} Function to check item presence.
      */
     isInClipboard: state => item => {
       if (!item || !item.uuid) {
-        // If the item is invalid or doesn't have an id, return false
+        // If the item is invalid or doesn't have an uuid, return false
         return false;
       }
       return state.clipboard.some(clipboardItem => clipboardItem.uuid === item.uuid);
@@ -52,15 +55,24 @@ const clipboardModule = {
    */
   mutations: {
     /**
-     * Adds an items to the clipboard.
+     * Sets the entire clipboard state.
+     * @param {Object} state - The state of the module.
+     * @param {Array} clipboard - The new clipboard array.
+     */
+    SET_CLIPBOARD(state, clipboard) {
+      if (!Array.isArray(clipboard)) {
+        throw new Error('Clipboard content must be an array');
+      }
+      state.clipboard.splice(0, state.clipboard.length, ...clipboard);
+    },
+
+    /**
+     * Adds items to the clipboard.
      * @param {Object} state - The state of the module.
      * @param {any} items - The items to add.
      */
     ADD_TO_CLIPBOARD(state, items) {
-      // Check if the input is an array, if not, wrap it as an array
       const itemsToAdd = Array.isArray(items) ? items : [items];
-
-      // Add each item only if it's not already in the clipboard
       itemsToAdd.forEach(item => {
         if (!item.uuid) {
           item.uuid = uuidv4();
@@ -78,11 +90,14 @@ const clipboardModule = {
      */
     REMOVE_FROM_CLIPBOARD(state, item) {
       if (!item || !item.uuid) {
-        console.error('Item or item id is missing');
+        console.error('Item or item uuid is missing');
         return;
       }
-      
-      state.clipboard = state.clipboard.filter(clipboardItem => clipboardItem.uuid !== item.uuid);
+      // state.clipboard = state.clipboard.filter(clipboardItem => clipboardItem.uuid !== item.uuid);
+      const index = state.clipboard.findIndex(clipboardItem => clipboardItem.uuid === item.uuid);
+      if (index !== -1) {
+        state.clipboard.splice(index, 1);
+      }
     },
 
     /**
@@ -90,7 +105,7 @@ const clipboardModule = {
      * @param {Object} state - The state of the module.
      */
     CLEAR_CLIPBOARD(state) {
-      state.clipboard = [];
+      state.clipboard.splice(0, state.clipboard.length);
     },
   },
 
@@ -99,45 +114,90 @@ const clipboardModule = {
    */
   actions: {
     /**
-     * Adds an item to the clipboard by committing the corresponding mutation.
-     * @param {Object} context - The context object containing commit.
-     * @param {any} item - The item to add to the clipboard.
+     * Initializes the clipboard by loading from localStorage and server,
+     * and setting up the storage event listener.
+     * @param {Object} context - The Vuex context.
      */
-    addToClipboard({ commit }, item) {
+    initializeClipboard({ commit }) {
+      // Load from localStorage
+      const clipboard = ClipboardManager.loadFromLocalStorage();
+      commit('SET_CLIPBOARD', clipboard);
+
+      // Load from server and update state
+      ClipboardManager.loadFromServer().then(serverClipboard => {
+        if (serverClipboard.length > 0) {
+          commit('SET_CLIPBOARD', serverClipboard);
+          ClipboardManager.saveToLocalStorage(serverClipboard);
+        }
+      });
+
+      // Set up storage event listener
+      window.addEventListener('storage', event => {
+        if (event.key === 'clipboard') {
+          const clipboard = ClipboardManager.loadFromLocalStorage();
+          commit('SET_CLIPBOARD', clipboard);
+        }
+      });
+    },
+
+    /**
+     * Setup saveToServerFn
+     * @param {Object} context - The Vuex context.
+     * @param {Function} saveToServerFn - The function to save the clipboard to the server.
+     */
+    setupSaveToServerFn({ commit }, saveToServerFn) {
+      ClipboardManager.saveToServerFn = saveToServerFn;
+    },
+
+    /**
+     * Setup loadFromServerFn
+     * @param {Object} context - The Vuex context.
+     * @param {Function} loadFromServerFn - The function to load the clipboard from the server.
+     */
+    setupLoadFromServerFn({ commit }, loadFromServerFn) {
+      ClipboardManager.loadFromServerFn = loadFromServerFn;
+    },
+
+    /**
+     * Adds an item to the clipboard.
+     * Updates localStorage and the server.
+     * @param {Object} context - The Vuex context.
+     * @param {any} item - The item to add.
+     */
+    addToClipboard({ commit, state }, item) {
       if (!item) {
         throw new Error('Item is missing');
       }
       commit('ADD_TO_CLIPBOARD', item);
+      // Save to localStorage and server
+      ClipboardManager.saveToLocalStorage(state.clipboard);
+      ClipboardManager.saveToServer(state.clipboard);
     },
 
     /**
-     * Removes an item from the clipboard by committing the corresponding mutation.
-     * @param {Object} context - The context object containing commit.
-     * @param {any} item - The item to remove from the clipboard.
+     * Removes an item from the clipboard.
+     * Updates localStorage and the server.
+     * @param {Object} context - The Vuex context.
+     * @param {any} item - The item to remove.
      */
-    removeFromClipboard({ commit }, item) {
+    removeFromClipboard({ commit, state }, item) {
       commit('REMOVE_FROM_CLIPBOARD', item);
+      // Save to localStorage and server
+      ClipboardManager.saveToLocalStorage(state.clipboard);
+      ClipboardManager.saveToServer(state.clipboard);
     },
 
     /**
-     * Clears all items from the clipboard by committing the corresponding mutation.
-     * @param {Object} context - The context object containing commit.
+     * Clears all items from the clipboard.
+     * Updates localStorage and the server.
+     * @param {Object} context - The Vuex context.
      */
-    clearClipboard({ commit }) {
+    clearClipboard({ commit, state }) {
       commit('CLEAR_CLIPBOARD');
+      // Save to localStorage and server
+      ClipboardManager.saveToLocalStorage(state.clipboard);
+      ClipboardManager.saveToServer(state.clipboard);
     },
-  },
-
-  /**
-   * Methods are not a standard part of Vuex modules but can be used for custom functionality.
-   */
-  methods: {
-    /**
-     * Emits a custom event using the EventBus.
-     */
-    emitChanges() {
-      window.ProcessMaker.EventBus.$emit("screen-change");
-    }
   },
 };
 
