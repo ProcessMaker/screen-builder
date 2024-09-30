@@ -49,6 +49,7 @@
             :watchers="screen.watchers"
             :data="requestData"
             :type="screen.type"
+            @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
           />
