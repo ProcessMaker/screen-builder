@@ -213,7 +213,7 @@ export default {
     },
     tabOpened() {
       const pageIndex = this.localOpenedPages[this.activeTab];
-      const isInClipboard = this.activeTab  === this.$refs.tabs.tabs.length - 1;
+      const isInClipboard = (this.activeTab  === this.$refs.tabs.tabs.length - 1) && this.showClipboard;
       if (isInClipboard) {
         this.$emit("tab-opened", this.clipboardPageIndex);
       } else {

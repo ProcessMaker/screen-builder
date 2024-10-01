@@ -124,7 +124,7 @@
         </template>
         <template #default="{ currentPage: tabPage }">
           <b-button
-            v-if="isClipboardPage(currentPage)"
+            v-if="isClipboardPage(tabPage)"
             variant="link"
             @click="clearClipboard"
           >
@@ -203,14 +203,14 @@
                   {{ element.config.name || element.label || $t("Field Name") }}
                   <div class="ml-auto">
                     <clipboard-button
-                      v-if="!isClipboardPage(currentPage)"
+                      v-if="!isClipboardPage(tabPage)"
                       :index="index"
                       :config="element.config"
-                      :isInClipboard="isInClipboard(extendedPages[currentPage].items[index])"
+                      :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
                       :addTitle="$t('Add to clipboard')"
                       :removeTitle="$t('Remove from clipboard')"
-                      @addToClipboard="addToClipboard(extendedPages[currentPage].items[index])"
-                      @removeFromClipboard="removeFromClipboard(extendedPages[currentPage].items[index])"
+                      @addToClipboard="addToClipboard(extendedPages[tabPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(extendedPages[tabPage].items[index])"
                     />
                     <button
                       v-if="isAiSection(element) && aiPreview(element)"
@@ -268,14 +268,14 @@
                   {{ element.config.name || $t("Variable Name") }}
                   <div class="ml-auto">
                     <clipboard-button
-                      v-if="!isClipboardPage(currentPage)"
+                      v-if="!isClipboardPage(tabPage)"
                       :index="index"
                       :config="element.config"
-                      :isInClipboard="isInClipboard(extendedPages[currentPage].items[index])"
+                      :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
                       :addTitle="$t('Add to clipboard')"
                       :removeTitle="$t('Remove from clipboard')"
-                      @addToClipboard="addToClipboard(extendedPages[currentPage].items[index])"
-                      @removeFromClipboard="removeFromClipboard(extendedPages[currentPage].items[index])"
+                      @addToClipboard="addToClipboard(extendedPages[tabPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(extendedPages[tabPage].items[index])"
                     />
                     <button
                       class="btn btn-sm btn-secondary mr-2"
