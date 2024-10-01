@@ -121,9 +121,26 @@ export default {
     /**
      * Clear the clipboard
      */
-    clearClipboard() {
-      this.$store.dispatch("clipboardModule/clearClipboard"); // Dispatch action to clear clipboard from the Vuex store
-      this.$root.$emit('update-clipboard');
+    async clearClipboard() {
+      const confirm = await this.$bvModal.msgBoxConfirm(
+        this.$t("Deleting the clipboard will permanently remove all information, and you will need to copy all components again."),
+        {
+          title: this.$t("Are you sure you want to clear clipboard?"),
+          size: "md",
+          buttonSize: "sm",
+          okVariant: "primary py-2 px-4",
+          cancelVariant: "outline-secondary py-2 px-4",
+          okTitle: this.$t("Confirm"),
+          cancelTitle: this.$t("Cancel"),
+          footerClass: "p-2 border-0",
+          hideHeaderClose: true,
+          centered: true,
+        }
+      );
+      if (confirm) {
+        this.$store.dispatch("clipboardModule/clearClipboard");
+        this.$root.$emit('update-clipboard');
+      }
     },
 
     /**
