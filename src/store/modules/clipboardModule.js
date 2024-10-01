@@ -174,6 +174,13 @@ const clipboardModule = {
       ClipboardManager.saveToServer(state.clipboard);
     },
 
+    pushState({ commit, state }, clipboard) {
+      commit('SET_CLIPBOARD', clipboard);
+      // Save to localStorage and server
+      ClipboardManager.saveToLocalStorage(state.clipboard);
+      ClipboardManager.saveToServer(state.clipboard);
+    },
+
     /**
      * Removes an item from the clipboard.
      * Updates localStorage and the server.

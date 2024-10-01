@@ -8,7 +8,6 @@
         no-body
         class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       >
-      [{{currentPage}}]
       <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend>
             <span
@@ -77,6 +76,8 @@
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
                     class="gray-text"
+                    :disabled="!canDragControl(element)"
+                    @mousedown="disableEnableDragControl(element, $event)"
                   >
                     <i
                       v-if="element.config && element.config.icon"
@@ -110,7 +111,6 @@
         :show-clipboard="showClipboard"
         @tab-opened="currentPage = $event"
         @close-clipboard="closeClipboard"
-        @clear-clipboard="clearClipboard"
       >
         <template #tabs-start>
           <pages-dropdown
@@ -123,6 +123,13 @@
           />
         </template>
         <template #default="{ currentPage: tabPage }">
+          <b-button
+            v-if="isClipboardPage(currentPage)"
+            variant="link"
+            @click="clearClipboard"
+          >
+            {{ $t('Clear All') }}
+          </b-button>
           <div
             v-if="isCurrentPageEmpty(tabPage)"
             data-cy="screen-drop-zone"
@@ -196,6 +203,7 @@
                   {{ element.config.name || element.label || $t("Field Name") }}
                   <div class="ml-auto">
                     <clipboard-button
+                      v-if="!isClipboardPage(currentPage)"
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(extendedPages[currentPage].items[index])"
@@ -260,6 +268,7 @@
                   {{ element.config.name || $t("Variable Name") }}
                   <div class="ml-auto">
                     <clipboard-button
+                      v-if="!isClipboardPage(currentPage)"
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(extendedPages[currentPage].items[index])"
@@ -667,7 +676,9 @@ export default {
     };
   },
   computed: {
-    // Get clipboard items from Vuex store
+    isCurrentPageClipboard() {
+      return this.isClipboardPage(this.currentPage);
+    },
     extendedPages() {
       return [
         ...this.config,
@@ -824,6 +835,18 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    isClipboardPage(page) {
+      return page === this.config.length;
+    },
+    disableEnableDragControl(control, event) {
+      if (!this.canDragControl(control)) {
+        event.preventDefault();
+      }
+    },
+    canDragControl(control) {
+      const isDragAndPaste = control.component === "Clipboard";
+      return !(isDragAndPaste && this.isClipboardPage(this.currentPage));
+    },
     openClipboard() {
       this.showClipboard = true;
       this.$nextTick(() => {
@@ -1135,6 +1158,8 @@ export default {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage
       });
+      this.replaceClipboardContent([this.clipboardPage]);
+      this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
     },
     async undo() {
       this.inspect();
@@ -1159,7 +1184,7 @@ export default {
       );
     },
     updateConfig(items) {
-      this.config[this.currentPage].items = items;
+      this.extendedPages[this.currentPage].items = items;
       this.updateState();
     },
     hasError(element) {
@@ -1207,14 +1232,14 @@ export default {
     },
     deleteItem(index) {
       // Remove the item from the array in currentPage
-      this.config[this.currentPage].items.splice(index, 1);
+      this.extendedPages[this.currentPage].items.splice(index, 1);
       this.inspection.inspector.splice(0, this.inspection.inspector.length);
       this.updateState();
     },
     duplicateItem(index) {
       const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
       this.updateUuids(duplicate);
-      this.config[this.currentPage].items.push(duplicate);
+      this.extendedPages[this.currentPage].items.push(duplicate);
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
@@ -1317,6 +1342,7 @@ export default {
         currentPage: this.currentPage,
         deletedPage: true
       });
+      this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
     },
     inspect(element = {}) {
       this.inspection = element;
@@ -1622,5 +1648,9 @@ $side-bar-font-size: 0.875rem;
 .modal-subtitle {
   font-size: 15px;
   font-weight: normal;
+}
+.gray-text.disabled {
+  cursor: not-allowed; /* Cambia el cursor cuando se pasa por encima */
+  pointer-events: all; /* Permite que el pseudo-elemento reciba eventos del ratón */
 }
 </style>
