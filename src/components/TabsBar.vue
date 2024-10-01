@@ -63,7 +63,6 @@
       ref="clipboard"
       class="h-100 w-100"
       name="clipboard"
-      @click="clipboard"
     >
       <template #title>
         {{ $t('Clipboard') }}
@@ -211,9 +210,6 @@ export default {
     },
     closeClipboard() {
       this.$emit('close-clipboard');
-    },
-    clipboard() {
-      this.$emit('clear-clipboard');
     },
     tabOpened() {
       const pageIndex = this.localOpenedPages[this.activeTab];
