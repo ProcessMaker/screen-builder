@@ -39,14 +39,15 @@
               <b-form-radio
                 v-model="selectedRow"
                 :value="item"
-                @change="onRadioChange(item)"
+                @change="onRadioChange(item, index)"
               />
             </template>
             <template v-if="field.key === 'checkbox'">
               <b-form-checkbox 
               v-model="selectedRows" 
-              :value="item" 
-              @change="onMultipleSelectionChange()"/>
+              :value="item"
+              :checked="selected"
+              @change="onMultipleSelectionChange(index)"/>
             </template>
             <template v-if="isFiledownload(field, item)">
               <span href="#" @click="downloadFile(item, field.key, index)">{{
@@ -261,7 +262,10 @@ export default {
       currentRowIndex: null,
       collectionData: {},
       selectedRow: null,
-      selectedRows: []
+      selectedRows: [],
+      selectedIndex: null, 
+      rows: [],
+      i: 1
     };
   },
   computed: {
@@ -302,6 +306,10 @@ export default {
         ? this.collectionData
         : (Array.isArray(this.value) ? this.value : []);
 
+      if(this.value) {
+        this.selectedIndex = this.value.selectedRowIndex;
+      }
+
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
@@ -318,8 +326,23 @@ export default {
         data: value,
         lastSortConfig: false
       };
-      return data;
-      
+
+       // Enable Radio button selected when process finishes
+       if (this.selectedIndex !== null && this.selectedIndex < data.data.length) {
+        this.selectedRow = data.data[this.selectedIndex];
+      }
+
+      //Enable Checkbox selected when process finishes
+      if (Array.isArray(this.value) && this.value.length > 0) {
+        if(this.rows.length === 0) {
+          this.value.forEach(item => {
+              if (item.hasOwnProperty('selectedRowsIndex')) {
+                  this.selectedRows.push(data.data[item.selectedRowsIndex]);
+              } 
+          });
+        }
+      }
+      return data;      
     },
     // The fields used for our vue table
     tableFields() {
@@ -342,7 +365,7 @@ export default {
         fields.unshift({
           key: 'checkbox',
           label: '',
-          sortable: false,
+          sortable: false
         });
       }
       
@@ -387,16 +410,35 @@ export default {
     componentOutput(data) {
       this.$emit('input',  data);
     },
-    onRadioChange(selectedItem) {
+    onRadioChange(selectedItem, index) {
       if(this.source?.singleField) {
-        const valueOfColumn = selectedItem[this.source.singleField];
+        let valueOfColumn = selectedItem[this.source.singleField];
         this.componentOutput(valueOfColumn);
       } else {
+        selectedItem = { ...selectedItem, selectedRowIndex: index};
         this.componentOutput(selectedItem);
       }
     },
-    onMultipleSelectionChange() {
+    onMultipleSelectionChange(selIndex) {
+      this.collectionData.forEach((item, index) => {
+          this.selectedRows.forEach((selectedItem) => {
+              // Compares both objects all keys and values
+              if (this.areObjectsEqual(selectedItem, item)) {
+                  // Adds`selectedRowIndex` with index iteration
+                  selectedItem.selectedRowsIndex = index;
+              }
+          });
+      });
       this.componentOutput(this.selectedRows);
+      this.rows.push(selIndex);
+    },
+    areObjectsEqual(obj1, obj2) {
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
+
+        if (keys1.length !== keys2.length) return false;
+
+        return keys1.every(key => obj1[key] === obj2[key]);
     },
     onCollectionChange(collectionId,pmql) {
       let param = {params:{pmql:pmql}};
