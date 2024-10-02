@@ -46,7 +46,6 @@
               <b-form-checkbox 
               v-model="selectedRows" 
               :value="item"
-              :checked="selected"
               @change="onMultipleSelectionChange(index)"/>
             </template>
             <template v-if="isFiledownload(field, item)">
@@ -411,11 +410,12 @@ export default {
       this.$emit('input',  data);
     },
     onRadioChange(selectedItem, index) {
+      const globalIndex = (this.currentPage - 1) * this.perPage + index;
       if(this.source?.singleField) {
         let valueOfColumn = selectedItem[this.source.singleField];
         this.componentOutput(valueOfColumn);
       } else {
-        selectedItem = { ...selectedItem, selectedRowIndex: index};
+        selectedItem = { ...selectedItem, selectedRowIndex: globalIndex};
         this.componentOutput(selectedItem);
       }
     },
