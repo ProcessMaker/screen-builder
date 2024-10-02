@@ -93,7 +93,6 @@ const clipboardModule = {
         console.error('Item or item uuid is missing');
         return;
       }
-      // state.clipboard = state.clipboard.filter(clipboardItem => clipboardItem.uuid !== item.uuid);
       const index = state.clipboard.findIndex(clipboardItem => clipboardItem.uuid === item.uuid);
       if (index !== -1) {
         state.clipboard.splice(index, 1);
