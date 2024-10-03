@@ -714,6 +714,8 @@ export default {
 }
 .cf-uploader-list {
   margin-bottom: 14px;
+  max-height: 75px;
+  overflow:auto;
 }
 .cf-file-upload-list {
   color: #20242A;
