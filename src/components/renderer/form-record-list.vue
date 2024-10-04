@@ -33,21 +33,35 @@
           :current-page="currentPage"
           data-cy="table"
         >
-          <template #cell()="{ index, field, item }">
+          <!-- Slot header for checkbox (Select All) -->
+          <template #head(checkbox)="data">
+            <b-form-checkbox
+              v-model="allRowsSelected"
+              @change="selectAllRows"
+              :indeterminate="indeterminate"
+              aria-label="Select All"
+            />
+          </template>
 
-            <template v-if="field.key === 'radio'">
-              <b-form-radio
-                v-model="selectedRow"
-                :value="item"
-                @change="onRadioChange(item, index)"
-              />
-            </template>
-            <template v-if="field.key === 'checkbox'">
-              <b-form-checkbox 
+          <template #cell(checkbox)="{ index, item }">
+            <b-form-checkbox 
               v-model="selectedRows" 
               :value="item"
-              @change="onMultipleSelectionChange(index)"/>
-            </template>
+              @change="onMultipleSelectionChange(index)"
+            />
+          </template>
+
+          <template #cell(radio)="{ index, item }">
+            <b-form-radio
+              v-model="selectedRow"
+              :value="item"
+              @change="onRadioChange(item, index)"
+              
+            />
+          </template>
+
+          <template #cell()="{ index, field, item }">
+
             <template v-if="isFiledownload(field, item)">
               <span href="#" @click="downloadFile(item, field.key, index)">{{
                 mustache(field.key, item)
@@ -264,10 +278,13 @@ export default {
       selectedRows: [],
       selectedIndex: null, 
       rows: [],
-      i: 1
+      selectAll: false
     };
   },
   computed: {
+    indeterminate() {
+      return this.selectedRows.length > 0 && this.selectedRows.length < this.tableData.data.length;
+    },
     popupConfig() {
       const config = [];
       config[this.form] = this.formConfig[this.form];
@@ -406,6 +423,23 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    selectAllRows() {
+      if (this.allRowsSelected) {
+        const updatedRows = this.tableData.data.map((item, index) => {
+          return {
+            ...item,
+            selectedRowsIndex: index
+          };
+        });
+
+        this.selectedRows = updatedRows;
+        this.collectionData = updatedRows;
+        this.onMultipleSelectionChange();
+      } else {
+        this.selectedRows = [];
+        this.onMultipleSelectionChange();
+      }
+    },
     componentOutput(data) {
       this.$emit('input',  data);
     },
