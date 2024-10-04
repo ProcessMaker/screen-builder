@@ -57,20 +57,6 @@
         <option disabled value="">{{ $t("Select a column") }}</option>
           </b-form-select>
         </div>
-        <div class="mt-3" v-if="dataSelectionOptions === 'multiple-records'">
-          <label id="quantity-records">{{ $t('Quantity of selectable records') }}</label>
-         <b-input 
-          id="quantity-records"
-          v-model="quantityRecords"
-          />
-        </div>
-
-        <label class="mt-3">{{ $t("Variable to store selection") }}</label>
-        <b-input 
-          id="variable-store-selection"
-          v-model="variableStore"
-          placeholder="Variable Name"/>
-
       </div>
     </div>
   </template>
