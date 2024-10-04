@@ -50,6 +50,7 @@
 
           <b-col v-if="displayBuilder && !displayPreview" class="text-right">
             <screen-toolbar
+              :disabled="$refs.builder?.isCurrentPageClipboard"
               @undo="$refs.builder.undo()"
               @redo="$refs.builder.redo()"
               @open-calc="openComputedProperties"

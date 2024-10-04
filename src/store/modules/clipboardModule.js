@@ -93,7 +93,6 @@ const clipboardModule = {
         console.error('Item or item uuid is missing');
         return;
       }
-      // state.clipboard = state.clipboard.filter(clipboardItem => clipboardItem.uuid !== item.uuid);
       const index = state.clipboard.findIndex(clipboardItem => clipboardItem.uuid === item.uuid);
       if (index !== -1) {
         state.clipboard.splice(index, 1);
@@ -169,6 +168,13 @@ const clipboardModule = {
         throw new Error('Item is missing');
       }
       commit('ADD_TO_CLIPBOARD', item);
+      // Save to localStorage and server
+      ClipboardManager.saveToLocalStorage(state.clipboard);
+      ClipboardManager.saveToServer(state.clipboard);
+    },
+
+    pushState({ commit, state }, clipboard) {
+      commit('SET_CLIPBOARD', clipboard);
       // Save to localStorage and server
       ClipboardManager.saveToLocalStorage(state.clipboard);
       ClipboardManager.saveToServer(state.clipboard);
