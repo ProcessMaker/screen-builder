@@ -513,6 +513,40 @@ export default [
           },
         },
         {
+          type: 'FormMultiselect',
+          field: 'paginationOption',
+          config: {
+            icon: 'fas',
+            label: 'Pagination',
+            options: [
+              {
+                content:'No Pagination (show all)' ,
+                value: 0,
+              },
+              {
+                content: '5 items per page',
+                value: 5,
+              },
+              {
+                content: '10 items per page',
+                value: 10,
+              },
+              {
+                content: '15 items per page',
+                value: 15,
+              },
+              {
+                content: '25 items per page',
+                value: 25,
+              },
+              {
+                content: '50 items per page',
+                value: 50,
+              },
+            ],
+          },
+        },
+        {
           type: 'PageSelect',
           field: 'form',
           config: {
