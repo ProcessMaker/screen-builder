@@ -9,7 +9,7 @@
           data-cy="inspector-collection-data-source"
           @change="displayOptionChange"
         />
-        <small class="form-text text-muted">{{
+        <small class="mt-3 form-text text-muted">{{
         $t("A record list can display the data of a defined variable or a collection")
       }}</small>
       </div>
@@ -23,7 +23,7 @@
          <pmql-input
         v-model="pmql"
         :search-type="'collections_w_mustaches'"
-        class="mb-1"
+        class="mt-3 mb-1"
         data-cy="inspector-collection-pmql"
         :input-label="'PMQL'"
         :condensed="true"
@@ -31,24 +31,32 @@
         :placeholder="$t('PMQL')"
       >
       </pmql-input>
-      <small class="form-text text-muted">{{
+      <small class="mt-3 form-text text-muted">{{
         $t("Leave this field empty to show all the records of the collection")
       }}</small>
-        <label for="collectionsource">{{ $t("Data Selection") }}</label>
+        <label class="mt-3" id="data-selection">{{ $t("Data Selection") }}</label>
 
         <b-form-select
-          id="dataselectionsource"
+          id="data-selection"
           v-model="dataSelectionOptions"
           :options="dataSelectionDisplayOptions"
           data-cy="inspector-collection-data-selection"
         />
-        <small class="form-text text-muted">{{
+        <small class="mt-3 form-text text-muted">{{
         $t("The user can select specific data to be stored into a variable")
       }}</small>
 
-        <label>{{ $t("Variable to store selection") }}</label>
-        <b-input id="storeSelection" name="storeSelection" aria-placeholder="Variable name"></b-input>
-
+        <div class="mt-3" v-if="dataSelectionOptions === 'single-field'">
+          <label id="single-columns">{{ $t('Column') }}</label>
+          <b-form-select
+          id="single-columns"
+          v-model="singleField"
+          :options="singleFieldOptions"
+          data-cy="inspector-collection-single-field"
+        >
+        <option disabled value="">{{ $t("Select a column") }}</option>
+          </b-form-select>
+        </div>
       </div>
     </div>
   </template>
@@ -61,7 +69,10 @@
     "collectionFields",
     "collectionFieldsColumns",
     "pmql",
-    "sourceOptions"
+    "sourceOptions",
+    "variableStore",
+    "dataSelectionOptions",
+    "singleField"
 
   ];
   export default {
@@ -77,6 +88,7 @@
         sourceDisplayOptions: [],
         collectionFields: [],
         collectionFieldsColumns: [],
+        variableStore: null,
         pmql: null,
         sourceDisplayOptions: [
         {
@@ -87,7 +99,29 @@
           text: this.$t('Collection'),
           value: 'Collection',
         },
-      ]
+      ],
+      dataSelectionDisplayOptions: [
+        {
+          text: this.$t('Do not allow selection'),
+          value: 'no-selection',
+        },
+        {
+          text: this.$t('Single field of record'),
+          value: 'single-field',
+        },
+        {
+          text: this.$t('Single record'),
+          value: 'single-record',
+        },
+        {
+          text: this.$t('Multiple records'),
+          value: 'multiple-records',
+        },
+      ],
+      dataSelectionOptions: "no-selection", 
+      collectionColumns: [],
+      singleFieldOptions: [],
+      singleField: null
       };
     },
     methods: {
@@ -106,30 +140,17 @@
             }
         }
       },
-      changeCollectionColumns(columnsSelected) {
-        let selectedKeys = columnsSelected.map(column => column.content);
-        
-        if (Array.isArray(this.collectionFieldsColumns?.dataRecordList)) {
-          this.collectionFieldsColumns.dataRecordList.forEach(record => {
-            let dataObject = record.data;
+      getCollectionColumns(records) {
+        const [firstRecord] = records?.dataRecordList || [];
 
-            if (dataObject && typeof dataObject === 'object') {
-              Object.keys(dataObject).forEach(key => {
-                if (!selectedKeys.includes(key)) {
-                  delete dataObject[key];
-                } else {
-                  const matchingColumn = columnsSelected.find(column => column.content === key);
+        if (firstRecord?.data) {
+          const dataObject = firstRecord.data;
 
-                  if (matchingColumn && matchingColumn.key !== key) {
-                    dataObject[matchingColumn.key] = dataObject[key];
-                    delete dataObject[key];
-                  }
-                }
-              });
-            } 
-          });
+          for (const [key, value] of Object.entries(dataObject)) {
+            this.singleFieldOptions.push({ text: key, value: key });
+          }
         }
-      }
+      },
     },
     computed: {
       options() {
@@ -155,6 +176,7 @@
       },
       collectionFields: {
         handler(collectionFieldsData) {
+           this.getCollectionColumns(collectionFieldsData);
            this.$root.$emit("record-list-collection", collectionFieldsData);
         },
         deep: true
@@ -172,7 +194,7 @@
           this.$emit("input", this.options);
         },
         deep: true
-      }
+      },
     },
   };
   </script>

@@ -36,7 +36,7 @@ export default {
       collectionId: null,
       pmql: "",
       unique: false,
-      dataRecordList: [],
+      dataRecordList: []
     };
   },
   computed: {
@@ -66,7 +66,7 @@ export default {
         this.$emit("input", this.options);
       },
       deep: true
-    },
+    }
   },
   created() {
     this.onDebouncedPmqlChange = debounce((pmql) => {
