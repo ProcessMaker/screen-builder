@@ -33,21 +33,35 @@
           :current-page="currentPage"
           data-cy="table"
         >
+          <!-- Slot header for checkbox (Select All) -->
+          <template #head(checkbox)="data">
+            <b-form-checkbox
+              v-model="allRowsSelected"
+              @change="selectAllRows"
+              :indeterminate="indeterminate"
+              aria-label="Select All"
+            />
+          </template>
+
+          <template #cell(checkbox)="{ index, item }">
+            <b-form-checkbox 
+              v-model="selectedRows" 
+              :value="item"
+              @change="onMultipleSelectionChange(index)"
+            />
+          </template>
+
+          <template #cell(radio)="{ index, item }">
+            <b-form-radio
+              v-model="selectedRow"
+              :value="item"
+              @change="onRadioChange(item, index)"
+              
+            />
+          </template>
+
           <template #cell()="{ index, field, item }">
 
-            <template v-if="field.key === 'radio'">
-              <b-form-radio
-                v-model="selectedRow"
-                :value="item"
-                @change="onRadioChange(item)"
-              />
-            </template>
-            <template v-if="field.key === 'checkbox'">
-              <b-form-checkbox 
-              v-model="selectedRows" 
-              :value="item" 
-              @change="handleMultipleSelection()"/>
-            </template>
             <template v-if="isFiledownload(field, item)">
               <span href="#" @click="downloadFile(item, field.key, index)">{{
                 mustache(field.key, item)
@@ -261,10 +275,16 @@ export default {
       currentRowIndex: null,
       collectionData: {},
       selectedRow: null,
-      selectedRows: [], 
+      selectedRows: [],
+      selectedIndex: null, 
+      rows: [],
+      selectAll: false
     };
   },
   computed: {
+    indeterminate() {
+      return this.selectedRows.length > 0 && this.selectedRows.length < this.tableData.data.length;
+    },
     popupConfig() {
       const config = [];
       config[this.form] = this.formConfig[this.form];
@@ -298,10 +318,18 @@ export default {
       console.log("refs vuetable not exists");
     },
     tableData() {
-      const value = Object.keys(this.collectionData).length !== 0 ? this.collectionData : (this.value || []);
+      const value = Array.isArray(this.collectionData) && this.collectionData.length
+        ? this.collectionData
+        : (Array.isArray(this.value) ? this.value : []);
+
+      if(this.value) {
+        this.selectedIndex = this.value.selectedRowIndex;
+      }
+
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
+
       const data = {
         total: value.length,
         per_page: this.perPage,
@@ -314,7 +342,23 @@ export default {
         data: value,
         lastSortConfig: false
       };
-      return data;
+
+       // Enable Radio button selected when process finishes
+       if (this.selectedIndex !== null && this.selectedIndex < data.data.length) {
+        this.selectedRow = data.data[this.selectedIndex];
+      }
+
+      //Enable Checkbox selected when process finishes
+      if (Array.isArray(this.value) && this.value.length > 0) {
+        if(this.rows.length === 0) {
+          this.value.forEach(item => {
+              if (item.hasOwnProperty('selectedRowsIndex')) {
+                  this.selectedRows.push(data.data[item.selectedRowsIndex]);
+              } 
+          });
+        }
+      }
+      return data;      
     },
     // The fields used for our vue table
     tableFields() {
@@ -337,7 +381,7 @@ export default {
         fields.unshift({
           key: 'checkbox',
           label: '',
-          sortable: false,
+          sortable: false
         });
       }
       
@@ -379,16 +423,56 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
-    onRadioChange(selectedItem) {
-      if(this.source.singleField) {
-        const valueOfColumn = selectedItem[this.source.singleField];
-        // TODO: Save this valueOfColumn into CUSTOM STORE variable required in next ticket
+    selectAllRows() {
+      if (this.allRowsSelected) {
+        const updatedRows = this.tableData.data.map((item, index) => {
+          return {
+            ...item,
+            selectedRowsIndex: index
+          };
+        });
+
+        this.selectedRows = updatedRows;
+        this.collectionData = updatedRows;
+        this.onMultipleSelectionChange();
       } else {
-        // TODO: Save the entire ROW into CUSTOM STORE variable required in next ticket
+        this.selectedRows = [];
+        this.onMultipleSelectionChange();
       }
     },
-    handleMultipleSelection() {
-      // TODO: Save this.selectedRows into CUSTOM STORE variable required in next ticket
+    componentOutput(data) {
+      this.$emit('input',  data);
+    },
+    onRadioChange(selectedItem, index) {
+      const globalIndex = (this.currentPage - 1) * this.perPage + index;
+      if(this.source?.singleField) {
+        let valueOfColumn = selectedItem[this.source.singleField];
+        this.componentOutput(valueOfColumn);
+      } else {
+        selectedItem = { ...selectedItem, selectedRowIndex: globalIndex};
+        this.componentOutput(selectedItem);
+      }
+    },
+    onMultipleSelectionChange(selIndex) {
+      this.collectionData.forEach((item, index) => {
+          this.selectedRows.forEach((selectedItem) => {
+              // Compares both objects all keys and values
+              if (this.areObjectsEqual(selectedItem, item)) {
+                  // Adds`selectedRowIndex` with index iteration
+                  selectedItem.selectedRowsIndex = index;
+              }
+          });
+      });
+      this.componentOutput(this.selectedRows);
+      this.rows.push(selIndex);
+    },
+    areObjectsEqual(obj1, obj2) {
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
+
+        if (keys1.length !== keys2.length) return false;
+
+        return keys1.every(key => obj1[key] === obj2[key]);
     },
     onCollectionChange(collectionId,pmql) {
       let param = {params:{pmql:pmql}};
