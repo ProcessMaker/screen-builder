@@ -78,7 +78,7 @@
           </template>
         </b-table>
       <b-pagination
-        v-if="tableData.total > perPage"
+        v-if="tableData.total > perPage && (perPage !== 0)"
         v-model="currentPage"
         data-cy="table-pagination"
         :total-rows="tableData.total"
@@ -212,7 +212,8 @@ export default {
     "formComputed",
     "formWatchers",
     "_perPage",
-    "source"
+    "source",
+    "paginationOption"
   ],
   data() {
     return {
@@ -333,15 +334,56 @@ export default {
       this.updateRowDataNamePrefix,
       100
     );
-    if(this.source?.collectionFields?.dataRecordList) {
-      this.setCollectionIntoList(this.source.collectionFields.dataRecordList);
+
+    if (this.paginationOption != null) {
+      this.perPage = this.paginationOption;
     }
+
+    if(this.source?.sourceOptions === "Collection") {
+      this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
+    }
+    
+    this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
-    setCollectionIntoList(array) {
-      const result = [];
+    onCollectionChange(collectionId,pmql) {
+      let param = {params:{pmql:pmql}};
+      let rowsCollection = [];
+      this.$dataProvider
+        .getCollectionRecordsList(collectionId, param)
+        .then((response) => {
+          rowsCollection = response.data;
 
-      array.forEach((row) => {
+          this.changeCollectionColumns(rowsCollection,this.fields);
+        });
+
+      this.$emit('change', this.field);
+    },
+    changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
+      
+      const optionsList = columnsSelected.optionsList;
+
+      collectionFieldsColumns.forEach(column => {
+        let dataObject = column.data;
+        let newDataObject = {};
+
+        Object.keys(dataObject).forEach(dataKey => {
+          const matchingOption = optionsList.find(option => option.content === dataKey);
+
+          if (matchingOption) {
+            newDataObject[matchingOption.key] = dataObject[dataKey];
+          }
+        });
+
+        column.data = newDataObject;
+      });
+
+       this.setCollectionIntoList(collectionFieldsColumns);
+        
+    },
+    setCollectionIntoList(arrayCollection) {
+      const result = [];
+      arrayCollection.forEach((row) => {
         if (row.hasOwnProperty('data')) {
           const dataObject = row.data;
           const extracted = {};
@@ -404,15 +446,26 @@ export default {
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
 
-      const convertToVuetableFormat = (option) => {
-        // let slot = '__filedownload';
-        return {
-          key: option[key || "value"],
-          sortable: true,
-          label: option[value || "content"],
-          tdClass: "table-column"
+      let convertToVuetableFormat = {};
+      if(this.source?.sourceOptions === "Collection") {
+          convertToVuetableFormat = (option) => {
+          return {
+            key: option[key || "key"],
+            sortable: true,
+            label: option[key || "key"],
+            tdClass: "table-column"
+          };
         };
-      };
+      } else {
+          convertToVuetableFormat = (option) => {
+          return {
+            key: option[key || "value"],
+            sortable: true,
+            label: option[value || "content"],
+            tdClass: "table-column"
+          };
+        };
+      }
 
       return this.getValidFieldData(jsonData, dataName).map(
         convertToVuetableFormat

@@ -7,13 +7,18 @@
           v-model="sourceOptions"
           :options="sourceDisplayOptions"
           data-cy="inspector-collection-data-source"
+          @change="displayOptionChange"
         />
+        <small class="form-text text-muted">{{
+        $t("A record list can display the data of a defined variable or a collection")
+      }}</small>
       </div>
       <div class="mt-2" v-if="sourceOptions === 'Collection'">
 
          <CollectionRecordsList 
          v-model="collectionFields"
-         :record-pmql="pmql"/>
+         :record-pmql="pmql"
+         @change="collectionChanged"/>
 
          <pmql-input
         v-model="pmql"
@@ -27,7 +32,7 @@
       >
       </pmql-input>
       <small class="form-text text-muted">{{
-        $t("Advanced data search")
+        $t("Leave this field empty to show all the records of the collection")
       }}</small>
         <label for="collectionsource">{{ $t("Data Selection") }}</label>
 
@@ -50,9 +55,11 @@
   <script>
 
   import CollectionRecordsList from "./collection-records-list.vue"
+  import { cloneDeep } from "lodash";
 
   const CONFIG_FIELDS = [
     "collectionFields",
+    "collectionFieldsColumns",
     "pmql",
     "sourceOptions"
 
@@ -69,6 +76,7 @@
         submitCollectionCheck: true,
         sourceDisplayOptions: [],
         collectionFields: [],
+        collectionFieldsColumns: [],
         pmql: null,
         sourceDisplayOptions: [
         {
@@ -81,6 +89,47 @@
         },
       ]
       };
+    },
+    methods: {
+      displayOptionChange() {
+        this.collectionFields = [];
+        this.collectionFieldsColumns = [];
+        this.pmql = null;
+        this.$root.$emit("collection-changed", true);
+      },
+      collectionChanged(data) {
+        if (Array.isArray(data)) {
+            const [firstItem] = data;
+            const collectionId = firstItem?.collection_id;
+            if(collectionId !== this.collectionFields.collectionId) {
+              this.$root.$emit("collection-changed", true);
+            }
+        }
+      },
+      changeCollectionColumns(columnsSelected) {
+        let selectedKeys = columnsSelected.map(column => column.content);
+        
+        if (Array.isArray(this.collectionFieldsColumns?.dataRecordList)) {
+          this.collectionFieldsColumns.dataRecordList.forEach(record => {
+            let dataObject = record.data;
+
+            if (dataObject && typeof dataObject === 'object') {
+              Object.keys(dataObject).forEach(key => {
+                if (!selectedKeys.includes(key)) {
+                  delete dataObject[key];
+                } else {
+                  const matchingColumn = columnsSelected.find(column => column.content === key);
+
+                  if (matchingColumn && matchingColumn.key !== key) {
+                    dataObject[matchingColumn.key] = dataObject[key];
+                    delete dataObject[key];
+                  }
+                }
+              });
+            } 
+          });
+        }
+      }
     },
     computed: {
       options() {
@@ -100,9 +149,15 @@
         immediate: true
       },
       sourceOptions: {
-        handler() {
-           
+        handler(changeOption) {
+           this.$root.$emit("record-list-option", changeOption);
         }
+      },
+      collectionFields: {
+        handler(collectionFieldsData) {
+           this.$root.$emit("record-list-collection", collectionFieldsData);
+        },
+        deep: true
       },
       pmql: {
         handler(newPmql) {

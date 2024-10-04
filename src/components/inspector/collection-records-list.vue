@@ -76,7 +76,6 @@ export default {
   mounted() {
     this.$root.$on("change-pmql", (val) => {
       this.pmql = val;
-      this.onCollectionChange();
     });
     this.getCollections();
     if (this.collectionId) {
@@ -90,6 +89,7 @@ export default {
         .then((response) => {
           this.dataRecordList = response.data;
         });
+      this.$emit('change', this.dataRecordList);
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
