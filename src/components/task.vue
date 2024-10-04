@@ -1001,6 +1001,7 @@ export default {
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
     this.loadTask(true);
+    this.setSelfService();
   },
   destroyed() {
     this.unsubscribeSocketListeners();
