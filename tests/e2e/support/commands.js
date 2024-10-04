@@ -65,6 +65,11 @@ Cypress.Commands.add("socketEvent", (event, body) => {
   });
 });
 
+Cypress.Commands.add("socketEventNext", (event, body) => {
+  cy.window().then((win) => {
+    win.Echo.eventMockNext(event, body);
+  });
+});
 /**
  * Converts Cypress fixtures, including JSON, to a Blob. All file types are
  * converted to base64 then converted to a Blob using Cypress
@@ -74,7 +79,7 @@ Cypress.Commands.add("socketEvent", (event, body) => {
  * @param {String} type - content type of the uploaded file
  * @return {Promise} Resolves with blob containing fixture contents
  */
-function getFixtureBlob(fileUrl, type) {
+function getFixtureBlob(fileUrl, type, c) {
   return type === "application/json"
     ? cy
         .fixture(fileUrl)

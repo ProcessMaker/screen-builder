@@ -107,6 +107,7 @@ export default {
     alwaysAllowEditing: { type: Boolean, default: false },
     disableInterstitial: { type: Boolean, default: false },
     waitLoadingListeners: { type: Boolean, default: false },
+    isWebEntry: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -677,54 +678,96 @@ export default {
         return null;
       }
     },
+    
     /**
-     * Handles the process completion and redirects the user based on the task assignment.
-     * @param {object} data - The data object containing endEventDestination.
-     * @param {string} userId - The ID of the current user.
-     * @param {string} requestId - The ID of the current request.
+     * Handles redirection upon process completion, considering destination type and user task validation.
+     * @async
+     * @param {Object} data - Contains information about the end event destination.
+     * @param {number} userId - ID of the current user.
+     * @param {number} requestId - ID of the request to complete.
+     * @returns {Promise<void>}
      */
     async processCompletedRedirect(data, userId, requestId) {
+      // Emit completion event if accessed through web entry.
+      if (this.isWebEntry) {
+        this.$emit("completed", requestId);
+        return;
+      }
+
       try {
-        // Verify if is not anotherProcess type
-        if (data.endEventDestination.type !== "anotherProcess") {
-          if (data?.endEventDestination.value) {
-            window.location.href = data?.endEventDestination.value;
-          } else {
-            window.location.href = `/requests/${this.requestId}`;
-          }
+        const destinationUrl = this.resolveDestinationUrl(data);
+        if (destinationUrl) {
+          window.location.href = destinationUrl;
           return;
         }
-        // Parse endEventDestination from the provided data
-        const endEventDestination = this.parseJsonSafely(
-          data.endEventDestination.value
-        );
-        // Get the next request using retry logic
-        const nextRequest = await this.retryApiCall(() =>
-          this.getNextRequest(
-            endEventDestination.processId,
-            endEventDestination.startEvent
-          )
-        );
 
-        const params = {
-          processRequestId: nextRequest.data.id,
-          status: "ACTIVE",
-          page: 1,
-          perPage: 1
-        };
-        // Get the tasks for the next request using retry logic
-        const response = await this.retryApiCall(() => this.getTasks(params));
-        // Handle the first task from the response
-        const firstTask = response.data.data[0];
-        if (firstTask && firstTask.user_id === userId) {
-          this.redirectToTask(firstTask.id);
-        } else {
-          this.redirectToRequest(requestId);
-        }
+        // Proceed to handle redirection to the next request if applicable.
+        await this.handleNextRequestRedirection(data, userId, requestId);
       } catch (error) {
         console.error("Error processing completed redirect:", error);
         this.$emit("completed", requestId);
       }
+    },
+
+    /**
+     * Resolves the URL to redirect to if the end event is not another process.
+     * @param {Object} data - Contains the end event destination data.
+     * @returns {string|null} - The URL for redirection, or null if proceeding to another process.
+     */
+    resolveDestinationUrl(data) {
+      if (data.endEventDestination.type !== "anotherProcess") {
+        return data.endEventDestination.value || `/requests/${this.requestId}`;
+      }
+      return null;
+    },
+
+    /**
+     * Handles redirection logic to the next request's task or fallback to the request itself.
+     * @async
+     * @param {Object} data - Contains the end event destination.
+     * @param {number} userId - ID of the current user.
+     * @param {number} requestId - ID of the request to complete.
+     * @returns {Promise<void>}
+     */
+    async handleNextRequestRedirection(data, userId, requestId) {
+      const nextRequest = await this.fetchNextRequest(data.endEventDestination);
+      const firstTask = await this.fetchFirstTask(nextRequest);
+
+      if (firstTask?.user_id === userId) {
+        this.redirectToTask(firstTask.id);
+      } else {
+        this.redirectToRequest(requestId);
+      }
+    },
+
+    /**
+     * Fetch the next request using retry logic.
+     * @async
+     * @param {Object} endEventDestination - The parsed end event destination object.
+     * @returns {Promise<Object>} - The next request data.
+     */
+    async fetchNextRequest(endEventDestination) {
+      const destinationData = this.parseJsonSafely(endEventDestination.value);
+      return await this.retryApiCall(() =>
+        this.getNextRequest(destinationData.processId, destinationData.startEvent)
+      );
+    },
+
+    /**
+     * Fetch the first task from the next request using retry logic.
+     * @async
+     * @param {Object} nextRequest - The next request object.
+     * @returns {Promise<Object|null>} - The first task data, or null if no tasks found.
+     */
+    async fetchFirstTask(nextRequest) {
+      const params = {
+        processRequestId: nextRequest.data.id,
+        status: "ACTIVE",
+        page: 1,
+        perPage: 1
+      };
+      const response = await this.retryApiCall(() => this.getTasks(params));
+      return response.data.data[0] || null;
     },
     getAllowedRequestId() {
       const permissions = this.task.user_request_permission || [];
@@ -800,6 +843,7 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleRedirect(data) {
+      debugger;
       switch (data.method) {
         case 'redirectToTask':
           this.handleRedirectToTask(data);
@@ -808,6 +852,7 @@ export default {
           this.handleProcessUpdated(data);
           break;
         case 'processCompletedRedirect':
+          debugger;
           this.processCompletedRedirect(
             data.params[0],
             this.userId,
