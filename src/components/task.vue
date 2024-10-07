@@ -94,6 +94,7 @@ export default {
     initialRequestId: { type: Number, default: null },
     initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
+    screenVersion: { type: Number, default: null },
     userId: { type: Number, default: null },
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
@@ -265,7 +266,12 @@ export default {
         return;
       }
 
-      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
+      let url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
+
+      if (this.screenVersion) {
+        url += `&screen_version=${this.screenVersion}`;
+      }
+
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -532,6 +538,7 @@ export default {
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
           }
+          this.disabled = false;
         });
     },
     emitIfTaskCompleted(requestId) {
@@ -994,6 +1001,7 @@ export default {
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
     this.loadTask(true);
+    this.setSelfService();
   },
   destroyed() {
     this.unsubscribeSocketListeners();
