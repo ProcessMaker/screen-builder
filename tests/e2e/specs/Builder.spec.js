@@ -71,7 +71,9 @@ describe("Screen Builder", () => {
       "aaa._.ccc",
       "aaa..ccc",
       "aaa.123.ccc",
-      "aaa.1.ccc"
+      "aaa.1.ccc",
+      ".",
+      ".aaa",
     ].forEach((name) => {
       cy.get("[data-cy=inspector-name]").clear().type(name);
       cy.get("[data-cy=inspector-name]").should("have.class", "is-invalid");
