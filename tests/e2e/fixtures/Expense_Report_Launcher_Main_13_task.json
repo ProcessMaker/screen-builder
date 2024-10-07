@@ -1,0 +1,64 @@
+{
+    "advanceStatus": "open",
+    "id": 20841,
+    "element_name": "Mobile Expense Report",
+    "element_id": "node_7580",
+    "element_type": "task",
+    "status": "ACTIVE",
+    "due_at": "2024-10-07T02:24:13.000000Z",
+    "process_request_id": 277,
+    "is_self_service": 0,
+    "data": {
+        "today": "2024-10-04",
+        "action": null,
+        "btn_tab": "reports1",
+        "goToPage": null,
+        "approvers": {
+            "workEmail": null,
+            "displayName": null
+        }
+    },
+    "process_request": {
+        "id": 277,
+        "uuid": "9d292838-d9a5-409e-9e90-0871db7f9d31",
+        "process_id": 985,
+        "user_id": 1,
+        "parent_request_id": null,
+        "status": "ACTIVE",
+        "errors": null,
+        "completed_at": null,
+        "initiated_at": "2024-10-04T00:15:40+00:00",
+        "created_at": "2024-10-04T00:15:40+00:00",
+        "updated_at": "2024-10-04T02:24:14+00:00",
+        "case_title": "Mobile Expense for Admin User",
+        "case_number": 7328,
+        "callable_id": "Process_3",
+        "process_version_id": 7513
+    },
+    "draft": null,
+    "component": "task-screen",
+    "request_data": {
+        "today": "2024-10-04",
+        "action": null,
+        "btn_tab": "reports1"
+    },
+    "loop_context": "",
+    "definition": {
+        "outgoing": {},
+        "incoming": {},
+        "id": "node_7580",
+        "name": "Mobile Expense Report",
+        "screenRef": "2007",
+        "allowInterstitial": "true",
+        "interstitialScreenRef": "2033",
+        "assignment": "requester",
+        "assignedUsers": "",
+        "assignedGroups": "",
+        "assignmentLock": "false",
+        "allowReassignment": "false",
+        "config": "{\"web_entry\":{\"require_valid_session\":false,\"screen_id\":null,\"completed_action\":\"SCREEN\",\"completed_screen_id\":null,\"completed_url\":null,\"enable_query_params\":false,\"password\":null,\"enable_password_protect\":false,\"exclude_data\":[],\"embed\":{\"position\":\"full\",\"title\":\"Form\",\"icon\":\"question-circle\",\"color\":null},\"webentryRouteConfig\":{\"nodeId\":\"node_7580\",\"nodeType\":null,\"processId\":28,\"parameters\":[],\"firstUrlSegment\":null,\"urlType\":\"standard-url\",\"entryUrl\":\"https:\/\/ins93166.plgdev.processmaker.io\/webentry\/28\/node_7580\"}},\"email_notifications\":{\"notifications\":[]},\"selfService\":false}",
+        "elementDestination": "{\"type\":\"taskSource\",\"value\":null}"
+    },
+    "bpmn_tag_name": "task",
+    "allow_interstitial": true
+  }
