@@ -13,6 +13,7 @@
       @upload-start="start"
       @file-removed="removed"
       @file-success="fileUploaded"
+      @file-error="fileError"
       @file-added="addFile"
       :class="{'was-validated': required}"
     >
@@ -569,6 +570,24 @@ export default {
       if (['Enter', 'Space'].includes(e.code)) {
         e.target.click();
       }
+    },
+    fileError(rootFile, file, messages, chunk)
+    {
+      let displayMessage = '';
+      try {
+        const messagesArray = JSON.parse(messages);
+        displayMessage = messagesArray.join(', ');
+      }
+      catch (e) {
+        displayMessage = messages;
+      }
+
+      if (displayMessage.length > 0) {
+        window.ProcessMaker.alert(`${this.$t('File Upload Error:')}  ${displayMessage}`, 'danger');
+      }
+
+      window.onbeforeunload = function() {};
+      this.$emit('file-error', messages);
     },
     fileUploaded(rootFile, file, message) {
       this.uploading = false;
