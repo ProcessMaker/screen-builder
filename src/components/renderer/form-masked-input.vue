@@ -52,7 +52,7 @@
       />
       <b-button variant="outline-secondary conceal-reveal-btn" @click="concealOrReveal">
         <i :class="iconBtn"></i>
-        {{ labelBtn }}
+        <span> {{ labelBtn }} </span>
       </b-button>
     </div>
 
@@ -478,7 +478,12 @@ export default {
   width: 100%;
 }
 .conceal-reveal-btn {
-  width: 20%;
+  width: 25%;
   margin-left: 5px;
+}
+@media screen and (max-width: 1000px) {
+  .conceal-reveal-btn span {
+    display: none;
+  }
 }
 </style>
