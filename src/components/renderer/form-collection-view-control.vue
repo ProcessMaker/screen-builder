@@ -201,6 +201,7 @@ export default {
     collection(collection) {
       if(collection) {
         this.selCollectionId = collection.collectionId;
+        this.$root.$emit("collection-screen-mode", "display");
       }
     },
     record(record) {
