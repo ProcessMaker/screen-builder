@@ -127,7 +127,7 @@ export default {
           window.location.reload();
         })
         .catch((error) => {
-          const errorMessage = error.response?.data?.message || error.message;
+          const errorMessage = error.response?.data?.message  || error.response?.data?.error || error.message;
           ProcessMaker.alert(errorMessage, "danger");
         });
     },
