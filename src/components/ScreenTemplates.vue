@@ -87,8 +87,19 @@
     components: {
       ScreenTemplateCard,
     },
-    props: ['screenId', 'currentScreenPage', 'screenType'],
-    mounted() {
+    props: {
+      screenId: {
+        type: Number,
+        required: true,
+      },
+      currentScreenPage: {
+        type: Number,   
+        default: 0,
+      },
+      screenType: {
+        type: String,   
+        default: 'FORM',
+      }
     },
     data() {
       return {
