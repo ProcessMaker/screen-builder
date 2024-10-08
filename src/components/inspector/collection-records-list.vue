@@ -9,6 +9,12 @@
         data-cy="inspector-collection"
       />
     </div>
+    <div v-if="collectionId > 0" class="screen-link mt-2">
+      <a :href="`/collections/${collectionId}`" target="_blank">
+        {{ $t("Open Collection") }}
+        <i class="ml-1 fas fa-external-link-alt" />
+      </a>
+    </div>
   </div>
 </template>
 
