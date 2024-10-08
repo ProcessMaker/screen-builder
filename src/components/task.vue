@@ -865,6 +865,7 @@ export default {
 
       if (
         elementDestinationValue &&
+        elementDestinationValue !== 'taskSource' &&
         data?.params[0]?.tokenId === this.taskId &&
         data?.params[0]?.requestStatus === 'ACTIVE'
       ) {
