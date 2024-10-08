@@ -87,8 +87,19 @@
     components: {
       ScreenTemplateCard,
     },
-    props: ['screenId', 'currentScreenPage'],
-    mounted() {
+    props: {
+      screenId: {
+        type: Number,
+        required: true,
+      },
+      currentScreenPage: {
+        type: Number,   
+        default: 0,
+      },
+      screenType: {
+        type: String,   
+        default: 'FORM',
+      }
     },
     data() {
       return {
@@ -109,7 +120,7 @@
       fetchMyTemplates() {
         ProcessMaker.apiClient
         .get(
-          "templates/screen?is_public=0",
+          `templates/screen?is_public=0&screen_type=${this.screenType}`,
         )
         .then((response) => {
           this.myTemplatesData = response.data.data;
@@ -124,7 +135,7 @@
       fetchSharedTemplates() {
       ProcessMaker.apiClient
         .get(
-          "templates/screen?is_public=1",
+          `templates/screen?is_public=1&screen_type=${this.screenType}`,
         )
         .then((response) => {
           this.sharedTemplatesData = response.data.data;
