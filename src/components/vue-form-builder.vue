@@ -303,6 +303,7 @@
               :shared-templates-data="sharedTemplatesData"
               @close-templates-panel="closeTemplatesPanel"
               :screen-id="screen.id"
+              :screen-type="screen.type"
               :currentScreenPage="currentPage"
             />
           </b-card-body>

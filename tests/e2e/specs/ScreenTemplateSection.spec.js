@@ -25,10 +25,9 @@ it("Displays My Templates when My Templates button is clicked", () => {
 
   cy.get("[data-cy=screen-templates]").click();
   cy.get("[data-cy=screen-templates-section]").should("be.visible");
-  
   cy.intercept(
     "GET",
-    "/api/1.0/templates/screen?is_public=0",
+    "/api/1.0/templates/screen?is_public=0&screen_type=FORM",
     {
       statusCode: 200,
       body: {
@@ -44,7 +43,7 @@ it("Displays My Templates when My Templates button is clicked", () => {
           media: [],
           name: "My Templates Test",
           screen_custom_css: null,
-          screen_type: "EMAIL",
+          screen_type: "FORM",
           template_media: [],
           updated_at: "2024-09-10T18:18:27+00:00",
           user_id: 1,
@@ -73,7 +72,7 @@ it("Displays Shared Templates when Shared Templates button is clicked", () => {
   
   cy.intercept(
     "GET",
-    "/api/1.0/templates/screen?is_public=1",
+    "/api/1.0/templates/screen?is_public=1&screen_type=FORM",
     {
       statusCode: 200,
       body: {
