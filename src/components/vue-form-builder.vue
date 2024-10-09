@@ -362,6 +362,7 @@
                 :is-open="accordion.open ? '1' : '0'"
                 @click="toggleAccordion(accordion)"
               >
+              <b-button>
                 <i class="fas fa-cog mr-2" />
                 {{ $t(accordionName(accordion)) }}
                 <i
@@ -369,6 +370,7 @@
                   :class="{ 'fas fa-angle-right': !accordion.open }"
                 />
               </b-button>
+              </component>
               <b-collapse
                 :id="accordionName(accordion)"
                 :key="`${accordionName(accordion)}-collapse`"
