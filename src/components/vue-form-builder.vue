@@ -323,13 +323,26 @@
     <!-- Inspector -->
     <b-col
       v-if="renderControls"
-      class="overflow-hidden h-100 p-0 inspector-column"
+      class="overflow-auto mh-100 p-0 d-flex flex-column position-relative inspector-column"
     >
       <b-card
         no-body
-        class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
+        class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0 inspector-column"
       >
-        <b-card-body class="p-0 h-100 overflow-auto">
+        <div v-if="showTemplatesPanel">
+          <b-card-body class="p-2 h-100 overflow-auto screen-templates-column">
+            <screen-templates
+              ref="screenTemplates"
+              :shared-templates-data="sharedTemplatesData"
+              @close-templates-panel="closeTemplatesPanel"
+              :screen-id="screen.id"
+              :screen-type="screen.type"
+              :currentScreenPage="currentPage"
+            />
+          </b-card-body>
+        </div>
+        <div v-else>
+          <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
               v-if="
@@ -524,6 +537,8 @@ import { formTypes } from "@/global-properties";
 import TabsBar from "./TabsBar.vue";
 import Sortable from './sortable/Sortable.vue';
 import ClipboardButton from './ClipboardButton.vue';
+import ScreenTemplates from './ScreenTemplates.vue';
+
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -592,6 +607,7 @@ export default {
     PagesDropdown,
     Sortable,
     ClipboardButton,
+    ScreenTemplates,
   },
   mixins: [HasColorProperty, testing, Clipboard],
   props: {
@@ -617,7 +633,10 @@ export default {
     },
     processId: {
       default: 0
-    }
+    },
+    sharedTemplatesData: {
+      type: Array,
+    },
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -674,6 +693,7 @@ export default {
       collapse: {},
       groupOrder: {},
       searchProperties: ['name'],
+      showTemplatesPanel: false,
       enableOption: true
     };
   },
@@ -1199,6 +1219,12 @@ export default {
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
+    openTemplatesPanel() {
+      this.showTemplatesPanel = true;
+    },
+    closeTemplatesPanel() {
+      this.showTemplatesPanel = false;
+    },
     updateConfig(items) {
       this.extendedPages[this.currentPage].items = items;
       this.updateState();
@@ -1361,6 +1387,7 @@ export default {
       this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
     },
     inspect(element = {}) {
+      this.closeTemplatesPanel();
       this.inspection = element;
       this.selected = element;
       const defaultAccordion = this.accordions.find(
@@ -1495,7 +1522,6 @@ export default {
       this.updateState();
       this.inspect(clone);
     },
-
   }
 };
 </script>
@@ -1629,6 +1655,12 @@ $side-bar-font-size: 0.875rem;
 .inspector-column {
   max-width: 265px;
   font-size: $side-bar-font-size;
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  height: 100%;
+}
+
+.screen-templates-column {
+  overflow-y: auto;
 }
 
 .form-control-ghost {
