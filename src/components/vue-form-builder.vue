@@ -401,7 +401,8 @@
             </b-collapse>
           </template>
         </b-card-body>
-      </b-card>
+        </div>
+    </b-card>
     </b-col>
 
     <!-- Modals -->
