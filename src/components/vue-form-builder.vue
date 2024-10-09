@@ -371,6 +371,7 @@
                 />
               </b-button>
               </component>
+            </b-collapse>
               <b-collapse
                 :id="accordionName(accordion)"
                 :key="`${accordionName(accordion)}-collapse`"
