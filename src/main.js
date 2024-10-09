@@ -114,6 +114,35 @@ window.exampleScreens = [
     status: "ACTIVE"
   }
 ];
+
+const exampleUsers = [
+  {
+    id: 1,
+    username: 'admin',
+    status: 'ACTIVE',
+    fullname: 'Administrator',
+  },
+  {
+    id: 2,
+    username: 'jdavis',
+    status: 'INACTIVE',
+    fullname: 'Jonathan Davis',
+  }
+];
+
+const exampleGroups = [
+  {
+    id: 1,
+    name: 'Super Users',
+    status: 'ACTIVE',
+  },
+  {
+    id: 2,
+    name: 'Metalheads',
+    status: 'INACTIVE',
+  }
+];
+
 // get cache config from header
 const cacheEnabled = document.head.querySelector(
   "meta[name='screen-cache-enabled']"
@@ -179,6 +208,28 @@ window.ProcessMaker = {
               ]
             }
           });
+        }  else if (url === "users") {
+            resolve({
+              data: {
+                data: exampleUsers
+              }
+            });
+        }  else if (url === "groups") {
+            resolve({
+              data: {
+                data: exampleGroups
+              }
+            });
+        }  else if (url.substr(0, 6) === "users/") {
+          const index = url.substr(6, 1);
+          resolve({
+            data: exampleUsers[index - 1]
+          });
+        }  else if (url.substr(0, 7) === "groups/") {
+          const index = url.substr(7, 1);
+          resolve({
+            data: exampleGroups[index - 1]
+          });
         } else {
           window.axios
             .get(url, params)
@@ -201,6 +252,12 @@ window.ProcessMaker = {
                 ]
               }
             });
+            break;
+          case "/api/1.0/encrypted_data/encryptText":
+            resolve("62abf17e-d1a6-4f68-a382-ed63872d29b0");
+            break;
+          case "/api/1.0/encrypted_data/decryptText":
+            resolve("Secret Value");
             break;
           default:
             window.axios
