@@ -52,6 +52,7 @@
             <screen-toolbar
               @undo="$refs.builder.undo()"
               @redo="$refs.builder.redo()"
+              @open-templates="openTemplatesPanel"
               @open-calc="openComputedProperties"
               @open-customCss="openCustomCSS"
               @open-watchers="openWatchersPopup"
@@ -443,7 +444,9 @@ export default {
         minimap: {
           enabled: false
         }
-      }
+      },
+      showTemplatesPanel: false,
+      sharedTemplatesData: null,
     };
   },
   computed: {
@@ -695,6 +698,9 @@ export default {
     },
     openWatchersPopup() {
       this.$refs.watchersPopup.show();
+    },
+    openTemplatesPanel() {
+      this.$refs.builder.openTemplatesPanel();
     },
     openComputedProperties() {
       this.$refs.computedProperties.show();

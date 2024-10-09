@@ -244,13 +244,6 @@ export default {
     componentConfigComputed() {
       return JSON.parse(JSON.stringify(this.componentConfig));
     },
-    requestId() {
-      const node = document.head.querySelector(`meta[name="request-id"]`);
-      if (node === null) {
-        return null;
-      }
-      return node.content;
-    },
     mode() {
       return this.$root.$children[0].mode;
     },
@@ -258,7 +251,7 @@ export default {
       return this.mode === 'preview' && window.exampleScreens !== undefined;
     },
     inPreviewMode() {
-      return this.mode === 'preview' && this.requestId === null;
+      return this.mode === 'preview';
     },
   },
   watch: {
@@ -412,15 +405,15 @@ export default {
             if (this.inStandAloneMode || !this.inPreviewMode) {
               // Build data to send
               const dataToEncrypt = {
-                request_id: this.requestId,
+                uuid: uuidValidate(this.value) ? this.value : null,
                 field_name: this.name,
                 plain_text: this.localValue,
-                screen_id: this.$root.task?.screen?.screen_id
+                screen_id: this.$root.task?.screen?.screen_id || window?.PM4ConfigOverrides?.authParams?.screen_id
               };
 
               // Call endpoint to encrypt data
               window.ProcessMaker.apiClient
-                .post("encrypted_data/encryptText", dataToEncrypt)
+                .post("/api/1.0/encrypted_data/encryptText", dataToEncrypt)
                 .then((response) => {
                   const v = response?.data !== undefined ? response?.data : response;
                   this.afterEncrypt(v);
@@ -444,14 +437,14 @@ export default {
           if (this.inStandAloneMode || !this.inPreviewMode) {
             // Build data to send
             const dataToDecrypt = {
-              request_id: this.requestId,
+              uuid: this.value,
               field_name: this.name,
-              screen_id: this.$root.task?.screen?.screen_id
+              screen_id: this.$root.task?.screen?.screen_id || window?.PM4ConfigOverrides?.authParams?.screen_id
             };
 
             // Call endpoint to decrypt data
             window.ProcessMaker.apiClient
-              .post("encrypted_data/decryptText", dataToDecrypt)
+              .post("/api/1.0/encrypted_data/decryptText", dataToDecrypt)
               .then((response) => {
                 const v = response?.data !== undefined ? response?.data : response;
                 this.afterDecrypt(v);
