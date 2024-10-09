@@ -363,6 +363,7 @@
               v-model="accordion.open"
             >
               <component
+                v-if="shouldShow(item)"
                 :is="item.type"
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :key="index"
@@ -673,6 +674,7 @@ export default {
       collapse: {},
       groupOrder: {},
       searchProperties: ['name'],
+      enableOption: true
     };
   },
   computed: {
@@ -852,6 +854,20 @@ export default {
       this.$nextTick(() => {
         this.$refs.tabsBar.openClipboard();
       });
+    },
+    shouldShow(item) {
+      const sourceOptions = this.inspection.config[item.field]?.sourceOptions;
+
+      if (sourceOptions === 'Variable') {
+        this.enableOption = true;
+        return true;
+      }
+
+      if (sourceOptions === 'Collection') {
+        this.enableOption = false;
+      }
+
+      return !(item.if === "hideControl" && this.enableOption === false);
     },
     isCurrentPageEmpty(currentPage) {
       return this.config[currentPage]?.items?.length === 0;

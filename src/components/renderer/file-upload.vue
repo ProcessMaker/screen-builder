@@ -19,7 +19,7 @@
     >
       <uploader-unsupport/>
 
-      <uploader-drop v-if="uploaderLoaded" class="form-control-file">
+      <uploader-drop v-if="uploaderLoaded && !isConversationalForm" class="form-control-file">
         <p>{{ $t('Drop a file here to upload or') }}</p>
         <uploader-btn
           :attrs="nativeButtonAttrs"
@@ -33,7 +33,64 @@
         </uploader-btn>
         <span v-if="validation === 'required' && !value" class="required">{{ $t('Required') }}</span>
       </uploader-drop>
-      <uploader-list>
+
+      <!-- Render the conversational form file upload UI when the screen type is conversational forms -->
+      <uploader-list v-if="isConversationalForm" class="cf-uploader-list">
+        <template v-slot="{fileList}">
+          <ul v-if="uploading" class="cf-upload-progress">
+            <li v-for="file in fileList" :key="file.id || file.name">
+              <uploader-file :file="file" list />
+            </li>
+          </ul>
+          <ul v-else>
+            <li v-for="(file, i) in files" :key="file.id || i" :data-cy="file.id" class="cf-file-upload-list">
+              <span class="cf-filename text-truncate">
+                <i :class="getFileIconClass(file)" class="mr-2"></i>
+                {{ nativeFiles[file.id].name }}
+              </span>
+              <b-btn 
+                variant="outline" 
+                @click="removeFile(file)" 
+                v-b-tooltip.hover :title="$t('Delete')"
+                class="pr-0"
+                :aria-label="$t('Delete file {{ nativeFiles[file.id].name }}')"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </b-btn>
+            </li>
+          </ul>
+        </template>
+      </uploader-list>
+      <uploader-drop v-if="uploaderLoaded && isConversationalForm" class="form-control-file">
+        <b-button
+          v-if="!required"
+          @click="cfSkipFileUpload"
+          class="btn cf-skip-btn mb-3"
+        >
+          <i class="fas fa-arrow-left mr-2"></i> {{ $t('Skip Uploading') }}
+        </b-button>
+
+        <uploader-btn
+          :attrs="nativeButtonAttrs"
+          :class="[
+            { disabled: disabled }, 
+            'btn',
+            showSingleUploadButton ? 'cf-single-upload-btn' : (showMultiUploadButton ? 'cf-multi-upload-btn' : '')
+          ]"
+          tabindex="0"
+          v-on:keyup.native="browse"
+          :aria-label="$attrs['aria-label']"
+        >
+          <span v-if="showSingleUploadButton"><i class="far fa-image mr-2"></i> {{ $t('Add File/Photo') }}</span>
+          <span v-else-if="showMultiUploadButton"><i class="fas fa-plus mr-2"></i> {{ $t('Add another') }}</span>
+        </uploader-btn>
+
+        <b-button v-if="files.length !== 0" class="cf-file-upload-submit" variant="primary" @click="emitConversationalFormSubmit" :aria-label="$t('Submit')">
+          <i class="fas fa-paper-plane"></i> <span v-if="files.length !== 0 && showMultiUploadButton">{{ $t('Send All') }}</span>
+        </b-button>
+      </uploader-drop>
+      
+      <uploader-list v-else>
         <template slot-scope = "{ fileList }">
           <ul v-if="uploading">
             <li v-for="file in fileList" :key="file.id">
@@ -94,7 +151,7 @@ const ignoreErrors = [
 export default {
   components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
-  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload'],
+  props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload', 'screenType'],
   updated() {
     this.removeDefaultClasses();
   },
@@ -208,6 +265,15 @@ export default {
     },
     fileDataName() {
       return this.prefix + this.name + (this.row_id ? '.' + this.row_id : '');
+    },
+    isConversationalForm() {
+      return this.screenType === 'conversational-forms';
+    },
+    showSingleUploadButton() {
+      return this.files.length === 0 || !this.multipleUpload;
+    },
+    showMultiUploadButton() {
+      return this.files.length !== 0 && this.multipleUpload;
     },
   },
   watch: {
@@ -336,6 +402,7 @@ export default {
     },
     setRequestFiles() {
       _.set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
+      console.log("!!!!!! SET REQUEST FILES", this.valueToSend());
       this.$emit('input', this.valueToSend());
     },
     valueToSend() {
@@ -545,6 +612,7 @@ export default {
         this.$set(this.nativeFiles, id, rootFile);
         this.addToFiles(fileInfo);
       } else {
+        console.log("!!!!!! FILE UPLOADED", name);
         this.$emit('input', name);
       }
     },
@@ -608,6 +676,17 @@ export default {
           : null;
       }
     },
+    getFileIconClass(file) {
+      return this.nativeFiles[file.id].fileType.includes('image/') 
+        ? 'far fa-image' 
+        : 'far fa-file';
+    },
+    emitConversationalFormSubmit($event) {
+      this.$emit('cf-submit', $event);
+    },
+    cfSkipFileUpload() {
+      this.$emit('cf-skip-file-upload');
+    }
   },
 };
 </script>
@@ -617,4 +696,58 @@ export default {
   color: red;
   font-size: 0.8em;
 }
+
+/* Conversational Forms Styling */
+.cf-single-upload-btn {
+  background-color: #EAF2FF;
+  border: 1px solid #81AFFF;
+  color: #81AFFF;
+  width: 100%;
+  padding: 12px 10px;
+  text-transform: capitalize;
+  margin: 0;
+}
+.cf-multi-upload-btn {
+  background: #fff;
+  color: #20242A;
+  border: 1px solid #D7DDE5;
+  font-size: 12px;
+  width: 57%;
+  padding: 7px;
+  border-radius: 8px;
+  margin: 0;
+  text-transform: capitalize;
+  margin-right: 30px;
+}
+.cf-file-upload-submit {
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  text-transform: capitalize;
+  padding: 7px;
+}
+.cf-filename {
+  width: 88%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.cf-uploader-list {
+  margin-bottom: 14px;
+  max-height: 75px;
+  overflow:auto;
+}
+.cf-file-upload-list {
+  color: #20242A;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #F3F5F7;
+}
+.cf-skip-btn {
+  background-color: #FFF;
+  border: 1px solid #D7DDE5;
+  color: #20242A;
+  width: 100%;
+  padding: 12px 10px;
+  box-shadow: 0px 12px 24px -12px #0000001F;
+}
+
 </style>

@@ -81,16 +81,26 @@ export default {
     const hasIncludeScreen = params.match(/include=.*,screen,/);
     const hasIncludeNested = params.match(/include=.*,nested,/);
 
+    // Extract screen_version from params.
+    const screenVersionMatch = params.match(/screen_version=([^&]+)/);
+    const screenVersion = screenVersionMatch ? screenVersionMatch[1] : null;
+
     // remove params ?...
     promises.push(
       this.get(endpoint + params.replace(/,screen,|,nested,/g, ","))
     );
     // Get the screen from a separated cached endpoint
     if (hasIncludeScreen) {
-      const screenEndpoint = `${(endpoint + params).replace(
+      let screenEndpoint = `${(endpoint + params).replace(
         /\?.+$/,
         ""
       )}/screen?include=screen${hasIncludeNested ? ",nested" : ""}`;
+
+      // Append screen_version only if screenVersion is not empty.
+      if (screenVersion) {
+        screenEndpoint += `&screen_version=${screenVersion}`;
+      }
+
       promises.push(this.get(screenEndpoint));
     }
     // Await for both promises to resolve
@@ -221,7 +231,6 @@ export default {
     if (authParams) {
       query = `?${new URLSearchParams(authParams).toString()}`;
     }
-
     return query;
   },
 
@@ -283,6 +292,48 @@ export default {
         if (error.response && error.response.status === 404) {
           const data = { data: [] };
           return [data, nonce];
+        }
+        throw error;
+      });
+  },
+
+  getCollectionRecordsList(collectionId, options = null) {
+
+    return this.get(
+      `/collections/${collectionId}/records${this.authQueryString()}`,
+      options
+    )
+      .then((response) => {
+        const data = response ? response.data : null;
+        if (!data) {
+          throw new Error(i18next.t("No data returned"));
+        }
+        return data;
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          const data = { data: [] };
+          return [data];
+        }
+        throw error;
+      });
+  },
+
+  getCollectionRecordsView(collectionId, recordId) {
+    return this.get(
+      `/collections/${collectionId}/records/${recordId}`
+    )
+      .then((response) => {
+        const data = response ? response.data : null;
+        if (!data) {
+          throw new Error(i18next.t("No data returned"));
+        }
+        return data;
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          const data = { data: [] };
+          return data;
         }
         throw error;
       });

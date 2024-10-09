@@ -31,6 +31,7 @@
             :watchers="screen.watchers"
             :key="refreshScreen"
             :loop-context="loopContext"
+            :taskdraft="this.task"
             @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
@@ -49,6 +50,7 @@
             :watchers="screen.watchers"
             :data="requestData"
             :type="screen.type"
+            @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
           />
@@ -94,6 +96,7 @@ export default {
     initialRequestId: { type: Number, default: null },
     initialProcessId: { type: Number, default: null },
     initialNodeId: { type: String, default: null },
+    screenVersion: { type: Number, default: null },
     userId: { type: Number, default: null },
     csrfToken: { type: String, default: null },
     value: { type: Object, default: () => {} },
@@ -260,12 +263,17 @@ export default {
         this.loadNextAssignedTask();
       }
     },
-    loadTask() {
+    loadTask(mounting = false) {
       if (!this.taskId) {
         return;
       }
 
-      const url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
+      let url = `/${this.taskId}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`;
+
+      if (this.screenVersion) {
+        url += `&screen_version=${this.screenVersion}`;
+      }
+
       // For Vocabularies
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
         window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
@@ -276,7 +284,7 @@ export default {
           .getTasks(url)
           .then((response) => {
             this.task = response.data;
-            this.linkTask();
+            this.linkTask(mounting);
             this.checkTaskStatus();
             if (
               window.PM4ConfigOverrides
@@ -296,12 +304,27 @@ export default {
           });
       });
     },
-    linkTask() {
+    linkTask(mounting) {
       this.nodeId = this.task.element_id;
       this.listenForParentChanges();
       if (this.task.process_request.status === 'COMPLETED') {
         if (!this.taskPreview) {
           this.$emit('completed', this.task.process_request.id);
+          // When the process ends before the request is opened
+          if (mounting) {
+            // get end event element destination config
+            window.ProcessMaker.apiClient.get(`/requests/${this.requestId}/end-event-destination`)
+              .then((response) => {
+                if (!response.data?.data?.endEventDestination) {
+                  // by default it goes to summary
+                  window.location.href = `/requests/${this.requestId}`;
+                  return;
+                }
+
+                // process the end event destination
+                this.processCompletedRedirect(response.data.data, this.userId, this.requestId);
+              });
+          }
         }
       }
       if (this.taskPreview && this.task.status === "CLOSED") {
@@ -450,7 +473,6 @@ export default {
 
           return this.getSessionRedirectUrl();
         } catch (error) {
-          console.error("Error in getDestinationUrl:", error);
           return null;
         }
       }
@@ -517,6 +539,7 @@ export default {
           } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
           }
+          this.disabled = false;
         });
     },
     emitIfTaskCompleted(requestId) {
@@ -978,7 +1001,8 @@ export default {
     this.nodeId = this.initialNodeId;
     this.requestData = this.value;
     this.loopContext = this.initialLoopContext;
-    this.loadTask();
+    this.loadTask(true);
+    this.setSelfService();
   },
   destroyed() {
     this.unsubscribeSocketListeners();
