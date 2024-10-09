@@ -310,16 +310,48 @@
         </div>
         <div v-else>
           <b-card-body class="p-0 h-100 overflow-auto">
-            <template v-for="accordion in accordions">
-              <b-button
-                v-if="
-                  getInspectorFields(accordion) &&
-                  getInspectorFields(accordion).length > 0
-                "
-                :key="`${accordionName(accordion)}-button`"
-                variant="outline"
-                class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
-                :data-cy="`accordion-${accordionName(accordion).replace(
+          <template v-for="accordion in accordions">
+            <b-button
+              v-if="
+                getInspectorFields(accordion) &&
+                getInspectorFields(accordion).length > 0
+              "
+              :key="`${accordionName(accordion)}-button`"
+              variant="outline"
+              class="text-left card-header d-flex align-items-center w-100 outline-0 text-capitalize shadow-none"
+              :data-cy="`accordion-${accordionName(accordion).replace(
+                ' ',
+                ''
+              )}`"
+              :accordion-name="`accordion-${accordionName(accordion).replace(
+                ' ',
+                ''
+              )}`"
+              :is-open="accordion.open ? '1' : '0'"
+              @click="toggleAccordion(accordion)"
+            >
+              <i class="fas fa-cog mr-2" />
+              {{ $t(accordionName(accordion)) }}
+              <i
+                class="fas fa-angle-down ml-auto"
+                :class="{ 'fas fa-angle-right': !accordion.open }"
+              />
+            </b-button>
+            <b-collapse
+              :id="accordionName(accordion)"
+              :key="`${accordionName(accordion)}-collapse`"
+              v-model="accordion.open"
+            >
+              <component
+                v-if="shouldShow(item)"
+                :is="item.type"
+                v-for="(item, index) in getInspectorFields(accordion)"
+                :key="index"
+                v-model="inspection.config[item.field]"
+                :data-cy="'inspector-' + (item.field || item.config.name)"
+                v-bind="item.config"
+                :field-name="item.field"
+                :field-accordion="`accordion-${accordionName(accordion).replace(
                   ' ',
                   ''
                 )}`"
@@ -651,6 +683,7 @@ export default {
       groupOrder: {},
       searchProperties: ['name'],
       showTemplatesPanel: false,
+      enableOption: true
     };
   },
   computed: {
@@ -800,6 +833,20 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    shouldShow(item) {
+      const sourceOptions = this.inspection.config[item.field]?.sourceOptions;
+
+      if (sourceOptions === 'Variable') {
+        this.enableOption = true;
+        return true;
+      }
+
+      if (sourceOptions === 'Collection') {
+        this.enableOption = false;
+      }
+
+      return !(item.if === "hideControl" && this.enableOption === false);
+    },
     isCurrentPageEmpty(currentPage) {
       return this.config[currentPage]?.items?.length === 0;
     },
