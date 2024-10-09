@@ -182,6 +182,9 @@ export default {
     this.scrollable = Scrollparent(this.$el);
 
     this.containerObserver.observe(this.$refs.formRendererContainer);
+    
+    // Initialize the clipboard module
+    this.$store.dispatch('clipboardModule/initializeClipboard');
   },
   methods: {
     ...mapActions("globalErrorsModule", [
@@ -364,7 +367,10 @@ export default {
       // Control coordinates
       const controlEl = entries[0].target.getBoundingClientRect();
       this.parseCss();
-    }
+    },
+    saveClipboarToLocalStorage(items){
+      localStorage.setItem("savedClipboard", JSON.stringify(items));
+    },
   }
 };
 </script>

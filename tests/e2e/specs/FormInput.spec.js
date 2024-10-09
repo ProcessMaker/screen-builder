@@ -1,7 +1,7 @@
 describe("Form Input", () => {
   const visitAndOpenAcordeon = () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
   };
 
   const dragFormInput = () => {

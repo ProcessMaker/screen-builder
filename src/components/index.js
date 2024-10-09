@@ -29,6 +29,7 @@ import { LRUCache } from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "../store/modules/globalErrorsModule";
 import undoRedoModule from "../store/modules/undoRedoModule";
+import clipboardModule from "../store/modules/clipboardModule";
 import BasicSearch from "./basic-search.vue";
 import ComputedProperties from "./computed-properties.vue";
 import CustomCSS from "./custom-css.vue";
@@ -171,7 +172,8 @@ export default {
       modules: {
         globalErrorsModule,
         // @todo Improve how to load this module, it is used only in the form builder, not used in the form renderer.
-        undoRedoModule
+        undoRedoModule,
+        clipboardModule
       }
     });
     Vue.mixin({ store });

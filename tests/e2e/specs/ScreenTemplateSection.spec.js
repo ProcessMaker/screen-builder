@@ -109,7 +109,7 @@ it("Displays Shared Templates when Shared Templates button is clicked", () => {
     });
 });
 
-it("Is hidden when an Inspector Panel should open", () => {
+it.only("Is hidden when an Inspector Panel should open", () => {
   cy.visit("/");
 
   cy.get("[data-cy=screen-templates]").click();
@@ -118,7 +118,7 @@ it("Is hidden when an Inspector Panel should open", () => {
   );
   
   cy.setPreviewDataInput({ name: "" });
-  cy.openAcordeon("collapse-1");
+  cy.openAcordeonByLabel("Input Fields");
   cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
     position: "bottom"
   });

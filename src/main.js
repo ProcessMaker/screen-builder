@@ -15,6 +15,7 @@ import { LRUCache } from "lru-cache";
 import VueFormElements from "@processmaker/vue-form-elements";
 import undoRedoModule from "@/store/modules/undoRedoModule";
 import globalErrorsModule from "@/store/modules/globalErrorsModule";
+import clipboardModule from "@/store/modules/clipboardModule";
 import ScreenBuilder from "@/components";
 import TestComponents from "../tests/components";
 
@@ -52,7 +53,8 @@ Vue.component("PmqlInput", {
 const store = new Vuex.Store({
   modules: {
     globalErrorsModule,
-    undoRedoModule
+    undoRedoModule,
+    clipboardModule
   }
 });
 
