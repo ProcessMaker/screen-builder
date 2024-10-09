@@ -253,10 +253,10 @@ window.ProcessMaker = {
               }
             });
             break;
-          case "encrypted_data/encryptText":
+          case "/api/1.0/encrypted_data/encryptText":
             resolve("62abf17e-d1a6-4f68-a382-ed63872d29b0");
             break;
-          case "encrypted_data/decryptText":
+          case "/api/1.0/encrypted_data/decryptText":
             resolve("Secret Value");
             break;
           default:
