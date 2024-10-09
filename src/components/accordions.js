@@ -13,7 +13,11 @@ export default [
       'initiallyChecked',
       'screen',
       'multipleUpload',
-      'linkUrl'
+      'linkUrl',
+      'collection',
+      'record',
+      'collectionmode',
+      'submitCollectionCheck',
     ],
     open: true,
   },
@@ -47,6 +51,7 @@ export default [
     },
     fields: [
       'fields',
+      'paginationOption',
       { name: 'options', hideFor: 'FormMultiColumn' },
     ],
     open: false,

@@ -76,7 +76,7 @@ beforeEach(() => {
   cy.get("[data-cy=screen-element-container]").click();
   cy.get("[data-cy=accordion-Configuration]").click();
   cy.get(".form-check-label").click();
-  cy.get("div.multiselect").click();
+  cy.get("[data-cy=inspector-eventData]").click();
   cy.get(
     '.multiselect__element > .multiselect__option span:contains("page2")'
   ).click();

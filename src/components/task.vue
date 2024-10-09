@@ -31,6 +31,7 @@
             :watchers="screen.watchers"
             :key="refreshScreen"
             :loop-context="loopContext"
+            :taskdraft="this.task"
             @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
@@ -49,6 +50,7 @@
             :watchers="screen.watchers"
             :data="requestData"
             :type="screen.type"
+            @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
           />
@@ -471,7 +473,6 @@ export default {
 
           return this.getSessionRedirectUrl();
         } catch (error) {
-          console.error("Error in getDestinationUrl:", error);
           return null;
         }
       }
