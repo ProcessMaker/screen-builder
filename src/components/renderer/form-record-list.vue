@@ -15,70 +15,98 @@
         </button>
       </div>
     </div>
-    <div v-if="!value">
+    <div v-if="!value && !tableData.data">
       {{ $t("This record list is empty or contains no data.") }}
     </div>
     <template v-else>
-      <b-table
-        ref="vuetable"
-        :per-page="perPage"
-        :data-manager="dataManager"
-        :fields="tableFields"
-        :items="tableData.data"
-        :sort-compare-options="{ numeric: false }"
-        :sort-null-last="true"
-        sort-icon-left
-        :css="css"
-        :empty-text="$t('No Data Available')"
-        :current-page="currentPage"
-        data-cy="table"
-      >
-        <template #cell()="{ index, field, item }">
-          <template v-if="isFiledownload(field, item)">
-            <span href="#" @click="downloadFile(item, field.key, index)">{{
-              mustache(field.key, item)
-            }}</span>
-          </template>
-          <template v-else-if="isImage(field, item)">
-            <img :src="mustache(field.key, item)" style="record-list-image" />
-          </template>
-          <template v-else-if="isWebEntryFile(field, item)">
-            {{ formatIfWebEntryFile(field, item) }}
-          </template>
-          <template v-else>
-            {{ formatIfDate(mustache(field.key, item)) }}
+        <b-table
+          ref="vuetable"
+          :per-page="perPage"
+          :data-manager="dataManager"
+          :fields="tableFields"
+          :items="tableData.data"
+          :sort-compare-options="{ numeric: false }"
+          :sort-null-last="true"
+          sort-icon-left
+          :css="css"
+          :empty-text="$t('No Data Available')"
+          :current-page="currentPage"
+          data-cy="table"
+        >
+          <!-- Slot header for checkbox (Select All) -->
+          <template #head(checkbox)="data">
+            <b-form-checkbox
+              v-model="allRowsSelected"
+              @change="selectAllRows"
+              :indeterminate="indeterminate"
+              aria-label="Select All"
+            />
           </template>
 
-        </template>
-        <template #cell(__actions)="{ index, item }">
-          <div class="actions">
-            <div
-              class="btn-group btn-group-sm"
-              role="group"
-              aria-label="Actions"
-            >
-              <button
-                class="btn btn-primary"
-                :title="$t('Edit')"
-                data-cy="edit-row"
-                @click="showEditForm(index, item.row_id)"
+          <template #cell(checkbox)="{ index, item }">
+            <b-form-checkbox 
+              v-model="selectedRows" 
+              :value="item"
+              @change="onMultipleSelectionChange(index)"
+            />
+          </template>
+
+          <template #cell(radio)="{ index, item }">
+            <b-form-radio
+              v-model="selectedRow"
+              :value="item"
+              @change="onRadioChange(item, index)"
+              
+            />
+          </template>
+
+          <template #cell()="{ index, field, item }">
+
+            <template v-if="isFiledownload(field, item)">
+              <span href="#" @click="downloadFile(item, field.key, index)">{{
+                mustache(field.key, item)
+              }}</span>
+            </template>
+            <template v-else-if="isImage(field, item)">
+              <img :src="mustache(field.key, item)" style="record-list-image" />
+            </template>
+            <template v-else-if="isWebEntryFile(field, item)">
+              {{ formatIfWebEntryFile(field, item) }}
+            </template>
+            <template v-else>
+              {{ formatIfDate(mustache(field.key, item)) }}
+            </template>
+  
+          </template>
+          <template #cell(__actions)="{ index, item }">
+            <div class="actions">
+              <div
+                class="btn-group btn-group-sm"
+                role="group"
+                aria-label="Actions"
               >
-                <i class="fas fa-edit" />
-              </button>
-              <button
-                class="btn btn-danger"
-                :title="$t('Delete')"
-                data-cy="remove-row"
-                @click="showDeleteConfirmation(index, item.row_id)"
-              >
-                <i class="fas fa-trash-alt" />
-              </button>
+                <button
+                  class="btn btn-primary"
+                  :title="$t('Edit')"
+                  data-cy="edit-row"
+                  @click="showEditForm(index, item.row_id)"
+                >
+                  <i class="fas fa-edit" />
+                </button>
+                <button
+                  class="btn btn-danger"
+                  :title="$t('Delete')"
+                  data-cy="remove-row"
+                  @click="showDeleteConfirmation(index, item.row_id)"
+                >
+                  <i class="fas fa-trash-alt" />
+                </button>
+              </div>
             </div>
-          </div>
-        </template>
-      </b-table>
+          </template>
+        </b-table>
       <b-pagination
-        v-if="tableData.total > perPage"
+        v-if="tableData.total > perPage && (perPage !== 0)"
         v-model="currentPage"
         data-cy="table-pagination"
         :total-rows="tableData.total"
@@ -211,7 +239,9 @@ export default {
     "formConfig",
     "formComputed",
     "formWatchers",
-    "_perPage"
+    "_perPage",
+    "source",
+    "paginationOption"
   ],
   data() {
     return {
@@ -242,10 +272,19 @@ export default {
         }
       },
       initFormValues: {},
-      currentRowIndex: null
+      currentRowIndex: null,
+      collectionData: {},
+      selectedRow: null,
+      selectedRows: [],
+      selectedIndex: null, 
+      rows: [],
+      selectAll: false
     };
   },
   computed: {
+    indeterminate() {
+      return this.selectedRows.length > 0 && this.selectedRows.length < this.tableData.data.length;
+    },
     popupConfig() {
       const config = [];
       config[this.form] = this.formConfig[this.form];
@@ -279,7 +318,14 @@ export default {
       console.log("refs vuetable not exists");
     },
     tableData() {
-      const value = this.value || [];
+      const value = Array.isArray(this.collectionData) && this.collectionData.length
+        ? this.collectionData
+        : (Array.isArray(this.value) ? this.value : []);
+
+      if(this.value) {
+        this.selectedIndex = this.value.selectedRowIndex;
+      }
+
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
@@ -296,7 +342,23 @@ export default {
         data: value,
         lastSortConfig: false
       };
-      return data;
+
+       // Enable Radio button selected when process finishes
+       if (this.selectedIndex !== null && this.selectedIndex < data.data.length) {
+        this.selectedRow = data.data[this.selectedIndex];
+      }
+
+      //Enable Checkbox selected when process finishes
+      if (Array.isArray(this.value) && this.value.length > 0) {
+        if(this.rows.length === 0) {
+          this.value.forEach(item => {
+              if (item.hasOwnProperty('selectedRowsIndex')) {
+                  this.selectedRows.push(data.data[item.selectedRowsIndex]);
+              } 
+          });
+        }
+      }
+      return data;      
     },
     // The fields used for our vue table
     tableFields() {
@@ -306,6 +368,23 @@ export default {
         fields.push(jsonOptionsActionsColumn);
       }
 
+      // Adds radio buttons or checkbox to the table depending selected option
+      if (['single-field', 'single-record'].includes(this.source?.dataSelectionOptions)) {
+        fields.unshift({
+          key: 'radio',
+          label: '',
+          sortable: false,
+        });
+      }
+
+      if (this.source?.dataSelectionOptions === 'multiple-records') {
+        fields.unshift({
+          key: 'checkbox',
+          label: '',
+          sortable: false
+        });
+      }
+      
       return fields;
     },
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
@@ -322,7 +401,7 @@ export default {
           this.currentPage > totalPages ? totalPages : this.currentPage;
         this.currentPage = this.currentPage == 0 ? 1 : this.currentPage;
       }
-    }
+    },
   },
   mounted() {
     if (this._perPage) {
@@ -332,8 +411,121 @@ export default {
       this.updateRowDataNamePrefix,
       100
     );
+
+    if (this.paginationOption != null) {
+      this.perPage = this.paginationOption;
+    }
+
+    if(this.source?.sourceOptions === "Collection") {
+      this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
+    }
+    
+    this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    selectAllRows() {
+      if (this.allRowsSelected) {
+        const updatedRows = this.tableData.data.map((item, index) => {
+          return {
+            ...item,
+            selectedRowsIndex: index
+          };
+        });
+
+        this.selectedRows = updatedRows;
+        this.collectionData = updatedRows;
+        this.onMultipleSelectionChange();
+      } else {
+        this.selectedRows = [];
+        this.onMultipleSelectionChange();
+      }
+    },
+    componentOutput(data) {
+      this.$emit('input',  data);
+    },
+    onRadioChange(selectedItem, index) {
+      const globalIndex = (this.currentPage - 1) * this.perPage + index;
+      if(this.source?.singleField) {
+        let valueOfColumn = selectedItem[this.source.singleField];
+        this.componentOutput(valueOfColumn);
+      } else {
+        selectedItem = { ...selectedItem, selectedRowIndex: globalIndex};
+        this.componentOutput(selectedItem);
+      }
+    },
+    onMultipleSelectionChange(selIndex) {
+      this.collectionData.forEach((item, index) => {
+          this.selectedRows.forEach((selectedItem) => {
+              // Compares both objects all keys and values
+              if (this.areObjectsEqual(selectedItem, item)) {
+                  // Adds`selectedRowIndex` with index iteration
+                  selectedItem.selectedRowsIndex = index;
+              }
+          });
+      });
+      this.componentOutput(this.selectedRows);
+      this.rows.push(selIndex);
+    },
+    areObjectsEqual(obj1, obj2) {
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
+
+        if (keys1.length !== keys2.length) return false;
+
+        return keys1.every(key => obj1[key] === obj2[key]);
+    },
+    onCollectionChange(collectionId,pmql) {
+      let param = {params:{pmql:pmql}};
+      let rowsCollection = [];
+      this.$dataProvider
+        .getCollectionRecordsList(collectionId, param)
+        .then((response) => {
+          rowsCollection = response.data;
+
+          this.changeCollectionColumns(rowsCollection,this.fields);
+        });
+
+      this.$emit('change', this.field);
+    },
+    changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
+      
+      const optionsList = columnsSelected.optionsList;
+
+      collectionFieldsColumns.forEach(column => {
+        let dataObject = column.data;
+        let newDataObject = {};
+
+        Object.keys(dataObject).forEach(dataKey => {
+          const matchingOption = optionsList.find(option => option.content === dataKey);
+
+          if (matchingOption) {
+            newDataObject[matchingOption.key] = dataObject[dataKey];
+          }
+        });
+
+        column.data = newDataObject;
+      });
+
+       this.setCollectionIntoList(collectionFieldsColumns);
+        
+    },
+    setCollectionIntoList(arrayCollection) {
+      const result = [];
+      arrayCollection.forEach((row) => {
+        if (row.hasOwnProperty('data')) {
+          const dataObject = row.data;
+          const extracted = {};
+
+          for (const [key, value] of Object.entries(dataObject)) {
+            extracted[key] = value;
+          }
+
+          result.push(extracted);
+        }
+      });
+      //sets Collection result(columns and rows) into this.collectionData
+      this.collectionData = result;
+    },
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
     },
@@ -377,21 +569,31 @@ export default {
       } else if (this.addItem) {
         rowId = this.addItem.row_id;
       }
-
       this.$root.$emit("set-upload-data-name", this, index, rowId);
     },
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
-
-      const convertToVuetableFormat = (option) => {
-        // let slot = '__filedownload';
-        return {
-          key: option[key || "value"],
-          sortable: true,
-          label: option[value || "content"],
-          tdClass: "table-column"
+      
+      let convertToVuetableFormat = {};
+      if(this.source?.sourceOptions === "Collection") {
+          convertToVuetableFormat = (option) => {
+          return {
+            key: option[key || "key"],
+            sortable: true,
+            label: option[key || "key"],
+            tdClass: "table-column"
+          };
         };
-      };
+      } else {
+          convertToVuetableFormat = (option) => {
+          return {
+            key: option[key || "value"],
+            sortable: true,
+            label: option[value || "content"],
+            tdClass: "table-column"
+          };
+        };
+      }
 
       return this.getValidFieldData(jsonData, dataName).map(
         convertToVuetableFormat

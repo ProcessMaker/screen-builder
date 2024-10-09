@@ -50,6 +50,7 @@ import accordions from "@/components/accordions";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
 import { LinkButton } from "./renderer";
 import "../assets/css/tabs.css";
+import FormCollectionRecordControl from "./renderer/form-collection-record-control.vue";
 
 const rendererComponents = {
   ...renderer,
@@ -164,6 +165,7 @@ export default {
     Vue.use(Vuex);
     Vue.component("FormListTable", FormListTable);
     Vue.component("LinkButton", LinkButton);
+    Vue.component("FormCollectionRecordControl", FormCollectionRecordControl);
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,
