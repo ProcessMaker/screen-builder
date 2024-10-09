@@ -11,6 +11,7 @@ import FileUpload from './components/renderer/file-upload';
 import FileDownload from './components/renderer/file-download';
 import FormListTable from './components/renderer/form-list-table';
 import FormAnalyticsChart from "./components/renderer/form-analytics-chart";
+import FormCollectionRecordControl from './components/renderer/form-collection-record-control.vue';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -43,7 +44,7 @@ import {
   buttonTypeEvent,
   tooltipProperty,
   LoadingSubmitButtonProperty,
-  LabelSubmitButtonProperty
+  LabelSubmitButtonProperty,
 } from './form-control-common-properties';
 
 export default [
@@ -487,12 +488,21 @@ export default [
           },
         },
         {
+          type: 'collectionDataSource',
+          field: 'source',
+          config: {
+            label: 'Source of Record List',
+            helper: 'A record list can display the data of a defined variable or a collection'
+          }
+        },
+        {
           type: 'FormCheckbox',
           field: 'editable',
           config: {
             label: 'Editable?',
             helper: 'Should records be editable/removable and can new records be added',
           },
+          if: 'hideControl'
         },
         {
           type: 'ColumnSetup',
@@ -503,12 +513,47 @@ export default [
           },
         },
         {
+          type: 'FormMultiselect',
+          field: 'paginationOption',
+          config: {
+            icon: 'fas',
+            label: 'Pagination',
+            options: [
+              {
+                content:'No Pagination (show all)' ,
+                value: 0,
+              },
+              {
+                content: '5 items per page',
+                value: 5,
+              },
+              {
+                content: '10 items per page',
+                value: 10,
+              },
+              {
+                content: '15 items per page',
+                value: 15,
+              },
+              {
+                content: '25 items per page',
+                value: 25,
+              },
+              {
+                content: '50 items per page',
+                value: 50,
+              },
+            ],
+          },
+        },
+        {
           type: 'PageSelect',
           field: 'form',
           config: {
             label: 'Record Form',
             helper: 'The form to use for adding/editing records',
           },
+          if: 'hideControl'
         },
         colorProperty,
         bgcolorProperty,
@@ -1032,5 +1077,52 @@ export default [
         buttonVariantStyleProperty
       ]
     }
+  },
+  {
+    editorComponent: FormCollectionRecordControl,
+    editorBinding: 'FormCollectionRecordControl',
+    rendererComponent: FormCollectionRecordControl,
+    rendererBinding: 'FormCollectionRecordControl',
+    control: {
+      popoverContent: "Create a Collection Record Control",
+      order: 7.0,
+      group: 'Content Fields',
+      label: 'Collection Record Control',
+      component: 'FormCollectionRecordControl',
+      'editor-component': 'FormCollectionRecordControl',
+      'editor-control': 'FormCollectionRecordControl',
+      config: {
+        name: 'Collection Record Control',
+        icon: 'fas fa-database',
+        label: 'Collection Record Control',
+      },
+      inspector: [
+        {
+          type: "collectionRecordsList",
+          field: "collection",
+          config: {
+            label: 'Collection Name',
+            helper: 'Select a collection',
+            value: '',
+          }
+        },
+        {
+          type: 'FormInput',
+          field: 'record',
+          config: {
+            label: 'Record ID',
+            helper: 'Supports Mustache Variable and the Collection Record',
+            value: '',
+          },
+        },
+        {
+          type: "collectionDisplayMode",
+          field: "collectionmode",
+          config: {
+            label: "Mode",
+          }
+        },
+      ],
+    },
   }
 ];
