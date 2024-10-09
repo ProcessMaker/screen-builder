@@ -337,47 +337,13 @@
                 :class="{ 'fas fa-angle-right': !accordion.open }"
               />
             </b-button>
-            <b-collapse
-              :id="accordionName(accordion)"
-              :key="`${accordionName(accordion)}-collapse`"
-              v-model="accordion.open"
-            >
-              <component
-                v-if="shouldShow(item)"
-                :is="item.type"
-                v-for="(item, index) in getInspectorFields(accordion)"
-                :key="index"
-                v-model="inspection.config[item.field]"
-                :data-cy="'inspector-' + (item.field || item.config.name)"
-                v-bind="item.config"
-                :field-name="item.field"
-                :field-accordion="`accordion-${accordionName(accordion).replace(
-                  ' ',
-                  ''
-                )}`"
-                :accordion-name="`accordion-${accordionName(accordion).replace(
-                  ' ',
-                  ''
-                )}`"
-                :is-open="accordion.open ? '1' : '0'"
-                @click="toggleAccordion(accordion)"
-              >
-              <b-button>
-                <i class="fas fa-cog mr-2" />
-                {{ $t(accordionName(accordion)) }}
-                <i
-                  class="fas fa-angle-down ml-auto"
-                  :class="{ 'fas fa-angle-right': !accordion.open }"
-                />
-              </b-button>
-              </component>
-            </b-collapse>
               <b-collapse
                 :id="accordionName(accordion)"
                 :key="`${accordionName(accordion)}-collapse`"
                 v-model="accordion.open"
               >
                 <component
+                   v-if="shouldShow(item)"
                   :is="item.type"
                   v-for="(item, index) in getInspectorFields(accordion)"
                   :key="index"
