@@ -57,6 +57,14 @@ export default [
           validation: 'regex: [0-9]*',
         },
       },
+      {
+        type: 'EncryptedConfig',
+        field: 'encryptedConfig',
+        config: {
+          label: 'Encrypted',
+          helper: '',
+        },
+      },
     ],
   },
 ];

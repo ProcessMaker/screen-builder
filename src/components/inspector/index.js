@@ -26,3 +26,4 @@ export { default as ValidationSelect } from "./validation-select.vue";
 export { default as LoadingSubmitButton } from "./loading-submit-button.vue";
 export { default as LabelSubmitButton } from "./label-submit-button.vue";
 export { default as AnalyticsSelector } from "./analytics-selector.vue";
+export { default as EncryptedConfig } from "./encrypted-config.vue";
