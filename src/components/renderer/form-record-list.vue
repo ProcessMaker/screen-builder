@@ -241,7 +241,8 @@ export default {
     "formWatchers",
     "_perPage",
     "source",
-    "paginationOption"
+    "paginationOption",
+    "designerMode"
   ],
   data() {
     return {

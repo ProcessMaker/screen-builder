@@ -330,7 +330,7 @@
               v-model="accordion.open"
             >
               <component
-                v-if="shouldShow(item)"
+                v-if="shouldShow(item, accordion)"
                 :is="item.type"
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :key="index"
@@ -632,7 +632,9 @@ export default {
       collapse: {},
       groupOrder: {},
       searchProperties: ['name'],
-      enableOption: true
+      enableOption: true,
+      enableDesignOption: true,
+      styleMode: null
     };
   },
   computed: {
@@ -779,10 +781,13 @@ export default {
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
     });
+    this.$root.$on("style-mode", (mode) => {
+      this.styleMode = mode;
+    });
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
-    shouldShow(item) {
+    shouldShow(item, accordion) {
       const sourceOptions = this.inspection.config[item.field]?.sourceOptions;
 
       if (sourceOptions === 'Variable') {
@@ -792,6 +797,18 @@ export default {
 
       if (sourceOptions === 'Collection') {
         this.enableOption = false;
+      }
+
+      if(this.styleMode === "Modern") {
+        this.enableDesignOption = false;
+      } else {
+        this.enableDesignOption = true;
+      }
+
+      if(accordion.name === "Design") {
+        if(item.type === "ColorSelectRecord" && !this.enableDesignOption) {
+          return false;
+        }
       }
 
       return !(item.if === "hideControl" && this.enableOption === false);
