@@ -29,6 +29,8 @@ import LinkButton from "./components/renderer/link-button.vue";
 import {
   bgcolorProperty,
   colorProperty,
+  bgcolorPropertyRecord,
+  colorPropertyRecord,
   keyNameProperty,
   javascriptReservedKeywords,
   labelProperty,
@@ -555,8 +557,16 @@ export default [
           },
           if: 'hideControl'
         },
-        colorProperty,
-        bgcolorProperty,
+        {
+          type: 'collectionDesignerMode',
+          field: 'designerMode',
+          config: {
+            label: 'Table Style',
+            helper: ''
+          }
+        },
+        colorPropertyRecord,
+        bgcolorPropertyRecord,
       ],
     },
   },
