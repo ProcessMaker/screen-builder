@@ -5,6 +5,7 @@ export { default as CollectionDisplayMode } from "./collection-display-mode.vue"
 export { default as CollectionDesignerMode } from "./collection-designer-mode.vue";
 export { default as ColorSelect } from "./color-select.vue";
 export { default as ColorSelectRecord } from "./color-select.vue";
+export { default as ColorSelectModern } from "./color-select-modern.vue";
 export { default as ColumnSetup } from "./column-setup.vue";
 export { default as ContainerColumns } from "./container-columns.vue";
 export { default as DataMapping } from "./data-mapping.vue";

@@ -27,6 +27,7 @@ import { dataSourceValues } from '@/components/inspector/data-source-types';
 import LinkButton from "./components/renderer/link-button.vue";
 
 import {
+  bgcolorModern,
   bgcolorProperty,
   colorProperty,
   bgcolorPropertyRecord,
@@ -567,6 +568,7 @@ export default [
         },
         colorPropertyRecord,
         bgcolorPropertyRecord,
+        bgcolorModern
       ],
     },
   },
