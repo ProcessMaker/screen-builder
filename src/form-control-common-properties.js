@@ -1,6 +1,33 @@
 import Tooltip from './components/inspector/tooltip';
 import DeviceVisibility from './components/inspector/device-visibility';
 
+export const bgcolorModern = {
+  type: 'ColorSelectModern',
+  field: 'bgcolormodern',
+  config: {
+    label: '',
+    helper: '',
+    options: [
+      {
+        value: 'alert alert-primary',
+        content: 'primary',
+      },
+      {
+        value: 'alert alert-success',
+        content: 'success',
+      },
+      {
+        value: 'alert alert-warning',
+        content: 'warning',
+      },
+      {
+        value: 'alert alert-secondary',
+        content: 'secondary',
+      },
+    ],
+  },
+};
+
 export const bgcolorProperty = {
   type: 'ColorSelect',
   field: 'bgcolor',

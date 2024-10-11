@@ -21,6 +21,7 @@
     <template v-else>
         <b-table
           ref="vuetable"
+          :class="{ 'record-list-table': styleMode === 'Modern' }"
           :per-page="perPage"
           :data-manager="dataManager"
           :fields="tableFields"
@@ -32,7 +33,9 @@
           :empty-text="$t('No Data Available')"
           :current-page="currentPage"
           data-cy="table"
+          :tbody-tr-class="rowClass"
         >
+        
           <!-- Slot header for checkbox (Select All) -->
           <template #head(checkbox)="data">
             <b-form-checkbox
@@ -61,7 +64,7 @@
           </template>
 
           <template #cell()="{ index, field, item }">
-
+            
             <template v-if="isFiledownload(field, item)">
               <span href="#" @click="downloadFile(item, field.key, index)">{{
                 mustache(field.key, item)
@@ -86,20 +89,30 @@
                 aria-label="Actions"
               >
                 <button
-                  class="btn btn-primary"
+                :class="{
+                    btn: true,
+                    'btn-primary': styleMode === 'Classic'
+                  }"
                   :title="$t('Edit')"
                   data-cy="edit-row"
                   @click="showEditForm(index, item.row_id)"
                 >
-                  <i class="fas fa-edit" />
+
+                  <i v-if="styleMode === 'Classic'" class="fas fa-edit"></i>
+                  <img v-else src="../../assets/pencil-square.svg" alt="edit" />
                 </button>
+
                 <button
-                  class="btn btn-danger"
+                  :class="{
+                    btn: true,
+                    'btn-danger': styleMode === 'Classic'
+                    }"
                   :title="$t('Delete')"
                   data-cy="remove-row"
                   @click="showDeleteConfirmation(index, item.row_id)"
                 >
-                  <i class="fas fa-trash-alt" />
+                  <i v-if="styleMode === 'Classic'" class="fas fa-trash-alt" />
+                  <img v-else src="../../assets/Shape.svg" alt="delete" />
                 </button>
               </div>
             </div>
@@ -115,6 +128,7 @@
         aria-controls="vuetable"
         @change="onChangePage"
       />
+
     </template>
 
     <b-modal
@@ -279,7 +293,8 @@ export default {
       selectedRows: [],
       selectedIndex: null, 
       rows: [],
-      selectAll: false
+      selectAll: false,
+      styleMode: "Classic"
     };
   },
   computed: {
@@ -421,9 +436,19 @@ export default {
       this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
     }
     
+    this.setStyleMode(this.designerMode?.designerOptions);
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    rowClass(item) {
+      return this.isRowSelected(item) ? 'sel-row' : '';
+    },
+    isRowSelected(item) {
+      return this.selectedRows.includes(item) || this.selectedRow === item;
+    },
+    setStyleMode(value) {
+      this.styleMode = value ? value : "Classic";
+    },
     selectAllRows() {
       if (this.allRowsSelected) {
         const updatedRows = this.tableData.data.map((item, index) => {
@@ -775,8 +800,73 @@ export default {
 };
 </script>
 
-<style>
-.table td.table-column {
-  max-width: 300px;
+<style lang="scss">
+
+.sel-row {
+  background-color: #e0f7e0;
 }
+
+.record-list-table {
+  max-width: 300px;
+  border-radius: 8px;
+  border: none; 
+  overflow: hidden;
+
+  /* Cabecera */
+  thead {
+    background-color: #e0f7e0; /* Color de fondo */
+    border: none;
+
+    th {
+      border: 1px solid #c0e0c0; /* Color de borde más oscuro */
+      font-weight: bold;
+      color: #333;
+      padding: 10px;
+
+      &:first-child {
+        border-top-left-radius: 8px; /* Esquina superior izquierda redondeada */
+      }
+
+      &:last-child {
+        border-top-right-radius: 8px; /* Esquina superior derecha redondeada */
+      }
+    }
+  }
+
+  /* Cuerpo de la tabla */
+  tbody {
+    border-left: 1px solid #d4f1d4;
+    border-right: 1px solid #d4f1d4;
+    border-bottom: 1px solid #d4f1d4;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    tr {
+      td {
+        padding: 10px;
+        border-top: 1px solid #d4f1d4; /* Borde superior de las celdas */
+
+        &:first-child {
+          border-left: 1px solid #d4f1d4; /* Borde izquierdo de la primera columna */
+        }
+
+        &:last-child {
+          border-right: 1px solid #d4f1d4; /* Borde derecho de la última columna */
+        }
+      }
+    }
+  }
+
+  /* Ajuste para cubrir las esquinas inferiores */
+  tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+    overflow: hidden;
+  }
+  
+  tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+    overflow: hidden;
+  }
+}
+
 </style>

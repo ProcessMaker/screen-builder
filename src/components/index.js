@@ -57,6 +57,7 @@ const rendererComponents = {
 };
 export {default as globalProperties, formTypes} from "../global-properties";
 export {
+  bgcolorModern,
   bgcolorProperty,
   colorProperty,
   javascriptReservedKeywords,
