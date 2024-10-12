@@ -106,17 +106,29 @@
                   :class="{
                     btn: true,
                     'btn-danger': styleMode === 'Classic'
-                    }"
+                  }"
                   :title="$t('Delete')"
                   data-cy="remove-row"
-                  @click="showDeleteConfirmation(index, item.row_id)"
+                  popover="manual"
+                  @click="styleMode === 'Modern' 
+                  ? togglePopover(index, $event, item.row_id) 
+                  : showDeleteConfirmation(index, item.row_id)"
+                  ref="deleteButton"
                 >
                   <i v-if="styleMode === 'Classic'" class="fas fa-trash-alt" />
                   <img v-else src="../../assets/Shape.svg" alt="delete" />
                 </button>
+
+                <div v-show="isPopoverVisible === index" class="popover-content">
+                  <p>Are you sure you want to delete it?</p>
+                  <button class="btn btn-light" @click="hidePopover">CANCEL</button>
+                  <button class="btn btn-danger" @click="popover_remove()">DELETE</button>
+                </div>
+
               </div>
             </div>
           </template>
+         
         </b-table>
       <b-pagination
         v-if="tableData.total > perPage && (perPage !== 0)"
@@ -213,6 +225,7 @@
     >
       <p>{{ $t("The form to be displayed is not assigned.") }}</p>
     </b-modal>
+    
     <div v-if="editable && selfReferenced" class="alert alert-danger">
       {{
         $t(
@@ -294,7 +307,9 @@ export default {
       selectedIndex: null, 
       rows: [],
       selectAll: false,
-      styleMode: "Classic"
+      styleMode: "Classic",
+      isPopoverVisible: null,
+      popoverPosition: { top: '0px', left: '0px' },
     };
   },
   computed: {
@@ -440,6 +455,24 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    togglePopover(index, event, rowId) {
+      this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
+      this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
+      if (this.isPopoverVisible !== null) {
+        const rect = event.target.getBoundingClientRect();
+        this.popoverPosition = {
+          top: `${rect.bottom + window.scrollY}px`,
+          left: `${rect.left + window.scrollX}px`
+        };
+      }
+    },
+    hidePopover() {
+      this.isPopoverVisible = null;
+    },
+    popover_remove() {
+      this.remove();
+      this.hidePopover();
+    },
     rowClass(item) {
       return this.isRowSelected(item) ? 'sel-row' : '';
     },
@@ -748,7 +781,10 @@ export default {
       });
     },
     showDeleteConfirmation(index, rowId) {
+      console.log("rowId: ", rowId);
+      console.log("this.tableData.data: ", this.tableData.data);
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
+      console.log("this.deleteIndex: ", this.deleteIndex);
       this.$refs.deleteModal.show();
     },
     downloadFile(rowData, rowField, rowIndex) {
@@ -782,6 +818,7 @@ export default {
       });
     },
     remove() {
+      console.log("En remove: ", this.deleteIndex);
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       const data = this.tableData.data
@@ -795,45 +832,62 @@ export default {
       // Emit the newly updated data model
       this.$emit("input", data);
       this.$root.$emit("removed-record", this, recordData);
-    }
+    },
   }
 };
 </script>
 
 <style lang="scss">
 
+.popover-content {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  position: fixed;
+  z-index: 1000;
+  width: 285px;
+  text-align: center;
+  margin-top: 30px;
+}
+.popover-content p {
+  margin: 0 0 10px;
+}
+.popover-content .btn-light {
+  margin-right: 5px;
+}
 .sel-row {
   background-color: #e0f7e0;
 }
 
 .record-list-table {
-  max-width: 300px;
+
   border-radius: 8px;
   border: none; 
   overflow: hidden;
 
-  /* Cabecera */
+  /* Header */
   thead {
-    background-color: #e0f7e0; /* Color de fondo */
+    background-color: #e0f7e0;
     border: none;
 
     th {
-      border: 1px solid #c0e0c0; /* Color de borde más oscuro */
+      border: 1px solid #c0e0c0; /* border dark color */
       font-weight: bold;
       color: #333;
       padding: 10px;
 
       &:first-child {
-        border-top-left-radius: 8px; /* Esquina superior izquierda redondeada */
+        border-top-left-radius: 8px;
       }
 
       &:last-child {
-        border-top-right-radius: 8px; /* Esquina superior derecha redondeada */
+        border-top-right-radius: 8px;
       }
     }
   }
 
-  /* Cuerpo de la tabla */
+  /* Body */
   tbody {
     border-left: 1px solid #d4f1d4;
     border-right: 1px solid #d4f1d4;
@@ -844,20 +898,19 @@ export default {
     tr {
       td {
         padding: 10px;
-        border-top: 1px solid #d4f1d4; /* Borde superior de las celdas */
+        border-top: 1px solid #d4f1d4;
 
         &:first-child {
-          border-left: 1px solid #d4f1d4; /* Borde izquierdo de la primera columna */
+          border-left: 1px solid #d4f1d4;
         }
 
         &:last-child {
-          border-right: 1px solid #d4f1d4; /* Borde derecho de la última columna */
+          border-right: 1px solid #d4f1d4;
         }
       }
     }
   }
 
-  /* Ajuste para cubrir las esquinas inferiores */
   tbody tr:last-child td:first-child {
     border-bottom-left-radius: 8px;
     overflow: hidden;
