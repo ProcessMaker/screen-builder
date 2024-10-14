@@ -8,7 +8,7 @@
         no-body
         class="h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       >
-        <b-input-group size="sm" style="height: 42px">
+      <b-input-group size="sm" style="height: 42px">
           <b-input-group-prepend>
             <span
               class="input-group-text rounded-0 border-left-0 border-top-0 border-bottom-0"
@@ -72,9 +72,12 @@
                       customClass: 'custom-popover',
                       boundaryPadding: 16
                     }"
+                    :data-control="controls.indexOf(element)"
                     :boundary="'viewport'"
                     :data-cy="`controls-${element.component}`"
                     class="gray-text"
+                    :disabled="!canDragControl(element)"
+                    @mousedown="disableEnableDragControl(element, $event)"
                   >
                     <i
                       v-if="element.config && element.config.icon"
@@ -105,7 +108,9 @@
         ref="tabsBar"
         :pages="config"
         :is-multi-page="showToolbar"
+        :show-clipboard="showClipboard"
         @tab-opened="currentPage = $event"
+        @close-clipboard="closeClipboard"
       >
         <template #tabs-start>
           <pages-dropdown
@@ -114,9 +119,17 @@
             @addPage="$bvModal.show('addPageModal')"
             @clickPage="onClick"
             @seeAllPages="$bvModal.show('openSortable')"
+            @clipboard="openClipboard"
           />
         </template>
         <template #default="{ currentPage: tabPage }">
+          <b-button
+            v-if="isClipboardPage(tabPage)"
+            variant="link"
+            @click="clearClipboard"
+          >
+            {{ $t('Clear All') }}
+          </b-button>
           <div
             v-if="isCurrentPageEmpty(tabPage)"
             data-cy="screen-drop-zone"
@@ -151,7 +164,7 @@
             data-cy="editor-content"
             class="h-100"
             ghost-class="form-control-ghost"
-            :value="config[tabPage].items"
+            :value="extendedPages[tabPage].items"
             v-bind="{
               group: { name: 'controls' },
               swapThreshold: 0.5
@@ -159,7 +172,7 @@
             @input="updateConfig"
           >
             <div
-              v-for="(element, index) in config[tabPage].items"
+              v-for="(element, index) in extendedPages[tabPage].items"
               :key="index"
               class="control-item mt-4 mb-4"
               :class="{
@@ -189,6 +202,16 @@
                   />
                   {{ element.config.name || element.label || $t("Field Name") }}
                   <div class="ml-auto">
+                    <clipboard-button
+                      v-if="!isClipboardPage(tabPage)"
+                      :index="index"
+                      :config="element.config"
+                      :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
+                      :addTitle="$t('Add to clipboard')"
+                      :removeTitle="$t('Remove from clipboard')"
+                      @addToClipboard="addToClipboard(extendedPages[tabPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(extendedPages[tabPage].items[index])"
+                    />
                     <button
                       v-if="isAiSection(element) && aiPreview(element)"
                       data-test="apply-ai-btn"
@@ -244,6 +267,16 @@
                   />
                   {{ element.config.name || $t("Variable Name") }}
                   <div class="ml-auto">
+                    <clipboard-button
+                      v-if="!isClipboardPage(tabPage)"
+                      :index="index"
+                      :config="element.config"
+                      :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
+                      :addTitle="$t('Add to clipboard')"
+                      :removeTitle="$t('Remove from clipboard')"
+                      @addToClipboard="addToClipboard(extendedPages[tabPage].items[index])"
+                      @removeFromClipboard="removeFromClipboard(extendedPages[tabPage].items[index])"
+                    />
                     <button
                       class="btn btn-sm btn-secondary mr-2"
                       :title="$t('Copy Control')"
@@ -290,13 +323,26 @@
     <!-- Inspector -->
     <b-col
       v-if="renderControls"
-      class="overflow-hidden h-100 p-0 inspector-column"
+      class="overflow-auto mh-100 p-0 d-flex flex-column position-relative inspector-column"
     >
       <b-card
         no-body
-        class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0"
+        class="p-0 h-100 border-top-0 border-bottom-0 border-right-0 rounded-0 inspector-column"
       >
-        <b-card-body class="p-0 h-100 overflow-auto">
+        <div v-if="showTemplatesPanel">
+          <b-card-body class="p-2 h-100 overflow-auto screen-templates-column">
+            <screen-templates
+              ref="screenTemplates"
+              :shared-templates-data="sharedTemplatesData"
+              @close-templates-panel="closeTemplatesPanel"
+              :screen-id="screen.id"
+              :screen-type="screen.type"
+              :currentScreenPage="currentPage"
+            />
+          </b-card-body>
+        </div>
+        <div v-else>
+          <b-card-body class="p-0 h-100 overflow-auto">
           <template v-for="accordion in accordions">
             <b-button
               v-if="
@@ -343,7 +389,7 @@
                   ''
                 )}`"
                 :builder="builder"
-                :form-config="config"
+                :form-config="extendedPages"
                 :screen-type="screenType"
                 :current-page="currentPage"
                 :selected-control="selected"
@@ -355,7 +401,8 @@
             </b-collapse>
           </template>
         </b-card-body>
-      </b-card>
+        </div>
+    </b-card>
     </b-col>
 
     <!-- Modals -->
@@ -475,6 +522,7 @@ import {
 } from "@processmaker/vue-form-elements";
 import Validator from "@chantouchsek/validatorjs";
 import HasColorProperty from "../mixins/HasColorProperty";
+import Clipboard from "../mixins/Clipboard";
 import * as renderer from "./renderer";
 import * as inspector from "./inspector";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
@@ -489,6 +537,8 @@ import MultipleUploadsCheckbox from "./utils/multiple-uploads-checkbox";
 import { formTypes } from "@/global-properties";
 import TabsBar from "./TabsBar.vue";
 import Sortable from './sortable/Sortable.vue';
+import ClipboardButton from './ClipboardButton.vue';
+import ScreenTemplates from './ScreenTemplates.vue';
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -528,12 +578,13 @@ const defaultConfig = [
 ];
 
 const defaultGroupOrder = {
-  "Input Fields" : 1.0,
-  "Content Fields" : 2.0,
-  "Dashboards" : 2.5,
-  "Navigation" : 3.0,
-  "Files" : 4.0,
-  "Advanced" : 5.0,
+  "Clipboard": 1.0,
+  "Input Fields" : 2.0,
+  "Content Fields" : 3.0,
+  "Dashboards" : 3.5,
+  "Navigation" : 4.0,
+  "Files" : 5.0,
+  "Advanced" : 6.0,
 };
 
 const DEFAULT_GROUP = "Advanced";
@@ -556,8 +607,10 @@ export default {
     ...renderer,
     PagesDropdown,
     Sortable,
+    ClipboardButton,
+    ScreenTemplates,
   },
-  mixins: [HasColorProperty, testing],
+  mixins: [HasColorProperty, testing, Clipboard],
   props: {
     renderControls: {
       type: Boolean,
@@ -581,7 +634,10 @@ export default {
     },
     processId: {
       default: 0
-    }
+    },
+    sharedTemplatesData: {
+      type: Array,
+    },
   },
   data() {
     const config = this.initialConfig || defaultConfig;
@@ -593,7 +649,13 @@ export default {
       config[0].name = this.title;
     }
 
+    const clipboardPage = {
+      name: this.$t("Clipboard"),
+      items: this.$store.getters["clipboardModule/clipboardItems"],
+    };
+
     return {
+      clipboardPage,
       showAddPageValidations: false,
       openedPages: [0],
       currentPage: 0,
@@ -634,10 +696,24 @@ export default {
       searchProperties: ['name'],
       enableOption: true,
       enableDesignOption: true,
-      styleMode: null
+      styleMode: null,
+      showTemplatesPanel: false
     };
   },
   computed: {
+    isCurrentPageClipboard() {
+      return this.isClipboardPage(this.currentPage);
+    },
+    extendedPages() {
+      return [
+        ...this.config,
+        this.clipboardPage,
+      ];
+    },
+    clipboardItems() {
+      return this.$store.getters["clipboardModule/clipboardItems"];
+    },
+    
     sortedPages() {
       return [...this.config].sort((a, b) => a.order - b.order);
     },
@@ -704,7 +780,6 @@ export default {
           return orderA - orderB;
         });
       });
-
       return grouped;
     },
     showToolbar() {
@@ -717,7 +792,7 @@ export default {
         this.checkForCaptchaInLoops();
         this.$emit("change", this.config);
       },
-      deep: true
+      deep: true,
     },
     currentPage() {
       this.inspect();
@@ -751,6 +826,7 @@ export default {
     }
   },
   created() {
+    this.addUuidToElements(this.config);
     this.$store.dispatch("undoRedoModule/pushState", {
       config: JSON.stringify(this.config),
       currentPage: this.currentPage
@@ -787,6 +863,24 @@ export default {
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
+    isClipboardPage(page) {
+      return page === this.config.length;
+    },
+    disableEnableDragControl(control, event) {
+      if (!this.canDragControl(control)) {
+        event.preventDefault();
+      }
+    },
+    canDragControl(control) {
+      const isDragAndPaste = control.component === "Clipboard";
+      return !(isDragAndPaste && this.isClipboardPage(this.currentPage));
+    },
+    openClipboard() {
+      this.showClipboard = true;
+      this.$nextTick(() => {
+        this.$refs.tabsBar.openClipboard();
+      });
+    },
     shouldShow(item, accordion) {
       const sourceOptions = this.inspection.config[item.field]?.sourceOptions;
 
@@ -931,6 +1025,7 @@ export default {
       accordion.open = true;
     },
     migrateConfig(config = this.config) {
+      this.addUuidToElements(config);
       config.forEach((page) => this.replaceFormText(page.items));
       config.forEach((page) => this.migrateFormSubmit(page.items));
       config.forEach((page) => this.updateFieldNameValidation(page.items));
@@ -1114,10 +1209,14 @@ export default {
       });
     },
     updateState() {
+      // paste the clipboard items into the current page
+      this.replaceClipboardContent(this.config);
       this.$store.dispatch("undoRedoModule/pushState", {
         config: JSON.stringify(this.config),
         currentPage: this.currentPage
       });
+      this.replaceClipboardContent([this.clipboardPage]);
+      this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
     },
     async undo() {
       this.inspect();
@@ -1141,8 +1240,14 @@ export default {
         this.$store.getters["undoRedoModule/currentState"].currentPage
       );
     },
+    openTemplatesPanel() {
+      this.showTemplatesPanel = true;
+    },
+    closeTemplatesPanel() {
+      this.showTemplatesPanel = false;
+    },
     updateConfig(items) {
-      this.config[this.currentPage].items = items;
+      this.extendedPages[this.currentPage].items = items;
       this.updateState();
     },
     hasError(element) {
@@ -1190,13 +1295,14 @@ export default {
     },
     deleteItem(index) {
       // Remove the item from the array in currentPage
-      this.config[this.currentPage].items.splice(index, 1);
+      this.extendedPages[this.currentPage].items.splice(index, 1);
       this.inspection.inspector.splice(0, this.inspection.inspector.length);
       this.updateState();
     },
     duplicateItem(index) {
       const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
-      this.config[this.currentPage].items.push(duplicate);
+      this.updateUuids(duplicate);
+      this.extendedPages[this.currentPage].items.push(duplicate);
     },
     openEditPageModal(index) {
       this.editPageIndex = index;
@@ -1299,8 +1405,10 @@ export default {
         currentPage: this.currentPage,
         deletedPage: true
       });
+      this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
     },
     inspect(element = {}) {
+      this.closeTemplatesPanel();
       this.inspection = element;
       this.selected = element;
       const defaultAccordion = this.accordions.find(
@@ -1314,6 +1422,7 @@ export default {
     // This will ensure each control in the editor has it's own config and it's not shared
     cloneControl(control) {
       const copy = {
+        uuid: this.generateUUID(),
         config: JSON.parse(JSON.stringify(control.config)),
         inspector: JSON.parse(JSON.stringify(control.inspector)),
         component: control.component,
@@ -1434,7 +1543,6 @@ export default {
       this.updateState();
       this.inspect(clone);
     },
-
   }
 };
 </script>
@@ -1568,6 +1676,12 @@ $side-bar-font-size: 0.875rem;
 .inspector-column {
   max-width: 265px;
   font-size: $side-bar-font-size;
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  height: 100%;
+}
+
+.screen-templates-column {
+  overflow-y: auto;
 }
 
 .form-control-ghost {
@@ -1603,5 +1717,9 @@ $side-bar-font-size: 0.875rem;
 .modal-subtitle {
   font-size: 15px;
   font-weight: normal;
+}
+.gray-text.disabled {
+  cursor: not-allowed; /* Cambia el cursor cuando se pasa por encima */
+  pointer-events: all; /* Permite que el pseudo-elemento reciba eventos del ratón */
 }
 </style>

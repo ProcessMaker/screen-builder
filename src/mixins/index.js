@@ -18,3 +18,4 @@ export { default as testing } from "./testing";
 export { ValidationMsg, validators } from "./ValidationRules";
 export { default as VisibilityRule } from "./VisibilityRule";
 export { default as watchers } from "./watchers";
+export { default as Clipboard } from "./Clipboard";

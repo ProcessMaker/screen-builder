@@ -64,7 +64,7 @@ describe("Watchers", () => {
 
   it.skip("CRUD of watchers", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -144,7 +144,7 @@ describe("Watchers", () => {
   });
   it("Test cancel", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -161,13 +161,13 @@ describe("Watchers", () => {
   });
   it("Test variables in multi columns", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-3");
     cy.get("[data-cy=controls-FormMultiColumn]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
     );
     cy.get("[data-cy=screen-element-container]").click();
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container] .column-draggable",
       { position: "bottom" }
@@ -181,7 +181,7 @@ describe("Watchers", () => {
 
   it("Test variables in nested screens", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-3");
     cy.get("[data-cy=controls-FormNestedScreen]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -202,7 +202,7 @@ describe("Watchers", () => {
 
   it("Create duplicated properties", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -265,7 +265,7 @@ describe("Watchers", () => {
     );
 
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -349,7 +349,7 @@ describe("Watchers", () => {
     );
 
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -408,7 +408,7 @@ describe("Watchers", () => {
     });
 
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -557,7 +557,7 @@ describe("Watchers", () => {
   });
   it("Focuses the first field that has an error", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });

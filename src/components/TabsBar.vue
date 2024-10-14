@@ -58,6 +58,29 @@
         </div>
       </template>
     </b-tab>
+    <b-tab
+      v-if="showClipboard"
+      ref="clipboard"
+      class="h-100 w-100"
+      name="clipboard"
+    >
+      <template #title>
+        {{ $t('Clipboard') }}
+        <span
+          :data-test="`close-clipboard-tab`"
+          class="close-tab"
+          role="link"
+          @click.stop="closeClipboard"
+        >
+          <i class="fas fa-times" />
+        </span>
+      </template>
+      <template #default>
+        <div class="h-100 w-100" data-test="tab-content">
+          <slot :current-page="clipboardPageIndex" />
+        </div>
+      </template>
+    </b-tab>
     <template #tabs-end>
       <div
         v-if="tabsListOverflow"
@@ -115,6 +138,13 @@ export default {
     isMultiPage: {
       type: Boolean,
       default: true
+    },
+    /**
+     * Show clipboard tab
+     */
+    showClipboard: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -128,6 +158,9 @@ export default {
     };
   },
   computed: {
+    clipboardPageIndex() {
+      return this.pages.length;
+    },
     validLocalOpenedPages() {
       return this.localOpenedPages.filter((page) => this.pages[page]);
     }
@@ -170,9 +203,22 @@ export default {
     this.checkTabsOverflow();
   },
   methods: {
+    openClipboard() {
+      if (this.$refs.clipboard) {
+        this.$refs.clipboard.activate();
+      }
+    },
+    closeClipboard() {
+      this.$emit('close-clipboard');
+    },
     tabOpened() {
       const pageIndex = this.localOpenedPages[this.activeTab];
-      this.$emit("tab-opened", pageIndex);
+      const isInClipboard = (this.activeTab  === this.$refs.tabs.tabs.length - 1) && this.showClipboard;
+      if (isInClipboard) {
+        this.$emit("tab-opened", this.clipboardPageIndex);
+      } else {
+        this.$emit("tab-opened", pageIndex);
+      }
     },
     pageNumber(index) {
       return index + 1;

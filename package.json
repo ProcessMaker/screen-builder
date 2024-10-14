@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/screen-builder",
-  "version": "2.99.3",
+  "version": "3.0.0",
   "scripts": {
     "dev": "VITE_COVERAGE=true vite",
     "build": "vite build",
@@ -40,6 +40,7 @@
     "moment-timezone": "^0.5.45",
     "monaco-editor": "^0.34.0",
     "scrollparent": "^2.0.1",
+    "uuid": "^10.0.0",
     "vue-loader": "^15.9.2",
     "vue-monaco": "^0.3.2",
     "vue-simple-uploader": "^0.7.4",
