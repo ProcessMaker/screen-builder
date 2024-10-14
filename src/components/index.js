@@ -29,6 +29,7 @@ import { LRUCache } from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "../store/modules/globalErrorsModule";
 import undoRedoModule from "../store/modules/undoRedoModule";
+import clipboardModule from "../store/modules/clipboardModule";
 import BasicSearch from "./basic-search.vue";
 import ComputedProperties from "./computed-properties.vue";
 import CustomCSS from "./custom-css.vue";
@@ -50,6 +51,7 @@ import VariableNameGenerator from "@/components/VariableNameGenerator";
 import { LinkButton } from "./renderer";
 import "../assets/css/tabs.css";
 import FormCollectionRecordControl from "./renderer/form-collection-record-control.vue";
+import FormCollectionViewControl from "./renderer/form-collection-view-control.vue";
 
 const rendererComponents = {
   ...renderer,
@@ -166,11 +168,13 @@ export default {
     Vue.component("FormListTable", FormListTable);
     Vue.component("LinkButton", LinkButton);
     Vue.component("FormCollectionRecordControl", FormCollectionRecordControl);
+    Vue.component("FormCollectionViewControl", FormCollectionViewControl);
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,
         // @todo Improve how to load this module, it is used only in the form builder, not used in the form renderer.
-        undoRedoModule
+        undoRedoModule,
+        clipboardModule
       }
     });
     Vue.mixin({ store });

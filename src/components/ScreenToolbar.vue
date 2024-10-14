@@ -4,7 +4,7 @@
       <b-button
         class="screen-toolbar-button"
         variant="link"
-        :disabled="!canUndo"
+        :disabled="!canUndo || disabled"
         data-cy="toolbar-undo"
         @click="$emit('undo')"
       >
@@ -14,7 +14,7 @@
       <b-button
         class="screen-toolbar-button"
         variant="link"
-        :disabled="!canRedo"
+        :disabled="!canRedo || disabled"
         data-cy="toolbar-redo"
         @click="$emit('redo')"
       >
@@ -22,9 +22,19 @@
         {{ $t("Redo") }}
       </b-button>
       <b-button
+        class="screen-toolbar-button"
+        variant="link"
+        data-cy="screen-templates"
+        @click="$emit('open-templates')"
+      >
+        <i class="fas fa-palette" />
+        {{ $t("Templates") }}
+      </b-button>
+      <b-button
         type="button"
         class="screen-toolbar-button"
         variant="link"
+        :disabled="disabled"
         :title="$t('Calculated Properties')"
         data-cy="topbar-calcs"
         @click="$emit('open-calc')"
@@ -36,6 +46,7 @@
         type="button"
         class="screen-toolbar-button"
         variant="link"
+        :disabled="disabled"
         :title="$t('Custom CSS')"
         data-cy="topbar-css"
         @click="$emit('open-customCss')"
@@ -47,6 +58,7 @@
         type="button"
         class="screen-toolbar-button"
         variant="link"
+        :disabled="disabled"
         :title="$t('Watchers')"
         data-cy="topbar-watchers"
         @click="$emit('open-watchers')"
@@ -58,6 +70,7 @@
         type="button"
         class="screen-toolbar-button"
         variant="outlined-secondary"
+        :disabled="disabled"
         :popper-opts="{ placement: 'bottom-end' }"
         data-cy="topbar-options"
       >
@@ -77,6 +90,15 @@
 
 <script>
 export default {
+  props: {
+    /**
+     * Whether the toolbar is disabled or not
+     */
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       showToolbar: true

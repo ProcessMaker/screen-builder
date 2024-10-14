@@ -10,7 +10,7 @@ describe("Responsive Preview test", () => {
 
   beforeEach(() => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get(controlInputSelector).drag(screenDropZoneSelector, {
       position: "bottom"
     });

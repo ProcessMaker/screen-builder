@@ -1,8 +1,8 @@
 describe("MultiColumns", () => {
   it("Configure using JSON", () => {
     cy.visit("/");
+    cy.openAcordeon("collapse-3");
     cy.openAcordeon("collapse-2");
-    cy.openAcordeon("collapse-1");
     cy.get("[data-cy=controls-FormMultiColumn]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -55,7 +55,7 @@ describe("MultiColumns", () => {
 
   it("Configure using columns configuration", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-2");
+    cy.openAcordeon("collapse-3");
     cy.get("[data-cy=controls-FormMultiColumn]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -93,7 +93,7 @@ describe("MultiColumns", () => {
     );
     cy.get("[data-cy=inspector-add-column-width]").clear().type("8");
     cy.get("[data-cy=inspector-add-column-modal] button.btn-primary").click();
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     cy.get("[data-cy=controls-FormInput]").drag(
       "[data-cy=screen-element-container] .column-draggable:empty"
     );

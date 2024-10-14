@@ -18,10 +18,10 @@ describe("Computed fields", () => {
     cy.visit("/");
     cy.loadFromJson("FOUR-5139.json", 0);
 
-    // Enter preview mode
+    // Step 1: Enter preview mode
     cy.get("[data-cy=mode-preview]").click();
 
-    // Add three inputs input in loop
+    // Step : Add three inputs input in loop
     cy.get("[data-cy=loop-loop_1-add]").click();
     cy.get("[data-cy=loop-loop_1-add]").click();
     cy.get("[data-cy=loop-loop_1-add]").click();
@@ -138,7 +138,7 @@ describe("Computed fields", () => {
   });
   it("Create a javascript computed field", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -184,7 +184,7 @@ describe("Computed fields", () => {
 
   it("Create a computed field with formula", () => {
     cy.visit("/");
-    cy.openAcordeon("collapse-1");
+    cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"

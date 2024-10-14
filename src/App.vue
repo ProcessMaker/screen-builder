@@ -50,8 +50,10 @@
 
           <b-col v-if="displayBuilder && !displayPreview" class="text-right">
             <screen-toolbar
+              :disabled="$refs.builder?.isCurrentPageClipboard"
               @undo="$refs.builder.undo()"
               @redo="$refs.builder.redo()"
+              @open-templates="openTemplatesPanel"
               @open-calc="openComputedProperties"
               @open-customCss="openCustomCSS"
               @open-watchers="openWatchersPopup"
@@ -443,7 +445,9 @@ export default {
         minimap: {
           enabled: false
         }
-      }
+      },
+      showTemplatesPanel: false,
+      sharedTemplatesData: null,
     };
   },
   computed: {
@@ -519,7 +523,11 @@ export default {
         });
       }
       return warnings;
-    }
+    },
+     // Get clipboard items from Vuex store
+    clipboardItems() {
+      return this.$store.getters["clipboardModule/clipboardItems"];
+    },
   },
   created() {
     this.updateDataInput = debounce(this.updateDataInput, 1000);
@@ -602,6 +610,7 @@ export default {
       const savedWatchers = localStorage.getItem("savedWatchers");
       const customCSS = localStorage.getItem("customCSS");
       const computed = localStorage.getItem("computed");
+      const savedClipboard = localStorage.getItem("savedClipboard");  
 
       if (savedConfig) {
         const config = JSON.parse(savedConfig);
@@ -695,6 +704,9 @@ export default {
     },
     openWatchersPopup() {
       this.$refs.watchersPopup.show();
+    },
+    openTemplatesPanel() {
+      this.$refs.builder.openTemplatesPanel();
     },
     openComputedProperties() {
       this.$refs.computedProperties.show();

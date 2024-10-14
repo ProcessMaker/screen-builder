@@ -17,6 +17,7 @@ export default {
         @addPage="onAddPage"
         @clickPage="onClick"
         @seeAllPages="onSeeAllPages"
+        @clipboard="onClipboard"
       />
     `,
     data() {
@@ -31,7 +32,10 @@ export default {
       },
       onClick(index) {
         console.log("Click page item:", index);
-      }
+      },
+      onClipboard() {
+        console.log("Open clipboard");
+      },
     }
   })
 };
@@ -104,8 +108,8 @@ export const ClickInCreatePage = {
     await selectorAddPage.click(selectorAddPage);
   }
 };
-// Open the See all Pages
-export const ClickInSeeAllPages = {
+// Open the Clipboard
+export const ClickInClipboard = {
   args: {
     data: [{ name: "Page 1" }]
   },
@@ -114,19 +118,18 @@ export const ClickInSeeAllPages = {
     const selector = canvasElement.querySelector(
       "[data-test=page-dropdown] button"
     );
-    const selectorAddPage = canvasElement.querySelector(
-      "[data-test=see-all-pages]"
+    const clipboardOption = canvasElement.querySelector(
+      "[data-test=clipboard]"
     );
-    console.log(selectorAddPage);
     await selector.click(selector);
     await waitFor(
       () => {
         expect(canvas.getByTestId("page-dropdown")).toContainHTML(
-          "See all pages"
+          "Clipboard"
         );
       },
       { timeout: 1000 }
     );
-    await selectorAddPage.click(selectorAddPage);
+    await clipboardOption.click(clipboardOption);
   }
 };

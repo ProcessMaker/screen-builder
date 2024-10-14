@@ -28,6 +28,15 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <div class="ml-auto">
+                <clipboard-button
+                  :index="index"
+                  :config="element.config"
+                  :isInClipboard="isInClipboard(items[index])"
+                  :addTitle="$t('Add to clipboard')"
+                  :removeTitle="$t('Remove from clipboard')"
+                  @addToClipboard="addToClipboard(items[index])"
+                  @removeFromClipboard="removeFromClipboard(items[index])"
+                />
                 <button
                   v-if="isAiSection(element) && aiPreview(element)"
                   class="btn btn-sm btn-primary mr-2"
@@ -83,6 +92,15 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <div class="ml-auto">
+                <clipboard-button
+                  :index="index"
+                  :config="element.config"
+                  :isInClipboard="isInClipboard(items[index])"
+                  :addTitle="$t('Add to clipboard')"
+                  :removeTitle="$t('Remove from clipboard')"
+                  @addToClipboard="addToClipboard(items[index])"
+                  @removeFromClipboard="removeFromClipboard(items[index])"
+                />
                 <button
                   class="btn btn-sm btn-secondary mr-2"
                   :title="$t('Copy Control')"
@@ -136,6 +154,8 @@ import {
   FormTextArea
 } from "@processmaker/vue-form-elements";
 import { HasColorProperty } from "@/mixins";
+import { Clipboard } from "@/mixins";
+import ClipboardButton from '../ClipboardButton.vue';
 import * as renderer from "@/components/renderer";
 
 export default {
@@ -149,9 +169,10 @@ export default {
     FormDatePicker,
     FormHtmlEditor,
     FormHtmlViewer,
+    ClipboardButton,
     ...renderer
   },
-  mixins: [HasColorProperty],
+  mixins: [HasColorProperty, Clipboard],
   props: ["value", "name", "config", "selected", "validationErrors"],
   data() {
     return {

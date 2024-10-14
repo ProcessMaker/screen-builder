@@ -9,6 +9,16 @@
         data-cy="inspector-collection"
       />
     </div>
+    <div v-if="collectionId > 0" class="screen-link mt-2">
+      <a 
+        :href="`/designer/screen-builder/${
+          screenMode === 'display' ? idCollectionScreenView : idCollectionScreenEdit
+          }/edit`" 
+          target="_blank">
+        {{ $t(screenMode === 'display' ? "Open View Screen" : "Open Edit Screen") }}
+        <i class="ml-1 fas fa-external-link-alt" />
+      </a>
+    </div>
   </div>
 </template>
 
@@ -36,7 +46,10 @@ export default {
       collectionId: null,
       pmql: "",
       unique: false,
-      dataRecordList: []
+      dataRecordList: [],
+      idCollectionScreenView: null,
+      idCollectionScreenEdit: null,
+      screenMode: null
     };
   },
   computed: {
@@ -81,6 +94,9 @@ export default {
     if (this.collectionId) {
       this.getFields();
     }
+    this.$root.$on("collection-screen-mode", (mode) => {
+      this.screenMode = mode;
+    });
   },
   methods: {
     onCollectionChange() {
@@ -93,6 +109,9 @@ export default {
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
+        const [firstItem = {}] = response.data.data || [];
+        this.idCollectionScreenView = firstItem.read_screen_id;
+        this.idCollectionScreenEdit = firstItem.create_screen_id;
         this.collections = [
           { value: null, text: this.$t("Select a collection") },
           ...response.data.data.map((collection) => {
