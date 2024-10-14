@@ -567,8 +567,7 @@ export default [
           }
         },
         colorPropertyRecord,
-        bgcolorPropertyRecord,
-        bgcolorModern
+        bgcolorPropertyRecord
       ],
     },
   },

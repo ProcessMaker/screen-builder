@@ -9,9 +9,6 @@
           data-cy="inspector-collection-designer-model"
         />
       </div>
-      <div class="mt-2" v-if="designerOptions === 'Modern'">
-        <!-- <p>Aqui diseno Modern</p> -->
-      </div>
     </div>
   </template>
   <script>

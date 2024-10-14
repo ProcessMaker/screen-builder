@@ -4,7 +4,7 @@
       <div class="col">
         <h4>{{ label }}</h4>
       </div>
-      <div class="col text-right">
+      <div v-if="styleMode === 'Classic'" class="col text-right">
         <button
           v-if="editable && !selfReferenced"
           class="btn btn-primary"
@@ -130,17 +130,30 @@
           </template>
          
         </b-table>
-      <b-pagination
-        v-if="tableData.total > perPage && (perPage !== 0)"
-        v-model="currentPage"
-        data-cy="table-pagination"
-        :total-rows="tableData.total"
-        :per-page="perPage"
-        :aria-label="$t('Pagination')"
-        aria-controls="vuetable"
-        @change="onChangePage"
-      />
-
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="col text-left">
+            <b-pagination
+              v-if="tableData.total > perPage && (perPage !== 0)"
+              v-model="currentPage"
+              data-cy="table-pagination"
+              :total-rows="tableData.total"
+              :per-page="perPage"
+              :aria-label="$t('Pagination')"
+              aria-controls="vuetable"
+              @change="onChangePage"
+            />
+          </div>
+          <div v-if="styleMode === 'Modern'" class="col text-right">
+            <button
+              v-if="editable && !selfReferenced"
+              class="btn btn-link text-primary class-button-modern"
+              data-cy="add-row"
+              @click="showAddForm"
+            >
+              <span class="mr-1">+</span> {{ $t("Add") }}
+            </button>
+          </div>
+        </div>
     </template>
 
     <b-modal
@@ -857,68 +870,59 @@ export default {
   margin-right: 5px;
 }
 .sel-row {
-  background-color: #e0f7e0;
+  background-color: #81AFFF;
+}
+.class-button-modern {
+  font-size: 14px; 
+  font-weight: bold; 
+  text-decoration: none;
 }
 
 .record-list-table {
+  border-collapse: separate;
+  border-spacing: 0;
 
-  border-radius: 8px;
-  border: none; 
-  overflow: hidden;
+  thead th {
+    background-color: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    &:first-child {
+      border-top-left-radius: 10px;
+      border-left: 1px solid #e0e0e0;
+    }
+    &:last-child {
+      border-top-right-radius: 10px;
+      border-right: 1px solid #e0e0e0;
+    }
+  }
 
-  /* Header */
-  thead {
-    background-color: #e0f7e0;
-    border: none;
+  tbody tr {
+    td {
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    td:first-child {
+      border-left: 1px solid #e0e0e0;
+    }
 
-    th {
-      border: 1px solid #c0e0c0; /* border dark color */
-      font-weight: bold;
-      color: #333;
-      padding: 10px;
+    td:last-child {
+      border-right: 1px solid #e0e0e0;
+    }
 
-      &:first-child {
-        border-top-left-radius: 8px;
+    &:last-child {
+      td:first-child {
+        border-bottom-left-radius: 10px;
       }
-
-      &:last-child {
-        border-top-right-radius: 8px;
+      td:last-child {
+        border-bottom-right-radius: 10px;
       }
     }
   }
 
-  /* Body */
-  tbody {
-    border-left: 1px solid #d4f1d4;
-    border-right: 1px solid #d4f1d4;
-    border-bottom: 1px solid #d4f1d4;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-
-    tr {
-      td {
-        padding: 10px;
-        border-top: 1px solid #d4f1d4;
-
-        &:first-child {
-          border-left: 1px solid #d4f1d4;
-        }
-
-        &:last-child {
-          border-right: 1px solid #d4f1d4;
-        }
-      }
-    }
-  }
-
-  tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 8px;
-    overflow: hidden;
-  }
-  
-  tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 8px;
-    overflow: hidden;
+  th:not(:first-child):not(:last-child),
+  td:not(:first-child):not(:last-child) {
+    border-left: none;
+    border-right: none;
   }
 }
 
