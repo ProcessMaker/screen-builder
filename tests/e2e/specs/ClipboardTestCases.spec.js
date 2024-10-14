@@ -1,6 +1,8 @@
 describe("Clipboard Button Actions", () => {
 
   it("TCP4-4441: Verify clipboard in section column and dropdown menu", () => {
+    // Clear local storage
+    cy.clearLocalStorage();
     cy.visit("/");
     cy.openAcordeonByLabel("Clipboard");
     cy.get("[data-cy=screen-drop-zone]").should(
@@ -148,8 +150,9 @@ describe("Clipboard Button Actions", () => {
     cy.visit("/");
     cy.openAcordeonByLabel("Navigation");
     cy.wait(1000);
-
-    cy.get('[data-cy="controls"] > [data-cy="controls-FormPageNavigation"]').drag("[data-cy=screen-drop-zone]", { position: "bottom" });
+    
+    
+    cy.get('[data-cy=controls-FormButton]:contains("Page")').drag("[data-cy=screen-drop-zone]", { position: "bottom" });
 
     cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
