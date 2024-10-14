@@ -349,7 +349,7 @@ export default [
       order: 2.0,
       group: 'Navigation',
       label: 'Page Navigation',
-      component: 'FormPageNavigation',
+      component: 'FormButton',
       'editor-component': 'FormButton',
       'editor-control': 'PageNavigation',
       config: {
