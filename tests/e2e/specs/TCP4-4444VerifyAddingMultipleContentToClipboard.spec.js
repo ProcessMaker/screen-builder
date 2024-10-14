@@ -1,6 +1,5 @@
 describe("Clipboard Button Actions", () => {
   beforeEach(() => {
-    // Clear local storage and visit the base URL before each test
     cy.visit("/");
     cy.showValidationOnLoad();
     cy.clearLocalStorage();
@@ -11,8 +10,6 @@ describe("Clipboard Button Actions", () => {
     cy.loadFromJson("TCP4-4446.json", 0);
     cy.get("[data-cy=screen-drop-zone]").should("not.contain.text", "Place your controls here.");
 
-    // Open "Input Fields" accordion and add the first screen element to the clipboard
-    cy.openAcordeonByLabel("Input Fields");
     cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible").click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
