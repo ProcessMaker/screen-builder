@@ -903,9 +903,6 @@ export default {
         if(item.type === "ColorSelectRecord" && !this.enableDesignOption) {
           return false;
         }
-        if(item.type === "ColorSelectModern" && this.enableDesignOption ) {
-          return false;
-        }
       }
 
       return !(item.if === "hideControl" && this.enableOption === false);
