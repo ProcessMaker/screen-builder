@@ -505,24 +505,7 @@ export default {
       this.hidePopover();
     },
     rowClass(item) {
-      //return this.isRowSelected(item) ? 'sel-row' : '';
-      return this.isRowSelected(item) ? this.colorSelection(this.bgcolormodern) : '';
-    },
-    colorSelection(colormode) {
-      if (this.styleMode === 'Modern') {
-        switch (colormode) {
-          case 'alert alert-primary':
-            return 'sel-row-primary';
-          case 'alert alert-success':
-            return 'sel-row-success';
-          case 'alert alert-warning':
-            return 'sel-row-warning';
-          case 'alert alert-secondary':
-            return 'sel-row-secondary';
-          default:
-            return 'sel-row-secondary';
-        }
-      }
+      return this.isRowSelected(item) ? 'sel-row' : '';
     },
     isRowSelected(item) {
       return this.selectedRows.includes(item) || this.selectedRow === item;
@@ -900,6 +883,9 @@ export default {
 .popover-content .btn-light {
   margin-right: 5px;
 }
+.sel-row {
+  background-color: #eaf2ff;
+}
 .sel-row-primary {
   background-color: #66b2ff;
 }
@@ -923,29 +909,29 @@ export default {
   border-spacing: 0;
  
   thead th {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
     &:first-child {
       border-top-left-radius: 10px;
-      border-left: 1px solid #e0e0e0;
+      border-left: 1px solid;
     }
     &:last-child {
       border-top-right-radius: 10px;
-      border-right: 1px solid #e0e0e0;
+      border-right: 1px solid;
     }
   }
 
   tbody tr {
     td {
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid;
     }
     
     td:first-child {
-      border-left: 1px solid #e0e0e0;
+      border-left: 1px solid;
     }
 
     td:last-child {
-      border-right: 1px solid #e0e0e0;
+      border-right: 1px solid;
     }
 
     &:last-child {
@@ -968,28 +954,121 @@ export default {
 .record-list-table-primary {
   @extend .record-list-table-base;
   thead th {
-    background-color: #007bff;
+    //background-color: #007bff;
+    background-color: #f8fbff;
+    border-top-color: #eaf2ff;
+    border-bottom-color: #eaf2ff;
+    &:first-child {
+      border-left-color: #eaf2ff;
+    }
+    &:last-child {
+      border-right-color: #eaf2ff;
+    }
+  }
+
+  tbody tr {
+    td {
+      border-color: #eaf2ff;
+      border-top: solid 0;
+    }
+    
+    td:first-child {
+      border-left-color: #eaf2ff;
+    }
+
+    td:last-child {
+      border-right-color: #eaf2ff;
+    }
   }
 }
 
 .record-list-table-success {
   @extend .record-list-table-base;
   thead th {
-    background-color: #28a745;
+    background-color: #eefcf1;
+    border-top-color: #d2f0d9;
+    border-bottom-color: #d2f0d9;
+    &:first-child {
+      border-left-color: #d2f0d9;
+    }
+    &:last-child {
+      border-right-color: #d2f0d9;
+    }
+  }
+
+  tbody tr {
+    td {
+      border-color: #d2f0d9;
+      border-top: solid 0;
+    }
+    
+    td:first-child {
+      border-left-color: #d2f0d9;
+    }
+
+    td:last-child {
+      border-right-color: #d2f0d9;
+    }
   }
 }
 
 .record-list-table-warning {
   @extend .record-list-table-base;
   thead th {
-    background-color: #ffc107;
+    background-color: #fefae6;
+    border-top-color: #fef4c9;
+    border-bottom-color: #fef4c9;
+    &:first-child {
+      border-left-color: #fef4c9;
+    }
+    &:last-child {
+      border-right-color: #fef4c9;
+    }
+  }
+
+  tbody tr {
+    td {
+      border-color: #fef4c9;
+      border-top: solid 0;
+    }
+    
+    td:first-child {
+      border-left-color: #fef4c9;
+    }
+
+    td:last-child {
+      border-right-color: #fef4c9;
+    }
   }
 }
 
 .record-list-table-secondary {
   @extend .record-list-table-base;
   thead th {
-    background-color: #6c757d;
+    background-color: #fbfbfc;
+    border-top-color: #f3f5f7;
+    border-bottom-color: #f3f5f7;
+    &:first-child {
+      border-left-color: #f3f5f7;
+    }
+    &:last-child {
+      border-right-color: #f3f5f7;
+    }
+  }
+
+  tbody tr {
+    td {
+      border-color: #f3f5f7;
+      border-top: solid 0;
+    }
+    
+    td:first-child {
+      border-left-color: #f3f5f7;
+    }
+
+    td:last-child {
+      border-right-color: #f3f5f7;
+    }
   }
 }
 
