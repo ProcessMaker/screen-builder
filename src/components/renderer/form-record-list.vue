@@ -865,7 +865,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+@import '../sortable/tableStyles.scss';
 .popover-content {
   background-color: white;
   border: 1px solid #ddd;
@@ -885,18 +885,6 @@ export default {
 }
 .sel-row {
   background-color: #eaf2ff;
-}
-.sel-row-primary {
-  background-color: #66b2ff;
-}
-.sel-row-success {
-  background-color: #71d188;
-}
-.sel-row-warning {
-  background-color: #ffe27d;
-}
-.sel-row-secondary {
-  background-color: #b0b3b8;
 }
 .class-button-modern {
   font-size: 14px; 
@@ -952,124 +940,19 @@ export default {
 }
 
 .record-list-table-primary {
-  @extend .record-list-table-base;
-  thead th {
-    //background-color: #007bff;
-    background-color: #f8fbff;
-    border-top-color: #eaf2ff;
-    border-bottom-color: #eaf2ff;
-    &:first-child {
-      border-left-color: #eaf2ff;
-    }
-    &:last-child {
-      border-right-color: #eaf2ff;
-    }
-  }
-
-  tbody tr {
-    td {
-      border-color: #eaf2ff;
-      border-top: solid 0;
-    }
-    
-    td:first-child {
-      border-left-color: #eaf2ff;
-    }
-
-    td:last-child {
-      border-right-color: #eaf2ff;
-    }
-  }
+  @include record-list-table($primary-bg-color, $primary-border-color);
 }
 
 .record-list-table-success {
-  @extend .record-list-table-base;
-  thead th {
-    background-color: #eefcf1;
-    border-top-color: #d2f0d9;
-    border-bottom-color: #d2f0d9;
-    &:first-child {
-      border-left-color: #d2f0d9;
-    }
-    &:last-child {
-      border-right-color: #d2f0d9;
-    }
-  }
-
-  tbody tr {
-    td {
-      border-color: #d2f0d9;
-      border-top: solid 0;
-    }
-    
-    td:first-child {
-      border-left-color: #d2f0d9;
-    }
-
-    td:last-child {
-      border-right-color: #d2f0d9;
-    }
-  }
+  @include record-list-table($success-bg-color, $success-border-color);
 }
 
 .record-list-table-warning {
-  @extend .record-list-table-base;
-  thead th {
-    background-color: #fefae6;
-    border-top-color: #fef4c9;
-    border-bottom-color: #fef4c9;
-    &:first-child {
-      border-left-color: #fef4c9;
-    }
-    &:last-child {
-      border-right-color: #fef4c9;
-    }
-  }
-
-  tbody tr {
-    td {
-      border-color: #fef4c9;
-      border-top: solid 0;
-    }
-    
-    td:first-child {
-      border-left-color: #fef4c9;
-    }
-
-    td:last-child {
-      border-right-color: #fef4c9;
-    }
-  }
+  @include record-list-table($warning-bg-color, $warning-border-color);
 }
 
 .record-list-table-secondary {
-  @extend .record-list-table-base;
-  thead th {
-    background-color: #fbfbfc;
-    border-top-color: #f3f5f7;
-    border-bottom-color: #f3f5f7;
-    &:first-child {
-      border-left-color: #f3f5f7;
-    }
-    &:last-child {
-      border-right-color: #f3f5f7;
-    }
-  }
-
-  tbody tr {
-    td {
-      border-color: #f3f5f7;
-      border-top: solid 0;
-    }
-    
-    td:first-child {
-      border-left-color: #f3f5f7;
-    }
-
-    td:last-child {
-      border-right-color: #f3f5f7;
-    }
-  }
+  @include record-list-table($secondary-bg-color, $secondary-border-color);
 }
 
 </style>
