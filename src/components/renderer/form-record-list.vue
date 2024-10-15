@@ -21,7 +21,7 @@
     <template v-else>
         <b-table
           ref="vuetable"
-          :class="{ 'record-list-table': styleMode === 'Modern' }"
+          :class="tableClassModern"
           :per-page="perPage"
           :data-manager="dataManager"
           :fields="tableFields"
@@ -282,7 +282,8 @@ export default {
     "_perPage",
     "source",
     "paginationOption",
-    "designerMode"
+    "designerMode",
+    "bgcolormodern"
   ],
   data() {
     return {
@@ -322,10 +323,27 @@ export default {
       selectAll: false,
       styleMode: "Classic",
       isPopoverVisible: null,
-      popoverPosition: { top: '0px', left: '0px' },
+      popoverPosition: { top: '0px', left: '0px' }
     };
   },
   computed: {
+    tableClassModern() {
+      if (this.styleMode === 'Modern') {
+        switch (this.bgcolormodern) {
+          case 'alert alert-primary':
+            return 'record-list-table-primary';
+          case 'alert alert-success':
+            return 'record-list-table-success';
+          case 'alert alert-warning':
+            return 'record-list-table-warning';
+          case 'alert alert-secondary':
+            return 'record-list-table-secondary';
+          default:
+            return 'record-list-table-secondary';
+        }
+      }
+      return '';
+    },
     indeterminate() {
       return this.selectedRows.length > 0 && this.selectedRows.length < this.tableData.data.length;
     },
@@ -487,7 +505,24 @@ export default {
       this.hidePopover();
     },
     rowClass(item) {
-      return this.isRowSelected(item) ? 'sel-row' : '';
+      //return this.isRowSelected(item) ? 'sel-row' : '';
+      return this.isRowSelected(item) ? this.colorSelection(this.bgcolormodern) : '';
+    },
+    colorSelection(colormode) {
+      if (this.styleMode === 'Modern') {
+        switch (colormode) {
+          case 'alert alert-primary':
+            return 'sel-row-primary';
+          case 'alert alert-success':
+            return 'sel-row-success';
+          case 'alert alert-warning':
+            return 'sel-row-warning';
+          case 'alert alert-secondary':
+            return 'sel-row-secondary';
+          default:
+            return 'sel-row-secondary';
+        }
+      }
     },
     isRowSelected(item) {
       return this.selectedRows.includes(item) || this.selectedRow === item;
@@ -794,10 +829,7 @@ export default {
       });
     },
     showDeleteConfirmation(index, rowId) {
-      console.log("rowId: ", rowId);
-      console.log("this.tableData.data: ", this.tableData.data);
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
-      console.log("this.deleteIndex: ", this.deleteIndex);
       this.$refs.deleteModal.show();
     },
     downloadFile(rowData, rowField, rowIndex) {
@@ -831,7 +863,6 @@ export default {
       });
     },
     remove() {
-      console.log("En remove: ", this.deleteIndex);
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       const data = this.tableData.data
@@ -869,8 +900,17 @@ export default {
 .popover-content .btn-light {
   margin-right: 5px;
 }
-.sel-row {
-  background-color: #81AFFF;
+.sel-row-primary {
+  background-color: #66b2ff;
+}
+.sel-row-success {
+  background-color: #71d188;
+}
+.sel-row-warning {
+  background-color: #ffe27d;
+}
+.sel-row-secondary {
+  background-color: #b0b3b8;
 }
 .class-button-modern {
   font-size: 14px; 
@@ -878,12 +918,11 @@ export default {
   text-decoration: none;
 }
 
-.record-list-table {
+.record-list-table-base {
   border-collapse: separate;
   border-spacing: 0;
-
+ 
   thead th {
-    background-color: #f5f5f5;
     border-top: 1px solid #e0e0e0;
     border-bottom: 1px solid #e0e0e0;
     &:first-child {
@@ -923,6 +962,34 @@ export default {
   td:not(:first-child):not(:last-child) {
     border-left: none;
     border-right: none;
+  }
+}
+
+.record-list-table-primary {
+  @extend .record-list-table-base;
+  thead th {
+    background-color: #007bff;
+  }
+}
+
+.record-list-table-success {
+  @extend .record-list-table-base;
+  thead th {
+    background-color: #28a745;
+  }
+}
+
+.record-list-table-warning {
+  @extend .record-list-table-base;
+  thead th {
+    background-color: #ffc107;
+  }
+}
+
+.record-list-table-secondary {
+  @extend .record-list-table-base;
+  thead th {
+    background-color: #6c757d;
   }
 }
 

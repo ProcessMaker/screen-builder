@@ -12,7 +12,6 @@ import FileDownload from './components/renderer/file-download';
 import FormListTable from './components/renderer/form-list-table';
 import FormAnalyticsChart from "./components/renderer/form-analytics-chart";
 import FormCollectionRecordControl from './components/renderer/form-collection-record-control.vue';
-import FormCollectionViewControl from './components/renderer/form-collection-view-control.vue';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -59,7 +58,7 @@ export default [
     rendererBinding: 'FormHtmlEditor',
     control: {
       popoverContent: "Use a Rich Text Editor to add HTML-formatted",
-      order: 2.0,
+      order: 1.0,
       group: 'Content Fields',
       label: 'Rich Text',
       component: 'FormHtmlViewer',
@@ -101,7 +100,7 @@ export default [
     rendererBinding: 'FormMaskedInput',
     control: {
       popoverContent: "Collect a string of text and format it as one of several data types",
-      order: 2.0,
+      order: 1.0,
       group: 'Input Fields',
       label: 'Line Input',
       component: 'FormInput',
@@ -132,7 +131,6 @@ export default [
       ],
     },
   },
-
   {
     editorComponent: FormTextArea,
     editorBinding: 'FormTextArea',
@@ -140,7 +138,7 @@ export default [
     rendererBinding: 'FormTextArea',
     control: {
       popoverContent: "Collect a multi-line string of text, to allow for extensive, richly formatted responses",
-      order: 5.0,
+      order: 4.0,
       group: 'Input Fields',
       label: 'Textarea',
       component: 'FormTextArea',
@@ -198,7 +196,7 @@ export default [
     rendererBinding: 'FormSelectList',
     control: {
       popoverContent: "Collect options from a list, as radio butttons or dropdowns",
-      order: 3.0,
+      order: 2.0,
       group: 'Input Fields',
       label: 'Select List',
       component: 'FormSelectList',
@@ -253,7 +251,7 @@ export default [
     rendererBinding: 'FormCheckbox',
     control: {
       popoverContent: "Add a checkbox or toggle for true/false responses",
-      order: 7.0,
+      order: 6.0,
       group: 'Input Fields',
       label: 'Checkbox',
       component: 'FormCheckbox',
@@ -295,7 +293,7 @@ export default [
     rendererBinding: 'FormDatePicker',
     control: {
       popoverContent: "Collect a date or date/time",
-      order: 6.0,
+      order: 5.0,
       group: 'Input Fields',
       label: 'Date Picker',
       component: 'FormDatePicker',
@@ -349,7 +347,7 @@ export default [
     rendererBinding: 'FormButton',
     control: {
       popoverContent: "Add special buttons that link between subpages within this Form",
-      order: 2.0,
+      order: 1.0,
       group: 'Navigation',
       label: 'Page Navigation',
       component: 'FormButton',
@@ -384,7 +382,7 @@ export default [
     rendererBinding: 'FormMultiColumn',
     control: {
       popoverContent: "Organize and group your content in columns",
-      order: 3.0,
+      order: 2.0,
       group: 'Content Fields',
       label: 'Multicolumn / Table',
       component: 'FormMultiColumn',
@@ -429,7 +427,7 @@ export default [
     rendererBinding: 'FormLoop',
     control: {
       popoverContent: "Add a repeatable section of content",
-      order: 6.0,
+      order: 5.0,
       group: 'Content Fields',
       label: 'Loop',
       component: 'FormLoop',
@@ -465,7 +463,7 @@ export default [
     rendererBinding: 'FormRecordList',
     control: {
       popoverContent: "Format content in a table structure and allow for adding rows",
-      order: 5.0,
+      order: 4.0,
       group: 'Content Fields',
       label: 'Record List',
       component: 'FormRecordList',
@@ -569,7 +567,8 @@ export default [
           }
         },
         colorPropertyRecord,
-        bgcolorPropertyRecord
+        bgcolorPropertyRecord,
+        bgcolorModern
       ],
     },
   },
@@ -580,7 +579,7 @@ export default [
     rendererBinding: 'FormImage',
     control: {
       popoverContent: "Upload an image to your screen",
-      order: 4.0,
+      order: 3.0,
       group: 'Content Fields',
       label: 'Image',
       component: 'FormImage',
@@ -647,7 +646,7 @@ export default [
     rendererBinding: 'FormAvatar',
     control: {
       popoverContent: "User avatar",
-      order: 4.0,
+      order: 3.0,
       group: 'Dashboards',
       label: 'User Avatar',
       component: 'FormAvatar',
@@ -691,7 +690,7 @@ export default [
     rendererBinding: 'FormButton',
     control: {
       popoverContent: "Add an action to submit your form or update a field",
-      order: 4.0,
+      order: 3.0,
       group: 'Input Fields',
       label: 'Submit Button',
       component: 'FormButton',
@@ -752,7 +751,7 @@ export default [
     rendererBinding: 'FormNestedScreen',
     control: {
       popoverContent: "Add and reuse another Form within this Form",
-      order: 7.0,
+      order: 6.0,
       group: 'Content Fields',
       label: 'Nested Screen',
       component: 'FormNestedScreen',
@@ -787,7 +786,7 @@ export default [
     control: {
       group: "Files",
       popoverContent: "Collect files uploaded into the Form",
-      order: 2.0,
+      order: 1.0,
       label: 'File Upload',
       component: 'FileUpload',
       'editor-component': 'FileUpload',
@@ -839,7 +838,7 @@ export default [
     builderBinding: 'FileDownload',
     control: {
       popoverContent: "Offer a File download",
-      order: 3.0,
+      order: 2.0,
       group: "Files",
       label: 'File Download',
       component: 'FileDownload',
@@ -875,7 +874,7 @@ export default [
     builderBinding: 'BFormComponent',
     control: {
       popoverContent: "Add one of several Bootstrap Vue components",
-      order: 2.0,
+      order: 1.0,
       group: 'Advanced',
       label: 'Bootstrap Component',
       component: 'BFormComponent',
@@ -929,7 +928,7 @@ export default [
     builderBinding: 'BWrapperComponent',
     control: {
       popoverContent: "Wrap an existing subpage within this Form into a Bootstrap Vue component",
-      order: 3.0,
+      order: 2.0,
       group: 'Advanced',
       label: 'Bootstrap Wrapper',
       component: 'BWrapperComponent',
@@ -1028,7 +1027,7 @@ export default [
     rendererBinding: "FormAnalyticsChart",
     control: {
       popoverContent: "Add a chart from the Analytics Reports",
-      order: 7.0,
+      order: 6.0,
       group: 'Dashboards',
       label: "Analytics Chart",
       component: "FormAnalyticsChart",
@@ -1059,7 +1058,7 @@ export default [
     control: {
       popoverContent: "Add a URL where this link should redirect",
       group: 'Content Fields',
-      order: 7.0,
+      order: 6.0,
       label: "Link URL",
       component: "LinkButton",
       "editor-component": "LinkButton",
@@ -1090,19 +1089,6 @@ export default [
         buttonVariantStyleProperty
       ]
     }
-  },
-  {
-    control: {
-      popoverContent: "Drag and paste copied elements to your desired location.",
-      order: 1.0,
-      group: 'Clipboard',
-      label: 'Drag & Paste',
-      component: "Clipboard",
-      config: {
-        icon: 'fa fa-clipboard',
-      },
-      inspector: [],
-    },
   },
   {
     editorComponent: FormCollectionRecordControl,
@@ -1148,46 +1134,6 @@ export default [
             label: "Mode",
           }
         },
-      ],
-    },
-  },
-  {
-    editorComponent: FormCollectionViewControl,
-    editorBinding: 'FormCollectionViewControl',
-    rendererComponent: FormCollectionViewControl,
-    rendererBinding: 'FormCollectionViewControl',
-    control: {
-      popoverContent: "Create a Collection View Control",
-      order: 7.0,
-      group: 'Content Fields',
-      label: 'Collection Record View',
-      component: 'FormCollectionViewControl',
-      'editor-component': 'FormCollectionViewControl',
-      'editor-control': 'FormCollectionViewControl',
-      config: {
-        name: 'Collection View Control',
-        icon: 'fas fa-database',
-        label: 'Collection View Control',
-      },
-      inspector: [
-        {
-          type: "collectionRecordsList",
-          field: "collection",
-          config: {
-            label: 'Collection Name',
-            helper: 'Select a collection',
-            value: '',
-          }
-        },
-        {
-          type: 'FormInput',
-          field: 'record',
-          config: {
-            label: 'Record ID',
-            helper: 'Supports Mustache Variable and the Collection Record',
-            value: '',
-          },
-        }
       ],
     },
   }
