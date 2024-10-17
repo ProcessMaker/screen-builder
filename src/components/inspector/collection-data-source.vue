@@ -73,7 +73,6 @@
     "variableStore",
     "dataSelectionOptions",
     "singleField"
-
   ];
   export default {
     components: {

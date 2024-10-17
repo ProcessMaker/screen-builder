@@ -4,7 +4,7 @@
       <div class="col">
         <h4>{{ label }}</h4>
       </div>
-      <div class="col text-right">
+      <div v-if="styleMode === 'Classic'" class="col text-right">
         <button
           v-if="editable && !selfReferenced"
           class="btn btn-primary"
@@ -21,6 +21,7 @@
     <template v-else>
         <b-table
           ref="vuetable"
+          :class="tableClassModern"
           :per-page="perPage"
           :data-manager="dataManager"
           :fields="tableFields"
@@ -32,7 +33,9 @@
           :empty-text="$t('No Data Available')"
           :current-page="currentPage"
           data-cy="table"
+          :tbody-tr-class="rowClass"
         >
+        
           <!-- Slot header for checkbox (Select All) -->
           <template #head(checkbox)="data">
             <b-form-checkbox
@@ -61,7 +64,7 @@
           </template>
 
           <template #cell()="{ index, field, item }">
-
+            
             <template v-if="isFiledownload(field, item)">
               <span href="#" @click="downloadFile(item, field.key, index)">{{
                 mustache(field.key, item)
@@ -86,35 +89,71 @@
                 aria-label="Actions"
               >
                 <button
-                  class="btn btn-primary"
+                :class="{
+                    btn: true,
+                    'btn-primary': styleMode === 'Classic'
+                  }"
                   :title="$t('Edit')"
                   data-cy="edit-row"
                   @click="showEditForm(index, item.row_id)"
                 >
-                  <i class="fas fa-edit" />
+
+                  <i v-if="styleMode === 'Classic'" class="fas fa-edit"></i>
+                  <img v-else src="../../assets/pencil-square.svg" alt="edit" />
                 </button>
+
                 <button
-                  class="btn btn-danger"
+                  :class="{
+                    btn: true,
+                    'btn-danger': styleMode === 'Classic'
+                  }"
                   :title="$t('Delete')"
                   data-cy="remove-row"
-                  @click="showDeleteConfirmation(index, item.row_id)"
+                  popover="manual"
+                  @click="styleMode === 'Modern' 
+                  ? togglePopover(index, $event, item.row_id) 
+                  : showDeleteConfirmation(index, item.row_id)"
+                  ref="deleteButton"
                 >
-                  <i class="fas fa-trash-alt" />
+                  <i v-if="styleMode === 'Classic'" class="fas fa-trash-alt" />
+                  <img v-else src="../../assets/Shape.svg" alt="delete" />
                 </button>
+
+                <div v-show="isPopoverVisible === index" class="popover-content">
+                  <p>Are you sure you want to delete it?</p>
+                  <button class="btn btn-light" @click="hidePopover">CANCEL</button>
+                  <button class="btn btn-danger" @click="popover_remove()">DELETE</button>
+                </div>
+
               </div>
             </div>
           </template>
+         
         </b-table>
-      <b-pagination
-        v-if="tableData.total > perPage && (perPage !== 0)"
-        v-model="currentPage"
-        data-cy="table-pagination"
-        :total-rows="tableData.total"
-        :per-page="perPage"
-        :aria-label="$t('Pagination')"
-        aria-controls="vuetable"
-        @change="onChangePage"
-      />
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="col text-left">
+            <b-pagination
+              v-if="tableData.total > perPage && (perPage !== 0)"
+              v-model="currentPage"
+              data-cy="table-pagination"
+              :total-rows="tableData.total"
+              :per-page="perPage"
+              :aria-label="$t('Pagination')"
+              aria-controls="vuetable"
+              @change="onChangePage"
+            />
+          </div>
+          <div v-if="styleMode === 'Modern'" class="col text-right">
+            <button
+              v-if="editable && !selfReferenced"
+              class="btn btn-link text-primary class-button-modern"
+              data-cy="add-row"
+              @click="showAddForm"
+            >
+              <span class="mr-1">+</span> {{ $t("Add") }}
+            </button>
+          </div>
+        </div>
     </template>
 
     <b-modal
@@ -199,6 +238,7 @@
     >
       <p>{{ $t("The form to be displayed is not assigned.") }}</p>
     </b-modal>
+    
     <div v-if="editable && selfReferenced" class="alert alert-danger">
       {{
         $t(
@@ -241,7 +281,9 @@ export default {
     "formWatchers",
     "_perPage",
     "source",
-    "paginationOption"
+    "paginationOption",
+    "designerMode",
+    "bgcolormodern"
   ],
   data() {
     return {
@@ -278,10 +320,30 @@ export default {
       selectedRows: [],
       selectedIndex: null, 
       rows: [],
-      selectAll: false
+      selectAll: false,
+      styleMode: "Classic",
+      isPopoverVisible: null,
+      popoverPosition: { top: '0px', left: '0px' }
     };
   },
   computed: {
+    tableClassModern() {
+      if (this.styleMode === 'Modern') {
+        switch (this.bgcolormodern) {
+          case 'alert alert-primary':
+            return 'record-list-table-primary';
+          case 'alert alert-success':
+            return 'record-list-table-success';
+          case 'alert alert-warning':
+            return 'record-list-table-warning';
+          case 'alert alert-secondary':
+            return 'record-list-table-secondary';
+          default:
+            return 'record-list-table-secondary';
+        }
+      }
+      return '';
+    },
     indeterminate() {
       return this.selectedRows.length > 0 && this.selectedRows.length < this.tableData.data.length;
     },
@@ -420,9 +482,37 @@ export default {
       this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
     }
     
+    this.setStyleMode(this.designerMode?.designerOptions);
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    togglePopover(index, event, rowId) {
+      this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
+      this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
+      if (this.isPopoverVisible !== null) {
+        const rect = event.target.getBoundingClientRect();
+        this.popoverPosition = {
+          top: `${rect.bottom + window.scrollY}px`,
+          left: `${rect.left + window.scrollX}px`
+        };
+      }
+    },
+    hidePopover() {
+      this.isPopoverVisible = null;
+    },
+    popover_remove() {
+      this.remove();
+      this.hidePopover();
+    },
+    rowClass(item) {
+      return this.isRowSelected(item) ? 'sel-row' : '';
+    },
+    isRowSelected(item) {
+      return this.selectedRows.includes(item) || this.selectedRow === item;
+    },
+    setStyleMode(value) {
+      this.styleMode = value ? value : "Classic";
+    },
     selectAllRows() {
       if (this.allRowsSelected) {
         const updatedRows = this.tableData.data.map((item, index) => {
@@ -769,13 +859,100 @@ export default {
       // Emit the newly updated data model
       this.$emit("input", data);
       this.$root.$emit("removed-record", this, recordData);
-    }
+    },
   }
 };
 </script>
 
-<style>
-.table td.table-column {
-  max-width: 300px;
+<style lang="scss">
+@import '../sortable/tableStyles.scss';
+.popover-content {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  position: fixed;
+  z-index: 1000;
+  width: 285px;
+  text-align: center;
+  margin-top: 30px;
 }
+.popover-content p {
+  margin: 0 0 10px;
+}
+.popover-content .btn-light {
+  margin-right: 5px;
+}
+.sel-row {
+  background-color: #eaf2ff;
+}
+.class-button-modern {
+  font-size: 14px; 
+  font-weight: bold; 
+  text-decoration: none;
+}
+
+.record-list-table-base {
+  border-collapse: separate;
+  border-spacing: 0;
+ 
+  thead th {
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    &:first-child {
+      border-top-left-radius: 10px;
+      border-left: 1px solid;
+    }
+    &:last-child {
+      border-top-right-radius: 10px;
+      border-right: 1px solid;
+    }
+  }
+
+  tbody tr {
+    td {
+      border-bottom: 1px solid;
+    }
+    
+    td:first-child {
+      border-left: 1px solid;
+    }
+
+    td:last-child {
+      border-right: 1px solid;
+    }
+
+    &:last-child {
+      td:first-child {
+        border-bottom-left-radius: 10px;
+      }
+      td:last-child {
+        border-bottom-right-radius: 10px;
+      }
+    }
+  }
+
+  th:not(:first-child):not(:last-child),
+  td:not(:first-child):not(:last-child) {
+    border-left: none;
+    border-right: none;
+  }
+}
+
+.record-list-table-primary {
+  @include record-list-table($primary-bg-color, $primary-border-color);
+}
+
+.record-list-table-success {
+  @include record-list-table($success-bg-color, $success-border-color);
+}
+
+.record-list-table-warning {
+  @include record-list-table($warning-bg-color, $warning-border-color);
+}
+
+.record-list-table-secondary {
+  @include record-list-table($secondary-bg-color, $secondary-border-color);
+}
+
 </style>
