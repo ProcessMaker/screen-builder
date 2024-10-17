@@ -9,7 +9,11 @@
         v-if="thumbnail"
         class="thumbnail-container thumbnail-image-container"
       >
-        <img class="thumbnail-image" :src="thumbnail" :alt="`${template.name}`"/>
+        <img
+          class="thumbnail-image"
+          :src="thumbnail"
+          :alt="`${template.name}`"
+        />
       </div>
       <div
         v-else
@@ -17,18 +21,20 @@
       >
         <i class="p-4 fas fa-palette thumbnail-icon"></i>
       </div>
-      <hr class="card-divider">
+      <hr class="card-divider" />
       <b-card-body class="p-1">
         <div class="template-details">
           <span class="template-name d-block pt-1">{{ template.name }}</span>
-          <span class="template-description d-block">{{ template.description }}</span>
+          <span class="template-description d-block">{{
+            template.description
+          }}</span>
         </div>
         <b-collapse v-model="showApplyOptions">
-            <b-form-checkbox-group
-              class="apply-options-group p-2"
-              v-model="selected"
-              name="apply-options"
-            >
+          <b-form-checkbox-group
+            v-model="selected"
+            class="apply-options-group p-2"
+            name="apply-options"
+          >
             <div class="row row-cols-3 icons-row">
               <div
                 v-for="option in applyOptions"
@@ -43,73 +49,84 @@
                     <i :class="option.icon"></i>
                   </div>
                 </div>
-                <b-form-checkbox
-                  class="option-checkbox"
-                  :value="option.value"
-                >
+                <b-form-checkbox class="option-checkbox" :value="option.value">
                   {{ option.text }}
                 </b-form-checkbox>
               </div>
             </div>
-            </b-form-checkbox-group>
-            <hr class="bottom-card-divider">
-            <div class="apply-btn-container d-flex justify-content-end">
-              <button
-                type="button"
-                size="sm"
-                class="btn btn-outline-secondary card-btn"
-                @click="onCancel"
-              >
-                {{ $t("Cancel") }}
-              </button>
-              <button
-                :disabled="!selected.length"
-                type="button"
-                size="sm"
-                class="btn btn-primary ml-2 card-btn"
-                @click="applyTemplate"
-              >
-                {{ $t("Apply") }}
-              </button>
-            </div>
+          </b-form-checkbox-group>
+          <hr class="bottom-card-divider" />
+          <div class="apply-btn-container d-flex justify-content-end">
+            <button
+              type="button"
+              size="sm"
+              class="btn btn-outline-secondary card-btn"
+              @click="onCancel"
+            >
+              {{ $t("Cancel") }}
+            </button>
+            <button
+              :disabled="!selected.length"
+              type="button"
+              size="sm"
+              class="btn btn-primary ml-2 card-btn"
+              @click="applyTemplate"
+            >
+              {{ $t("Apply") }}
+            </button>
+          </div>
         </b-collapse>
       </b-card-body>
     </b-card>
-    
   </div>
 </template>
 
 <script>
-import CssIcon from './CssIcon.vue';
+import CssIcon from "./CssIcon.vue";
 
 export default {
   components: {
-    CssIcon,
+    CssIcon
   },
   mixins: [],
-  props: ['template', 'screenId', 'currentScreenPage'],
+  props: {
+    template: {
+      type: Object,
+      required: true
+    },
+    screenId: {
+      type: Number,
+      required: true
+    },
+    currentScreenPage: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       showApplyOptions: false,
       selected: [],
       applyOptions: [
-        { text: 'CSS', value: 'CSS' },
-        { text: 'Fields', value: 'Fields', icon: 'fp-fields-icon' },
-        { text: 'Layout', value: 'Layout', icon: 'fp-layout-icon' },
-      ],
+        { text: "CSS", value: "CSS" },
+        { text: "Fields", value: "Fields", icon: "fp-fields-icon" },
+        { text: "Layout", value: "Layout", icon: "fp-layout-icon" }
+      ]
     };
   },
   computed: {
     thumbnail() {
-      if (this.template?.template_media && this.template.template_media.length > 0) {
+      if (
+        this.template?.template_media &&
+        this.template.template_media.length > 0
+      ) {
         return this.template.template_media[0].url;
-      } else if (this.template?.template_media?.thumbnail?.url) {
-        return this.template?.template_media.thumbnail.url
+      }
+      if (this.template?.template_media?.thumbnail?.url) {
+        return this.template?.template_media.thumbnail.url;
       }
       return null;
-    },
-  },
-  mounted() {
+    }
   },
   methods: {
     showDetails() {
@@ -120,14 +137,20 @@ export default {
         .post(`/template/screen/${this.template.id}/apply`, {
           screenId: this.screenId,
           templateOptions: this.selected,
-          currentScreenPage: this.currentScreenPage,
+          currentScreenPage: this.currentScreenPage
         })
-        .then((response) => {
-          ProcessMaker.alert(this.$t("The template options have been applied."), "success");
+        .then(() => {
+          ProcessMaker.alert(
+            this.$t("The template options have been applied."),
+            "success"
+          );
           window.location.reload();
         })
         .catch((error) => {
-          const errorMessage = error.response?.data?.message  || error.response?.data?.error || error.message;
+          const errorMessage =
+            error.response?.data?.message ||
+            error.response?.data?.error ||
+            error.message;
           ProcessMaker.alert(errorMessage, "danger");
         });
     },
@@ -135,34 +158,35 @@ export default {
       this.showApplyOptions = false;
       this.selected = [];
     }
-  },
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-
-.fp-fields-icon, .fp-layout-icon {
-  color: #EAF2FF;
+.fp-fields-icon,
+.fp-layout-icon {
+  color: #eaf2ff;
 }
 
 .screenbuilder-template-card {
   width: 225px;
   margin: 8px;
-  border: 1px solid #D7DDE5;
+  border: 1px solid #d7dde5;
   border-radius: 8px;
-  box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05), 0px 2px 4px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 3px 6px -3px rgb(0, 0, 0, 0.05),
+    0px 2px 4px -2px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
 
 .card-divider {
   width: 100%;
   margin: 0px;
-  background-color: #D7DDE5;
+  background-color: #d7dde5;
 }
 
 .thumbnail-container:hover,
 .thumbnail-container.active {
-  border-color: #1572C2;
+  border-color: #1572c2;
   cursor: pointer;
 }
 
@@ -180,7 +204,7 @@ export default {
 }
 
 .thumbnail-icon {
-  color: #CDDDEE;
+  color: #cdddee;
   font-size: 59px;
 }
 
@@ -192,14 +216,14 @@ export default {
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
-  color: #2F343B;
+  color: #2f343b;
 }
 
 .template-description {
   font-size: 12.5px;
   font-weight: 400;
   line-height: 18px;
-  color: #4E5663;
+  color: #4e5663;
 }
 
 .apply-options-group {
@@ -214,7 +238,7 @@ export default {
 }
 
 .apply-options-container {
-    padding: 5px;
+  padding: 5px;
 }
 
 .apply-options-group i {
@@ -228,7 +252,7 @@ export default {
   justify-content: center;
   width: 66px;
   height: 76px;
-  border: 0.7px solid #D7DDE5;
+  border: 0.7px solid #d7dde5;
   border-radius: 8px;
   margin-bottom: 10px;
 }
@@ -239,7 +263,7 @@ export default {
 
 .bottom-card-divider {
   width: 90%;
-  background-color: #E9ECF1;
+  background-color: #e9ecf1;
   margin-top: 0px;
 }
 
@@ -253,5 +277,4 @@ export default {
   border-radius: 8px;
   padding: 5px 10px;
 }
-
 </style>
