@@ -124,6 +124,7 @@ export default {
     showMyTemplates() {
       this.myTemplatesSelected = true;
       this.sharedTemplatesSelected = false;
+      this.activeTemplateId = null;
       this.fetchMyTemplates();
     },
     fetchMyTemplates() {
@@ -158,6 +159,7 @@ export default {
     showSharedTemplates() {
       this.myTemplatesSelected = false;
       this.sharedTemplatesSelected = true;
+      this.activeTemplateId = null;
       this.fetchSharedTemplates();
     }
   }
