@@ -528,6 +528,19 @@ export default {
         this.prefix = parent.loopContext + '.';
       }
     },
+    validateFile(file, acceptFiles){
+      const extensions = acceptFiles.filter(item => item.startsWith('.'));
+      const mimeTypes = acceptFiles.filter(item => !item.startsWith('.'));
+      const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+      const fileType = file.fileType;
+      const isExtensionValid = extensions.includes(fileExtension);
+      const isMimeTypeValid = mimeTypes.includes(fileType);
+
+      if (!isExtensionValid && !isMimeTypeValid) {
+        return false;
+      }
+      return true;
+    },
     addFile(file) {
       if (this.disabled) {
         file.ignored = true;
@@ -544,7 +557,7 @@ export default {
 
       if (this.filesAccept) {
         file.ignored = true;
-        if (this.filesAccept.indexOf(file.fileType) !== -1) {
+        if (this.validateFile(file, this.filesAccept)) {
           file.ignored = false;
         }
         if (file.ignored) {
