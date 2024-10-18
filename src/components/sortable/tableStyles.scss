@@ -1,0 +1,42 @@
+$primary-bg-color: #f8fbff;
+$primary-border-color: #e6efff;
+
+$success-bg-color: #71d188;
+$success-border-color: #28a745;
+
+$warning-bg-color: #fff3cd;
+$warning-border-color: #ffc107;
+
+$secondary-bg-color: #fbfbfc;
+$secondary-border-color: #f3f5f7;
+
+@mixin record-list-table($bg-color, $border-color) {
+  @extend .record-list-table-base;
+
+  thead th {
+    background-color: $bg-color;
+    border-top-color: $border-color;
+    border-bottom-color: $border-color;
+    &:first-child {
+      border-left-color: $border-color;
+    }
+    &:last-child {
+      border-right-color: $border-color;
+    }
+  }
+
+  tbody tr {
+    td {
+      border-color: $border-color;
+      border-top: solid 0;
+    }
+
+    td:first-child {
+      border-left-color: $border-color;
+    }
+
+    td:last-child {
+      border-right-color: $border-color;
+    }
+  }
+}

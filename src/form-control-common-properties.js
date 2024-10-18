@@ -1,6 +1,33 @@
 import Tooltip from './components/inspector/tooltip';
 import DeviceVisibility from './components/inspector/device-visibility';
 
+export const bgcolorModern = {
+  type: 'ColorSelectModern',
+  field: 'bgcolormodern',
+  config: {
+    label: '',
+    helper: '',
+    options: [
+      {
+        value: 'alert alert-primary',
+        content: 'primary',
+      },
+      {
+        value: 'alert alert-success',
+        content: 'success',
+      },
+      {
+        value: 'alert alert-warning',
+        content: 'warning',
+      },
+      {
+        value: 'alert alert-secondary',
+        content: 'secondary',
+      },
+    ],
+  },
+};
+
 export const bgcolorProperty = {
   type: 'ColorSelect',
   field: 'bgcolor',
@@ -44,8 +71,94 @@ export const bgcolorProperty = {
   },
 };
 
+export const bgcolorPropertyRecord = {
+  type: 'ColorSelectRecord',
+  field: 'bgcolor',
+  config: {
+    label: 'Background Color',
+    helper: 'Set the element\'s background color',
+    options: [
+      {
+        value: 'alert alert-primary',
+        content: 'primary',
+      },
+      {
+        value: 'alert alert-secondary',
+        content: 'secondary',
+      },
+      {
+        value: 'alert alert-success',
+        content: 'success',
+      },
+      {
+        value: 'alert alert-danger',
+        content: 'danger',
+      },
+      {
+        value: 'alert alert-warning',
+        content: 'warning',
+      },
+      {
+        value: 'alert alert-info',
+        content: 'info',
+      },
+      {
+        value: 'alert alert-light',
+        content: 'light',
+      },
+      {
+        value: 'alert alert-dark',
+        content: 'dark',
+      },
+    ],
+  },
+};
+
 export const colorProperty = {
   type: 'ColorSelect',
+  field: 'color',
+  config: {
+    label: 'Text Color',
+    helper: 'Set the element\'s text color',
+    options: [
+      {
+        value: 'text-primary',
+        content: 'primary',
+      },
+      {
+        value: 'text-secondary',
+        content: 'secondary',
+      },
+      {
+        value: 'text-success',
+        content: 'success',
+      },
+      {
+        value: 'text-danger',
+        content: 'danger',
+      },
+      {
+        value: 'text-warning',
+        content: 'warning',
+      },
+      {
+        value: 'text-info',
+        content: 'info',
+      },
+      {
+        value: 'text-light',
+        content: 'light',
+      },
+      {
+        value: 'text-dark',
+        content: 'dark',
+      },
+    ],
+  },
+};
+
+export const colorPropertyRecord = {
+  type: 'ColorSelectRecord',
   field: 'color',
   config: {
     label: 'Text Color',
