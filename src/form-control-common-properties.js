@@ -209,8 +209,8 @@ export const keyNameProperty = {
   config: {
     label: 'Variable Name',
     name: 'Variable Name',
-    // Update tests/e2e/specs/Builder.spec.js when changing this
-    validation: 'regex:/^([a-zA-Z]([a-zA-Z0-9_]?)+\\.?)+(?<!\\.)$/|required|not_in:' + javascriptReservedKeywords,
+    // Update tests/e2e/specs/Builder.spec.js when changing dot_notation
+    validation: 'dot_notation|required|not_in:' + javascriptReservedKeywords,
     helper: 'A variable name is a symbolic name to reference information.',
   },
 };
