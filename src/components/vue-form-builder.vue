@@ -711,7 +711,7 @@ export default {
     clipboardItems() {
       return this.$store.getters["clipboardModule/clipboardItems"];
     },
-    
+
     sortedPages() {
       return [...this.config].sort((a, b) => a.order - b.order);
     },
@@ -1189,6 +1189,9 @@ export default {
       });
     },
     updateState() {
+      if (this.selected) {
+        this.checkAndRefreshUuids(this.selected, this.clipboardPage.items);
+      }
       // paste the clipboard items into the current page
       this.replaceClipboardContent(this.config);
       this.$store.dispatch("undoRedoModule/pushState", {
@@ -1522,6 +1525,26 @@ export default {
       this.config[this.currentPage].items.push(clone);
       this.updateState();
       this.inspect(clone);
+    },
+    /**
+     * Compares a config with an array and updates UUIDs if different.
+     *
+     * @param {Object} selected - The config to compare.
+     * @param {Array<Object>} clipboardItems - Array of configs to check.
+     * @returns {Array<Object>} - Updated array with new UUIDs.
+     */
+    checkAndRefreshUuids(selected, clipboardItems) {
+      return clipboardItems.map(config => {
+        // Use lodash to compare the config objects
+        const isEqual = _.isEqual(selected.config, config.config);
+
+        // If they are not equal, update the UUID
+        if (!isEqual) {
+          config.uuid = this.generateUUID(); // Update UUID
+        }
+
+        return config;
+      });
     },
   }
 };
