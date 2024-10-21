@@ -58,11 +58,17 @@ export default {
     addUuidToElements(screenConfig) {
       const replaceInPage = (page) => {
         page.items.forEach((item, index) => {
-          if (!item.uuid) {
-            item.uuid = this.generateUUID();
-          }
-          if (item.items) {
-            replaceInPage(item);
+          if (item instanceof Array) {
+            // multi-column each item in the column
+            replaceInPage({ items: item });
+          } else {
+            // loop through children
+            if (!item.uuid) {
+              item.uuid = this.generateUUID();
+            }
+            if (item.items) {
+              replaceInPage(item);
+            }
           }
         });
       }
