@@ -21,7 +21,7 @@ describe("Clipboard backward compatibility", () => {
     });
 
     // Go to second page
-    cy.get('[data-test="page-dropdown"]').click({force: true});
+    cy.get('[data-test="page-dropdown"] button').click({force: true});
     cy.get('[data-test="page-popup"]').click({force: true});
     const elementsAddedFromMainPage = 17;
 
