@@ -23,6 +23,7 @@ describe("Clipboard backward compatibility", () => {
     // Go to second page
     cy.get('[data-test="page-dropdown"] button').click({force: true});
     cy.get('[data-test="page-popup"]').click({force: true});
+    cy.wait(1000);
     const elementsAddedFromMainPage = 17;
 
     // check if each control in the second page can be added to the clipboard
