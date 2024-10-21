@@ -38,6 +38,9 @@
         data-cy="my-templates-list"
       >
         <b-card-group>
+          <b-card-body v-if="loading" class="d-flex justify-content-center">
+            <b-spinner variant="primary" label="Spinning"></b-spinner>
+          </b-card-body>
           <b-card-body
             v-if="noMyTemplatesFound"
             class="p-2 h-100 overflow-auto"
@@ -60,6 +63,9 @@
         data-cy="shared-templates-list"
       >
         <b-card-group>
+          <b-card-body v-if="loading" class="d-flex justify-content-center">
+            <b-spinner variant="primary" label="Spinning"></b-spinner>
+          </b-card-body>
           <b-card-body
             v-if="noSharedTemplatesFound"
             class="p-2 h-100 overflow-auto"
@@ -109,6 +115,7 @@
         sharedTemplatesSelected: false,
         noMyTemplatesFound: false,
         noSharedTemplatesFound: false,
+        loading: false,
       };
     },
     methods: {
@@ -118,34 +125,42 @@
         this.fetchMyTemplates();
       },
       fetchMyTemplates() {
+        this.loading = true;
         ProcessMaker.apiClient
-        .get(
-          `templates/screen?is_public=0&screen_type=${this.screenType}`,
-        )
-        .then((response) => {
-          this.myTemplatesData = response.data.data;
-          if (this.myTemplatesData.length === 0 || this.myTemplatesData === undefined) {
-            this.noMyTemplatesFound = true;
+          .get(
+            `templates/screen?is_public=0&screen_type=${this.screenType}`,
+          )
+          .then((response) => {
+            this.myTemplatesData = response.data.data;
+            if (this.myTemplatesData.length === 0 || this.myTemplatesData === undefined) {
+              this.noMyTemplatesFound = true;
           }
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          this.loading = false;
         });
       },
       fetchSharedTemplates() {
-      ProcessMaker.apiClient
-        .get(
-          `templates/screen?is_public=1&screen_type=${this.screenType}`,
-        )
-        .then((response) => {
-          this.sharedTemplatesData = response.data.data;
-          if (this.sharedTemplatesData.length === 0 || this.sharedTemplatesData === undefined) {
-            this.noSharedTemplatesFound = true;
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+        this.loading = true;
+        ProcessMaker.apiClient
+          .get(
+            `templates/screen?is_public=1&screen_type=${this.screenType}`,
+          )
+          .then((response) => {
+            this.sharedTemplatesData = response.data.data;
+            if (this.sharedTemplatesData.length === 0 || this.sharedTemplatesData === undefined) {
+              this.noSharedTemplatesFound = true;
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .finally(() => {
+            this.loading = false;
+          });
       },
       showSharedTemplates() {
         this.myTemplatesSelected = false;
