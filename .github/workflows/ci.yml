@@ -25,9 +25,6 @@ jobs:
       - name: set-vfe-branch
         run: |
           export VFE_BRANCH=''
-          if [[ ${{ contains(github.event.pull_request.body, 'ci:next') }} ]]; then
-            export VFE_BRANCH=next
-          fi
           if [[ "${{ steps.install-vfe.outputs.match }}" != "" ]]; then
             export VFE_BRANCH=${{ steps.install-vfe.outputs.group1 }}
           fi
