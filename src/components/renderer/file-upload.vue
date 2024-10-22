@@ -61,32 +61,34 @@
           </ul>
         </template>
       </uploader-list>
-      <uploader-drop v-if="uploaderLoaded && isConversationalForm" class="form-control-file">
+      <uploader-drop v-if="uploaderLoaded && isConversationalForm" class="form-control-file" 
+        :class="this.files.length > 0 && !this.multipleUpload ? 'cf-single-file-upload' : ''"
+      > 
         <b-button
           v-if="!required"
           @click="cfSkipFileUpload"
-          class="btn cf-skip-btn mb-3"
+          class="btn cf-skip-btn"
+          :class="showMultiUploadButton ? 'mb-3' : ''"
         >
           <i class="fas fa-arrow-left mr-2"></i> {{ $t('Skip Uploading') }}
         </b-button>
-
         <uploader-btn
           :attrs="nativeButtonAttrs"
           :class="[
             { disabled: disabled }, 
             'btn',
-            showSingleUploadButton ? 'cf-single-upload-btn' : (showMultiUploadButton ? 'cf-multi-upload-btn' : '')
+            showSingleUploadButton || files.length === 0 && !showMultiUploadButton ? 'cf-single-upload-btn mt-3' : (showMultiUploadButton ? 'cf-multi-upload-btn' : '')
           ]"
           tabindex="0"
           v-on:keyup.native="browse"
           :aria-label="$attrs['aria-label']"
         >
-          <span v-if="showSingleUploadButton"><i class="far fa-image mr-2"></i> {{ $t('Add File/Photo') }}</span>
+          <span v-if="showSingleUploadButton || files.length === 0 && !showMultiUploadButton"><i class="far fa-image mr-2"></i> {{ $t('Add File/Photo') }}</span>
           <span v-else-if="showMultiUploadButton"><i class="fas fa-plus mr-2"></i> {{ $t('Add another') }}</span>
         </uploader-btn>
 
-        <b-button v-if="files.length !== 0" class="cf-file-upload-submit" variant="primary" @click="emitConversationalFormSubmit" :aria-label="$t('Submit')">
-          <i class="fas fa-paper-plane"></i> <span v-if="files.length !== 0 && showMultiUploadButton">{{ $t('Send All') }}</span>
+        <b-button v-if="files.length !== 0" class="cf-file-upload-submit" :class="!showMultiUploadButton ? 'w-100 mt-3' : ''" variant="primary" @click="emitConversationalFormSubmit" :aria-label="$t('Submit')">
+          <i class="fas fa-paper-plane"></i> <span v-if="showMultiUploadButton">{{ $t('Send All') }}</span> <span v-else>{{ $t('Submit File/Photo') }}</span>
         </b-button>
       </uploader-drop>
       
@@ -270,7 +272,7 @@ export default {
       return this.screenType === 'conversational-forms';
     },
     showSingleUploadButton() {
-      return this.files.length === 0 || !this.multipleUpload;
+      return this.files.length === 0 && !this.multipleUpload;
     },
     showMultiUploadButton() {
       return this.files.length !== 0 && this.multipleUpload;
@@ -402,7 +404,6 @@ export default {
     },
     setRequestFiles() {
       _.set(window, `PM4ConfigOverrides.requestFiles["${this.fileDataName}"]`, this.files);
-      console.log("!!!!!! SET REQUEST FILES", this.valueToSend());
       this.$emit('input', this.valueToSend());
     },
     valueToSend() {
@@ -491,7 +492,7 @@ export default {
         }
         this.$delete(this.nativeFiles, id);
       }
-
+      this.$emit('file-deleted', this.files);
     },
     addToFiles(fileInfo) {
       if (this.multipleUpload) {
@@ -625,7 +626,6 @@ export default {
         this.$set(this.nativeFiles, id, rootFile);
         this.addToFiles(fileInfo);
       } else {
-        console.log("!!!!!! FILE UPLOADED", name);
         this.$emit('input', name);
       }
     },
@@ -761,6 +761,10 @@ export default {
   width: 100%;
   padding: 12px 10px;
   box-shadow: 0px 12px 24px -12px #0000001F;
+}
+
+.form-control-file.cf-single-file-upload label {
+  display: none;
 }
 
 </style>
