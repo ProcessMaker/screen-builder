@@ -245,7 +245,7 @@
                   v-model="element.items"
                   :validation-errors="validationErrors"
                   class="card-body"
-                  :class="elementCssClass(element)"
+                  :class="styleMode === 'Modern' ? elementCssClassModern(element) : elementCssClass(element)"
                   :selected="selected"
                   :config="element.config"
                   :ai-element="element"
@@ -299,7 +299,7 @@
                   :tabindex="element.config.interactive ? 0 : -1"
                   class="card-body m-0 pb-4 pt-4"
                   :class="[
-                    elementCssClass(element),
+                    styleMode === 'Modern' ? elementCssClassModern(element) : elementCssClass(element),
                     { 'prevent-interaction': !element.config.interactive }
                   ]"
                   @input="
@@ -376,7 +376,7 @@
               v-model="accordion.open"
             >
               <component
-                v-if="shouldShow(item)"
+                v-if="shouldShow(item, accordion)"
                 :is="item.type"
                 v-for="(item, index) in getInspectorFields(accordion)"
                 :key="index"
@@ -694,8 +694,10 @@ export default {
       collapse: {},
       groupOrder: {},
       searchProperties: ['name'],
-      showTemplatesPanel: false,
-      enableOption: true
+      enableOption: true,
+      enableDesignOption: true,
+      styleMode: null,
+      showTemplatesPanel: false
     };
   },
   computed: {
@@ -711,7 +713,7 @@ export default {
     clipboardItems() {
       return this.$store.getters["clipboardModule/clipboardItems"];
     },
-    
+
     sortedPages() {
       return [...this.config].sort((a, b) => a.order - b.order);
     },
@@ -855,6 +857,9 @@ export default {
     this.$root.$on("ai-form-progress-updated", (progress, nonce) => {
       this.updateProgress(progress, nonce);
     });
+    this.$root.$on("style-mode", (mode) => {
+      this.styleMode = mode;
+    });
     this.setGroupOrder(defaultGroupOrder);
   },
   methods: {
@@ -876,7 +881,7 @@ export default {
         this.$refs.tabsBar.openClipboard();
       });
     },
-    shouldShow(item) {
+    shouldShow(item, accordion) {
       const sourceOptions = this.inspection.config[item.field]?.sourceOptions;
 
       if (sourceOptions === 'Variable') {
@@ -886,6 +891,21 @@ export default {
 
       if (sourceOptions === 'Collection') {
         this.enableOption = false;
+      }
+
+      if(this.styleMode === "Modern") {
+        this.enableDesignOption = false;
+      } else {
+        this.enableDesignOption = true;
+      }
+
+      if(accordion.name === "Design") {
+        if(item.type === "ColorSelectRecord" && !this.enableDesignOption) {
+          return false;
+        }
+        if(item.type === "ColorSelectModern" && this.enableDesignOption ) {
+          return false;
+        }
       }
 
       return !(item.if === "hideControl" && this.enableOption === false);
@@ -1189,6 +1209,9 @@ export default {
       });
     },
     updateState() {
+      if (this.selected) {
+        this.checkAndRefreshUuids(this.selected, this.clipboardPage.items);
+      }
       // paste the clipboard items into the current page
       this.replaceClipboardContent(this.config);
       this.$store.dispatch("undoRedoModule/pushState", {
@@ -1522,6 +1545,26 @@ export default {
       this.config[this.currentPage].items.push(clone);
       this.updateState();
       this.inspect(clone);
+    },
+    /**
+     * Compares a config with an array and updates UUIDs if different.
+     *
+     * @param {Object} selected - The config to compare.
+     * @param {Array<Object>} clipboardItems - Array of configs to check.
+     * @returns {Array<Object>} - Updated array with new UUIDs.
+     */
+    checkAndRefreshUuids(selected, clipboardItems) {
+      return clipboardItems.map(config => {
+        // Use lodash to compare the config objects
+        const isEqual = _.isEqual(selected.config, config.config);
+
+        // If they are not equal, update the UUID
+        if (!isEqual) {
+          config.uuid = this.generateUUID(); // Update UUID
+        }
+
+        return config;
+      });
     },
   }
 };

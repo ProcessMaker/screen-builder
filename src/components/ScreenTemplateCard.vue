@@ -3,7 +3,7 @@
     <b-card
       img-top
       class="mb-2 screenbuilder-template-card"
-      @click="showDetails"
+      @click="toggleDetails"
     >
       <div
         v-if="thumbnail"
@@ -29,7 +29,7 @@
             truncateText(template.description, 100)
           }}</span>
         </div>
-        <b-collapse v-model="showApplyOptions">
+        <b-collapse v-model="isApplyOptionsActive">
           <b-form-checkbox-group
             v-model="selected"
             class="apply-options-group p-2"
@@ -93,10 +93,27 @@ export default {
     CssIcon
   },
   mixins: [],
-  props: ["template", "screenId", "currentScreenPage"],
+  props: {
+    template: {
+      type: Object,
+      required: true
+    },
+    screenId: {
+      type: Number,
+      required: true
+    },
+    currentScreenPage: {
+      type: Number,
+      default: 0
+    },
+    activeTemplateId: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
-      showApplyOptions: false,
+      isApplyOptionsActive: false,
       selected: [],
       applyOptions: [
         { text: "CSS", value: "CSS" },
@@ -119,10 +136,14 @@ export default {
       return null;
     }
   },
-  mounted() {},
+  watch: {
+    activeTemplateId(newVal) {
+      this.isApplyOptionsActive = newVal === this.template.id;
+    }
+  },
   methods: {
-    showDetails() {
-      this.showApplyOptions = !this.showApplyOptions;
+    toggleDetails() {
+      this.$emit("toggle-active", this.template.id);
     },
     applyTemplate() {
       ProcessMaker.apiClient
@@ -131,7 +152,7 @@ export default {
           templateOptions: this.selected,
           currentScreenPage: this.currentScreenPage
         })
-        .then((response) => {
+        .then(() => {
           ProcessMaker.alert(
             this.$t("The template options have been applied."),
             "success"
@@ -147,7 +168,7 @@ export default {
         });
     },
     onCancel() {
-      this.showApplyOptions = false;
+      this.isApplyOptionsActive = false;
       this.selected = [];
     },
     toggleOption(value) {

@@ -51,6 +51,8 @@
             :template="template"
             :screen-id="screenId"
             :current-screen-page="currentScreenPage"
+            :active-template-id="activeTemplateId"
+            @toggle-active="setActiveTemplate"
           />
         </b-card-group>
       </div>
@@ -76,6 +78,8 @@
             :template="template"
             :screen-id="screenId"
             :current-screen-page="currentScreenPage"
+            :active-template-id="activeTemplateId"
+            @toggle-active="setActiveTemplate"
           />
         </b-card-group>
       </div>
@@ -112,6 +116,7 @@ export default {
       sharedTemplatesSelected: false,
       noMyTemplatesFound: false,
       noSharedTemplatesFound: false,
+      activeTemplateId: null,
       loading: false
     };
   },
@@ -119,9 +124,14 @@ export default {
     this.showMyTemplates();
   },
   methods: {
+    setActiveTemplate(id) {
+      // If the same template that is already active is clicked, it deactivates it.
+      this.activeTemplateId = this.activeTemplateId === id ? null : id;
+    },
     showMyTemplates() {
       this.myTemplatesSelected = true;
       this.sharedTemplatesSelected = false;
+      this.activeTemplateId = null;
       this.fetchMyTemplates();
     },
     fetchMyTemplates() {
@@ -167,6 +177,7 @@ export default {
     showSharedTemplates() {
       this.myTemplatesSelected = false;
       this.sharedTemplatesSelected = true;
+      this.activeTemplateId = null;
       this.fetchSharedTemplates();
     }
   }
