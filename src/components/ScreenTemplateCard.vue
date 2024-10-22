@@ -112,7 +112,8 @@ export default {
         this.template.template_media.length > 0
       ) {
         return this.template.template_media[0].url;
-      } else if (this.template?.template_media?.thumbnail?.url) {
+      }
+      if (this.template?.template_media?.thumbnail?.url) {
         return this.template?.template_media.thumbnail.url;
       }
       return null;
