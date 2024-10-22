@@ -41,7 +41,11 @@
                 :key="option.value"
                 class="col apply-options-container d-flex align-items-baseline flex-column"
               >
-                <div class="icon-container">
+                <div
+                  class="icon-container"
+                  :class="{ selected: selected.includes(option.value) }"
+                  @click.stop="toggleOption(option.value)"
+                >
                   <div v-if="option.value === 'CSS'">
                     <css-icon />
                   </div>
@@ -61,7 +65,7 @@
               type="button"
               size="sm"
               class="btn btn-outline-secondary card-btn"
-              @click="onCancel"
+              @click.stop="onCancel"
             >
               {{ $t("Cancel") }}
             </button>
@@ -70,7 +74,7 @@
               type="button"
               size="sm"
               class="btn btn-primary ml-2 card-btn"
-              @click="applyTemplate"
+              @click.stop="applyTemplate"
             >
               {{ $t("Apply") }}
             </button>
@@ -166,6 +170,14 @@ export default {
     onCancel() {
       this.isApplyOptionsActive = false;
       this.selected = [];
+    },
+    toggleOption(value) {
+      const index = this.selected.indexOf(value);
+      if (index === -1) {
+        this.selected.push(value);
+      } else {
+        this.selected.splice(index, 1);
+      }
     }
   }
 };
