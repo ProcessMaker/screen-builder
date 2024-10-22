@@ -5,6 +5,10 @@ module.exports = {
     node: true
   },
 
+  globals: {
+    ProcessMaker: "readonly"
+  },
+
   extends: [
     "plugin:vue/recommended",
     "airbnb-base",
