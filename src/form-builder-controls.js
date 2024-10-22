@@ -46,7 +46,9 @@ import {
   tooltipProperty,
   LoadingSubmitButtonProperty,
   LabelSubmitButtonProperty,
-  bgcolorModern
+  bgcolorModern,
+  bgcolorPropertyRecord,
+  colorPropertyRecord,
 } from './form-control-common-properties';
 
 export default [
@@ -566,8 +568,8 @@ export default [
             helper: ''
           }
         },
-        colorProperty,
-        bgcolorProperty,
+        colorPropertyRecord,
+        bgcolorPropertyRecord,
         bgcolorModern
       ],
     },
