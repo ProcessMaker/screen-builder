@@ -46,6 +46,9 @@ import {
   tooltipProperty,
   LoadingSubmitButtonProperty,
   LabelSubmitButtonProperty,
+  bgcolorModern,
+  bgcolorPropertyRecord,
+  colorPropertyRecord,
 } from './form-control-common-properties';
 
 export default [
@@ -557,8 +560,17 @@ export default [
           },
           if: 'hideControl'
         },
-        colorProperty,
-        bgcolorProperty,
+        {
+          type: 'collectionDesignerMode',
+          field: 'designerMode',
+          config: {
+            label: 'Table Style',
+            helper: ''
+          }
+        },
+        colorPropertyRecord,
+        bgcolorPropertyRecord,
+        bgcolorModern
       ],
     },
   },
