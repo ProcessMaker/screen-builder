@@ -156,6 +156,7 @@ export default {
     },
     callbackRecord() {
       this.hasMustache = true;
+      //console.log("en callbackRecord this.selCollectionId: ", this.selCollectionId);
       this.loadRecordCollection(this.selCollectionId, 1, this.selDisplayMode);
     },
     errors() {
@@ -212,9 +213,9 @@ export default {
     },
     record(record) {
       this.hasMustache = false;
-      if (record && !isNaN(record) && record > 0 && this.collection) {
+      if (record && !isNaN(record) && record > 0 && this.collection.collectionId) {
         this.selRecordId = record;
-        this.loadRecordCollection(this.selCollectionId, record, this.collectionmode);
+        this.loadRecordCollection(this.collection.collectionId, record, this.collectionmode);
       } else {
         if (this.isMustache(record)) {
           this.callbackRecord();
@@ -226,6 +227,7 @@ export default {
       if(collectionmode) {
         this.selDisplayMode = collectionmode.modeId;
       }
+      //console.log("en collectionmode: ", this.selCollectionId);
       this.loadRecordCollection(this.selCollectionId, this.selRecordId, this.selDisplayMode);
     },
   },
@@ -235,6 +237,7 @@ export default {
     });
 
     if (this.collection && this.record) {
+      //console.log("en mounted this.collection.collectionId: ", this.collection.collectionId);
       this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);
     }
   },
