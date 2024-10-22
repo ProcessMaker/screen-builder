@@ -109,7 +109,7 @@ it("Displays Shared Templates when Shared Templates button is clicked", () => {
     });
 });
 
-it.only("Is hidden when an Inspector Panel should open", () => {
+it("Is hidden when an Inspector Panel should open", () => {
   cy.visit("/");
 
   cy.get("[data-cy=screen-templates]").click();
