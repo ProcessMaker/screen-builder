@@ -35,6 +35,9 @@
         data-cy="my-templates-list"
       >
         <b-card-group>
+          <b-card-body v-if="loading" class="d-flex justify-content-center">
+            <b-spinner variant="primary" label="Spinning"></b-spinner>
+          </b-card-body>
           <b-card-body
             v-if="noMyTemplatesFound"
             class="p-2 h-100 overflow-auto"
@@ -59,6 +62,9 @@
         data-cy="shared-templates-list"
       >
         <b-card-group>
+          <b-card-body v-if="loading" class="d-flex justify-content-center">
+            <b-spinner variant="primary" label="Spinning"></b-spinner>
+          </b-card-body>
           <b-card-body
             v-if="noSharedTemplatesFound"
             class="p-2 h-100 overflow-auto"
@@ -110,7 +116,8 @@ export default {
       sharedTemplatesSelected: false,
       noMyTemplatesFound: false,
       noSharedTemplatesFound: false,
-      activeTemplateId: null
+      activeTemplateId: null,
+      loading: false
     };
   },
   mounted() {
@@ -128,19 +135,27 @@ export default {
       this.fetchMyTemplates();
     },
     fetchMyTemplates() {
+      this.loading = true;
       ProcessMaker.apiClient
         .get(`templates/screen?is_public=0&screen_type=${this.screenType}`)
         .then((response) => {
           this.myTemplatesData = response.data.data;
-          if (!this.myTemplatesData || this.myTemplatesData.length === 0) {
+          if (
+            this.myTemplatesData.length === 0 ||
+            this.myTemplatesData === undefined
+          ) {
             this.noMyTemplatesFound = true;
           }
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
     fetchSharedTemplates() {
+      this.loading = true;
       ProcessMaker.apiClient
         .get(`templates/screen?is_public=1&screen_type=${this.screenType}`)
         .then((response) => {
@@ -154,6 +169,9 @@ export default {
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
     showSharedTemplates() {
