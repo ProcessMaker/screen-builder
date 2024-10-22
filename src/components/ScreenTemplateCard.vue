@@ -196,10 +196,14 @@ export default {
 
 .thumbnail-image {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 8px 8px 0px 0px;
 }
 
 .thumbnail-image-container {
+  width: 100%;
+  height: 107px;
   border-radius: 8px;
   padding: 0px !important;
   background-size: contain;
