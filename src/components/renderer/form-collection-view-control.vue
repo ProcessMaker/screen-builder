@@ -206,9 +206,9 @@ export default {
     },
     record(record) {
       this.hasMustache = false;
-      if (record && !isNaN(record) && record > 0 && this.collection) {
+      if (record && !isNaN(record) && record > 0 && this.collection.collectionId) {
         this.selRecordId = record;
-        this.loadRecordCollection(this.selCollectionId, record, this.collectionmode);
+        this.loadRecordCollection(this.collection.collectionId, record, this.collectionmode);
       } else {
         if (this.isMustache(record)) {
           this.callbackRecord();

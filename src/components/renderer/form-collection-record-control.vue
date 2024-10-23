@@ -179,7 +179,7 @@ export default {
               this.selDisplayMode === "View" ? viewScreen : editScreen;
           
           this.loadScreen(this.screenCollectionId);
-
+         
           //This section validates if Collection has draft data
           if(this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '') {
             this.localData = respData;
@@ -212,9 +212,9 @@ export default {
     },
     record(record) {
       this.hasMustache = false;
-      if (record && !isNaN(record) && record > 0 && this.collection) {
+      if (record && !isNaN(record) && record > 0 && this.collection.collectionId) {
         this.selRecordId = record;
-        this.loadRecordCollection(this.selCollectionId, record, this.collectionmode);
+        this.loadRecordCollection(this.collection.collectionId, record, this.selDisplayMode);
       } else {
         if (this.isMustache(record)) {
           this.callbackRecord();
