@@ -597,6 +597,10 @@ export default {
       }
 
       if (displayMessage.length > 0) {
+        const data = JSON.parse(displayMessage);
+        if (data.message) {
+          displayMessage = data.message;
+        }
         window.ProcessMaker.alert(`${this.$t('File Upload Error:')}  ${displayMessage}`, 'danger');
       }
 
