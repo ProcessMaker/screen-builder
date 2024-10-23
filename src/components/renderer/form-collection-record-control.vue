@@ -16,7 +16,7 @@
 <script>
 import VueFormRenderer from "../vue-form-renderer.vue";
 import CollectionRecordsList from "../inspector/collection-records-list.vue";
-import _ from 'lodash';
+
 const globalObject = typeof window === "undefined" ? global : window;
 
 const defaultConfig = [
