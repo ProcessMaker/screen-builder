@@ -16,7 +16,7 @@
 <script>
 import VueFormRenderer from "../vue-form-renderer.vue";
 import CollectionRecordsList from "../inspector/collection-records-list.vue";
-
+import _ from 'lodash';
 const globalObject = typeof window === "undefined" ? global : window;
 
 const defaultConfig = [
@@ -156,7 +156,6 @@ export default {
     },
     callbackRecord() {
       this.hasMustache = true;
-      //console.log("en callbackRecord this.selCollectionId: ", this.selCollectionId);
       this.loadRecordCollection(this.selCollectionId, 1, this.selDisplayMode);
     },
     errors() {
@@ -180,7 +179,7 @@ export default {
               this.selDisplayMode === "View" ? viewScreen : editScreen;
           
           this.loadScreen(this.screenCollectionId);
-
+         
           //This section validates if Collection has draft data
           if(this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '') {
             this.localData = respData;
@@ -215,7 +214,7 @@ export default {
       this.hasMustache = false;
       if (record && !isNaN(record) && record > 0 && this.collection.collectionId) {
         this.selRecordId = record;
-        this.loadRecordCollection(this.collection.collectionId, record, this.collectionmode);
+        this.loadRecordCollection(this.collection.collectionId, record, this.selDisplayMode);
       } else {
         if (this.isMustache(record)) {
           this.callbackRecord();
@@ -227,7 +226,6 @@ export default {
       if(collectionmode) {
         this.selDisplayMode = collectionmode.modeId;
       }
-      //console.log("en collectionmode: ", this.selCollectionId);
       this.loadRecordCollection(this.selCollectionId, this.selRecordId, this.selDisplayMode);
     },
   },
@@ -237,7 +235,6 @@ export default {
     });
 
     if (this.collection && this.record) {
-      //console.log("en mounted this.collection.collectionId: ", this.collection.collectionId);
       this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);
     }
   },
