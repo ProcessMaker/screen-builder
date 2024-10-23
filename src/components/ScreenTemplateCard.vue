@@ -26,7 +26,7 @@
         <div class="template-details">
           <span class="template-name d-block pt-1">{{ template.name }}</span>
           <span class="template-description d-block">{{
-            template.description
+            truncateText(template.description, 100)
           }}</span>
         </div>
         <b-collapse v-model="isApplyOptionsActive">
@@ -178,6 +178,10 @@ export default {
       } else {
         this.selected.splice(index, 1);
       }
+    },
+    truncateText(text, limit) {
+      if (!text) return "";
+      return text.length > limit ? `${text.substring(0, limit)}...` : text;
     }
   }
 };
@@ -213,10 +217,14 @@ export default {
 
 .thumbnail-image {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 8px 8px 0px 0px;
 }
 
 .thumbnail-image-container {
+  width: 100%;
+  height: 107px;
   border-radius: 8px;
   padding: 0px !important;
   background-size: contain;
