@@ -147,6 +147,7 @@ export default {
         }
       );
       if (confirm) {
+        this.clipboardPage.items = [];
         this.$store.dispatch("clipboardModule/clearClipboard");
         this.$root.$emit('update-clipboard');
       }
