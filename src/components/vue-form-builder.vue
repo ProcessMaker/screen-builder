@@ -127,6 +127,7 @@
             v-if="isClipboardPage(tabPage)"
             variant="link"
             @click="clearClipboard"
+            class="no-text-transform"
           >
             {{ $t('Clear All') }}
           </b-button>
@@ -1770,5 +1771,8 @@ $side-bar-font-size: 0.875rem;
   border-radius: 8px;
   font-weight: 500;
   font-size: 14px;
+}
+.no-text-transform {
+    text-transform: none;
 }
 </style>
