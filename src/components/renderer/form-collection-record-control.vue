@@ -16,6 +16,7 @@
 <script>
 import VueFormRenderer from "../vue-form-renderer.vue";
 import CollectionRecordsList from "../inspector/collection-records-list.vue";
+import _ from 'lodash';
 
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -184,7 +185,7 @@ export default {
           if(this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '') {
             this.localData = respData;
           }else{
-            this.localData = this.taskDraft.draft.data;
+            this.localData = _.merge({}, respData, this.taskDraft.draft.data);
           }
           
         })
