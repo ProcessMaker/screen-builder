@@ -115,6 +115,9 @@ export default {
             // replace uuids in clipboard content
             clipboardContent.forEach(this.updateUuids);
             page.items.splice(index, 1, ...clipboardContent);
+            if (clipboardContent.length) {
+              window.ProcessMaker.alert(this.$t("Clipboard Pasted Succesfully"), "success");
+            }
           }
           if (item.items) {
             replaceInPage(item);
