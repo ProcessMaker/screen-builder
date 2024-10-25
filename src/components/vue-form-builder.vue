@@ -202,7 +202,7 @@
                   />
                   {{ element.config.name || element.label || $t("Field Name") }}
                   <b-badge
-                    v-if="isInClipboard(extendedPages[tabPage].items[index])"
+                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index])"
                     data-cy="copied-badge"
                     class="m-2 custom-badge"
                     pill
@@ -276,7 +276,7 @@
                   />
                   {{ element.config.name || $t("Variable Name") }}
                   <b-badge
-                    v-if="isInClipboard(extendedPages[tabPage].items[index])"
+                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index])"
                     data-cy="copied-badge"
                     class="m-2 custom-badge"
                     pill
