@@ -888,7 +888,7 @@ export default {
     },
     shouldShow(item, accordion) {
       const sourceOptions = this.inspection.config[item.field]?.sourceOptions;
-      //console.log("INICIO this.styleMode: ", this.styleMode);
+
       if (sourceOptions === 'Variable') {
         this.enableOption = true;
         return true;
