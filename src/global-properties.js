@@ -1,3 +1,7 @@
+import {
+  defaultValueProperty,
+} from './form-control-common-properties.js';
+
 export const formTypes = {
   form: 'form',
   display: 'display',
@@ -6,6 +10,15 @@ export const formTypes = {
 export default [
   {
     inspector: [
+      {
+        type: 'EncryptedConfig',
+        field: 'encryptedConfig',
+        config: {
+          label: 'Encrypted',
+          helper: '',
+        },
+      },
+      defaultValueProperty,
       {
         type: 'FormInput',
         field: 'conditionalHide',
@@ -55,14 +68,6 @@ export default [
           label: 'Tab Order',
           helper: 'Order in which a user will move focus from one control to another by pressing the Tab key',
           validation: 'regex: [0-9]*',
-        },
-      },
-      {
-        type: 'EncryptedConfig',
-        field: 'encryptedConfig',
-        config: {
-          label: 'Encrypted',
-          helper: '',
         },
       },
     ],
