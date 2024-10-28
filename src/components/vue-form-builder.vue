@@ -127,6 +127,7 @@
             v-if="isClipboardPage(tabPage)"
             variant="link"
             @click="clearClipboard"
+            class="no-text-transform"
           >
             {{ $t('Clear All') }}
           </b-button>
@@ -1744,5 +1745,8 @@ $side-bar-font-size: 0.875rem;
 .gray-text.disabled {
   cursor: not-allowed; /* Cambia el cursor cuando se pasa por encima */
   pointer-events: all; /* Permite que el pseudo-elemento reciba eventos del ratón */
+}
+.no-text-transform {
+    text-transform: none;
 }
 </style>
