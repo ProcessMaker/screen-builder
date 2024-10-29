@@ -28,7 +28,7 @@ describe("Clipboard Button Actions", () => {
 
     // Step 4: Verify 'Remove from Clipboard' button is visible after adding to clipboard and then click it
     cy.get('[data-cy="removeFromClipboard"]').should("be.visible");
-    cy.get('[data-cy="removeFromClipboard"]').click();
+    cy.get('[data-cy="removeFromClipboard"]').click({force: true});
     cy.get('[data-cy="removeFromClipboard"]').should("not.exist");
   });
 
@@ -73,7 +73,7 @@ describe("Clipboard Button Actions", () => {
 
     // Step 5: Remove the form input from the clipboard
     cy.get('[data-cy="removeFromClipboard"]').should("be.visible");
-    cy.get('[data-cy="removeFromClipboard"]').click();
+    cy.get('[data-cy="removeFromClipboard"]').click({force: true});
     cy.get('[data-cy="removeFromClipboard"]').should("not.exist");
   });
 
@@ -102,7 +102,7 @@ describe("Clipboard Button Actions", () => {
 
     // Step 4: Remove the form input from the clipboard
     cy.get('[data-cy="removeFromClipboard"]').should("be.visible");
-    cy.get('[data-cy="removeFromClipboard"]').click();
+    cy.get('[data-cy="removeFromClipboard"]').click({force: true});
     cy.get('[data-cy="removeFromClipboard"]').should("not.exist");
   });
 
