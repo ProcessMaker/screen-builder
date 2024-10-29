@@ -61,31 +61,37 @@ describe("Clipboard Button Actions", () => {
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(2) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(3) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(4) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(5) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(6) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get("[data-test=page-dropdown").click();
     cy.get("[data-test=clipboard]").should("exist").click({ force: true });
@@ -111,32 +117,37 @@ describe("Clipboard Button Actions", () => {
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(2) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(3) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(4) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(5) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(6) > [data-cy="screen-element-container"]').click({ force: true });
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
-
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get("[data-test=page-dropdown").click();
     cy.get("[data-test=clipboard]").should("exist").click({ force: true });
@@ -158,6 +169,7 @@ describe("Clipboard Button Actions", () => {
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get("[data-test=page-dropdown").click();
     cy.get("[data-test=clipboard]").should("exist").click({ force: true });
@@ -178,11 +190,13 @@ describe("Clipboard Button Actions", () => {
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
     cy.get(':nth-child(2) > [data-cy="screen-element-container"]').click();
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
     cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
+    cy.get('[data-cy="copied-badge"]').should("exist");
 
 
     cy.get("[data-test=page-dropdown").click();
