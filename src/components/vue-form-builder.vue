@@ -202,6 +202,15 @@
                     class="mr-2 ml-1"
                   />
                   {{ element.config.name || element.label || $t("Field Name") }}
+                  <b-badge
+                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index])"
+                    data-cy="copied-badge"
+                    class="m-2 custom-badge"
+                    pill
+                  >
+                    <i class="far fa-check-circle"></i>
+                    <span class="pl-2">{{ $t('Copied')}}</span>
+                  </b-badge>
                   <div class="ml-auto">
                     <clipboard-button
                       v-if="!isClipboardPage(tabPage)"
@@ -267,6 +276,15 @@
                     class="mr-2 ml-1"
                   />
                   {{ element.config.name || $t("Variable Name") }}
+                  <b-badge
+                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index])"
+                    data-cy="copied-badge"
+                    class="m-2 custom-badge"
+                    pill
+                  >
+                    <i class="far fa-check-circle"></i>
+                    <span class="pl-2">{{ $t('Copied')}}</span>
+                  </b-badge>
                   <div class="ml-auto">
                     <clipboard-button
                       v-if="!isClipboardPage(tabPage)"
@@ -1745,6 +1763,14 @@ $side-bar-font-size: 0.875rem;
 .gray-text.disabled {
   cursor: not-allowed; /* Cambia el cursor cuando se pasa por encima */
   pointer-events: all; /* Permite que el pseudo-elemento reciba eventos del ratón */
+}
+.custom-badge {
+  background-color: #D1F4D7 !important;
+  color: #06723A !important;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
 }
 .no-text-transform {
     text-transform: none;
