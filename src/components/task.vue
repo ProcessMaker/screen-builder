@@ -843,7 +843,6 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleRedirect(data) {
-      debugger;
       switch (data.method) {
         case 'redirectToTask':
           this.handleRedirectToTask(data);
@@ -852,7 +851,6 @@ export default {
           this.handleProcessUpdated(data);
           break;
         case 'processCompletedRedirect':
-          debugger;
           this.processCompletedRedirect(
             data.params[0],
             this.userId,
