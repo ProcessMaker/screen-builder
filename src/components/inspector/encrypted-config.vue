@@ -13,7 +13,7 @@
       <div v-if="settings.encrypted">
         <select-user-group
           :key="componentKey"
-          :label="$t('Users/Groups to View')"
+          :label="$t('Users/Groups to View Encrypted Fields')"
           v-model="settings.assignments"
           :multiple="true"
           @input="emitChanges"
