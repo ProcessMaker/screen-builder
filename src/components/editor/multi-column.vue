@@ -42,6 +42,15 @@
                       class="mr-2 ml-1"
                     />
                     {{ element.config.name || $t("Variable Name") }}
+                    <b-badge
+                      v-if="isInClipboard(element)"
+                      data-cy="copied-badge"
+                      class="m-2 custom-badge"
+                      pill
+                    >
+                      <i class="far fa-check-circle"></i>
+                      <span class="pl-2">{{ $t('Copied')}}</span>
+                    </b-badge>
                     <div class="ml-auto">
                       <clipboard-button
                         :index="index"
@@ -108,6 +117,15 @@
                       class="mr-2 ml-1"
                     />
                     {{ element.config.name || $t("Variable Name") }}
+                    <b-badge
+                      v-if="isInClipboard(element)"
+                      data-cy="copied-badge"
+                      class="m-2 custom-badge"
+                      pill
+                    >
+                      <i class="far fa-check-circle"></i>
+                      <span class="pl-2">{{ $t('Copied')}}</span>
+                    </b-badge>
                     <div class="ml-auto">
                       <clipboard-button
                         :index="index"
@@ -374,5 +392,13 @@ export default {
   100% {
     box-shadow: 0 0 0 13px rgba(0, 0, 0, 0);
   }
+}
+.custom-badge {
+  background-color: #D1F4D7 !important;
+  color: #06723A !important;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
 }
 </style>
