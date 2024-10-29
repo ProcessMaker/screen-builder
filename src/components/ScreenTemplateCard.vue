@@ -24,9 +24,11 @@
       <hr class="card-divider" />
       <b-card-body class="p-1">
         <div class="template-details">
-          <span class="template-name d-block pt-1">{{ template.name }}</span>
+          <span class="template-name d-block pt-1">{{
+            truncateText(template.name, 45)
+          }}</span>
           <span class="template-description d-block">{{
-            truncateText(template.description, 100)
+            truncateText(template.description, 60)
           }}</span>
         </div>
         <b-collapse v-model="isApplyOptionsActive">
