@@ -41,7 +41,7 @@
       <input
         v-else
         v-model="localValue"
-        v-bind="componentConfig"
+        v-bind="componentConfigEncField"
         v-uni-id="name"
         :name="name"
         class="form-control"
@@ -231,6 +231,7 @@ export default {
       labelBtn: '',
       errorEncryptedField: '',
       concealExecuted: false,
+      componentConfigEncField: null,
     };
   },
   computed: {
@@ -289,17 +290,18 @@ export default {
      * "encrypted" attribute is enabled
      */
     if (this.encryptedConfig?.encrypted) {
+      this.componentConfigEncField = JSON.parse(JSON.stringify(this.componentConfig));
       if (uuidValidate(this.localValue)) {
         this.inputType = "password";
         this.iconBtn = "fas fa-eye";
         this.labelBtn = this.$t("Reveal");
         this.concealExecuted = true;
-        this.componentConfig.readonly = true;
+        this.componentConfigEncField.readonly = true;
       } else {
         this.inputType = "text";
         this.iconBtn = "fas fa-eye-slash";
         this.labelBtn = this.$t("Conceal");
-        this.componentConfig.readonly = false;
+        this.componentConfigEncField.readonly = this.componentConfig.readonly;
       }
     } else {
       this.inputType = this.dataType;
@@ -381,7 +383,7 @@ export default {
       this.iconBtn = "fas fa-eye";
       this.labelBtn = this.$t("Reveal");
       this.concealExecuted = true;
-      this.componentConfig.readonly = true;
+      this.componentConfigEncField.readonly = true;
       this.errorEncryptedField = "";
 
       // Assign uuid from encrypted data
@@ -392,7 +394,7 @@ export default {
       this.inputType = this.dataType;
       this.iconBtn = "fas fa-eye-slash";
       this.labelBtn = this.$t("Conceal");
-      this.componentConfig.readonly = false;
+      this.componentConfigEncField.readonly = this.componentConfig.readonly;
 
       // Assign value decrypted
       this.localValue = decryptedValue;
