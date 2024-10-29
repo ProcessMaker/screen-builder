@@ -79,7 +79,7 @@ Cypress.Commands.add("socketEventNext", (event, body) => {
  * @param {String} type - content type of the uploaded file
  * @return {Promise} Resolves with blob containing fixture contents
  */
-function getFixtureBlob(fileUrl, type, c) {
+function getFixtureBlob(fileUrl, type) {
   return type === "application/json"
     ? cy
         .fixture(fileUrl)
