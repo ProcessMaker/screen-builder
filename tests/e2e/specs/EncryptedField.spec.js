@@ -90,4 +90,44 @@ describe("Encrypted Field", () => {
     // After conceal the value should be the same
     cy.get("[data-cy=preview-content] [name=form_input_1]").should("have.value", secretValue);
   });
+
+  it("Encrypted field in preview with 'readonly' property enabled", () => {
+    visitAndOpenAcordeon();
+    dragFormInput();
+    // Enable "readonly" mode
+    cy.get("[data-cy=inspector-readonly]").click();
+    cy.get("[data-cy=accordion-Advanced]").click();
+    // Enable encrypted
+    cy.get("[data-cy=inspector-encryptedConfig]")
+      .children()
+      .children(".custom-control")
+      .each((control) => {
+        // forced click over the control
+        control.children("input").trigger("click");
+      });
+    // Display available users/groups
+    cy.get('[data-cy="inspector-encryptedConfig"] .multiselect').click();
+    // Select a group
+    cy.get('[data-cy="inspector-encryptedConfig"] #option-2-4').click();
+    // Go to preview mode
+    enterPreviewMode();
+    // Set initial data
+    cy.setPreviewDataInput('{"form_input_1":"Other value"}');
+    // Click in "Conceal" with data
+    cy.get('[data-cy=preview-content] [name=form_input_1]').siblings('button').click();
+    // After conceal should be keep the "readonly" mode
+    cy.get("[data-cy=preview-content] [name=form_input_1]").should("have.attr", "readonly");
+    // After conceal the value should be different
+    cy.get("[data-cy=preview-content] [name=form_input_1]").should("have.not.value", secretValue);
+    // The value in data should be the uuid returned
+    cy.assertPreviewData({
+      form_input_1: uuid,
+    });
+    // Click in "Reveal"
+    cy.get('[data-cy=preview-content] [name=form_input_1]').siblings('button').click();
+    // After conceal should be keep the "readonly" mode
+    cy.get("[data-cy=preview-content] [name=form_input_1]").should("have.attr", "readonly");
+    // After conceal the value should be the same
+    cy.get("[data-cy=preview-content] [name=form_input_1]").should("have.value", secretValue);
+  });
 });
