@@ -203,7 +203,7 @@
                   />
                   {{ element.config.name || element.label || $t("Field Name") }}
                   <b-badge
-                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index])"
+                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index])  && screenType === 'form'"
                     data-cy="copied-badge"
                     class="m-2 custom-badge"
                     pill
@@ -213,7 +213,7 @@
                   </b-badge>
                   <div class="ml-auto">
                     <clipboard-button
-                      v-if="!isClipboardPage(tabPage)"
+                      v-if="!isClipboardPage(tabPage) && screenType === 'form'"
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
@@ -259,6 +259,7 @@
                   :selected="selected"
                   :config="element.config"
                   :ai-element="element"
+                  :screen-type="screenType"
                   @inspect="inspect"
                   @update-state="updateState"
                 />
@@ -277,7 +278,7 @@
                   />
                   {{ element.config.name || $t("Variable Name") }}
                   <b-badge
-                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index])"
+                    v-if="!isClipboardPage(tabPage) && isInClipboard(extendedPages[tabPage].items[index]) && screenType === 'form'"
                     data-cy="copied-badge"
                     class="m-2 custom-badge"
                     pill
@@ -287,7 +288,7 @@
                   </b-badge>
                   <div class="ml-auto">
                     <clipboard-button
-                      v-if="!isClipboardPage(tabPage)"
+                      v-if="!isClipboardPage(tabPage) && screenType === 'form'"
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
@@ -321,12 +322,14 @@
                     styleMode === 'Modern' ? elementCssClassModern(element) : elementCssClass(element),
                     { 'prevent-interaction': !element.config.interactive }
                   ]"
+                  :screen-type="screenType"
                   @input="
                     element.config.interactive
                       ? (element.config.content = $event)
                       : null
                   "
                   @focusout.native="updateState"
+                  
                 />
               </div>
             </div>
