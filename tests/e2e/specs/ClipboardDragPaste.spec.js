@@ -229,4 +229,37 @@ describe("Clipboard Drag and Paste", () => {
     cy.get('[data-cy="screen-element-container"]').eq(0).find('input').should('exist');
     cy.get('[data-cy="screen-element-container"]').eq(1).find('input').should('exist');
   });
+  it("Drag and Drop clipboard item into a multicolumn ", () => {
+    // Step 1: Visit the homepage and open the 'Content Fields' and 'Clipboard' accordions
+    cy.visit("/");
+    cy.openAcordeonByLabel("Content Fields");
+    cy.openAcordeonByLabel("Clipboard");
+
+    // Step 2: Drag Multicolumn control to the screen's drop zone and add a Clipboard control inside
+    cy.get("[data-cy=controls-FormMultiColumn]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
+    addControlInsideTable(1, nodeControls.clipboard);
+
+    // Step 3: Verify that there are one input elements pasted
+    cy.get('[data-cy="screen-element-container"]').should('have.length', 1);
+    cy.get('[data-cy="screen-element-container"]').eq(0).find('input').should('exist');
+  });
+
+  it("Drag and Drop clipboard item into a loop", () => {
+    // Step 1: Visit the homepage and open the 'Content Fields' and 'Clipboard' accordions
+    cy.visit("/");
+    cy.openAcordeonByLabel("Content Fields");
+    cy.openAcordeonByLabel("Clipboard");
+
+    // Step 2: Drag Loop control to the screen's drop zone and add a Clipboard control inside
+    cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
+      position: "bottom"
+    });
+    addControlInsideLoop(1, nodeControls.clipboard);
+
+    // Step 3: Verify that there are one input elements pasted
+    cy.get('[data-cy="screen-element-container"]').should('have.length', 1);
+    cy.get('[data-cy="screen-element-container"]').eq(0).find('input').should('exist');
+  });
 });
