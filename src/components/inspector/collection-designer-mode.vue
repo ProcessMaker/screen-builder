@@ -36,6 +36,9 @@
       ],
       };
     },
+    mounted () {
+      this.callBuilder(this.designerOptions);
+    },
     computed: {
       options() {
         return Object.fromEntries(
@@ -56,10 +59,15 @@
       options: {
         handler() {
           this.$emit("input", this.options);
-          this.$root.$emit("style-mode", this.options.designerOptions);
+          this.callBuilder(this.options.designerOptions);
         },
         deep: true
       },
     },
+    methods: {
+      callBuilder(option) {
+        this.$root.$emit("style-mode", option);
+      }
+    }
   };
   </script>

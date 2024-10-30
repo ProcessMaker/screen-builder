@@ -255,7 +255,9 @@
                   v-model="element.items"
                   :validation-errors="validationErrors"
                   class="card-body"
-                  :class="styleMode === 'Modern' ? elementCssClassModern(element) : elementCssClass(element)"
+                  :class="styleMode === 'Modern' && element.component === 'FormRecordList' 
+                    ? elementCssClassModern(element) 
+                    : elementCssClass(element)"
                   :selected="selected"
                   :config="element.config"
                   :ai-element="element"
@@ -318,7 +320,9 @@
                   :tabindex="element.config.interactive ? 0 : -1"
                   class="card-body m-0 pb-4 pt-4"
                   :class="[
-                    styleMode === 'Modern' ? elementCssClassModern(element) : elementCssClass(element),
+                    styleMode === 'Modern' && element.component === 'FormRecordList' 
+                    ? elementCssClassModern(element) 
+                    : elementCssClass(element),
                     { 'prevent-interaction': !element.config.interactive }
                   ]"
                   @input="
