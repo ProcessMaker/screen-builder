@@ -1,6 +1,11 @@
 <template>
   <div class="column-draggable" :selector="config.customCssSelector">
-    <draggable style="min-height: 80px" :list="items" group="controls">
+    <draggable
+      style="min-height: 80px"
+      :list="items" 
+      group="controls"
+      @change="onChange"
+    >
       <div
         v-for="(element, index) in items"
         :key="index"
@@ -206,7 +211,9 @@ export default {
       immediate: true
     },
     items() {
+      debugger;
       this.$emit("input", this.items);
+      // this.$emit("update-state");
     }
   },
   mounted() {
@@ -276,7 +283,13 @@ export default {
           this.$set(item.config.aiConfig, "progress", progress);
         }
       });
-    }
+    },
+    /**
+     * Triggered when the draggable container is changed.
+     */
+    onChange(e) {
+      this.$emit("update-state");
+    },
   }
 };
 </script>
