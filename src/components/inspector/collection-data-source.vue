@@ -194,6 +194,9 @@
         },
         deep: true
       },
+      dataSelectionOptions() {
+        this.singleField = null;
+      }
     },
   };
   </script>
