@@ -33,7 +33,7 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <b-badge
-                v-if="isInClipboard(items[index])"
+                v-if="isInClipboard(items[index]) && screenType === 'form'"
                 data-cy="copied-badge"
                 class="m-2 custom-badge"
                 pill
@@ -43,6 +43,7 @@
               </b-badge>
               <div class="ml-auto">
                 <clipboard-button
+                  v-if="screenType === 'form'"
                   :index="index"
                   :config="element.config"
                   :isInClipboard="isInClipboard(items[index])"
@@ -88,6 +89,7 @@
               :config="element.config"
               @inspect="inspect"
               @update-state="$emit('update-state')"
+              :screen-type="screenType"
             />
           </div>
         </div>
@@ -106,7 +108,7 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <b-badge
-                v-if="isInClipboard(items[index])"
+                v-if="isInClipboard(items[index]) && screenType === 'form'"
                 data-cy="copied-badge"
                 class="m-2 custom-badge"
                 pill
@@ -116,6 +118,7 @@
               </b-badge>
               <div class="ml-auto">
                 <clipboard-button
+                  v-if="screenType === 'form'"
                   :index="index"
                   :config="element.config"
                   :isInClipboard="isInClipboard(items[index])"
@@ -151,6 +154,7 @@
               ]"
               :tabindex="element.config.interactive ? 0 : -1"
               :config="element.config"
+              :screen-type="screenType"
               @input="
                 element.config.interactive
                   ? (element.config.content = $event)
@@ -196,7 +200,7 @@ export default {
     ...renderer
   },
   mixins: [HasColorProperty, Clipboard],
-  props: ["value", "name", "config", "selected", "validationErrors"],
+  props: ["value", "name", "config", "selected", "validationErrors", "screenType"],
   data() {
     return {
       items: [],
