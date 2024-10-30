@@ -215,9 +215,7 @@ export default {
       immediate: true
     },
     items() {
-      debugger;
       this.$emit("input", this.items);
-      // this.$emit("update-state");
     }
   },
   mounted() {
