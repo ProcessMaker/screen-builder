@@ -65,6 +65,11 @@ Cypress.Commands.add("socketEvent", (event, body) => {
   });
 });
 
+Cypress.Commands.add("socketEventNext", (event, body) => {
+  cy.window().then((win) => {
+    win.Echo.eventMockNext(event, body);
+  });
+});
 /**
  * Converts Cypress fixtures, including JSON, to a Blob. All file types are
  * converted to base64 then converted to a Blob using Cypress
