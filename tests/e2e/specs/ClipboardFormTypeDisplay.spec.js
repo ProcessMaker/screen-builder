@@ -17,6 +17,5 @@ describe("Clipboard Form Type Display", () => {
     // Verify that the button does not exist for specific child elements
     checkAddToClipboardNotExist(2);
     checkAddToClipboardNotExist(3);
-    checkAddToClipboardNotExist(2); // This seems redundant; if necessary, ensure it's intentional
   });
 });
