@@ -158,6 +158,10 @@ export default {
     this.removeDefaultClasses();
   },
   mounted() {
+    if (this.value) {
+      this.fetchFiles();
+    }
+    
     this.$root.$on('set-upload-data-name',
       (recordList, index, id) => this.listenRecordList(recordList, index, id));
 
@@ -597,6 +601,10 @@ export default {
       }
 
       if (displayMessage.length > 0) {
+        const data = JSON.parse(displayMessage);
+        if (data.message) {
+          displayMessage = data.message;
+        }
         window.ProcessMaker.alert(`${this.$t('File Upload Error:')}  ${displayMessage}`, 'danger');
       }
 
@@ -699,7 +707,29 @@ export default {
     },
     cfSkipFileUpload() {
       this.$emit('cf-skip-file-upload');
-    }
+    },
+    async fetchFiles() {
+      const fileIds = Array.isArray(this.value) ? this.value : [this.value];
+
+      const fetchPromises = fileIds.map(async (file) => {
+        const id = file?.file ?? file;
+        const endpoint = `files/${id}`;
+        try {
+            const response = await ProcessMaker.apiClient.get(endpoint);
+            if (response?.data) {
+                const fileExists = this.files.some(existingFile => existingFile.id === response.data.id);
+                // Check if the file already exists in the list before adding it.
+                if (!fileExists) {
+                    this.files.push(response.data);
+                }
+            }
+        } catch (error) {
+            console.error(`Failed to fetch file ${id}`, error);
+        }
+      });
+
+      return await Promise.all(fetchPromises);
+    },
   },
 };
 </script>
