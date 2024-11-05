@@ -29,8 +29,8 @@
           <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
           <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
           
-          <label class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
-          <b-form-input id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
+          <label v-if="renderAs === 'checkbox'" class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
+          <b-form-input v-if="renderAs === 'checkbox'" id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
         </div>
 
         <div class="card-footer text-right p-2">
@@ -78,8 +78,8 @@
                     <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
                     <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
                     
-                    <label class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
-                    <b-form-input id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
+                    <label v-if="renderAs === 'checkbox'" class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
+                    <b-form-input v-if="renderAs === 'checkbox'" id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
                   </div>
 
                   <div class="card-footer text-right p-2">
@@ -137,7 +137,7 @@
     </div>
     
     <div v-if="dataSource === dataSourceValues.collection">
-      <collection-select-list v-model="collectionOptions"></collection-select-list>
+      <collection-select-list v-model="collectionOptions" :renderAs="renderAs"></collection-select-list>
     </div>
 
     <div v-if="showRenderAs">
@@ -210,10 +210,10 @@
       <b-form-input id="value" v-model="value" @change="valueChanged" data-cy="inspector-datasource-content"/>
       <small class="form-text text-muted mb-3">{{ $t('Content to display to the user in the select list.') }}</small>
 
-      <label for="aria-label">{{ $t('Aria Label') }}</label>
-      <mustache-helper/>
-      <b-form-input id="aria-label" v-model="optionAriaLabel" data-cy="inspector-datasource-aria-label"/>
-      <small class="form-text text-muted mb-3">{{ $t('Aria label for accessibility support.') }}</small>
+      <label v-if="renderAs === 'checkbox'" for="aria-label">{{ $t('Aria Label') }}</label>
+      <mustache-helper v-if="renderAs === 'checkbox'" />
+      <b-form-input v-if="renderAs === 'checkbox'" id="aria-label" v-model="optionAriaLabel" data-cy="inspector-datasource-aria-label"/>
+      <small v-if="renderAs === 'checkbox'" class="form-text text-muted mb-3">{{ $t('Aria label for accessibility support.') }}</small>
     </div>
 
     <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
@@ -221,9 +221,9 @@
       <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property" data-cy="inspector-options-value" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
 
-      <label for="aria-label">{{ $t('Aria Label') }}</label>
-      <b-form-input id="aria-label" v-model="optionAriaLabel" placeholder="Aria Label Property" data-cy="inspector-options-aria-label" />
-      <small class="form-text text-muted mb-3">{{ $t('Enter the property name for the aria label from the Request data variable.') }}</small>
+      <label v-if="renderAs === 'checkbox'" for="aria-label">{{ $t('Aria Label') }}</label>
+      <b-form-input v-if="renderAs === 'checkbox'" id="aria-label" v-model="optionAriaLabel" placeholder="Aria Label Property" data-cy="inspector-options-aria-label" />
+      <small v-if="renderAs === 'checkbox'" class="form-text text-muted mb-3">{{ $t('Enter the property name for the aria label from the Request data variable.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">

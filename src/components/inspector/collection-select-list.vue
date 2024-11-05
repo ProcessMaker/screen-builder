@@ -31,7 +31,7 @@
       />
     </div>
 
-    <div v-if="fields.length > 1" class="mt-3">
+    <div v-if="fields.length > 1 && renderAs === 'checkbox'" class="mt-3">
       <label for="aria-label">{{ $t("Aria Label") }}</label>
       <b-form-select
         id="aria-label"
@@ -92,7 +92,7 @@ export default {
     MustacheHelper,
     ScreenVariableSelector
   },
-  props: ["value"],
+  props: ["value", "renderAs"],
   data() {
     return {
       collections: [],
