@@ -15,5 +15,6 @@ export const nodeControls = {
   formHtmlViewer: "[data-cy=controls-FormHtmlViewer]",
   formSelectList: "[data-cy=controls-FormSelectList]",
   formSubmit: "[data-cy=controls-FormButton]",
-  formTextArea: "[data-cy=controls-FormTextArea]"
+  formTextArea: "[data-cy=controls-FormTextArea]",
+  clipboard: "[data-cy=controls-Clipboard]"
 };

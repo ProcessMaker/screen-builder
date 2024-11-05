@@ -145,7 +145,7 @@ Cypress.Commands.add("assertComponentValueAsJson", (selector, expectedData) => {
  * @function
  * @param {String} filename - The screen filename to load
  */
-Cypress.Commands.add("loadFromJson", (filename, index) => {
+Cypress.Commands.add("loadFromJson", (filename, index, mode= 'form') => {
   return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
     cy.window().then((win) => {
       win.exampleScreens = content.screens;
@@ -159,6 +159,11 @@ Cypress.Commands.add("loadFromJson", (filename, index) => {
         "#screen-builder-container",
         "$refs.builder.config",
         screen.config
+      );
+      cy.setVueComponentProperty(
+        "#screen-builder-container",
+        "$refs.builder.$parent.displayType",
+        mode
       );
       cy.setVueComponentProperty(
         "#screen-builder-container",

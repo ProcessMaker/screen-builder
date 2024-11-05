@@ -114,6 +114,7 @@
           title="Default"
           :render-controls="displayBuilder"
           @change="updateConfig"
+          :screen-type="displayType"
         >
           <default-loading-spinner />
         </vue-form-builder>
@@ -448,6 +449,7 @@ export default {
       },
       showTemplatesPanel: false,
       sharedTemplatesData: null,
+      displayType: 'form'
     };
   },
   computed: {

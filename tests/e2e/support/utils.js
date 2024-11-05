@@ -59,9 +59,7 @@ export function addControlInsideTable(numColumn, control) {
       "numColumn",
       numColumn
     );
-  cy.get(control).drag(
-    '[data-cy=screen-element-container] >* div[class^= "column-draggable"]:nth-child(2)'
-  );
+  cy.get(control).drag(column);
   cy.get("[data-cy=screen-element-container]").last().click();
 }
 
