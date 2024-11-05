@@ -1,13 +1,18 @@
 <template>
   <div>
     <div>
-      <label for="collection">{{ $t("Collection") }}</label>
-      <b-form-select
-        id="collection"
-        v-model="collectionId"
-        :options="collections"
-        data-cy="inspector-collection"
-      />
+      <label for="collection">{{ $t("Collection Name") }}</label>
+      <b-form-group>
+        <b-form-select
+          id="collection"
+          v-model="collectionId"
+          :options="collections"
+          data-cy="inspector-collection"
+        />
+        <b-form-text class="mt-2">
+        {{ $t("Collection Record Control is not available for Anonymous Web Entry") }} 
+        </b-form-text>
+    </b-form-group>
     </div>
     <div v-if="collectionId > 0" class="screen-link mt-2">
       <a 
