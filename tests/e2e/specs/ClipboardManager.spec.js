@@ -3,6 +3,7 @@ import ClipboardManager from "../../../src/store/modules/ClipboardManager";
 describe("Clipboard Manager", () => {
 
   it("Should be updated when adding and removing an input field to/from the clipboard", () => {
+    cy.clearLocalStorage();
     cy.visit("/");
     cy.openAcordeonByLabel("Input Fields");
 

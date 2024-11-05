@@ -108,22 +108,45 @@ export default {
       }
 
       const replaceInPage = (page) => {
-        page.items.forEach((item, index) => {
-          if (item.component === clipboardComponentName) {
-            // clone clipboard content to avoid modifying the original
-            const clipboardContent = _.cloneDeep(this.$store.getters["clipboardModule/clipboardItems"]);
-            // replace uuids in clipboard content
-            clipboardContent.forEach(this.updateUuids);
-            page.items.splice(index, 1, ...clipboardContent);
-            if (clipboardContent.length) {
-              window.ProcessMaker.alert(this.$t("Clipboard Pasted Succesfully"), "success");
-            }
-          }
-          if (item.items) {
-            replaceInPage(item);
-          }
-        });
-      }
+        const processItems = (items) => {
+            items.forEach((item, index) => {
+                // Recursively process nested arrays
+                if (Array.isArray(item)) {
+                    return processItems(item);
+                }
+    
+                // Replace clipboard component with clipboard content
+                if (item.component === clipboardComponentName) {
+                    // Clone clipboard content to avoid modifying original data
+                    const clipboardContent = _.cloneDeep(this.$store.getters["clipboardModule/clipboardItems"]);
+                    
+                    // Update UUIDs in clipboard content to prevent duplicate IDs
+                    clipboardContent.forEach(this.updateUuids);
+    
+                    // Replace the clipboard component with the clipboard content
+                    items.splice(index, 1, ...clipboardContent);
+    
+                    // Show success message if clipboard content is present
+                    if (clipboardContent.length > 0) {
+                        window.ProcessMaker.alert(this.$t("Clipboard Pasted Successfully"), "success");
+                    }
+                }
+    
+                // Process nested items recursively
+                if (item.items) {
+                    processItems(item.items);
+                }
+            });
+        };
+    
+        // Initiate the processing of page items
+        if (page && Array.isArray(page.items)) {
+            processItems(page.items);
+        } else {
+            console.warn("Invalid page structure or no items to process.");
+        }
+      };
+
       screenConfig.forEach((item) => replaceInPage(item));
     },
 

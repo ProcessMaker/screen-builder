@@ -1,6 +1,11 @@
 <template>
   <div class="column-draggable" :selector="config.customCssSelector">
-    <draggable style="min-height: 80px" :list="items" group="controls">
+    <draggable
+      style="min-height: 80px"
+      :list="items" 
+      group="controls"
+      @change="onChange"
+    >
       <div
         v-for="(element, index) in items"
         :key="index"
@@ -28,7 +33,7 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <b-badge
-                v-if="isInClipboard(items[index])"
+                v-if="isInClipboard(items[index]) && screenType === 'form'"
                 data-cy="copied-badge"
                 class="m-2 custom-badge"
                 pill
@@ -38,6 +43,7 @@
               </b-badge>
               <div class="ml-auto">
                 <clipboard-button
+                  v-if="screenType === 'form'"
                   :index="index"
                   :config="element.config"
                   :isInClipboard="isInClipboard(items[index])"
@@ -83,6 +89,7 @@
               :config="element.config"
               @inspect="inspect"
               @update-state="$emit('update-state')"
+              :screen-type="screenType"
             />
           </div>
         </div>
@@ -101,7 +108,7 @@
               />
               {{ element.config.name || $t("Variable Name") }}
               <b-badge
-                v-if="isInClipboard(items[index])"
+                v-if="isInClipboard(items[index]) && screenType === 'form'"
                 data-cy="copied-badge"
                 class="m-2 custom-badge"
                 pill
@@ -111,6 +118,7 @@
               </b-badge>
               <div class="ml-auto">
                 <clipboard-button
+                  v-if="screenType === 'form'"
                   :index="index"
                   :config="element.config"
                   :isInClipboard="isInClipboard(items[index])"
@@ -146,6 +154,7 @@
               ]"
               :tabindex="element.config.interactive ? 0 : -1"
               :config="element.config"
+              :screen-type="screenType"
               @input="
                 element.config.interactive
                   ? (element.config.content = $event)
@@ -191,7 +200,7 @@ export default {
     ...renderer
   },
   mixins: [HasColorProperty, Clipboard],
-  props: ["value", "name", "config", "selected", "validationErrors"],
+  props: ["value", "name", "config", "selected", "validationErrors", "screenType"],
   data() {
     return {
       items: [],
@@ -276,7 +285,13 @@ export default {
           this.$set(item.config.aiConfig, "progress", progress);
         }
       });
-    }
+    },
+    /**
+     * Triggered when the draggable container is changed.
+     */
+    onChange(e) {
+      this.$emit("update-state");
+    },
   }
 };
 </script>
