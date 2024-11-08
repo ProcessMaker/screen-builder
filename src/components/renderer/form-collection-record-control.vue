@@ -167,7 +167,6 @@ export default {
       this.selCollectionId = collectionId;
       this.selRecordId = recordId;
       this.selDisplayMode = modeId;
-
       this.$dataProvider
         .getCollectionRecordsView(collectionId, recordId)
         .then((response) => {
@@ -176,9 +175,10 @@ export default {
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
             //Choose screen id regarding of the display Mode
-            this.screenCollectionId =
-              this.selDisplayMode === "View" ? viewScreen : editScreen;
-          
+            this.screenCollectionId = 
+              typeof this.selDisplayMode === 'function' ? 
+                (this.collectionmode.modeId === "View" ? viewScreen : editScreen) :
+                (this.selDisplayMode === "View" ? viewScreen : editScreen);
           this.loadScreen(this.screenCollectionId);
          
           //This section validates if Collection has draft data
