@@ -192,6 +192,7 @@ export default {
         .catch(() => {
           this.localData = {};
           globalObject.ProcessMaker.alert(this.$t('This content does not exist. We could not locate indicated data'), "danger");
+          this.placeholder = "Select a collection";
         });;
     },
     isMustache(record) {
