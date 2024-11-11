@@ -181,13 +181,17 @@ export default {
                 (this.selDisplayMode === "View" ? viewScreen : editScreen);
           this.loadScreen(this.screenCollectionId);
          
-          //This section validates if Collection has draft data
-          if(this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '') {
+          //This section validates if Collection has draft data and if the record is different to the draft record
+          if (
+            this.taskDraft?.draft?.data == null || 
+            this.taskDraft.draft.data === '' || 
+            String(this.selRecordId) !== this.taskDraft.draft.data.id
+          ) {
             this.localData = respData;
           }else{
             this.localData = _.merge({}, respData, this.taskDraft.draft.data);
           }
-          
+
         })
         .catch(() => {
           this.localData = {};
