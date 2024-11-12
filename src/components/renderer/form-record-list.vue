@@ -431,20 +431,22 @@ export default {
       }
 
       // Adds radio buttons or checkbox to the table depending selected option
-      if (['single-field', 'single-record'].includes(this.source?.dataSelectionOptions)) {
-        fields.unshift({
-          key: 'radio',
-          label: '',
-          sortable: false,
-        });
-      }
-
-      if (this.source?.dataSelectionOptions === 'multiple-records') {
-        fields.unshift({
-          key: 'checkbox',
-          label: '',
-          sortable: false
-        });
+      if(this.source?.sourceOptions === "Collection") { 
+        if (['single-field', 'single-record'].includes(this.source?.dataSelectionOptions)) {
+          fields.unshift({
+            key: 'radio',
+            label: '',
+            sortable: false,
+          });
+        }
+  
+        if (this.source?.dataSelectionOptions === 'multiple-records') {
+          fields.unshift({
+            key: 'checkbox',
+            label: '',
+            sortable: false
+          });
+        }
       }
       
       return fields;
