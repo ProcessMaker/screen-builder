@@ -61,7 +61,8 @@ export default {
       screenType: "",
       hasMustache: false,
       flagDraft: {},
-      taskDraft: {}
+      taskDraft: {},
+      enableDraft: true
     };
   },
   computed: {
@@ -182,12 +183,13 @@ export default {
           this.loadScreen(this.screenCollectionId);
          
           //This section validates if Collection has draft data
-          if(this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '') {
+          if (this.taskDraft?.draft?.data == null || this.taskDraft.draft.data === '' || !this.enableDraft) 
+          {
             this.localData = respData;
           }else{
             this.localData = _.merge({}, respData, this.taskDraft.draft.data);
           }
-          
+
         })
         .catch(() => {
           this.localData = {};
@@ -214,6 +216,7 @@ export default {
     },
     record(record) {
       this.hasMustache = false;
+      this.enableDraft = false;
       if (record && !isNaN(record) && record > 0 && this.collection.collectionId) {
         this.selRecordId = record;
         this.loadRecordCollection(this.collection.collectionId, record, this.selDisplayMode);
