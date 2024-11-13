@@ -70,7 +70,7 @@
     </filter-table>
   </div>
   <div v-else>
-    <formEmpty link="Requests" title="No Cases to Show" :url="noDataUrl" />
+    <formEmpty link="Requests" :title="$t('No Cases to Show')" :url="noDataUrl" />
   </div>
 </template>
 
