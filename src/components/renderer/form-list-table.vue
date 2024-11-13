@@ -160,12 +160,12 @@ export default {
   },
   watch: {
     listOption() {
-      this.title = this.checkTitle(this.listOption);
+      this.title = this.$t(this.checkTitle(this.listOption));
       this.dataControl = {};
     }
   },
   mounted() {
-    this.title = this.checkTitle(this.listOption);
+    this.title = this.$t(this.checkTitle(this.listOption));
   },
   methods: {
     /**
