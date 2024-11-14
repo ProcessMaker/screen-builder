@@ -481,6 +481,15 @@ export default [
           jsonData: '',
         },
         form: '',
+        source: {
+          collectionFields: [],
+          collectionFieldsColumns: [],
+          pmql: null,
+          sourceOptions: "Variable",
+          variableStore: null,
+          dataSelectionOptions: "no-selection",
+          singleField: null
+        }
       },
       inspector: [
         keyNameProperty,
