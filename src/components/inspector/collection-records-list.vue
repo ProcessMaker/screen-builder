@@ -54,7 +54,8 @@ export default {
       dataRecordList: [],
       idCollectionScreenView: null,
       idCollectionScreenEdit: null,
-      screenMode: null
+      screenMode: null,
+      collectionsMap: {}
     };
   },
   computed: {
@@ -76,6 +77,7 @@ export default {
     },
     collectionId: {
       handler() {
+        this.updateScreenIds();
         this.getFields();
       }
     },
@@ -114,17 +116,20 @@ export default {
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
-        const [firstItem = {}] = response.data.data || [];
-        this.idCollectionScreenView = firstItem.read_screen_id;
-        this.idCollectionScreenEdit = firstItem.create_screen_id;
+        this.collectionsMap = response.data.data.reduce((acc, collection) => {
+          acc[collection.id] = {
+            read_screen_id: collection.read_screen_id,
+            create_screen_id: collection.create_screen_id
+          };
+          return acc;
+        }, {});
+
         this.collections = [
           { value: null, text: this.$t("Select a collection") },
-          ...response.data.data.map((collection) => {
-            return {
-              text: collection.name,
-              value: collection.id
-            };
-          })
+          ...response.data.data.map((collection) => ({
+            text: collection.name,
+            value: collection.id
+          }))
         ];
       });
     },
@@ -155,6 +160,16 @@ export default {
     },
     onPmqlChange(pmql) {
       this.pmql = pmql;
+    },
+    updateScreenIds() {
+      if (this.collectionId && this.collectionsMap[this.collectionId]) {
+        const selectedCollection = this.collectionsMap[this.collectionId];
+        this.idCollectionScreenView = selectedCollection.read_screen_id;
+        this.idCollectionScreenEdit = selectedCollection.create_screen_id;
+      } else {
+        this.idCollectionScreenView = null;
+        this.idCollectionScreenEdit = null;
+      }
     }
   }
 };
