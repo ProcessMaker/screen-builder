@@ -192,7 +192,7 @@
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
-      <div v-if="valueTypeReturned === 'single'">
+      <div v-if="valueTypeReturned === 'single' || valueTypeReturned === 'object'">
         <label for="key">{{ $t('Value') }}</label>
         <mustache-helper/>
         <b-form-input id="key" v-model="key" @change="keyChanged" data-cy="inspector-datasource-value"/>
