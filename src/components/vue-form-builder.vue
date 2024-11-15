@@ -234,7 +234,7 @@
                     <button
                       v-if="!(isAiSection(element) && aiPreview(element))"
                       data-test="copy-control-btn"
-                      class="btn btn-sm btn-secondary mr-2"
+                      class="btn btn-sm btn-primary mr-2"
                       :title="$t('Copy Control')"
                       @click="duplicateItem(index)"
                     >
@@ -300,7 +300,7 @@
                       @removeFromClipboard="removeFromClipboard(extendedPages[tabPage].items[index])"
                     />
                     <button
-                      class="btn btn-sm btn-secondary mr-2"
+                      class="btn btn-sm btn-primary mr-2"
                       :title="$t('Copy Control')"
                       @click="duplicateItem(index)"
                     >
