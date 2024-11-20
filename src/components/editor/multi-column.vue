@@ -72,7 +72,7 @@
                       </button>
                       <button
                         v-if="!(isAiSection(element) && aiPreview(element))"
-                        class="btn btn-sm btn-secondary mr-2"
+                        class="btn btn-sm btn-primary mr-2"
                         :aria-label="$t('Duplicate')"
                         @click="duplicateItem(index, row)"
                       >
@@ -140,7 +140,7 @@
                         @removeFromClipboard="removeFromClipboard(element)"
                       />
                       <button
-                        class="btn btn-sm btn-secondary mr-2"
+                        class="btn btn-sm btn-primary mr-2"
                         :title="$t('Copy Control')"
                         @click="duplicateItem(index, row)"
                       >
