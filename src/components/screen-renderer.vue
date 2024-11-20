@@ -37,7 +37,7 @@
       :is="component"
       ref="component"
       :vdata="value"
-      :_parent="_parent || value._parent"
+      :_parent="_parent || value?._parent"
       :_initial-page="currentPage"
       :taskdraft="taskdraft"
       @after-submit="afterSubmit"
