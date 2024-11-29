@@ -170,9 +170,10 @@ export default {
         }
       );
       if (confirm) {
-        this.clipboardPage.items = [];
         this.$store.dispatch("clipboardModule/clearClipboard");
         this.$root.$emit('update-clipboard');
+        // Update the clipboard page with the new clipboard items
+        this.clipboardPage.items = this.$store.getters["clipboardModule/clipboardItems"];
       }
     },
 
