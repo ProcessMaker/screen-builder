@@ -62,7 +62,8 @@ export default {
       hasMustache: false,
       flagDraft: {},
       taskDraft: {},
-      enableDraft: true
+      enableDraft: true,
+      defaultColumnsRecordId: 1
     };
   },
   computed: {
@@ -80,7 +81,6 @@ export default {
         Object.keys(data).forEach((variable) => {
           this.validationData && this.$set(this.validationData, variable, data[variable]);
         });
-
         if (this.collection) {
           this.$set(this.collection, 'data', Array.isArray(data) ? data : [data]);
           this.$set(this.collection, 'screen', this.screenCollectionId);
@@ -140,7 +140,6 @@ export default {
       this.customCSS = null;
       this.watchers = [];
       this.screenTitle = null;
-
       if (id) {
         this.$dataProvider.getScreen(id).then((response) => {
           this.config = response.data.config;
@@ -212,6 +211,9 @@ export default {
     collection(collection) {
       if(collection) {
         this.selCollectionId = collection.collectionId;
+        const currentData = this.localData;
+        this.$set(collection, 'data', Array.isArray(currentData) ? currentData : [currentData]);
+        this.$set(collection, 'screen', this.screenCollectionId);
       }
     },
     record(record) {
@@ -240,7 +242,11 @@ export default {
     });
 
     if (this.collection && this.record) {
-      this.loadRecordCollection(this.collection.collectionId, this.record, this.collectionmode.modeId);
+      const recordId = this.isMustache(this.record) ? this.defaultColumnsRecordId : this.record;
+      if(this.isMustache(this.record)) {
+        this.hasMustache = true;
+      }
+      this.loadRecordCollection(this.collection.collectionId, recordId, this.collectionmode.modeId);
     }
   },
 };
