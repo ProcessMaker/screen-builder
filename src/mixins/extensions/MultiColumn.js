@@ -18,7 +18,7 @@ export default {
     loadMultiColumnItems({ element, node, screen, definition, formIndex }) {
       element.items.forEach((col, index) => {
         const column = this.createComponent('div', {
-          class: `col-sm-${element.config.options[index].content}`,
+          class: `col-sm-${element.config.options[index].content + (element.config.options[index].class !== undefined ? " "+element.config.options[index].class : "")}` ,
         });
         this.loadItems(col, column, screen, definition, formIndex);
         node.appendChild(column);

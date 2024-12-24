@@ -13861,7 +13861,7 @@ const cb = /* @__PURE__ */ xr($A), wr = typeof window > "u" ? global : window, Z
     loadMultiColumnItems({ element: t, node: e, screen: r, definition: a, formIndex: i }) {
       t.items.forEach((n, s) => {
         const o = this.createComponent("div", {
-          class: `col-sm-${t.config.options[s].content}`
+          class: `col-sm-${t.config.options[s].content + (t.config.options[s].class !== void 0 ? " " + t.config.options[s].class : "")}`
         });
         this.loadItems(n, o, r, a, i), e.appendChild(o);
       });
