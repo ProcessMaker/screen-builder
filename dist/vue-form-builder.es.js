@@ -46384,6 +46384,7 @@ const _K = KK.exports, $K = {
     return {
       addValue: "",
       addContent: "",
+      addClass: "",
       addError: "",
       existingOptions: [],
       dataJson: [],
@@ -46430,7 +46431,7 @@ const _K = KK.exports, $K = {
       this.$emit("change", t);
     },
     resetAdd() {
-      this.addValue = "", this.addContent = "", this.addError = "";
+      this.addValue = "", this.addContent = "", this.addClass = "", this.addError = "";
     },
     addNewOption(t) {
       let e = JSON.parse(JSON.stringify(this.options));
@@ -46451,7 +46452,8 @@ const _K = KK.exports, $K = {
       }
       e.push({
         value: r + 1,
-        content: this.addContent
+        content: this.addContent,
+        class: this.addClass
       }), this.$emit("change", e), this.resetAdd();
     },
     removeOption(t) {
@@ -46476,7 +46478,9 @@ var e_ = function() {
     } } }, [e._v("x ")]) : e._e()])]);
   }), 0)], 1), r("b-btn", { directives: [{ name: "b-modal", rawName: "v-b-modal.addOptionModal", modifiers: { addOptionModal: !0 } }], attrs: { "data-cy": "inspector-columns-add" } }, [e._v(e._s(e.$t("Add Column")))]), e.helper ? r("small", { staticClass: "form-text text-muted" }, [e._v(e._s(e.$t(e.helper)))]) : e._e(), r("b-modal", { attrs: { "ok-title": e.$t("Ok"), "cancel-title": e.$t("Cancel"), id: "addOptionModal", title: e.$t("Add New Column"), "data-cy": "inspector-add-column-modal" }, on: { cancel: e.resetAdd, ok: e.addNewOption } }, [r("form-input", { attrs: { label: e.$t("Column Width"), validate: "required|numeric|between:1,12", error: this.addError, "data-cy": "inspector-add-column-width" }, model: { value: e.addContent, callback: function(a) {
     e.addContent = a;
-  }, expression: "addContent" } })], 1)]], 2);
+  }, expression: "addContent" } }), r("form-input", { attrs: { label: e.$t("Column Class") }, model: { value: e.addClass, callback: function(a) {
+    e.addClass = a;
+  }, expression: "addClass" } })], 1)]], 2);
 }, t_ = [], r_ = /* @__PURE__ */ oe(
   $K,
   e_,

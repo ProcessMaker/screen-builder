@@ -73,6 +73,11 @@
           :error="this.addError"
           data-cy="inspector-add-column-width"
         />
+        
+        <form-input
+          :label="$t('Column Class')"
+          v-model="addClass"
+        />
       </b-modal>
     </template>
   </div>
@@ -93,6 +98,7 @@ export default {
     return {
       addValue: '',
       addContent: '',
+      addClass:'',
       addError: '',
       existingOptions: [],
       dataJson: [],
@@ -147,6 +153,7 @@ export default {
     resetAdd() {
       this.addValue = '';
       this.addContent = '';
+      this.addClass='';
       this.addError = '';
     },
     addNewOption(event) {
@@ -180,6 +187,7 @@ export default {
       newOptions.push({
         value: newIndex + 1,
         content: this.addContent,
+        class:this.addClass
       });
       this.$emit('change', newOptions);
       // Reset values
