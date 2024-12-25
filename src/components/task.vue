@@ -234,6 +234,8 @@ export default {
       }
     },
     isSelfService(newValue) {
+      console.log("isSelfService in the task.vue--------------old val:",this.isSelfService())
+
       console.log("isSelfService in the task.vue--------------new val:",newValue)
       this.disableForSelfService();
     }

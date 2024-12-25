@@ -50825,6 +50825,9 @@ const Bee = () => new Promise((t) => {
             (e === null || t) && (e = "task-screen"), this.renderComponent = e;
           }
       }
+    },
+    isSelfService(t) {
+      console.log("isSelfService in the task.vue--------------old val:", this.isSelfService()), console.log("isSelfService in the task.vue--------------new val:", t), this.disableForSelfService();
     }
   },
   computed: {
@@ -50839,6 +50842,9 @@ const Bee = () => new Promise((t) => {
     },
     parentRequest() {
       return ae.get(this.task, "process_request.parent_request_id", null);
+    },
+    isSelfService() {
+      return window.ProcessMaker.isSelfService;
     }
   },
   methods: {
@@ -51034,7 +51040,7 @@ var Ree = function() {
   qee,
   !1,
   null,
-  "e0cfb9af",
+  "b06dd2ff",
   null,
   null
 );
