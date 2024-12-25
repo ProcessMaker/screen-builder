@@ -50760,8 +50760,16 @@ const Bee = () => new Promise((t) => {
       refreshScreen: 0,
       redirecting: null,
       loadingButton: !1,
-      loadingTask: !1
+      loadingTask: !1,
+      intervalId: null
+      // To store the interval ID
     };
+  },
+  created() {
+    this.startWatching();
+  },
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
   watch: {
     initialScreenId: {
@@ -50852,6 +50860,11 @@ const Bee = () => new Promise((t) => {
     }
   },
   methods: {
+    startWatching() {
+      this.intervalId = setInterval(() => {
+        console.log("check isSelfService Value-------------", window.ProcessMaker.isSelfService), this.disableForSelfService();
+      }, 1e3);
+    },
     disableForm(t) {
       if (t instanceof Array)
         for (let e of t)
@@ -51044,7 +51057,7 @@ var Ree = function() {
   qee,
   !1,
   null,
-  "f4b38d63",
+  "10e74fcd",
   null,
   null
 );

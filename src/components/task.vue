@@ -122,7 +122,16 @@ export default {
       redirecting: null,
       loadingButton: false,
       loadingTask: false,
+      intervalId: null // To store the interval ID
     };
+  },
+  created() {
+    // Start checking for changes when the component is created
+    this.startWatching();
+  },
+  beforeDestroy() {
+    // Clear the interval when the component is destroyed
+    clearInterval(this.intervalId);
   },
   watch: {
     initialScreenId: {
@@ -273,6 +282,12 @@ export default {
     }
   },
   methods: {
+    startWatching() {
+      this.intervalId = setInterval(() => {
+        console.log("check isSelfService Value-------------",window.ProcessMaker.isSelfService)
+        this.disableForSelfService();
+      }, 1000); // Check every second (adjust as needed)
+    },
     disableForm(json) {
       if (json instanceof Array) {
         for (let item of json) {
