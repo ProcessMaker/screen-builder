@@ -241,18 +241,6 @@ export default {
           this.renderComponent = component;
         }
       }
-    },
-    'isSelfService':{
-      handler(newValue)
-      {
-        // console.log("isSelfService in the task.vue--------------old val:",this.isSelfService())
-
-        console.log("isSelfService in the task.vue--------------new val:",window.ProcessMaker.isSelfService)
-        console.log("task--------------",this.task)
-         console.log("disabled--------------",this.disabled)
-        this.disableForSelfService();
-      },
-      immediate: true // Optionally call immediately on component 
     }
   },
   computed: {
@@ -276,15 +264,11 @@ export default {
     },
     parentRequest() {
       return _.get(this.task, 'process_request.parent_request_id', null);
-    },
-    isSelfService() {
-      return window.ProcessMaker.isSelfService;
     }
   },
   methods: {
     startWatching() {
       this.intervalId = setInterval(() => {
-        console.log("check isSelfService Value-------------",window.ProcessMaker.isSelfService)
         this.disableForSelfService();
       }, 1000); // Check every second (adjust as needed)
     },
