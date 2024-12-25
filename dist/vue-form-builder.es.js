@@ -50826,8 +50826,10 @@ const Bee = () => new Promise((t) => {
           }
       }
     },
-    isSelfService(t) {
-      console.log("isSelfService in the task.vue--------------old val:", this.isSelfService()), console.log("isSelfService in the task.vue--------------new val:", t), this.disableForSelfService();
+    disabled: {
+      handler() {
+        console.log("isSelfService in the task.vue--------------old val:", this.isSelfService()), console.log("isSelfService in the task.vue--------------new val:", newValue), this.disableForSelfService();
+      }
     }
   },
   computed: {
@@ -51040,7 +51042,7 @@ var Ree = function() {
   qee,
   !1,
   null,
-  "b06dd2ff",
+  "4348169d",
   null,
   null
 );
