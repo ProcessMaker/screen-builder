@@ -233,6 +233,9 @@ export default {
         }
       }
     },
+    isSelfService(newValue) {
+      this.disableForSelfService();
+    }
   },
   computed: {
     shouldAddSubmitButton() {
@@ -256,6 +259,9 @@ export default {
     parentRequest() {
       return _.get(this.task, 'process_request.parent_request_id', null);
     },
+    isSelfService() {
+      return window.ProcessMaker.isSelfService;
+    }
   },
   methods: {
     disableForm(json) {
