@@ -233,14 +233,15 @@ export default {
         }
       }
     },
-    disabled:{
-      handler()
+    'isSelfService':{
+      handler(newValue)
       {
         console.log("isSelfService in the task.vue--------------old val:",this.isSelfService())
 
         console.log("isSelfService in the task.vue--------------new val:",newValue)
         this.disableForSelfService();
-      }
+      },
+      immediate: true // Optionally call immediately on component 
     }
   },
   computed: {
