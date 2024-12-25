@@ -50828,7 +50828,7 @@ const Bee = () => new Promise((t) => {
     },
     isSelfService: {
       handler(t) {
-        console.log("isSelfService in the task.vue--------------old val:", this.isSelfService()), console.log("isSelfService in the task.vue--------------new val:", t), this.disableForSelfService();
+        console.log("isSelfService in the task.vue--------------new val:", t), this.disableForSelfService();
       },
       immediate: !0
       // Optionally call immediately on component 
@@ -51044,7 +51044,7 @@ var Ree = function() {
   qee,
   !1,
   null,
-  "84fcf411",
+  "1a3f8df9",
   null,
   null
 );
