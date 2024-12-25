@@ -239,6 +239,8 @@ export default {
         // console.log("isSelfService in the task.vue--------------old val:",this.isSelfService())
 
         console.log("isSelfService in the task.vue--------------new val:",window.ProcessMaker.isSelfService)
+        console.log("task--------------",this.task)
+         console.log("disabled--------------",this.disabled)
         this.disableForSelfService();
       },
       immediate: true // Optionally call immediately on component 
