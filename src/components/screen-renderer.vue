@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { cloneDeep, isEmpty, isEqual } from "lodash";
+import { cloneDeep, isEmpty, isMatch, omit } from "lodash";
 import Json2Vue from "../mixins/Json2Vue";
 import CurrentPageProperty from "../mixins/CurrentPageProperty";
 import WatchersSynchronous from "@/components/watchers-synchronous";
@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     rebuildScreen(definition) {
-      if (!isEqual(definition, this.currentDefinition)) {
+      if (!isMatch(this.currentDefinition, omit(definition, "isMobile"))) {
         this.currentDefinition = cloneDeep(definition);
         this.component = this.buildComponent(this.currentDefinition);
       }
