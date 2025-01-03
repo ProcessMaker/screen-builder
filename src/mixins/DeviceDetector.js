@@ -1,4 +1,5 @@
 export const MAX_MOBILE_WIDTH = 480;
+export const originalDevicePixelRatio = window.devicePixelRatio;
 export default {
   created() {
     window.addEventListener("resize", this.resizeHandler);
@@ -20,7 +21,9 @@ export default {
       const isModelerInspector = this.data && this.data.$type && this.data.$type.startsWith("bpmn:");
       if (this.definition && !isModelerInspector) {
         this.definition.isMobile =
-          renderer && renderer.offsetWidth <= MAX_MOBILE_WIDTH;
+          renderer &&
+          renderer.offsetWidth <= MAX_MOBILE_WIDTH &&
+          originalDevicePixelRatio === window.devicePixelRatio;
       }
     }
   }
