@@ -29,8 +29,8 @@ export default {
       const defaultComputedName = `default_${safeDotName}__`;
       this.addData(screen, `${name}_was_filled__`, `!!this.getValue(${JSON.stringify(name)}, this.vdata) || !!this.getValue(${JSON.stringify(name)}, data)`);
       this.addMounted(
-        screen, 
-        `if (!this.${safeDotName}) {
+        screen,
+        `if (this.${safeDotName} === undefined || this.${safeDotName} === null) {
             this.tryFormField(${JSON.stringify(name)}, () => {
             this.${safeDotName} = ${value};
             this.setValue(${JSON.stringify(name)}, ${value}, this.vdata, this);});
