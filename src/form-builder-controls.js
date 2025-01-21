@@ -361,7 +361,7 @@ export default [
         variant: 'primary',
         event: 'pageNavigate',
         eventData: null,
-
+        disableClipboard: true,
       },
       inspector: [
         {
