@@ -53,7 +53,7 @@
                     </b-badge>
                     <div class="ml-auto">
                       <clipboard-button
-                        v-if="screenType === 'form'"
+                        v-if="screenType === 'form' && !element.config.disableClipboard"
                         :index="index"
                         :config="element.config"
                         :isInClipboard="isInClipboard(element)"
@@ -130,7 +130,7 @@
                     </b-badge>
                     <div class="ml-auto">
                       <clipboard-button
-                        v-if="screenType === 'form'"
+                        v-if="screenType === 'form' && !element.config.disableClipboard"
                         :index="index"
                         :config="element.config"
                         :isInClipboard="isInClipboard(element)"

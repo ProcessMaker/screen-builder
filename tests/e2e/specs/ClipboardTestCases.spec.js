@@ -156,7 +156,7 @@ describe("Clipboard Button Actions", () => {
       .should('have.length', 6);
   });
 
-  it("TCP4-4443: Verify that the control from the NAVIGATION section have been added to the clipboard", () => {
+  it("TCP4-4443: Verify that the control from the NAVIGATION section have not been added to the clipboard", () => {
     cy.clearLocalStorage();
     cy.visit("/");
     cy.openAcordeonByLabel("Navigation");
@@ -166,16 +166,7 @@ describe("Clipboard Button Actions", () => {
     cy.get('[data-cy=controls-FormButton]:contains("Page")').drag("[data-cy=screen-drop-zone]", { position: "bottom" });
 
     cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
-    cy.get('[data-cy="addToClipboard"]').should("be.visible");
-    cy.get('[data-cy="addToClipboard"]').click();
     cy.get('[data-cy="addToClipboard"]').should("not.exist");
-    cy.get('[data-cy="copied-badge"]').should("exist");
-
-    cy.get("[data-test=page-dropdown").click();
-    cy.get("[data-test=clipboard]").should("exist").click({ force: true });
-    cy.get('[data-cy="screen-element-container"]')
-      .children()
-      .should('have.length', 1);
   });
 
   it("TCP4-4443: Verify that the control from the FILES section have been added to the clipboard", () => {

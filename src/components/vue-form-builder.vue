@@ -213,7 +213,7 @@
                   </b-badge>
                   <div class="ml-auto">
                     <clipboard-button
-                      v-if="!isClipboardPage(tabPage) && screenType === 'form'"
+                      v-if="!isClipboardPage(tabPage) && screenType === 'form' && !element.config.disableClipboard"
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
@@ -288,7 +288,7 @@
                   </b-badge>
                   <div class="ml-auto">
                     <clipboard-button
-                      v-if="!isClipboardPage(tabPage) && screenType === 'form'"
+                      v-if="!isClipboardPage(tabPage) && screenType === 'form' && !element.config.disableClipboard"
                       :index="index"
                       :config="element.config"
                       :isInClipboard="isInClipboard(extendedPages[tabPage].items[index])"
