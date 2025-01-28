@@ -109,8 +109,7 @@ export default {
     alwaysAllowEditing: { type: Boolean, default: false },
     disableInterstitial: { type: Boolean, default: false },
     waitLoadingListeners: { type: Boolean, default: false },
-    isWebEntry: { type: Boolean, default: false },
-    updatePage: { type: Function, default: () => {} }
+    isWebEntry: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -604,9 +603,6 @@ export default {
       this.$emit('input', data);
       this.setSelfService();
     },
-    // updatePage(data) {
-    //   this.$emit('updatePage', data);
-    // },
     activityAssigned() {
       // This may no longer be needed
     },
