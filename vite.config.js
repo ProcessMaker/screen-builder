@@ -47,7 +47,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "src/components/index.js"),
       name: libraryName,
-      fileName: (format) => `vue-form-builder.${format}.js`
+      fileName: (format) => `vue-form-builder.${format}.js`,
+      formats: ["es"],
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
@@ -65,6 +66,7 @@ export default defineConfig({
         "SharedComponents"
       ],
       output: {
+        preserveModules: true,
         exports: "named",
         assetFileNames: `vue-form-builder.[ext]`,
         // Provide global variables to use in the UMD build

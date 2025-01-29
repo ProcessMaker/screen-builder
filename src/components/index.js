@@ -24,8 +24,6 @@ import FileDownload from "./renderer/file-download.vue";
 import FormMaskedInput from "./renderer/form-masked-input.vue";
 import DefaultLoadingSpinner from "./utils/default-loading-spinner.vue";
 import DataProvider from "../DataProvider";
-import { cacheAdapterEnhancer } from "axios-extensions";
-import { LRUCache } from "lru-cache";
 import Vuex from "vuex";
 import globalErrorsModule from "../store/modules/globalErrorsModule";
 import undoRedoModule from "../store/modules/undoRedoModule";
@@ -52,6 +50,7 @@ import { LinkButton } from "./renderer";
 import "../assets/css/tabs.css";
 import FormCollectionRecordControl from "./renderer/form-collection-record-control.vue";
 import FormCollectionViewControl from "./renderer/form-collection-view-control.vue";
+import { initializeScreenCache } from "./utils/initializeScreenCache";
 
 const rendererComponents = {
   ...renderer,
@@ -102,7 +101,8 @@ export {
   DataFormatProperty,
   globalErrorsModule,
   accordions,
-  VariableNameGenerator
+  VariableNameGenerator,
+  initializeScreenCache
 };
 export * from "./inspector";
 export * from "./renderer";
@@ -191,22 +191,4 @@ export default {
   }
 };
 
-/**
- * Initialize the axios cache adapter
- *
- * @param {Object} apiClient
- * @param {Object} screenConfig
- */
-export function initializeScreenCache(apiClient, screenConfig) {
-  apiClient.defaults.adapter = cacheAdapterEnhancer(
-    apiClient.defaults.adapter,
-    {
-      enabledByDefault: window.ProcessMaker.screen.cacheEnabled,
-      cacheFlag: "useCache",
-      defaultCache: new LRUCache({
-        ttl: window.ProcessMaker.screen.cacheTimeout,
-        max: 100
-      })
-    }
-  );
-}
+
