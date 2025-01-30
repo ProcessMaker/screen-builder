@@ -110,6 +110,7 @@ export default {
       return this.$refs.component.getCurrentPage();
     },
     setCurrentPage(page) {
+      this.$emit("updatedPage");
       this.$refs.component.setCurrentPage(page);
     },
     afterSubmit() {
