@@ -28,6 +28,9 @@
           </div>
           <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
           <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
+          
+          <label v-if="renderAs === 'checkbox'" class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
+          <b-form-input v-if="renderAs === 'checkbox'" id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
         </div>
 
         <div class="card-footer text-right p-2">
@@ -74,6 +77,9 @@
                     </div>
                     <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
                     <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
+                    
+                    <label v-if="renderAs === 'checkbox'" class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
+                    <b-form-input v-if="renderAs === 'checkbox'" id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
                   </div>
 
                   <div class="card-footer text-right p-2">
@@ -131,7 +137,7 @@
     </div>
     
     <div v-if="dataSource === dataSourceValues.collection">
-      <collection-select-list v-model="collectionOptions"></collection-select-list>
+      <collection-select-list v-model="collectionOptions" :renderAs="renderAs"></collection-select-list>
     </div>
 
     <div v-if="showRenderAs">
@@ -203,12 +209,21 @@
       <mustache-helper/>
       <b-form-input id="value" v-model="value" @change="valueChanged" data-cy="inspector-datasource-content"/>
       <small class="form-text text-muted mb-3">{{ $t('Content to display to the user in the select list.') }}</small>
+
+      <label v-if="renderAs === 'checkbox'" for="aria-label">{{ $t('Aria Label') }}</label>
+      <mustache-helper v-if="renderAs === 'checkbox'" />
+      <b-form-input v-if="renderAs === 'checkbox'" id="aria-label" v-model="optionAriaLabel" data-cy="inspector-datasource-aria-label"/>
+      <small v-if="renderAs === 'checkbox'" class="form-text text-muted mb-3">{{ $t('Aria label for accessibility support.') }}</small>
     </div>
 
     <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Variable Data Property') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property" data-cy="inspector-options-value" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
+
+      <label v-if="renderAs === 'checkbox'" for="aria-label">{{ $t('Aria Label') }}</label>
+      <b-form-input v-if="renderAs === 'checkbox'" id="aria-label" v-model="optionAriaLabel" placeholder="Aria Label Property" data-cy="inspector-options-aria-label" />
+      <small v-if="renderAs === 'checkbox'" class="form-text text-muted mb-3">{{ $t('Enter the property name for the aria label from the Request data variable.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
@@ -287,6 +302,7 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
+      optionAriaLabel: '',
       showRenderAs: false,
       renderAs: 'dropdown',
       allowMultiSelect: false,
@@ -413,6 +429,9 @@ export default {
     valueField() {
       return this.value || 'content';
     },
+    ariaLabelField() {
+      return this.optionAriaLabel || 'ariaLabel';
+    },
     currentItemToDelete() {
       if (this.removeIndex !== null
           && this.optionsList.length > 0
@@ -450,6 +469,7 @@ export default {
         editIndex: this.editIndex,
         removeIndex: this.removeIndex,
         valueTypeReturned: this.valueTypeReturned,
+        optionAriaLabel: this.optionAriaLabel,
       };
     },
   },
@@ -467,6 +487,7 @@ export default {
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.key = this.options.key;
     this.value = this.options.value;
+    this.optionAriaLabel = this.options.optionAriaLabel;
     this.pmqlQuery = this.options.pmqlQuery;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
@@ -530,8 +551,9 @@ export default {
       const that = this;
       jsonList.forEach (item => {
         that.optionsList.push({
-          [that.keyField] : item[that.keyField],
-          [that.valueField] : item[that.valueField],
+          [that.keyField]: item[that.keyField],
+          [that.valueField]: item[that.valueField],
+          [that.ariaLabelField]: item[that.ariaLabelField]
         });
       });
       this.jsonError = '';
@@ -560,12 +582,14 @@ export default {
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
       this.optionValue = this.optionsList[index][this.keyField];
+      this.optionAriaLabel = this.optionsList[index][this.ariaLabelField];
       this.optionError = '';
     },
     showAddOption() {
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
+      this.optionAriaLabel = '';
       this.showOptionCard = true;
       this.optionError = '';
       this.editIndex = null;
@@ -582,6 +606,7 @@ export default {
           {
             [this.valueField]: this.optionContent,
             [this.keyField]: this.optionValue,
+            [this.ariaLabelField]: this.optionAriaLabel,
           }
         );
       }
@@ -592,6 +617,7 @@ export default {
         }
         this.optionsList[this.editIndex][this.keyField] = this.optionValue;
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
+        this.optionsList[this.editIndex][this.ariaLabelField] = this.optionAriaLabel;
       }
 
       this.jsonData = JSON.stringify(this.optionsList);
