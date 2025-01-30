@@ -411,7 +411,7 @@
                   ''
                 )}`"
                 :builder="builder"
-                :form-config="extendedPages"
+                :form-config="config"
                 :screen-type="screenType"
                 :current-page="currentPage"
                 :selected-control="selected"
