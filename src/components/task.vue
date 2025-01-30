@@ -32,6 +32,7 @@
             :key="refreshScreen"
             :loop-context="loopContext"
             :taskdraft="this.task"
+            @update-page-task="pageUpdate"
             @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
@@ -50,6 +51,7 @@
             :watchers="screen.watchers"
             :data="requestData"
             :type="screen.type"
+            @update-page-task="pageUpdate"
             @update="onUpdate"
             @after-submit="afterSubmit"
             @submit="submit"
@@ -107,7 +109,7 @@ export default {
     alwaysAllowEditing: { type: Boolean, default: false },
     disableInterstitial: { type: Boolean, default: false },
     waitLoadingListeners: { type: Boolean, default: false },
-    isWebEntry: { type: Boolean, default: false },
+    isWebEntry: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -364,6 +366,9 @@ export default {
       } else {
         this.hasErrors = false;
       }
+    },
+    pageUpdate() {
+      this.$emit("updated-page-core");
     },
     resetScreenState() {
       this.loadingButton = false;
