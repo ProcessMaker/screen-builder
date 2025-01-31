@@ -430,7 +430,7 @@ export default {
       return this.value || 'content';
     },
     ariaLabelField() {
-      return this.optionAriaLabel || 'ariaLabel';
+      return this.ariaLabel || 'ariaLabel';
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
@@ -487,7 +487,7 @@ export default {
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.key = this.options.key;
     this.value = this.options.value;
-    this.optionAriaLabel = this.options.optionAriaLabel;
+    this.optionAriaLabel = this.options.ariaLabel;
     this.pmqlQuery = this.options.pmqlQuery;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
