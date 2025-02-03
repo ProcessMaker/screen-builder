@@ -302,7 +302,7 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
-      optionAriaLabel: '',
+      optionAriaLabel: null,
       showRenderAs: false,
       renderAs: 'dropdown',
       allowMultiSelect: false,
@@ -589,7 +589,7 @@ export default {
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
-      this.optionAriaLabel = '';
+      this.optionAriaLabel = null;
       this.showOptionCard = true;
       this.optionError = '';
       this.editIndex = null;
