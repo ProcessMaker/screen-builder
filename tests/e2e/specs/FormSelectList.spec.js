@@ -348,14 +348,14 @@ describe("Form Select List", () => {
     cy.get("[data-cy=inspector-edit-json]").click();
 
     cy.assertComponentValueAsJson('[data-cy="inspector-monaco-json"]', [
-      { content: "one", value: "one", ariaLabel: "" }
+      { content: "one", value: "one", ariaLabel: null }
     ]);
 
     cy.setVueComponentValue(
       '[data-cy="inspector-monaco-json"]',
       JSON.stringify([
-        { content: "one", value: "one", ariaLabel: "" },
-        { content: "two", value: "two", ariaLabel: "" }
+        { content: "one", value: "one", ariaLabel: null },
+        { content: "two", value: "two", ariaLabel: null }
       ])
     );
     cy.get("[data-cy=inspector-monaco-json-expand]").click();
@@ -363,8 +363,8 @@ describe("Form Select List", () => {
       '[data-cy="inspector-monaco-json-expanded"]',
       JSON.stringify(
         [
-          { content: "one", value: "one", ariaLabel: "" },
-          { content: "two", value: "two", ariaLabel: "" }
+          { content: "one", value: "one", ariaLabel: null },
+          { content: "two", value: "two", ariaLabel: null }
         ],
         null,
         2
