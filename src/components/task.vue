@@ -884,7 +884,10 @@ export default {
         }
         this.nodeId = data.params[0].nodeId;
         this.taskId = data.params[0].tokenId;
-        this.reload();
+
+        // Force a redirect to ensure the correct task is loaded immediately.
+        // This prevents async reloads that may cause inconsistencies.
+        window.location.href = `/tasks/${this.taskId}/edit`;
       }
     },
 
