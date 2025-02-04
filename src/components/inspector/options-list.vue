@@ -302,7 +302,7 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
-      optionAriaLabel: null,
+      optionAriaLabel: '',
       showRenderAs: false,
       renderAs: 'dropdown',
       allowMultiSelect: false,
@@ -549,12 +549,19 @@ export default {
       }
       this.optionsList = [];
       const that = this;
-      jsonList.forEach (item => {
-        that.optionsList.push({
-          [that.keyField]: item[that.keyField],
-          [that.valueField]: item[that.valueField],
-          [that.ariaLabelField]: item[that.ariaLabelField]
-        });
+      jsonList.forEach((item) => {
+        if (that.renderAs === "checkbox") {
+          that.optionsList.push({
+            [that.keyField]: item[that.keyField],
+            [that.valueField]: item[that.valueField],
+            [that.ariaLabelField]: item[that.ariaLabelField]
+          });
+        } else {
+          that.optionsList.push({
+            [that.keyField]: item[that.keyField],
+            [that.valueField]: item[that.valueField]
+          });
+        }
       });
       this.jsonError = '';
     },
@@ -578,46 +585,56 @@ export default {
 
     },
     showEditOption(index) {
+      debugger;
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
       this.optionValue = this.optionsList[index][this.keyField];
-      this.optionAriaLabel = this.optionsList[index][this.ariaLabelField];
+      if (this.renderAs === "checkbox") {
+        this.optionAriaLabel = this.optionsList[index][this.ariaLabelField];
+      }
       this.optionError = '';
     },
     showAddOption() {
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
-      this.optionAriaLabel = null;
+      this.optionAriaLabel = '';
       this.showOptionCard = true;
       this.optionError = '';
       this.editIndex = null;
     },
     addOption() {
       const that = this;
+      debugger;
 
       if (this.optionCardType === 'insert') {
         if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
           this.optionError = 'An item with the same key already exists';
           return;
         }
-        this.optionsList.push(
-          {
+        if (this.renderAs === "checkbox") {
+          this.optionsList.push({
             [this.valueField]: this.optionContent,
             [this.keyField]: this.optionValue,
-            [this.ariaLabelField]: this.optionAriaLabel,
-          }
-        );
-      }
-      else {
+            [this.ariaLabelField]: this.optionAriaLabel
+          });
+        } else {
+          this.optionsList.push({
+            [this.valueField]: this.optionContent,
+            [this.keyField]: this.optionValue
+          });
+        }
+      } else {
         if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
           this.optionError = 'An item with the same key already exists';
           return;
         }
         this.optionsList[this.editIndex][this.keyField] = this.optionValue;
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
-        this.optionsList[this.editIndex][this.ariaLabelField] = this.optionAriaLabel;
+        if (this.renderAs === "checkbox") {
+          this.optionsList[this.editIndex][this.ariaLabelField] = this.optionAriaLabel;
+        }
       }
 
       this.jsonData = JSON.stringify(this.optionsList);
