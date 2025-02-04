@@ -585,7 +585,6 @@ export default {
 
     },
     showEditOption(index) {
-      debugger;
       this.optionCardType = 'edit';
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
@@ -606,7 +605,6 @@ export default {
     },
     addOption() {
       const that = this;
-      debugger;
 
       if (this.optionCardType === 'insert') {
         if (this.optionsList.find(item => { return item[that.keyField] === this.optionValue; })) {
