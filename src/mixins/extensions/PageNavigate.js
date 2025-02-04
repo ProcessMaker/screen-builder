@@ -13,6 +13,7 @@ export default {
         if (!this.$parent.definition.config[page]) {
           return;
         }
+        this.$parent.$emit("updatePage");
         this.currentPage__ = page;
       };
     },
