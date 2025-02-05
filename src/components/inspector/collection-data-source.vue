@@ -33,7 +33,7 @@
       <small class="mt-3 form-text text-muted">
         {{ $t("Leave this field empty to show all the records of the collection") }}
       </small>
-      <label id="data-selection" class="mt-3">{{ $t("Data Selection") }}</label>
+      <label for="data-selection" class="mt-3">{{ $t("Data Selection") }}</label>
       <b-form-select
         id="data-selection"
         v-model="dataSelectionOptions"
@@ -44,7 +44,7 @@
         {{ $t("The user can select specific data to be stored into a variable") }}
       </small>
       <div v-if="dataSelectionOptions === 'single-field'" class="mt-3">
-        <label id="single-columns">{{ $t("Column") }}</label>
+        <label for="single-columns">{{ $t("Column") }}</label>
         <b-form-select
           id="single-columns"
           v-model="singleField"
@@ -190,7 +190,7 @@ export default {
       if (firstRecord?.data) {
         const dataObject = firstRecord.data;
 
-        for (const [key, value] of Object.entries(dataObject)) {
+        for (const [key] of Object.entries(dataObject)) {
           this.singleFieldOptions.push({ text: key, value: key });
         }
       }
