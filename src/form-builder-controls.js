@@ -224,6 +224,7 @@ export default [
           optionsList: [],
           key:'value',
           value:'content',
+          ariaLabel: 'ariaLabel',
           valueTypeReturned: 'single',
         },
         helper: null,
