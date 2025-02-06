@@ -430,7 +430,7 @@ export default {
       return this.value || 'content';
     },
     ariaLabelField() {
-      return this.optionAriaLabel || 'ariaLabel';
+      return this.ariaLabel || 'ariaLabel';
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
@@ -487,7 +487,7 @@ export default {
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.key = this.options.key;
     this.value = this.options.value;
-    this.optionAriaLabel = this.options.optionAriaLabel;
+    this.optionAriaLabel = this.options.ariaLabel;
     this.pmqlQuery = this.options.pmqlQuery;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
@@ -549,12 +549,19 @@ export default {
       }
       this.optionsList = [];
       const that = this;
-      jsonList.forEach (item => {
-        that.optionsList.push({
-          [that.keyField]: item[that.keyField],
-          [that.valueField]: item[that.valueField],
-          [that.ariaLabelField]: item[that.ariaLabelField]
-        });
+      jsonList.forEach((item) => {
+        if (that.renderAs === "checkbox") {
+          that.optionsList.push({
+            [that.keyField]: item[that.keyField],
+            [that.valueField]: item[that.valueField],
+            [that.ariaLabelField]: item[that.ariaLabelField]
+          });
+        } else {
+          that.optionsList.push({
+            [that.keyField]: item[that.keyField],
+            [that.valueField]: item[that.valueField]
+          });
+        }
       });
       this.jsonError = '';
     },
@@ -582,7 +589,9 @@ export default {
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
       this.optionValue = this.optionsList[index][this.keyField];
-      this.optionAriaLabel = this.optionsList[index][this.ariaLabelField];
+      if (this.renderAs === "checkbox") {
+        this.optionAriaLabel = this.optionsList[index][this.ariaLabelField];
+      }
       this.optionError = '';
     },
     showAddOption() {
@@ -602,22 +611,28 @@ export default {
           this.optionError = 'An item with the same key already exists';
           return;
         }
-        this.optionsList.push(
-          {
+        if (this.renderAs === "checkbox") {
+          this.optionsList.push({
             [this.valueField]: this.optionContent,
             [this.keyField]: this.optionValue,
-            [this.ariaLabelField]: this.optionAriaLabel,
-          }
-        );
-      }
-      else {
+            [this.ariaLabelField]: this.optionAriaLabel
+          });
+        } else {
+          this.optionsList.push({
+            [this.valueField]: this.optionContent,
+            [this.keyField]: this.optionValue
+          });
+        }
+      } else {
         if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
           this.optionError = 'An item with the same key already exists';
           return;
         }
         this.optionsList[this.editIndex][this.keyField] = this.optionValue;
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
-        this.optionsList[this.editIndex][this.ariaLabelField] = this.optionAriaLabel;
+        if (this.renderAs === "checkbox") {
+          this.optionsList[this.editIndex][this.ariaLabelField] = this.optionAriaLabel;
+        }
       }
 
       this.jsonData = JSON.stringify(this.optionsList);
