@@ -360,10 +360,9 @@ export default {
   mounted() {
     this.initData();
     this.$root.$on("record-list-option", (val) => {
-      this.$nextTick(()=>{
-        this.isCollection = (val === "Collection") ? true : false;
+      this.$nextTick(() => {
+        this.isCollection = val === "Collection";
       });
-      
     });
     this.$root.$on("record-list-collection", (collectionData) => {
       this.getCollectionColumns(collectionData);
