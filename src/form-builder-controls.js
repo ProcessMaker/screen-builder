@@ -1157,6 +1157,10 @@ export default [
           field: "collectionmode",
           config: {
             label: "Mode",
+            options: [
+              { value: "Edit", text: "Edit" },
+              { value: "View", text: "View" },
+            ]
           }
         },
       ],
