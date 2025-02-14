@@ -8,7 +8,10 @@ export default {
     defaultValues(screen, definition) {
       this.variables.forEach(({name, config}) => {
         if (this.isComputedVariable(name, definition)) return;
-        if (config.defaultValue) {
+        // Avoid process empty or non defined default values
+        const hasDefaultValue = config.defaultValue &&
+          !(config.defaultValue.mode === 'basic' && (config.defaultValue.value === null || config.defaultValue.value === ''));
+        if (hasDefaultValue) {
           if (config.defaultValue.mode === 'basic') {
             this.setupDefaultValue(screen, name, `this.mustache(${JSON.stringify(config.defaultValue.value)})`);
           } else if (config.defaultValue.mode === 'js') {
