@@ -12,8 +12,8 @@ export default {
           screen,
           safeDotName,
           `
-            this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
-            this.getValue(${JSON.stringify(v.name)}, data) || 
+            this.getValue(${JSON.stringify(v.name)}, this.vdata) ??
+            this.getValue(${JSON.stringify(v.name)}, data) ??
             this.initialValue(
               '${component}',
               '${dataFormat}',
