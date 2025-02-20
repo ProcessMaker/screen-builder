@@ -250,6 +250,7 @@ export default {
       this.renderComponent = 'simpleErrorMessage';
     },
     loadScreen(id) {
+      this.disabled = true;
       let query = '?include=nested';
       if (this.requestId) {
         query += '&request_id=' + this.requestId;
@@ -257,6 +258,7 @@ export default {
 
       this.$dataProvider.getScreen(id, query).then((response) => {
         this.screen = response.data;
+        this.disabled = false;
       });
     },
     reload() {
