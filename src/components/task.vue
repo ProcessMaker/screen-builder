@@ -878,16 +878,18 @@ export default {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
         if (this.task && !(this.task.allow_interstitial || this.isSameUser(this.task, data))) {
-           // The getDestinationUrl() function is called asynchronously to retrieve the URL
+          // The getDestinationUrl() function is called asynchronously to retrieve the URL
           window.location.href = await this.getDestinationUrl();
           return;
         }
         this.nodeId = data.params[0].nodeId;
         this.taskId = data.params[0].tokenId;
 
-        // Force a redirect to ensure the correct task is loaded immediately.
-        // This prevents async reloads that may cause inconsistencies.
-        window.location.href = `/tasks/${this.taskId}/edit`;
+        // Force a redirect to ensure the correct task is loaded immediately for ConversationalForm.
+        // This prevents async reloads that may cause inconsistencies specific to ConversationalForm.
+        if (this.renderComponent === "ConversationalForm") {
+          window.location.href = `/tasks/${this.taskId}/edit`;
+        }
       }
     },
 
