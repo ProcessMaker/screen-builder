@@ -19,6 +19,7 @@
       class="p-0"
       :loop-context="loopContext"
       :taskdraft="taskdraft"
+      @updatePage="setCurrentPage"
       @after-submit="afterSubmit"
       @submit="submit"
     />
@@ -361,6 +362,7 @@ export default {
       return this.$refs.renderer.getCurrentPage();
     },
     setCurrentPage(page) {
+      this.$emit("update-page-task");
       this.$refs.renderer.setCurrentPage(page);
     },
     onContainerObserver(entries) {

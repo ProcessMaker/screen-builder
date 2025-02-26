@@ -31,6 +31,16 @@
       />
     </div>
 
+    <div v-if="fields.length > 1 && renderAs === 'checkbox'" class="mt-3">
+      <label for="aria-label">{{ $t("Aria Label") }}</label>
+      <b-form-select
+        id="aria-label"
+        v-model="ariaLabelField"
+        :options="fields"
+        data-cy="inspector-collection-aria-label"
+      />
+    </div>
+
     <div v-if="fields.length > 1" class="mt-3">
       <pmql-input
         v-model="pmql"
@@ -72,6 +82,7 @@ const CONFIG_FIELDS = [
   "collectionId",
   "labelField",
   "valueField",
+  "ariaLabelField",
   "pmql",
   "unique"
 ];
@@ -81,7 +92,7 @@ export default {
     MustacheHelper,
     ScreenVariableSelector
   },
-  props: ["value"],
+  props: ["value", "renderAs"],
   data() {
     return {
       collections: [],
@@ -89,6 +100,7 @@ export default {
       collectionId: null,
       labelField: null,
       valueField: null,
+      ariaLabelField: null,
       pmql: "",
       unique: false
     };
@@ -137,6 +149,7 @@ export default {
     resetFields() {
       this.labelField = null;
       this.valueField = null;
+      this.ariaLabelField = null;
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {

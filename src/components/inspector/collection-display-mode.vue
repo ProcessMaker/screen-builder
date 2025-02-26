@@ -1,86 +1,68 @@
 <template>
   <div>
     <div>
-      <label for="collectionmode">{{ $t("Mode") }}</label>
+      <label for="collection-mode">{{ $t(label) }}</label>
       <b-form-select
-        id="collectionmode"
-        v-model="modeId"
-        :options="displayOptions"
+        id="collection-mode"
+        v-model="mode"
+        :options="options"
         data-cy="inspector-collection"
+        @change="saveFields"
       />
     </div>
-    <div class="mt-2" v-if="modeId !== 'View'">
-      <b-form-checkbox v-model="submitCollectionCheck">
-      {{  $t("Update collection on submit") }}
+    <div v-show="showCollectionCheck" class="mt-2">
+      <b-form-checkbox v-model="submitCollectionCheck" @change="saveFields">
+        {{ $t("Update collection on submit") }}
       </b-form-checkbox>
     </div>
   </div>
 </template>
 
 <script>
-import ScreenVariableSelector from "../screen-variable-selector.vue";
-
-const CONFIG_FIELDS = ["modeId", "submitCollectionCheck"];
 export default {
-  components: {
-    ScreenVariableSelector
-  },
-  props: ["value", "screenType"],
-  data() {
-    return {
-      fields: [],
-      modeId: null,
-      submitCollectionCheck: true,
-      displayOptions: []
-    };
-  },
-  mounted() {
-    this.getFields();
-  },
-  computed: {
-    options() {
-      return Object.fromEntries(
-        CONFIG_FIELDS.map((field) => [field, this[field]])
-      );
-    }
-  },
-  watch: {
+  props: {
     value: {
-      handler(value) {
-        if (!value) {
-          return;
-        }
-        CONFIG_FIELDS.forEach((field) => (this[field] = value[field]));
-      },
-      immediate: true
-    },
-    modeId: {
-      handler() {
-        this.getFields();
-      }
-    },
-    submitCollectionCheck(newValue) {
-      this.submitCollectionCheck = newValue;
+      type: Object,
+      default: () => ({})
     },
     screenType: {
-      handler() {
-        this.getFields();
-      },
-      immediate: true
+      type: String,
+      default: ""
     },
     options: {
-      handler() {
-        this.$emit("input", this.options);
-      },
-      deep: true
+      type: Array,
+      default: () => []
+    },
+    label: {
+      type: String,
+      default: ""
     }
   },
+  data() {
+    return {
+      mode: "",
+      submitCollectionCheck: null
+    };
+  },
+  computed: {
+    showCollectionCheck() {
+      return this.mode === "Edit";
+    }
+  },
+  mounted() {
+    // Set the defaulta data
+    this.mode = this.value.modeId || "Edit";
+    this.submitCollectionCheck =
+      this.value.submitCollectionCheck !== undefined
+        ? this.value.submitCollectionCheck
+        : true;
+  },
   methods: {
-    getFields() {
-      this.displayOptions = [
-        { value: "Edit", text: "Edit" },
-        { value: "View", text: "View" }
-      ];
+    saveFields() {
+      this.$emit("input", {
+        modeId: this.mode,
+        submitCollectionCheck: this.submitCollectionCheck
+      });
     }
   }
 };

@@ -28,6 +28,9 @@
           </div>
           <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
           <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
+
+          <label v-if="renderAs === 'checkbox'" class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
+          <b-form-input v-if="renderAs === 'checkbox'" id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
         </div>
 
         <div class="card-footer text-right p-2">
@@ -74,6 +77,9 @@
                     </div>
                     <label class="mt-3" for="option-content">{{ $t('Content') }}</label>
                     <b-form-input id="option-content" v-model="optionContent" data-cy="inspector-option-content" />
+                    
+                    <label v-if="renderAs === 'checkbox'" class="mt-3" for="option-aria-label">{{ $t('Aria Label') }}</label>
+                    <b-form-input v-if="renderAs === 'checkbox'" id="option-aria-label" v-model="optionAriaLabel" data-cy="inspector-option-aria-label" />
                   </div>
 
                   <div class="card-footer text-right p-2">
@@ -131,7 +137,7 @@
     </div>
     
     <div v-if="dataSource === dataSourceValues.collection">
-      <collection-select-list v-model="collectionOptions"></collection-select-list>
+      <collection-select-list v-model="collectionOptions" :renderAs="renderAs"></collection-select-list>
     </div>
 
     <div v-if="showRenderAs">
@@ -203,12 +209,21 @@
       <mustache-helper/>
       <b-form-input id="value" v-model="value" @change="valueChanged" data-cy="inspector-datasource-content"/>
       <small class="form-text text-muted mb-3">{{ $t('Content to display to the user in the select list.') }}</small>
+
+      <label v-if="renderAs === 'checkbox'" for="aria-label">{{ $t('Aria Label') }}</label>
+      <mustache-helper v-if="renderAs === 'checkbox'" />
+      <b-form-input v-if="renderAs === 'checkbox'" id="aria-label" v-model="optionAriaLabel" data-cy="inspector-datasource-aria-label"/>
+      <small v-if="renderAs === 'checkbox'" class="form-text text-muted mb-3">{{ $t('Aria label for accessibility support.') }}</small>
     </div>
 
     <div v-if="valueTypeReturned === 'single' && dataSource === dataSourceValues.dataObject">
       <label for="key">{{ $t('Variable Data Property') }}</label>
       <b-form-input id="key" v-model="key" @change="keyChanged" placeholder="Request Variable Property" data-cy="inspector-options-value" />
       <small class="form-text text-muted mb-3">{{ $t('Enter the property name from the Request data variable that will be passed as the value when selected.') }}</small>
+
+      <label v-if="renderAs === 'checkbox'" for="aria-label">{{ $t('Aria Label') }}</label>
+      <b-form-input v-if="renderAs === 'checkbox'" id="aria-label" v-model="optionAriaLabel" placeholder="Aria Label Property" data-cy="inspector-options-aria-label" />
+      <small v-if="renderAs === 'checkbox'" class="form-text text-muted mb-3">{{ $t('Enter the property name for the aria label from the Request data variable.') }}</small>
     </div>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
@@ -279,6 +294,7 @@ export default {
       endpoints: {},
       pmqlQuery: '',
       optionsList: [],
+      optionsListExtra: [],
       showOptionCard: false,
       showRemoveWarning: false,
       showJsonEditor: false,
@@ -287,6 +303,7 @@ export default {
       removeIndex: null,
       optionValue: '',
       optionContent: '',
+      optionAriaLabel: '',
       showRenderAs: false,
       renderAs: 'dropdown',
       allowMultiSelect: false,
@@ -385,6 +402,14 @@ export default {
         this.selectedEndPoint = this.endPointList[0].value;
       }
     },
+    renderAs(val) {
+      if (this.dataSource === 'provideData') {
+        if (val !== 'dropdown') {
+          // add aria label field when renderAs is not dropdown
+          this.optionsListExtra = this.optionsList.map(option => ({...option, [this.ariaLabelField]: ''}));
+        }
+       }
+    }
   },
   computed: {
     showTypeOfValueReturned() {
@@ -412,6 +437,9 @@ export default {
     },
     valueField() {
       return this.value || 'content';
+    },
+    ariaLabelField() {
+      return this.ariaLabel || 'ariaLabel';
     },
     currentItemToDelete() {
       if (this.removeIndex !== null
@@ -441,6 +469,7 @@ export default {
         defaultOptionKey: this.defaultOptionKey,
         selectedOptions: this.selectedOptions,
         optionsList: this.optionsList,
+        optionsListExtra: this.optionsListExtra,
         showRenderAs: this.showRenderAs,
         renderAs: this.renderAs,
         allowMultiSelect: this.allowMultiSelect,
@@ -450,6 +479,7 @@ export default {
         editIndex: this.editIndex,
         removeIndex: this.removeIndex,
         valueTypeReturned: this.valueTypeReturned,
+        optionAriaLabel: this.optionAriaLabel,
       };
     },
   },
@@ -467,10 +497,12 @@ export default {
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.key = this.options.key;
     this.value = this.options.value;
+    this.optionAriaLabel = this.options.ariaLabel;
     this.pmqlQuery = this.options.pmqlQuery;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
     this.optionsList = this.options.optionsList ? this.options.optionsList : [];
+    this.optionsListExtra = this.options.optionsListExtra ? this.options.optionsListExtra : [];
     this.jsonData = JSON.stringify(this.optionsList);
     this.showRenderAs = this.options.showRenderAs;
     this.renderAs = this.options.renderAs;
@@ -528,11 +560,19 @@ export default {
       }
       this.optionsList = [];
       const that = this;
-      jsonList.forEach (item => {
-        that.optionsList.push({
-          [that.keyField] : item[that.keyField],
-          [that.valueField] : item[that.valueField],
-        });
+      jsonList.forEach((item) => {
+        if (that.renderAs === "checkbox") {
+          that.optionsList.push({
+            [that.keyField]: item[that.keyField],
+            [that.valueField]: item[that.valueField],
+            [that.ariaLabelField]: item[that.ariaLabelField]
+          });
+        } else {
+          that.optionsList.push({
+            [that.keyField]: item[that.keyField],
+            [that.valueField]: item[that.valueField]
+          });
+        }
       });
       this.jsonError = '';
     },
@@ -560,12 +600,16 @@ export default {
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
       this.optionValue = this.optionsList[index][this.keyField];
+      if (this.renderAs === "checkbox") {
+        this.optionAriaLabel = this.optionsListExtra[index][this.ariaLabelField];
+      }
       this.optionError = '';
     },
     showAddOption() {
       this.optionCardType = 'insert';
       this.optionContent = '';
       this.optionValue = '';
+      this.optionAriaLabel = '';
       this.showOptionCard = true;
       this.optionError = '';
       this.editIndex = null;
@@ -578,20 +622,27 @@ export default {
           this.optionError = 'An item with the same key already exists';
           return;
         }
-        this.optionsList.push(
-          {
+        const newOption = {
             [this.valueField]: this.optionContent,
             [this.keyField]: this.optionValue,
-          }
-        );
-      }
-      else {
+          };
+        if (this.renderAs === "checkbox") {
+          this.optionsList.push(newOption);
+          this.optionsListExtra.push({...newOption, [this.ariaLabelField]: this.optionAriaLabel});
+
+        } else {
+          this.optionsList.push(newOption);
+        }
+      } else {
         if (this.optionsList.find((item, index) => { return item[that.keyField] === this.optionValue && index !== this.editIndex ; })) {
           this.optionError = 'An item with the same key already exists';
           return;
         }
         this.optionsList[this.editIndex][this.keyField] = this.optionValue;
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
+        if (this.renderAs === "checkbox") {
+          this.optionsListExtra[this.editIndex] = {...this.optionsList[this.editIndex], [this.ariaLabelField]: this.optionAriaLabel};
+        }
       }
 
       this.jsonData = JSON.stringify(this.optionsList);

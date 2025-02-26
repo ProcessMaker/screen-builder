@@ -163,6 +163,9 @@ window.ProcessMaker = {
   app: {
     url: `${protocol}//${hostname}:${port}` // Create a URL with the current port
   },
+  setValidatorLanguage(language) {
+    window.ProcessMaker.user.lang = 'en';
+  },
   apiClient: {
     create() {
       return this;
