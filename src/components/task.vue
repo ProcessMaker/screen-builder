@@ -890,6 +890,8 @@ export default {
         if (this.renderComponent === "ConversationalForm") {
           window.location.href = `/tasks/${this.taskId}/edit`;
         }
+
+        this.reload();
       }
     },
 
