@@ -224,6 +224,7 @@ export default [
           optionsList: [],
           key:'value',
           value:'content',
+          ariaLabel: 'ariaLabel',
           valueTypeReturned: 'single',
         },
         helper: null,
@@ -1156,6 +1157,10 @@ export default [
           field: "collectionmode",
           config: {
             label: "Mode",
+            options: [
+              { value: "Edit", text: "Edit" },
+              { value: "View", text: "View" },
+            ]
           }
         },
       ],

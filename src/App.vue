@@ -340,6 +340,10 @@ import "./assets/css/tabs.css";
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
 
+if (typeof globalObject.ProcessMaker?.setValidatorLanguage === 'function') {
+  globalObject.ProcessMaker.setValidatorLanguage(Validator, globalObject.ProcessMaker.user.lang);
+}
+
 /* istanbul ignore next */
 Validator.register(
   "attr-value",
@@ -540,9 +544,11 @@ export default {
     if (
       globalObject.ProcessMaker &&
       globalObject.ProcessMaker.user &&
-      globalObject.ProcessMaker.user.lang
+      globalObject.ProcessMaker.user.lang &&
+      typeof globalObject.ProcessMaker.setValidatorLanguage === 'function'
     ) {
-      Validator.useLang(globalObject.ProcessMaker.user.lang);
+      //Validator.useLang(globalObject.ProcessMaker.user.lang);
+      globalObject.ProcessMaker.setValidatorLanguage(Validator, globalObject.ProcessMaker.user.lang);
     }
     // Iterate through our initial config set, calling this.addControl
     controlConfig.forEach((config) => {
@@ -672,9 +678,11 @@ export default {
         if (
           globalObject.ProcessMaker &&
           globalObject.ProcessMaker.user &&
-          globalObject.ProcessMaker.user.lang
+          globalObject.ProcessMaker.user.lang &&
+          typeof globalObject.ProcessMaker.setValidatorLanguage === 'function'
         ) {
-          Validator.useLang(globalObject.ProcessMaker.user.lang);
+          globalObject.ProcessMaker.setValidatorLanguage(Validator, globalObject.ProcessMaker.user.lang);
+          //Validator.useLang(globalObject.ProcessMaker.user.lang);
         }
 
         // Validation will not run until you call passes/fails on it
