@@ -329,7 +329,7 @@
                       : null
                   "
                   @focusout.native="updateState"
-                  
+
                 />
               </div>
             </div>
@@ -1476,8 +1476,12 @@ export default {
       }
 
       // Generate Variable Name
+      const keyNamePropertyToFind = _.cloneDeep(keyNameProperty);
+      delete keyNamePropertyToFind.config.helper;
+      delete keyNamePropertyToFind.config.label;
+
       if (
-        _.findIndex(control.inspector, keyNameProperty) !== -1 ||
+        _.findIndex(control.inspector, keyNamePropertyToFind) !== -1 ||
         control.component === "FormLoop"
       ) {
         [this.variables, copy.config.name] = this.generator.generate(
