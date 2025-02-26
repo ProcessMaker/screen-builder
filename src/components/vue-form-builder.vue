@@ -329,7 +329,7 @@
                       : null
                   "
                   @focusout.native="updateState"
-                  
+
                 />
               </div>
             </div>
@@ -568,9 +568,10 @@ const globalObject = typeof window === "undefined" ? global : window;
 if (
   globalObject.ProcessMaker &&
   globalObject.ProcessMaker.user &&
-  globalObject.ProcessMaker.user.lang
+  globalObject.ProcessMaker.user.lang &&
+  typeof globalObject.ProcessMaker.setValidatorLanguage === 'function'
 ) {
-  Validator.useLang(globalObject.ProcessMaker.user.lang);
+  globalObject.ProcessMaker.setValidatorLanguage(Validator, globalObject.ProcessMaker.user.lang);
 }
 
 // Todo: Validation messages are not translated. These will need to be converted
@@ -1476,8 +1477,12 @@ export default {
       }
 
       // Generate Variable Name
+      const keyNamePropertyToFind = _.cloneDeep(keyNameProperty);
+      delete keyNamePropertyToFind.config.helper;
+      delete keyNamePropertyToFind.config.label;
+
       if (
-        _.findIndex(control.inspector, keyNameProperty) !== -1 ||
+        _.findIndex(control.inspector, keyNamePropertyToFind) !== -1 ||
         control.component === "FormLoop"
       ) {
         [this.variables, copy.config.name] = this.generator.generate(
