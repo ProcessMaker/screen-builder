@@ -63,7 +63,8 @@ export default {
       flagDraft: {},
       taskDraft: {},
       enableDraft: true,
-      defaultColumnsRecordId: 1
+      defaultColumnsRecordId: 1,
+      defaultCollectionMode: 'Edit',
     };
   },
   computed: {
@@ -148,13 +149,17 @@ export default {
       const recordId = this.isMustache(this.record)
         ? this.defaultColumnsRecordId
         : this.record;
+
       if (this.isMustache(this.record)) {
         this.hasMustache = true;
       }
+
+      const collectionMode = this.collectionmode?.modeId ?? this.defaultCollectionMode;
+
       this.loadRecordCollection(
         this.collection.collectionId,
         recordId,
-        this.collectionmode.modeId
+        collectionMode,
       );
     }
   },
