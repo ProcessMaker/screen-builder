@@ -10,15 +10,15 @@
           data-cy="inspector-collection"
         />
         <b-form-text class="mt-2">
-        {{ $t("Collection Record Control is not available for Anonymous Web Entry") }} 
+        {{ $t("Collection Record Control is not available for Anonymous Web Entry") }}
         </b-form-text>
     </b-form-group>
     </div>
     <div v-if="collectionId > 0" class="screen-link mt-2">
-      <a 
+      <a
         :href="`/designer/screen-builder/${
           screenMode === 'display' ? idCollectionScreenView : idCollectionScreenEdit
-          }/edit`" 
+          }/edit`"
           target="_blank">
         {{ $t(screenMode === 'display' ? "Open View Screen" : "Open Edit Screen") }}
         <i class="ml-1 fas fa-external-link-alt" />
@@ -67,11 +67,15 @@ export default {
   },
   watch: {
     value: {
-      handler(value) {
-        if (!value) {
+      handler(newValue) {
+        if (!newValue) {
+          // Clear collection id
+          this.collectionId = null;
+
           return;
         }
-        CONFIG_FIELDS.forEach((field) => (this[field] = value[field]));
+
+        CONFIG_FIELDS.forEach((field) => (this[field] = newValue[field]));
       },
       immediate: true
     },
