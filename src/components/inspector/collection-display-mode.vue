@@ -41,23 +41,37 @@ export default {
   data() {
     return {
       mode: "",
-      submitCollectionCheck: null
+      submitCollectionCheck: null,
+      defaultMode: 'Edit',
     };
   },
   computed: {
     showCollectionCheck() {
-      return this.mode === "Edit";
+      return this.mode === this.defaultMode;
+    }
+  },
+  watch: {
+    value: {
+      handler(newValue) {
+        this.updateModeAndCollectionCheck(newValue);
+      },
+      deep: true,
     }
   },
   mounted() {
-    // Set the defaulta data
-    this.mode = this.value.modeId || "Edit";
-    this.submitCollectionCheck =
-      this.value.submitCollectionCheck !== undefined
-        ? this.value.submitCollectionCheck
-        : true;
+    // Set the default data
+    this.updateModeAndCollectionCheck(this.value);
   },
   methods: {
+    /**
+     * Update the mode and collection check value
+     *
+     * @param {Object} value
+     */
+    updateModeAndCollectionCheck(value) {
+      this.mode = value.modeId || this.defaultMode;
+      this.submitCollectionCheck = value.submitCollectionCheck ?? true;
+    },
     saveFields() {
       this.$emit("input", {
         modeId: this.mode,
