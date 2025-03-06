@@ -1132,6 +1132,10 @@ export default [
         name: 'Collection Record Control',
         icon: 'fas fa-database',
         label: 'Collection Record Control',
+        collectionmode: {
+          modeId: 'Edit',
+          submitCollectionCheck: true
+        }
       },
       inspector: [
         {
