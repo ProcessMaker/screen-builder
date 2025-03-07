@@ -375,6 +375,7 @@ export default {
           break;
         case 'collection':
           this.showRenderAs = false;
+          this.renderAs = 'dropdown';
           this.jsonData = '';
           this.dataName = '';
           this.selectedDataSource = '';
