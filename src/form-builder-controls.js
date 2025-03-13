@@ -152,6 +152,34 @@ export default [
             value: '',
           },
         },
+        {
+          type: 'FormCheckbox',
+          field: 'isSearchEnable',
+          config: {
+            label: 'Search Enable',
+            helper: '',
+            value: true,
+          },
+        },
+        {
+          type: 'FormCheckbox',
+          field: 'isPaginationEnable',
+          config: {
+            label: 'Pagination Enable',
+            helper: '',
+            value: 'true',
+          },
+        },
+        {
+          type: 'FormInput',
+          field: 'pageSize',
+          config: {
+            label: 'Page Size',
+            helper: '',
+            type: 'number',
+            value: '20',
+          },
+        },
         keyNameProperty,
         // labelProperty,
         // // DataTypeProperty,

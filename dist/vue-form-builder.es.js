@@ -49775,6 +49775,34 @@ const Aee = Ou(Tee), sre = Ou(Oee), ore = Ou([Cee]), zee = Ou([XP, VP]), Eee = D
             value: ""
           }
         },
+        {
+          type: "FormCheckbox",
+          field: "isSearchEnable",
+          config: {
+            label: "Search Enable",
+            helper: "",
+            value: !0
+          }
+        },
+        {
+          type: "FormCheckbox",
+          field: "isPaginationEnable",
+          config: {
+            label: "Pagination Enable",
+            helper: "",
+            value: "true"
+          }
+        },
+        {
+          type: "FormInput",
+          field: "pageSize",
+          config: {
+            label: "Page Size",
+            helper: "",
+            type: "number",
+            value: "20"
+          }
+        },
         Qt,
         // labelProperty,
         // // DataTypeProperty,
