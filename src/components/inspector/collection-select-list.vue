@@ -95,7 +95,7 @@ export default {
   props: {
     value: Object,
     renderAs: String,
-    collectionTypeFilter: {
+    excludeCollectionType: {
       type: String,
       default: null
     }
@@ -163,9 +163,9 @@ export default {
         let collections = response.data.data;
 
         // Apply filter if collectionType is set
-        if (this.collectionTypeFilter) {
+        if (this.excludeCollectionType) {
           collections = collections.filter(
-            (collection) => collection.type !== this.collectionTypeFilter
+            (collection) => collection.type !== this.excludeCollectionType
           );
         }
 
