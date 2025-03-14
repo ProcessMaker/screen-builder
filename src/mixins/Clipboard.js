@@ -40,6 +40,7 @@ export default {
      * @returns {Boolean} - Returns true if the item is in the clipboard, otherwise false.
      */
     isInClipboard(item) {
+      console.log("isInClipboard", item);
       return this.$store.getters["clipboardModule/isInClipboard"](item); // Use Vuex getter to check if item exists in the clipboard
     },
 
@@ -47,6 +48,7 @@ export default {
      * Generate a unique UUID for the specified item.
      */
     generateUUID() {
+      console.log("generateUUID");
       return uuidv4(); // Generate a unique identifier using UUID v4
     },
 
