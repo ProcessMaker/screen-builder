@@ -206,7 +206,7 @@ describe("Clipboard Button Actions", () => {
       .should('have.length', 2);
 
   });
-  it("TCP4-4443: Verify that focus out in rich text does not remove an item from the clipboard", () => {
+  it("Verify that focus out in rich text does not remove an item from the clipboard", () => {
     // STEP 1: Clear storage and navigate to homepage
     cy.clearLocalStorage();
     cy.visit("/");
