@@ -72,7 +72,6 @@ const clipboardModule = {
      * @param {any} items - The items to add.
      */
     ADD_TO_CLIPBOARD(state, items) {
-      console.log("ADD_TO_CLIPBOARD", items);
       const itemsToAdd = Array.isArray(items) ? items : [items];
       itemsToAdd.forEach(item => {
         if (!item.uuid) {
