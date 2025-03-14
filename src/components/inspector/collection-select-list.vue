@@ -92,7 +92,14 @@ export default {
     MustacheHelper,
     ScreenVariableSelector
   },
-  props: ["value", "renderAs"],
+  props: {
+    value: Object,
+    renderAs: String,
+    collectionTypeFilter: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       collections: [],
@@ -153,9 +160,18 @@ export default {
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
+        let collections = response.data.data;
+
+        // Apply filter if collectionType is set
+        if (this.collectionTypeFilter) {
+          collections = collections.filter(
+            (collection) => collection.type !== this.collectionTypeFilter
+          );
+        }
+
         this.collections = [
           { value: null, text: this.$t("Select a collection") },
-          ...response.data.data.map((collection) => {
+          ...collections.map((collection) => {
             return {
               text: collection.name,
               value: collection.id
