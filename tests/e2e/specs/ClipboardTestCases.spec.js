@@ -206,4 +206,33 @@ describe("Clipboard Button Actions", () => {
       .should('have.length', 2);
 
   });
+  it("Verify that focus out in rich text does not remove an item from the clipboard", () => {
+    // STEP 1: Clear storage and navigate to homepage
+    cy.clearLocalStorage();
+    cy.visit("/");
+
+    // STEP 2: Add HTML Viewer control and set content
+    cy.openAcordeonByLabel("Content Fields");
+    cy.wait(1000);
+    cy.get('[data-cy="controls"] > [data-cy="controls-FormHtmlViewer"]').drag("[data-cy=screen-drop-zone]", { position: "bottom" });
+    cy.get("[data-cy=screen-element-container]").click();
+    cy.window().then((win) => {
+      win.tinymce.activeEditor.setContent('Hello, this is a test via API!');
+    });
+
+    // STEP 3: Add Input control and copy to clipboard
+    cy.openAcordeonByLabel("Input Fields");
+    cy.get("[data-cy=screen-element-container]").click();
+    cy.get('[data-cy="controls"] > [data-cy="controls-FormInput"]').drag("[data-cy=screen-element-container]", { position: "bottom" });
+    cy.get(':nth-child(2) > [data-cy="screen-element-container"]').click();
+    cy.get('[data-cy="addToClipboard"]').click();
+
+    // STEP 4: Update HTML content and verify clipboard badge
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
+    cy.window().then((win) => {
+      win.tinymce.activeEditor.setContent('334444 qweq');
+    });
+    cy.get(':nth-child(2) > [data-cy="screen-element-container"]').click();
+    cy.get('[data-cy="copied-badge"]').should("exist");
+  });
 });

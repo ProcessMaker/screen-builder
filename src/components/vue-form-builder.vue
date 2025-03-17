@@ -1582,12 +1582,14 @@ export default {
      */
     checkAndRefreshUuids(selected, clipboardItems) {
       return clipboardItems.map(config => {
-        // Use lodash to compare the config objects
-        const isEqual = _.isEqual(selected.config, config.config);
+        // Return early if UUIDs don't match
+        if (selected.uuid !== config.uuid) {
+          return config;
+        }
 
-        // If they are not equal, update the UUID
-        if (!isEqual) {
-          config.uuid = this.generateUUID(); // Update UUID
+        // Deep compare configs and update UUID if they differ
+        if (!_.isEqual(selected.config, config.config)) {
+          config.uuid = this.generateUUID();
         }
 
         return config;
