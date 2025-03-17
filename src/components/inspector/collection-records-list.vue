@@ -130,10 +130,12 @@ export default {
 
         this.collections = [
           { value: null, text: this.$t("Select a collection") },
-          ...response.data.data.map((collection) => ({
-            text: collection.name,
-            value: collection.id
-          }))
+          ...response.data.data
+              .filter((collection) => collection.type !== 'RAG')
+              .map((collection) => ({
+                text: collection.name,
+                value: collection.id
+              }))
         ];
       });
     },
