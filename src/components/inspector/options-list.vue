@@ -137,7 +137,7 @@
     </div>
     
     <div v-if="dataSource === dataSourceValues.collection">
-      <collection-select-list v-model="collectionOptions" :renderAs="renderAs"></collection-select-list>
+      <collection-select-list v-model="collectionOptions" :renderAs="renderAs" exclude-collection-type="RAG"></collection-select-list>
     </div>
 
     <div v-if="showRenderAs">
