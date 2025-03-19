@@ -300,6 +300,7 @@
                     <button
                       class="btn btn-sm btn-primary mr-2"
                       :title="$t('Copy Control')"
+                      data-test="copy-control-btn"
                       @click="duplicateItem(index)"
                     >
                       <i class="fas fa-copy text-light" />
@@ -1326,7 +1327,7 @@ export default {
       this.updateState();
     },
     duplicateItem(index) {
-      const duplicate = _.cloneDeep(this.config[this.currentPage].items[index]);
+      const duplicate = _.cloneDeep(this.extendedPages[this.currentPage].items[index]);
       this.updateUuids(duplicate);
       this.extendedPages[this.currentPage].items.push(duplicate);
     },
