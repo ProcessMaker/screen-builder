@@ -472,7 +472,6 @@ export default {
         editIndex: this.editIndex,
         removeIndex: this.removeIndex,
         valueTypeReturned: this.valueTypeReturned,
-        optionAriaLabel: this.optionAriaLabel,
       };
     },
   },
@@ -490,7 +489,6 @@ export default {
     this.selectedEndPoint = this.options.selectedEndPoint,
     this.key = this.options.key;
     this.value = this.options.value;
-    this.optionAriaLabel = this.options.ariaLabel;
     this.pmqlQuery = this.options.pmqlQuery;
     this.defaultOptionKey= this.options.defaultOptionKey;
     this.selectedOptions = this.options.selectedOptions;
@@ -593,8 +591,9 @@ export default {
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
       this.optionValue = this.optionsList[index][this.keyField];
+      this.optionAriaLabel = "";
       if (this.renderAs === "checkbox") {
-        this.optionAriaLabel = this.optionsListExtra[index][this.ariaLabelField];
+        this.optionAriaLabel = this.optionsListExtra[index][this.ariaLabelField] ?? "";
       }
       this.optionError = '';
     },
