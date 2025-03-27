@@ -593,7 +593,9 @@ export default {
       this.optionValue = this.optionsList[index][this.keyField];
       this.optionAriaLabel = "";
       if (this.renderAs === "checkbox") {
-        this.optionAriaLabel = this.optionsListExtra[index][this.ariaLabelField] ?? "";
+        this.optionAriaLabel = this.optionsListExtra[index]
+          ? this.optionsListExtra[index][this.ariaLabelField]
+          : "";
       }
       this.optionError = '';
     },
