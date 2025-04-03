@@ -123,6 +123,16 @@ export default [
           },
         },
         {
+          type: 'FormTextArea',
+          field: 'isSearchEnableText',
+          config: {
+            rows: 5,
+            label: 'Columns Text Fake',
+            helper: 'The HTML text to display',
+            value: '',
+          },
+        },
+        {
           type: 'FormCheckbox',
           field: 'isSearchEnable',
           config: {

@@ -49746,6 +49746,16 @@ const Aee = Ou(Tee), sre = Ou(Oee), ore = Ou([Cee]), zee = Ou([XP, VP]), Eee = D
           }
         },
         {
+          type: "FormTextArea",
+          field: "isSearchEnableText",
+          config: {
+            rows: 5,
+            label: "Columns Text Fake",
+            helper: "The HTML text to display",
+            value: ""
+          }
+        },
+        {
           type: "FormCheckbox",
           field: "isSearchEnable",
           config: {
