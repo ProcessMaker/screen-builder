@@ -109,7 +109,7 @@ export default [
         placeholder: '',
         validation: '',
         helper: null,
-        type: 'text',
+        // type: 'text',
       },
       inspector: [
         {
@@ -123,22 +123,12 @@ export default [
           },
         },
         {
-          type: 'FormTextArea',
-          field: 'isSearchEnableText',
-          config: {
-            rows: 5,
-            label: 'Columns Text Fake',
-            helper: 'The HTML text to display',
-            value: '',
-          },
-        },
-        {
           type: 'FormCheckbox',
           field: 'isSearchEnable',
           config: {
             label: 'Search Enable',
             helper: '',
-            //value: true,
+            value: '1',
           },
         },
         {
