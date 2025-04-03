@@ -787,6 +787,128 @@ describe("Task component", () => {
 
     cy.url().should("eq", "http://localhost:5173/requests/3");
   });
+
+  it("Should display form fields and prevent redirect to next task when taskId is in activeTokens", () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        created_at: moment().toISOString(),
+        completed_at: moment().toISOString(),
+        due_at: moment().add(1, "day").toISOString(),
+        user: {
+          avatar: "",
+          fullname: "Assigned User"
+        },
+        screen: Screens.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE",
+          user: {
+            avatar: "",
+            fullname: "Requester User"
+          }
+        },
+        process: {
+          id: 1,
+          name: "Process Name"
+        },
+        user_request_permission: [{ process_request_id: 1, allowed: true }]
+      }
+    );
+
+    cy.visit("/?scenario=TaskAssigned", {
+      onBeforeLoad(win) {
+        const requestIdMeta = win.document.createElement("meta");
+        requestIdMeta.setAttribute("name", "request-id");
+        requestIdMeta.setAttribute("content", "1");
+        win.document.head.appendChild(requestIdMeta);
+      }
+    });
+
+    cy.wait(2000);
+    cy.get("[data-cy=screen-field-firstname]").should("be.visible");
+    cy.get("[data-cy=screen-field-lastname]").should("be.visible");
+    
+    cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
+      params: {
+        "0": {
+          nodeId: 'node_2',
+          tokenId: 2,
+          userId: 1,
+        },
+      
+        activeTokens: [1,2,3],
+      },
+      method: "redirectToTask"
+    });
+    cy.get("[data-cy=screen-field-firstname]").should("be.visible");
+    cy.get("[data-cy=screen-field-lastname]").should("be.visible");
+  });
+  
+  it("Should display form fields and redirect to next task when taskId is not in activeTokens", () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        created_at: moment().toISOString(),
+        completed_at: moment().toISOString(),
+        due_at: moment().add(1, "day").toISOString(),
+        user: {
+          avatar: "",
+          fullname: "Assigned User"
+        },
+        screen: Screens.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE",
+          user: {
+            avatar: "",
+            fullname: "Requester User"
+          }
+        },
+        process: {
+          id: 1,
+          name: "Process Name"
+        },
+        user_request_permission: [{ process_request_id: 1, allowed: true }]
+      }
+    );
+
+    cy.visit("/?scenario=TaskAssigned", {
+      onBeforeLoad(win) {
+        const requestIdMeta = win.document.createElement("meta");
+        requestIdMeta.setAttribute("name", "request-id");
+        requestIdMeta.setAttribute("content", "1");
+        win.document.head.appendChild(requestIdMeta);
+      }
+    });
+
+    cy.wait(2000);
+    cy.get("[data-cy=screen-field-firstname]").should("be.visible");
+    cy.get("[data-cy=screen-field-lastname]").should("be.visible");
+    
+    cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
+      params: {
+        "0": {
+          nodeId: 'node_2',
+          tokenId: 2,
+          userId: 1,
+        },
+      
+        activeTokens: [2,3],
+      },
+      method: "redirectToTask"
+    });
+    cy.get("[data-cy=screen-field-firstname]").should("not.exist");
+    cy.get("[data-cy=screen-field-lastname]").should("not.exist");
+  });
 });
 
 function getTask(url, responseData) {
