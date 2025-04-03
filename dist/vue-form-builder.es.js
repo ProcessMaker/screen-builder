@@ -49733,38 +49733,8 @@ const Aee = Ou(Tee), sre = Ou(Oee), ore = Ou([Cee]), zee = Ou([XP, VP]), Eee = D
         validation: "",
         helper: null,
         type: "text"
-        // dataFormat: 'string',
-        // dataSourceUrl:'',
-        // dataSourceEndpoint:'',
-        // rootElement:'response',
-        // dataSourceUrl:'',
-        // dataSourceEndpoint:'',
-        // options: {
-        //   showRenderAs: true,
-        //   dataSource: dataSourceValues.provideData,
-        //   jsonData: '',
-        //   pmqlQuery: '',
-        //   dataName: 'response',
-        //   renderAs: 'dropdown',
-        //   allowMultiSelect: false,
-        //   selectedOptions: [],
-        //   optionsList: [],
-        //   key:'value',
-        //   value:'content',
-        //   valueTypeReturned: 'single',
-        // },
       },
       inspector: [
-        // {
-        //   type: 'FormTextArea',
-        //   field: 'content',
-        //   config: {
-        //     rows: 5,
-        //     label: 'Config And Data',
-        //     helper: 'The HTML text to display',
-        //     value: '',
-        //   },
-        // },
         {
           type: "FormTextArea",
           field: "column",
@@ -49780,8 +49750,8 @@ const Aee = Ou(Tee), sre = Ou(Oee), ore = Ou([Cee]), zee = Ou([XP, VP]), Eee = D
           field: "isSearchEnable",
           config: {
             label: "Search Enable",
-            helper: "",
-            value: !0
+            helper: ""
+            //value: true,
           }
         },
         {
@@ -49789,8 +49759,8 @@ const Aee = Ou(Tee), sre = Ou(Oee), ore = Ou([Cee]), zee = Ou([XP, VP]), Eee = D
           field: "isPaginationEnable",
           config: {
             label: "Pagination Enable",
-            helper: "",
-            value: "true"
+            helper: ""
+            //value: 'true',
           }
         },
         {
@@ -49799,20 +49769,11 @@ const Aee = Ou(Tee), sre = Ou(Oee), ore = Ou([Cee]), zee = Ou([XP, VP]), Eee = D
           config: {
             label: "Page Size",
             helper: "",
-            type: "number",
-            value: "20"
+            type: "number"
+            //value: '20',
           }
         },
         Qt,
-        // labelProperty,
-        // // DataTypeProperty,
-        // // DataFormatProperty,
-        // validationRulesProperty,
-        // placeholderProperty,
-        // helperTextProperty,
-        // readonlyProperty,
-        // colorProperty,
-        // bgcolorProperty,
         pn
       ]
     }
