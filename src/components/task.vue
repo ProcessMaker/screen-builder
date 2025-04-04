@@ -850,6 +850,10 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleRedirect(data) {
+      // Validate if the task is still active before redirects
+      if (data.params?.activeTokens?.includes(this.taskId)) {
+        return;
+      }
       switch (data.method) {
         case 'redirectToTask':
           this.handleRedirectToTask(data);
