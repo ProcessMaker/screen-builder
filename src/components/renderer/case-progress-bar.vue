@@ -52,6 +52,10 @@ export default {
   },
   methods: {
     getStageStatus(caseNumber) {
+      if (!caseNumber) {
+        console.error("Case number is not defined.");
+        return;
+      }
       ProcessMaker.api
         .get(`cases/${caseNumber}/stages_bar`)
         .then((response) => {
