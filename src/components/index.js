@@ -48,7 +48,7 @@ import FormListTable from "./renderer/form-list-table.vue";
 import FormAnalyticsChart from "./renderer/form-analytics-chart.vue";
 import accordions from "@/components/accordions";
 import VariableNameGenerator from "@/components/VariableNameGenerator";
-import { LinkButton } from "./renderer";
+import { LinkButton, CaseProgressBar } from "./renderer";
 import "../assets/css/tabs.css";
 import FormCollectionRecordControl from "./renderer/form-collection-record-control.vue";
 import FormCollectionViewControl from "./renderer/form-collection-view-control.vue";
@@ -166,6 +166,7 @@ export default {
     Vue.use(Vuex);
     Vue.component("FormListTable", FormListTable);
     Vue.component("LinkButton", LinkButton);
+    Vue.component("CaseProgressBar", CaseProgressBar);
     Vue.component("FormCollectionRecordControl", FormCollectionRecordControl);
     Vue.component("FormCollectionViewControl", FormCollectionViewControl);
     const store = new Vuex.Store({
