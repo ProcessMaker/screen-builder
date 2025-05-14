@@ -26,6 +26,7 @@ import {
 } from '@processmaker/vue-form-elements';
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 import LinkButton from "./components/renderer/link-button.vue";
+import CaseProgressBar from "./components/renderer/case-progress-bar.vue";
 
 import {
   bgcolorProperty,
@@ -50,6 +51,8 @@ import {
   bgcolorPropertyRecord,
   colorPropertyRecord,
 } from './form-control-common-properties';
+import { editor } from 'monaco-editor';
+import { render } from 'mustache';
 
 export default [
   {
@@ -1209,5 +1212,30 @@ export default [
         }
       ],
     },
+  },
+  {
+    editorComponent: CaseProgressBar,
+    editorBinding: 'CaseProgressBar',
+    rendererComponent: CaseProgressBar,
+    rendererBinding: 'CaseProgressBar',
+    control: {
+      popoverContent: "Add a progress bar to show the status of a case",
+      order: 7.0,
+      group: 'Dashboards',
+      label: 'Case Progress Bar',
+      component: 'CaseProgressBar',
+      'editor-component': 'CaseProgressBar',
+      'editor-control': 'CaseProgressBar',
+      config: {
+        label: 'New Case Progress Bar',
+        icon: 'fas fa-chart-bar',
+        variant: 'primary',
+        event: 'submit',
+        name: null,
+        fieldValue: null,
+        tooltip: {},
+      },
+      inspector: [],
+    }
   }
 ];
