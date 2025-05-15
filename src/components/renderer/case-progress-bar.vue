@@ -28,6 +28,17 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    <div class="pipeline-wrapper">
+      <div class="pipeline">
+        <div class="stage-container">
+          <div class="stage-block pending">
+            <div class="stage-name">No stages available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -38,6 +49,7 @@ export default {
   props: ["label", "event", "eventData"],
   data() {
     return {
+      caseNumber: null,
       stagesPerCase: [],
       stagesStatus: {
         Done: "closed",
@@ -47,8 +59,8 @@ export default {
     };
   },
   mounted() {
-    const { caseNumber } = window.ProcessMaker;
-    this.getStageStatus(caseNumber);
+    this.caseNumber = window.ProcessMaker?.caseNumber;
+    this.getStageStatus(this.caseNumber);
   },
   methods: {
     getStageStatus(caseNumber) {
