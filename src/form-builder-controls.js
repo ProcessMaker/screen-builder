@@ -51,8 +51,6 @@ import {
   bgcolorPropertyRecord,
   colorPropertyRecord,
 } from './form-control-common-properties';
-import { editor } from 'monaco-editor';
-import { render } from 'mustache';
 
 export default [
   {
