@@ -68,7 +68,7 @@ export default {
         console.error("Case number is not defined.");
         return;
       }
-      ProcessMaker.api
+      ProcessMaker.apiClient
         .get(`cases/${caseNumber}/stages_bar`)
         .then((response) => {
           this.stagesPerCase = response.data.stages_per_case;
