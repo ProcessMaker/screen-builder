@@ -64,12 +64,12 @@ export default {
   },
   methods: {
     getStageStatus(caseNumber) {
-      if (!caseNumber) {
-        console.error("Case number is not defined.");
-        return;
+      let url_api = 'cases/stages_bar';
+      if (caseNumber) {
+        url_api += `/${caseNumber}`;
       }
       ProcessMaker.apiClient
-        .get(`cases/${caseNumber}/stages_bar`)
+        .get(url_api)
         .then((response) => {
           this.stagesPerCase = response.data.stages_per_case;
         })
