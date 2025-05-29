@@ -450,8 +450,6 @@ export default {
      * Emits a closed event.
      */
     async emitClosedEvent() {
-      console.log('emitClosedEvent', this.task);
-      debugger;
       this.$emit("closed", this.task?.id, await this.getDestinationUrl());
     },
     /**
@@ -460,8 +458,6 @@ export default {
      */
     // eslint-disable-next-line consistent-return
     async getDestinationUrl() {
-      console.log('getDestinationUrl', this.task);
-      debugger;
       const { elementDestination, allow_interstitial: allowInterstitial } = this.task || {};
 
       if (!elementDestination) {
@@ -521,7 +517,6 @@ export default {
       return document.referrer || '/tasks';
     },
     loadNextAssignedTask(requestId = null) {
-      console.log('loadNextAssignedTask', requestId);
       if (!requestId) {
         requestId = this.requestId;
       }
@@ -814,7 +809,6 @@ export default {
      * Listens for specific events related to the process and triggers appropriate actions.
      */
     addProcessUpdateListener() {
-      console.log('addProcessUpdateListener', this.requestId);
       this.addSocketListener(
         `updated-${this.requestId}`,
         `ProcessMaker.Models.ProcessRequest.${this.requestId}`,
@@ -830,7 +824,6 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleProcessUpdate(data) {
-      console.log('handleProcessUpdate', data);
       if (data.event === 'ACTIVITY_EXCEPTION') {
         this.$emit('error', this.requestId);
         window.location.href = `/requests/${this.requestId}`;
@@ -857,8 +850,6 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleRedirect(data) {
-      console.log('handleRedirect', data);
-      debugger;
       // Validate if the task is still active before redirects
       if (data.params?.activeTokens?.includes(this.taskId)) {
         return;
