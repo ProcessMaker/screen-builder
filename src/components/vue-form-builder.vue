@@ -1381,15 +1381,27 @@ export default {
       }
       return index > this.pageDelete ? index - 1 : index;
     },
+    // This function is used to calculate the new index of the references FormRecordList
+    calcNewIndexForFormRecordList(index, referencedBy, config) {
+      if (config[this.pageDelete].items.length > 0) {
+        throw new Error(
+          `${this.$t(
+            "Can not delete this page, it is referenced by"
+          )}: ${referencedBy}`
+        );
+      }
+      return index > this.pageDelete ? index - 1 : index;
+    },
     // Update Record list references
     updateRecordListReferences() {
       this.config.forEach((page) => {
         page.items.forEach((item) => {
           if (item.component === "FormRecordList") {
             // eslint-disable-next-line no-param-reassign
-            item.config.form = this.calcNewIndexFor(
+            item.config.form = this.calcNewIndexForFormRecordList(
               item.config.form * 1,
-              item.config.label
+              item.config.label,
+              this.config,
             );
           }
         });
