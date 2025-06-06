@@ -978,6 +978,9 @@ export default {
           if (
             ['ACTIVITY_ACTIVATED'].includes(data.event)
           ) {
+            if (data.activeTokens?.includes(this.taskId)) {
+              return;
+            }
             this.closeTask(this.parentRequest);
           }
           if (

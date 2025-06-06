@@ -617,13 +617,16 @@ export default {
           return;
         }
         const newOption = {
-            [this.valueField]: this.optionContent,
-            [this.keyField]: this.optionValue,
-          };
+          [this.valueField]: this.optionContent,
+          [this.keyField]: this.optionValue
+        };
         if (this.renderAs === "checkbox") {
+          const index = this.optionsList.length;
           this.optionsList.push(newOption);
-          this.optionsListExtra.push({...newOption, [this.ariaLabelField]: this.optionAriaLabel});
-
+          this.optionsListExtra[index] = {
+            ...newOption,
+            [this.ariaLabelField]: this.optionAriaLabel
+          };
         } else {
           this.optionsList.push(newOption);
         }
@@ -635,7 +638,10 @@ export default {
         this.optionsList[this.editIndex][this.keyField] = this.optionValue;
         this.optionsList[this.editIndex][this.valueField] = this.optionContent;
         if (this.renderAs === "checkbox") {
-          this.optionsListExtra[this.editIndex] = {...this.optionsList[this.editIndex], [this.ariaLabelField]: this.optionAriaLabel};
+          this.optionsListExtra[this.editIndex] = {
+            ...this.optionsList[this.editIndex],
+            [this.ariaLabelField]: this.optionAriaLabel
+          };
         }
       }
 
