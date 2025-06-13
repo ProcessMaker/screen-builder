@@ -101,7 +101,7 @@
     "storybook": "^7.6.13",
     "v-calendar": "^0.9.7",
     "validatorjs": "^3.14.2",
-    "vite": "^4.0.4",
+    "vite": "^4.5.14",
     "vite-plugin-istanbul": "^5.0.0",
     "vite-plugin-monaco-editor": "^1.1.0",
     "vue": "^2.6.12",
