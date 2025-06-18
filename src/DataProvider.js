@@ -231,6 +231,8 @@ export default {
     if (authParams) {
       query = `?${new URLSearchParams(authParams).toString()}`;
     }
+
+    console.log("authQueryString", query);
     return query;
   },
 
@@ -320,8 +322,9 @@ export default {
   },
 
   getCollectionRecordsView(collectionId, recordId) {
+    console.log("getCollectionRecordsView", collectionId, recordId);
     return this.get(
-      `/collections/${collectionId}/records/${recordId}`
+      `/collections/${collectionId}/records/${recordId}${this.authQueryString()}`
     )
       .then((response) => {
         const data = response ? response.data : null;
