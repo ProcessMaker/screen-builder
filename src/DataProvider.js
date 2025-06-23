@@ -324,17 +324,7 @@ export default {
   getCollectionRecordsView(collectionId, recordId) {
     console.log("getCollectionRecordsView", collectionId, recordId);
 
-    const authParams = get(window, "PM4ConfigOverrides.authParams", null);
-    const params = authParams ? { params: authParams } : {};
-
-    console.log("getCollectionRecordsView debug:", {
-      collectionId,
-      recordId,
-      authParams,
-      params
-    });
-
-    return this.get(`/collections/${collectionId}/records/${recordId}`, params)
+    return this.get(`/collections/${collectionId}/records/${recordId}`)
       .then((response) => {
         const data = response ? response.data : null;
         if (!data) {

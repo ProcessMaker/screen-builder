@@ -300,9 +300,11 @@ export default {
               && window.PM4ConfigOverrides.getScreenEndpoint
               && window.PM4ConfigOverrides.getScreenEndpoint.includes('tasks/')
             ) {
+              console.log("window.PM4ConfigOverrides.getScreenEndpoint", window.PM4ConfigOverrides.getScreenEndpoint);
               const screenPath = window.PM4ConfigOverrides.getScreenEndpoint.split('/');
               screenPath[1] = this.task.id;
               window.PM4ConfigOverrides.getScreenEndpoint = screenPath.join('/');
+              console.log("UPDATED window.PM4ConfigOverrides.getScreenEndpoint", window.PM4ConfigOverrides.getScreenEndpoint);
             }
           })
           .catch(() => {
