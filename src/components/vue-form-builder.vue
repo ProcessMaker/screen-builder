@@ -1390,6 +1390,13 @@ export default {
           )}: ${referencedBy}`
         );
       }
+      if (index === this.pageDelete) {
+        throw new Error(
+          `${this.$t(
+            "Can not delete this page, it is referenced by"
+          )}: ${referencedBy}`
+        );
+      }
       return index > this.pageDelete ? index - 1 : index;
     },
     // Update Record list references
