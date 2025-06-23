@@ -1383,20 +1383,6 @@ export default {
     },
     // This function is used to calculate the new index of the references FormRecordList
     calcNewIndexForFormRecordList(index, referencedBy, config) {
-      if (config[this.pageDelete].items.length > 0) {
-        throw new Error(
-          `${this.$t(
-            "Can not delete this page, it is referenced by"
-          )}: ${referencedBy}`
-        );
-      }
-      if (index === this.pageDelete) {
-        throw new Error(
-          `${this.$t(
-            "Can not delete this page, it is referenced by"
-          )}: ${referencedBy}`
-        );
-      }
       return index > this.pageDelete ? index - 1 : index;
     },
     // Update Record list references
@@ -1433,6 +1419,12 @@ export default {
     },
     async deletePage() {
       const back = _.cloneDeep(this.config);
+      if(!this.isNotReferenceToFormRecordList()) {
+        return;
+      }
+      if(!this.isNotReferenceToRecordForm()) {
+        return;
+      }
       try {
         this.updateRecordListReferences();
         this.updateNavigationButtonsReferences();
@@ -1452,6 +1444,36 @@ export default {
         deletedPage: true
       });
       this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
+    },
+    isNotReferenceToFormRecordList() {
+      const page = this.config[this.pageDelete];
+      for (let j = 0; j < page.items.length; j++) {
+        const item = page.items[j];
+        if (item.component === "FormRecordList") {
+          const referencedBy = item.config.label;
+          const message = `${this.$t("Can not delete this page, it is referenced by")}: ${referencedBy}`;
+          globalObject.ProcessMaker.alert(message, "danger");
+          return false;
+        }
+      }
+      return true;
+    },
+    isNotReferenceToRecordForm() {
+      for (let i = 0; i < this.config.length; i++) {
+        const page = this.config[i];
+        for (let j = 0; j < page.items.length; j++) {
+          const item = page.items[j];
+          if (item.component === "FormRecordList") {
+            if (Number(item.config.form) === this.pageDelete) {
+              const referencedBy = item.config.label;
+              const message = `${this.$t("Can not delete this page, it is referenced by")}: ${referencedBy}`;
+              globalObject.ProcessMaker.alert(message, "danger");
+              return false;
+            }
+          }
+        }
+      }
+      return true;
     },
     inspect(element = {}) {
       this.closeTemplatesPanel();
