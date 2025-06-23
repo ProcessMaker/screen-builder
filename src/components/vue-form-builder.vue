@@ -1390,6 +1390,9 @@ export default {
           )}: ${referencedBy}`
         );
       }
+      if (index === this.pageDelete) {
+        throw new Error(`${this.$t("Can not delete this page")}`);
+      }
       return index > this.pageDelete ? index - 1 : index;
     },
     // Update Record list references
@@ -1399,7 +1402,7 @@ export default {
           if (item.component === "FormRecordList") {
             // eslint-disable-next-line no-param-reassign
             item.config.form = this.calcNewIndexForFormRecordList(
-              item.config.form * 1,
+              parseInt(item.config.form, 10) * 1,
               item.config.label,
               this.config,
             );
