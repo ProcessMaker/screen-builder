@@ -1447,8 +1447,7 @@ export default {
     },
     isNotReferenceToFormRecordList() {
       const page = this.config[this.pageDelete];
-      for (let j = 0; j < page.items.length; j++) {
-        const item = page.items[j];
+      for (let item of page.items) {
         if (item.component === "FormRecordList") {
           const referencedBy = item.config.label;
           const message = `${this.$t("Can not delete this page, it is referenced by")}: ${referencedBy}`;
@@ -1459,10 +1458,8 @@ export default {
       return true;
     },
     isNotReferenceToRecordForm() {
-      for (let i = 0; i < this.config.length; i++) {
-        const page = this.config[i];
-        for (let j = 0; j < page.items.length; j++) {
-          const item = page.items[j];
+      for (let page of this.config) {
+        for (let item of page.items) {
           if (item.component === "FormRecordList") {
             if (Number(item.config.form) === this.pageDelete) {
               const referencedBy = item.config.label;
