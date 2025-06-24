@@ -1461,7 +1461,7 @@ export default {
       for (let page of this.config) {
         for (let item of page.items) {
           if (item.component === "FormRecordList") {
-            if (Number(item.config.form) === this.pageDelete) {
+            if (item.config.form !== null && Number(item.config.form) === this.pageDelete) {
               const referencedBy = item.config.label;
               const message = `${this.$t("Can not delete this page, it is referenced by")}: ${referencedBy}`;
               globalObject.ProcessMaker.alert(message, "danger");
