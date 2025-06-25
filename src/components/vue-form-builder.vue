@@ -1382,7 +1382,7 @@ export default {
       return index > this.pageDelete ? index - 1 : index;
     },
     // This function is used to calculate the new index of the references FormRecordList
-    calcNewIndexForFormRecordList(index, referencedBy, config) {
+    calcNewIndexForFormRecordList(index, referencedBy) {
       return index > this.pageDelete ? index - 1 : index;
     },
     // Update Record list references
@@ -1391,11 +1391,12 @@ export default {
         page.items.forEach((item) => {
           if (item.component === "FormRecordList") {
             // eslint-disable-next-line no-param-reassign
-            item.config.form = this.calcNewIndexForFormRecordList(
-              item.config.form * 1,
-              item.config.label,
-              this.config,
-            );
+            if (Number.isFinite(item.config.form)) {
+              item.config.form = this.calcNewIndexForFormRecordList(
+                item.config.form,
+                item.config.label,
+              );
+            }
           }
         });
       });
@@ -1419,9 +1420,6 @@ export default {
     },
     async deletePage() {
       const back = _.cloneDeep(this.config);
-      if(!this.isNotReferenceToFormRecordList()) {
-        return;
-      }
       if(!this.isNotReferenceToRecordForm()) {
         return;
       }
@@ -1445,23 +1443,11 @@ export default {
       });
       this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
     },
-    isNotReferenceToFormRecordList() {
-      const page = this.config[this.pageDelete];
-      for (let item of page.items) {
-        if (item.component === "FormRecordList") {
-          const referencedBy = item.config.label;
-          const message = `${this.$t("Can not delete this page, it is referenced by")}: ${referencedBy}`;
-          globalObject.ProcessMaker.alert(message, "danger");
-          return false;
-        }
-      }
-      return true;
-    },
     isNotReferenceToRecordForm() {
       for (let page of this.config) {
         for (let item of page.items) {
           if (item.component === "FormRecordList") {
-            if (item.config.form !== null && Number(item.config.form) === this.pageDelete) {
+            if (this.isValidInteger(item.config.form) && Number(item.config.form) === this.pageDelete) {
               const referencedBy = item.config.label;
               const message = `${this.$t("Can not delete this page, it is referenced by")}: ${referencedBy}`;
               globalObject.ProcessMaker.alert(message, "danger");
@@ -1471,6 +1457,17 @@ export default {
         }
       }
       return true;
+    },
+    isValidInteger(value) {
+      if (typeof value === 'boolean' || value === null || value === undefined) {
+        return false;
+      }
+      const str = String(value).trim();
+      if (str === '') {
+        return false;
+      }
+      const num = Number(str);
+      return Number.isInteger(num);
     },
     inspect(element = {}) {
       this.closeTemplatesPanel();
