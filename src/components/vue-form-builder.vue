@@ -1391,9 +1391,9 @@ export default {
         page.items.forEach((item) => {
           if (item.component === "FormRecordList") {
             // eslint-disable-next-line no-param-reassign
-            if (Number.isFinite(item.config.form)) {
+            if (this.isValidInteger(item.config.form)) {
               item.config.form = this.calcNewIndexForFormRecordList(
-                item.config.form,
+                item.config.form * 1,
                 item.config.label,
               );
             }
