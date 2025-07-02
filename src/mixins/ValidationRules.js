@@ -68,20 +68,18 @@ export const custom_date = (date) => {
   let checkDate = moment(date, [format, moment.ISO_8601], true);
   return checkDate.isValid();
 };
-  
+
 export const after = (after, fieldName) => helpers.withParams({after}, function(date, data) {
   // Get check date
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, after, after));
+  const checkDate = moment(get(dataWithParent, after.replace(/[{ }]/g, ''), after));
   if (!checkDate.isValid()) {
     return false;
   }
-
   const inputDate = moment(date).toISOString();
-  const afterDate = checkDate.toISOString();
-
+  const afterDate = moment(checkDate.toISOString()).endOf('day').toDate().toISOString();
   return inputDate > afterDate;
 });
 
@@ -90,13 +88,12 @@ export const after_or_equal = (after_or_equal, fieldName) => helpers.withParams(
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, after_or_equal, after_or_equal));
+  const checkDate = moment(get(dataWithParent, after_or_equal.replace(/[{ }]/g, ''), after_or_equal));
   if (!checkDate.isValid()) {
     return false;
   }
-
   const inputDate = moment(date).toISOString();
-  const equalOrAfterDate = checkDate.toISOString();
+  const equalOrAfterDate = moment(checkDate.toISOString()).startOf('day').toDate().toISOString();
   return inputDate >= equalOrAfterDate;
 });
 
@@ -105,13 +102,12 @@ export const before = (before, fieldName) => helpers.withParams({before}, functi
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, before, before));
+  const checkDate = moment(get(dataWithParent, before.replace(/[{ }]/g, ''), before));
   if (!checkDate.isValid()) {
     return false;
   }
-
   const inputDate = moment(date).toISOString();
-  const beforeDate = checkDate.toISOString();
+  const beforeDate = moment(checkDate.toISOString()).startOf('day').toDate().toISOString();
   return inputDate < beforeDate;
 });
 
@@ -120,14 +116,12 @@ export const before_or_equal = (before_or_equal, fieldName) => helpers.withParam
   const level = fieldName.split('.').length - 1;
   const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
   dataWithParent.today = moment().format('YYYY-MM-DD');
-  const checkDate = moment(get(dataWithParent, before_or_equal, before_or_equal));
+  const checkDate = moment(get(dataWithParent, before_or_equal.replace(/[{ }]/g, ''), before_or_equal));
   if (!checkDate.isValid()) {
     return false;
   }
-    
   const inputDate = moment(date).toISOString();
-  const beforeDate = checkDate.toISOString();
-    
+  const beforeDate = moment(checkDate.toISOString()).endOf('day').toDate().toISOString();
   return inputDate <= beforeDate;
 });
 
