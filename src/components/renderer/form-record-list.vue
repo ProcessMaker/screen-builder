@@ -356,7 +356,7 @@ export default {
       });
     },
     edit(event) {
-      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.$invalid) {
+      if (this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         event.preventDefault();
         return;
       }
@@ -389,7 +389,7 @@ export default {
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
 
-      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.$invalid) {
+      if (this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid) {
         return;
       }
 
