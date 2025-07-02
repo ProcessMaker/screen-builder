@@ -42,6 +42,17 @@
 
       <div class="row">
         <div class="col">
+          <div data-cy="unselected-container">
+            <div class="row border-top">
+              <div class="col-1"/>
+              <div class="col-1 d-flex align-items-center">
+                <input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="''" data-cy="inspector-options-unselected">
+              </div>
+              <div class="col-6" style="cursor:grab">
+                {{ $t('Unselected') }}
+              </div>
+            </div>
+          </div>
           <draggable @update="updateSort" :element="'div'" v-model="optionsList" group="options" @start="drag=true" @end="drag=false" >
             <div v-for="(option, index) in optionsList" :key="option.value">
               <div v-if="removeIndex === index">
@@ -87,12 +98,12 @@
                 </div>
               </div>
 
-              <div class="row border-top" :class="rowCss(index)">
+              <div class="row border-top" :class="rowCss(index)" :data-cy="'option-' + option[keyField].trim()">
                 <div class="col-1" style="cursor:grab">
                   <span class="fas fa-arrows-alt-v"/>
                 </div>
                 <div class="col-1 d-flex align-items-center">
-                  <input type="radio" class="form-check" @click="defaultOptionClick" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
+                  <input type="radio" class="form-check" @click="defaultOptionClick($event)" name="defaultOptionGroup" v-model="defaultOptionKey" :value="option[keyField]">
                 </div>
                 <div class="col-5" style="cursor:grab">
                   {{ option[valueField] }}
@@ -182,7 +193,7 @@
     </div>
 
     <label for="value-type-returned">{{ $t('Type of Value Returned') }}</label>
-    <b-form-select id="value-type-returded" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
+    <b-form-select id="value-type-returded" @change="setDefaultValue" v-model="valueTypeReturned" :options="returnValueOptions" data-cy="inspector-value-returned" />
     <small class="form-text text-muted mb-3">{{ $t("Select 'Single Value' to use parts of the selected object. Select 'Object' to use the entire selected value.") }}</small>
 
     <div v-if="dataSource === dataSourceValues.dataConnector">
@@ -228,7 +239,7 @@
 
 <script>
 import draggable from 'vuedraggable';
-import { dataSources, dataSourceValues } from './data-source-types';
+import {dataSources, dataSourceValues} from './data-source-types';
 import MonacoEditor from 'vue-monaco';
 import MustacheHelper from './mustache-helper';
 import _ from 'lodash';
@@ -426,8 +437,8 @@ export default {
     this.dataSource = this.options.dataSource;
     this.jsonData = this.options.jsonData;
     this.dataName = this.options.dataName;
-    this.selectedDataSource = this.options.selectedDataSource,
-    this.selectedEndPoint = this.options.selectedEndPoint,
+    this.selectedDataSource = this.options.selectedDataSource;
+    this.selectedEndPoint = this.options.selectedEndPoint;
     this.key = this.options.key;
     this.value = this.options.value;
     this.pmqlQuery = this.options.pmqlQuery;
@@ -470,7 +481,6 @@ export default {
         text: option['name'],
       };
     },
-
     jsonDataChange() {
       let jsonList = [];
       try {
@@ -493,9 +503,34 @@ export default {
       });
       this.jsonError = '';
     },
-    defaultOptionClick() {
-      if (this.defaultOptionKey === event.target.value) {
-        this.defaultOptionKey = false;
+    defaultOptionClick(event) {
+      const {value} = event.target;
+      this.defaultOptionKey = value;
+      this.setDefaultValue();
+    },
+    setDefaultValue() {
+      if (this.valueTypeReturned === 'single') {
+        return this.selectedControl.config.defaultValue = {
+          mode: 'basic',
+          value: this.defaultOptionKey,
+        };
+      }
+      // if the Unselected option was selected
+      if (this.valueTypeReturned === 'object' && this.defaultOptionKey === '') {
+        return this.selectedControl.config.defaultValue = {
+          mode: 'basic',
+          value: this.defaultOptionKey,
+        };
+      }
+      if (this.valueTypeReturned === 'object' && this.defaultOptionKey !== '') {
+        this.optionsList.find(option => {
+          if (option.value === this.defaultOptionKey) {
+            return this.selectedControl.config.defaultValue = {
+              mode: 'js',
+              value: `return ${JSON.stringify(option)}`,
+            };
+          }
+        });
       }
     },
     rowCss(index) {
