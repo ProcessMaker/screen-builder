@@ -247,7 +247,11 @@ export default {
       return json;
     },
     showSimpleErrorMessage() {
-      this.renderComponent = 'simpleErrorMessage';
+      // This triggers a re-render if it has already been displayed.
+      this.renderComponent = null;
+      setTimeout(() => {
+        this.renderComponent = 'simpleErrorMessage';
+      }, 0);
     },
     loadScreen(id) {
       this.disabled = true;

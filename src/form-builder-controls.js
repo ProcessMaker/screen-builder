@@ -222,6 +222,7 @@ export default [
           allowMultiSelect: false,
           selectedOptions: [],
           optionsList: [],
+          optionsListExtra: [],
           key:'value',
           value:'content',
           ariaLabel: 'ariaLabel',
