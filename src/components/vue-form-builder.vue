@@ -1382,14 +1382,7 @@ export default {
       return index > this.pageDelete ? index - 1 : index;
     },
     // This function is used to calculate the new index of the references FormRecordList
-    calcNewIndexForFormRecordList(index, referencedBy, config) {
-      if (config[this.pageDelete].items.length > 0) {
-        throw new Error(
-          `${this.$t(
-            "Can not delete this page, it is referenced by"
-          )}: ${referencedBy}`
-        );
-      }
+    calcNewIndexForFormRecordList(index, referencedBy) {
       return index > this.pageDelete ? index - 1 : index;
     },
     // Update Record list references
@@ -1398,11 +1391,12 @@ export default {
         page.items.forEach((item) => {
           if (item.component === "FormRecordList") {
             // eslint-disable-next-line no-param-reassign
-            item.config.form = this.calcNewIndexForFormRecordList(
-              item.config.form * 1,
-              item.config.label,
-              this.config,
-            );
+            if (this.isValidInteger(item.config.form)) {
+              item.config.form = this.calcNewIndexForFormRecordList(
+                item.config.form * 1,
+                item.config.label,
+              );
+            }
           }
         });
       });
@@ -1426,6 +1420,9 @@ export default {
     },
     async deletePage() {
       const back = _.cloneDeep(this.config);
+      if(!this.isNotReferenceToRecordForm()) {
+        return;
+      }
       try {
         this.updateRecordListReferences();
         this.updateNavigationButtonsReferences();
@@ -1445,6 +1442,32 @@ export default {
         deletedPage: true
       });
       this.$store.dispatch("clipboardModule/pushState", this.clipboardPage.items);
+    },
+    isNotReferenceToRecordForm() {
+      for (let page of this.config) {
+        for (let item of page.items) {
+          if (item.component === "FormRecordList") {
+            if (this.isValidInteger(item.config.form) && Number(item.config.form) === this.pageDelete) {
+              const referencedBy = item.config.label;
+              const message = `${this.$t("Can not delete this page, it is referenced by")}: ${referencedBy}`;
+              globalObject.ProcessMaker.alert(message, "danger");
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    },
+    isValidInteger(value) {
+      if (typeof value === 'boolean' || value === null || value === undefined) {
+        return false;
+      }
+      const str = String(value).trim();
+      if (str === '') {
+        return false;
+      }
+      const num = Number(str);
+      return Number.isInteger(num);
     },
     inspect(element = {}) {
       this.closeTemplatesPanel();
