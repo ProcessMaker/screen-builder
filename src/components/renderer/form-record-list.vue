@@ -582,69 +582,118 @@ export default {
         return keys1.every(key => obj1[key] === obj2[key]);
     },
     onCollectionChange(collectionId, pmql) {
-      // If there is no PMQL, return
+      // If there is no PMQL, get all records
       if (!pmql || pmql.trim() === "") {
-        // When PMQL is empty, call API without PMQL parameter to get all records
-        this.$dataProvider
-          .getCollectionRecordsList(collectionId, {})
-          .then((response) => {
-            const rowsCollection = response.data;
-            this.changeCollectionColumns(rowsCollection, this.fields);
-          })
-          .catch((error) => {
-            this.collectionData = [];
-          });
+        this.fetchAllRecords(collectionId);
         return;
       }
       
       // Process Mustache variables in PMQL
-      let processedPmql = pmql;
-      if (pmql && pmql.includes("{{")) {
-        try {
-          // Get data from validationData
-          const data = this.validationData || {};
-          
-          // Clean up the PMQL by removing unnecessary quotes around Mustache variables
-          processedPmql = pmql.replace(/"{{([^}]+)}}"/g, "{{$1}}");
-          
-          // Process Mustache variables
-          processedPmql = Mustache.render(processedPmql, data);
-          
-          // Check if the processed PMQL has empty values and handle them
-          if (
-            processedPmql.includes('= ""') || 
-            processedPmql.includes('= " "') || 
-            processedPmql.includes('= null') ||
-            processedPmql.includes('= undefined')
-          ) {
-            this.collectionData = [];
-            return;
-          }
-          
-          // Add quotes around string values in PMQL if they don't have them
-          processedPmql = processedPmql.replace(/= ([^"'\s]+)/g, '= "$1"');
-        } catch (error) {
-          this.collectionData = [];
-          return;
-        }
+      const processedPmql = this.processMustacheInPmql(pmql);
+      
+      // If processing failed or resulted in invalid PMQL, return
+      if (!processedPmql) {
+        return;
       }
       
+      // Fetch records with processed PMQL
+      this.fetchRecordsWithPmql(collectionId, processedPmql);
+    },
+
+    /**
+     * Process Mustache variables in PMQL string
+     * @param {string} pmql - The PMQL string to process
+     * @returns {string|null} - Processed PMQL or null if invalid
+     */
+    processMustacheInPmql(pmql) {
+      if (!pmql || !pmql.includes("{{")) {
+        return pmql;
+      }
+
+      try {
+        // Get data from validationData
+        const data = this.validationData || {};
+        
+        // Clean up the PMQL by removing unnecessary quotes around Mustache variables
+        let processedPmql = pmql.replace(/"{{([^}]+)}}"/g, "{{$1}}");
+        
+        // Process Mustache variables
+        processedPmql = Mustache.render(processedPmql, data);
+        
+        // Check if the processed PMQL has empty values
+        if (this.hasEmptyValues(processedPmql)) {
+          this.collectionData = [];
+          return null;
+        }
+        
+        // Add quotes around string values in PMQL if they don't have them
+        processedPmql = processedPmql.replace(/= ([^"'\s]+)/g, '= "$1"');
+        
+        return processedPmql;
+      } catch (error) {
+        this.collectionData = [];
+        return null;
+      }
+    },
+
+    /**
+     * Check if processed PMQL contains empty values
+     * @param {string} processedPmql - The processed PMQL string
+     * @returns {boolean} - True if contains empty values
+     */
+    hasEmptyValues(processedPmql) {
+      const emptyValues = ['= ""', '= " "', "= null", "= undefined"];
+      return emptyValues.some(value => processedPmql.includes(value));
+    },
+
+    /**
+     * Validate if processed PMQL is valid for API call
+     * @param {string} processedPmql - The processed PMQL string
+     * @returns {boolean} - True if valid
+     */
+    isValidPmql(processedPmql) {
+      return processedPmql && 
+             processedPmql.trim() !== "" && 
+             !processedPmql.includes("{{");
+    },
+
+    /**
+     * Fetch all records from collection without PMQL filter
+     * @param {number} collectionId - The collection ID
+     */
+    fetchAllRecords(collectionId) {
+      this.$dataProvider
+        .getCollectionRecordsList(collectionId, {})
+        .then((response) => {
+          const rowsCollection = response.data;
+          this.changeCollectionColumns(rowsCollection, this.fields);
+        })
+        .catch(() => {
+          this.collectionData = [];
+        });
+    },
+
+    /**
+     * Fetch records from collection with PMQL filter
+     * @param {number} collectionId - The collection ID
+     * @param {string} processedPmql - The processed PMQL string
+     */
+    fetchRecordsWithPmql(collectionId, processedPmql) {
       // Final validation before making API call
-      if (!processedPmql || processedPmql.trim() === "" || processedPmql.includes("{{")) {
+      if (!this.isValidPmql(processedPmql)) {
         this.collectionData = [];
         return;
       }
       
       const param = { params: { pmql: processedPmql } };
-      let rowsCollection = [];
       
       this.$dataProvider
         .getCollectionRecordsList(collectionId, param)
         .then((response) => {
-          rowsCollection = response.data;
+          const rowsCollection = response.data;
           this.changeCollectionColumns(rowsCollection, this.fields);
         })
-        .catch((error) => {
+        .catch(() => {
           this.collectionData = [];
         });
 
