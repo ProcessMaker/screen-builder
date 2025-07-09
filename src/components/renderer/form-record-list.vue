@@ -582,8 +582,18 @@ export default {
         return keys1.every(key => obj1[key] === obj2[key]);
     },
     onCollectionChange(collectionId, pmql) {
-      // Si no hay PMQL, no hacer nada
+      // If there is no PMQL, return
       if (!pmql || pmql.trim() === "") {
+        // When PMQL is empty, call API without PMQL parameter to get all records
+        this.$dataProvider
+          .getCollectionRecordsList(collectionId, {})
+          .then((response) => {
+            const rowsCollection = response.data;
+            this.changeCollectionColumns(rowsCollection, this.fields);
+          })
+          .catch((error) => {
+            this.collectionData = [];
+          });
         return;
       }
       
