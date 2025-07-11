@@ -4,6 +4,9 @@
             <img src="../assets/icons/ErrorMessage.svg" class="simple-error-message-icon"/>
         </p>
         <p>
+            <b-button variant="primary" @click="redirectToError">{{ $t(label) }}</b-button>
+        </p>
+        <p>
             <span class="simple-error-message-title"> {{ $t(title) }} </span>
         </p>
         <p>
@@ -14,12 +17,22 @@
 
 <script>
 export default {
+    props: ['instanceId'],
     data() {
         return {
             title: "We're Sorry",
             message:
-                "An error has occurred. Please try again. If the problem persists, please contact your administrator."
+                "An error has occurred. Please try again. If the problem persists, please contact your administrator.",
+            label: "View error details"
         };
+    },
+    methods: {
+        redirectToError() {
+            if (!this.instanceId) {
+                return;
+            }
+            window.location.href = `/requests/${this.instanceId}`;
+        }
     }
 };
 </script>
