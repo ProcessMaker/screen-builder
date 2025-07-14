@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div class="form-group link-button">
     <a :class="classColor" :href="inputUrlLink">
       <i v-if="variantStyle === 'button'" class="fas fa-external-link-alt" />
       {{ label }}
