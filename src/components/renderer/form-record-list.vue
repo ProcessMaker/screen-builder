@@ -627,7 +627,8 @@ export default {
         }
         
         // Add quotes around string values in PMQL if they don't have them
-        processedPmql = processedPmql.replace(/= ([^"'\s]+)/g, '= "$1"');
+        // This regex now properly handles values with spaces by looking for the end of the comparison
+        processedPmql = processedPmql.replace(/= ([^"'\s][^"']*[^"'\s]|[^"'\s]+)(?=\s|$)/g, '= "$1"');
         
         return processedPmql;
       } catch (error) {
