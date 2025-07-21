@@ -469,9 +469,9 @@ export default {
         this.currentPage = this.currentPage == 0 ? 1 : this.currentPage;
       }
     },
-    // Watch for changes in the option input field
-    "validationData.option": {
-      handler(newValue) {
+    // Watch for changes in validationData to handle any Mustache variable changes
+    validationData: {
+      handler(newValue, oldValue) {
         if (this.source?.sourceOptions === "Collection" && this.source?.collectionFields?.pmql) {
           this.onCollectionChange(
             this.source?.collectionFields?.collectionId, 
@@ -479,6 +479,7 @@ export default {
           );
         }
       },
+      deep: true,
       immediate: false
     }
   },
@@ -614,12 +615,9 @@ export default {
         // Get data from validationData
         const data = this.validationData || {};
         
-        // Clean up the PMQL by removing unnecessary quotes around Mustache variables
-        let processedPmql = pmql.replace(/"{{([^}]+)}}"/g, "{{$1}}");
-        
-        // Process Mustache variables
-        processedPmql = Mustache.render(processedPmql, data);
-        
+        // First, process all Mustache variables (both quoted and unquoted)
+        let processedPmql = Mustache.render(pmql, data);
+
         // Check if the processed PMQL has empty values
         if (this.hasEmptyValues(processedPmql)) {
           this.collectionData = [];
@@ -627,7 +625,11 @@ export default {
         }
         
         // Add quotes around string values in PMQL if they don't have them
-        processedPmql = processedPmql.replace(/= ([^"'\s]+)/g, '= "$1"');
+        // This regex now properly handles values with spaces by looking for the end of the comparison
+        processedPmql = processedPmql.replace(
+          /= ([^"'\s][^"']*[^"'\s]|[^"'\s]+)(?=\s|$)/g,
+          '= "$1"'
+        );
         
         return processedPmql;
       } catch (error) {
