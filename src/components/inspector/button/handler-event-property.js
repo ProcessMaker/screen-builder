@@ -1,7 +1,5 @@
-import CodeEditor from '../code-editor.vue';
-
 export const handlerEventProperty = {
-  type: CodeEditor,
+  type: 'CodeEditor',
   field: 'handler',
   config: {
     label: 'Click Handler',
