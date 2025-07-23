@@ -44,9 +44,9 @@
 
 <script>
 import MonacoEditor from 'vue-monaco';
-import _ from 'lodash';
 
 export default {
+  name: 'CodeEditor',
   props: {
     value: {
       type: String,
@@ -67,10 +67,10 @@ export default {
   },
   components: {
     MonacoEditor,
-  },    
+  },
   data() {
     return {
-      configValue: this.value,
+      configValue: this.value || '',
       smallMonacoOptions: {
         lineNumbers: 'off',
         lineDecorationsWidth: 0,
