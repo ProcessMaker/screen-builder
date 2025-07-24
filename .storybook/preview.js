@@ -1,5 +1,4 @@
 /** @type { import('@storybook/vue').Preview } */
-
 const preview = {
   parameters: {
     actions: { argTypesRegex: "^on[A-Z].*" },
