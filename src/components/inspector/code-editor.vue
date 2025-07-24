@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label>{{ $t(label) }} </label>
+    <label :for="`${dataFeature}-code-input`">{{ $t(label) }} </label>
     <div class="float-right buttons">
       <b-button
         :title="$t('Expand')"
@@ -11,6 +11,7 @@
       ><i class="fas fa-expand"></i></b-button>
     </div>
     <MonacoEditor
+      :id="`${dataFeature}-code-input`"
       v-model="configValue"
       :options="smallMonacoOptions"
       class="editor"
