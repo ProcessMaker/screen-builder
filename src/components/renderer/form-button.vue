@@ -106,7 +106,13 @@ export default {
     async runHandler() {
       if (this.handler) {
         try {
-          await new Function(this.handler).apply(this.transientData);
+          const data = this.getScreenDataReference(null, (screen, name, value) => {
+            // Enable the data reference to be updated by the handler
+            screen.$set(screen.vdata, name, value);
+          });
+          await new Function(['toRaw'], this.handler).apply(data, [(item) => {
+            return item[Symbol.for('__v_raw')];
+          }]);
         } catch (error) {
           console.error('❌ There is an error in the button handler', error);
         }

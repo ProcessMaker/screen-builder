@@ -28,6 +28,7 @@ function findScreenOwner(control, lastScreenContentIfNull = false) {
  * @return {object} proxy
  */
 function wrapScreenData(screen, customProperties = null, setter = null) {
+  const RAW = Symbol.for('__v_raw');
   const handler = {
     get: (target, name) => {
       if (customProperties && customProperties[name]) {
@@ -43,6 +44,9 @@ function wrapScreenData(screen, customProperties = null, setter = null) {
           return wrapScreenData(screenOwner);
         }
         return undefined;
+      }
+      if (name === RAW) {
+        return screen.vdata;
       }
       // Check if vdata exists
       if (screen.vdata !== undefined && screen.vdata !== null) {
