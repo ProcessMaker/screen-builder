@@ -101,6 +101,10 @@ export default {
       properties[":disabled"] = isCalcProp || element.config.disabled;
       // Events
       properties['@submit'] = 'submitForm';
+      // Add handler event if Button
+      if(componentName === 'FormButton') {
+        properties[':handler'] = this.byRef(element.config.handler);
+      }
     },
   },
   mounted() {
