@@ -10,6 +10,7 @@ import Task from "./task.vue";
 import Loop from "./editor/loop.vue";
 import MultiColumn from "./editor/multi-column.vue";
 import FormLoop from "./renderer/form-loop.vue";
+import FormDynamicPanel from "./renderer/form-dynamic-panel.vue";
 import NewFormMultiColumn from "./renderer/new-form-multi-column.vue";
 import FormNestedScreen from "./renderer/form-nested-screen.vue";
 import ScreenRenderer from "./screen-renderer.vue";
@@ -144,6 +145,7 @@ export default {
     Vue.component("FormImage", FormImage);
     Vue.component("FormAvatar", FormAvatar);
     Vue.component("FormLoop", FormLoop);
+    Vue.component("FormDynamicPanel", FormDynamicPanel);
     Vue.component("FormMultiColumn", FormMultiColumn);
     Vue.component("FormNestedScreen", FormNestedScreen);
     Vue.component("FormRecordList", FormRecordList);
