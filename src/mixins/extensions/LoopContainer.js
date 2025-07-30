@@ -41,7 +41,7 @@ export default {
       const child = this.createComponent("ScreenRenderer", {
         ":definition": this.byRef(nested),
         ":value": "loopRow",
-        ":loop-context": `'${loopContext}.' + index + 10`,
+        ":loop-context": `'${loopContext}.' + index`,
         ":_parent": "getValidationData()",
         ":components": this.byRef(this.components),
         ":config-ref": this.byRef(this.configRef || definition.config),
