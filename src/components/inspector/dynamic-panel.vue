@@ -14,7 +14,7 @@
 
     <div v-if="screenType == 'form' && settings.type === 'new'" class="form-group border-bottom">
       <FormInput
-        v-model="settings.indexOf"
+        v-model="settings.indexName"
         :label="$t('Index')"
         :name="$t('Index')"
         :helper="$t('Index of the dynamic panel')"
@@ -41,7 +41,7 @@ export default {
       settings: {
         type: 'new',
         varname: '',
-        indexOf: '',
+        indexName: '',
         add: false,
       },
     };
