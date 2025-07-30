@@ -8,6 +8,7 @@ import * as inspector from "./inspector";
 import FormBuilderControls from "../form-builder-controls";
 import Task from "./task.vue";
 import Loop from "./editor/loop.vue";
+import DynamicPanel from "./editor/dynamic-panel-editor.vue";
 import MultiColumn from "./editor/multi-column.vue";
 import FormLoop from "./renderer/form-loop.vue";
 import FormDynamicPanel from "./renderer/form-dynamic-panel.vue";
@@ -150,6 +151,7 @@ export default {
     Vue.component("FormNestedScreen", FormNestedScreen);
     Vue.component("FormRecordList", FormRecordList);
     Vue.component("Loop", Loop);
+    Vue.component("DynamicPanel", DynamicPanel);
     Vue.component("MultiColumn", MultiColumn);
     Vue.component("NewFormMultiColumn", NewFormMultiColumn);
     Vue.component("ScreenRenderer", ScreenRenderer);

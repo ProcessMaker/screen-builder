@@ -1,12 +1,6 @@
 <template>
   <div>
-    <div v-if="screenType == 'form'" class="form-group border-bottom pb-3">
-      <label for="type">{{ $t('Data Source') }}</label>
-      <b-form-select id="type" v-model="settings.type" :options="options" data-cy="inspector-source"/>
-    </div>
-    
     <div class="form-group border-bottom">
-      <label for="varname">{{ $t('Variable Name') }}</label>
       <FormInput
         v-model="settings.varname"
         :label="$t('Variable Name')"
@@ -20,21 +14,14 @@
 
     <div v-if="screenType == 'form' && settings.type === 'new'" class="form-group border-bottom">
       <FormInput
-        v-model="settings.times"
-        :label="$t('Default Loop Count')"
-        :name="$t('Default Loop Count')"
-        :helper="$t('Number of times to show the loop. Value must be greater than zero.')"
-        validation="required|integer|min:1|max:100"
+        v-model="settings.indexOf"
+        :label="$t('Index')"
+        :name="$t('Index')"
+        :helper="$t('Index of the dynamic panel')"
+        validation="required"
         data-cy="inspector-times"
       />
     </div>
-
-    <form-checkbox v-if="screenType == 'form'" name="add"
-      :label="$t('Allow additional loops')"
-      v-model="settings.add"
-      :helper="$t('Check this box to allow task assignee to add additional loops')"
-      data-cy="inspector-add"
-    />
   </div>
 </template>
 
@@ -54,7 +41,7 @@ export default {
       settings: {
         type: 'new',
         varname: '',
-        times: '3',
+        indexOf: '',
         add: false,
       },
     };

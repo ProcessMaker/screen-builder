@@ -4,7 +4,6 @@ import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormLoop from './components/renderer/form-loop';
 import FormDynamicPanel from './components/renderer/form-dynamic-panel.vue';
-import FormDynamicPanelEditor from './components/renderer/form-dynamic-panel-editor.vue';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
@@ -53,6 +52,7 @@ import {
   bgcolorPropertyRecord,
   colorPropertyRecord,
 } from './form-control-common-properties';
+import { indexOf } from 'lodash';
 
 export default [
   {
@@ -464,8 +464,8 @@ export default [
     },
   },
   {
-    editorComponent: FormDynamicPanelEditor,
-    editorBinding: 'FormDynamicPanelEditor',
+    editorComponent: FormDynamicPanel,
+    editorBinding: 'FormDynamicPanel',
     rendererComponent: FormDynamicPanel,
     rendererBinding: 'FormDynamicPanel',
     control: {
@@ -474,24 +474,24 @@ export default [
       group: 'Content Fields',
       label: 'Dynamic Panel',
       component: 'FormDynamicPanel',
-      'editor-component': 'Loop',
-      'editor-control': 'Loop',
+      'editor-component': 'DynamicPanel',
+      'editor-control': 'DynamicPanel',
       container: true,
       // Default items container
       items: [],
       config: {
         name: '',
-        icon: 'fas fa-redo',
+        icon: 'fas fa-th-large',
         settings: {
           type: 'new',
-          varname: 'loop',
-          times: '3',
+          varname: 'dynamic_panel',
+          indexOf: '',
           add: false,
         },
       },
       inspector: [
         {
-          type: 'LoopInspector',
+          type: 'DynamicPanelInspector',
           field: 'settings',
           config: {
           },
