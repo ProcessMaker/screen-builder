@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ itemData }}
     <slot v-if="itemData"></slot>
     <div v-else>
       <p>No data</p>

@@ -10,7 +10,7 @@ export default {
   methods: {
     loadFormDynamicPanelProperties({ properties, element }) {
       const variableName = element.config.settings.varname;
-      const index = element.config.settings.times;
+      const index = element.config.settings.indexOf;
 
       // Add itemData to the properties of FormDynamicPanel
       properties[':itemData'] = `${variableName}?.[${index}]`;
@@ -40,7 +40,8 @@ export default {
       loopContext += element.config.settings.varname;
 
       const variableName = element.config.settings.varname;
-      const index = element.config.settings.times;
+      const index = element.config.settings.indexOf;
+
       // Add nested component inside loop
       const child = this.createComponent("ScreenRenderer", {
         ":definition": this.byRef(nested),

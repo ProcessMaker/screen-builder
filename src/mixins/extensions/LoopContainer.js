@@ -37,12 +37,11 @@ export default {
         loopContext = `${this.loopContext}.`;
       }
       loopContext += element.config.settings.varname;
-
       // Add nested component inside loop
       const child = this.createComponent("ScreenRenderer", {
         ":definition": this.byRef(nested),
         ":value": "loopRow",
-        ":loop-context": `'${loopContext}.' + index`,
+        ":loop-context": `'${loopContext}.' + index + 10`,
         ":_parent": "getValidationData()",
         ":components": this.byRef(this.components),
         ":config-ref": this.byRef(this.configRef || definition.config),
