@@ -52,7 +52,6 @@ import {
   bgcolorPropertyRecord,
   colorPropertyRecord,
 } from './form-control-common-properties';
-import { indexOf } from 'lodash';
 
 export default [
   {
@@ -485,7 +484,7 @@ export default [
         settings: {
           type: 'new',
           varname: 'dynamic_panel',
-          indexOf: '',
+          indexName: '',
           add: false,
         },
       },
