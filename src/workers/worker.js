@@ -1,7 +1,5 @@
 // worker.js
 self.onmessage = function (e) {
-  console.log("Worker received:", e.data);
-
   const { fn, data } = e.data;
 
   try {
@@ -9,7 +7,6 @@ self.onmessage = function (e) {
     const func = new Function("data", fn);
     // const func = new Function('data', `return (${fn})(data)`)
     const result = func(data);
-    console.log("result ==> ", result);
 
     self.postMessage({ result });
   } catch (error) {

@@ -131,18 +131,15 @@ export default {
           const rawData = data[Symbol.for("__v_raw")];
 
           const worker = new Worker();
-          console.log("rawData ==> ", rawData);
           worker.postMessage({
             fn: this.handler,
             data: rawData,
           });
 
           worker.onmessage = (e) => {
-            console.log("Received:", e.data);
             if (e.data.error) {
               console.error("Worker error:", e.data.error);
             } else if (e.data.result) {
-              console.log("Worker result:", e.data.result);
 
               // Update the data with the result
               Object.keys(e.data.result).forEach(key => {
@@ -150,10 +147,6 @@ export default {
               });
             }
           };
-
-          // await new Function(['toRaw'], this.handler).apply(data, [(item) => {
-          //   return item[Symbol.for('__v_raw')];
-          // }]);
         } catch (error) {
           console.error("❌ There is an error in the button handler", error);
         }
