@@ -36,6 +36,7 @@ export default {
       if (this.loopContext) {
         loopContext = `${this.loopContext}.`;
       }
+
       loopContext += element.config.settings.varname;
       // Add nested component inside loop
       const child = this.createComponent("ScreenRenderer", {
