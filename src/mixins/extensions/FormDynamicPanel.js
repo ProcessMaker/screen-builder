@@ -27,11 +27,6 @@ export default {
         isMobile: false
       };
 
-      let loopContext = "";
-      if (this.loopContext) {
-        loopContext = `${this.loopContext}.`;
-      }
-      loopContext += element.config.settings.varname;
 
       const variableName = element.config.settings.varname;
       const index = element.config.settings.indexName;
