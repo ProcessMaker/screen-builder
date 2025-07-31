@@ -6,7 +6,6 @@
     </div>
     
     <div class="form-group border-bottom">
-      <label for="varname">{{ $t('Variable Name') }}</label>
       <FormInput
         v-model="settings.varname"
         :label="$t('Variable Name')"
