@@ -22,7 +22,7 @@ import { getValidPath } from '@/mixins';
 
 export default {
   mixins: [getValidPath],
-  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData', 'loading', 'loadingLabel'],
+  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData', 'loading', 'loadingLabel', 'handler'],
   data() {
     return {
       showSpinner: false
@@ -80,6 +80,8 @@ export default {
         const trueValue = this.fieldValue || '1';
         const value = (this.value == trueValue) ? null : trueValue;
         this.$emit('input', value);
+        // Run handler after setting the value
+        await this.runHandler();
       }
       if (this.event !== 'pageNavigate' && this.name) {
         this.setValue(this.$parent, this.name, this.fieldValue);
@@ -89,6 +91,8 @@ export default {
           this.showSpinner = true;
         }
         this.$emit('input', this.fieldValue);
+        // Run handler after setting the value
+        await this.runHandler();
         this.$nextTick(() => {
           this.$emit('submit', this.eventData, this.loading, this.buttonInfo);
         });
@@ -99,6 +103,21 @@ export default {
         this.$emit('page-navigate', this.eventData);
       }
     },
+    async runHandler() {
+      if (this.handler) {
+        try {
+          const data = this.getScreenDataReference(null, (screen, name, value) => {
+            // Enable the data reference to be updated by the handler
+            screen.$set(screen.vdata, name, value);
+          });
+          await new Function(['toRaw'], this.handler).apply(data, [(item) => {
+            return item[Symbol.for('__v_raw')];
+          }]);
+        } catch (error) {
+          console.error('❌ There is an error in the button handler', error);
+        }
+      }
+    }
   },
 };
 </script>

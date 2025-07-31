@@ -1,4 +1,7 @@
 /** @type { import('@storybook/vue-vite').StorybookConfig } */
+const path = require('path');
+const { mergeConfig } = require('vite');
+
 const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
@@ -13,6 +16,15 @@ const config = {
   },
   docs: {
     autodocs: "tag"
-  }
+  },
+  viteFinal: async (config) => {
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          'vue-monaco': path.resolve(__dirname, '../node_modules/vue-monaco/dist/vue-monaco.js'),
+        },
+      },
+    });
+  },
 };
 export default config;

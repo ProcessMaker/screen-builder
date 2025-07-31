@@ -562,6 +562,7 @@ import TabsBar from "./TabsBar.vue";
 import Sortable from './sortable/Sortable.vue';
 import ClipboardButton from './ClipboardButton.vue';
 import ScreenTemplates from './ScreenTemplates.vue';
+import CodeEditor from "./inspector/code-editor.vue";
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -633,6 +634,7 @@ export default {
     Sortable,
     ClipboardButton,
     ScreenTemplates,
+    CodeEditor,
   },
   mixins: [HasColorProperty, testing, Clipboard],
   props: {
