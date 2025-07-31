@@ -7,7 +7,7 @@
         :name="$t('Variable Name')"
         :helper="$t('This variable will contain an array of objects')"
         validation="regex:/^(?:[A-Z_.a-z])(?:[0-9A-Z_.a-z])*$/|required"
-        data-cy="inspector-name"
+        data-test="i1177-inspector-name"
       />
     </div>
 
@@ -15,34 +15,29 @@
     <div v-if="screenType == 'form' && settings.type === 'new'" class="form-group border-bottom">
       <FormInput
         v-model="settings.indexName"
-        :label="$t('Index')"
-        :name="$t('Index')"
-        :helper="$t('Index of the dynamic panel')"
+        :label="$t('Index Name')"
+        :name="$t('Index Name')"
+        :helper="$t('Index Name of the dynamic panel')"
         validation="required"
-        data-cy="inspector-times"
+        data-test="i1177-inspector-index-name"
       />
     </div>
   </div>
 </template>
 
 <script>
-import { FormInput, FormCheckbox } from '@processmaker/vue-form-elements';
+import { FormInput } from '@processmaker/vue-form-elements';
 
 export default {
   props: ['value', 'screenType'],
   inheritAttrs: false,
-  components: { FormInput, FormCheckbox },
+  components: { FormInput },
   data() {
     return {
-      options: [
-        { value: 'new', text: this.$t('New Array of Objects')},
-        { value: 'existing', text: this.$t('Existing Array')},
-      ],
       settings: {
         type: 'new',
         varname: '',
         indexName: '',
-        add: false,
       },
     };
   },
@@ -60,8 +55,6 @@ export default {
       },
       immediate: true,
     },
-  },
-  computed: {
   },
 };
 </script>
