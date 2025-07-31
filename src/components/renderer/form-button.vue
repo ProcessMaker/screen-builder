@@ -131,16 +131,17 @@ export default {
           const rawData = data[Symbol.for("__v_raw")];
 
           const worker = new Worker();
+          // Send the handler code to the worker
           worker.postMessage({
             fn: this.handler,
             data: rawData,
           });
 
+          // Listen for the result from the worker
           worker.onmessage = (e) => {
             if (e.data.error) {
               console.error("Worker error:", e.data.error);
             } else if (e.data.result) {
-
               // Update the data with the result
               Object.keys(e.data.result).forEach(key => {
                 rawData[key] = e.data.result[key];
