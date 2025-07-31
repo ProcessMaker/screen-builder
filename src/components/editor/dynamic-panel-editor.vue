@@ -180,8 +180,7 @@ import {
   FormSelectList,
   FormTextArea
 } from "@processmaker/vue-form-elements";
-import { HasColorProperty } from "@/mixins";
-import { Clipboard } from "@/mixins";
+import { HasColorProperty, Clipboard } from "@/mixins";
 import ClipboardButton from '../ClipboardButton.vue';
 import * as renderer from "@/components/renderer";
 
