@@ -108,7 +108,7 @@ export default {
           return;
         }
 
-        if (['FormLoop', 'FormNestedScreen', 'FormRecordList', 'FormDynamicPanel'].includes(item.component)) {
+        if (['FormLoop', 'FormNestedScreen', 'FormRecordList'].includes(item.component)) {
           return;
         }
 
