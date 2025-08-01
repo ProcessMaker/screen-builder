@@ -690,7 +690,7 @@
                                         "name": "button_with_handler",
                                         "fieldValue": null,
                                         "tooltip": {},
-                                        "handler": "this.form_input_2=\"value changed by handler\";"
+                                        "handler": "return {\n    form_input_2: \"value changed by handler\",\n}"
                                     },
                                     "inspector": [
                                         {
@@ -1392,7 +1392,7 @@
                                 "name": "record_list_button_with_handler",
                                 "fieldValue": null,
                                 "tooltip": {},
-                                "handler": "this.form_input_1=\"value changed by handler\";console.log('handler executed')"
+                                "handler": "console.log('handler executed');\nreturn {\n    form_input_1: \"value changed by handler\",\n}"
                             },
                             "inspector": [
                                 {
