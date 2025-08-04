@@ -1,6 +1,9 @@
 // worker.js
+import { parse } from 'flatted';
+
 self.onmessage = async function (e) {
-  const { fn, data } = e.data;
+  const { fn, dataRefs } = e.data;
+  const { data, scope, parent } = parse(dataRefs);
 
   try {
     // Validate inputs
@@ -18,15 +21,15 @@ self.onmessage = async function (e) {
 
     // Use Function constructor with explicit parameter and body
     // eslint-disable-next-line no-new-func
-    const userFunc = new Function('data', functionBody);
-    const result = isAsync ? await userFunc(data) : userFunc(data);
+    const userFunc = new Function('data', 'parent', functionBody);
+    const result = isAsync ? await userFunc.apply(scope, [data, parent]) : userFunc.apply(scope, [data, parent]);
 
     self.postMessage({ result });
   } catch (error) {
-    console.error('Error executing handler:', error);
+    console.error('❌ Error executing handler:', error);
 
     self.postMessage({
-      error: error.message,
+      error: error.message || error.toString(),
       stack: error.stack
     });
   }
