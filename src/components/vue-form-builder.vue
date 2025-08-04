@@ -1521,7 +1521,8 @@ export default {
 
       if (
         _.findIndex(control.inspector, keyNamePropertyToFind) !== -1 ||
-        control.component === "FormLoop"
+        control.component === "FormLoop" ||
+        control.component === "FormDynamicPanel"
       ) {
         [this.variables, copy.config.name] = this.generator.generate(
           this.config,
