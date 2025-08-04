@@ -10,7 +10,7 @@
       :disabled="showSpinner"
     >
       <b-spinner v-if="showSpinner" small></b-spinner>
-      {{ showSpinner ? (!loadingLabel ? 'Loading...': loadingLabel) : label }}
+      {{ showSpinner ? (!loadingLabel ? "Loading..." : loadingLabel) : label }}
     </button>
   </div>
 </template>
@@ -19,17 +19,31 @@
 import Mustache from 'mustache';
 import { mapActions, mapState } from "vuex";
 import { getValidPath } from '@/mixins';
+import Worker from "@/workers/worker.js?worker&inline";
 
 export default {
   mixins: [getValidPath],
-  props: ['variant', 'label', 'event', 'eventData', 'name', 'fieldValue', 'value', 'tooltip', 'transientData', 'loading', 'loadingLabel', 'handler'],
+  props: [
+    "variant",
+    "label",
+    "event",
+    "eventData",
+    "name",
+    "fieldValue",
+    "value",
+    "tooltip",
+    "transientData",
+    "loading",
+    "loadingLabel",
+    "handler"
+  ],
   data() {
     return {
       showSpinner: false
     };
   },
   computed: {
-    ...mapState('globalErrorsModule', ['valid']),
+    ...mapState("globalErrorsModule", ["valid"]),
     classList() {
       let variant = this.variant || 'primary';
       return {
@@ -106,15 +120,36 @@ export default {
     async runHandler() {
       if (this.handler) {
         try {
-          const data = this.getScreenDataReference(null, (screen, name, value) => {
-            // Enable the data reference to be updated by the handler
-            screen.$set(screen.vdata, name, value);
+          const data = this.getScreenDataReference(
+            null,
+            (screen, name, value) => {
+              // Enable the data reference to be updated by the handler
+              screen.$set(screen.vdata, name, value);
+            }
+          );
+
+          const rawData = data[Symbol.for("__v_raw")];
+
+          const worker = new Worker();
+          // Send the handler code to the worker
+          worker.postMessage({
+            fn: this.handler,
+            data: rawData,
           });
-          await new Function(['toRaw'], this.handler).apply(data, [(item) => {
-            return item[Symbol.for('__v_raw')];
-          }]);
+
+          // Listen for the result from the worker
+          worker.onmessage = (e) => {
+            if (e.data.error) {
+              console.error("Worker error:", e.data.error);
+            } else if (e.data.result) {
+              // Update the data with the result
+              Object.keys(e.data.result).forEach(key => {
+                rawData[key] = e.data.result[key];
+              });
+            }
+          };
         } catch (error) {
-          console.error('❌ There is an error in the button handler', error);
+          console.error("❌ There is an error in the button handler", error);
         }
       }
     }
