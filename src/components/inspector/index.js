@@ -18,6 +18,7 @@ export { default as ImageUpload } from "./image-upload.vue";
 export { default as ImageVariable } from "./image-variable.vue";
 export { default as InputVariable } from "./input-variable.vue";
 export { default as LoopInspector } from "./loop.vue";
+export { default as DynamicPanelInspector } from "./dynamic-panel.vue";
 export { default as MustacheHelper } from "./mustache-helper.vue";
 export { default as OptionsList } from "./options-list.vue";
 export { default as OutboundConfig } from "./outbound-config.vue";
