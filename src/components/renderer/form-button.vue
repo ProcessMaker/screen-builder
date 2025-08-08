@@ -20,6 +20,8 @@ import Mustache from 'mustache';
 import { mapActions, mapState } from "vuex";
 import { getValidPath } from '@/mixins';
 import Worker from "@/workers/worker.js?worker&inline";
+import { findRootScreen } from "@/mixins/DataReference";
+import { stringify } from 'flatted';
 
 export default {
   mixins: [getValidPath],
@@ -112,45 +114,50 @@ export default {
         });
         return;
       }
+      if (this.event === 'pageNavigate') {
+        // Run handler for page navigate
+        await this.runHandler();
+      }
       this.$emit(this.event, this.eventData);
       if (this.event === 'pageNavigate') {
         this.$emit('page-navigate', this.eventData);
       }
     },
-    async runHandler() {
+    runHandler() {
       if (this.handler) {
-        try {
-          const data = this.getScreenDataReference(
-            null,
-            (screen, name, value) => {
-              // Enable the data reference to be updated by the handler
-              screen.$set(screen.vdata, name, value);
-            }
-          );
+        return new Promise((resolve, reject) => {
+          try {
+            const rootScreen = findRootScreen(this);
+            const data = rootScreen.vdata;
+            const scope = this.transientData;
 
-          const rawData = data[Symbol.for("__v_raw")];
+            const worker = new Worker();
+            // Send the handler code to the worker
+            worker.postMessage({
+              fn: this.handler,
+              dataRefs: stringify({data, scope}),
+            });
 
-          const worker = new Worker();
-          // Send the handler code to the worker
-          worker.postMessage({
-            fn: this.handler,
-            data: rawData,
-          });
-
-          // Listen for the result from the worker
-          worker.onmessage = (e) => {
-            if (e.data.error) {
-              console.error("Worker error:", e.data.error);
-            } else if (e.data.result) {
-              // Update the data with the result
-              Object.keys(e.data.result).forEach(key => {
-                rawData[key] = e.data.result[key];
-              });
-            }
-          };
-        } catch (error) {
-          console.error("❌ There is an error in the button handler", error);
-        }
+            // Listen for the result from the worker
+            worker.onmessage = (e) => {
+              if (e.data.error) {
+                reject(e.data.error);
+              } else if (e.data.result) {
+                // Update the data with the result
+                Object.keys(e.data.result).forEach(key => {
+                  if (key === '_root') {
+                    Object.assign(data, e.data.result[key]);
+                  } else {
+                    scope[key] = e.data.result[key];
+                  }
+                });
+                resolve();
+              }
+            };
+          } catch (error) {
+            console.error("❌ There is an error in the button handler", error);
+          }
+        });
       }
     }
   },
