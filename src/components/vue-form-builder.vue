@@ -1533,6 +1533,9 @@ export default {
         }
       }
 
+      if (copy.component === "FormHtmlViewer") {
+        copy.config.name = "form_html_viewer";
+      }
       return copy;
     },
     initiateLanguageSupport() {

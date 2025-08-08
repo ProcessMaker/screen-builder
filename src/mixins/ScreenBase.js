@@ -205,9 +205,7 @@ export default {
       const times = Number(config.settings.times);
       const loopVariable = [];
       for (let i = 0; i < times; i++) {
-        loopVariable.push({
-          "_i": i
-        });
+        loopVariable.push({});
       }
       return loopVariable;
     },
