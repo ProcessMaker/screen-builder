@@ -96,9 +96,6 @@ describe("select list dependent collection", () => {
 
     cy.get("[data-cy=mode-preview]").click();
 
-    // Extra wait for the list to load completely before selecting
-    cy.wait(500); // half second, you can adjust it if necessary
-
     // Select a valid option
     cy.get('[data-cy="screen-field-form_select_list_1"]').selectOption(
       "Nevada"
