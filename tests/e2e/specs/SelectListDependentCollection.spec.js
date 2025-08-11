@@ -61,7 +61,7 @@ describe("select list dependent collection", () => {
     // load individual record
     cy.intercept(
       "GET",
-      /collections\/99\/records.*NV.*(Henderson|789)/,
+      /collections\/99\/records.*NV.*(henderson|789)/,
       JSON.stringify({
         data: [{ id: 789, data: { city: "Henderson" } }],
         meta: { total: 1 }
