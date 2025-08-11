@@ -1,6 +1,9 @@
 <template>
-  <div class="form-group">
-    <a :class="classColor" :href="inputUrlLink"> {{ label }} </a>
+  <div class="form-group link-button">
+    <a :class="classColor" :href="inputUrlLink">
+      <i v-if="variantStyle === 'button'" class="fas fa-external-link-alt" />
+      {{ label }}
+    </a>
   </div>
 </template>
 
@@ -8,6 +11,7 @@
 export default {
   props: [
     "variant",
+    "variantStyle",
     "label",
     "event",
     "eventData",
@@ -18,7 +22,10 @@ export default {
   ],
   computed: {
     classColor() {
-      return `text-${this.variant}`;
+      if (this.variantStyle === "link") {
+        return `text-${this.variant}`;
+      }
+      return `btn btn-${this.variant}`;
     }
   }
 };
