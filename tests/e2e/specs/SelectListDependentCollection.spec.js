@@ -117,22 +117,22 @@ describe("select list dependent collection", () => {
     
     // Open the city dropdown and check what options are available
     cy.get('[data-cy="screen-field-city"]').click();
-    
+ 
     // Look for Henderson specifically, and if not found, select the first available option
-    cy.get('body').then(($body) => {
-      if ($body.find('span:contains("Henderson")').length > 0) {
-        cy.get('[data-cy="screen-field-city"]').selectOption("Henderson");
-      } else {
-        // If Henderson is not available, select the first available option
-        cy.get('[data-cy="screen-field-city"]').find('span:not(.multiselect__option--disabled)').first().click();
-      }
+    cy.get('[data-cy="screen-field-city"]').selectOption("Henderson");
+    cy.wait(500);
+    cy.assertPreviewData({
+      state: "NV",
+      city: "789",
+      id_gt_than: "33",
+      form_select_list_2: null
     });
 
     // Updating a value referenced with mustache in the PMQL should trigger a backend call
     cy.get('[data-cy="screen-field-id_gt_than"]').type("44");
 
     // Wait for the city field to reset due to PMQL filter change
-    cy.wait(1000); // Give time for the backend call to complete
+    cy.wait(500); // Give time for the backend call to complete
     
     cy.assertPreviewData({
       state: "NV",
