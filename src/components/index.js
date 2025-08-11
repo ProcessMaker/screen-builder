@@ -72,6 +72,7 @@ export {
   validationRulesProperty,
   toggleStyleProperty,
   buttonVariantStyleProperty,
+  linkVariantStyleProperty,
   defaultValueProperty,
   buttonTypeEvent,
   tooltipProperty,

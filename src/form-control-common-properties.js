@@ -284,53 +284,76 @@ export const toggleStyleProperty = {
   },
 };
 
-export const buttonVariantStyleProperty = {
-  type: 'FormMultiselect',
-  field: 'variant',
-  config: {
-    label: 'Button Variant Style',
-    helper: 'The variant determines the appearance of the button',
-    options: [
-      {
-        value: 'primary',
-        content: 'Primary',
-      },
-      {
-        value: 'secondary',
-        content: 'Secondary',
-      },
-      {
-        value: 'success',
-        content: 'Success',
-      },
-      {
-        value: 'danger',
-        content: 'Danger',
-      },
-      {
-        value: 'warning',
-        content: 'Warning',
-      },
-      {
-        value: 'info',
-        content: 'Info',
-      },
-      {
-        value: 'light',
-        content: 'Light',
-      },
-
-      {
-        value: 'dark',
-        content: 'Dark',
-      },
-
-      {
-        value: 'link',
-        content: 'Link',
-      },
-    ],
+const optionsColor = [
+  {
+    value: "primary",
+    content: "Primary"
   },
+  {
+    value: "secondary",
+    content: "Secondary"
+  },
+  {
+    value: "success",
+    content: "Success"
+  },
+  {
+    value: "danger",
+    content: "Danger"
+  },
+  {
+    value: "warning",
+    content: "Warning"
+  },
+  {
+    value: "info",
+    content: "Info"
+  },
+  {
+    value: "light",
+    content: "Light"
+  },
+  {
+    value: "dark",
+    content: "Dark"
+  },
+  {
+    value: "link",
+    content: "Link"
+  }
+];
+
+export const buttonVariantStyleProperty = {
+  type: "FormMultiselect",
+  field: "variant",
+  config: {
+    label: "Button Variant Style",
+    helper: "The variant determines the appearance of the button",
+    options: optionsColor
+  }
+};
+
+export const linkVariantStyleProperty = {
+  type: "FormMultiselect",
+  field: "variant",
+  config: {
+    label: "Link Variant Style",
+    helper: "The variant determines the appearance of the link",
+    options: optionsColor
+  }
+};
+
+export const variantStyleProperty = {
+  type: "FormMultiselect",
+  field: "variantStyle",
+  config: {
+    label: "Variant Style",
+    helper: "The variant determines the appearance of the link",
+    options: [
+      { value: "link", content: "Link" },
+      { value: "button", content: "Button" }
+    ]
+  }
 };
 
 export const defaultValueProperty = {

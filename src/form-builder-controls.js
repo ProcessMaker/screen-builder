@@ -51,6 +51,8 @@ import {
   bgcolorModern,
   bgcolorPropertyRecord,
   colorPropertyRecord,
+  linkVariantStyleProperty,
+  variantStyleProperty
 } from './form-control-common-properties';
 
 export default [
@@ -1084,7 +1086,9 @@ export default [
         label: "New Link",
         icon: "fas fa-link",
         variant: "primary",
+        variantStyle: "link",
         event: "link",
+        value: "link"
       },
       inspector: [
         {
@@ -1092,7 +1096,7 @@ export default [
           field: 'label',
           config: {
             label: 'Label',
-            helper: 'The label describes the button\'s text',
+            helper: 'The label describes the link\'s text',
           },
         },
         {
@@ -1101,9 +1105,10 @@ export default [
           config: {
             label: 'Link URL',
             helper: 'Type here the URL link. Mustache syntax is supported.',
-          },         
+          },
         },
-        buttonVariantStyleProperty
+        variantStyleProperty,
+        linkVariantStyleProperty
       ]
     }
   },
