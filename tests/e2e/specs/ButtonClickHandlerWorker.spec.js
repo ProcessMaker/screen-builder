@@ -9,7 +9,7 @@ describe("Button click handler", () => {
     });
   });
 
-  it.only("Test circular reference and click handlers", () => {
+  it("Test circular reference and click handlers", () => {
     cy.loadFromJson("button_click_handler_worker.json", 0);
     cy.wait(1000);
 
