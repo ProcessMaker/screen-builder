@@ -10,6 +10,7 @@ describe("FOUR-6788 screen performance", () => {
 
     cy.loadFromJson("FOUR-6788_screen_performance.json");
     cy.visit("/?scenario=RenderScreen");
+    cy.wait(1000);
     const customThresholds = {
       performance: minimumPerformanceScore,
       accessibility,
@@ -31,6 +32,7 @@ describe("FOUR-6788 screen performance", () => {
 
     cy.loadFromJson("FOUR-6788_screen_performance_2.json");
     cy.visit("/?scenario=RenderScreen2");
+    cy.wait(1000);
     const customThresholds = {
       performance: minimumPerformanceScore,
       accessibility,
