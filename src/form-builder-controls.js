@@ -3,6 +3,7 @@ import FormAvatar from './components/renderer/form-avatar';
 import FormButton from './components/renderer/form-button';
 import FormMultiColumn from './components/renderer/form-multi-column';
 import FormLoop from './components/renderer/form-loop';
+import FormDynamicPanel from './components/renderer/form-dynamic-panel.vue';
 import FormRecordList from './components/renderer/form-record-list';
 import FormImage from './components/renderer/form-image';
 import FormMaskedInput from './components/renderer/form-masked-input';
@@ -457,6 +458,42 @@ export default [
       inspector: [
         {
           type: 'LoopInspector',
+          field: 'settings',
+          config: {
+          },
+        },
+      ],
+    },
+  },
+  {
+    editorComponent: FormDynamicPanel,
+    editorBinding: 'FormDynamicPanel',
+    rendererComponent: FormDynamicPanel,
+    rendererBinding: 'FormDynamicPanel',
+    control: {
+      popoverContent: "Add a dynamic panel component",
+      order: 6.0,
+      group: 'Content Fields',
+      label: 'Dynamic Panel',
+      component: 'FormDynamicPanel',
+      'editor-component': 'DynamicPanel',
+      'editor-control': 'DynamicPanel',
+      container: true,
+      // Default items container
+      items: [],
+      config: {
+        name: '',
+        icon: 'fas fa-th-large',
+        settings: {
+          type: 'new',
+          varname: 'dynamic_panel',
+          indexName: '',
+          add: false,
+        },
+      },
+      inspector: [
+        {
+          type: 'DynamicPanelInspector',
           field: 'settings',
           config: {
           },

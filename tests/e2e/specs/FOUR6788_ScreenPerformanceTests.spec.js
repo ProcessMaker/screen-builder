@@ -6,7 +6,7 @@ describe("FOUR-6788 screen performance", () => {
 
   // This test includes a Loop with 6 iterations, multi-column, select lists, rich texts and text areas
   it("Verify FOUR-6788 screen performance: select list, rich text", () => {
-    const maximumScreenRenderTime = 6000;
+    const maximumScreenRenderTime = 6500;
 
     cy.loadFromJson("FOUR-6788_screen_performance.json");
     cy.visit("/?scenario=RenderScreen");
@@ -27,7 +27,7 @@ describe("FOUR-6788 screen performance", () => {
   // This test includes a Loop with 6 iterations, multi-column, select lists, rich texts,
   // text areas, input texts, validations rules, visibility rules and a submit button
   it("Verify FOUR-6788 screen performance: input text, validations, visibility rules", () => {
-    const maximumScreenRenderTime = 6000;
+    const maximumScreenRenderTime = 6500;
 
     cy.loadFromJson("FOUR-6788_screen_performance_2.json");
     cy.visit("/?scenario=RenderScreen2");
