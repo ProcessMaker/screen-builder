@@ -251,11 +251,23 @@ Cypress.Commands.add(
   (subject, option) => {
     cy.get(subject).click();
     cy.get(subject).find("input").clear().type(option);
-    cy.get(subject)
-      .find(
-        `span:not(.multiselect__option--disabled) span:contains("${option}"):first`
-      )
-      .click();
+    
+    // Wait for options to be available and then try to find the target option
+    cy.get(subject).should('have.class', 'multiselect--active');
+    
+    // Try to find the option with retry logic
+    cy.get(subject).then(($el) => {
+      const optionSelector = `span:not(.multiselect__option--disabled) span:contains("${option}"):first`;
+      
+      // Check if the option exists
+      if ($el.find(optionSelector).length > 0) {
+        cy.get(subject).find(optionSelector).click();
+      } else {
+        // If option not found, try to wait a bit more and retry
+        cy.wait(500);
+        cy.get(subject).find(optionSelector).should('exist').click();
+      }
+    });
   }
 );
 
