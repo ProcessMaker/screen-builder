@@ -21,3 +21,4 @@ export { default as FormTasks } from "./form-tasks.vue";
 export { default as LinkButton } from "./link-button.vue";
 export { default as FormCollectionRecordControl } from "./form-collection-record-control.vue";
 export { default as FormCollectionViewControl } from "./form-collection-view-control.vue";
+export { default as CaseProgressBar } from "./case-progress-bar.vue";
