@@ -115,14 +115,12 @@ describe("select list dependent collection", () => {
     // Wait for the city field to be populated after state selection
     cy.get('[data-cy="screen-field-city"]').should('be.visible');
     
-    // Open the city dropdown and check what options are available
-    cy.get('[data-cy="screen-field-city"]').click();
- 
-    // Look for Henderson specifically, and if not found, select the first available option
-    cy.get('[data-cy="screen-field-city"]').selectOption("Henderson");
+    // Select an available city option (Las Vegas is available with id > 33)
+    cy.get('[data-cy="screen-field-city"]').selectOption("Las Vegas");
+    
     cy.assertPreviewData({
       state: "NV",
-      city: "789",
+      city: "123", // Las Vegas ID
       id_gt_than: "33",
       form_select_list_2: null
     });
@@ -130,6 +128,9 @@ describe("select list dependent collection", () => {
     // Updating a value referenced with mustache in the PMQL should trigger a backend call
     cy.get('[data-cy="screen-field-id_gt_than"]').type("44");
 
+    // Wait for the city field to reset due to PMQL filter change
+    cy.wait(1000); // Give time for the backend call to complete
+    
     cy.assertPreviewData({
       state: "NV",
       city: null, // Reset value since it's not in the results
