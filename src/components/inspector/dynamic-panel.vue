@@ -22,22 +22,34 @@
         data-test="i1177-inspector-index-name"
       />
     </div>
+
+    <div class="form-group border-bottom">
+      <FormTextArea
+        v-model="settings.emptyStateMessage"
+        :label="$t('Empty State Message')"
+        :name="$t('Empty State Message')"
+        :helper="$t('Custom message to display when the panel has no data. Supports HTML and Mustache placeholders')"
+        :rows="3"
+        data-test="i1177-inspector-empty-state-message"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import { FormInput } from '@processmaker/vue-form-elements';
+import { FormInput, FormTextArea } from '@processmaker/vue-form-elements';
 
 export default {
   props: ['value', 'screenType'],
   inheritAttrs: false,
-  components: { FormInput },
+  components: { FormInput, FormTextArea },
   data() {
     return {
       settings: {
         type: 'new',
         varname: '',
         indexName: '',
+        emptyStateMessage: this.$t('No data available for this dynamic panel'),
       },
     };
   },
