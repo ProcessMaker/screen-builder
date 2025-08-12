@@ -631,7 +631,8 @@
                         "varname": "loop_1",
                         "indexOf": "index",
                         "add": false,
-                        "indexName": "index"
+                        "indexName": "index",
+                        "emptyStateMessage": "<h3>No data available for this dynamic panel {{loop_1.length}}</h3>"
                       },
                       "label": ""
                     },

@@ -14,6 +14,15 @@ export default {
 
       // Add itemData to the properties of FormDynamicPanel
       properties[':itemData'] = `${variableName} && ${variableName}[${index}]`;
+      
+      // Add emptyStateMessage property if configured
+      if (element.config.settings.emptyStateMessage) {
+        properties[':emptyStateMessage'] = this.byRef(element.config.settings.emptyStateMessage);
+      }
+      
+      // Add validationData for Mustache processing
+      properties[':validationData'] = 'getValidationData()';
+      
       this.registerVariable(element.config.settings.varname, element);
     },
     loadFormDynamicPanelItems({ element, node, definition }) {
