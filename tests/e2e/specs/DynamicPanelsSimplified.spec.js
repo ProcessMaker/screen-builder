@@ -125,4 +125,40 @@ describe("Dynamic Panels - Simplified", () => {
       ]
     });
   });
+
+  it("should test state message with Mustache and html syntax", () => {
+    // Switch to preview mode
+    cy.get("[data-cy=mode-preview]").click();
+    
+    // Set up preview data with loop_1 array so {{loop_1.length}} resolves to "3"
+    const testData = {
+      index: "0",
+      loop_1: [
+        { name: "John Doe" },
+        { name: "Jane Smith" },
+        { name: "Bob Johnson" }
+      ]
+    };
+    
+    cy.setPreviewDataInput(testData);
+    
+    // Test with no data - should show default empty state message with Mustache processed
+    cy.get("[data-cy=preview-content] [name=index]").clear().type("5"); // Invalid index
+    
+    // Verify the default empty state message is displayed with Mustache processed
+    cy.get("[data-cy=preview-content] .dynamic-panel-empty").should("contain", "No data available for this dynamic panel 3");
+    
+    // Verify HTML is rendered (not escaped)
+    cy.get("[data-cy=preview-content] .dynamic-panel-empty h3").should("be.visible");
+    cy.get("[data-cy=preview-content] .dynamic-panel-empty h3").should("contain", "No data available for this dynamic panel 3");
+    
+    // Test with valid data - should show the panel content
+    cy.get("[data-cy=preview-content] [name=index]").clear().type("0");
+    cy.get("[data-cy=preview-content] label").contains("Selected Name").should("be.visible");
+    
+    // Test with another invalid index to show empty state again
+    cy.get("[data-cy=preview-content] [name=index]").clear().type("10");
+    cy.get("[data-cy=preview-content] .dynamic-panel-empty").should("contain", "No data available for this dynamic panel 3");
+  });
+
 }); 

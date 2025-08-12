@@ -489,6 +489,7 @@ export default [
           varname: 'dynamic_panel',
           indexName: '',
           add: false,
+          emptyStateMessage:  'No data available for this dynamic panel',
         },
       },
       inspector: [
