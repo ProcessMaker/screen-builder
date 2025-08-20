@@ -22,10 +22,10 @@ export default {
   ],
   computed: {
     classColor() {
-      if (this.variantStyle === "link") {
-        return `text-${this.variant}`;
+      if (this.variantStyle === "button") {
+        return `btn btn-${this.variant}`;
       }
-      return `btn btn-${this.variant}`;
+      return `text-${this.variant}`;
     }
   }
 };
