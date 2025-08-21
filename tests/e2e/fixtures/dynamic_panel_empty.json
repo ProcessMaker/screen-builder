@@ -1,0 +1,77 @@
+{
+  "screens": [
+    {
+      "id": "dynamic-panel-empty-test",
+      "config": [
+        {
+          "name": "Default",
+          "items": [
+            {
+              "uuid": "dynamic-panel-empty-uuid",
+              "config": {
+                "name": "dynamic_panel_1",
+                "icon": "fas fa-th-large",
+                "settings": {
+                  "type": "new",
+                  "varname": "dynamic_panel_1",
+                  "indexName": "",
+                  "add": false,
+                  "emptyStateMessage": ""
+                },
+                "label": "Dynamic Panel",
+                "container": true
+              },
+              "inspector": [
+                {
+                  "type": "DynamicPanelInspector",
+                  "field": "settings",
+                  "config": {}
+                }
+              ],
+              "component": "FormDynamicPanel",
+              "editor-component": "DynamicPanel",
+              "editor-control": "DynamicPanel",
+              "items": [
+                {
+                  "uuid": "nested-input-uuid",
+                  "config": {
+                    "icon": "far fa-square",
+                    "label": "Test Input",
+                    "name": "test_input",
+                    "placeholder": "",
+                    "validation": [],
+                    "helper": null,
+                    "type": "text",
+                    "dataFormat": "string",
+                    "readonly": false
+                  },
+                  "component": "FormInput",
+                  "inspector": [
+                    {
+                      "type": "FormInput",
+                      "field": "name",
+                      "config": {
+                        "label": "Variable Name",
+                        "name": "Variable Name",
+                        "validation": "dot_notation|required|not_in:null,break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,class,const,enum,export,extends,import,super,true,false",
+                        "helper": "A variable name is a symbolic name to reference information."
+                      }
+                    },
+                    {
+                      "type": "FormInput",
+                      "field": "label",
+                      "config": {
+                        "label": "Label",
+                        "helper": "The label describes the field's name"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 
