@@ -489,7 +489,7 @@ export default [
           varname: 'dynamic_panel',
           indexName: '',
           add: false,
-          emptyStateMessage:  'No data available for this dynamic panel',
+          emptyStateMessage:  'No data available. Please configure an Index Name for this dynamic panel.',
         },
       },
       inspector: [
