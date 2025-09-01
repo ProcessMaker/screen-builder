@@ -1,5 +1,63 @@
 // worker.js
-import { parse } from 'flatted';
+import { parse } from "flatted";
+
+// Create a mock context for browser globals
+const createMockContext = () => {
+  const mockContext = {
+    alert: (message) => {
+      // Send alert message back to main thread
+      self.postMessage({
+        type: "alert",
+        message
+      });
+    },
+                console: {
+        log: (...args) => {
+          self.postMessage({
+            type: "console.log",
+            args
+          });
+        },
+        error: (...args) => {
+        self.postMessage({
+          type: "console.error",
+          args
+        });
+      },
+      warn: (...args) => {
+        self.postMessage({
+          type: "console.warn",
+          args
+        });
+      },
+      info: (...args) => {
+        self.postMessage({
+          type: "console.info",
+          args
+        });
+      }
+    },
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  confirm: (message) => {
+        self.postMessage({
+          type: "confirm",
+          message
+        });
+        // For now, return true as default
+        return true;
+      },
+      prompt: (message, defaultValue = "") => {
+        self.postMessage({
+          type: "prompt",
+          message,
+          defaultValue
+        });
+        // For now, return defaultValue as default
+        return defaultValue;
+      }
+  };
+
+  return mockContext;
+};
 
 self.onmessage = async function (e) {
   const { fn, dataRefs } = e.data;
@@ -7,12 +65,15 @@ self.onmessage = async function (e) {
 
   try {
     // Validate inputs
-    if (!fn || typeof fn !== 'string') {
-      throw new Error('Function code must be a string');
+    if (!fn || typeof fn !== "string") {
+      throw new Error("Function code must be a string");
     }
 
     // Check if the code is asynchronous
     const isAsync = detectAsyncCode(fn);
+
+    // Create mock context for browser globals
+    const mockContext = createMockContext();
 
     // If the code contains await, wrap it in an async function
     const functionBody = isAsync
@@ -21,8 +82,12 @@ self.onmessage = async function (e) {
 
     // Use Function constructor with explicit parameter and body
     // eslint-disable-next-line no-new-func
-    const userFunc = new Function('data', 'parent', functionBody);
-    const result = isAsync ? await userFunc.apply(scope, [data, parent]) : userFunc.apply(scope, [data, parent]);
+    const userFunc = new Function("data", "parent", "alert", "console", "confirm", "prompt", functionBody);
+    
+    // Apply the function with the mock context
+    const result = isAsync 
+      ? await userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console, mockContext.confirm, mockContext.prompt])
+      : userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console, mockContext.confirm, mockContext.prompt]);
 
     self.postMessage({ result });
   } catch (error) {
@@ -38,11 +103,11 @@ self.onmessage = async function (e) {
 function detectAsyncCode(code) {
   // Remove comments and strings to avoid false positives
   const cleanCode = code
-    .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
-    .replace(/\/\/.*$/gm, '') // Remove line comments
+    .replace(/\/\*[\s\S]*?\*\//g, "") // Remove block comments
+    .replace(/\/\/.*$/gm, "") // Remove line comments
     .replace(/"[^"]*"/g, '""') // Replace string content
     .replace(/'[^']*'/g, "''") // Replace string content
-    .replace(/`[^`]*`/g, '``'); // Replace template literals
+    .replace(/`[^`]*`/g, "``"); // Replace template literals
 
   // Check for async patterns
   const asyncPatterns = [
