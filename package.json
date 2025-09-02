@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/screen-builder",
-  "version": "3.8.11",
+  "version": "3.8.12",
   "scripts": {
     "dev": "VITE_COVERAGE=true vite",
     "build": "vite build",
