@@ -58,16 +58,7 @@ export default [
   },
   {
     name: "Design",
-    fields: [
-      "color",
-      "bgcolor",
-      "variant",
-      "toggle",
-      "height",
-      "width",
-      "designerMode",
-      "bgcolormodern"
-    ],
+    fields: ['color', 'bgcolor', 'variant', 'variantStyle', 'toggle', 'height', 'width', 'designerMode', 'bgcolormodern'],
     open: false
   },
   {
