@@ -11,49 +11,14 @@ const createMockContext = () => {
         message
       });
     },
-                console: {
-        log: (...args) => {
-          self.postMessage({
-            type: "console.log",
-            args
-          });
-        },
-        error: (...args) => {
+    console: {
+      log: (...args) => {
         self.postMessage({
-          type: "console.error",
-          args
-        });
-      },
-      warn: (...args) => {
-        self.postMessage({
-          type: "console.warn",
-          args
-        });
-      },
-      info: (...args) => {
-        self.postMessage({
-          type: "console.info",
+          type: "console.log",
           args
         });
       }
-    },
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  confirm: (message) => {
-        self.postMessage({
-          type: "confirm",
-          message
-        });
-        // For now, return true as default
-        return true;
-      },
-      prompt: (message, defaultValue = "") => {
-        self.postMessage({
-          type: "prompt",
-          message,
-          defaultValue
-        });
-        // For now, return defaultValue as default
-        return defaultValue;
-      }
+    }
   };
 
   return mockContext;
@@ -82,16 +47,16 @@ self.onmessage = async function (e) {
 
     // Use Function constructor with explicit parameter and body
     // eslint-disable-next-line no-new-func
-    const userFunc = new Function("data", "parent", "alert", "console", "confirm", "prompt", functionBody);
+    const userFunc = new Function("data", "parent", "alert", "console", functionBody);
     
     // Apply the function with the mock context
     const result = isAsync 
-      ? await userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console, mockContext.confirm, mockContext.prompt])
-      : userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console, mockContext.confirm, mockContext.prompt]);
+      ? await userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console])
+      : userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console]);
 
     self.postMessage({ result });
   } catch (error) {
-    console.error('❌ Error executing handler:', error);
+    console.error("❌ Error executing handler:", error);
 
     self.postMessage({
       error: error.message || error.toString(),

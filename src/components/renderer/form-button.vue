@@ -135,7 +135,7 @@ export default {
             // Send the handler code to the worker
             worker.postMessage({
               fn: this.handler,
-              dataRefs: stringify({ data, scope }),
+              dataRefs: stringify({ data, scope })
             });
 
             // Listen for the result from the worker
@@ -148,23 +148,6 @@ export default {
                     break;
                   case "console.log":
                     console.log(...e.data.args);
-                    break;
-                  case "console.error":
-                    console.error(...e.data.args);
-                    break;
-                  case "console.warn":
-                    console.warn(...e.data.args);
-                    break;
-                  case "console.info":
-                    console.info(...e.data.args);
-                    break;
-                  case "confirm":
-                    // For now, just log the confirm message
-                    console.log("Confirm:", e.data.message);
-                    break;
-                  case "prompt":
-                    // For now, just log the prompt message
-                    console.log("Prompt:", e.data.message, "Default:", e.data.defaultValue);
                     break;
                 }
                 return; // Don't resolve/reject yet, wait for actual result
