@@ -68,8 +68,6 @@ self.onmessage = async function (e) {
 function detectAsyncCode(code) {
   // Remove comments and strings to avoid false positives
   const cleanCode = code
-    .replace(/\/\*[\s\S]*?\*\//g, "") // Remove block comments
-    .replace(/\/\/.*$/gm, "") // Remove line comments
     .replace(/"[^"]*"/g, '""') // Replace string content
     .replace(/'[^']*'/g, "''") // Replace string content
     .replace(/`[^`]*`/g, "``"); // Replace template literals
