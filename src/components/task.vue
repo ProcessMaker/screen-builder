@@ -531,6 +531,7 @@ export default {
       const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${timestamp}`;
       return this.$dataProvider
         .getTasks(url).then((response) => {
+          this.$emit("load-data-task", response);
           if (response.data.data.length > 0) {
             let task = response.data.data[0];
             if (task.process_request_id !== this.requestId) {
