@@ -144,7 +144,10 @@ export default {
               if (e.data.type) {
                 switch (e.data.type) {
                   case "alert":
-                    alert(e.data.message);
+                    this.$bvToast.toast(e.data.message, {
+                      variant: 'success',
+                      autoHideDelay: 3000
+                    });
                     break;
                   case "console.log":
                     console.log(...e.data.args);
