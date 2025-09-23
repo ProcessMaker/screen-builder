@@ -142,13 +142,11 @@ export default {
             worker.onmessage = (e) => {
               // Handle browser global function calls
               if (e.data.type) {
-                switch (e.data.type) {
-                  case "alert":
-                    this.$bvToast.toast(e.data.message, {
-                      variant: 'success',
-                      autoHideDelay: 3000
-                    });
-                    break;
+                if (e.data.type === "alert") {
+                  this.$bvToast.toast(e.data.message, {
+                    variant: 'success',
+                    autoHideDelay: 3000
+                  });
                 }
                 return; // Don't resolve/reject yet, wait for actual result
               }
