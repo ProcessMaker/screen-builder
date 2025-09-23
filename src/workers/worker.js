@@ -102,7 +102,7 @@ self.onmessage = async function (e) {
 
     self.postMessage({ result });
   } catch (error) {
-    console.error("❌ Error executing handler:", error);
+    console.error("Error executing handler:", error);
 
     self.postMessage({
       error: error.message || error.toString(),
