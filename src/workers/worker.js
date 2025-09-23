@@ -10,14 +10,6 @@ const createMockContext = () => {
         type: "alert",
         message
       });
-    },
-    console: {
-      log: (...args) => {
-        self.postMessage({
-          type: "console.log",
-          args
-        });
-      }
     }
   };
 
@@ -47,12 +39,12 @@ self.onmessage = async function (e) {
 
     // Use Function constructor with explicit parameter and body
     // eslint-disable-next-line no-new-func
-    const userFunc = new Function("data", "parent", "alert", "console", functionBody);
+    const userFunc = new Function("data", "parent", "alert", functionBody);
     
     // Apply the function with the mock context
     const result = isAsync 
-      ? await userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console])
-      : userFunc.apply(scope, [data, parent, mockContext.alert, mockContext.console]);
+      ? await userFunc.apply(scope, [data, parent, mockContext.alert])
+      : userFunc.apply(scope, [data, parent, mockContext.alert]);
 
     self.postMessage({ result });
   } catch (error) {
