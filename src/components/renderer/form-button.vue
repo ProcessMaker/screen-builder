@@ -149,9 +149,6 @@ export default {
                       autoHideDelay: 3000
                     });
                     break;
-                  case "console.log":
-                    console.log(...e.data.args);
-                    break;
                 }
                 return; // Don't resolve/reject yet, wait for actual result
               }
