@@ -690,7 +690,7 @@ export default {
         return null;
       }
     },
-    
+
     /**
      * Handles redirection upon process completion, considering destination type and user task validation.
      * @async
@@ -829,7 +829,18 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleProcessUpdate(data) {
-      if (data.event === 'ACTIVITY_EXCEPTION') {
+      const { event, elementDestination, tokenId } = data;
+
+      // If the activity is completed and there is an element destination, set the element destination to the task
+      if (
+        event === "ACTIVITY_COMPLETED" &&
+        this.task.id === tokenId &&
+        elementDestination
+      ) {
+        this.task.elementDestination = elementDestination;
+      }
+
+      if (event === 'ACTIVITY_EXCEPTION') {
         this.$emit('error', this.requestId);
         window.location.href = `/requests/${this.requestId}`;
       }
