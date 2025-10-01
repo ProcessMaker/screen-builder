@@ -287,10 +287,6 @@ export default {
               });
             }
           }
-          if (i > 5000) {
-            throw Error("CSS is too long");
-          }
-
           i += 1;
         });
 
