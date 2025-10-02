@@ -288,7 +288,7 @@ export default {
             }
           }
 
-          if (i > 2000) {
+          if (i > 20000) {
             throw Error("CSS is too long");
           }
 
