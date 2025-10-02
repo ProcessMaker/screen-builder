@@ -739,6 +739,82 @@ export default {
       });
       //sets Collection result(columns and rows) into this.collectionData
       this.collectionData = result;
+      this.reapplyCollectionSelections(result);
+    },
+    // Keep selected rows in sync after collection refreshes triggered by PMQL filters.
+    reapplyCollectionSelections(newCollection) {
+      if (!this.shouldPersistCollectionSelection()) {
+        return;
+      }
+
+      if (!Array.isArray(this.selectedRows) || this.selectedRows.length === 0) {
+        return;
+      }
+
+      const keyCounts = this.selectedRows.reduce((accumulator, item) => {
+        const key = this.getCollectionRowKey(item);
+        if (!key) {
+          return accumulator;
+        }
+        const occurrences = accumulator.get(key) || 0;
+        accumulator.set(key, occurrences + 1);
+        return accumulator;
+      }, new Map());
+
+      if (keyCounts.size === 0) {
+        this.selectedRows = [];
+        return;
+      }
+
+      const updatedSelection = [];
+
+      newCollection.forEach((row, index) => {
+        const rowKey = this.getCollectionRowKey(row);
+        const occurrences = keyCounts.get(rowKey);
+        if (!occurrences) {
+          return;
+        }
+
+        const newRow = { ...row, selectedRowsIndex: index };
+        updatedSelection.push(newRow);
+
+        if (occurrences === 1) {
+          keyCounts.delete(rowKey);
+        } else {
+          keyCounts.set(rowKey, occurrences - 1);
+        }
+      });
+
+      this.selectedRows = updatedSelection;
+    },
+    shouldPersistCollectionSelection() {
+      const pmql = this.source?.collectionFields?.pmql;
+      return (
+        this.source?.sourceOptions === "Collection" &&
+        this.source?.dataSelectionOptions === "multiple-records" &&
+        typeof pmql === "string" &&
+        pmql.trim().length > 0
+      );
+    },
+    getCollectionRowKey(item) {
+      if (!item || typeof item !== "object") {
+        return null;
+      }
+
+      const entries = Object.entries(item).filter(
+        ([key]) => key !== "selectedRowsIndex"
+      );
+
+      if (entries.length === 0) {
+        return null;
+      }
+
+      entries.sort(([keyA], [keyB]) => {
+        if (keyA > keyB) return 1;
+        if (keyA < keyB) return -1;
+        return 0;
+      });
+      return JSON.stringify(entries);
     },
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
