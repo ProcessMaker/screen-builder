@@ -775,8 +775,9 @@ export default {
           return;
         }
 
-        const newRow = { ...row, selectedRowsIndex: index };
-        updatedSelection.push(newRow);
+        // eslint-disable-next-line no-param-reassign
+        row.selectedRowsIndex = index;
+        updatedSelection.push(row);
 
         if (occurrences === 1) {
           keyCounts.delete(rowKey);
