@@ -1,4 +1,4 @@
-# ProcessMaker Screen Builder
+# ProcessMaker Screen Builder.
 
 `@processmaker/screen-builder` is a VueJS powered Screen Builder that produces compatible JSON for our vue-form-renderer.
 
