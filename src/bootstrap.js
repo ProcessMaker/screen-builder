@@ -50,6 +50,9 @@ const cacheEnabled = document.head.querySelector(
 const cacheTimeout = document.head.querySelector(
   "meta[name='screen-cache-timeout']"
 );
+const secureHandlerToggleVisibleMeta = document.head.querySelector(
+  "meta[name='screen-secure-handler-toggle-visible']"
+);
 
 // Get the current protocol, hostname, and port
 const { protocol, hostname, port } = window.location;
@@ -73,7 +76,10 @@ window.ProcessMaker = {
   alert(message, variant) {},
   screen: {
     cacheEnabled: cacheEnabled ? cacheEnabled.content === "true" : false,
-    cacheTimeout: cacheTimeout ? Number(cacheTimeout.content) : 0
+    cacheTimeout: cacheTimeout ? Number(cacheTimeout.content) : 0,
+    secureHandlerToggleVisible: !!Number(
+      secureHandlerToggleVisibleMeta?.content
+    )
   }
 };
 window.Echo = {
