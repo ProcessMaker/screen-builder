@@ -202,8 +202,8 @@ export default {
       const functionBody = `return (async () => { ${this.handler} })();`;
 
       try {
-        // eslint-disable-next-line no-new-func
-        const userFunc = new Function("data", "parent", "toRaw", functionBody);
+        // eslint-disable-next-line no-new-func, max-len
+        const userFunc = new Function("data", "parent", "toRaw", functionBody); // NOSONAR. This dynamic code execution is safe because it only occurs when the user has explicitly disabled the security worker.
         const result = userFunc.apply(context, [
           dataReference,
           parentReference,
