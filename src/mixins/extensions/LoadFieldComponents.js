@@ -55,11 +55,19 @@ export default {
             componentName === "FormTextArea" ||
             componentName === "FormInput"
           ) {
-            properties["@input"] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
-            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@input"
+            ] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@change"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           } else {
-            properties["@input"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-            properties["@change"] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@input"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            properties[
+              "@change"
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           }
           // Process the FormSelectList@reset event
           properties[
@@ -100,12 +108,17 @@ export default {
       properties[":readonly"] = isCalcProp || element.config.readonly;
       properties[":disabled"] = isCalcProp || element.config.disabled;
       // Events
-      properties['@submit'] = 'submitForm';
+      properties["@submit"] = "submitForm";
       // Add handler event if Button
-      if(componentName === 'FormButton') {
-        properties[':handler'] = this.byRef(element.config.handler);
+      if (componentName === "FormButton") {
+        properties[":handler"] = this.byRef(element.config.handler);
+        const handlerSecurity =
+          element.config.handlerSecurityEnabled === undefined
+            ? true
+            : element.config.handlerSecurityEnabled;
+        properties[":handler-security-enabled"] = this.byRef(handlerSecurity);
       }
-    },
+    }
   },
   mounted() {
     this.extensions.push({
