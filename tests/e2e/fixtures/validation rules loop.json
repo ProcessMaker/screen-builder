@@ -9768,7 +9768,7 @@
                                   {
                                     "field": "before:",
                                     "value": "before:form_date_picker_3",
-                                    "helper": "The field unter validation must be before the given date.",
+                                    "helper": "The field under validation must be before the given date.",
                                     "configs": [
                                       {
                                         "type": "FormInput",
@@ -10547,7 +10547,7 @@
                                   {
                                     "field": "after_or_equal:",
                                     "value": "after_or_equal:form_date_picker_5",
-                                    "helper": "The field unter validation must be after or equal to the given field.",
+                                    "helper": "The field under validation must be after or equal to the given field.",
                                     "configs": [
                                       {
                                         "type": "FormInput",
@@ -11326,7 +11326,7 @@
                                   {
                                     "field": "before_or_equal:",
                                     "value": "before_or_equal:form_date_picker_7",
-                                    "helper": "The field unter validation must be before or equal to the given field.",
+                                    "helper": "The field under validation must be before or equal to the given field.",
                                     "configs": [
                                       {
                                         "type": "FormInput",

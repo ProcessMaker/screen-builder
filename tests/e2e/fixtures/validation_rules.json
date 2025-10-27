@@ -3417,7 +3417,7 @@
                                         "value": "before_or_equal:today",
                                         "field": "before_or_equal:",
                                         "content": "Before or Equal to Date",
-                                        "helper": "The field unter validation must be before or equal to the given field.",
+                                        "helper": "The field under validation must be before or equal to the given field.",
                                         "visible": false,
                                         "configs": [
                                             {
@@ -19474,7 +19474,7 @@
                                                 {
                                                     "field": "before_or_equal:",
                                                     "value": "before_or_equal:2020-08-01",
-                                                    "helper": "The field unter validation must be before or equal to the given field.",
+                                                    "helper": "The field under validation must be before or equal to the given field.",
                                                     "configs": [
                                                         {
                                                             "type": "FormInput",
