@@ -14,7 +14,7 @@ import FormListTable from './components/renderer/form-list-table';
 import FormAnalyticsChart from "./components/renderer/form-analytics-chart";
 import FormCollectionRecordControl from './components/renderer/form-collection-record-control.vue';
 import FormCollectionViewControl from './components/renderer/form-collection-view-control.vue';
-import { handlerEventProperty } from './components/inspector/button/handler-event-property';
+import { handlerEventProperty, handlerSecurityProperty } from './components/inspector/button/handler-event-property';
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -763,6 +763,7 @@ export default [
         fieldValue: null,
         tooltip: {},
         handler: '',
+        handlerSecurityEnabled: true,
       },
       inspector: [
         {
@@ -786,6 +787,7 @@ export default [
         },
         buttonTypeEvent,
         handlerEventProperty,
+        handlerSecurityProperty,
         LoadingSubmitButtonProperty,
         LabelSubmitButtonProperty,
         tooltipProperty,

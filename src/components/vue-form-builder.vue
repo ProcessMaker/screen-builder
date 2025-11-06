@@ -810,6 +810,13 @@ export default {
     },
     showToolbar() {
       return this.screenType === formTypes.form;
+    },
+    secureHandlerToggleVisible() {
+      return _.get(
+        globalObject,
+        "ProcessMaker.screen.secureHandlerToggleVisible",
+        false
+      );
     }
   },
   watch: {
@@ -1220,6 +1227,13 @@ export default {
           (control) => control.component === this.inspection.component
         ) || { inspector: [] };
       return control.inspector.filter((input) => {
+        if (
+          !this.secureHandlerToggleVisible &&
+          typeof input === "object" &&
+          input.field === "handlerSecurityEnabled"
+        ) {
+          return false;
+        }
         if (accordionFields.includes(input.field)) {
           return true;
         }

@@ -442,7 +442,7 @@ export default {
           field: "after_or_equal:",
           content: this.$t("After or Equal to Date"),
           helper: this.$t(
-            "The field unter validation must be after or equal to the given field."
+            "The field under validation must be after or equal to the given field."
           ),
           visible: true,
           configs: [
@@ -459,7 +459,7 @@ export default {
           field: "before:",
           content: this.$t("Before Date"),
           helper: this.$t(
-            "The field unter validation must be before the given date."
+            "The field under validation must be before the given date."
           ),
           visible: true,
           configs: [
@@ -476,7 +476,7 @@ export default {
           field: "before_or_equal:",
           content: this.$t("Before or Equal to Date"),
           helper: this.$t(
-            "The field unter validation must be before or equal to the given field."
+            "The field under validation must be before or equal to the given field."
           ),
           visible: true,
           configs: [
