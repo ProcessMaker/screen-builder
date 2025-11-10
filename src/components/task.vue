@@ -838,6 +838,8 @@ export default {
         elementDestination
       ) {
         this.task.elementDestination = elementDestination;
+        // update allow_interstitial based on the element destination change after the submit
+        this.task.allow_interstitial = elementDestination.type === "displayNextAssignedTask";
       }
 
       if (event === 'ACTIVITY_EXCEPTION') {
