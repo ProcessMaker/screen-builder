@@ -86,6 +86,7 @@ export default [
       {name: 'tabindex', showFor: 'FormButton'},
       {name: 'tabindex', showFor: 'FormTextArea'},
       {name: 'encryptedConfig', showFor: 'FormInput'},
+      {name: 'variablesToSubmit', showFor: 'FormButton'},
     ],
     open: false,
   },
