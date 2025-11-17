@@ -335,14 +335,6 @@ export default {
       }
       
       items.forEach(item => {
-        // Extract container varname if it's a container
-        // if (this.isContainer(item)) {
-        //   const containerVarName = item.config?.settings?.varname;
-        //   if (containerVarName && !containerVarName.startsWith('_parent.')) {
-        //     variables[containerVarName] = null;
-        //   }
-        // }
-        
         // Extract variable name from config
         const variableName = item.config?.name;
         if (variableName && !variableName.startsWith('_parent.')) {
@@ -365,34 +357,7 @@ export default {
         }
       });
     },
-    
-    /**
-     * Check if an item is a container based on configurable container types
-     */
-    // isContainer(item) {
-    //   // Check if explicitly marked as container
-    //   if (item.config?.container === true) {
-    //     return true;
-    //   }
-      
-    //   // Check component name
-    //   if (item.component && CONTAINER_TYPES.components.includes(item.component)) {
-    //     return true;
-    //   }
-      
-    //   // Check editor-component
-    //   if (item['editor-component'] && CONTAINER_TYPES.editorComponents.includes(item['editor-component'])) {
-    //     return true;
-    //   }
-      
-    //   // Check editor-control
-    //   if (item['editor-control'] && CONTAINER_TYPES.editorControls.includes(item['editor-control'])) {
-    //     return true;
-    //   }
-      
-    //   return false;
-    // },
-    
+
     /**
      * Check if an item is a FormMultiColumn
      */

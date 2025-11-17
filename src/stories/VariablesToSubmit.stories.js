@@ -263,7 +263,7 @@ export const WithContainerVariables = {
 // All variables selected
 export const AllVariablesSelected = {
   args: {
-    value: ["index", "name", "email", "loop_1", "selectedName", "totalAmount", "discount"],
+    value: ["index", "name", "email", "loop_1", "loop_1.field1", "selectedName", "totalAmount", "submitButton", "discount"],
     builder: createMockBuilder(mockFormConfig, mockVariablesTree, mockComputed),
     formConfig: mockFormConfig,
     selectedControl: mockSelectedControl
