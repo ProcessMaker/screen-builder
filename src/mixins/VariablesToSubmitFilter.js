@@ -1,54 +1,28 @@
 /**
  * VariablesToSubmitFilter Mixin
  * 
- * This mixin provides functionality to filter form data before submission.
- * It implements a two-layer protection system:
- * 
- * LAYER 1 (VariablesToSubmitFilter): Validates and filters data in ScreenBase
- *   - Protects against invalid vdata (null/undefined/false/array)
- *   - Normalizes invalid data to {} (empty object)
- *   - Filters variables based on variablesToSubmit configuration
- *   - Always preserves system variables (starting with _)
- * 
- * LAYER 2 (task.vue): Additional protection at the task level
- *   - Validates formData before sending to server
- *   - Uses requestData or {} as fallback if formData is invalid
- * 
- * Use Cases:
- * 1. Backward Compatibility: When variablesToSubmit is not configured,
- *    sends all vdata (original behavior)
- * 2. New Feature: When variablesToSubmit is configured, filters and sends
- *    only specified variables + system variables
- * 3. Data Protection: Ensures null/undefined/false never reaches the server
+ * Filters form data before submission based on button configuration.
+ * Protects against invalid data (null/undefined/false) and preserves system variables.
  */
 
 export default {
   methods: {
     /**
      * Filters data for submission based on variablesToSubmit configuration
-     * 
-     * @param {Object|null|undefined|false} data - The form data to filter (vdata)
-     * @param {Object|null} buttonInfo - Button configuration containing variablesToSubmit
-     * @returns {Object} Filtered data object (never null/undefined/false)
-     * 
-     * LAYER 1 PROTECTION:
-     * - Validates data is a valid object (not null/undefined/false/array)
-     * - If invalid, normalizes to {} (empty object)
-     * - Applies filtering if variablesToSubmit is configured
-     * - Preserves all system variables (starting with _)
+     * @param {Object} data - Form data to filter
+     * @param {Object} buttonInfo - Button configuration with optional variablesToSubmit array
+     * @returns {Object} Filtered data (always returns a valid object)
      */
     filterDataForSubmission(data, buttonInfo) {
-      // PROTECTION: Ensure data is a valid object
-      // If data is null, undefined, false, or array, normalize to {}
+      // Normalize invalid data to empty object
       const safeData = this.isValidObject(data) ? data : {};
 
-      // Check if filtering is needed
+      // No filtering: return all data (backward compatibility)
       if (!this.shouldFilterVariables(buttonInfo)) {
-        // Backward Compatibility: No filtering, return all data
         return safeData;
       }
 
-      // New Feature: Filter variables
+      // Apply filtering
       const variablesToSubmit = buttonInfo.variablesToSubmit;
       const filteredData = {};
 
@@ -71,12 +45,8 @@ export default {
 
     /**
      * Checks if data is a valid plain object
-     * 
      * @param {*} data - Data to validate
-     * @returns {boolean} True if data is a valid object, false otherwise
-     * 
-     * Valid: { name: 'John' }, { _parent: {...} }
-     * Invalid: null, undefined, false, [], "string", 123
+     * @returns {boolean} True if valid object, false otherwise
      */
     isValidObject(data) {
       return (
@@ -89,17 +59,9 @@ export default {
     },
 
     /**
-     * Determines if variable filtering should be applied
-     * 
-     * @param {Object|null} buttonInfo - Button configuration
-     * @returns {boolean} True if filtering should be applied, false otherwise
-     * 
-     * Returns true only if:
-     * - buttonInfo exists
-     * - buttonInfo.variablesToSubmit exists
-     * - buttonInfo.variablesToSubmit is a non-empty array
-     * 
-     * Otherwise returns false (backward compatibility: send all data)
+     * Checks if filtering should be applied
+     * @param {Object} buttonInfo - Button configuration
+     * @returns {boolean} True if filtering enabled, false otherwise
      */
     shouldFilterVariables(buttonInfo) {
       return (
