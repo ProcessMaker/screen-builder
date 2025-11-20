@@ -173,7 +173,6 @@ export default {
         return;
       }
       const dataToSubmit = this.filterDataForSubmission(this.vdata, buttonInfo);
-      console.log('dataToSubmit 111', dataToSubmit);
       this.$emit('submit', dataToSubmit, loading, buttonInfo);
     },
     resetValue(safeDotName, variableName) {
