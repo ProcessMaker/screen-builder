@@ -586,7 +586,9 @@ export default {
       }
       this.disabled = true;
 
-      if (formData) {
+      // Ensure formData is always a valid object (never null, undefined, or false)
+      const safeFormData = (formData && typeof formData === 'object') ? formData : (this.requestData || {});
+      if (formData && typeof formData === 'object') {
         this.onUpdate(Object.assign({}, this.requestData, formData));
       }
 
@@ -595,7 +597,7 @@ export default {
       } else {
         this.loadingButton = false;
       }
-      this.$emit('submit', this.task, loading, buttonInfo);
+      this.$emit('submit', this.task, safeFormData, loading, buttonInfo);
 
       if (this.task?.allow_interstitial && !this.loadingButton && !this.disableInterstitial) {
         this.task.interstitial_screen['_interstitial'] = true;

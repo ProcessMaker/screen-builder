@@ -4,6 +4,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { ValidationMsg } from './ValidationRules';
 import DataReference from "./DataReference";
 import computedFields from "./computedFields";
+import VariablesToSubmitFilter from "./VariablesToSubmitFilter";
 import { findRootScreen } from "./DataReference";
 
 const stringFormats = ['string', 'datetime', 'date', 'password'];
@@ -11,7 +12,7 @@ const parentReference = [];
 
 export default {
   name: "ScreenContent",
-  mixins: [DataReference, computedFields],
+  mixins: [DataReference, computedFields, VariablesToSubmitFilter],
   schema: [
     function() {
       if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
@@ -158,7 +159,8 @@ export default {
       };
       this.$emit('after-submit', event, ...arguments);
       if (event.validation === false) {
-        this.$emit('submit', this.vdata, loading, buttonInfo);
+        const dataToSubmit = this.filterDataForSubmission(this.vdata, buttonInfo);
+        this.$emit('submit', dataToSubmit, loading, buttonInfo);
         return;
       }
       await this.validateNow(findRootScreen(this));
@@ -170,7 +172,9 @@ export default {
         // if the form is not valid the data is not emitted
         return;
       }
-      this.$emit('submit', this.vdata, loading, buttonInfo);;
+      const dataToSubmit = this.filterDataForSubmission(this.vdata, buttonInfo);
+      console.log('dataToSubmit 111', dataToSubmit);
+      this.$emit('submit', dataToSubmit, loading, buttonInfo);
     },
     resetValue(safeDotName, variableName) {
       this.setValue(safeDotName, null);
