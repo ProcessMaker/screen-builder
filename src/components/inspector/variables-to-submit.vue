@@ -2,7 +2,7 @@
   <div v-if="event === 'submit'">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="mb-0" style="color: #333; font-weight: 600;">{{ $t('Submit Information') }}</h6>
+      <h6 class="mb-0 text-dark font-weight-bold">{{ $t('Submit Information') }}</h6>
       <b-form-checkbox
         v-model="isEnabled"
         switch
@@ -13,7 +13,7 @@
       </b-form-checkbox>
     </div>
     
-    <hr class="my-3" style="border-color: #e0e0e0;" />
+    <hr class="my-3 border-light" />
     
     <div v-if="!isEnabled" class="text-muted text-center py-3">
       <small>{{ $t('Select variables to submit, otherwise all variables will be submitted by default.') }}</small>
@@ -28,11 +28,10 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <button
           type="button"
-          class="btn btn-link p-0 text-primary font-weight-bold"
+          class="btn btn-link p-0 text-primary font-weight-bold select-all-btn"
           @click="selectAll"
           :disabled="filteredVariables.length === 0 || selectedVariables.length === filteredVariables.length"
           data-cy="variables-to-submit-select-all"
-          style="text-decoration: none; font-size: 0.95rem;"
         >
           {{ $t('Select All') }}
         </button>
@@ -41,7 +40,6 @@
           size="sm"
           @click="toggleSearch"
           data-cy="variables-to-submit-search-toggle"
-          style="border-radius: 4px; padding: 0.25rem 0.5rem;"
         >
           <i class="fas fa-search"></i>
         </b-button>
@@ -54,7 +52,6 @@
             v-model="searchQuery"
             :placeholder="$t('Search variables...')"
             data-cy="variables-to-submit-search"
-            style="border-radius: 4px;"
           />
           <b-input-group-append>
             <b-button @click="searchQuery = ''" :disabled="!searchQuery" data-cy="variables-to-submit-clear-search" variant="outline-secondary">
@@ -64,26 +61,24 @@
         </b-input-group>
       </div>
       
-      <hr class="my-3" style="border-color: #e0e0e0;" />
+      <hr class="my-3 border-light" />
       
       <!-- Variables List -->
-      <div class="variables-list" style="max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0;">
+      <div class="variables-list">
         <div
           v-for="variable in filteredVariables"
           :key="variable"
-          class="d-flex align-items-center px-3 py-2"
-          style="border-bottom: 1px solid #f0f0f0;"
+          class="variable-item d-flex align-items-center px-3 py-2"
           :data-cy="`variable-item-${variable}`"
         >
           <b-form-checkbox
             v-model="selectedVariables"
             :value="variable"
-            class="mb-0"
+            class="mb-0 mr-2"
             :data-cy="`variable-checkbox-${variable}`"
-            style="margin-right: 0.5rem;"
           >
           </b-form-checkbox>
-          <span style="color: #333; font-size: 0.9rem;">{{ variable }}</span>
+          <span class="variable-name">{{ variable }}</span>
         </div>
         <div v-if="filteredVariables.length === 0" class="text-muted text-center py-4">
           <small>{{ $t('No variables match your search.') }}</small>
@@ -378,11 +373,30 @@ export default {
 </script>
 
 <style scoped>
+.select-all-btn {
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
 .variables-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0;
   background-color: #fff;
 }
 
-.variables-list > div:last-child {
-  border-bottom: none !important;
+.variable-item {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.variable-item:last-child {
+  border-bottom: none;
+}
+
+.variable-name {
+  color: #333;
+  font-size: 0.9rem;
 }
 </style>
