@@ -89,13 +89,6 @@
 </template>
 
 <script>
-// Configurable container types that should be considered
-const CONTAINER_TYPES = {
-  components: ['FormLoop', 'FormNestedScreen', 'FormDynamicPanel'],
-  editorComponents: ['Loop', 'NestedScreen', 'DynamicPanel'],
-  editorControls: ['Loop']
-};
-
 export default {
   name: 'VariablesToSubmit',
   props: {
