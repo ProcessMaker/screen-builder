@@ -90,13 +90,14 @@
         v-if="isEnabled && missingRequiredVariables.length > 0"
         show 
         variant="warning"
-        class="mt-3 mb-0"
+        class="mt-3 mb-0 d-flex align-items-start"
         data-cy="missing-required-warning"
       >
         <i class="fas fa-bolt warning-icon"></i>
-        The following required fields are not included:
-        <strong>{{ missingRequiredVariables.join(', ') }}.</strong>
-        This may cause validation errors during submission.
+        <span>
+          {{ $t('The following required fields are not included') }} "<strong>{{ missingRequiredVariables.join('", "') }}</strong>".
+          {{ $t('This may cause validation errors during submission.') }}
+        </span>
       </b-alert>
     </div>
   </div>
@@ -568,5 +569,7 @@ export default {
 .warning-icon {
   color: #f39c12;
   margin-right: 0.5rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
 }
 </style>
