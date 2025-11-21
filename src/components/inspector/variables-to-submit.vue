@@ -360,7 +360,6 @@ export default {
     
     /**
      * Recursively extract variables from config items
-     * Handles regular items, containers (loops, nested screens, dynamic panels), and FormMultiColumn
      */
     extractVariablesFromConfigItems(items, prefix = '', variables = {}, depth = 0) {
       if (!Array.isArray(items)) {
@@ -368,27 +367,108 @@ export default {
       }
       
       items.forEach(item => {
-        // Extract variable name from config
-        const variableName = item.config?.name;
-        if (variableName && !variableName.startsWith('_parent.')) {
-          variables[variableName] = null;
-        }
+        // Extract variable from current item
+        this.extractVariableFromItem(item, variables);
         
-        // Process nested items
-        if (Array.isArray(item.items) && item.items.length > 0) {
-          if (this.isMultiColumn(item)) {
-            // FormMultiColumn: items is an array of arrays (columns)
-            item.items.forEach(columnItems => {
-              if (Array.isArray(columnItems) && columnItems.length > 0) {
-                this.extractVariablesFromConfigItems(columnItems, prefix, variables, depth + 1);
-              }
-            });
-          } else {
-            // Regular container: items is a single array
-            this.extractVariablesFromConfigItems(item.items, prefix, variables, depth + 1);
-          }
+        // Handle special component types (Open/Closed Principle)
+        this.processSpecialComponents(item, prefix, variables, depth);
+        
+        // Process nested items in containers
+        this.processNestedItems(item, prefix, variables, depth);
+      });
+    },
+    
+    /**
+     * Extract variable name from a single item
+     * Single Responsibility: Only handles variable name extraction
+     */
+    extractVariableFromItem(item, variables) {
+      const variableName = item.config?.name;
+      if (variableName && !variableName.startsWith('_parent.')) {
+        variables[variableName] = null;
+      }
+    },
+    
+    /**
+     * Process special component types
+     */
+    processSpecialComponents(item, prefix, variables, depth) {
+      const componentHandlers = {
+        'FormNestedScreen': () => this.extractFromNestedScreen(item, prefix, variables, depth),
+        // Add more special component handlers here in the future
+      };
+      
+      const handler = componentHandlers[item.component];
+      if (handler) {
+        handler();
+      }
+    },
+    
+    /**
+     * Extract variables from FormNestedScreen
+     */
+    extractFromNestedScreen(item, prefix, variables, depth) {
+      if (!item.config?.screen) {
+        return;
+      }
+      
+      const nestedScreenPages = this.getNestedScreenPages(item.config.screen);
+      if (!nestedScreenPages) {
+        return;
+      }
+      
+      nestedScreenPages.forEach(page => {
+        if (Array.isArray(page.items)) {
+          this.extractVariablesFromConfigItems(page.items, prefix, variables, depth + 1);
         }
       });
+    },
+    
+    /**
+     * Get nested screen pages from global store
+     */
+    getNestedScreenPages(screenId) {
+      const globalObject = typeof window === 'undefined' ? global : window;
+      
+      if (!globalObject.nestedScreens) {
+        return null;
+      }
+      
+      const nestedScreenData = globalObject.nestedScreens[`id_${screenId}`];
+      return Array.isArray(nestedScreenData) ? nestedScreenData : null;
+    },
+    
+    /**
+     * Process nested items in containers
+     */
+    processNestedItems(item, prefix, variables, depth) {
+      if (!Array.isArray(item.items) || item.items.length === 0) {
+        return;
+      }
+      
+      if (this.isMultiColumn(item)) {
+        this.processMultiColumnItems(item.items, prefix, variables, depth);
+      } else {
+        this.processRegularContainerItems(item.items, prefix, variables, depth);
+      }
+    },
+    
+    /**
+     * Process FormMultiColumn items
+     */
+    processMultiColumnItems(items, prefix, variables, depth) {
+      items.forEach(columnItems => {
+        if (Array.isArray(columnItems) && columnItems.length > 0) {
+          this.extractVariablesFromConfigItems(columnItems, prefix, variables, depth + 1);
+        }
+      });
+    },
+    
+    /**
+     * Process regular container items
+     */
+    processRegularContainerItems(items, prefix, variables, depth) {
+      this.extractVariablesFromConfigItems(items, prefix, variables, depth + 1);
     },
 
     /**

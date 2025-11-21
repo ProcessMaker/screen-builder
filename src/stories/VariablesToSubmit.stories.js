@@ -270,3 +270,417 @@ export const AllVariablesSelected = {
   }
 };
 
+// Mock nested screen configuration
+const mockNestedScreenConfig = [
+  {
+    name: "Nested Page 1",
+    items: [
+      {
+        component: "FormInput",
+        config: {
+          name: "nestedFirstName",
+          label: "First Name (Nested)"
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "nestedLastName",
+          label: "Last Name (Nested)"
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "nestedEmail",
+          label: "Email (Nested)"
+        }
+      }
+    ]
+  },
+  {
+    name: "Nested Page 2",
+    items: [
+      {
+        component: "FormInput",
+        config: {
+          name: "nestedPhone",
+          label: "Phone (Nested)"
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "nestedAddress",
+          label: "Address (Nested)"
+        }
+      }
+    ]
+  }
+];
+
+// Form config with nested screen
+const mockFormConfigWithNested = [
+  {
+    name: "Default",
+    items: [
+      {
+        component: "FormInput",
+        config: {
+          name: "mainField1",
+          label: "Main Field 1"
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "mainField2",
+          label: "Main Field 2"
+        }
+      },
+      {
+        component: "FormNestedScreen",
+        config: {
+          name: "nestedScreen",
+          label: "Nested Screen",
+          screen: 123 // This ID will be used to lookup in window.nestedScreens
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "mainField3",
+          label: "Main Field 3"
+        }
+      },
+      {
+        component: "FormButton",
+        config: {
+          name: "submitButton",
+          label: "Submit",
+          event: "submit"
+        }
+      }
+    ]
+  }
+];
+
+// Variables tree including nested screen variables
+const mockVariablesTreeWithNested = [
+  { name: "mainField1", config: {}, element: {} },
+  { name: "mainField2", config: {}, element: {} },
+  { name: "mainField3", config: {}, element: {} },
+  { name: "nestedFirstName", config: {}, element: {} },
+  { name: "nestedLastName", config: {}, element: {} },
+  { name: "nestedEmail", config: {}, element: {} },
+  { name: "nestedPhone", config: {}, element: {} },
+  { name: "nestedAddress", config: {}, element: {} }
+];
+
+// Story with nested screen
+export const WithNestedScreen = {
+  args: {
+    value: [],
+    builder: createMockBuilder(mockFormConfigWithNested, mockVariablesTreeWithNested, []),
+    formConfig: mockFormConfigWithNested,
+    selectedControl: mockSelectedControl
+  },
+  render: (args, { argTypes }) => ({
+    props: Object.keys(argTypes),
+    components: { VariablesToSubmit },
+    template: `
+      <div style="max-width: 400px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <div style="margin-bottom: 15px; padding: 10px; background: #f0f8ff; border-radius: 4px;">
+          <strong>📦 Nested Screen Story</strong>
+          <p style="margin: 5px 0; font-size: 12px; color: #666;">
+            This story demonstrates variables from a FormNestedScreen.
+            The nested screen contains variables like <code>nestedFirstName</code>, 
+            <code>nestedLastName</code>, etc.
+          </p>
+        </div>
+        <variables-to-submit 
+          v-bind="$props" 
+          v-model="selectedVariables"
+          @input="handleInput"
+          @change="handleChange"
+        />
+        <div style="margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+          <strong>Selected Variables:</strong>
+          <pre style="margin: 5px 0; font-size: 11px; overflow-x: auto;">{{ selectedVariables }}</pre>
+        </div>
+      </div>
+    `,
+    data() {
+      return {
+        selectedVariables: args.value || []
+      };
+    },
+    methods: {
+      handleInput(value) {
+        this.selectedVariables = value;
+        console.log('Input event:', value);
+      },
+      handleChange(value) {
+        console.log('Change event:', value);
+      }
+    },
+    watch: {
+      value(newValue) {
+        this.selectedVariables = newValue || [];
+      }
+    },
+    created() {
+      // Setup window.nestedScreens for nested screen component
+      if (typeof window !== 'undefined') {
+        if (!window.nestedScreens) {
+          window.nestedScreens = {};
+        }
+        // Store the nested screen config with ID 123 (matching the screen ID in config)
+        window.nestedScreens['id_123'] = mockNestedScreenConfig;
+        console.log('✅ Nested screen data loaded:', window.nestedScreens);
+      }
+    },
+    beforeDestroy() {
+      // Cleanup
+      if (typeof window !== 'undefined' && window.nestedScreens) {
+        delete window.nestedScreens['id_123'];
+      }
+    }
+  })
+};
+
+// Story with nested screen and some variables pre-selected
+export const WithNestedScreenPreSelected = {
+  args: {
+    value: ["mainField1", "nestedFirstName", "nestedEmail"],
+    builder: createMockBuilder(mockFormConfigWithNested, mockVariablesTreeWithNested, []),
+    formConfig: mockFormConfigWithNested,
+    selectedControl: mockSelectedControl
+  },
+  render: (args, { argTypes }) => ({
+    props: Object.keys(argTypes),
+    components: { VariablesToSubmit },
+    template: `
+      <div style="max-width: 400px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <div style="margin-bottom: 15px; padding: 10px; background: #e8f5e9; border-radius: 4px;">
+          <strong>✅ Nested Screen with Pre-Selected Variables</strong>
+          <p style="margin: 5px 0; font-size: 12px; color: #666;">
+            Main fields + Nested screen fields are pre-selected.
+          </p>
+        </div>
+        <variables-to-submit 
+          v-bind="$props" 
+          v-model="selectedVariables"
+          @input="handleInput"
+          @change="handleChange"
+        />
+        <div style="margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+          <strong>Selected Variables:</strong>
+          <pre style="margin: 5px 0; font-size: 11px; overflow-x: auto;">{{ selectedVariables }}</pre>
+        </div>
+      </div>
+    `,
+    data() {
+      return {
+        selectedVariables: args.value || []
+      };
+    },
+    methods: {
+      handleInput(value) {
+        this.selectedVariables = value;
+        console.log('Input event:', value);
+      },
+      handleChange(value) {
+        console.log('Change event:', value);
+      }
+    },
+    watch: {
+      value(newValue) {
+        this.selectedVariables = newValue || [];
+      }
+    },
+    created() {
+      if (typeof window !== 'undefined') {
+        if (!window.nestedScreens) {
+          window.nestedScreens = {};
+        }
+        window.nestedScreens['id_123'] = mockNestedScreenConfig;
+        console.log('✅ Nested screen data loaded:', window.nestedScreens);
+      }
+    },
+    beforeDestroy() {
+      if (typeof window !== 'undefined' && window.nestedScreens) {
+        delete window.nestedScreens['id_123'];
+      }
+    }
+  })
+};
+
+// Story with multiple nested screens
+const mockFormConfigWithMultipleNested = [
+  {
+    name: "Default",
+    items: [
+      {
+        component: "FormInput",
+        config: {
+          name: "mainField",
+          label: "Main Field"
+        }
+      },
+      {
+        component: "FormNestedScreen",
+        config: {
+          name: "nestedScreen1",
+          label: "Contact Information",
+          screen: 100
+        }
+      },
+      {
+        component: "FormNestedScreen",
+        config: {
+          name: "nestedScreen2",
+          label: "Address Information",
+          screen: 200
+        }
+      },
+      {
+        component: "FormButton",
+        config: {
+          name: "submitButton",
+          label: "Submit",
+          event: "submit"
+        }
+      }
+    ]
+  }
+];
+
+const mockNestedScreen1Config = [
+  {
+    name: "Contact",
+    items: [
+      {
+        component: "FormInput",
+        config: {
+          name: "contactEmail",
+          label: "Email"
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "contactPhone",
+          label: "Phone"
+        }
+      }
+    ]
+  }
+];
+
+const mockNestedScreen2Config = [
+  {
+    name: "Address",
+    items: [
+      {
+        component: "FormInput",
+        config: {
+          name: "street",
+          label: "Street"
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "city",
+          label: "City"
+        }
+      },
+      {
+        component: "FormInput",
+        config: {
+          name: "zipCode",
+          label: "ZIP Code"
+        }
+      }
+    ]
+  }
+];
+
+const mockVariablesTreeMultipleNested = [
+  { name: "mainField", config: {}, element: {} },
+  { name: "contactEmail", config: {}, element: {} },
+  { name: "contactPhone", config: {}, element: {} },
+  { name: "street", config: {}, element: {} },
+  { name: "city", config: {}, element: {} },
+  { name: "zipCode", config: {}, element: {} }
+];
+
+export const WithMultipleNestedScreens = {
+  args: {
+    value: [],
+    builder: createMockBuilder(mockFormConfigWithMultipleNested, mockVariablesTreeMultipleNested, []),
+    formConfig: mockFormConfigWithMultipleNested,
+    selectedControl: mockSelectedControl
+  },
+  render: (args, { argTypes }) => ({
+    props: Object.keys(argTypes),
+    components: { VariablesToSubmit },
+    template: `
+      <div style="max-width: 400px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <div style="margin-bottom: 15px; padding: 10px; background: #fff3e0; border-radius: 4px;">
+          <strong>🔗 Multiple Nested Screens</strong>
+          <p style="margin: 5px 0; font-size: 12px; color: #666;">
+            Form with two nested screens: Contact Info and Address Info.
+          </p>
+        </div>
+        <variables-to-submit 
+          v-bind="$props" 
+          v-model="selectedVariables"
+          @input="handleInput"
+          @change="handleChange"
+        />
+        <div style="margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+          <strong>Selected Variables:</strong>
+          <pre style="margin: 5px 0; font-size: 11px; overflow-x: auto;">{{ selectedVariables }}</pre>
+        </div>
+      </div>
+    `,
+    data() {
+      return {
+        selectedVariables: args.value || []
+      };
+    },
+    methods: {
+      handleInput(value) {
+        this.selectedVariables = value;
+        console.log('Input event:', value);
+      },
+      handleChange(value) {
+        console.log('Change event:', value);
+      }
+    },
+    watch: {
+      value(newValue) {
+        this.selectedVariables = newValue || [];
+      }
+    },
+    created() {
+      if (typeof window !== 'undefined') {
+        if (!window.nestedScreens) {
+          window.nestedScreens = {};
+        }
+        window.nestedScreens['id_100'] = mockNestedScreen1Config;
+        window.nestedScreens['id_200'] = mockNestedScreen2Config;
+        console.log('✅ Multiple nested screens loaded:', window.nestedScreens);
+      }
+    },
+    beforeDestroy() {
+      if (typeof window !== 'undefined' && window.nestedScreens) {
+        delete window.nestedScreens['id_100'];
+        delete window.nestedScreens['id_200'];
+      }
+    }
+  })
+};
+
