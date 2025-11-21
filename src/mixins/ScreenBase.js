@@ -159,7 +159,18 @@ export default {
       };
       this.$emit('after-submit', event, ...arguments);
       if (event.validation === false) {
+        // Filter data based on variablesToSubmit configuration (LAYER 1 protection)
         const dataToSubmit = this.filterDataForSubmission(this.vdata, buttonInfo);
+        
+        // Debug logging for variables filtering
+        if (buttonInfo?.variablesToSubmit?.length > 0) {
+          console.log('[VariablesToSubmit] Filtering enabled (validation bypassed)');
+          console.log('[VariablesToSubmit] Original data keys:', Object.keys(this.vdata || {}));
+          console.log('[VariablesToSubmit] Selected variables:', buttonInfo.variablesToSubmit);
+          console.log('[VariablesToSubmit] Filtered data keys:', Object.keys(dataToSubmit));
+          console.log('[VariablesToSubmit] Data to submit:', dataToSubmit);
+        }
+        
         this.$emit('submit', dataToSubmit, loading, buttonInfo);
         return;
       }
@@ -172,7 +183,18 @@ export default {
         // if the form is not valid the data is not emitted
         return;
       }
+      // Filter data based on variablesToSubmit configuration (LAYER 1 protection)
       const dataToSubmit = this.filterDataForSubmission(this.vdata, buttonInfo);
+      
+      // Debug logging for variables filtering
+      if (buttonInfo?.variablesToSubmit?.length > 0) {
+        console.log('[VariablesToSubmit] Filtering enabled');
+        console.log('[VariablesToSubmit] Original data keys:', Object.keys(this.vdata || {}));
+        console.log('[VariablesToSubmit] Selected variables:', buttonInfo.variablesToSubmit);
+        console.log('[VariablesToSubmit] Filtered data keys:', Object.keys(dataToSubmit));
+        console.log('[VariablesToSubmit] Data to submit:', dataToSubmit);
+      }
+      
       this.$emit('submit', dataToSubmit, loading, buttonInfo);
     },
     resetValue(safeDotName, variableName) {

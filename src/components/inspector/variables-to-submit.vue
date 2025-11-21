@@ -84,6 +84,20 @@
           <small>{{ $t('No variables match your search.') }}</small>
         </div>
       </div>
+      
+      <!-- Warning for missing required fields -->
+      <b-alert 
+        v-if="isEnabled && missingRequiredVariables.length > 0"
+        show 
+        variant="warning"
+        class="mt-3 mb-0"
+        data-cy="missing-required-warning"
+      >
+        <i class="fas fa-exclamation-triangle"></i>
+        The following required fields are not included:
+        <strong>{{ missingRequiredVariables.join(', ') }}.</strong>
+        This may cause validation errors during submission.
+      </b-alert>
     </div>
   </div>
 </template>
@@ -156,6 +170,37 @@ export default {
       const query = this.searchQuery.toLowerCase();
       return this.availableVariables.filter(variable =>
         variable.toLowerCase().includes(query)
+      );
+    },
+    
+    /**
+     * Get list of required variables from form config
+     */
+    requiredVariables() {
+      const required = [];
+      const config = this.formConfig || this.builder?.config || this.$root?.$children[0]?.config || [];
+      
+      if (Array.isArray(config) && config.length > 0) {
+        config.forEach(page => {
+          if (Array.isArray(page.items)) {
+            this.findRequiredFields(page.items, required);
+          }
+        });
+      }
+      
+      return required;
+    },
+    
+    /**
+     * Get list of required variables that are not in selectedVariables
+     */
+    missingRequiredVariables() {
+      if (!this.isEnabled) {
+        return [];
+      }
+      
+      return this.requiredVariables.filter(
+        variable => !this.selectedVariables.includes(variable)
       );
     }
   },
@@ -351,6 +396,53 @@ export default {
      */
     isMultiColumn(item) {
       return item.component === 'FormMultiColumn';
+    },
+    
+    /**
+     * Check if a validation item indicates required field
+     */
+    isRequiredValidation(validation) {
+      if (typeof validation === 'string') {
+        return validation.includes('required');
+      }
+      if (Array.isArray(validation)) {
+        return validation.some(v => {
+          if (typeof v === 'string') return v.includes('required');
+          if (v?.value && typeof v.value === 'string') return v.value.includes('required');
+          if (v?.rule && typeof v.rule === 'string') return v.rule.includes('required');
+          return false;
+        });
+      }
+      return false;
+    },
+    
+    /**
+     * Recursively find required fields in form config
+     */
+    findRequiredFields(items, required) {
+      if (!Array.isArray(items)) return;
+      
+      items.forEach(item => {
+        const { validation, name } = item.config || {};
+        
+        // Add to required list if has required validation
+        if (name && !name.startsWith('_parent.') && this.isRequiredValidation(validation)) {
+          required.push(name);
+        }
+        
+        // Recurse into nested items
+        if (Array.isArray(item.items)) {
+          if (this.isMultiColumn(item)) {
+            item.items.forEach(columnItems => {
+              if (Array.isArray(columnItems)) {
+                this.findRequiredFields(columnItems, required);
+              }
+            });
+          } else {
+            this.findRequiredFields(item.items, required);
+          }
+        }
+      });
     }
   },
   mounted() {
