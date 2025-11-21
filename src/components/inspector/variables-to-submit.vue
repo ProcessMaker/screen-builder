@@ -93,7 +93,7 @@
         class="mt-3 mb-0"
         data-cy="missing-required-warning"
       >
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-bolt warning-icon"></i>
         The following required fields are not included:
         <strong>{{ missingRequiredVariables.join(', ') }}.</strong>
         This may cause validation errors during submission.
@@ -563,5 +563,10 @@ export default {
 .variable-name {
   color: #333;
   font-size: 0.9rem;
+}
+
+.warning-icon {
+  color: #f39c12;
+  margin-right: 0.5rem;
 }
 </style>
