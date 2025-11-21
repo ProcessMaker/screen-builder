@@ -800,6 +800,14 @@ export default [
           },
         },
         buttonVariantStyleProperty,
+        {
+          type: 'VariablesToSubmit',
+          field: 'variablesToSubmit',
+          config: {
+            label: 'Variables to Submit',
+            helper: 'Select which variables should be included in the submission payload. Only variables from the parent (top-level) request can be used.',
+          },
+        },
       ],
     },
   },
