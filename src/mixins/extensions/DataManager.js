@@ -12,12 +12,17 @@ export default {
           screen,
           safeDotName,
           `
-            this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
-            this.getValue(${JSON.stringify(v.name)}, data) || 
-            this.initialValue(
-              '${component}',
-              '${dataFormat}',
-              ${JSON.stringify(v.config)})
+            (() => {
+              const vdataVal = this.getValue(${JSON.stringify(
+                v.name
+              )}, this.vdata);
+              if (vdataVal !== undefined) return vdataVal;
+              const dataVal = this.getValue(${JSON.stringify(v.name)}, data);
+              if (dataVal !== undefined) return dataVal;
+              return this.initialValue('${component}', '${dataFormat}', ${JSON.stringify(
+            v.config
+          )});
+            })()
           `,
           v.name
         );
