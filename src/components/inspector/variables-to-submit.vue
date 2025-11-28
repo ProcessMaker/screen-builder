@@ -34,11 +34,11 @@
         <p>{{ $t('Select variables to submit, otherwise all variables will be submitted by default.') }}</p>
       </div>
       
-      <div v-if="availableVariables.length === 0" class="alert alert-info">
+      <div v-if="isEnabled && availableVariables.length === 0" class="alert alert-info">
         <small>{{ $t('No variables available. Variables will be available after you add form fields to your screen.') }}</small>
       </div>
       
-      <div v-else>
+      <div v-else-if="isEnabled">
         <div class="divider"></div>
         
         <!-- Select All and Search Section -->
