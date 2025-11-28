@@ -53,6 +53,7 @@
             {{ $t('Select All') }}
           </button>
           <button
+            type="button"
             class="search-button"
             @click="toggleSearch"
             data-cy="variables-to-submit-search-toggle"
