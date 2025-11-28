@@ -1,104 +1,112 @@
 <template>
-  <div v-if="event === 'submit'">
-    <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="mb-0 text-dark font-weight-bold">{{ $t('Submit Information') }}</h6>
-      <b-form-checkbox
-        v-model="isEnabled"
-        switch
-        size="lg"
-        class="mb-0"
-        data-cy="variables-to-submit-toggle"
-      >
-      </b-form-checkbox>
-    </div>
-    
-    <hr class="my-3 border-light" />
-    
-    <div v-if="!isEnabled" class="text-muted text-center py-3">
-      <small>{{ $t('Select variables to submit, otherwise all variables will be submitted by default.') }}</small>
-    </div>
-    
-    <div v-else-if="availableVariables.length === 0" class="alert alert-info">
-      <small>{{ $t('No variables available. Variables will be available after you add form fields to your screen.') }}</small>
-    </div>
-    
-    <div v-else>
-      <!-- Select All and Search Section -->
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <button
-          type="button"
-          class="btn btn-link p-0 text-primary font-weight-bold select-all-btn"
-          @click="selectAll"
-          :disabled="filteredVariables.length === 0 || selectedVariables.length === filteredVariables.length"
-          data-cy="variables-to-submit-select-all"
+  <div v-if="event === 'submit'" class="variables-to-submit-wrapper">
+    <!-- Warning for missing required fields (outside card) -->
+    <b-alert 
+      v-if="isEnabled && missingRequiredVariables.length > 0"
+      show 
+      variant="warning"
+      class="warning-alert"
+      data-cy="missing-required-warning"
+    >
+      <i class="fas fa-bolt warning-icon"></i>
+      <span class="warning-text">
+        {{ $t('The following required fields are not included') }} "<strong>{{ missingRequiredVariables.join('", "') }}</strong>".
+        {{ $t('This may cause validation errors during submission.') }}
+      </span>
+    </b-alert>
+
+    <!-- Card Container -->
+    <div class="variables-to-submit-card">
+      <!-- Header Section -->
+      <div class="header-section">
+        <h6 class="header-title">{{ $t('Submit Information') }}</h6>
+        <b-form-checkbox
+          v-model="isEnabled"
+          switch
+          size="lg"
+          class="toggle-switch"
+          data-cy="variables-to-submit-toggle"
         >
-          {{ $t('Select All') }}
-        </button>
-        <b-button
-          variant="outline-secondary"
-          size="sm"
-          @click="toggleSearch"
-          data-cy="variables-to-submit-search-toggle"
-        >
-          <i class="fas fa-search"></i>
-        </b-button>
+        </b-form-checkbox>
       </div>
       
-      <!-- Search Input (shown when search is active) -->
-      <div v-if="showSearch" class="mb-3">
-        <b-input-group>
-          <b-form-input
-            v-model="searchQuery"
-            :placeholder="$t('Search variables...')"
-            data-cy="variables-to-submit-search"
-          />
-          <b-input-group-append>
-            <b-button @click="searchQuery = ''" :disabled="!searchQuery" data-cy="variables-to-submit-clear-search" variant="outline-secondary">
-              <i class="fas fa-times"></i>
-            </b-button>
-          </b-input-group-append>
-        </b-input-group>
+      <div class="description-text">
+        <p>{{ $t('Select variables to submit, otherwise all variables will be submitted by default.') }}</p>
       </div>
       
-      <hr class="my-3 border-light" />
+      <div v-if="isEnabled && availableVariables.length === 0" class="alert alert-info">
+        <small>{{ $t('No variables available. Variables will be available after you add form fields to your screen.') }}</small>
+      </div>
       
-      <!-- Variables List -->
-      <div class="variables-list">
-        <div
-          v-for="variable in filteredVariables"
-          :key="variable"
-          class="variable-item d-flex align-items-center px-3 py-2"
-          :data-cy="`variable-item-${variable}`"
-        >
-          <b-form-checkbox
-            v-model="selectedVariables"
-            :value="variable"
-            class="mb-0 mr-2"
-            :data-cy="`variable-checkbox-${variable}`"
+      <div v-else-if="isEnabled">
+        <div class="divider"></div>
+        
+        <!-- Select All and Search Section -->
+        <div class="controls-section">
+          <button
+            type="button"
+            class="select-all-button"
+            @click="selectAll"
+            :disabled="filteredVariables.length === 0 || selectedVariables.length === filteredVariables.length"
+            data-cy="variables-to-submit-select-all"
           >
-          </b-form-checkbox>
-          <span class="variable-name">{{ variable }}</span>
+            {{ $t('Select All') }}
+          </button>
+          <button
+            type="button"
+            class="search-button"
+            @click="toggleSearch"
+            data-cy="variables-to-submit-search-toggle"
+          >
+            <i class="fas fa-search"></i>
+          </button>
         </div>
-        <div v-if="filteredVariables.length === 0" class="text-muted text-center py-4">
-          <small>{{ $t('No variables match your search.') }}</small>
+        
+        <!-- Search Input (shown when search is active) -->
+        <div v-if="showSearch" class="search-container">
+          <b-input-group>
+            <b-form-input
+              v-model="searchQuery"
+              :placeholder="$t('Search variables...')"
+              data-cy="variables-to-submit-search"
+              class="search-input"
+            />
+            <b-input-group-append>
+              <b-button 
+                @click="searchQuery = ''" 
+                :disabled="!searchQuery" 
+                data-cy="variables-to-submit-clear-search" 
+                variant="outline-secondary"
+                class="clear-search-button"
+              >
+                <i class="fas fa-times"></i>
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </div>
+        <div class="divider"></div>
+        <!-- Variables List -->
+        <div class="variables-list">
+          <div
+            v-for="variable in filteredVariables"
+            :key="variable"
+            class="variable-item"
+            :data-cy="`variable-item-${variable}`"
+          >
+            <b-form-checkbox
+              v-model="selectedVariables"
+              :value="variable"
+              class="variable-checkbox"
+              :data-cy="`variable-checkbox-${variable}`"
+            >
+              <span class="variable-name">{{ variable }}</span>
+            </b-form-checkbox>
+          </div>
+          <div v-if="filteredVariables.length === 0" class="no-results">
+            <small>{{ $t('No variables match your search.') }}</small>
+          </div>
         </div>
       </div>
-      
-      <!-- Warning for missing required fields -->
-      <b-alert 
-        v-if="isEnabled && missingRequiredVariables.length > 0"
-        show 
-        variant="warning"
-        class="mt-3 mb-0 d-flex align-items-start"
-        data-cy="missing-required-warning"
-      >
-        <i class="fas fa-bolt warning-icon"></i>
-        <span>
-          {{ $t('The following required fields are not included') }} "<strong>{{ missingRequiredVariables.join('", "') }}</strong>".
-          {{ $t('This may cause validation errors during submission.') }}
-        </span>
-      </b-alert>
     </div>
   </div>
 </template>
@@ -511,6 +519,18 @@ export default {
           required.push(name);
         }
         
+        // Handle FormNestedScreen components
+        if (item.component === 'FormNestedScreen' && item.config?.screen) {
+          const nestedScreenPages = this.getNestedScreenPages(item.config.screen);
+          if (nestedScreenPages) {
+            nestedScreenPages.forEach(page => {
+              if (Array.isArray(page.items)) {
+                this.findRequiredFields(page.items, required);
+              }
+            });
+          }
+        }
+        
         // Recurse into nested items
         if (Array.isArray(item.items)) {
           if (this.isMultiColumn(item)) {
@@ -539,37 +559,224 @@ export default {
 </script>
 
 <style scoped>
-.select-all-btn {
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.variables-list {
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+/* Wrapper Container */
+.variables-to-submit-wrapper {
   padding: 0;
-  background-color: #fff;
 }
 
+/* Card Container with Border */
+.variables-to-submit-card {
+  background-color: #ffffff;
+  border: 1px solid #e3e8ef;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 0 0 12px 0;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.toggle-switch {
+  margin: 0;
+}
+
+/* Description Text */
+.description-text {
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.description-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+/* Controls Section (Select All + Search) */
+.controls-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+
+.select-all-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #0d6efd;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.select-all-button:hover:not(:disabled) {
+  color: #0a58ca;
+  text-decoration: none;
+}
+
+.select-all-button:disabled {
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.search-button {
+  background: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-button:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.search-button i {
+  font-size: 14px;
+}
+
+/* Search Container */
+.search-container {
+  margin-bottom: 12px;
+}
+
+.search-input {
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.clear-search-button {
+  border-radius: 0 6px 6px 0;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background-color: #e3e8ef;
+  margin: 16px 0 12px 0;
+}
+
+/* Variables List */
+.variables-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 0;
+  margin-top: 12px;
+  background-color: transparent;
+}
+
+.variables-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.variables-list::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.variables-list::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
+}
+
+.variables-list::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+/* Variable Item */
 .variable-item {
-  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+  border-bottom: 1px solid #e3e8ef;
+  transition: background-color 0.15s ease;
+}
+
+.variable-item:hover {
+  background-color: transparent;
 }
 
 .variable-item:last-child {
   border-bottom: none;
 }
 
+.variable-checkbox {
+  margin: 0;
+  width: 100%;
+}
+
+.variable-checkbox >>> .custom-control-label {
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+}
+
 .variable-name {
-  color: #333;
-  font-size: 0.9rem;
+  color: #212529;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* No Results */
+.no-results {
+  padding: 32px 16px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.no-results small {
+  font-size: 14px;
+}
+
+/* Warning Alert (outside card) */
+.warning-alert {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 0 12px 0;
+  padding: 12px 16px;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .warning-icon {
-  color: #f39c12;
-  margin-right: 0.5rem;
+  color: #ffc107;
+  margin-right: 10px;
   flex-shrink: 0;
-  margin-top: 0.125rem;
+  margin-top: 2px;
+  font-size: 16px;
+}
+
+.warning-text {
+  color: #856404;
+  flex: 1;
+}
+
+.warning-text strong {
+  color: #664d03;
+  font-weight: 600;
 }
 </style>
