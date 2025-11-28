@@ -518,6 +518,18 @@ export default {
           required.push(name);
         }
         
+        // Handle FormNestedScreen components
+        if (item.component === 'FormNestedScreen' && item.config?.screen) {
+          const nestedScreenPages = this.getNestedScreenPages(item.config.screen);
+          if (nestedScreenPages) {
+            nestedScreenPages.forEach(page => {
+              if (Array.isArray(page.items)) {
+                this.findRequiredFields(page.items, required);
+              }
+            });
+          }
+        }
+        
         // Recurse into nested items
         if (Array.isArray(item.items)) {
           if (this.isMultiColumn(item)) {
@@ -695,7 +707,7 @@ export default {
 /* Variable Item */
 .variable-item {
   padding: 12px 0;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #e3e8ef;
   transition: background-color 0.15s ease;
 }
 
