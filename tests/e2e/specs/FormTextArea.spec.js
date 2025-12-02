@@ -165,7 +165,7 @@ describe("Form Text Area Field", () => {
       { position: "bottom" }
     );
     cy.get("[data-cy=screen-element-container]").click();
-    cy.get("[data-cy=accordion-Advanced]").click();
+    cy.get("[data-cy=accordion-Accessibility]").click();
     cy.get("[data-cy=inspector-ariaLabel]").clear().type("Aria label test");
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=preview-content] [name=form_text_area_1]").should(
@@ -182,7 +182,7 @@ describe("Form Text Area Field", () => {
       { position: "bottom" }
     );
     cy.get("[data-cy=screen-element-container]").click();
-    cy.get("[data-cy=accordion-Advanced]").click();
+    cy.get("[data-cy=accordion-Accessibility]").click();
     cy.get("[data-cy=inspector-tabindex]").clear().type("5");
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=preview-content] [name=form_text_area_1]").should(
