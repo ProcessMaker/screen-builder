@@ -14,11 +14,7 @@ import FormListTable from './components/renderer/form-list-table';
 import FormAnalyticsChart from "./components/renderer/form-analytics-chart";
 import FormCollectionRecordControl from './components/renderer/form-collection-record-control.vue';
 import FormCollectionViewControl from './components/renderer/form-collection-view-control.vue';
-<<<<<<< HEAD
-import { handlerEventProperty } from './components/inspector/button/handler-event-property';
-=======
 import { handlerEventProperty, handlerSecurityProperty } from './components/inspector/button/handler-event-property';
->>>>>>> origin/develop
 import {DataTypeProperty, DataFormatProperty, DataTypeDateTimeProperty} from './VariableDataTypeProperties';
 import {
   FormInput,
@@ -767,10 +763,7 @@ export default [
         fieldValue: null,
         tooltip: {},
         handler: '',
-<<<<<<< HEAD
-=======
         handlerSecurityEnabled: true,
->>>>>>> origin/develop
       },
       inspector: [
         {
@@ -807,6 +800,14 @@ export default [
           },
         },
         buttonVariantStyleProperty,
+        {
+          type: 'VariablesToSubmit',
+          field: 'variablesToSubmit',
+          config: {
+            label: 'Variables to Submit',
+            helper: 'Select which variables should be included in the submission payload. Only variables from the parent (top-level) request can be used.',
+          },
+        },
       ],
     },
   },

@@ -20,7 +20,10 @@ module.exports = {
   testMatch: [
     '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)',
   ],
-  testURL: 'http://localhost/',
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    url: 'http://localhost/',
+  },
   transformIgnorePatterns: [
     'node_modules/(?!(vuetable-2|vue-uniq-ids|@processmaker/vue-form-elements/src)/)',
   ],
