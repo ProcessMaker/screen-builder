@@ -392,6 +392,23 @@ export default {
      * Single Responsibility: Only handles variable name extraction
      */
     extractVariableFromItem(item, variables) {
+      // Components that don't have submittable variables
+      const displayOnlyComponents = [
+        'FormNestedScreen',
+        'FormHtmlViewer',
+        'FormMultiColumn',
+        'FormCollectionRecordControl',
+        'FormCollectionViewControl',
+        'FormAvatar',
+        'FormListTable',
+        'FormAnalyticsChart',
+        'CaseProgressBar',
+        'FileDownload',
+      ];
+      // Skip display-only and container components that don't have submittable variables
+      if (displayOnlyComponents.includes(item.component)) {
+        return;
+      }
       const variableName = item.config?.name;
       if (variableName && !variableName.startsWith('_parent.')) {
         variables[variableName] = null;
