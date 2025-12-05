@@ -38,12 +38,13 @@ import { getItemsFromConfig } from "../itemProcessingUtils";
 import { ValidatorFactory } from "../factories/ValidatorFactory";
 import CurrentPageProperty from "../mixins/CurrentPageProperty";
 import DeviceDetector, { MAX_MOBILE_WIDTH } from "../mixins/DeviceDetector";
+import VariablesToSubmitFilter from "../mixins/VariablesToSubmitFilter";
 import ScreenRenderer from "@/components/screen-renderer.vue";
 
 export default {
   name: "VueFormRenderer",
   components: { ScreenRenderer, CustomCssOutput },
-  mixins: [CurrentPageProperty, DeviceDetector],
+  mixins: [CurrentPageProperty, DeviceDetector, VariablesToSubmitFilter],
   model: {
     prop: "data",
     event: "update"
@@ -257,7 +258,8 @@ export default {
       this.$emit('after-submit', ...arguments);
     },
     submit(eventData, loading = false, buttonInfo = null) {
-      this.$emit("submit", this.data, loading, buttonInfo);
+      // eventData is already filtered by ScreenBase.submitForm, just pass it through
+      this.$emit("submit", eventData, loading, buttonInfo);
     },
     parseCss() {
       const containerSelector = `.${this.containerClass}`;

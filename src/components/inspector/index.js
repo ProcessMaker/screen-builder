@@ -32,3 +32,4 @@ export { default as LabelSubmitButton } from "./label-submit-button.vue";
 export { default as AnalyticsSelector } from "./analytics-selector.vue";
 export { default as EncryptedConfig } from "./encrypted-config.vue";
 export { default as CodeEditor } from "./code-editor.vue";
+export { default as VariablesToSubmit } from "./variables-to-submit.vue";
