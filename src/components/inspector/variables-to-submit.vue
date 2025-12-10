@@ -164,6 +164,9 @@ export default {
       
       // Extract calculated variables (computed properties)
       Object.assign(variables, this.extractCalculatedVariables());
+
+      // Extract watcher output variables
+      Object.assign(variables, this.extractWatcherVariables());
       
       // Filter: exclude _parent variables, include all others
       return Object.keys(variables)
@@ -249,6 +252,11 @@ export default {
     // Watch for computed properties changes in App.vue
     '$root.computed'() {
       // Force recomputation when computed properties change
+      this.$forceUpdate();
+    },
+    // Watch for watchers changes in App.vue
+    '$root.watchers'() {
+      // Force recomputation when watchers change
       this.$forceUpdate();
     }
   },
@@ -347,6 +355,45 @@ export default {
       }
       
       return [];
+    },
+
+    /**
+     * Extract watcher output variables from the screen
+     */
+    extractWatcherVariables() {
+      const watcherVars = {};
+      const watchers = this.getWatchers() || [];
+      
+      watchers.forEach(watcher => {
+        if (watcher.byPass) return;
+        
+        // Output variable (for scripts)
+        if (watcher.output_variable) {
+          watcherVars[watcher.output_variable] = null;
+        }
+        
+        // Data mapping variables (for data sources)
+        try {
+          const config = typeof watcher.script_configuration === 'string'
+            ? JSON.parse(watcher.script_configuration)
+            : watcher.script_configuration;
+          (config?.dataMapping || []).forEach(m => {
+            if (m.key) watcherVars[m.key] = null;
+          });
+        } catch (e) {}
+      });
+      
+      return watcherVars;
+    },
+    
+    /**
+     * Get watchers from various sources
+     */
+    getWatchers() {
+      return this.$root?.$data?.watchers 
+        || this.$root?.$children?.[0]?.watchers 
+        || this.$root?.$children?.[0]?.$data?.watchers 
+        || [];
     },
     
     /**
