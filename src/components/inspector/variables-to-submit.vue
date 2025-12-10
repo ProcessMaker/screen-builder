@@ -251,8 +251,13 @@ export default {
         this.$emit('change', []);
       }
     },
-    isEnabled(newValue) {
-      if (!newValue) {
+    isEnabled(newValue, oldValue) {
+      if (newValue && !oldValue) {
+        // When enabled for the first time, select all variables
+        this.selectedVariables = [...this.availableVariables];
+        this.$emit('input', this.selectedVariables);
+        this.$emit('change', this.selectedVariables);
+      } else if (!newValue) {
         // When disabled, clear selection to submit all variables
         this.selectedVariables = [];
         this.$emit('input', []);
