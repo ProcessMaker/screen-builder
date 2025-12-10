@@ -422,7 +422,9 @@ export default {
           (config?.dataMapping || []).forEach(m => {
             if (m.key) watcherVars[m.key] = null;
           });
-        } catch (e) {}
+        } catch {
+          console.error('Invalid JSON in script_configuration for watcher:', watcher.name);
+        }
       });
       
       return watcherVars;
