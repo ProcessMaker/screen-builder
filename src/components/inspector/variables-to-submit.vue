@@ -43,15 +43,16 @@
         
         <!-- Select All and Search Section -->
         <div class="controls-section">
-          <button
-            type="button"
-            class="select-all-button"
-            @click="selectAll"
-            :disabled="filteredVariables.length === 0 || selectedVariables.length === filteredVariables.length"
+          <b-form-checkbox
+            :checked="allSelected"
+            :indeterminate="someSelected"
+            @change="toggleSelectAll"
+            :disabled="filteredVariables.length === 0"
+            class="select-all-checkbox"
             data-cy="variables-to-submit-select-all"
           >
             {{ $t('Select All') }}
-          </button>
+          </b-form-checkbox>
           <button
             type="button"
             class="search-button"
@@ -164,10 +165,13 @@ export default {
       
       // Extract calculated variables (computed properties)
       Object.assign(variables, this.extractCalculatedVariables());
+
+      // Extract watcher output variables
+      Object.assign(variables, this.extractWatcherVariables());
       
-      // Filter: exclude _parent variables, include all others
+      // Filter: exclude _parent variables and invalid variable names
       return Object.keys(variables)
-        .filter(variable => !variable.startsWith('_parent.'))
+        .filter(variable => this.isValidVariableName(variable))
         .sort();
     },
     
@@ -211,6 +215,22 @@ export default {
       return this.requiredVariables.filter(
         variable => !this.selectedVariables.includes(variable)
       );
+    },
+    
+    /**
+     * Check if all filtered variables are selected
+     */
+    allSelected() {
+      return this.filteredVariables.length > 0 && 
+        this.filteredVariables.every(v => this.selectedVariables.includes(v));
+    },
+    
+    /**
+     * Check if some (but not all) filtered variables are selected
+     */
+    someSelected() {
+      const selectedCount = this.filteredVariables.filter(v => this.selectedVariables.includes(v)).length;
+      return selectedCount > 0 && selectedCount < this.filteredVariables.length;
     }
   },
   watch: {
@@ -231,8 +251,13 @@ export default {
         this.$emit('change', []);
       }
     },
-    isEnabled(newValue) {
-      if (!newValue) {
+    isEnabled(newValue, oldValue) {
+      if (newValue && !oldValue) {
+        // When enabled for the first time, select all variables
+        this.selectedVariables = [...this.availableVariables];
+        this.$emit('input', this.selectedVariables);
+        this.$emit('change', this.selectedVariables);
+      } else if (!newValue) {
         // When disabled, clear selection to submit all variables
         this.selectedVariables = [];
         this.$emit('input', []);
@@ -249,6 +274,11 @@ export default {
     // Watch for computed properties changes in App.vue
     '$root.computed'() {
       // Force recomputation when computed properties change
+      this.$forceUpdate();
+    },
+    // Watch for watchers changes in App.vue
+    '$root.watchers'() {
+      // Force recomputation when watchers change
       this.$forceUpdate();
     }
   },
@@ -289,11 +319,36 @@ export default {
       this.selectedVariables = this.selectedVariables.filter(v => !filteredSet.has(v));
     },
     
+    toggleSelectAll(checked) {
+      if (checked) {
+        this.selectAll();
+      } else {
+        this.deselectAll();
+      }
+    },
+    
     toggleSearch() {
       this.showSearch = !this.showSearch;
       if (!this.showSearch) {
         this.searchQuery = '';
       }
+    },
+    
+    /**
+     * Check if a variable name is valid
+     * Uses same logic as dot_notation validation rule
+     */
+    isValidVariableName(name) {
+      if (!name || typeof name !== 'string') {
+        return false;
+      }
+      if (name.startsWith('_parent.')) {
+        return false;
+      }
+      // Same regex as dot_notation: starts with letter, followed by letters, numbers, or underscores
+      const validPartRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+      const parts = name.split('.');
+      return parts.every(part => validPartRegex.test(part));
     },
     
     /**
@@ -347,6 +402,47 @@ export default {
       }
       
       return [];
+    },
+
+    /**
+     * Extract watcher output variables from the screen
+     */
+    extractWatcherVariables() {
+      const watcherVars = {};
+      const watchers = this.getWatchers() || [];
+      
+      watchers.forEach(watcher => {
+        if (watcher.byPass) return;
+        
+        // Output variable (for scripts)
+        if (watcher.output_variable) {
+          watcherVars[watcher.output_variable] = null;
+        }
+        
+        // Data mapping variables (for data sources)
+        try {
+          const config = typeof watcher.script_configuration === 'string'
+            ? JSON.parse(watcher.script_configuration)
+            : watcher.script_configuration;
+          (config?.dataMapping || []).forEach(m => {
+            if (m.key) watcherVars[m.key] = null;
+          });
+        } catch {
+          console.error('Invalid JSON in script_configuration for watcher:', watcher.name);
+        }
+      });
+      
+      return watcherVars;
+    },
+    
+    /**
+     * Get watchers from various sources
+     */
+    getWatchers() {
+      return this.$root?.$data?.watchers 
+        || this.$root?.$children?.[0]?.watchers 
+        || this.$root?.$children?.[0]?.$data?.watchers 
+        || [];
     },
     
     /**
@@ -634,25 +730,16 @@ export default {
   margin-top: 0;
 }
 
-.select-all-button {
-  background: none;
-  border: none;
-  padding: 0;
-  color: #0d6efd;
-  font-size: 15px;
+.select-all-checkbox {
+  margin: 0;
+  font-size: 14px;
   font-weight: 600;
+  color: #495057;
+}
+
+.select-all-checkbox >>> .custom-control-label {
   cursor: pointer;
-  text-decoration: none;
-}
-
-.select-all-button:hover:not(:disabled) {
-  color: #0a58ca;
-  text-decoration: none;
-}
-
-.select-all-button:disabled {
-  color: #adb5bd;
-  cursor: not-allowed;
+  user-select: none;
 }
 
 .search-button {
