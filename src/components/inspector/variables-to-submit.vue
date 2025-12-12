@@ -267,9 +267,14 @@ export default {
     'selectedControl.config.event'(newVal) {
       this.event = newVal;
     },
-    'builder.variablesTree'() {
-      // Force recomputation when variables tree changes
-      this.$forceUpdate();
+    formConfig: {
+      handler() {
+        this.$nextTick(() => {
+          this.cleanupInvalidSelections();
+        });
+      },
+      deep: true,
+      immediate: true
     },
     // Watch for computed properties changes in App.vue
     '$root.computed'() {
@@ -283,6 +288,20 @@ export default {
     }
   },
   methods: {
+    /**
+     * Remove selected variables that no longer exist in availableVariables
+     */
+    cleanupInvalidSelections() {
+      const available = this.availableVariables;
+      const validSelected = this.selectedVariables.filter(v => available.includes(v));
+      if (validSelected.length !== this.selectedVariables.length) {
+        this.selectedVariables = validSelected;
+        // Turn off toggle if no variables remain selected
+        if (validSelected.length === 0) {
+          this.isEnabled = false;
+        }
+      }
+    },
     /**
      * Load variables from the variables tree
      * Only includes root-level variables (no prefix, no dots in name)
