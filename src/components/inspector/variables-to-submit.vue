@@ -231,6 +231,20 @@ export default {
     someSelected() {
       const selectedCount = this.filteredVariables.filter(v => this.selectedVariables.includes(v)).length;
       return selectedCount > 0 && selectedCount < this.filteredVariables.length;
+    },
+    
+    /**
+     * Source for computed properties to watch for changes
+     */
+    computedPropertiesSource() {
+      return this.getComputedProperties() || [];
+    },
+    
+    /**
+     * Source for watchers to watch for changes
+     */
+    watchersSource() {
+      return this.getWatchers() || [];
     }
   },
   watch: {
@@ -276,15 +290,23 @@ export default {
       deep: true,
       immediate: true
     },
-    // Watch for computed properties changes in App.vue
-    '$root.computed'() {
-      // Force recomputation when computed properties change
-      this.$forceUpdate();
+    // Watch for computed properties changes
+    computedPropertiesSource: {
+      handler() {
+        this.$nextTick(() => {
+          this.cleanupInvalidSelections();
+        });
+      },
+      deep: true
     },
-    // Watch for watchers changes in App.vue
-    '$root.watchers'() {
-      // Force recomputation when watchers change
-      this.$forceUpdate();
+    // Watch for watchers changes
+    watchersSource: {
+      handler() {
+        this.$nextTick(() => {
+          this.cleanupInvalidSelections();
+        });
+      },
+      deep: true
     }
   },
   methods: {
@@ -396,6 +418,11 @@ export default {
       // Try App.vue (root component)
       if (this.$root?.$data?.computed) {
         return this.$root.$data.computed;
+      }
+      
+      // Try $root.$children[0] (App.vue pattern)
+      if (this.$root?.$children?.[0]?.computed && Array.isArray(this.$root.$children[0].computed)) {
+        return this.$root.$children[0].computed;
       }
       
       // Try builder sources
