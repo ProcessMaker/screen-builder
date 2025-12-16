@@ -7,8 +7,8 @@ export default {
     defaultValues(screen, definition) {
       this.variables.forEach((v) => {
         const { name, config } = v;
-        const { component } = v.element;
         if (this.isComputedVariable(name, definition)) return;
+        const { component } = v.element;
         const isCheckbox = component === "FormCheckbox";
         if (config.defaultValue) {
           if (config.defaultValue.mode === "basic") {
@@ -36,9 +36,14 @@ export default {
           );
         }
         // Update vdata
-        this.addMounted(screen, `
-          this.setValue(${JSON.stringify(name)}, this.getValue(${JSON.stringify(name)}), this.vdata, this);
-        `);
+        this.addMounted(
+          screen,
+          `
+          this.setValue(${JSON.stringify(name)}, this.getValue(${JSON.stringify(
+            name
+          )}), this.vdata, this);
+        `
+        );
       });
     },
     setupDefaultValue(screen, name, value, isCheckbox = false) {
@@ -64,7 +69,9 @@ export default {
         `if (${mountCheck}) {
             this.tryFormField(${JSON.stringify(name)}, () => {
             this.${safeDotName} = ${value};
-            this.setValue(${JSON.stringify(name)}, ${value}, this.vdata, this);});
+            this.setValue(${JSON.stringify(
+              name
+            )}, ${value}, this.vdata, this);});
         }`
       );
       screen.computed[defaultComputedName] = {
