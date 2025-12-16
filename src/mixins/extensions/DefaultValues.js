@@ -56,7 +56,7 @@ export default {
             name
           )}, this.vdata) || !!this.getValue(${JSON.stringify(name)}, data)`;
       const mountCheck = isCheckbox
-        ? `this.${safeDotName} === undefined`
+        ? `this.${safeDotName} == null`
         : `!this.${safeDotName}`;
       this.addData(screen, `${name}_was_filled__`, wasFilledCheck);
       this.addMounted(
