@@ -41,7 +41,8 @@ export default {
     "loading",
     "loadingLabel",
     "handler",
-    "handlerSecurityEnabled"
+    "handlerSecurityEnabled",
+    "config"
   ],
   data() {
     return {
@@ -86,7 +87,8 @@ export default {
       return {
         name: this.name,
         label: this.label,
-        value: this.fieldValue
+        value: this.fieldValue,
+        variablesToSubmit: this.config?.variablesToSubmit
       };
     }
   },

@@ -57,7 +57,8 @@ export default {
       if (buttonInfo && this.loopContext) {
         buttonInfo.loopContext = this.loopContext;
       }
-      this.$emit('submit', this.value, loading, buttonInfo);
+      // Use eventData (already filtered) instead of this.value (unfiltered)
+      this.$emit('submit', eventData, loading, buttonInfo);
     },
     buildComponent(definition) {
       if (window.ProcessMaker && window.ProcessMaker.EventBus) {

@@ -586,7 +586,9 @@ export default {
       }
       this.disabled = true;
 
-      if (formData) {
+      // Ensure formData is always a valid object (never null, undefined, or false)
+      const safeFormData = (formData && typeof formData === 'object') ? formData : (this.requestData || {});
+      if (formData && typeof formData === 'object') {
         this.onUpdate(Object.assign({}, this.requestData, formData));
       }
 
@@ -595,7 +597,7 @@ export default {
       } else {
         this.loadingButton = false;
       }
-      this.$emit('submit', this.task, loading, buttonInfo);
+      this.$emit('submit', this.task, safeFormData, loading, buttonInfo);
 
       if (this.task?.allow_interstitial && !this.loadingButton && !this.disableInterstitial) {
         this.task.interstitial_screen['_interstitial'] = true;
@@ -690,7 +692,7 @@ export default {
         return null;
       }
     },
-
+    
     /**
      * Handles redirection upon process completion, considering destination type and user task validation.
      * @async
@@ -829,20 +831,7 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleProcessUpdate(data) {
-      const { event, elementDestination, tokenId } = data;
-
-      // If the activity is completed and there is an element destination, set the element destination to the task
-      if (
-        event === "ACTIVITY_COMPLETED" &&
-        this.task.id === tokenId &&
-        elementDestination
-      ) {
-        this.task.elementDestination = elementDestination;
-        // update allow_interstitial based on the element destination change after the submit
-        this.task.allow_interstitial = elementDestination.type === "displayNextAssignedTask";
-      }
-
-      if (event === 'ACTIVITY_EXCEPTION') {
+      if (data.event === 'ACTIVITY_EXCEPTION') {
         this.$emit('error', this.requestId);
         window.location.href = `/requests/${this.requestId}`;
       }
