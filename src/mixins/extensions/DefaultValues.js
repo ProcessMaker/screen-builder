@@ -10,24 +10,20 @@ export default {
         const { component } = v.element;
         if (this.isComputedVariable(name, definition)) return;
         const isCheckbox = component === "FormCheckbox";
-        const isDisabled =
-          v.element.config.disabled || v.element.config.readonly;
         if (config.defaultValue) {
           if (config.defaultValue.mode === "basic") {
             this.setupDefaultValue(
               screen,
               name,
               `this.mustache(${JSON.stringify(config.defaultValue.value)})`,
-              isCheckbox,
-              isDisabled
+              isCheckbox
             );
           } else if (config.defaultValue.mode === "js") {
             this.setupDefaultValue(
               screen,
               name,
               `(function() {${config.defaultValue.value}}).bind(this.getDataReference())()`,
-              isCheckbox,
-              isDisabled
+              isCheckbox
             );
           }
         }
@@ -36,28 +32,16 @@ export default {
             screen,
             name,
             config.initiallyChecked ? "true" : "false",
-            isCheckbox,
-            isDisabled
+            isCheckbox
           );
         }
         // Update vdata
-        this.addMounted(
-          screen,
-          `
-          this.setValue(${JSON.stringify(name)}, this.getValue(${JSON.stringify(
-            name
-          )}), this.vdata, this);
-        `
-        );
+        this.addMounted(screen, `
+          this.setValue(${JSON.stringify(name)}, this.getValue(${JSON.stringify(name)}), this.vdata, this);
+        `);
       });
     },
-    setupDefaultValue(
-      screen,
-      name,
-      value,
-      isCheckbox = false,
-      isDisabled = false
-    ) {
+    setupDefaultValue(screen, name, value, isCheckbox = false) {
       const safeDotName = this.safeDotName(name);
       const defaultComputedName = `default_${safeDotName}__`;
       // For checkboxes, use explicit undefined checks to preserve false values
@@ -72,33 +56,15 @@ export default {
             name
           )}, this.vdata) || !!this.getValue(${JSON.stringify(name)}, data)`;
       const mountCheck = isCheckbox
-        ? `typeof this.${safeDotName} !== 'boolean'`
+        ? `this.${safeDotName} == null`
         : `!this.${safeDotName}`;
-
-      // For disabled fields, set the default value directly without reactive watchers
-      if (isDisabled) {
-        this.addMounted(
-          screen,
-          `if (${mountCheck}) {
-            this.tryFormField(${JSON.stringify(name)}, () => {
-              this.${safeDotName} = ${value};
-              this.setValue(${JSON.stringify(
-                name
-              )}, ${value}, this.vdata, this);
-            });
-          }`
-        );
-        return;
-      }
       this.addData(screen, `${name}_was_filled__`, wasFilledCheck);
       this.addMounted(
         screen,
         `if (${mountCheck}) {
             this.tryFormField(${JSON.stringify(name)}, () => {
             this.${safeDotName} = ${value};
-            this.setValue(${JSON.stringify(
-              name
-            )}, ${value}, this.vdata, this);});
+            this.setValue(${JSON.stringify(name)}, ${value}, this.vdata, this);});
         }`
       );
       screen.computed[defaultComputedName] = {
@@ -124,12 +90,7 @@ export default {
       onloadproperties({ properties, element, definition }) {
         const { name } = element.config;
         if (this.isComputedVariable(name, definition)) return;
-        // Skip input event handler for disabled/readonly fields
-        const isDisabled = element.config.disabled || element.config.readonly;
-        if (
-          (element.config.defaultValue || element.config.initiallyChecked) &&
-          !isDisabled
-        ) {
+        if (element.config.defaultValue || element.config.initiallyChecked) {
           const safeDotName = this.safeDotName(name);
           const event = `${safeDotName}_was_filled__ |= !!$event; !${safeDotName}_was_filled__ && (vdata.${this.dot2bracket(
             name
