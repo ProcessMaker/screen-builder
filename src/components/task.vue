@@ -898,7 +898,10 @@ export default {
      * @param {Object} data - The event data containing the tokenId of the task.
      */
     async handleRedirectToTask(data) {
-      if (data?.params[0]?.tokenId) {
+      if (
+        data?.params[0]?.tokenId &&
+        this.task.user?.id === data.params[0]?.userId
+      ) {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
         if (this.task && !(this.task.allow_interstitial || this.isSameUser(this.task, data))) {
