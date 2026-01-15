@@ -137,6 +137,9 @@ export default {
                 value: collection.id
               }))
         ];
+        if (this.collectionId) {
+          this.updateScreenIds();
+        }
       });
     },
     getFields() {
