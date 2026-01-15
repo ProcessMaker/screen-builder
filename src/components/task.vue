@@ -888,8 +888,9 @@ export default {
      */
     async handleRedirectToTask(data) {
       if (
-        data?.params[0]?.tokenId &&
-        this.task.user?.id === data.params[0]?.userId
+        (data?.params[0]?.tokenId &&
+        this.task.user?.id === data.params[0]?.userId) ||
+        this.task.elementDestination.type === 'taskSource'
       ) {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
