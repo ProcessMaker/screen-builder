@@ -916,6 +916,7 @@ describe("Task component", () => {
         completed_at: moment().toISOString(),
         due_at: moment().add(1, "day").toISOString(),
         user: {
+          id: 1,
           avatar: "",
           fullname: "Assigned User"
         },
