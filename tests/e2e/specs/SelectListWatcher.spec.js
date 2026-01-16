@@ -51,7 +51,7 @@ describe("SelectList - Watcher", () => {
 
     // Select "John" option in radio buttons "form_select_list_2"
     cy.get(
-      "[data-cy=preview-content] [name=form_select_list_2][value=John]"
+      '[data-cy=preview-content] [id^="form_select_list_2-John-"]'
     ).click();
 
     // Select "Mary" option in select list "form_select_list_3"
@@ -78,7 +78,7 @@ describe("SelectList - Watcher", () => {
 
     // Select "John" option in radio buttons "form_select_list_2"
     cy.get(
-      "[data-cy=preview-content] [name=form_select_list_2][value=John]"
+      '[data-cy=preview-content] [id^="form_select_list_2-John-"]'
     ).click();
 
     // Select "Mary" option in select list "form_select_list_3"

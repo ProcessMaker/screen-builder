@@ -23,9 +23,9 @@ describe("single select with invalid initial value", () => {
     cy.setPreviewDataInput({ person: [] });
     cy.get("[data-cy=mode-preview]").click();
 
-    cy.get("[data-cy=preview-content] [name=person]").eq(0).click();
-    cy.get("[data-cy=preview-content] [name=person]").eq(1).click();
-    cy.get("[data-cy=preview-content] [name=person]").eq(0).click();
+    cy.get('[data-cy=preview-content] [id^="person-one-"]').click();
+    cy.get('[data-cy=preview-content] [id^="person-two-"]').click();
+    cy.get('[data-cy=preview-content] [id^="person-one-"]').click();
 
     // Check the data of the screen
     cy.assertPreviewData({
