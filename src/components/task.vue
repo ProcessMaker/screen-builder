@@ -831,6 +831,12 @@ export default {
      * @param {Object} data - The event data received from the socket listener.
      */
     handleProcessUpdate(data) {
+      if (!this.task) {
+        // reload the task if it is not found
+        this.reload();
+        return;
+      }
+      
       const { event, elementDestination, tokenId } = data;
 
       // If the activity is completed and there is an element destination, set the element destination to the task
