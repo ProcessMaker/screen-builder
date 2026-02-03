@@ -900,11 +900,16 @@ export default {
      * @param {Object} data - The event data containing the tokenId of the task.
      */
     async handleRedirectToTask(data) {
-      if (
-        (data?.params[0]?.tokenId &&
-        this.task.user?.id === data.params[0]?.userId) ||
-        this.task.elementDestination?.type === 'taskSource'
-      ) {
+      const isWebEntry = !this.task;
+      let applyRedirect;
+      if (isWebEntry) {
+        applyRedirect = data?.params[0]?.tokenId;
+      } else {
+        applyRedirect = (data?.params[0]?.tokenId &&
+          this.task.user?.id === data.params[0]?.userId) ||
+          this.task.elementDestination?.type === 'taskSource';
+      }
+      if (applyRedirect) {
         this.loadingTask = true;
         // Check if interstitial tasks are allowed for this task.
         if (this.task && !(this.task.allow_interstitial || this.isSameUser(this.task, data))) {
