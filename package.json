@@ -73,7 +73,7 @@
     "@storybook/vue-vite": "^7.6.13",
     "@vitejs/plugin-vue2": "^2.3.1",
     "@vue/test-utils": "^1.1.1",
-    "axios": "^1.6.0",
+    "axios": "^1.13.5",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^26.6.3",
     "babel-plugin-istanbul": "^6.1.1",
