@@ -836,7 +836,7 @@ export default {
         this.reload();
         return;
       }
-      
+      // get the event, element destination and token id from the data
       const { event, elementDestination, tokenId } = data;
 
       // If the activity is completed and there is an element destination, set the element destination to the task
@@ -848,6 +848,12 @@ export default {
         this.task.elementDestination = elementDestination;
         // update allow_interstitial based on the element destination change after the submit
         this.task.allow_interstitial = elementDestination.type === "displayNextAssignedTask";
+
+        if (elementDestination.type !== 'taskSource') {
+          // redirect to the element destination value
+          window.location.href = elementDestination.value;
+          return;
+        }
       }
 
       if (event === 'ACTIVITY_EXCEPTION') {
