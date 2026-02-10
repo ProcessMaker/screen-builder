@@ -849,7 +849,7 @@ export default {
         // update allow_interstitial based on the element destination change after the submit
         this.task.allow_interstitial = elementDestination.type === "displayNextAssignedTask";
 
-        if (elementDestination.type !== 'taskSource') {
+        if (elementDestination?.type !== 'taskSource' && elementDestination?.value) {
           // redirect to the element destination value
           window.location.href = elementDestination.value;
           return;
