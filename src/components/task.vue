@@ -913,9 +913,10 @@ export default {
      */
     async handleRedirectToTask(data) {
       const tokenId = data?.params[0]?.tokenId;
-        const newTaskUserId = data?.params[0]?.userId; // User assigned to the new task (from the backend)
-        const nodeId = data?.params[0]?.nodeId;
-        const currentUserId = this.userId; // Current user (who sees the page) = window.ProcessMaker.user.id
+      const newTaskUserId = data?.params[0]?.userId; // User assigned to the new task (from the backend)
+      const nodeId = data?.params[0]?.nodeId;
+      // Current user: prop > window.ProcessMaker.user > task assignee (when viewing assigned task)
+      const currentUserId = this.userId ?? window.ProcessMaker?.user?.id ?? this.task?.user?.id;
         const elementDestType = this.task?.elementDestination?.type;
         // Redirect if the new task is assigned to the current user, or if it is taskSource
         const isNewTaskForCurrentUser = tokenId && (newTaskUserId === currentUserId || (newTaskUserId == null && (elementDestType === 'displayNextAssignedTask' || elementDestType === 'taskSource')));
@@ -948,9 +949,9 @@ export default {
      *
      * @param {Object} redirectData - The redirect data object.
      */
-      isSameUser(redirectData) {
+    isSameUser(redirectData) {
       const newTaskUserId = redirectData?.params?.[0]?.userId;
-      const currentUserId = this.userId;
+      const currentUserId = this.userId ?? window.ProcessMaker?.user?.id ?? this.task?.user?.id;
       const elementDestType = this.task?.elementDestination?.type;
       const userIdMatch = newTaskUserId === currentUserId
         || (newTaskUserId == null && (elementDestType === 'displayNextAssignedTask' || elementDestType === 'taskSource'));
