@@ -918,10 +918,13 @@ export default {
       // Current user: prop > window.ProcessMaker.user > task assignee (when viewing assigned task)
       const currentUserId = this.userId ?? window.ProcessMaker?.user?.id ?? this.task?.user?.id;
         const elementDestType = this.task?.elementDestination?.type;
+        const userCanClaim = data?.params?.[0]?.userCanClaim;
         // Redirect if the new task is assigned to the current user, or if it is taskSource
         const isNewTaskForCurrentUser = tokenId && (newTaskUserId === currentUserId || (newTaskUserId == null && (elementDestType === 'displayNextAssignedTask' || elementDestType === 'taskSource')));
         const isTaskSource = elementDestType === 'taskSource';
-        const shouldHandle = isNewTaskForCurrentUser || isTaskSource;
+        // Redirect when task is unclaimed and user can claim it (pool tasks)
+        const isUnclaimedAndClaimable = newTaskUserId === null && userCanClaim === true;
+        const shouldHandle = isNewTaskForCurrentUser || isTaskSource || isUnclaimedAndClaimable;
   
         if (shouldHandle) {
           this.loadingTask = true;
