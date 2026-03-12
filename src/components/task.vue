@@ -912,43 +912,53 @@ export default {
      * @param {Object} data - The event data containing the tokenId of the task.
      */
     async handleRedirectToTask(data) {
-      if (
-        (data?.params[0]?.tokenId &&
-        this.task.user?.id === data.params[0]?.userId) ||
-        this.task.elementDestination?.type === 'taskSource' ||
-        (data.params[0]?.userId === null && data.params[0]?.userCanClaim === true)
-      ) {
-        this.loadingTask = true;
-        // Check if interstitial tasks are allowed for this task.
-        if (this.task && !(this.task.allow_interstitial || this.isSameUser(this.task, data))) {
-          // The getDestinationUrl() function is called asynchronously to retrieve the URL
-          window.location.href = await this.getDestinationUrl();
-          return;
+      const tokenId = data?.params[0]?.tokenId;
+      const newTaskUserId = data?.params[0]?.userId; // User assigned to the new task (from the backend)
+      const nodeId = data?.params[0]?.nodeId;
+      // Current user: prop > window.ProcessMaker.user > task assignee (when viewing assigned task)
+      const currentUserId = this.userId ?? window.ProcessMaker?.user?.id ?? this.task?.user?.id;
+        const elementDestType = this.task?.elementDestination?.type;
+        const userCanClaim = data?.params?.[0]?.userCanClaim;
+        // Redirect if the new task is assigned to the current user, or if it is taskSource
+        const isNewTaskForCurrentUser = tokenId && (newTaskUserId === currentUserId || (newTaskUserId == null && (elementDestType === 'displayNextAssignedTask' || elementDestType === 'taskSource')));
+        const isTaskSource = elementDestType === 'taskSource';
+        // Redirect when task is unclaimed and user can claim it (pool tasks)
+        const isUnclaimedAndClaimable = newTaskUserId === null && userCanClaim === true;
+        const shouldHandle = isNewTaskForCurrentUser || isTaskSource || isUnclaimedAndClaimable;
+  
+        if (shouldHandle) {
+          this.loadingTask = true;
+          // Check if interstitial tasks are allowed for this task.
+          if (this.task && !(this.task.allow_interstitial || this.isSameUser(data))) {
+            window.location.href = await this.getDestinationUrl();
+            return;
+          }
+          this.nodeId = nodeId;
+          this.taskId = tokenId;
+  
+          // Force a redirect to ensure the correct task is loaded immediately for ConversationalForm.
+          if (this.renderComponent === "ConversationalForm") {
+            window.location.href = `/tasks/${this.taskId}/edit`;
+          }
+  
+          this.reload();
         }
-        this.nodeId = data.params[0].nodeId;
-        this.taskId = data.params[0].tokenId;
-
-        // Force a redirect to ensure the correct task is loaded immediately for ConversationalForm.
-        // This prevents async reloads that may cause inconsistencies specific to ConversationalForm.
-        if (this.renderComponent === "ConversationalForm") {
-          window.location.href = `/tasks/${this.taskId}/edit`;
-        }
-
-        this.reload();
-      }
     },
 
     /**
-     * Checks if the current task and the redirect data belong to the same user.
-     * and the destination is taskSource.
+     * Checks if the redirect applies to the current user.
+     * - userId of event = user assigned to the new task
+     * - It is considered a match if: new task assigned to the current user, or taskSource/displayNextAssignedTask with user null
      *
-     * @param {Object} currentTask - The current task object.
      * @param {Object} redirectData - The redirect data object.
      */
-    isSameUser(currentTask, redirectData) {
-      const userIdMatch = currentTask.user?.id === redirectData.params[0].userId;
-      const typeMatch = currentTask.elementDestination?.type === null
-                      || currentTask.elementDestination?.type === 'taskSource';
+    isSameUser(redirectData) {
+      const newTaskUserId = redirectData?.params?.[0]?.userId;
+      const currentUserId = this.userId ?? window.ProcessMaker?.user?.id ?? this.task?.user?.id;
+      const elementDestType = this.task?.elementDestination?.type;
+      const userIdMatch = newTaskUserId === currentUserId
+        || (newTaskUserId == null && (elementDestType === 'displayNextAssignedTask' || elementDestType === 'taskSource'));
+      const typeMatch = elementDestType === null || elementDestType === 'taskSource' || elementDestType === 'displayNextAssignedTask';
 
       return userIdMatch && typeMatch;
     },
