@@ -341,6 +341,9 @@ export default {
         },
       ],
       valueTypeReturned: '',
+      assetType: null,
+      assetTypeResolved: false,
+      screenId: null,
     };
   },
   watch: {
@@ -504,9 +507,37 @@ export default {
     monacoMounted(editor) {
       editor.getAction('editor.action.formatDocument').run();
     },
-    getDataSourceList() {
+    resolveAssetType() {
+      if (this.assetTypeResolved) {
+        return Promise.resolve(this.assetType);
+      }
+      const match = window.location.pathname.match(/screen-builder\/(\d+)\/edit/);
+      if (!match) {
+        this.assetTypeResolved = true;
+        return Promise.resolve(this.assetType);
+      }
+      this.screenId = match[1];
+      return this.$dataProvider
+        .get(`/screens/${this.screenId}`)
+        .then(response => {
+          this.assetType = response.data.asset_type || null;
+          this.assetTypeResolved = true;
+          return this.assetType;
+        })
+        .catch(() => {
+          this.assetTypeResolved = true;
+          return this.assetType;
+        });
+    },
+    async getDataSourceList() {
+      await this.resolveAssetType();
+      const params = {};
+      if (this.assetType) {
+        // For PM Block screens, expose both regular and PM Block connectors.
+        params.asset_type = this.assetType === 'PM_BLOCK' ? 'all' : this.assetType;
+      }
       this.$dataProvider
-        .get('/data_sources')
+        .get('/data_sources', { params })
         .then(response => {
           let jsonData = response.data.data;
           // Map the data sources response to value/text items list
