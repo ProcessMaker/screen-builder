@@ -354,8 +354,7 @@ export default {
         this.loopContext = _.get(this.task, "loop_context", "");
 
         if (this.task.draft) {
-          this.requestData = _.merge(
-            {},
+          this.requestData = this.restoreDraftData(
             this.requestData,
             this.task.draft.data
           );
@@ -372,6 +371,13 @@ export default {
       } else {
         this.hasErrors = false;
       }
+    },
+    restoreDraftData(requestData, draftData) {
+      const shouldMerge =
+        globalThis?.ProcessMaker?.screen?.mergeDraftOnRestore ?? true;
+      return shouldMerge
+        ? _.merge({}, requestData, draftData)
+        : { ...requestData, ...draftData };
     },
     pageUpdate() {
       this.$emit("updated-page-core");
