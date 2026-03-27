@@ -15,6 +15,67 @@ function initializeTaskAndScreenIntercepts(method, url, response) {
     response.screen
   );
 }
+
+function getTask(url, responseData) {
+  initializeTaskAndScreenIntercepts("GET", url, {
+    id: responseData.id,
+    advanceStatus: "completed",
+    component: "task-screen",
+    status: responseData.status,
+    allow_interstitial: responseData.allow_interstitial,
+    interstitial_screen: responseData.interstitial_screen,
+    screen: responseData.screen,
+    process_request: {
+      id: 1,
+      parent_request_id: responseData.parent_request_id,
+      status: responseData.status
+    },
+    user_request_permission: responseData.user_request_permission
+  });
+}
+
+function getTasks(url, responseData = null) {
+  if (responseData) {
+    cy.intercept("GET", url, {
+      data: [
+        {
+          id: responseData.taskId,
+          advanceStatus: "open",
+          process_id: 1,
+          process_request_id: responseData.process_request_id,
+          subprocess_request_id: 1,
+          status: responseData.status,
+          completed_at: null,
+          due_at: moment().add(1, "day").toISOString(),
+          due_notified: 0,
+          process_request: {
+            id: 1,
+            status: responseData.status
+          }
+        }
+      ]
+    });
+  } else {
+    cy.intercept("GET", url, { data: [] });
+  }
+}
+
+function getActiveTasksUrl(requestId, includeUserFilter = true) {
+  const userFilter = includeUserFilter ? "user_id=1&" : "";
+
+  return `http://localhost:5173/api/1.1/tasks?${userFilter}status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1`;
+}
+
+function mockInterstitialTaskLookups(
+  requestId,
+  { userTask = null, activeTasks = [] } = {}
+) {
+  getTasks(getActiveTasksUrl(requestId), userTask);
+  cy.intercept("GET", getActiveTasksUrl(requestId, false), {
+    data: activeTasks
+  });
+}
+
 describe("Task component", () => {
   it("In a webentry", () => {
     cy.visit("/?scenario=WebEntry", {
@@ -517,10 +578,7 @@ describe("Task component", () => {
           responseDataTask1
         );
 
-        getTasks(
-          "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1",
-          null
-        );
+        mockInterstitialTaskLookups(1);
 
         const responseDataTask2 = {
           status: "ACTIVE",
@@ -712,9 +770,7 @@ describe("Task component", () => {
           responseDataTask1
         );
 
-        getTasks(
-          "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1"
-        );
+        mockInterstitialTaskLookups(1);
       }
     );
 
@@ -745,28 +801,20 @@ describe("Task component", () => {
       }
     );
 
-    getTasks(
-      "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1"
-    );
-
-    cy.intercept(
-      "GET",
-      "http://localhost:5173/api/1.1/tasks?status=ACTIVE&process_request_id=1&include_sub_tasks=1",
-      {
-        data: [
-          {
-            id: 2,
-            element_id: "node_2",
-            element_name: "FT-A",
-            element_type: "task",
-            status: "ACTIVE",
-            user_id: null,
-            process_request_id: 1,
-            advanceStatus: "open"
-          }
-        ]
-      }
-    );
+    mockInterstitialTaskLookups(1, {
+      activeTasks: [
+        {
+          id: 2,
+          element_id: "node_2",
+          element_name: "FT-A",
+          element_type: "task",
+          status: "ACTIVE",
+          user_id: null,
+          process_request_id: 1,
+          advanceStatus: "open"
+        }
+      ]
+    });
 
     cy.visit("/?scenario=TaskRedirect", {});
 
@@ -782,9 +830,6 @@ describe("Task component", () => {
         id: 1,
         advanceStatus: "open",
         component: "task-screen",
-        status: "TRIGGERED",
-        allow_interstitial: true,
-        interstitial_screen: InterstitialScreen.screens[0],
         screen: SingleScreen.screens[0],
         process_request: {
           id: 1,
@@ -793,20 +838,35 @@ describe("Task component", () => {
       }
     );
 
-    getTasks(
-      "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1"
-    );
-
-    cy.intercept(
-      "GET",
-      "http://localhost:5173/api/1.1/tasks?status=ACTIVE&process_request_id=1&include_sub_tasks=1",
-      { data: [] }
-    );
-
     cy.visit("/?scenario=TaskRedirect", {});
 
     cy.wait(2000);
-    cy.contains("We're getting the next task for you...").should("be.visible");
+    cy.get(".form-group").find("button").click();
+
+    cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
+      function () {
+        const responseDataTask1 = {
+          status: "CLOSED",
+          process_request_id: 1,
+          id: 1,
+          screen: SingleScreen.screens[0],
+          allow_interstitial: true,
+          interstitial_screen: InterstitialScreen.screens[0]
+        };
+
+        getTask(
+          `http://localhost:5173/api/1.1/tasks/${responseDataTask1.id}?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination`,
+          responseDataTask1
+        );
+
+        mockInterstitialTaskLookups(1);
+
+        cy.wait(2000);
+        cy.reload();
+      }
+    );
+
+    cy.contains("Please wait").should("be.visible");
     cy.url().should("eq", "http://localhost:5173/?scenario=TaskRedirect");
   });
 
@@ -860,9 +920,7 @@ describe("Task component", () => {
           responseDataTask1
         );
 
-        getTasks(
-          "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1"
-        );
+        mockInterstitialTaskLookups(1);
 
         cy.wait(2000);
         cy.reload();
@@ -1050,46 +1108,3 @@ describe("Task component", () => {
     cy.get("[data-cy=screen-field-lastname]").should("not.exist");
   });
 });
-
-function getTask(url, responseData) {
-  initializeTaskAndScreenIntercepts("GET", url, {
-    id: responseData.id,
-    advanceStatus: "completed",
-    component: "task-screen",
-    status: responseData.status,
-    allow_interstitial: responseData.allow_interstitial,
-    interstitial_screen: responseData.interstitial_screen,
-    screen: responseData.screen,
-    process_request: {
-      id: 1,
-      parent_request_id: responseData.parent_request_id,
-      status: responseData.status
-    },
-    user_request_permission: responseData.user_request_permission
-  });
-}
-function getTasks(url, responseData = null) {
-  if (responseData) {
-    cy.intercept("GET", url, {
-      data: [
-        {
-          id: responseData.taskId,
-          advanceStatus: "open",
-          process_id: 1,
-          process_request_id: responseData.process_request_id,
-          subprocess_request_id: 1,
-          status: responseData.status,
-          completed_at: null,
-          due_at: moment().add(1, "day").toISOString(),
-          due_notified: 0,
-          process_request: {
-            id: 1,
-            status: responseData.status
-          }
-        }
-      ]
-    });
-  } else {
-    cy.intercept("GET", url, { data: [] });
-  }
-}
