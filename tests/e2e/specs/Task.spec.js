@@ -822,6 +822,139 @@ describe("Task component", () => {
     cy.url().should("eq", "http://localhost:5173/requests/1");
   });
 
+  it("Interstitial should load the next claimable self-service task from the user-filtered lookup", () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        status: "TRIGGERED",
+        allow_interstitial: true,
+        interstitial_screen: InterstitialScreen.screens[0],
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        }
+      }
+    );
+
+    cy.intercept("GET", getActiveTasksUrl(1), {
+      data: [
+        {
+          id: 2,
+          advanceStatus: "open",
+          process_id: 1,
+          process_request_id: 1,
+          subprocess_request_id: 1,
+          status: "ACTIVE",
+          user_id: null,
+          is_self_service: 1,
+          self_service_groups: {
+            users: ["1"],
+            groups: []
+          },
+          completed_at: null,
+          due_at: moment().add(1, "day").toISOString(),
+          due_notified: 0,
+          process_request: {
+            id: 1,
+            status: "ACTIVE"
+          }
+        }
+      ]
+    });
+    cy.intercept("GET", getActiveTasksUrl(1, false), { data: [] });
+
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/2?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 2,
+        advanceStatus: "open",
+        component: "task-screen",
+        status: "ACTIVE",
+        screen: Screens.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        },
+        user_request_permission: [{ process_request_id: 1, allowed: true }]
+      }
+    );
+
+    cy.visit("/?scenario=TaskRedirect", {});
+
+    cy.wait(2000);
+    cy.get("[data-cy=screen-field-firstname]").should("be.visible");
+    cy.get("[data-cy=screen-field-lastname]").should("be.visible");
+    cy.url().should("eq", "http://localhost:5173/?scenario=TaskRedirect");
+  });
+
+  it("Interstitial should load a claimable self-service task from redirectToTask", () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        status: "TRIGGERED",
+        allow_interstitial: true,
+        interstitial_screen: InterstitialScreen.screens[0],
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        }
+      }
+    );
+
+    mockInterstitialTaskLookups(1);
+
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/2?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 2,
+        advanceStatus: "open",
+        component: "task-screen",
+        status: "ACTIVE",
+        screen: Screens.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        },
+        user_request_permission: [{ process_request_id: 1, allowed: true }]
+      }
+    );
+
+    cy.visit("/?scenario=TaskRedirect", {});
+
+    cy.wait(2000);
+    cy.contains("Please wait").should("be.visible");
+    cy.get("[data-cy=screen-field-firstname]").should("not.exist");
+
+    cy.socketEventNext("ProcessMaker\\Events\\RedirectTo", {
+      params: {
+        "0": {
+          nodeId: "node_2",
+          tokenId: 2,
+          userId: null,
+          userCanClaim: true
+        },
+        activeTokens: [2]
+      },
+      method: "redirectToTask"
+    });
+
+    cy.get("[data-cy=screen-field-firstname]").should("be.visible");
+    cy.get("[data-cy=screen-field-lastname]").should("be.visible");
+    cy.url().should("eq", "http://localhost:5173/?scenario=TaskRedirect");
+  });
+
   it("Interstitial should keep waiting when there are no active tasks yet", () => {
     initializeTaskAndScreenIntercepts(
       "GET",
