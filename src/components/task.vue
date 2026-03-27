@@ -526,40 +526,64 @@ export default {
       // If the task has not an origin source it should re redirected top the tasks List as default.
       return document.referrer || '/tasks';
     },
-    loadNextAssignedTask(requestId = null) {
+    getActiveTasksUrl(requestId, includeUserFilter = true) {
+      const timestamp = !window.Cypress ? `&t=${Date.now()}` : "";
+      const userFilter = includeUserFilter ? `user_id=${this.userId}&` : "";
+
+      return `?${userFilter}status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${timestamp}`;
+    },
+    isWaitingOnInterstitial() {
+      return Boolean(this.task?.allow_interstitial && _.get(this.screen, '_interstitial', false));
+    },
+    async redirectToRequestIfAnotherActiveTaskExists(requestId) {
+      if (!this.isWaitingOnInterstitial()) {
+        return false;
+      }
+
+      const response = await this.$dataProvider.getTasks(this.getActiveTasksUrl(requestId, false));
+      const activeTasks = _.get(response, 'data.data', []).filter((task) => task.id !== this.taskId);
+
+      if (activeTasks.length > 0) {
+        this.redirectToRequest(requestId);
+        return true;
+      }
+
+      return false;
+    },
+    async loadNextAssignedTask(requestId = null) {
       if (!requestId) {
         requestId = this.requestId;
       }
       if (!this.userId) {
         return;
       }
-      const timestamp = !window.Cypress ? `&t=${Date.now()}` : "";
-      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${timestamp}`;
-      return this.$dataProvider
-        .getTasks(url).then((response) => {
-          this.$emit("load-data-task", response);
-          if (response.data.data.length > 0) {
-            let task = response.data.data[0];
-            if (task.process_request_id !== this.requestId) {
-              // Next task is in a subprocess, do a hard redirect
-              if (this.redirecting === task.process_request_id) {
-                return;
-              }
-              this.unsubscribeSocketListeners();
-              this.redirecting = task.process_request_id;
-              this.$emit('redirect', task.id, true);
-              return;
-            } else {
-              this.emitIfTaskCompleted(requestId);
-            }
-            this.taskId = task.id;
-            this.nodeId = task.element_id;
-            this.loadTask();
-          } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
-            this.$emit('completed', this.getAllowedRequestId());
+
+      const response = await this.$dataProvider.getTasks(this.getActiveTasksUrl(requestId));
+
+      this.$emit("load-data-task", response);
+      if (response.data.data.length > 0) {
+        let task = response.data.data[0];
+        if (task.process_request_id !== this.requestId) {
+          // Next task is in a subprocess, do a hard redirect
+          if (this.redirecting === task.process_request_id) {
+            return;
           }
-          this.disabled = false;
-        });
+          this.unsubscribeSocketListeners();
+          this.redirecting = task.process_request_id;
+          this.$emit('redirect', task.id, true);
+          return;
+        } else {
+          this.emitIfTaskCompleted(requestId);
+        }
+        this.taskId = task.id;
+        this.nodeId = task.element_id;
+        this.loadTask();
+      } else if (await this.redirectToRequestIfAnotherActiveTaskExists(requestId)) {
+        return;
+      } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
+        this.$emit('completed', this.getAllowedRequestId());
+      }
+      this.disabled = false;
     },
     emitIfTaskCompleted(requestId) {
       // Only emit completed after getting the subprocess tasks and there are no tasks and process is completed

@@ -726,6 +726,90 @@ describe("Task component", () => {
     cy.url().should("eq", "http://localhost:5173/requests/1");
   });
 
+  it("Interstitial should redirect to request when another active task exists for a different user", () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        status: "TRIGGERED",
+        allow_interstitial: true,
+        interstitial_screen: InterstitialScreen.screens[0],
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        }
+      }
+    );
+
+    getTasks(
+      "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1"
+    );
+
+    cy.intercept(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks?status=ACTIVE&process_request_id=1&include_sub_tasks=1",
+      {
+        data: [
+          {
+            id: 2,
+            element_id: "node_2",
+            element_name: "FT-A",
+            element_type: "task",
+            status: "ACTIVE",
+            user_id: null,
+            process_request_id: 1,
+            advanceStatus: "open"
+          }
+        ]
+      }
+    );
+
+    cy.visit("/?scenario=TaskRedirect", {});
+
+    cy.wait(2000);
+    cy.url().should("eq", "http://localhost:5173/requests/1");
+  });
+
+  it("Interstitial should keep waiting when there are no active tasks yet", () => {
+    initializeTaskAndScreenIntercepts(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks/1?include=data,user,draft,requestor,processRequest,component,screen,requestData,loopContext,bpmnTagName,interstitial,definition,nested,userRequestPermission,elementDestination",
+      {
+        id: 1,
+        advanceStatus: "open",
+        component: "task-screen",
+        status: "TRIGGERED",
+        allow_interstitial: true,
+        interstitial_screen: InterstitialScreen.screens[0],
+        screen: SingleScreen.screens[0],
+        process_request: {
+          id: 1,
+          status: "ACTIVE"
+        }
+      }
+    );
+
+    getTasks(
+      "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1"
+    );
+
+    cy.intercept(
+      "GET",
+      "http://localhost:5173/api/1.1/tasks?status=ACTIVE&process_request_id=1&include_sub_tasks=1",
+      { data: [] }
+    );
+
+    cy.visit("/?scenario=TaskRedirect", {});
+
+    cy.wait(2000);
+    cy.contains("We're getting the next task for you...").should("be.visible");
+    cy.url().should("eq", "http://localhost:5173/?scenario=TaskRedirect");
+  });
+
   /* DNAT = Display Next Assigned Task
    parentTask1                           endEvent
               \_______childTask1_______/
