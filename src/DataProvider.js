@@ -154,7 +154,18 @@ export default {
     }
 
     const screenPromise = new Promise((resolve, reject) => {
-      this.get(`${endpoint}/${id}${query}`)
+      let fullQuery = query || "";
+      const authQuery = this.authQueryString();
+      if (authQuery && !fullQuery.includes("request_id=")) {
+        const authParams = authQuery.startsWith("?") ? authQuery.slice(1) : authQuery;
+        if (fullQuery) {
+          fullQuery += `${fullQuery.includes("?") ? "&" : "?"}${authParams}`;
+        } else {
+          fullQuery = `?${authParams}`;
+        }
+      }
+
+      this.get(`${endpoint}/${id}${fullQuery}`)
         .then((response) => {
           if (response.data.nested) {
             this.addNestedScreenCache(response.data.nested);
