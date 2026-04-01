@@ -142,7 +142,8 @@
   "overrides": {
     "form-data": "^4.0.4",
     "lodash": "^4.17.21",
-    "rollup": "^4.59.1"
+    "rollup": "^4.59.1",
+    "handlebars": "^4.7.9"
   },
   "nyc": {
     "include": [
