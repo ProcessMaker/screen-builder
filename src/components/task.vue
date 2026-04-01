@@ -293,6 +293,7 @@ export default {
           .getTasks(url)
           .then((response) => {
             this.task = response.data;
+            this.setSelfService(this.task);
             this.linkTask(mounting);
             this.checkTaskStatus();
             if (
@@ -391,6 +392,7 @@ export default {
       }
     },
     checkTaskStatus() {
+      this.setSelfService(this.task);
       if (
         this.task.status == 'COMPLETED' ||
         this.task.status == 'CLOSED' ||
@@ -402,13 +404,19 @@ export default {
       }
       this.prepareTask();
     },
-    setSelfService() {
+    resolveSelfService(task = this.task) {
+      if (task) {
+        return (
+          _.get(task, 'process_request.status') === 'ACTIVE'
+          && Boolean(_.get(task, 'is_self_service', false))
+        );
+      }
+
+      return Boolean(_.get(window, 'ProcessMaker.isSelfService', false));
+    },
+    setSelfService(task = this.task) {
       this.$nextTick(() => {
-        if (window.ProcessMaker.isSelfService) {
-          this.isSelfService = true;
-        } else {
-          this.isSelfService = false;
-        }
+        this.isSelfService = this.resolveSelfService(task);
       });
     },
     /**
