@@ -38,7 +38,7 @@
     "@storybook/addon-docs": "^7.6.13",
     "axios-extensions": "^3.1.6",
     "flatted": "^3.4.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "lru-cache": "^10.0.1",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
@@ -141,7 +141,7 @@
   },
   "overrides": {
     "form-data": "^4.0.4",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "rollup": "^4.59.1",
     "handlebars": "^4.7.9"
   },
