@@ -329,7 +329,9 @@ export default {
       selectAll: false,
       styleMode: "Classic",
       isPopoverVisible: null,
-      popoverPosition: { top: '0px', left: '0px' }
+      popoverPosition: { top: '0px', left: '0px' },
+      popoverAnchorEl: null,
+      popoverReposition: null
     };
   },
   computed: {
@@ -506,39 +508,74 @@ export default {
     this.setStyleMode(this.designerMode?.designerOptions);
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
+  beforeDestroy() {
+    this.detachPopoverListeners();
+  },
   methods: {
     togglePopover(index, event, rowId) {
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
-      this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
-      if (this.isPopoverVisible !== null) {
-        // event.target may be the <img> inside the button; walk up to the button itself
-        const buttonEl = event.target.closest("button") || event.target;
-        const rect = buttonEl.getBoundingClientRect();
-        const popoverWidth = 285;
-        const estimatedPopoverHeight = 130;
-        const viewportMargin = 8;
+      const willBeVisible = this.isPopoverVisible !== index;
+      this.isPopoverVisible = willBeVisible ? index : null;
 
-        // Default: anchor below the button, aligned to its left edge
-        let top = rect.bottom + viewportMargin;
-        let left = rect.left;
-
-        // Flip above the button if there isn't enough room below
-        if (top + estimatedPopoverHeight > window.innerHeight - viewportMargin) {
-          top = Math.max(viewportMargin, rect.top - estimatedPopoverHeight - viewportMargin);
-        }
-
-        // Clamp horizontally so the popover never overflows the viewport
-        const maxLeft = window.innerWidth - popoverWidth - viewportMargin;
-        left = Math.max(viewportMargin, Math.min(left, maxLeft));
-
-        this.popoverPosition = {
-          top: `${top}px`,
-          left: `${left}px`,
-        };
+      if (willBeVisible) {
+        this.popoverAnchorEl = event.target.closest("button") || event.target;
+        this.updatePopoverPosition();
+        this.attachPopoverListeners();
+      } else {
+        this.detachPopoverListeners();
       }
+    },
+    updatePopoverPosition() {
+      if (!this.popoverAnchorEl || !this.popoverAnchorEl.isConnected) {
+        // Anchor was removed from the DOM (e.g. row deleted, table re-rendered)
+        this.hidePopover();
+        return;
+      }
+
+      const rect = this.popoverAnchorEl.getBoundingClientRect();
+      const popoverWidth = 285;
+      const estimatedPopoverHeight = 130;
+      const viewportMargin = 8;
+
+      // Default: anchor below the button, aligned to its left edge
+      let top = rect.bottom + viewportMargin;
+      let left = rect.left;
+
+      // Flip above the button if there isn't enough room below
+      if (top + estimatedPopoverHeight > window.innerHeight - viewportMargin) {
+        top = Math.max(viewportMargin, rect.top - estimatedPopoverHeight - viewportMargin);
+      }
+
+      // Clamp horizontally so the popover never overflows the viewport
+      const maxLeft = window.innerWidth - popoverWidth - viewportMargin;
+      left = Math.max(viewportMargin, Math.min(left, maxLeft));
+
+      this.popoverPosition = {
+        top: `${top}px`,
+        left: `${left}px`,
+      };
+    },
+    attachPopoverListeners() {
+      if (this.popoverReposition) {
+        return;
+      }
+      this.popoverReposition = () => this.updatePopoverPosition();
+      window.addEventListener("resize", this.popoverReposition);
+      // Capture phase so we catch scrolling on any ancestor (table wrapper, modal body, etc.)
+      window.addEventListener("scroll", this.popoverReposition, true);
+    },
+    detachPopoverListeners() {
+      if (!this.popoverReposition) {
+        return;
+      }
+      window.removeEventListener("resize", this.popoverReposition);
+      window.removeEventListener("scroll", this.popoverReposition, true);
+      this.popoverReposition = null;
+      this.popoverAnchorEl = null;
     },
     hidePopover() {
       this.isPopoverVisible = null;
+      this.detachPopoverListeners();
     },
     popover_remove() {
       this.remove();
