@@ -118,8 +118,11 @@
                   <i v-if="styleMode === 'Classic'" class="fas fa-trash-alt" />
                   <img v-else src="../../assets/Shape.svg" alt="delete" />
                 </button>
-
-                <div v-show="isPopoverVisible === index" class="popover-content">
+                <div
+                  v-show="isPopoverVisible === index"
+                  class="popover-content"
+                  :style="popoverPosition"
+                >
                   <p>Are you sure you want to delete it?</p>
                   <button class="btn btn-light" @click="hidePopover">CANCEL</button>
                   <button class="btn btn-danger" @click="popover_remove()">DELETE</button>
@@ -508,10 +511,29 @@ export default {
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
       this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
       if (this.isPopoverVisible !== null) {
-        const rect = event.target.getBoundingClientRect();
+        // event.target may be the <img> inside the button; walk up to the button itself
+        const buttonEl = event.target.closest("button") || event.target;
+        const rect = buttonEl.getBoundingClientRect();
+        const popoverWidth = 285;
+        const estimatedPopoverHeight = 130;
+        const viewportMargin = 8;
+
+        // Default: anchor below the button, aligned to its left edge
+        let top = rect.bottom + viewportMargin;
+        let left = rect.left;
+
+        // Flip above the button if there isn't enough room below
+        if (top + estimatedPopoverHeight > window.innerHeight - viewportMargin) {
+          top = Math.max(viewportMargin, rect.top - estimatedPopoverHeight - viewportMargin);
+        }
+
+        // Clamp horizontally so the popover never overflows the viewport
+        const maxLeft = window.innerWidth - popoverWidth - viewportMargin;
+        left = Math.max(viewportMargin, Math.min(left, maxLeft));
+
         this.popoverPosition = {
-          top: `${rect.bottom + window.scrollY}px`,
-          left: `${rect.left + window.scrollX}px`
+          top: `${top}px`,
+          left: `${left}px`,
         };
       }
     },
@@ -1075,8 +1097,9 @@ export default {
   position: fixed;
   z-index: 1000;
   width: 285px;
+  max-width: calc(100vw - 16px);
   text-align: center;
-  margin-top: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 .popover-content p {
   margin: 0 0 10px;
