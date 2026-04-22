@@ -154,6 +154,24 @@ export default {
   components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
   props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload', 'screenType'],
+  created() {
+    const vm = this;
+    // After merge with chunk getParams(), query includes `filename` for this chunk's file — fix
+    // data_name per request without replacing opts.query with a function or serializing uploads.
+    this.options.processParams = (params, file) => {
+      if (!vm.name) {
+        params.data_name = params.filename || file.name;
+      } else if (
+        vm.multipleUpload
+        && (_.has(window, 'PM4ConfigOverrides.postFileEndpoint')
+          || (typeof vm.endpoint === 'string'
+            && /file-manager|package-files|public-files/i.test(vm.endpoint)))
+      ) {
+        params.data_name = params.filename || file.name;
+      }
+      return params;
+    };
+  },
   updated() {
     this.removeDefaultClasses();
   },
@@ -573,9 +591,6 @@ export default {
         }
       }
       file.ignored = false;
-      if (!this.name) {
-        this.options.query.data_name = file.name;
-      }
       return true;
     },
     removeDefaultClasses() {
