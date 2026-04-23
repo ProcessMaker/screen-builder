@@ -473,7 +473,7 @@ export default {
       this.editIndex = index;
       this.optionContent = this.optionsList[index][this.valueField];
       this.optionValue = this.optionsList[index][this.keyField];
-      this.optionContentCollection = this.optionsList[index][this.keyFieldCollection];
+      this.optionContentCollection = this.optionsList[index].label || this.optionsList[index][this.keyFieldCollection];
       this.optionValueCollection = this.optionsList[index][this.valueField];
       this.optionError = '';
     },
@@ -535,15 +535,17 @@ export default {
 
         this.optionsList.push(
           {
-            [this.keyFieldCollection]: this.optionContentCollection,
+            [this.keyFieldCollection]: this.optionValueCollection,
             [this.valueField]: this.optionValueCollection,
+            label: this.optionContentCollection,
           }
         );
         this.optionsList = this.optionsList.filter(option => option["content"] !== "all");
       }
       else {
-        this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionContentCollection;
+        this.optionsList[this.editIndex][this.keyFieldCollection] = this.optionValueCollection;
         this.optionsList[this.editIndex][this.valueField] = this.optionValueCollection;
+        this.optionsList[this.editIndex].label = this.optionContentCollection;
       }
 
       this.jsonError = '';
