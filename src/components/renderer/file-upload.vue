@@ -392,8 +392,8 @@ export default {
         return p.includes('/file-manager/public')
           || (/\/file-manager\/?$/i.test(p) && /^#\/public(\/|$)/i.test(h));
       } catch (e) {
-        return false;
       }
+      return false;
     },
     clearFiles() {
       this.showComponent = false;
