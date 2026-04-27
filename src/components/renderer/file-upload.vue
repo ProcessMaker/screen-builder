@@ -386,14 +386,13 @@ export default {
   },
   methods: {
     isFileManagerPublicInterface() {
-      try {
-        const p = String(window.location.pathname || '');
-        const h = String(window.location.hash || '');
-        return p.includes('/file-manager/public')
-          || (/\/file-manager\/?$/i.test(p) && /^#\/public(\/|$)/i.test(h));
-      } catch (e) {
+      if (typeof window === 'undefined' || !window.location) {
+        return false;
       }
-      return false;
+      const p = String(window.location.pathname || '');
+      const h = String(window.location.hash || '');
+      return p.includes('/file-manager/public')
+        || (/\/file-manager\/?$/i.test(p) && /^#\/public(\/|$)/i.test(h));
     },
     clearFiles() {
       this.showComponent = false;
