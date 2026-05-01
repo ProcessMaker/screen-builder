@@ -15,7 +15,8 @@
     "test": "jest tests/unit --no-coverage",
     "test:coverage": "jest tests/unit --coverage",
     "test:variables": "jest tests/unit/VariablesToSubmit.spec.js --no-coverage",
-    "serve": "npm run dev"
+    "serve": "npm run dev",
+    "update-dependencies": "node scripts/update-dependencies.js"
   },
   "main": "./dist/vue-form-builder.umd.js",
   "module": "./dist/vue-form-builder.es.js",

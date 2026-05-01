@@ -1,0 +1,77 @@
+# Publishes every push to GitHub Packages. Install with the branch dist-tag, e.g.:
+#   npm install @processmaker/screen-builder@my-feature-branch
+# (slashes and invalid characters in branch names become hyphens.)
+#
+# Requires: repo Settings → Actions → General → Workflow permissions:
+#   "Read and write permissions" (or fine-grained token with packages:write).
+
+name: Publish prerelease to GitHub Packages
+
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+
+concurrency:
+  group: gh-packages-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    if: github.repository == 'ProcessMaker/screen-builder'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: '@processmaker'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build bundle
+        run: npm run build-bundle
+
+      - name: Prerelease semver and dist-tag from branch
+        id: meta
+        run: |
+          set -euo pipefail
+          BASE=$(node -p "require('./package.json').version")
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          # Unique tarball semver (npm forbids republishing the same version).
+          NEW_VERSION="${BASE}-0.${SHORT_SHA}"
+          echo "version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+
+          # Dist-tag: branch-like identifier (lowercase, URL-ish safe for npm).
+          RAW="${GITHUB_REF_NAME}"
+          TAG=$(echo "$RAW" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9._-]+/-/g' | sed -E 's/^[-._]+|[-._]+$//g')
+          if [ -z "$TAG" ]; then TAG="head"; fi
+          TAG=$(echo "$TAG" | cut -c1-120)
+
+          # Avoid moving reserved / risky tags or semver-looking tags.
+          case "$TAG" in
+            latest|next|stable|experimental|preview|prerelease|dev)
+              TAG="${TAG}-branch"
+              ;;
+          esac
+          if echo "$TAG" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+'; then
+            TAG="branch-${TAG}"
+          fi
+
+          echo "dist-tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Publishing version ${NEW_VERSION} with dist-tag '${TAG}'"
+
+          npm version "${NEW_VERSION}" --no-git-tag-version
+
+      - name: Publish to GitHub Packages
+        run: npm publish --tag "${{ steps.meta.outputs.dist-tag }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
