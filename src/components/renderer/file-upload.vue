@@ -154,6 +154,18 @@ export default {
   components: { ...uploader, RequiredAsterisk },
   mixins: [uniqIdsMixin],
   props: ['label', 'error', 'helper', 'name', 'value', 'controlClass', 'endpoint', 'accept', 'validation', 'parent', 'config', 'multipleUpload', 'screenType'],
+  created() {
+    const vm = this;
+    // File Manager > Public + multi: see isFileManagerPublicInterface(); processParams fixes
+    // data_name per chunk (processParams runs after getParams merges `filename` for this chunk).
+    this.options.processParams = (params, file) => {
+      if (!vm.isFileManagerPublicInterface() || !vm.multipleUpload) {
+        return params;
+      }
+      params.data_name = params.filename || file.name;
+      return params;
+    };
+  },
   updated() {
     this.removeDefaultClasses();
   },
@@ -373,6 +385,15 @@ export default {
     };
   },
   methods: {
+    isFileManagerPublicInterface() {
+      if (typeof window === 'undefined' || !window.location) {
+        return false;
+      }
+      const p = String(window.location.pathname || '');
+      const h = String(window.location.hash || '');
+      return p.includes('/file-manager/public')
+        || (/\/file-manager\/?$/i.test(p) && /^#\/public(\/|$)/i.test(h));
+    },
     clearFiles() {
       this.showComponent = false;
       this.$nextTick(() => {
@@ -573,7 +594,7 @@ export default {
         }
       }
       file.ignored = false;
-      if (!this.name) {
+      if (!this.name && !(this.isFileManagerPublicInterface() && this.multipleUpload)) {
         this.options.query.data_name = file.name;
       }
       return true;
