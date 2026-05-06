@@ -21,7 +21,7 @@ permissions:
   packages: write
 
 jobs:
-  publish:
+  publish-prerelease:
     if: github.repository == 'ProcessMaker/screen-builder'
     runs-on: ubuntu-latest
     steps:
