@@ -387,10 +387,6 @@ export default {
         ? this.collectionData
         : (Array.isArray(this.value) ? this.value : []);
 
-      if(this.value) {
-        this.selectedIndex = this.value.selectedRowIndex;
-      }
-
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
@@ -407,11 +403,6 @@ export default {
         data: value,
         lastSortConfig: false
       };
-
-       // Enable Radio button selected when process finishes
-       if (this.selectedIndex !== null && this.selectedIndex < data.data.length) {
-        this.selectedRow = data.data[this.selectedIndex];
-      }
 
       //Enable Checkbox selected when process finishes
       if (Array.isArray(this.value) && this.value.length > 0) {
@@ -467,6 +458,15 @@ export default {
         this.currentPage =
           this.currentPage > totalPages ? totalPages : this.currentPage;
         this.currentPage = this.currentPage == 0 ? 1 : this.currentPage;
+      }
+    },
+    // Restore radio selection when the value prop is set after collection data is already loaded
+    value: {
+      immediate: true,
+      handler() {
+        if (Array.isArray(this.collectionData) && this.collectionData.length) {
+          this.restoreRadioSelection(this.collectionData);
+        }
       }
     },
     // Watch for changes in validationData to handle any Mustache variable changes
@@ -740,6 +740,7 @@ export default {
       //sets Collection result(columns and rows) into this.collectionData
       this.collectionData = result;
       this.reapplyCollectionSelections(result);
+      this.restoreRadioSelection(result);
     },
     // Keep selected rows in sync after collection refreshes triggered by PMQL filters.
     reapplyCollectionSelections(newCollection) {
@@ -787,6 +788,27 @@ export default {
       });
 
       this.selectedRows = updatedSelection;
+    },
+    // Restore selectedRow after collection data (re)loads or when value prop changes.
+    // Mirrors reapplyCollectionSelections for the single-record (radio) case.
+    restoreRadioSelection(rows) {
+      if (!this.value || !Array.isArray(rows) || rows.length === 0) {
+        return;
+      }
+
+      if (this.source?.singleField) {
+        // singleField mode emits a scalar; find the row whose field matches
+        const match = rows.find(row => row[this.source.singleField] === this.value);
+        if (match) {
+          this.selectedRow = match;
+        }
+      } else if (typeof this.value === "object" && !Array.isArray(this.value)) {
+        // Regular single-record mode emits { ...item, selectedRowIndex: N }
+        const idx = this.value.selectedRowIndex;
+        if (idx != null && idx >= 0 && idx < rows.length) {
+          this.selectedRow = rows[idx];
+        }
+      }
     },
     shouldPersistCollectionSelection() {
       const pmql = this.source?.collectionFields?.pmql;
