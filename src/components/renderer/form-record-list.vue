@@ -35,7 +35,7 @@
           data-cy="table"
           :tbody-tr-class="rowClass"
         >
-        
+
           <!-- Slot header for checkbox (Select All) -->
           <template #head(checkbox)="data">
             <b-form-checkbox
@@ -47,8 +47,8 @@
           </template>
 
           <template #cell(checkbox)="{ index, item }">
-            <b-form-checkbox 
-              v-model="selectedRows" 
+            <b-form-checkbox
+              v-model="selectedRows"
               :value="item"
               @change="onMultipleSelectionChange(index)"
             />
@@ -59,12 +59,12 @@
               v-model="selectedRow"
               :value="item"
               @change="onRadioChange(item, index)"
-              
+
             />
           </template>
 
           <template #cell()="{ index, field, item }">
-            
+
             <template v-if="isFiledownload(field, item)">
               <span href="#" @click="downloadFile(item, field.key, index)">{{
                 mustache(field.key, item)
@@ -79,7 +79,7 @@
             <template v-else>
               {{ formatIfDate(mustache(field.key, item)) }}
             </template>
-  
+
           </template>
           <template #cell(__actions)="{ index, item }">
             <div class="actions">
@@ -110,8 +110,8 @@
                   :title="$t('Delete')"
                   data-cy="remove-row"
                   popover="manual"
-                  @click="styleMode === 'Modern' 
-                  ? togglePopover(index, $event, item.row_id) 
+                  @click="styleMode === 'Modern'
+                  ? togglePopover(index, $event, item.row_id)
                   : showDeleteConfirmation(index, item.row_id)"
                   ref="deleteButton"
                 >
@@ -131,7 +131,7 @@
               </div>
             </div>
           </template>
-         
+
         </b-table>
         <div class="d-flex justify-content-between align-items-center">
           <div class="col text-left">
@@ -241,7 +241,7 @@
     >
       <p>{{ $t("The form to be displayed is not assigned.") }}</p>
     </b-modal>
-    
+
     <div v-if="editable && selfReferenced" class="alert alert-danger">
       {{
         $t(
@@ -324,7 +324,7 @@ export default {
       collectionData: {},
       selectedRow: null,
       selectedRows: [],
-      selectedIndex: null, 
+      selectedIndex: null,
       rows: [],
       selectAll: false,
       styleMode: "Classic",
@@ -390,10 +390,6 @@ export default {
         ? this.collectionData
         : (Array.isArray(this.value) ? this.value : []);
 
-      if(this.value) {
-        this.selectedIndex = this.value.selectedRowIndex;
-      }
-
       const from = this.paginatorPage - 1;
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.lastPage = Math.ceil(value.length / this.perPage);
@@ -411,22 +407,17 @@ export default {
         lastSortConfig: false
       };
 
-       // Enable Radio button selected when process finishes
-       if (this.selectedIndex !== null && this.selectedIndex < data.data.length) {
-        this.selectedRow = data.data[this.selectedIndex];
-      }
-
       //Enable Checkbox selected when process finishes
       if (Array.isArray(this.value) && this.value.length > 0) {
         if(this.rows.length === 0) {
           this.value.forEach(item => {
               if (item.hasOwnProperty('selectedRowsIndex')) {
                   this.selectedRows.push(data.data[item.selectedRowsIndex]);
-              } 
+              }
           });
         }
       }
-      return data;      
+      return data;
     },
     // The fields used for our vue table
     tableFields() {
@@ -437,7 +428,7 @@ export default {
       }
 
       // Adds radio buttons or checkbox to the table depending selected option
-      if(this.source?.sourceOptions === "Collection") { 
+      if(this.source?.sourceOptions === "Collection") {
         if (['single-field', 'single-record'].includes(this.source?.dataSelectionOptions)) {
           fields.unshift({
             key: 'radio',
@@ -445,7 +436,7 @@ export default {
             sortable: false,
           });
         }
-  
+
         if (this.source?.dataSelectionOptions === 'multiple-records') {
           fields.unshift({
             key: 'checkbox',
@@ -454,7 +445,7 @@ export default {
           });
         }
       }
-      
+
       return fields;
     },
     // Determines if the form used for add/edit is self referencing. If so, we should not show it
@@ -472,12 +463,21 @@ export default {
         this.currentPage = this.currentPage == 0 ? 1 : this.currentPage;
       }
     },
+    // Restore radio selection when the value prop is set after collection data is already loaded
+    value: {
+      immediate: true,
+      handler() {
+        if (Array.isArray(this.collectionData) && this.collectionData.length) {
+          this.restoreRadioSelection(this.collectionData);
+        }
+      }
+    },
     // Watch for changes in validationData to handle any Mustache variable changes
     validationData: {
       handler(newValue, oldValue) {
         if (this.source?.sourceOptions === "Collection" && this.source?.collectionFields?.pmql) {
           this.onCollectionChange(
-            this.source?.collectionFields?.collectionId, 
+            this.source?.collectionFields?.collectionId,
             this.source?.collectionFields?.pmql
           );
         }
@@ -502,7 +502,7 @@ export default {
     if(this.source?.sourceOptions === "Collection") {
       this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
     }
-    
+
     this.setStyleMode(this.designerMode?.designerOptions);
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
@@ -615,15 +615,15 @@ export default {
         this.fetchAllRecords(collectionId);
         return;
       }
-      
+
       // Process Mustache variables in PMQL
       const processedPmql = this.processMustacheInPmql(pmql);
-      
+
       // If processing failed or resulted in invalid PMQL, return
       if (!processedPmql) {
         return;
       }
-      
+
       // Fetch records with processed PMQL
       this.fetchRecordsWithPmql(collectionId, processedPmql);
     },
@@ -641,7 +641,7 @@ export default {
       try {
         // Get data from validationData
         const data = this.validationData || {};
-        
+
         // First, process all Mustache variables (both quoted and unquoted)
         let processedPmql = Mustache.render(pmql, data);
 
@@ -650,14 +650,14 @@ export default {
           this.collectionData = [];
           return null;
         }
-        
+
         // Add quotes around string values in PMQL if they don't have them
         // This regex now properly handles values with spaces by looking for the end of the comparison
         processedPmql = processedPmql.replace(
           /= ([^"'\s][^"']*[^"'\s]|[^"'\s]+)(?=\s|$)/g,
           '= "$1"'
         );
-        
+
         return processedPmql;
       } catch (error) {
         this.collectionData = [];
@@ -681,8 +681,8 @@ export default {
      * @returns {boolean} - True if valid
      */
     isValidPmql(processedPmql) {
-      return processedPmql && 
-             processedPmql.trim() !== "" && 
+      return processedPmql &&
+             processedPmql.trim() !== "" &&
              !processedPmql.includes("{{");
     },
 
@@ -713,9 +713,9 @@ export default {
         this.collectionData = [];
         return;
       }
-      
+
       const param = { params: { pmql: processedPmql } };
-      
+
       this.$dataProvider
         .getCollectionRecordsList(collectionId, param)
         .then((response) => {
@@ -729,7 +729,7 @@ export default {
       this.$emit("change", this.field);
     },
     changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
-      
+
       const optionsList = columnsSelected.optionsList;
 
       collectionFieldsColumns.forEach(column => {
@@ -748,7 +748,7 @@ export default {
       });
 
        this.setCollectionIntoList(collectionFieldsColumns);
-        
+
     },
     setCollectionIntoList(arrayCollection) {
       const result = [];
@@ -767,6 +767,7 @@ export default {
       //sets Collection result(columns and rows) into this.collectionData
       this.collectionData = result;
       this.reapplyCollectionSelections(result);
+      this.restoreRadioSelection(result);
     },
     // Keep selected rows in sync after collection refreshes triggered by PMQL filters.
     reapplyCollectionSelections(newCollection) {
@@ -814,6 +815,27 @@ export default {
       });
 
       this.selectedRows = updatedSelection;
+    },
+    // Restore selectedRow after collection data (re)loads or when value prop changes.
+    // Mirrors reapplyCollectionSelections for the single-record (radio) case.
+    restoreRadioSelection(rows) {
+      if (!this.value || !Array.isArray(rows) || rows.length === 0) {
+        return;
+      }
+
+      if (this.source?.singleField) {
+        // singleField mode emits a scalar; find the row whose field matches
+        const match = rows.find(row => row[this.source.singleField] === this.value);
+        if (match) {
+          this.selectedRow = match;
+        }
+      } else if (typeof this.value === "object" && !Array.isArray(this.value)) {
+        // Regular single-record mode emits { ...item, selectedRowIndex: N }
+        const idx = this.value.selectedRowIndex;
+        if (idx != null && idx >= 0 && idx < rows.length) {
+          this.selectedRow = rows[idx];
+        }
+      }
     },
     shouldPersistCollectionSelection() {
       const pmql = this.source?.collectionFields?.pmql;
@@ -891,14 +913,14 @@ export default {
     },
     getTableFieldsFromDataSource() {
       const { jsonData, key, value, dataName } = this.fields;
-      
+
       let convertToVuetableFormat = {};
       if(this.source?.sourceOptions === "Collection") {
           convertToVuetableFormat = (option) => {
           return {
             key: option[key || "key"],
             sortable: true,
-            label: option[key || "key"],
+            label: option.label || option[key || "key"],
             tdClass: "table-column"
           };
         };
@@ -907,7 +929,7 @@ export default {
           return {
             key: option[key || "value"],
             sortable: true,
-            label: option[value || "content"],
+            label: option.label || option[value || "content"],
             tdClass: "table-column"
           };
         };
@@ -1116,15 +1138,15 @@ export default {
   background-color: #eaf2ff;
 }
 .class-button-modern {
-  font-size: 14px; 
-  font-weight: bold; 
+  font-size: 14px;
+  font-weight: bold;
   text-decoration: none;
 }
 
 .record-list-table-base {
   border-collapse: separate;
   border-spacing: 0;
- 
+
   thead th {
     border-top: 1px solid;
     border-bottom: 1px solid;
@@ -1142,7 +1164,7 @@ export default {
     td {
       border-bottom: 1px solid;
     }
-    
+
     td:first-child {
       border-left: 1px solid;
     }

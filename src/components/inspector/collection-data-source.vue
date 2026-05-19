@@ -188,6 +188,7 @@ export default {
       const [firstRecord] = records?.dataRecordList || [];
 
       if (firstRecord?.data) {
+        this.singleFieldOptions = [];
         const dataObject = firstRecord.data;
 
         for (const [key] of Object.entries(dataObject)) {
