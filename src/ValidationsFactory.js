@@ -157,7 +157,7 @@ class FormLoopValidations extends Validations {
         return;
       }
       page.items.filter(item => {
-        if (item.component === 'FormLoop' && item.config.name === this.element.config.name) {
+        if (item.component === 'FormLoop' && item.config.name === this.element.config.name && item !== this.element) {
           siblings.push(item);
         }
       });
@@ -240,8 +240,10 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
-    // Disable validations if field is hidden
-    if (!this.isVisible()) {
+    // When inside a loop, each row may have different data so the static isVisible()
+    // check (which uses only the first row's data) cannot reliably determine visibility.
+    // The runtime closure evaluates conditionalHide per-row with the correct data.
+    if (!this.insideLoop && !this.isVisible()) {
       return;
     }
     if (this.element.config && this.element.config.readonly) {
