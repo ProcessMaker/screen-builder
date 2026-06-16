@@ -283,10 +283,7 @@ export default {
         url += `&screen_version=${this.screenVersion}`;
       }
 
-      // For Vocabularies
-      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
-        window.ProcessMaker.VocabulariesSchemaUrl = `vocabularies/task_schema/${this.taskId}`;
-      }
+      this.setVocabulariesSchemaUrl();
 
       return this.beforeLoadTask(this.taskId, this.nodeId).then(() => {
         this.$dataProvider
@@ -692,6 +689,19 @@ export default {
       const queryString = new URLSearchParams(queryParams).toString();
 
       return this.$dataProvider.getTasks(`?${queryString}`);
+    },
+    setVocabulariesSchemaUrl() {
+      if (
+        window.ProcessMaker
+        && window.ProcessMaker.packages
+        && window.ProcessMaker.packages.includes("package-vocabularies")
+      ) {
+        const schemaUrl = `vocabularies/task_schema/${this.taskId}`;
+        if (window.ProcessMaker.VocabulariesSchemaUrl !== schemaUrl) {
+          window.ProcessMaker.VocabulariesSchemaCache = null;
+        }
+        window.ProcessMaker.VocabulariesSchemaUrl = schemaUrl;
+      }
     },
     /**
      * Parses a JSON string and returns the result.
