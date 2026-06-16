@@ -10,25 +10,56 @@ import { findRootScreen } from "./DataReference";
 const stringFormats = ['string', 'datetime', 'date', 'password'];
 const parentReference = [];
 
+const getVocabulariesSchema = () => {
+  if (
+    window.ProcessMaker &&
+    window.ProcessMaker.packages &&
+    window.ProcessMaker.packages.includes("package-vocabularies")
+  ) {
+    if (window.ProcessMaker.VocabulariesSchemaUrl) {
+      const schemaUrl = window.ProcessMaker.VocabulariesSchemaUrl;
+      const cache = window.ProcessMaker.VocabulariesSchemaCache;
+
+      if (cache && cache.url === schemaUrl) {
+        return cache.promise || cache.data;
+      }
+
+      const promise = window.ProcessMaker.apiClient
+        .get(schemaUrl)
+        .then((response) => {
+          if (window.ProcessMaker.VocabulariesSchemaUrl === schemaUrl) {
+            window.ProcessMaker.VocabulariesSchemaCache = {
+              url: schemaUrl,
+              data: response.data
+            };
+          }
+          return response.data;
+        })
+        .catch((error) => {
+          if (window.ProcessMaker.VocabulariesSchemaCache?.url === schemaUrl) {
+            window.ProcessMaker.VocabulariesSchemaCache = null;
+          }
+          throw error;
+        });
+
+      window.ProcessMaker.VocabulariesSchemaCache = {
+        url: schemaUrl,
+        promise
+      };
+
+      return promise;
+    }
+    if (window.ProcessMaker.VocabulariesPreview) {
+      return window.ProcessMaker.VocabulariesPreview;
+    }
+  }
+  return {};
+};
+
 export default {
   name: "ScreenContent",
   mixins: [DataReference, computedFields, VariablesToSubmitFilter],
-  schema: [
-    function() {
-      if (window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-vocabularies')) {
-        if (window.ProcessMaker.VocabulariesSchemaUrl) {
-          let response = window.ProcessMaker.apiClient.get(window.ProcessMaker.VocabulariesSchemaUrl);
-          return response.then(response => {
-            return response.data;
-          });
-        }
-        if (window.ProcessMaker.VocabulariesPreview) {
-          return window.ProcessMaker.VocabulariesPreview;
-        }
-      }
-      return {};
-    },
-  ],
+  schema: [getVocabulariesSchema],
   data() {
     return {
       ValidationRules__: {},
