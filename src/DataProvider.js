@@ -217,6 +217,7 @@ export default {
   getDataSource(dataSourceId, params, nonce = null) {
     // keep backwards compatibility
     if (
+      !params.cache &&
       !window.ProcessMaker.screen.cacheEnabled &&
       !window.ProcessMaker.screen.cacheTimeout
     ) {
@@ -226,6 +227,7 @@ export default {
     url += this.authQueryString();
     return this.get(url, {
       useCache: window.ProcessMaker.screen.cacheEnabled,
+      cache: params.cache,
       params: {
         pmds_config: JSON.stringify(params.config),
         pmds_data: JSON.stringify(params.data)
