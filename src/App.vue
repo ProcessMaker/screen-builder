@@ -1,5 +1,12 @@
 <template>
-  <b-container id="screen-builder-container" class="h-100">
+  <div class="app-root h-100">
+    <vibe-app-shell
+      v-if="builderMode === 'vibe'"
+      :used-screen-paths="usedVibeScreenPaths"
+      @switch-mode="setBuilderMode"
+      @use-screen="useVibeScreen"
+    />
+    <b-container v-else id="screen-builder-container" class="h-100">
     <b-card id="app" no-body class="h-100 bg-white border-top-0 ">
       <!-- Card Header -->
       <b-card-header class="bg-white p-0">
@@ -48,7 +55,15 @@
             </b-button-group>
           </b-col>
 
-          <b-col v-if="displayBuilder && !displayPreview" class="text-right">
+          <b-col v-if="displayBuilder && !displayPreview" class="text-right d-flex align-items-center justify-content-end">
+            <b-btn
+              variant="outline-secondary"
+              size="sm"
+              class="mr-2"
+              @click="setBuilderMode('vibe')"
+            >
+              Vibe IDE
+            </b-btn>
             <screen-toolbar
               :disabled="$refs.builder?.isCurrentPageClipboard"
               @undo="$refs.builder.undo()"
@@ -315,6 +330,7 @@
       />
     </b-modal>
   </b-container>
+  </div>
 </template>
 
 <script>
@@ -329,7 +345,8 @@ import VueFormBuilder from "./components/vue-form-builder.vue";
 import VueFormRenderer from "./components/vue-form-renderer.vue";
 import ScreenToolbar from "./components/ScreenToolbar.vue";
 import canOpenJsonFile from "./mixins/canOpenJsonFile";
-
+import VibeAppShell from "./vibe/VibeAppShell.vue";
+import { extractUsedVibeScreenPaths } from "./vibe/services/vibeUseScreenControl";
 // Bring in our initial set of controls
 import controlConfig from "./form-builder-controls";
 import globalProperties from "./global-properties";
@@ -395,10 +412,12 @@ export default {
     MonacoEditor,
     WatchersPopup,
     ScreenToolbar,
+    VibeAppShell,
   },
   mixins: [canOpenJsonFile],
   data() {
     return {
+      builderMode: "classic",
       previewDataStringify: "",
       numberOfElements: 0,
       preview: {
@@ -453,10 +472,15 @@ export default {
       },
       showTemplatesPanel: false,
       sharedTemplatesData: null,
-      displayType: 'form'
+      displayType: 'form',
+      classicInitialized: false,
+      pendingVibeScreenPath: null,
     };
   },
   computed: {
+    usedVibeScreenPaths() {
+      return extractUsedVibeScreenPaths(this.config);
+    },
     previewInputValid() {
       try {
         JSON.parse(this.previewInput);
@@ -547,26 +571,98 @@ export default {
       globalObject.ProcessMaker.user.lang &&
       typeof globalObject.ProcessMaker.setValidatorLanguage === 'function'
     ) {
-      //Validator.useLang(globalObject.ProcessMaker.user.lang);
       globalObject.ProcessMaker.setValidatorLanguage(Validator, globalObject.ProcessMaker.user.lang);
     }
-    // Iterate through our initial config set, calling this.addControl
-    controlConfig.forEach((config) => {
-      config.control.inspector.push(...globalProperties[0].inspector);
-
-      this.addControl(
-        config.control,
-        config.rendererComponent,
-        config.rendererBinding,
-        config.builderComponent,
-        config.builderBinding
-      );
-    });
-
-    this.loadFromLocalStorage();
+    if (this.builderMode === "classic") {
+      this.initClassicBuilder();
+    }
   },
   methods: {
     ...mapMutations("globalErrorsModule", { setStoreMode: "setMode" }),
+    setBuilderMode(mode) {
+      if (mode === "vibe") {
+        this.classicInitialized = false;
+        this.pendingVibeScreenPath = null;
+      }
+      this.builderMode = mode;
+      if (mode === "classic") {
+        this.$nextTick(() => this.initClassicBuilder());
+      }
+    },
+    useVibeScreen(screenPath) {
+      if (!screenPath) return;
+      this.pendingVibeScreenPath = screenPath;
+      this.setBuilderMode("classic");
+    },
+    initClassicBuilder() {
+      if (this.classicInitialized) {
+        this.applyPendingVibeScreen();
+        return;
+      }
+
+      const tryInit = (attempts = 0) => {
+        if (!this.$refs.builder) {
+          if (attempts < 20) {
+            this.$nextTick(() => tryInit(attempts + 1));
+          }
+          return;
+        }
+
+        controlConfig.forEach((config) => {
+          config.control.inspector.push(...globalProperties[0].inspector);
+          this.addControl(
+            config.control,
+            config.rendererComponent,
+            config.rendererBinding,
+            config.builderComponent,
+            config.builderBinding
+          );
+        });
+        this.loadFromLocalStorage();
+        this.classicInitialized = true;
+        this.applyPendingVibeScreen();
+      };
+
+      tryInit();
+    },
+    applyPendingVibeScreen() {
+      const screenPath = this.pendingVibeScreenPath;
+      if (!screenPath) return;
+
+      const tryAdd = (attempts = 0) => {
+        const builder = this.$refs.builder;
+        if (!builder?.addVibeScreenControl) {
+          if (attempts < 30) {
+            this.$nextTick(() => tryAdd(attempts + 1));
+          } else {
+            // eslint-disable-next-line no-alert
+            window.alert(
+              "Vue Component Editor control is not available. Is package-plg installed?"
+            );
+            this.pendingVibeScreenPath = null;
+          }
+          return;
+        }
+
+        const added = builder.addVibeScreenControl(screenPath);
+        if (added) {
+          this.pendingVibeScreenPath = null;
+          return;
+        }
+
+        if (attempts < 30) {
+          this.$nextTick(() => tryAdd(attempts + 1));
+        } else {
+          // eslint-disable-next-line no-alert
+          window.alert(
+            "Vue Component Editor control is not available. Is package-plg installed?"
+          );
+          this.pendingVibeScreenPath = null;
+        }
+      };
+
+      tryAdd();
+    },
     updateDataInput() {
       this.updateDataInputNow();
     },
@@ -739,11 +835,13 @@ export default {
       builderComponent,
       builderBinding
     ) {
-      // Add it to the renderer
-      this.$refs.renderer.$options.components[rendererBinding] =
-        rendererComponent;
-      // Add it to the form builder
-      this.$refs.builder.addControl(control, builderComponent, builderBinding);
+      if (this.$refs.renderer) {
+        this.$refs.renderer.$options.components[rendererBinding] =
+          rendererComponent;
+      }
+      if (this.$refs.builder) {
+        this.$refs.builder.addControl(control, builderComponent, builderBinding);
+      }
     }
   }
 };
@@ -768,6 +866,11 @@ body {
   height: 100%;
   min-height: 100%;
   max-height: 100%;
+  overflow: hidden;
+}
+
+.app-root {
+  height: 100%;
   overflow: hidden;
 }
 

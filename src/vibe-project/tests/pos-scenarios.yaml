@@ -1,0 +1,212 @@
+scenarios:
+  - name: "POS screen loads with catalog and empty cart"
+    description: "Verifies main layout elements render on initial load"
+    when: []
+    then:
+      - assert: visible
+        target: pos-product-selection-screen
+      - assert: visible
+        target: product-search
+      - assert: visible
+        target: pos-cart
+      - assert: visible
+        target: category-all
+      - assert: visible
+        target: category-Bebidas
+      - assert: visible
+        target: category-Panadería
+      - assert: visible
+        target: category-Comidas
+      - assert: visible
+        target: product-1
+
+  - name: "Search filters products by name"
+    description: "Typing in search updates searchQuery and keeps matching products visible"
+    when:
+      - action: fill
+        field: product-search
+        value: "Café"
+    then:
+      - assert: data
+        field: searchQuery
+        equals: "Café"
+      - assert: visible
+        target: add-product
+
+  - name: "Search filters products by category"
+    description: "Searching a category name updates searchQuery and shows category products"
+    when:
+      - action: fill
+        field: product-search
+        value: "Panadería"
+    then:
+      - assert: data
+        field: searchQuery
+        equals: "Panadería"
+      - assert: visible
+        target: product-3
+
+  - name: "Category filter selects Bebidas"
+    description: "Clicking Bebidas category updates activeCategory"
+    when:
+      - action: click
+        target: category-Bebidas
+    then:
+      - assert: data
+        field: activeCategory
+        equals: "Bebidas"
+
+  - name: "Category filter selects Panadería"
+    description: "Clicking Panadería category updates activeCategory"
+    when:
+      - action: click
+        target: category-Panadería
+    then:
+      - assert: data
+        field: activeCategory
+        equals: "Panadería"
+
+  - name: "Category filter selects Comidas"
+    description: "Clicking Comidas category updates activeCategory"
+    when:
+      - action: click
+        target: category-Comidas
+    then:
+      - assert: data
+        field: activeCategory
+        equals: "Comidas"
+
+  - name: "Category filter resets to Todos"
+    description: "Clicking Todos clears activeCategory filter"
+    when:
+      - action: click
+        target: category-Bebidas
+      - action: click
+        target: category-all
+    then:
+      - assert: data
+        field: activeCategory
+        equals: ""
+
+  - name: "Add product to cart shows totals"
+    description: "Adding a product from catalog displays cart item and checkout controls"
+    when:
+      - action: click
+        target: add-product
+    then:
+      - assert: visible
+        target: cart-item
+      - assert: visible
+        target: cart-subtotal
+      - assert: visible
+        target: cart-tax
+      - assert: visible
+        target: cart-total
+      - assert: visible
+        target: checkout
+      - assert: visible
+        target: clear-cart
+
+  - name: "Checkout single item completes sale"
+    description: "Completing checkout shows success alert with correct message"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: checkout
+    then:
+      - assert: visible
+        target: checkout-success
+      - assert: data
+        field: checkoutMessage
+        equals: "Venta completada: 1 artículo(s) por US$ 4,23 (IVA incluido)."
+
+  - name: "Checkout multiple units of same product"
+    description: "Adding the same product twice records correct item count and total"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: add-product
+      - action: click
+        target: checkout
+    then:
+      - assert: visible
+        target: checkout-success
+      - assert: data
+        field: checkoutMessage
+        equals: "Venta completada: 2 artículo(s) por US$ 8,47 (IVA incluido)."
+
+  - name: "Increase quantity in cart before checkout"
+    description: "Using cart controls to increase quantity updates sale total"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: increase-qty
+      - action: click
+        target: increase-qty
+      - action: click
+        target: checkout
+    then:
+      - assert: visible
+        target: checkout-success
+      - assert: data
+        field: checkoutMessage
+        equals: "Venta completada: 3 artículo(s) por US$ 12,71 (IVA incluido)."
+
+  - name: "Decrease quantity in cart"
+    description: "Decreasing quantity after adding twice leaves one unit in cart"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: add-product
+      - action: click
+        target: decrease-qty
+    then:
+      - assert: visible
+        target: cart-item
+      - assert: visible
+        target: checkout
+
+  - name: "Remove item clears cart controls"
+    description: "Removing the only cart item hides checkout controls"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: remove-item
+    then:
+      - assert: data
+        field: checkoutMessage
+        equals: ""
+
+  - name: "Clear cart empties checkout state"
+    description: "Vaciar removes items and leaves checkout message unset"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: clear-cart
+    then:
+      - assert: data
+        field: checkoutMessage
+        equals: ""
+
+  - name: "Checkout filtered product by search"
+    description: "Searching for Cappuccino and checking out calculates correct total"
+    when:
+      - action: fill
+        field: product-search
+        value: "Cappuccino"
+      - action: click
+        target: add-product
+      - action: click
+        target: checkout
+    then:
+      - assert: visible
+        target: checkout-success
+      - assert: data
+        field: checkoutMessage
+        equals: "Venta completada: 1 artículo(s) por US$ 5,14 (IVA incluido)."

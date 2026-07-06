@@ -1,0 +1,46 @@
+:root {
+  /* Brand palette */
+  --vibe-navy: #0f264a;
+  --vibe-lime: #b7f06b;
+
+  --vibe-bg: #edf1f6;
+  --vibe-bg-soft: #f4f7fa;
+  --vibe-panel-bg: #ffffff;
+  --vibe-border: rgba(15, 38, 74, 0.08);
+  --vibe-border-strong: rgba(15, 38, 74, 0.14);
+  --vibe-text: #0f264a;
+  --vibe-text-muted: #4a5f78;
+  --vibe-text-subtle: #7a8fa8;
+
+  --vibe-accent: #0f264a;
+  --vibe-accent-hover: #1a3a6b;
+  --vibe-accent-soft: #4a6585;
+  --vibe-accent-secondary: #b7f06b;
+  --vibe-accent-muted: rgba(15, 38, 74, 0.08);
+  --vibe-accent-on: #ffffff;
+  --vibe-accent-gradient: linear-gradient(135deg, #1a3a6b 0%, #0f264a 100%);
+
+  --vibe-success: #059669;
+  --vibe-success-bg: #ecfdf5;
+  --vibe-error: #c53030;
+  --vibe-error-bg: rgba(197, 48, 48, 0.08);
+  --vibe-warning: #d97706;
+
+  --vibe-radius-xl: 28px;
+  --vibe-radius-lg: 20px;
+  --vibe-radius: 16px;
+  --vibe-radius-sm: 12px;
+  --vibe-radius-pill: 999px;
+  --vibe-shadow-sm: 0 4px 16px rgba(15, 38, 74, 0.06);
+  --vibe-shadow: 0 10px 40px rgba(15, 38, 74, 0.08);
+  --vibe-shadow-lg: 0 20px 60px rgba(15, 38, 74, 0.12);
+  --vibe-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --vibe-font-size: 13px;
+  --vibe-font-size-sm: 12px;
+  --vibe-gap: 14px;
+  --vibe-workspace-padding: 16px;
+  --vibe-toolbar-height: 56px;
+  --vibe-sidebar-width: 260px;
+  --vibe-preview-width: 420px;
+  --vibe-tests-height: 220px;
+}
