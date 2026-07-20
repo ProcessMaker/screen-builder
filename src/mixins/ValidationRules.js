@@ -160,8 +160,18 @@ export const regex = (expression) => helpers.withParams({expression}, (value) =>
   return !!String(value).match(regexp);
 });
 
+const hasRequiredValue = (value) => {
+  if (value instanceof Array) {
+    return value.length > 0;
+  }
+  if (typeof value === 'string') {
+    return value.trim().length > 0;
+  }
+  return !isNil(value) && value !== false;
+};
+
 export const required = (value) => {
-  return value instanceof Array ? value.length > 0 : !isNil(value) && value !== '' && value !== false;
+  return hasRequiredValue(value);
 };
 
 export const requiredIf = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
@@ -174,7 +184,7 @@ export const requiredIf = (variable, expected, fieldName) => helpers.withParams(
     expectedValue = expected === 'true' || expected === '1';
   }
   if (variableValue != expectedValue) return true;
-  return value instanceof Array ? value.length > 0 : !!value;
+  return hasRequiredValue(value);
 });
 
 export const requiredUnless = (variable, expected, fieldName) => helpers.withParams({variable, expected}, function(value, data) {
@@ -187,7 +197,7 @@ export const requiredUnless = (variable, expected, fieldName) => helpers.withPar
     expectedValue = expected === 'true' || expected === '1';
   }
   if (variableValue == expectedValue) return true;
-  return value instanceof Array ? value.length > 0 : !!value;
+  return hasRequiredValue(value);
 });
   
 export const sameAs = (field, fieldName) => helpers.withParams({field}, function(value, data) {
