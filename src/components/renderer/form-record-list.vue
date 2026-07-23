@@ -329,7 +329,8 @@ export default {
       selectAll: false,
       styleMode: "Classic",
       isPopoverVisible: null,
-      popoverPosition: { top: '0px', left: '0px' }
+      popoverPosition: { top: '0px', left: '0px' },
+      restoringSelection: false
     };
   },
   computed: {
@@ -472,14 +473,42 @@ export default {
         }
       }
     },
+    // Backup for b-form-radio inside b-table: @change can miss clicks, but v-model still updates.
+    selectedRow(newVal, oldVal) {
+      if (
+        this.restoringSelection ||
+        !newVal ||
+        newVal === oldVal ||
+        this.source?.sourceOptions !== "Collection"
+      ) {
+        return;
+      }
+      if (
+        !["single-field", "single-record"].includes(
+          this.source?.dataSelectionOptions
+        )
+      ) {
+        return;
+      }
+      const pageIndex = Array.isArray(this.tableData?.data)
+        ? this.tableData.data.indexOf(newVal)
+        : -1;
+      if (pageIndex < 0) {
+        return;
+      }
+      this.onRadioChange(newVal, pageIndex);
+    },
     // Watch for changes in validationData to handle any Mustache variable changes
     validationData: {
-      handler(newValue, oldValue) {
-        if (this.source?.sourceOptions === "Collection" && this.source?.collectionFields?.pmql) {
-          this.onCollectionChange(
-            this.source?.collectionFields?.collectionId,
-            this.source?.collectionFields?.pmql
-          );
+      handler() {
+        if (this.source?.sourceOptions === "Collection") {
+          const pmql = this.getCollectionPmql();
+          if (pmql) {
+            this.onCollectionChange(
+              this.source?.collectionFields?.collectionId,
+              pmql
+            );
+          }
         }
       },
       deep: true,
@@ -500,7 +529,10 @@ export default {
     }
 
     if(this.source?.sourceOptions === "Collection") {
-      this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
+      this.onCollectionChange(
+        this.source?.collectionFields?.collectionId,
+        this.getCollectionPmql()
+      );
     }
 
     this.setStyleMode(this.designerMode?.designerOptions);
@@ -576,17 +608,97 @@ export default {
       }
     },
     componentOutput(data) {
-      this.$emit('input',  data);
+      // Avoid emitting undefined, which would leave the bound variable as null
+      // and lose the selection when submitting to the next task.
+      if (typeof data === "undefined") {
+        return;
+      }
+      this.$emit("input", data);
+      // Also write directly to validationData (screen vdata). Submit reads vdata, and
+      // v-model/@input listener order can drop object selections before they sync.
+      this.persistValueToFormData(data);
+    },
+    persistValueToFormData(data) {
+      if (
+        !this.name ||
+        !this.validationData ||
+        typeof this.validationData !== "object"
+      ) {
+        return;
+      }
+      if (String(this.name).includes(".")) {
+        _.set(this.validationData, this.name, data);
+        const rootKey = String(this.name).split(".")[0];
+        this.$set(this.validationData, rootKey, this.validationData[rootKey]);
+        return;
+      }
+      this.$set(this.validationData, this.name, data);
+    },
+    getCollectionPmql() {
+      // PMQL can live on source.pmql and/or source.collectionFields.pmql depending
+      // on how the inspector synced the config; prefer the nested copy when present.
+      const nestedPmql = this.source?.collectionFields?.pmql;
+      if (typeof nestedPmql === "string") {
+        return nestedPmql;
+      }
+      return this.source?.pmql || "";
     },
     onRadioChange(selectedItem, index) {
       const globalIndex = (this.currentPage - 1) * this.perPage + index;
-      if(this.source?.singleField) {
-        let valueOfColumn = selectedItem[this.source.singleField];
-        this.componentOutput(valueOfColumn);
+      // Prefer dataSelectionOptions; fall back to singleField for legacy configs.
+      const isSingleField =
+        this.source?.dataSelectionOptions === "single-field" ||
+        (this.source?.dataSelectionOptions == null && !!this.source?.singleField);
+
+      if (isSingleField && this.source?.singleField) {
+        this.componentOutput(this.getSingleFieldValue(selectedItem));
       } else {
-        selectedItem = { ...selectedItem, selectedRowIndex: globalIndex};
-        this.componentOutput(selectedItem);
+        this.componentOutput({
+          ...selectedItem,
+          selectedRowIndex: globalIndex
+        });
       }
+    },
+    /**
+     * Resolve the configured singleField value from a collection row.
+     * Rows are remapped from collection field names (content) to column keys,
+     * so singleField may not match Object.keys(row) directly.
+     */
+    getSingleFieldValue(selectedItem) {
+      const field = this.source?.singleField;
+      if (!field || !selectedItem || typeof selectedItem !== "object") {
+        return undefined;
+      }
+
+      if (Object.prototype.hasOwnProperty.call(selectedItem, field)) {
+        return selectedItem[field];
+      }
+
+      const optionsList = this.fields?.optionsList || [];
+      const byContent = optionsList.find((opt) => opt.content === field);
+      if (
+        byContent &&
+        Object.prototype.hasOwnProperty.call(selectedItem, byContent.key)
+      ) {
+        return selectedItem[byContent.key];
+      }
+
+      const byKey = optionsList.find((opt) => opt.key === field);
+      if (
+        byKey &&
+        Object.prototype.hasOwnProperty.call(selectedItem, byKey.key)
+      ) {
+        return selectedItem[byKey.key];
+      }
+
+      const lower = String(field).toLowerCase();
+      const matchedKey = Object.keys(selectedItem).find(
+        (key) => String(key).toLowerCase() === lower
+      );
+      return matchedKey ? selectedItem[matchedKey] : undefined;
+    },
+    rowMatchesSingleFieldValue(row, value) {
+      return this.getSingleFieldValue(row) === value;
     },
     onMultipleSelectionChange(selIndex) {
       this.collectionData.forEach((item, index) => {
@@ -725,30 +837,39 @@ export default {
         .catch(() => {
           this.collectionData = [];
         });
-
-      this.$emit("change", this.field);
     },
-    changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
+    changeCollectionColumns(collectionFieldsColumns, columnsSelected) {
+      const optionsList = columnsSelected?.optionsList || [];
+      const singleField = this.source?.singleField;
 
-      const optionsList = columnsSelected.optionsList;
+      collectionFieldsColumns.forEach((column) => {
+        const dataObject = column.data || {};
+        const newDataObject = {};
 
-      collectionFieldsColumns.forEach(column => {
-        let dataObject = column.data;
-        let newDataObject = {};
-
-        Object.keys(dataObject).forEach(dataKey => {
-          const matchingOption = optionsList.find(option => option.content === dataKey);
+        Object.keys(dataObject).forEach((dataKey) => {
+          const matchingOption = optionsList.find(
+            (option) => option.content === dataKey
+          );
 
           if (matchingOption) {
             newDataObject[matchingOption.key] = dataObject[dataKey];
           }
         });
 
+        // Keep the configured single-field under its original collection field name
+        // so radio selection can read it even if the column was remapped or hidden.
+        if (
+          singleField &&
+          Object.prototype.hasOwnProperty.call(dataObject, singleField)
+        ) {
+          newDataObject[singleField] = dataObject[singleField];
+        }
+
+        // eslint-disable-next-line no-param-reassign
         column.data = newDataObject;
       });
 
-       this.setCollectionIntoList(collectionFieldsColumns);
-
+      this.setCollectionIntoList(collectionFieldsColumns);
     },
     setCollectionIntoList(arrayCollection) {
       const result = [];
@@ -819,26 +940,56 @@ export default {
     // Restore selectedRow after collection data (re)loads or when value prop changes.
     // Mirrors reapplyCollectionSelections for the single-record (radio) case.
     restoreRadioSelection(rows) {
-      if (!this.value || !Array.isArray(rows) || rows.length === 0) {
+      if (this.value == null || this.value === "" || !Array.isArray(rows) || rows.length === 0) {
         return;
       }
 
-      if (this.source?.singleField) {
+      const isSingleField =
+        this.source?.dataSelectionOptions === "single-field" ||
+        (this.source?.dataSelectionOptions == null && !!this.source?.singleField);
+
+      if (isSingleField && this.source?.singleField) {
         // singleField mode emits a scalar; find the row whose field matches
-        const match = rows.find(row => row[this.source.singleField] === this.value);
+        const match = rows.find((row) =>
+          this.rowMatchesSingleFieldValue(row, this.value)
+        );
         if (match) {
+          this.restoringSelection = true;
           this.selectedRow = match;
+          this.$nextTick(() => {
+            this.restoringSelection = false;
+          });
         }
-      } else if (typeof this.value === "object" && !Array.isArray(this.value)) {
-        // Regular single-record mode emits { ...item, selectedRowIndex: N }
-        const idx = this.value.selectedRowIndex;
-        if (idx != null && idx >= 0 && idx < rows.length) {
-          this.selectedRow = rows[idx];
+        return;
+      }
+
+      if (typeof this.value === "object" && !Array.isArray(this.value)) {
+        // Prefer matching by row content so selection survives collection refreshes
+        // even when selectedRowIndex is missing or rows were reordered.
+        const valueKey = this.getCollectionRowKey(this.value);
+        let match = null;
+        if (valueKey) {
+          match = rows.find(
+            (row) => this.getCollectionRowKey(row) === valueKey
+          );
+        }
+        if (!match) {
+          const idx = this.value.selectedRowIndex;
+          if (idx != null && idx >= 0 && idx < rows.length) {
+            match = rows[idx];
+          }
+        }
+        if (match) {
+          this.restoringSelection = true;
+          this.selectedRow = match;
+          this.$nextTick(() => {
+            this.restoringSelection = false;
+          });
         }
       }
     },
     shouldPersistCollectionSelection() {
-      const pmql = this.source?.collectionFields?.pmql;
+      const pmql = this.getCollectionPmql();
       return (
         this.source?.sourceOptions === "Collection" &&
         this.source?.dataSelectionOptions === "multiple-records" &&
@@ -852,7 +1003,7 @@ export default {
       }
 
       const entries = Object.entries(item).filter(
-        ([key]) => key !== "selectedRowsIndex"
+        ([key]) => key !== "selectedRowsIndex" && key !== "selectedRowIndex"
       );
 
       if (entries.length === 0) {

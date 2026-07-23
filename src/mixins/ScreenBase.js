@@ -220,6 +220,16 @@ export default {
         value = null;
       } else if (component === "FormLoop") {
         value = this.emptyLoopValue(config);
+      } else if (component === "FormRecordList") {
+        const selectionMode = config?.source?.dataSelectionOptions;
+        const isCollectionSelection =
+          config?.source?.sourceOptions === "Collection" &&
+          selectionMode &&
+          selectionMode !== "no-selection";
+        // Collection radio/checkbox modes store a selection (object/scalar/array of
+        // selected rows), not the full list. Start with null until the user selects.
+        // Variable-mode record lists store rows as an array.
+        value = isCollectionSelection ? null : [];
       }
       return value;
     },
@@ -234,16 +244,32 @@ export default {
       }
       return loopVariable;
     },
-    updateScreenData(safeDotName, variable) {
+    updateScreenData(safeDotName, variable, eventValue) {
       this[`${safeDotName}_was_filled__`] = true;
       this.blockUpdate(safeDotName, 210);
-      this.setValueDebounced(variable, this[safeDotName], this.vdata);
+      // Prefer $event from @input so we don't depend on v-model listener order.
+      // Without this, updateScreenData can run before v-model assigns and write
+      // the previous value (e.g. []/null) back into vdata, wiping the selection.
+      const hasEventValue = arguments.length >= 3;
+      const value = hasEventValue ? eventValue : this[safeDotName];
+      if (hasEventValue) {
+        this[safeDotName] = eventValue;
+      }
+      this.setValueDebounced(variable, value, this.vdata);
     },
-    updateScreenDataNow(safeDotName, variable, setWasFilled = true) {
+    updateScreenDataNow(safeDotName, variable, setWasFilled = true, eventValue) {
       if (setWasFilled) {
         this[`${safeDotName}_was_filled__`] = true;
       }
-      this.setValue(variable, this[safeDotName], this.vdata);
+      // Prefer $event from @input so we don't depend on v-model listener order.
+      // Without this, updateScreenDataNow can run before v-model assigns and write
+      // the previous value (e.g. []/null) back into vdata, wiping the selection.
+      const hasEventValue = arguments.length >= 4;
+      const value = hasEventValue ? eventValue : this[safeDotName];
+      if (hasEventValue) {
+        this[safeDotName] = eventValue;
+      }
+      this.setValue(variable, value, this.vdata);
       this.unblockUpdate(safeDotName);
     },
     blockUpdate(safeDotName, time) {
