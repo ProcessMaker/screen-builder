@@ -107,6 +107,15 @@ export default {
       );
       properties[":readonly"] = isCalcProp || element.config.readonly;
       properties[":disabled"] = isCalcProp || element.config.disabled;
+      // Record List must read editability from the live config object so
+      // disableForm() mutations (completed/closed preview) take effect.
+      if (componentName === "FormRecordList") {
+        const configRef = this.byRef(element.config);
+        delete properties.editable;
+        // Avoid "&&" in attribute expressions: owner.innerHTML escapes & to &amp;.
+        properties[":editable"] =
+          `(${configRef}.editable)?!(${configRef}.disabled||${configRef}.readonly):false`;
+      }
       // Events
       properties["@submit"] = "submitForm";
       // Add handler event if Button

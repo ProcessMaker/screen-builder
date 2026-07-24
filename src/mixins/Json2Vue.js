@@ -163,9 +163,19 @@ export default {
       properties = this.mergeUpdatedConfig(nodeName, this.setDefaultPropertyValues(properties));
       nodeName = this.snakeCase(nodeName);
       const node = this.ownerDocument.createElement(nodeName);
+      // Keep false for editability flags so closed/completed forms can disable Record List / Loop.
+      const allowFalseProperties = [
+        "editable",
+        "disabled",
+        "readonly",
+        ":editable",
+        ":disabled",
+        ":readonly"
+      ];
       for (let property in properties) {
         const value = properties[property];
-        if (value !== false && value !== null && value !== undefined) {
+        const allowFalse = allowFalseProperties.includes(property);
+        if ((allowFalse || value !== false) && value !== null && value !== undefined) {
           if (property.substr(0,1) === ':' || (typeof value === 'string' && value.indexOf('{{') === -1)) {
             node.setAttribute(this.escapeVuePropertyName(property), value);
           } else if (typeof value === 'string' && value.indexOf('{{') !== -1 && !properties.ignoreMustache) {
