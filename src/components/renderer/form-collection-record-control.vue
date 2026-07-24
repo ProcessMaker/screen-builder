@@ -283,14 +283,12 @@ export default {
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
           // Choose screen id regarding of the display Mode
-          this.screenCollectionId =
-            typeof this.selDisplayMode === "function"
-              ? this.collectionmode.modeId === "View" || this.isDisabled
-                ? viewScreen
-                : editScreen
-              : effectiveMode === "View"
-              ? viewScreen
-              : editScreen;
+          let useViewScreen = effectiveMode === "View";
+          if (typeof this.selDisplayMode === "function") {
+            useViewScreen =
+              this.collectionmode.modeId === "View" || this.isDisabled;
+          }
+          this.screenCollectionId = useViewScreen ? viewScreen : editScreen;
           this.loadScreen(this.screenCollectionId);
 
           // This section validates if Collection has draft data

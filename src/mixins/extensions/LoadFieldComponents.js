@@ -27,53 +27,55 @@ export default {
         }
       });
     },
+    bindFieldVariable(properties, element, componentName) {
+      if (componentName === "FormImage") {
+        this.registerVariable(element.config.variableName, element);
+        delete properties.image;
+        properties[":image"] = this.byRef(element.config.image);
+        return;
+      }
+      if (!this.validVariableName(element.config.name)) {
+        return;
+      }
+      this.registerVariable(element.config.name, element);
+      // v-model are not assigned directly to the field name, to prevent invalid references like:
+      // `person.content` when `person`=null
+      const safeDotName = this.safeDotName(element.config.name);
+      properties["v-model"] = safeDotName;
+      // Debounce input from FormTextArea and FormInput
+      if (componentName === "FormTextArea" || componentName === "FormInput") {
+        properties[
+          "@input"
+        ] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
+        properties[
+          "@change"
+        ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+      } else {
+        properties[
+          "@input"
+        ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+        properties[
+          "@change"
+        ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+      }
+      // Process the FormSelectList@reset event
+      properties[
+        "@reset"
+      ] = `resetValue('${safeDotName}', '${element.config.name}')`;
+    },
     loadFieldProperties({
       properties,
       element,
       componentName,
       definition,
-      formIndex,
-      screen
+      formIndex
     }) {
       properties.class = this.elementCssClass(element);
       properties[":validation-data"] = "getValidationData()";
 
       // verify if component is defined in popup
       if (!this.popups.includes(formIndex)) {
-        if (componentName === "FormImage") {
-          this.registerVariable(element.config.variableName, element);
-          delete properties.image;
-          properties[":image"] = this.byRef(element.config.image);
-        } else if (this.validVariableName(element.config.name)) {
-          this.registerVariable(element.config.name, element);
-          // v-model are not assigned directly to the field name, to prevent invalid references like:
-          // `person.content` when `person`=null
-          const safeDotName = this.safeDotName(element.config.name);
-          properties["v-model"] = safeDotName;
-          // Debounce input from FormTextArea and FormInput
-          if (
-            componentName === "FormTextArea" ||
-            componentName === "FormInput"
-          ) {
-            properties[
-              "@input"
-            ] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
-            properties[
-              "@change"
-            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-          } else {
-            properties[
-              "@input"
-            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-            properties[
-              "@change"
-            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-          }
-          // Process the FormSelectList@reset event
-          properties[
-            "@reset"
-          ] = `resetValue('${safeDotName}', '${element.config.name}')`;
-        }
+        this.bindFieldVariable(properties, element, componentName);
       }
       // Do not replace mustache in RichText control, it is replaced by the control
       if (
