@@ -251,13 +251,14 @@ export default {
       }
       this.setValueDebounced(variable, value, this.vdata);
     },
-    updateScreenDataNow(safeDotName, variable, setWasFilled = true, eventValue) {
+    updateScreenDataNow(safeDotName, variable, setWasFilled = true, eventValue = undefined) {
       if (setWasFilled) {
         this[`${safeDotName}_was_filled__`] = true;
       }
       // Prefer $event from @input so we don't depend on v-model listener order.
       // Without this, updateScreenDataNow can run before v-model assigns and write
       // the previous value (e.g. []/null) back into vdata, wiping the selection.
+      // Use arguments.length so explicit falsy values (0, '', false, null) are kept.
       const hasEventValue = arguments.length >= 4;
       const value = hasEventValue ? eventValue : this[safeDotName];
       if (hasEventValue) {

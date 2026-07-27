@@ -646,11 +646,7 @@ export default {
     onRadioChange(selectedItem, index) {
       const globalIndex = (this.currentPage - 1) * this.perPage + index;
       // Prefer dataSelectionOptions; fall back to singleField for legacy configs.
-      const isSingleField =
-        this.source?.dataSelectionOptions === "single-field" ||
-        (this.source?.dataSelectionOptions == null && !!this.source?.singleField);
-
-      if (isSingleField && this.source?.singleField) {
+      if (this.isSingleFieldSelectionMode() && this.source?.singleField) {
         this.componentOutput(this.getSingleFieldValue(selectedItem));
       } else {
         this.componentOutput({
@@ -670,24 +666,18 @@ export default {
         return undefined;
       }
 
-      if (Object.prototype.hasOwnProperty.call(selectedItem, field)) {
+      if (Object.hasOwn(selectedItem, field)) {
         return selectedItem[field];
       }
 
       const optionsList = this.fields?.optionsList || [];
       const byContent = optionsList.find((opt) => opt.content === field);
-      if (
-        byContent &&
-        Object.prototype.hasOwnProperty.call(selectedItem, byContent.key)
-      ) {
+      if (byContent && Object.hasOwn(selectedItem, byContent.key)) {
         return selectedItem[byContent.key];
       }
 
       const byKey = optionsList.find((opt) => opt.key === field);
-      if (
-        byKey &&
-        Object.prototype.hasOwnProperty.call(selectedItem, byKey.key)
-      ) {
+      if (byKey && Object.hasOwn(selectedItem, byKey.key)) {
         return selectedItem[byKey.key];
       }
 
@@ -699,6 +689,12 @@ export default {
     },
     rowMatchesSingleFieldValue(row, value) {
       return this.getSingleFieldValue(row) === value;
+    },
+    isSingleFieldSelectionMode() {
+      return (
+        this.source?.dataSelectionOptions === "single-field" ||
+        (this.source?.dataSelectionOptions == null && !!this.source?.singleField)
+      );
     },
     onMultipleSelectionChange(selIndex) {
       this.collectionData.forEach((item, index) => {
@@ -858,10 +854,7 @@ export default {
 
         // Keep the configured single-field under its original collection field name
         // so radio selection can read it even if the column was remapped or hidden.
-        if (
-          singleField &&
-          Object.prototype.hasOwnProperty.call(dataObject, singleField)
-        ) {
+        if (singleField && Object.hasOwn(dataObject, singleField)) {
           newDataObject[singleField] = dataObject[singleField];
         }
 
@@ -944,49 +937,46 @@ export default {
         return;
       }
 
-      const isSingleField =
-        this.source?.dataSelectionOptions === "single-field" ||
-        (this.source?.dataSelectionOptions == null && !!this.source?.singleField);
-
-      if (isSingleField && this.source?.singleField) {
-        // singleField mode emits a scalar; find the row whose field matches
+      if (this.isSingleFieldSelectionMode() && this.source?.singleField) {
         const match = rows.find((row) =>
           this.rowMatchesSingleFieldValue(row, this.value)
         );
-        if (match) {
-          this.restoringSelection = true;
-          this.selectedRow = match;
-          this.$nextTick(() => {
-            this.restoringSelection = false;
-          });
-        }
+        this.applyRestoredRadioSelection(match);
         return;
       }
 
       if (typeof this.value === "object" && !Array.isArray(this.value)) {
-        // Prefer matching by row content so selection survives collection refreshes
-        // even when selectedRowIndex is missing or rows were reordered.
-        const valueKey = this.getCollectionRowKey(this.value);
-        let match = null;
-        if (valueKey) {
-          match = rows.find(
-            (row) => this.getCollectionRowKey(row) === valueKey
-          );
-        }
-        if (!match) {
-          const idx = this.value.selectedRowIndex;
-          if (idx != null && idx >= 0 && idx < rows.length) {
-            match = rows[idx];
-          }
-        }
-        if (match) {
-          this.restoringSelection = true;
-          this.selectedRow = match;
-          this.$nextTick(() => {
-            this.restoringSelection = false;
-          });
+        this.applyRestoredRadioSelection(this.findSingleRecordRadioMatch(rows));
+      }
+    },
+    applyRestoredRadioSelection(match) {
+      if (!match) {
+        return;
+      }
+      this.restoringSelection = true;
+      this.selectedRow = match;
+      this.$nextTick(() => {
+        this.restoringSelection = false;
+      });
+    },
+    findSingleRecordRadioMatch(rows) {
+      // Prefer matching by row content so selection survives collection refreshes
+      // even when selectedRowIndex is missing or rows were reordered.
+      const valueKey = this.getCollectionRowKey(this.value);
+      if (valueKey) {
+        const byContent = rows.find(
+          (row) => this.getCollectionRowKey(row) === valueKey
+        );
+        if (byContent) {
+          return byContent;
         }
       }
+
+      const idx = this.value.selectedRowIndex;
+      if (idx != null && idx >= 0 && idx < rows.length) {
+        return rows[idx];
+      }
+      return null;
     },
     shouldPersistCollectionSelection() {
       const pmql = this.getCollectionPmql();
