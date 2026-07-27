@@ -220,17 +220,11 @@ export default {
         value = null;
       } else if (component === "FormLoop") {
         value = this.emptyLoopValue(config);
-      } else if (component === "FormRecordList") {
-        const selectionMode = config?.source?.dataSelectionOptions;
-        const isCollectionSelection =
-          config?.source?.sourceOptions === "Collection" &&
-          selectionMode &&
-          selectionMode !== "no-selection";
-        // Collection radio/checkbox modes store a selection (object/scalar/array of
-        // selected rows), not the full list. Start with null until the user selects.
-        // Variable-mode record lists store rows as an array.
-        value = isCollectionSelection ? null : [];
       }
+      // FormRecordList keeps the default `null` empty state (Variable and Collection).
+      // Do not initialize Variable mode as []: historical screens/tests/processes treat
+      // an untouched record list as null. Collection radio/checkbox selection also
+      // relies on null until the user selects a row.
       return value;
     },
     emptyLoopValue(config) {
