@@ -259,6 +259,12 @@ import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
+import {
+  buildRadioSelectionValue,
+  findRadioSelectionMatch,
+  getCollectionRowKey,
+  remapCollectionRowData
+} from "./form-record-list-selection";
 
 const jsonOptionsActionsColumn = {
   key: "__actions",
@@ -329,8 +335,7 @@ export default {
       selectAll: false,
       styleMode: "Classic",
       isPopoverVisible: null,
-      popoverPosition: { top: '0px', left: '0px' },
-      restoringSelection: false
+      popoverPosition: { top: '0px', left: '0px' }
     };
   },
   computed: {
@@ -472,31 +477,6 @@ export default {
           this.restoreRadioSelection(this.collectionData);
         }
       }
-    },
-    // Backup for b-form-radio inside b-table: @change can miss clicks, but v-model still updates.
-    selectedRow(newVal, oldVal) {
-      if (
-        this.restoringSelection ||
-        !newVal ||
-        newVal === oldVal ||
-        this.source?.sourceOptions !== "Collection"
-      ) {
-        return;
-      }
-      if (
-        !["single-field", "single-record"].includes(
-          this.source?.dataSelectionOptions
-        )
-      ) {
-        return;
-      }
-      const pageIndex = Array.isArray(this.tableData?.data)
-        ? this.tableData.data.indexOf(newVal)
-        : -1;
-      if (pageIndex < 0) {
-        return;
-      }
-      this.onRadioChange(newVal, pageIndex);
     },
     // Watch for changes in validationData to handle any Mustache variable changes
     validationData: {
@@ -643,57 +623,17 @@ export default {
       }
       return this.source?.pmql || "";
     },
-    onRadioChange(selectedItem, index) {
-      const globalIndex = (this.currentPage - 1) * this.perPage + index;
-      // Prefer dataSelectionOptions; fall back to singleField for legacy configs.
-      if (this.isSingleFieldSelectionMode() && this.source?.singleField) {
-        this.componentOutput(this.getSingleFieldValue(selectedItem));
-      } else {
-        this.componentOutput({
-          ...selectedItem,
-          selectedRowIndex: globalIndex
-        });
-      }
-    },
-    /**
-     * Resolve the configured singleField value from a collection row.
-     * Rows are remapped from collection field names (content) to column keys,
-     * so singleField may not match Object.keys(row) directly.
-     */
-    getSingleFieldValue(selectedItem) {
-      const field = this.source?.singleField;
-      if (!field || !selectedItem || typeof selectedItem !== "object") {
-        return undefined;
-      }
-
-      if (Object.hasOwn(selectedItem, field)) {
-        return selectedItem[field];
-      }
-
-      const optionsList = this.fields?.optionsList || [];
-      const byContent = optionsList.find((opt) => opt.content === field);
-      if (byContent && Object.hasOwn(selectedItem, byContent.key)) {
-        return selectedItem[byContent.key];
-      }
-
-      const byKey = optionsList.find((opt) => opt.key === field);
-      if (byKey && Object.hasOwn(selectedItem, byKey.key)) {
-        return selectedItem[byKey.key];
-      }
-
-      const lower = String(field).toLowerCase();
-      const matchedKey = Object.keys(selectedItem).find(
-        (key) => String(key).toLowerCase() === lower
-      );
-      return matchedKey ? selectedItem[matchedKey] : undefined;
-    },
-    rowMatchesSingleFieldValue(row, value) {
-      return this.getSingleFieldValue(row) === value;
-    },
-    isSingleFieldSelectionMode() {
-      return (
-        this.source?.dataSelectionOptions === "single-field" ||
-        (this.source?.dataSelectionOptions == null && !!this.source?.singleField)
+    onRadioChange(selectedItem, pageRelativeIndex) {
+      // b-table cell slot `index` is page-relative; convert once here.
+      this.componentOutput(
+        buildRadioSelectionValue(
+          selectedItem,
+          pageRelativeIndex,
+          this.currentPage,
+          this.perPage,
+          this.source,
+          this.fields
+        )
       );
     },
     onMultipleSelectionChange(selIndex) {
@@ -839,27 +779,12 @@ export default {
       const singleField = this.source?.singleField;
 
       collectionFieldsColumns.forEach((column) => {
-        const dataObject = column.data || {};
-        const newDataObject = {};
-
-        Object.keys(dataObject).forEach((dataKey) => {
-          const matchingOption = optionsList.find(
-            (option) => option.content === dataKey
-          );
-
-          if (matchingOption) {
-            newDataObject[matchingOption.key] = dataObject[dataKey];
-          }
-        });
-
-        // Keep the configured single-field under its original collection field name
-        // so radio selection can read it even if the column was remapped or hidden.
-        if (singleField && Object.hasOwn(dataObject, singleField)) {
-          newDataObject[singleField] = dataObject[singleField];
-        }
-
         // eslint-disable-next-line no-param-reassign
-        column.data = newDataObject;
+        column.data = remapCollectionRowData(
+          column.data,
+          optionsList,
+          singleField
+        );
       });
 
       this.setCollectionIntoList(collectionFieldsColumns);
@@ -933,50 +858,15 @@ export default {
     // Restore selectedRow after collection data (re)loads or when value prop changes.
     // Mirrors reapplyCollectionSelections for the single-record (radio) case.
     restoreRadioSelection(rows) {
-      if (this.value == null || this.value === "" || !Array.isArray(rows) || rows.length === 0) {
-        return;
+      const match = findRadioSelectionMatch(
+        this.value,
+        rows,
+        this.source,
+        this.fields
+      );
+      if (match) {
+        this.selectedRow = match;
       }
-
-      if (this.isSingleFieldSelectionMode() && this.source?.singleField) {
-        const match = rows.find((row) =>
-          this.rowMatchesSingleFieldValue(row, this.value)
-        );
-        this.applyRestoredRadioSelection(match);
-        return;
-      }
-
-      if (typeof this.value === "object" && !Array.isArray(this.value)) {
-        this.applyRestoredRadioSelection(this.findSingleRecordRadioMatch(rows));
-      }
-    },
-    applyRestoredRadioSelection(match) {
-      if (!match) {
-        return;
-      }
-      this.restoringSelection = true;
-      this.selectedRow = match;
-      this.$nextTick(() => {
-        this.restoringSelection = false;
-      });
-    },
-    findSingleRecordRadioMatch(rows) {
-      // Prefer matching by row content so selection survives collection refreshes
-      // even when selectedRowIndex is missing or rows were reordered.
-      const valueKey = this.getCollectionRowKey(this.value);
-      if (valueKey) {
-        const byContent = rows.find(
-          (row) => this.getCollectionRowKey(row) === valueKey
-        );
-        if (byContent) {
-          return byContent;
-        }
-      }
-
-      const idx = this.value.selectedRowIndex;
-      if (idx != null && idx >= 0 && idx < rows.length) {
-        return rows[idx];
-      }
-      return null;
     },
     shouldPersistCollectionSelection() {
       const pmql = this.getCollectionPmql();
@@ -988,24 +878,7 @@ export default {
       );
     },
     getCollectionRowKey(item) {
-      if (!item || typeof item !== "object") {
-        return null;
-      }
-
-      const entries = Object.entries(item).filter(
-        ([key]) => key !== "selectedRowsIndex" && key !== "selectedRowIndex"
-      );
-
-      if (entries.length === 0) {
-        return null;
-      }
-
-      entries.sort(([keyA], [keyB]) => {
-        if (keyA > keyB) return 1;
-        if (keyA < keyB) return -1;
-        return 0;
-      });
-      return JSON.stringify(entries);
+      return getCollectionRowKey(item);
     },
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
