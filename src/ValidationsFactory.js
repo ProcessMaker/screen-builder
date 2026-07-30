@@ -236,6 +236,15 @@ class PageNavigateValidations extends Validations {
 }
 
 /**
+ * No-op validations (e.g. FormRecordList — modal fields validate separately)
+ */
+class NoOpValidations extends Validations {
+  async addValidations() {
+    // intentionally empty
+  }
+}
+
+/**
  * Add validations for a form element
  */
 class FormElementValidations extends Validations {
@@ -400,8 +409,9 @@ function ValidationsFactory(element, options) {
     return new FormLoopValidations(element, options);
   }
   if (element.component === 'FormRecordList') {
-    //not required
-    //return new FormRecordListValidations(element, screen);
+    // Record list modal fields are validated only when submitting the modal,
+    // not as part of the parent screen's validation rules.
+    return new NoOpValidations(element, options);
   }
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
     return new PageNavigateValidations(element, options);
