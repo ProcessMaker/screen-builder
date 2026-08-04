@@ -64,7 +64,10 @@ export default {
     "showErrors",
     "testScreenDefinition",
     "deviceScreen",
-    "taskdraft"
+    "taskdraft",
+    // When true, local $v is still used (e.g. record list modals) but data
+    // changes do not update the parent form's global valid/submit state.
+    "isolated"
   ],
   data() {
     return {
@@ -152,6 +155,9 @@ export default {
       deep: true,
       handler() {
         this.$emit("update", this.data);
+        if (this.isolated) {
+          return;
+        }
         const mainScreen = this.getMainScreen();
         if (mainScreen) {
           this.validate(mainScreen);

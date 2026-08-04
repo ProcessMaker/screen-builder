@@ -182,6 +182,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :isolated="true"
         debug-context="Record List Add"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -198,7 +199,7 @@
       header-close-content="&times;"
       data-cy="modal-edit"
       @ok="edit"
-      @hidden="$refs.addRenderer.hasSubmitted(false)"
+      @hidden="handleHideEditModal"
       @shown="emitShownEvent"
     >
       <vue-form-renderer
@@ -210,6 +211,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :isolated="true"
         debug-context="Record List Edit"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -254,11 +256,13 @@
 
 <script>
 import _ from "lodash";
+import { mapActions } from "vuex";
 import { dateUtils } from "@processmaker/vue-form-elements";
 import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
+import { findRootScreen } from "@/mixins/DataReference";
 
 const jsonOptionsActionsColumn = {
   key: "__actions",
@@ -507,6 +511,7 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    ...mapActions("globalErrorsModule", ["validateNow", "close"]),
     togglePopover(index, event, rowId) {
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
       this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
@@ -991,7 +996,7 @@ export default {
       });
     },
     edit(event) {
-      this.$refs.addRenderer.hasSubmitted(true);
+      this.$refs.editRenderer.hasSubmitted(true);
       if (
         this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid
       ) {
@@ -1030,7 +1035,25 @@ export default {
     },
     handleHideAddModal() {
       this.addItem = this.initFormValues;
-      this.$refs.addRenderer.hasSubmitted(false);
+      if (this.$refs.addRenderer) {
+        this.$refs.addRenderer.hasSubmitted(false);
+      }
+      this.restoreParentValidationState();
+    },
+    handleHideEditModal() {
+      if (this.$refs.editRenderer) {
+        this.$refs.editRenderer.hasSubmitted(false);
+      }
+      this.restoreParentValidationState();
+    },
+    restoreParentValidationState() {
+      // Clear modal-driven global submit flags and refresh parent validity
+      // so required modal fields (e.g. FormCheckbox) never block parent submit.
+      this.close();
+      const rootScreen = findRootScreen(this);
+      if (rootScreen && typeof rootScreen.loadValidationRules === "function") {
+        this.validateNow(rootScreen);
+      }
     },
     async handleOk(bvModalEvt) {
       this.$refs.addRenderer.hasSubmitted(true);
