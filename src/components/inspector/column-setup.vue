@@ -395,12 +395,23 @@ export default {
     },
     getCollectionColumns(collection) {
       this.collectionOptions = [{ text: "All columns", value: "all" }];
+
+      // Prefer the collection schema when CollectionRecordsList
+      // has forwarded it on the v-model payload.
+      if (Array.isArray(collection?.fields) && collection.fields.length > 0) {
+        collection.fields.forEach((field) => {
+          this.collectionOptions.push({
+            text: field.text || field.value,
+            value: field.value
+          });
+        });
+        return;
+      }
+
+      // Fallback: get columns from the first record's populated keys.
       const [firstRecord] = collection?.dataRecordList || [];
-
       if (firstRecord?.data) {
-        const dataObject = firstRecord.data;
-
-        for (const [key, value] of Object.entries(dataObject)) {
+        for (const [key] of Object.entries(firstRecord.data)) {
           this.collectionOptions.push({ text: key, value: key });
         }
       }
