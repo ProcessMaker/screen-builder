@@ -110,7 +110,10 @@ export default {
       return `${window.ProcessMaker?.app?.url || ""}/cases`;
     },
     currentUser() {
-      return window.ProcessMaker?.user || window.Processmaker?.user || {};
+      return {
+        ...(window.Processmaker?.user || {}),
+        ...(window.ProcessMaker?.user || {})
+      };
     }
   },
   mounted() {

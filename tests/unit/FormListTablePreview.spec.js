@@ -158,11 +158,11 @@ describe("FormRequests preview resilience", () => {
     expect(fetch).toHaveBeenCalled();
   });
 
-  test("currentUser prefers ProcessMaker.user over Processmaker.user", () => {
+  test("currentUser merges Processmaker.user and ProcessMaker.user", () => {
     const { component: FormRequests, sandbox } = loadComponentOptions(
       "src/components/renderer/form-requests.vue",
       {
-        processMakerUser: { id: 1, username: "primary" },
+        processMakerUser: { id: 1, timezone: "UTC" },
         processmakerUser: { id: 2, username: "legacy" }
       }
     );
@@ -172,7 +172,8 @@ describe("FormRequests preview resilience", () => {
     try {
       expect(FormRequests.computed.currentUser()).toEqual({
         id: 1,
-        username: "primary"
+        username: "legacy",
+        timezone: "UTC"
       });
     } finally {
       global.window = originalWindow;
