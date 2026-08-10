@@ -240,10 +240,19 @@ class PageNavigateValidations extends Validations {
  */
 class FormElementValidations extends Validations {
   async addValidations(validations) {
-    // When inside a loop, each row may have different data so the static isVisible()
-    // check (which uses only the first row's data) cannot reliably determine visibility.
-    // The runtime closure evaluates conditionalHide per-row with the correct data.
-    if (!this.insideLoop && !this.isVisible()) {
+    if (this.insideLoop) {
+      // Inside loops, conditionalHide depends on per-row data and is evaluated
+      // correctly in the runtime closure. Skip that check here.
+      // However, visibleInDevice is device-level (not per-row) and is reliably
+      // set by the VisibilityRule extension, so we still honor it.
+      const visibleInDevice =
+        this.element.visibleInDevice === null || this.element.visibleInDevice === undefined
+          ? true
+          : this.element.visibleInDevice;
+      if (!visibleInDevice) {
+        return;
+      }
+    } else if (!this.isVisible()) {
       return;
     }
     if (this.element.config && this.element.config.readonly) {
