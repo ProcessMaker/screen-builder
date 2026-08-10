@@ -7,6 +7,15 @@ import i18next from "i18next";
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
+function normalizeDataSourceId(dataSourceId) {
+  const match =
+    typeof dataSourceId === "string"
+      ? dataSourceId.match(/^data_source-(\d+)$/)
+      : null;
+
+  return match ? match[1] : dataSourceId;
+}
+
 export default {
   screensCache: [],
   cachedScreenPromises: [],
@@ -196,12 +205,13 @@ export default {
     );
   },
 
-  postDataSource(scriptId, requestId, params) {
+  postDataSource(dataSourceId, requestId, params) {
+    const normalizedDataSourceId = normalizeDataSourceId(dataSourceId);
     let url;
     if (requestId) {
-      url = `/requests/${requestId}/data_sources/${scriptId}`;
+      url = `/requests/${requestId}/data_sources/${normalizedDataSourceId}`;
     } else {
-      url = `/requests/data_sources/${scriptId}`;
+      url = `/requests/data_sources/${normalizedDataSourceId}`;
     }
     url += this.authQueryString();
 
@@ -215,14 +225,20 @@ export default {
    * @returns {object}
    */
   getDataSource(dataSourceId, params, nonce = null) {
+    const normalizedDataSourceId = normalizeDataSourceId(dataSourceId);
     // keep backwards compatibility
     if (
       !window.ProcessMaker.screen.cacheEnabled &&
       !window.ProcessMaker.screen.cacheTimeout
     ) {
-      return this.postDataSource(dataSourceId, null, params).then(r => [r, nonce]);
+      return this.postDataSource(dataSourceId, null, params).then((r) => [
+        r,
+        nonce
+      ]);
     }
-    let url = `/requests/data_sources/${dataSourceId}/resources/${params.config.endpoint}/data`;
+    let url =
+      `/requests/data_sources/${normalizedDataSourceId}` +
+      `/resources/${params.config.endpoint}/data`;
     url += this.authQueryString();
     return this.get(url, {
       useCache: window.ProcessMaker.screen.cacheEnabled,

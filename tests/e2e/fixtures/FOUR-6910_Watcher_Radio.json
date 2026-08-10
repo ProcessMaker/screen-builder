@@ -1146,7 +1146,7 @@
                         "title": "Students",
                         "key": "package-data-sources\/data-source-task-service"
                     },
-                    "script_id": "2",
+                    "script_id": "data_source-2",
                     "script_key": "package-data-sources\/data-source-task-service",
                     "uid": "16667071052851"
                 }
