@@ -21,6 +21,12 @@ const recordData = {
     fieldNames.map((field, index) => [field, `${field}-${index + 1}`])
   )
 };
+const secondRecordData = {
+  id: 502,
+  ...Object.fromEntries(
+    fieldNames.map((field, index) => [field, `${field}-${index + 101}`])
+  )
+};
 
 function findRecordList(config) {
   const pending = [...config];
@@ -73,8 +79,11 @@ describe("Collection record list columns", () => {
       }))
     }).as("collectionFields");
     cy.intercept("GET", `/api/1.0/collections/${collectionId}/records*`, {
-      data: [{ id: recordData.id, data: recordData }],
-      meta: { total: 1 }
+      data: [
+        { id: recordData.id, data: recordData },
+        { id: secondRecordData.id, data: secondRecordData }
+      ],
+      meta: { total: 2 }
     }).as("collectionRecords");
     cy.visit("/");
   });
@@ -177,6 +186,52 @@ describe("Collection record list columns", () => {
       const recordList = findRecordList(builder.config);
 
       expect(recordList.config.fields.optionsList).to.deep.equal(legacyOptions);
+    });
+  });
+
+  it("restores and emits legacy data-prefixed single-field selections", () => {
+    configureCollectionRecordList();
+
+    const legacySingleField = "data.case_number";
+    const legacyOptions = [
+      { content: legacySingleField, key: legacySingleField }
+    ];
+
+    cy.get("#screen-builder-container").then((container) => {
+      const [{ __vue__: root }] = container;
+      const { builder } = root.$refs;
+      const recordList = findRecordList(builder.config);
+
+      recordList.config.name = "claim_selection";
+      recordList.config.source.dataSelectionOptions = "single-field";
+      recordList.config.source.singleField = legacySingleField;
+      recordList.config.fields.optionsList = legacyOptions;
+      recordList.config.fields.jsonData = JSON.stringify(legacyOptions);
+      root.previewInput = JSON.stringify({
+        claim_selection: recordData.case_number
+      });
+    });
+
+    cy.get("[data-cy=mode-preview]").click();
+    cy.wait("@collectionRecords");
+    cy.get('[data-cy="table"] tbody input[type="radio"]')
+      .should("have.length", 2)
+      .eq(0)
+      .should("be.checked");
+
+    cy.get('[data-cy="table"] tbody input[type="radio"]')
+      .eq(1)
+      .check({ force: true });
+
+    cy.get("#screen-builder-container").then((container) => {
+      const [{ __vue__: root }] = container;
+      const { builder } = root.$refs;
+      const recordList = findRecordList(builder.config);
+
+      expect(root.previewData.claim_selection).to.equal(
+        secondRecordData.case_number
+      );
+      expect(recordList.config.source.singleField).to.equal(legacySingleField);
     });
   });
 });

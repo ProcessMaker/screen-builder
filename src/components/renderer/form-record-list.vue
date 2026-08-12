@@ -585,7 +585,10 @@ export default {
     onRadioChange(selectedItem, index) {
       const globalIndex = (this.currentPage - 1) * this.perPage + index;
       if(this.source?.singleField) {
-        let valueOfColumn = selectedItem[this.source.singleField];
+        const singleField = normalizeCollectionFieldPath(
+          this.source.singleField
+        );
+        const valueOfColumn = selectedItem[singleField];
         this.componentOutput(valueOfColumn);
       } else {
         selectedItem = { ...selectedItem, selectedRowIndex: globalIndex};
@@ -816,7 +819,10 @@ export default {
 
       if (this.source?.singleField) {
         // singleField mode emits a scalar; find the row whose field matches
-        const match = rows.find(row => row[this.source.singleField] === this.value);
+        const singleField = normalizeCollectionFieldPath(
+          this.source.singleField
+        );
+        const match = rows.find(row => row[singleField] === this.value);
         if (match) {
           this.selectedRow = match;
         }
