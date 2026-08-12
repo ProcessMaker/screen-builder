@@ -259,6 +259,10 @@ import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
+import {
+  mapCollectionRecordData,
+  normalizeCollectionFieldPath
+} from "../../collectionFieldUtils";
 
 const jsonOptionsActionsColumn = {
   key: "__actions",
@@ -728,27 +732,14 @@ export default {
 
       this.$emit("change", this.field);
     },
-    changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
-
+    changeCollectionColumns(collectionFieldsColumns, columnsSelected) {
       const optionsList = columnsSelected.optionsList;
+      const mappedColumns = collectionFieldsColumns.map((column) => ({
+        ...column,
+        data: mapCollectionRecordData(column.data, optionsList)
+      }));
 
-      collectionFieldsColumns.forEach(column => {
-        let dataObject = column.data;
-        let newDataObject = {};
-
-        Object.keys(dataObject).forEach(dataKey => {
-          const matchingOption = optionsList.find(option => option.content === dataKey);
-
-          if (matchingOption) {
-            newDataObject[matchingOption.key] = dataObject[dataKey];
-          }
-        });
-
-        column.data = newDataObject;
-      });
-
-       this.setCollectionIntoList(collectionFieldsColumns);
-
+      this.setCollectionIntoList(mappedColumns);
     },
     setCollectionIntoList(arrayCollection) {
       const result = [];
@@ -915,17 +906,18 @@ export default {
       const { jsonData, key, value, dataName } = this.fields;
 
       let convertToVuetableFormat = {};
-      if(this.source?.sourceOptions === "Collection") {
-          convertToVuetableFormat = (option) => {
+      if (this.source?.sourceOptions === "Collection") {
+        convertToVuetableFormat = (option) => {
+          const keyValue = normalizeCollectionFieldPath(option[key || "key"]);
           return {
-            key: option[key || "key"],
+            key: keyValue,
             sortable: true,
-            label: option.label || option[key || "key"],
+            label: option.label || keyValue,
             tdClass: "table-column"
           };
         };
       } else {
-          convertToVuetableFormat = (option) => {
+        convertToVuetableFormat = (option) => {
           return {
             key: option[key || "value"],
             sortable: true,
