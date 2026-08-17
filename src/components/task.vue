@@ -548,14 +548,16 @@ export default {
           this.$emit("load-data-task", response);
           if (response.data.data.length > 0) {
             let task = response.data.data[0];
-            if (task.process_request_id !== this.requestId) {
-              // Next task is in a subprocess, do a hard redirect
+            const requiresWebEntryFallback = this.isWebEntry
+              && task.web_entry_available === false;
+            if (task.process_request_id !== this.requestId || requiresWebEntryFallback) {
+              // Cross-request transitions and non-Web Entry tasks require a hard redirect.
               if (this.redirecting === task.process_request_id) {
                 return;
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              this.$emit('redirect', task.id, true);
+              this.$emit('redirect', this.isWebEntry ? task : task.id, true);
               return;
             } else {
               this.emitIfTaskCompleted(requestId);
@@ -947,6 +949,13 @@ export default {
             window.location.href = await this.getDestinationUrl();
             return;
           }
+
+          // Web Entry needs the complete task to preserve the target request context.
+          if (this.isWebEntry) {
+            await this.loadNextAssignedTask(this.requestId);
+            return;
+          }
+
           this.nodeId = nodeId;
           this.taskId = tokenId;
   
