@@ -259,6 +259,10 @@ import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
+import {
+  mapCollectionRecordData,
+  normalizeCollectionFieldPath
+} from "../../collectionFieldUtils";
 
 const jsonOptionsActionsColumn = {
   key: "__actions",
@@ -581,7 +585,10 @@ export default {
     onRadioChange(selectedItem, index) {
       const globalIndex = (this.currentPage - 1) * this.perPage + index;
       if(this.source?.singleField) {
-        let valueOfColumn = selectedItem[this.source.singleField];
+        const singleField = normalizeCollectionFieldPath(
+          this.source.singleField
+        );
+        const valueOfColumn = selectedItem[singleField];
         this.componentOutput(valueOfColumn);
       } else {
         selectedItem = { ...selectedItem, selectedRowIndex: globalIndex};
@@ -728,27 +735,14 @@ export default {
 
       this.$emit("change", this.field);
     },
-    changeCollectionColumns(collectionFieldsColumns,columnsSelected) {
-
+    changeCollectionColumns(collectionFieldsColumns, columnsSelected) {
       const optionsList = columnsSelected.optionsList;
+      const mappedColumns = collectionFieldsColumns.map((column) => ({
+        ...column,
+        data: mapCollectionRecordData(column.data, optionsList)
+      }));
 
-      collectionFieldsColumns.forEach(column => {
-        let dataObject = column.data;
-        let newDataObject = {};
-
-        Object.keys(dataObject).forEach(dataKey => {
-          const matchingOption = optionsList.find(option => option.content === dataKey);
-
-          if (matchingOption) {
-            newDataObject[matchingOption.key] = dataObject[dataKey];
-          }
-        });
-
-        column.data = newDataObject;
-      });
-
-       this.setCollectionIntoList(collectionFieldsColumns);
-
+      this.setCollectionIntoList(mappedColumns);
     },
     setCollectionIntoList(arrayCollection) {
       const result = [];
@@ -825,7 +819,10 @@ export default {
 
       if (this.source?.singleField) {
         // singleField mode emits a scalar; find the row whose field matches
-        const match = rows.find(row => row[this.source.singleField] === this.value);
+        const singleField = normalizeCollectionFieldPath(
+          this.source.singleField
+        );
+        const match = rows.find(row => row[singleField] === this.value);
         if (match) {
           this.selectedRow = match;
         }
@@ -915,17 +912,18 @@ export default {
       const { jsonData, key, value, dataName } = this.fields;
 
       let convertToVuetableFormat = {};
-      if(this.source?.sourceOptions === "Collection") {
-          convertToVuetableFormat = (option) => {
+      if (this.source?.sourceOptions === "Collection") {
+        convertToVuetableFormat = (option) => {
+          const keyValue = normalizeCollectionFieldPath(option[key || "key"]);
           return {
-            key: option[key || "key"],
+            key: keyValue,
             sortable: true,
-            label: option.label || option[key || "key"],
+            label: option.label || keyValue,
             tdClass: "table-column"
           };
         };
       } else {
-          convertToVuetableFormat = (option) => {
+        convertToVuetableFormat = (option) => {
           return {
             key: option[key || "value"],
             sortable: true,

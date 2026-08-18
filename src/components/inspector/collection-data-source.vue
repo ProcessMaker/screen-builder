@@ -60,6 +60,7 @@
 <script>
 import { cloneDeep } from "lodash";
 import CollectionRecordsList from "./collection-records-list.vue";
+import { getCollectionFieldOptions } from "../../collectionFieldUtils";
 
 const CONFIG_FIELDS = [
   "collectionFields",
@@ -185,27 +186,7 @@ export default {
       }
     },
     getCollectionColumns(records) {
-      this.singleFieldOptions = [];
-
-      // Prefer the collection schema when CollectionRecordsList has
-      // forwarded it on the v-model payload.
-      if (Array.isArray(records?.fields) && records.fields.length > 0) {
-        records.fields.forEach((field) => {
-          this.singleFieldOptions.push({
-            text: field.text || field.value,
-            value: field.value
-          });
-        });
-        return;
-      }
-
-      // Fallback: get columns from the first record's populated keys.
-      const [firstRecord] = records?.dataRecordList || [];
-      if (firstRecord?.data) {
-        for (const [key] of Object.entries(firstRecord.data)) {
-          this.singleFieldOptions.push({ text: key, value: key });
-        }
-      }
+      this.singleFieldOptions = getCollectionFieldOptions(records);
     }
   }
 };
