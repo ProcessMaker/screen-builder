@@ -62,6 +62,79 @@
             <circle cx="8" cy="12.25" r="0.75" fill="currentColor" />
           </svg>
         </button>
+
+        <span class="preview-panel__controls-divider" aria-hidden="true" />
+
+        <button
+          class="vibe-btn ghost preview-panel__device-btn"
+          :class="{ active: bgMode === 'transparency' }"
+          title="Transparency (checkerboard)"
+          aria-label="Transparency background"
+          @click="bgMode = 'transparency'"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="5.5" height="5.5" fill="currentColor" opacity="0.35" />
+            <rect x="8.5" y="2" width="5.5" height="5.5" fill="currentColor" opacity="0.12" />
+            <rect x="2" y="8.5" width="5.5" height="5.5" fill="currentColor" opacity="0.12" />
+            <rect x="8.5" y="8.5" width="5.5" height="5.5" fill="currentColor" opacity="0.35" />
+            <rect
+              x="2"
+              y="2"
+              width="12"
+              height="12"
+              rx="1.25"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+        </button>
+
+        <label
+          class="preview-panel__color-btn vibe-btn ghost preview-panel__device-btn m-0"
+          :class="{ active: bgMode === 'solid' }"
+          title="Solid background"
+        >
+          <input
+            v-model="bgColor"
+            class="preview-panel__color-input"
+            type="color"
+            aria-label="Background color"
+            @focus="bgMode = 'solid'"
+            @click="bgMode = 'solid'"
+            @input="bgMode = 'solid'"
+          />
+          <span
+            class="preview-panel__color-swatch"
+            :style="{ backgroundColor: bgColor }"
+            aria-hidden="true"
+          />
+        </label>
+
+        <button
+          class="vibe-btn ghost preview-panel__device-btn"
+          :class="{ active: bgMode === 'guides' }"
+          title="Guide grid"
+          aria-label="Guide grid background"
+          @click="bgMode = 'guides'"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path
+              d="M2 5.5h12M2 10.5h12M5.5 2v12M10.5 2v12"
+              stroke="currentColor"
+              stroke-width="1.15"
+              stroke-linecap="round"
+            />
+            <rect
+              x="2"
+              y="2"
+              width="12"
+              height="12"
+              rx="1.25"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -83,8 +156,10 @@
         class="preview-panel__frame"
         :class="[
           `preview-panel__frame--${device}`,
+          `preview-panel__frame--bg-${bgMode}`,
           { 'preview-panel__frame--compiling': runState === 'compiling' },
         ]"
+        :style="frameStyle"
       >
         <div ref="previewMount" class="preview-panel__mount" />
       </div>
@@ -107,6 +182,8 @@ export default {
   data() {
     return {
       device: "desktop",
+      bgMode: "transparency",
+      bgColor: "#ffffff",
       previewInstance: null,
       removeStyles: null,
     };
@@ -117,6 +194,12 @@ export default {
     },
     showErrorOnly() {
       return !!this.error && !this.component;
+    },
+    frameStyle() {
+      if (this.bgMode === "solid") {
+        return { backgroundColor: this.bgColor };
+      }
+      return null;
     },
   },
   watch: {
@@ -202,7 +285,16 @@ export default {
 
 .preview-panel__controls {
   display: flex;
+  align-items: center;
   gap: 4px;
+}
+
+.preview-panel__controls-divider {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--vibe-border-strong);
+  flex-shrink: 0;
 }
 
 .preview-panel__device-btn {
@@ -212,12 +304,38 @@ export default {
   width: 28px;
   height: 28px;
   padding: 0;
+  position: relative;
 }
 
 .preview-panel__device-btn svg {
   width: 16px;
   height: 16px;
   display: block;
+}
+
+.preview-panel__color-btn {
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.preview-panel__color-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.preview-panel__color-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--vibe-border-strong);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  pointer-events: none;
 }
 
 .preview-panel__body {
@@ -257,13 +375,42 @@ export default {
   min-height: 100%;
 }
 
+.preview-panel__frame--bg-transparency {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, #e5e5e5 25%, transparent 25%),
+    linear-gradient(-45deg, #e5e5e5 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e5e5e5 75%),
+    linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+.preview-panel__frame--bg-solid {
+  background-image: none;
+}
+
+.preview-panel__frame--bg-guides {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(to right, rgba(15, 38, 74, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 38, 74, 0.08) 1px, transparent 1px),
+    linear-gradient(to right, rgba(15, 38, 74, 0.16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 38, 74, 0.16) 1px, transparent 1px);
+  background-size:
+    10px 10px,
+    10px 10px,
+    100px 100px,
+    100px 100px;
+  background-position: 0 0;
+}
+
 .preview-panel__frame--mobile .preview-panel__mount {
   max-width: 375px;
   margin: 0 auto;
   border: none;
   border-radius: var(--vibe-radius-xl);
   overflow: hidden;
-  background: #fff;
   box-shadow: var(--vibe-shadow-sm);
 }
 
@@ -273,8 +420,8 @@ export default {
 }
 
 .preview-panel__mount {
-  background: #fff;
   min-height: 200px;
   border-radius: var(--vibe-radius-lg);
+  background: transparent;
 }
 </style>
