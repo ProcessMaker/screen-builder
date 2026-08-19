@@ -259,6 +259,7 @@ import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
+import { normalizeCollectionFieldPath } from "../../collectionFieldUtils";
 import {
   buildRadioSelectionValue,
   findRadioSelectionMatch,
