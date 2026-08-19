@@ -83,6 +83,20 @@ describe("FormRecordList collection radio selection", () => {
     expect(value).toBe("Bob");
   });
 
+  it("resolves single-field configured with data. prefix", () => {
+    const value = getSingleFieldValue(
+      { case_number: "C-100" },
+      { singleField: "data.case_number" },
+      {
+        optionsList: [
+          { content: "data.case_number", key: "data.case_number" }
+        ]
+      }
+    );
+
+    expect(value).toBe("C-100");
+  });
+
   it("preserves original singleField key when columns are remapped", () => {
     const result = remapCollectionRowData(
       { name: "Alice", code: "A1", secret: "x" },

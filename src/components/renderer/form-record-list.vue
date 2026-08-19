@@ -778,16 +778,12 @@ export default {
       const optionsList = columnsSelected?.optionsList || [];
       const singleField = this.source?.singleField;
 
-      collectionFieldsColumns.forEach((column) => {
-        // eslint-disable-next-line no-param-reassign
-        column.data = remapCollectionRowData(
-          column.data,
-          optionsList,
-          singleField
-        );
-      });
+      const mappedColumns = collectionFieldsColumns.map((column) => ({
+        ...column,
+        data: remapCollectionRowData(column.data, optionsList, singleField)
+      }));
 
-      this.setCollectionIntoList(collectionFieldsColumns);
+      this.setCollectionIntoList(mappedColumns);
     },
     setCollectionIntoList(arrayCollection) {
       const result = [];
@@ -929,17 +925,18 @@ export default {
       const { jsonData, key, value, dataName } = this.fields;
 
       let convertToVuetableFormat = {};
-      if(this.source?.sourceOptions === "Collection") {
-          convertToVuetableFormat = (option) => {
+      if (this.source?.sourceOptions === "Collection") {
+        convertToVuetableFormat = (option) => {
+          const keyValue = normalizeCollectionFieldPath(option[key || "key"]);
           return {
-            key: option[key || "key"],
+            key: keyValue,
             sortable: true,
-            label: option.label || option[key || "key"],
+            label: option.label || keyValue,
             tdClass: "table-column"
           };
         };
       } else {
-          convertToVuetableFormat = (option) => {
+        convertToVuetableFormat = (option) => {
           return {
             key: option[key || "value"],
             sortable: true,

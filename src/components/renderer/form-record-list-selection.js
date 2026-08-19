@@ -4,6 +4,11 @@
  * without mounting the heavy FormRecordList component tree.
  */
 
+import {
+  mapCollectionRecordData,
+  normalizeCollectionFieldPath
+} from "../../collectionFieldUtils";
+
 export function isSingleFieldSelectionMode(source) {
   return (
     source?.dataSelectionOptions === "single-field" ||
@@ -11,35 +16,68 @@ export function isSingleFieldSelectionMode(source) {
   );
 }
 
+function uniqueFieldKeys(...keys) {
+  return keys.filter(
+    (key, index, arr) => key != null && key !== "" && arr.indexOf(key) === index
+  );
+}
+
 /**
  * Resolve the configured singleField value from a collection row.
  * Rows are remapped from collection field names (content) to column keys,
  * so singleField may not match Object.keys(row) directly.
+ * Supports legacy `data.` prefixed field paths via collectionFieldUtils.
  */
 export function getSingleFieldValue(selectedItem, source, fields) {
-  const field = source?.singleField;
-  if (!field || !selectedItem || typeof selectedItem !== "object") {
+  const rawField = source?.singleField;
+  const normalizedField = normalizeCollectionFieldPath(rawField);
+  if (!normalizedField || !selectedItem || typeof selectedItem !== "object") {
     return undefined;
   }
 
-  if (Object.hasOwn(selectedItem, field)) {
-    return selectedItem[field];
+  for (const key of uniqueFieldKeys(normalizedField, rawField)) {
+    if (Object.hasOwn(selectedItem, key)) {
+      return selectedItem[key];
+    }
   }
 
   const optionsList = fields?.optionsList || [];
-  const byContent = optionsList.find((opt) => opt.content === field);
-  if (byContent && Object.hasOwn(selectedItem, byContent.key)) {
-    return selectedItem[byContent.key];
+  const byContent = optionsList.find(
+    (opt) =>
+      normalizeCollectionFieldPath(opt.content) === normalizedField ||
+      opt.content === rawField
+  );
+  if (byContent) {
+    for (const key of uniqueFieldKeys(
+      normalizeCollectionFieldPath(byContent.key),
+      byContent.key
+    )) {
+      if (Object.hasOwn(selectedItem, key)) {
+        return selectedItem[key];
+      }
+    }
   }
 
-  const byKey = optionsList.find((opt) => opt.key === field);
-  if (byKey && Object.hasOwn(selectedItem, byKey.key)) {
-    return selectedItem[byKey.key];
+  const byKey = optionsList.find(
+    (opt) =>
+      normalizeCollectionFieldPath(opt.key) === normalizedField ||
+      opt.key === rawField
+  );
+  if (byKey) {
+    for (const key of uniqueFieldKeys(
+      normalizeCollectionFieldPath(byKey.key),
+      byKey.key
+    )) {
+      if (Object.hasOwn(selectedItem, key)) {
+        return selectedItem[key];
+      }
+    }
   }
 
-  const lower = String(field).toLowerCase();
+  const lower = String(normalizedField).toLowerCase();
   const matchedKey = Object.keys(selectedItem).find(
-    (key) => String(key).toLowerCase() === lower
+    (key) =>
+      String(normalizeCollectionFieldPath(key)).toLowerCase() === lower
   );
   return matchedKey ? selectedItem[matchedKey] : undefined;
 }
@@ -147,25 +185,35 @@ export function findRadioSelectionMatch(value, rows, source, fields) {
 }
 
 /**
- * Remap collection API rows from field content names to column keys,
- * always preserving the configured singleField under its original name.
+ * Remap collection API rows from field content names to column keys using
+ * collectionFieldUtils, always preserving the configured singleField.
  */
 export function remapCollectionRowData(dataObject, optionsList, singleField) {
   const sourceData = dataObject || {};
-  const newDataObject = {};
+  const mapped = mapCollectionRecordData(sourceData, optionsList || []);
 
-  Object.keys(sourceData).forEach((dataKey) => {
-    const matchingOption = (optionsList || []).find(
-      (option) => option.content === dataKey
-    );
-    if (matchingOption) {
-      newDataObject[matchingOption.key] = sourceData[dataKey];
-    }
-  });
-
-  if (singleField && Object.hasOwn(sourceData, singleField)) {
-    newDataObject[singleField] = sourceData[singleField];
+  if (!singleField) {
+    return mapped;
   }
 
-  return newDataObject;
+  const normalizedField = normalizeCollectionFieldPath(singleField);
+  const directSourceKey = uniqueFieldKeys(
+    singleField,
+    normalizedField,
+    `data.${normalizedField}`
+  ).find((candidate) => Object.hasOwn(sourceData, candidate));
+
+  if (directSourceKey) {
+    mapped[normalizedField] = sourceData[directSourceKey];
+    return mapped;
+  }
+
+  const matchedKey = Object.keys(sourceData).find(
+    (key) => normalizeCollectionFieldPath(key) === normalizedField
+  );
+  if (matchedKey) {
+    mapped[normalizedField] = sourceData[matchedKey];
+  }
+
+  return mapped;
 }
