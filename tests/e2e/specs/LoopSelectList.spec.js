@@ -98,15 +98,22 @@ describe("Select List Cache", () => {
 
     cy.loadFromJson("loop_select_list.json", 0);
     cy.get("#screen-builder-container").then(($builder) => {
-      const loop = $builder[0].__vue__.$refs.builder.config[0].items[0];
+      const config = $builder[0].__vue__.$refs.builder.config;
+      const loop = config[0].items[0];
       loop.config.settings.times = "1";
-      loop.items.push({
+      config[0].items.push({
         label: "Line Input",
         config: {
           name: "desktop_only",
           type: "text",
           label: "Desktop Only",
-          validation: [],
+          validation: [
+            {
+              value: "required",
+              helper: "Checks if the field has a value",
+              content: "Required"
+            }
+          ],
           deviceVisibility: {
             showForDesktop: true,
             showForMobile: false
@@ -119,6 +126,7 @@ describe("Select List Cache", () => {
       });
     });
 
+    cy.showValidationOnLoad();
     cy.get("[data-cy=mode-preview]").click();
     cy.wait("@responsiveDataSource");
 
@@ -135,10 +143,17 @@ describe("Select List Cache", () => {
         expect($builder[0].__vue__.previewData.loop_1[0].country).to.equal("1");
       });
     };
+    const assertScreenValidity = (invalid) => {
+      cy.window().should((win) => {
+        const renderer = win.vueInstance.$children[0].$refs.renderer;
+        expect(renderer.getMainScreen().$v.$invalid).to.equal(invalid);
+      });
+    };
 
     cy.get(select).selectOption("Bolivia");
     assertSelectionState();
     cy.get(desktopOnly).should("be.visible");
+    assertScreenValidity(true);
     cy.get(select).then(($select) => {
       originalSelect = $select[0];
     });
@@ -149,6 +164,7 @@ describe("Select List Cache", () => {
     });
     assertSelectionState();
     cy.get(desktopOnly).should("not.be.visible");
+    assertScreenValidity(false);
 
     cy.get("[data-cy=device-screen-desktop-button]").click();
     cy.get(select).should(($select) => {
@@ -156,6 +172,7 @@ describe("Select List Cache", () => {
     });
     assertSelectionState();
     cy.get(desktopOnly).should("be.visible");
+    assertScreenValidity(true);
     cy.get("@responsiveDataSource.all").should("have.length", 1);
   });
 
