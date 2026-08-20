@@ -7,6 +7,7 @@
         :computed="null"
         :custom-css="null"
         :watchers="null"
+        :is-mobile="isMobile"
         :is-loop="true"
         :debug-context="'Loop #' + loopIndex"
         :mode="mode"
@@ -54,7 +55,7 @@ export default {
     VueFormRenderer
   },
   mixins: [],
-  props: ["value", "config", "transientData", "name", "mode", "formConfig"],
+  props: ["value", "config", "transientData", "name", "mode", "formConfig", "isMobile"],
   data() {
     return {
       matrix: [],

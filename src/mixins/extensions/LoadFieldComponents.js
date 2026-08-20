@@ -86,6 +86,17 @@ export default {
       if (componentName === "FormNestedScreen") {
         properties[":_parent"] = "_parent";
       }
+      if (
+        [
+          "FormLoop",
+          "FormRecordList",
+          "FormNestedScreen",
+          "FormCollectionRecordControl",
+          "FormCollectionViewControl"
+        ].includes(componentName)
+      ) {
+        properties[":is-mobile"] = "isMobile";
+      }
       // Add cypress testing tags
       if (element.config.name) {
         properties["data-cy"] = `screen-field-${element.config.name}`;
