@@ -239,32 +239,41 @@ class PageNavigateValidations extends Validations {
  * Add validations for a form element
  */
 class FormElementValidations extends Validations {
-  async addValidations(validations) {
+  /**
+   * Returns true when this field should be skipped entirely (not validated).
+   * Inside loops, conditionalHide is per-row and handled by the runtime closure,
+   * so only the device-level visibleInDevice flag is checked statically.
+   */
+  shouldSkipValidation() {
     if (this.insideLoop) {
-      // Inside loops, conditionalHide depends on per-row data and is evaluated
-      // correctly in the runtime closure. Skip that check here.
-      // However, visibleInDevice is device-level (not per-row) and is reliably
-      // set by the VisibilityRule extension, so we still honor it.
       const visibleInDevice =
         this.element.visibleInDevice === null || this.element.visibleInDevice === undefined
           ? true
           : this.element.visibleInDevice;
-      if (!visibleInDevice) {
-        return;
-      }
-    } else if (!this.isVisible()) {
+      return !visibleInDevice;
+    }
+    return !this.isVisible();
+  }
+
+  /**
+   * Returns true when the element has a usable config with a valid variable name
+   * and is neither readonly nor disabled.
+   */
+  isValidElement() {
+    const { config } = this.element;
+    if (!config || config.readonly || config.disabled) {
+      return false;
+    }
+    return config.name &&
+      typeof config.name === 'string' &&
+      config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/);
+  }
+
+  async addValidations(validations) {
+    if (this.shouldSkipValidation()) {
       return;
     }
-    if (this.element.config && this.element.config.readonly) {
-      //readonly elements do not need validation
-      return;
-    }
-    if (this.element.config && this.element.config.disabled) {
-      //disabled elements do not need validation
-      return;
-    }
-    if (!(this.element.config && this.element.config.name && typeof this.element.config.name === 'string' && this.element.config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
-      //element invalid
+    if (!this.isValidElement()) {
       return;
     }
     const fieldName = this.element.config.name;
