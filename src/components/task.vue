@@ -561,7 +561,8 @@ export default {
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              this.$emit('redirect', this.isWebEntry ? task : task.id, true);
+              // Screen Builder uses Vue 2, where emitted events have no runtime emits contract.
+              this.$emit('redirect', this.isWebEntry ? task : task.id, true); // NOSONAR
               return true;
             } else {
               this.emitIfTaskCompleted(requestId);
