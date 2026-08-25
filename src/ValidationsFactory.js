@@ -36,9 +36,10 @@ class Validations {
    * Check if element/container is visible.
    */
   isVisible() {
-    const deviceConfig = this.element.config && this.element.config.deviceVisibility
-      ? this.element.config.deviceVisibility
-      : { showForDesktop: true, showForMobile: true };
+    const deviceConfig = this.element.config?.deviceVisibility || {
+      showForDesktop: true,
+      showForMobile: true
+    };
     const visibleInDevice =
       (this.isMobile && deviceConfig.showForMobile) ||
       (!this.isMobile && deviceConfig.showForDesktop);

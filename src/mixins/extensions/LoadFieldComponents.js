@@ -1,4 +1,12 @@
 /* eslint-disable no-param-reassign */
+const RESPONSIVE_COMPONENTS = new Set([
+  "FormLoop",
+  "FormRecordList",
+  "FormNestedScreen",
+  "FormCollectionRecordControl",
+  "FormCollectionViewControl"
+]);
+
 export default {
   data() {
     return {
@@ -6,6 +14,11 @@ export default {
     };
   },
   methods: {
+    addResponsiveProperties(properties, componentName) {
+      if (RESPONSIVE_COMPONENTS.has(componentName)) {
+        properties[":is-mobile"] = "isMobile";
+      }
+    },
     searchForRecordList(items) {
       items.forEach((item) => {
         if (item instanceof Array) {
@@ -86,17 +99,7 @@ export default {
       if (componentName === "FormNestedScreen") {
         properties[":_parent"] = "_parent";
       }
-      if (
-        [
-          "FormLoop",
-          "FormRecordList",
-          "FormNestedScreen",
-          "FormCollectionRecordControl",
-          "FormCollectionViewControl"
-        ].includes(componentName)
-      ) {
-        properties[":is-mobile"] = "isMobile";
-      }
+      this.addResponsiveProperties(properties, componentName);
       // Add cypress testing tags
       if (element.config.name) {
         properties["data-cy"] = `screen-field-${element.config.name}`;
