@@ -257,9 +257,13 @@ describe("Date Picker", () => {
     ).click();
     cy.get("[data-cy=preview-content]").click();
 
-    cy.assertPreviewData({
+    const expectedPreviewData = {
       form_date_picker_1: moment.utc(date, "MM/DD/YYYY").format("YYYY-MM-DD"),
       form_date_picker_2: null
+    };
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedPreviewData);
     });
   });
 
