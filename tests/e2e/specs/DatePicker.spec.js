@@ -222,8 +222,8 @@ describe("Date Picker", () => {
     });
   });
   it("Date picker with maxDate less than entered date should return null data", () => {
-    const today = moment().format("MM/DD/YYYY");
-    const tomorrow = moment().add(1, "day").format("MM/DD/YYYY");
+    const date = moment().format("MM/DD/YYYY");
+    const dateAfter = moment().add(1, "days").format("MM/DD/YYYY");
 
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
@@ -244,15 +244,21 @@ describe("Date Picker", () => {
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
-    ).type(today);
+    ).type(date);
     cy.get("[data-cy=preview-content]").click();
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
-    ).type(tomorrow);
+    ).type(dateAfter);
+    cy.get(
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]'
+    ).click();
+    cy.get(
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input'
+    ).click();
     cy.get("[data-cy=preview-content]").click();
 
     cy.assertPreviewData({
-      form_date_picker_1: moment().format("YYYY-MM-DD"),
+      form_date_picker_1: moment.utc(date, "MM/DD/YYYY").format("YYYY-MM-DD"),
       form_date_picker_2: null
     });
   });
