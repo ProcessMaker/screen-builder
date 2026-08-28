@@ -1,4 +1,11 @@
 describe("Form Text Area Field", () => {
+  function assertPreviewDataStable(expectedData) {
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedData);
+    });
+  }
+
   it("Default properties", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-2");
@@ -8,10 +15,10 @@ describe("Form Text Area Field", () => {
     );
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=mode-preview]").click();
-    cy.get("[data-cy=preview-content] [name=form_text_area_1]").type(
-      "Hello World"
-    );
-    cy.assertPreviewData({
+    cy.get("[data-cy=preview-content] [name=form_text_area_1]")
+      .type("Hello World")
+      .blur();
+    assertPreviewDataStable({
       form_text_area_1: "Hello World"
     });
   });
@@ -27,12 +34,16 @@ describe("Form Text Area Field", () => {
     cy.get("[data-cy=inspector-label]").clear().type("Comments");
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=preview-content]").should("contain.html", "Comments");
-    cy.get("[data-cy=preview-content] [name=comments]").type(
-      "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockup."
-    );
-    cy.assertPreviewData({
+    cy.get("[data-cy=preview-content] [name=comments]")
+      .type(
+        "Lorem ipsum is placeholder text commonly used in the graphic, print, " +
+          "and publishing industries for previewing layouts and visual mockup."
+      )
+      .blur();
+    assertPreviewDataStable({
       comments:
-        "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockup."
+        "Lorem ipsum is placeholder text commonly used in the graphic, print, " +
+        "and publishing industries for previewing layouts and visual mockup."
     });
   });
   it("Read Only", () => {
@@ -46,9 +57,9 @@ describe("Form Text Area Field", () => {
     cy.get("[data-cy=inspector-name]").clear().type("comments");
     cy.get("[data-cy=inspector-label]").clear().type("Comments");
 
-    cy.get("[data-cy=inspector-readonly").check();
+    cy.get("[data-cy=inspector-readonly]").check();
     cy.get("[data-cy=mode-preview]").click();
-    cy.get("[data-cy=screen-field-comments").should(
+    cy.get("[data-cy=screen-field-comments]").should(
       "have.attr",
       "readonly",
       "readonly"
@@ -98,10 +109,11 @@ describe("Form Text Area Field", () => {
     );
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Configuration]").click();
-    cy.get("[data-cy=inspector-richtext").check(); // Check checkbox element
+    cy.get("[data-cy=inspector-richtext]").check(); // Check checkbox element
     cy.get("[data-cy=mode-preview]").click();
+    cy.get("[data-cy=preview-content]").should("be.visible");
     cy.setPreviewDataInput('{"form_text_area_1":"<p>Hello <b>World</b></p>"}');
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_text_area_1: "<p>Hello <b>World</b></p>"
     });
   });
@@ -135,7 +147,7 @@ describe("Form Text Area Field", () => {
       .clear()
       .type("default value test");
     cy.get("[data-cy=mode-preview]").click();
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_text_area_1: "default value test"
     });
   });
