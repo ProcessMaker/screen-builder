@@ -1,30 +1,46 @@
+/* eslint-disable camelcase, no-param-reassign */
 import moment from "moment";
 
 describe("Complex screen", () => {
-  const today = new Date();
-  today.setUTCHours(0);
-  today.setUTCMinutes(0);
-  today.setUTCSeconds(0);
-  today.setUTCMilliseconds(0);
-  const today_date = moment(today).format("YYYY-MM-DD");
-
-  const now = new Date();
-  now.setUTCHours(8);
-  now.setUTCMinutes(15);
-  now.setUTCSeconds(0);
-  now.setUTCMilliseconds(0);
+  const today_date = moment.utc().format("YYYY-MM-DD");
+  const now = moment.utc().hours(8).minutes(15).seconds(0).milliseconds(0);
 
   const files = {
     page1: [],
     page2: []
   };
 
+  function assertPreviewDataStable(expectedData) {
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      const removeRowId = (obj) => {
+        if (obj && typeof obj === "object") {
+          if (Array.isArray(obj)) {
+            obj.forEach(removeRowId);
+          } else {
+            delete obj.row_id;
+            Object.values(obj).forEach(removeRowId);
+          }
+        }
+      };
+      removeRowId(data);
+      expect(data).to.eql(expectedData);
+    });
+  }
+
+  function goToNextPage(selector) {
+    cy.get(
+      "[data-cy=preview-content] button:contains(Page Navigation >>)"
+    ).click();
+    cy.get(selector).first().scrollIntoView().should("be.visible");
+  }
+
   before(() => {
     cy.visit("/");
 
     cy.window().then((win) => {
       // Add request-id header
-      const requestIdMeta = window.document.createElement("meta");
+      const requestIdMeta = win.document.createElement("meta");
       requestIdMeta.setAttribute("name", "request-id");
       requestIdMeta.setAttribute("content", "1");
       win.document.head.appendChild(requestIdMeta);
@@ -35,7 +51,11 @@ describe("Complex screen", () => {
   });
 
   beforeEach(() => {
-    cy.loadFromJson("complex_screen.json");
+    files.page1 = [];
+    files.page2 = [];
+    cy.window().then((win) => {
+      win.ProcessMaker.user.timezone = "UTC";
+    });
     cy.intercept(
       "GET",
       "/api/1.0/requests/1/files?id=1",
@@ -46,9 +66,10 @@ describe("Complex screen", () => {
       "/api/1.0/requests/1/files?id=2",
       JSON.stringify({ data: files.page2 })
     );
+    cy.loadFromJson("complex_screen.json");
   });
 
-  it("Fill page 1", () => {
+  it("fills all pages", () => {
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=preview-content] [name=form_input_1]").type("12345678");
     cy.get("[data-cy=preview-content] [name=form_input_1]").should(
@@ -126,7 +147,7 @@ describe("Complex screen", () => {
         message: "The file was uploaded.",
         fileUploadId: 1
       })
-    );
+    ).as("uploadPage1");
     cy.uploadFile(
       '[data-cy=preview-content] [data-cy="screen-field-page1"] input[type=file]',
       "avatar.jpeg",
@@ -137,56 +158,51 @@ describe("Complex screen", () => {
       file_name: "avatar.jpeg"
     });
 
-    cy.assertPreviewData(
-      {
-        form_input_1: "12345678",
-        form_text_area_1: "Hello!",
-        form_select_list_1: "a",
-        form_checkbox_1: true,
-        form_date_picker_1: today_date,
-        form_date_picker_2: now.toISOString(),
-        loop: [
-          {
-            form_input_2: "input in loop 1"
-          },
-          {
-            form_input_2: "input in loop 2"
-          },
-          {
-            form_input_2: "input in loop 3"
-          }
-        ],
-        form_record_list_1: [
-          {
-            first_name: "Thomas A.",
-            last_name: "Anderson"
-          }
-        ],
-        page1: 1,
-        form_input_5: "",
-        form_select_list_4: null,
-        form_date_picker_7: null,
-        form_record_list_3: null,
-        page2: null,
-        form_text_area_4: "",
-        form_checkbox_4: false,
-        form_date_picker_8: null,
-        form_input_4: "",
-        form_date_picker_5: null,
-        form_text_area_3: "",
-        form_date_picker_6: null,
-        form_select_list_3: null,
-        form_checkbox_3: false
-      },
-      true
-    );
-  });
+    cy.wait("@uploadPage1");
+    assertPreviewDataStable({
+      form_input_1: "12345678",
+      form_text_area_1: "Hello!",
+      form_select_list_1: "a",
+      form_checkbox_1: true,
+      form_date_picker_1: today_date,
+      form_date_picker_2: now.toISOString(),
+      loop: [
+        {
+          form_input_2: "input in loop 1"
+        },
+        {
+          form_input_2: "input in loop 2"
+        },
+        {
+          form_input_2: "input in loop 3"
+        }
+      ],
+      form_record_list_1: [
+        {
+          first_name: "Thomas A.",
+          last_name: "Anderson"
+        }
+      ],
+      page1: 1,
+      form_input_5: "",
+      form_select_list_4: null,
+      form_date_picker_7: null,
+      form_record_list_3: null,
+      page2: null,
+      form_text_area_4: "",
+      form_checkbox_4: false,
+      form_date_picker_8: null,
+      form_input_4: "",
+      form_date_picker_5: null,
+      form_text_area_3: "",
+      form_date_picker_6: null,
+      form_select_list_3: null,
+      form_checkbox_3: false
+    });
 
-  it("Fill page 2", () => {
+    // Page 2
     // Next Page
-    cy.get(
-      "[data-cy=preview-content] button:contains(Page Navigation >>)"
-    ).click();
+    goToNextPage("[data-cy=preview-content] [name=form_input_5]");
 
     cy.get("[data-cy=preview-content] [name=form_input_5]").type(
       "form input 5"
@@ -261,7 +277,7 @@ describe("Complex screen", () => {
         message: "The file was uploaded.",
         fileUploadId: 1
       })
-    );
+    ).as("uploadPage2");
     cy.uploadFile(
       '[data-cy=preview-content] [data-cy="screen-field-page2"] input[type=file]',
       "avatar.jpeg",
@@ -271,60 +287,55 @@ describe("Complex screen", () => {
     files.page2.push({
       file_name: "avatar.jpeg"
     });
-    cy.assertPreviewData(
-      {
-        form_input_1: "12345678",
-        form_text_area_1: "Hello!",
-        form_select_list_1: "a",
-        form_checkbox_1: true,
-        form_date_picker_1: today_date,
-        form_date_picker_2: now.toISOString(),
-        loop: [
-          {
-            form_input_2: "input in loop 1",
-            form_input_6: "input 6 in loop 1"
-          },
-          {
-            form_input_2: "input in loop 2",
-            form_input_6: "input 6 in loop 2"
-          },
-          {
-            form_input_2: "input in loop 3",
-            form_input_6: "input 6 in loop 3"
-          }
-        ],
-        form_record_list_1: [
-          {
-            first_name: "Thomas A.",
-            last_name: "Anderson"
-          }
-        ],
-        page1: 1,
-        form_input_5: "form input 5",
-        form_select_list_4: "foo",
-        form_date_picker_7: now.toISOString(),
-        form_record_list_3: null,
-        page2: 1,
-        form_text_area_4: "form text area 4",
-        form_checkbox_4: true,
-        form_date_picker_8: now.toISOString(),
-        form_input_4: "form input 4",
-        form_date_picker_5: today_date,
-        form_text_area_3: "form text area 3",
-        form_date_picker_6: now.toISOString(),
-        form_select_list_3: null,
-        form_checkbox_3: true
-      },
-      true
-    );
-  });
+    cy.wait("@uploadPage2");
+    assertPreviewDataStable({
+      form_input_1: "12345678",
+      form_text_area_1: "Hello!",
+      form_select_list_1: "a",
+      form_checkbox_1: true,
+      form_date_picker_1: today_date,
+      form_date_picker_2: now.toISOString(),
+      loop: [
+        {
+          form_input_2: "input in loop 1",
+          form_input_6: "input 6 in loop 1"
+        },
+        {
+          form_input_2: "input in loop 2",
+          form_input_6: "input 6 in loop 2"
+        },
+        {
+          form_input_2: "input in loop 3",
+          form_input_6: "input 6 in loop 3"
+        }
+      ],
+      form_record_list_1: [
+        {
+          first_name: "Thomas A.",
+          last_name: "Anderson"
+        }
+      ],
+      page1: 1,
+      form_input_5: "form input 5",
+      form_select_list_4: "foo",
+      form_date_picker_7: now.toISOString(),
+      form_record_list_3: null,
+      page2: 1,
+      form_text_area_4: "form text area 4",
+      form_checkbox_4: true,
+      form_date_picker_8: now.toISOString(),
+      form_input_4: "form input 4",
+      form_date_picker_5: today_date,
+      form_text_area_3: "form text area 3",
+      form_date_picker_6: now.toISOString(),
+      form_select_list_3: null,
+      form_checkbox_3: true
+    });
 
-  it("Fill page 3", () => {
+    // Page 3
     let loop;
     // Next Page
-    cy.get(
-      "[data-cy=preview-content] button:contains(Page Navigation >>)"
-    ).click();
+    goToNextPage("[data-cy=preview-content] [name=form_input_3]");
 
     // FILL LOOP 1
     loop = 0;
@@ -625,113 +636,107 @@ describe("Complex screen", () => {
       .clear()
       .type("2000");
 
-    cy.assertPreviewData(
-      {
-        form_input_1: "12345678",
-        form_text_area_1: "Hello!",
-        form_select_list_1: "a",
-        form_checkbox_1: true,
-        form_date_picker_1: today_date,
-        form_date_picker_2: now.toISOString(),
-        loop: [
-          {
-            form_input_2: "input in loop 1",
-            form_input_6: "input 6 in loop 1",
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000
-          },
-          {
-            form_input_2: "input in loop 2",
-            form_input_6: "input 6 in loop 2",
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000
-          },
-          {
-            form_input_2: "input in loop 3",
-            form_input_6: "input 6 in loop 3",
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000
-          },
-          {
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000
-          }
-        ],
-        form_record_list_1: [
-          {
-            first_name: "Thomas A.",
-            last_name: "Anderson"
-          }
-        ],
-        page1: 1,
-        form_input_5: "form input 5",
-        form_select_list_4: "foo",
-        form_date_picker_7: now.toISOString(),
-        form_record_list_3: null,
-        page2: 1,
-        form_text_area_4: "form text area 4",
-        form_checkbox_4: true,
-        form_date_picker_8: now.toISOString(),
-        form_input_4: "form input 4",
-        form_date_picker_5: today_date,
-        form_text_area_3: "form text area 3",
-        form_date_picker_6: now.toISOString(),
-        form_select_list_3: null,
-        form_checkbox_3: true
-      },
-      true
-    );
-  });
+    assertPreviewDataStable({
+      form_input_1: "12345678",
+      form_text_area_1: "Hello!",
+      form_select_list_1: "a",
+      form_checkbox_1: true,
+      form_date_picker_1: today_date,
+      form_date_picker_2: now.toISOString(),
+      loop: [
+        {
+          form_input_2: "input in loop 1",
+          form_input_6: "input 6 in loop 1",
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000
+        },
+        {
+          form_input_2: "input in loop 2",
+          form_input_6: "input 6 in loop 2",
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000
+        },
+        {
+          form_input_2: "input in loop 3",
+          form_input_6: "input 6 in loop 3",
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000
+        },
+        {
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000
+        }
+      ],
+      form_record_list_1: [
+        {
+          first_name: "Thomas A.",
+          last_name: "Anderson"
+        }
+      ],
+      page1: 1,
+      form_input_5: "form input 5",
+      form_select_list_4: "foo",
+      form_date_picker_7: now.toISOString(),
+      form_record_list_3: null,
+      page2: 1,
+      form_text_area_4: "form text area 4",
+      form_checkbox_4: true,
+      form_date_picker_8: now.toISOString(),
+      form_input_4: "form input 4",
+      form_date_picker_5: today_date,
+      form_text_area_3: "form text area 3",
+      form_date_picker_6: now.toISOString(),
+      form_select_list_3: null,
+      form_checkbox_3: true
+    });
 
-  it("Fill page 4", () => {
+    // Page 4
     // Next Page
-    cy.get(
-      "[data-cy=preview-content] button:contains(Page Navigation >>)"
-    ).click();
+    goToNextPage("[data-cy=preview-content] [name=form_input_1]");
     cy.get("[data-cy=preview-content] [name=form_input_1]")
       .clear()
       .type("form input 1");
@@ -761,15 +766,9 @@ describe("Complex screen", () => {
     cy.get("[data-cy=preview-content] [name=form_checkbox_6]").should(
       "be.checked"
     );
-    cy.get(
-      '[data-cy=preview-content] [id^="form_select_list_3-b-"]'
-    ).click();
-    cy.get(
-      '[data-cy=preview-content] [id^="form_select_list_4-b-"]'
-    ).click(); // Select b
-    cy.get(
-      '[data-cy=preview-content] [id^="form_select_list_4-c-"]'
-    ).click(); // Select c
+    cy.get('[data-cy=preview-content] [id^="form_select_list_3-b-"]').click();
+    cy.get('[data-cy=preview-content] [id^="form_select_list_4-b-"]').click(); // Select b
+    cy.get('[data-cy=preview-content] [id^="form_select_list_4-c-"]').click(); // Select c
     // record list - complete new fields
     cy.get(
       "[data-cy=preview-content] [data-cy=screen-field-form_record_list_1] [data-cy=edit-row]"
@@ -830,128 +829,125 @@ describe("Complex screen", () => {
       file_name: "avatar.jpeg"
     });
     cy.wait("@uploadFile");
-    cy.assertPreviewData(
-      {
-        form_input_1: "form input 1",
-        form_text_area_1: "Hello!",
-        form_select_list_1: "b",
-        form_checkbox_1: false,
-        form_date_picker_1: today_date,
-        form_date_picker_2: now.toISOString(),
-        loop: [
-          {
-            form_input_2: "input in loop 1",
-            form_input_6: "input 6 in loop 1",
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000,
-            form_input_9: "form input 1"
-          },
-          {
-            form_input_2: "input in loop 2",
-            form_input_6: "input 6 in loop 2",
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000,
-            form_input_9: "form input 1"
-          },
-          {
-            form_input_2: "input in loop 3",
-            form_input_6: "input 6 in loop 3",
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000,
-            form_input_9: "form input 1"
-          },
-          {
-            form_input_3: "info@processmaker.com",
-            form_text_area_2: "form text area 2",
-            form_select_list_2: "2",
-            form_checkbox_2: false,
-            form_date_picker_3: today_date,
-            form_date_picker_4: now.toISOString(),
-            form_record_list_2: [
-              {
-                first_name: "Thomas A.",
-                last_name: "Anderson"
-              }
-            ],
-            season: 2000,
-            form_input_9: "form input 1"
-          }
-        ],
-        form_record_list_1: [
-          {
-            first_name: "Thomas A.",
-            last_name: "Anderson",
-            email: "thomas@processmaker.com",
-            url: "https://thomas.processmaker.com"
-          }
-        ],
-        page1: 1,
-        form_input_5: 123.45,
-        form_select_list_4: ["b", "c"],
-        form_date_picker_7: now.toISOString(),
-        form_record_list_3: null,
-        page2: 1,
-        form_text_area_4: "form text area 4",
-        form_checkbox_4: true,
-        form_date_picker_8: now.toISOString(),
-        form_input_4: 4.21,
-        form_date_picker_5: today_date,
-        form_text_area_3: "form text area 3",
-        form_date_picker_6: now.toISOString(),
-        form_select_list_3: "b",
-        form_checkbox_3: true,
-        form_input_2: 123,
-        form_input_6: moment(now).format("YYYY-MM-DD HH:mm"),
-        form_text_area_2: "",
-        form_select_list_2: [], // form_select_list_2 is a disabled multi select list, its default value must an empty array
-        form_input_3: 12345,
-        form_input_7: moment(now).format("YYYY-MM-DD"),
-        form_input_8: "password",
-        form_checkbox_5: true,
-        form_checkbox_2: true,
-        form_checkbox_6: true,
-        form_checkbox_7: false,
-        form_date_picker_3: null,
-        form_checkbox_8: true,
-        form_date_picker_4: null,
-        nested_file: 1,
-        form_checkbox_9: true,
-        form_checkbox_10: true
-      },
-      true
-    );
+    assertPreviewDataStable({
+      form_input_1: "form input 1",
+      form_text_area_1: "Hello!",
+      form_select_list_1: "b",
+      form_checkbox_1: false,
+      form_date_picker_1: today_date,
+      form_date_picker_2: now.toISOString(),
+      loop: [
+        {
+          form_input_2: "input in loop 1",
+          form_input_6: "input 6 in loop 1",
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000,
+          form_input_9: "form input 1"
+        },
+        {
+          form_input_2: "input in loop 2",
+          form_input_6: "input 6 in loop 2",
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000,
+          form_input_9: "form input 1"
+        },
+        {
+          form_input_2: "input in loop 3",
+          form_input_6: "input 6 in loop 3",
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000,
+          form_input_9: "form input 1"
+        },
+        {
+          form_input_3: "info@processmaker.com",
+          form_text_area_2: "form text area 2",
+          form_select_list_2: "2",
+          form_checkbox_2: false,
+          form_date_picker_3: today_date,
+          form_date_picker_4: now.toISOString(),
+          form_record_list_2: [
+            {
+              first_name: "Thomas A.",
+              last_name: "Anderson"
+            }
+          ],
+          season: 2000,
+          form_input_9: "form input 1"
+        }
+      ],
+      form_record_list_1: [
+        {
+          first_name: "Thomas A.",
+          last_name: "Anderson",
+          email: "thomas@processmaker.com",
+          url: "https://thomas.processmaker.com"
+        }
+      ],
+      page1: 1,
+      form_input_5: 123.45,
+      form_select_list_4: ["b", "c"],
+      form_date_picker_7: now.toISOString(),
+      form_record_list_3: null,
+      page2: 1,
+      form_text_area_4: "form text area 4",
+      form_checkbox_4: true,
+      form_date_picker_8: now.toISOString(),
+      form_input_4: 4.21,
+      form_date_picker_5: today_date,
+      form_text_area_3: "form text area 3",
+      form_date_picker_6: now.toISOString(),
+      form_select_list_3: "b",
+      form_checkbox_3: true,
+      form_input_2: 123,
+      form_input_6: moment(now).format("YYYY-MM-DD HH:mm"),
+      form_text_area_2: "",
+      form_select_list_2: [], // form_select_list_2 is a disabled multi select list, its default value must an empty array
+      form_input_3: 12345,
+      form_input_7: moment(now).format("YYYY-MM-DD"),
+      form_input_8: "password",
+      form_checkbox_5: true,
+      form_checkbox_2: true,
+      form_checkbox_6: true,
+      form_checkbox_7: false,
+      form_date_picker_3: null,
+      form_checkbox_8: true,
+      form_date_picker_4: null,
+      nested_file: 1,
+      form_checkbox_9: true,
+      form_checkbox_10: true
+    });
   });
 });

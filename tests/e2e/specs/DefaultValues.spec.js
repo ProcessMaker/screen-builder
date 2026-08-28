@@ -82,27 +82,37 @@ describe("Default values", () => {
   });
 
   it("Javascript default value", () => {
+    const expectedPreviewData = {
+      name: "world",
+      form_input_1: "hello world"
+    };
+
     cy.visit("/");
     cy.openAcordeon("collapse-2");
-    cy.setPreviewDataInput({ name: "world" });
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-defaultValue-js]").click();
+    cy.get("[data-cy=inspector-defaultValue-jsValue]").should("be.visible");
     cy.setVueComponentValue(
       "[data-cy=inspector-defaultValue-jsValue]",
       "return `hello ${this.name}`;"
     );
+    cy.setPreviewDataInput({ name: "world" });
+    cy.get("#screen-builder-container").should(($div) => {
+      const previewInput = JSON.parse($div[0].__vue__.previewInput);
+      expect(previewInput.name).to.eq("world");
+    });
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=preview-content] [name=form_input_1]").should(
       "have.value",
       "hello world"
     );
-    cy.assertPreviewData({
-      name: "world",
-      form_input_1: "hello world"
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedPreviewData);
     });
   });
   it("Initially checked checkbox", () => {
