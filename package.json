@@ -154,5 +154,11 @@
       ".js",
       ".vue"
     ]
+  },
+  "processmaker": {
+    "build": {
+      "command": "build-bundle",
+      "downstream": ["modeler"]
+    }
   }
 }
