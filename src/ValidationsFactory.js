@@ -13,6 +13,7 @@ class Validations {
   firstPage = 0;
   data = {};
   insideLoop = false;
+  isMobile = false;
   constructor(element, options) {
     this.element = element;
     Object.assign(this, options);
@@ -35,11 +36,13 @@ class Validations {
    * Check if element/container is visible.
    */
   isVisible() {
-    // Disable validations if field is hidden
+    const deviceConfig = this.element.config?.deviceVisibility || {
+      showForDesktop: true,
+      showForMobile: true
+    };
     const visibleInDevice =
-      this.element.visibleInDevice === null || this.element.visibleInDevice === undefined
-        ? true
-        : this.element.visibleInDevice;
+      (this.isMobile && deviceConfig.showForMobile) ||
+      (!this.isMobile && deviceConfig.showForDesktop);
     if (!visibleInDevice) {
       return false;
     }
@@ -62,7 +65,7 @@ class Validations {
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (const item of this.element) {
-      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop }).addValidations(validations);
+      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop, isMobile: this.isMobile }).addValidations(validations);
     }
   }
 }
@@ -75,7 +78,7 @@ class ScreenValidations extends Validations {
     // add validations for page 1
     if (this.element.config[this.firstPage]) {
       pagesValidated = [this.firstPage];
-      const screenValidations = ValidationsFactory(this.element.config[this.firstPage].items, { screen: this.element, data: this.data });
+      const screenValidations = ValidationsFactory(this.element.config[this.firstPage].items, { screen: this.element, data: this.data, isMobile: this.isMobile });
       await screenValidations.addValidations(validations);
       pagesValidated = [];
     }
@@ -96,7 +99,7 @@ class FormNestedScreenValidations extends Validations {
       const definition = nestedScreen.config;
       let parentVisibilityRule = this.parentVisibilityRule ? this.parentVisibilityRule : this.element.config.conditionalHide;
       if (definition && definition[0] && definition[0].items) {
-        await ValidationsFactory(definition[0].items, { screen: nestedScreen, data: this.data, parentVisibilityRule }).addValidations(validations);
+        await ValidationsFactory(definition[0].items, { screen: nestedScreen, data: this.data, parentVisibilityRule, isMobile: this.isMobile }).addValidations(validations);
       }
     }
   }
@@ -146,7 +149,7 @@ class FormLoopValidations extends Validations {
     loopField['$each'] = {};
     this.checkForSiblings(validations);
     const firstRow = (get(this.data, this.element.config.name) || [{}])[0];
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true }).addValidations(loopField['$each']);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: {_parent: this.data, ...firstRow }, parentVisibilityRule: this.element.config.conditionalHide, insideLoop: true, isMobile: this.isMobile }).addValidations(loopField['$each']);
   }
   checkForSiblings(validations) {
     const siblings = [];
@@ -207,7 +210,7 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
+    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide, isMobile: this.isMobile }).addValidations(validations);
   }
 }
 
@@ -229,7 +232,7 @@ class PageNavigateValidations extends Validations {
     if (pagesValidated.length > 0 && !pagesValidated.includes(screenPageId)) {
       if (this.screen.config[screenNumber] && this.screen.config[screenNumber].items) {
         pagesValidated.push(screenPageId);
-        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
+        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data, isMobile: this.isMobile }).addValidations(validations);
       }
     }
   }
@@ -308,7 +311,7 @@ class FormElementValidations extends Validations {
           // Check Device Visibility
           let visibleInDevice = true;
           try {
-            const isMobileScreen = this.$root.$children[0].$refs.renderer.definition.isMobile;
+            const isMobileScreen = this.isMobile;
             visibleInDevice =
               (isMobileScreen && deviceConfig.showForMobile) ||
               (!isMobileScreen && deviceConfig.showForDesktop);
@@ -375,7 +378,7 @@ class FormElementValidations extends Validations {
       };
     }
     if (this.element.items) {
-      ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
+      ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, isMobile: this.isMobile }).addValidations(validations);
     }
   }
   camelCase(name) {

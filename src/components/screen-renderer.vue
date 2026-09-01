@@ -39,6 +39,7 @@
       :vdata="value"
       :_parent="_parent || value?._parent"
       :_initial-page="currentPage"
+      :is-mobile="isMobile"
       :taskdraft="taskdraft"
       @after-submit="afterSubmit"
       @submit="submit"
@@ -70,6 +71,10 @@ export default {
     loopContext: {
       type: String,
       default: ""
+    },
+    isMobile: {
+      type: Boolean,
+      default: false
     },
     taskdraft: Object
   },
