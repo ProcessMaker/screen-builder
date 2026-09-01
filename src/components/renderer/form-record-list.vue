@@ -259,10 +259,13 @@ import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
+import { normalizeCollectionFieldPath } from "../../collectionFieldUtils";
 import {
-  mapCollectionRecordData,
-  normalizeCollectionFieldPath
-} from "../../collectionFieldUtils";
+  buildRadioSelectionValue,
+  findRadioSelectionMatch,
+  getCollectionRowKey,
+  remapCollectionRowData
+} from "./form-record-list-selection";
 
 const jsonOptionsActionsColumn = {
   key: "__actions",
@@ -478,12 +481,15 @@ export default {
     },
     // Watch for changes in validationData to handle any Mustache variable changes
     validationData: {
-      handler(newValue, oldValue) {
-        if (this.source?.sourceOptions === "Collection" && this.source?.collectionFields?.pmql) {
-          this.onCollectionChange(
-            this.source?.collectionFields?.collectionId,
-            this.source?.collectionFields?.pmql
-          );
+      handler() {
+        if (this.source?.sourceOptions === "Collection") {
+          const pmql = this.getCollectionPmql();
+          if (pmql) {
+            this.onCollectionChange(
+              this.source?.collectionFields?.collectionId,
+              pmql
+            );
+          }
         }
       },
       deep: true,
@@ -504,7 +510,10 @@ export default {
     }
 
     if(this.source?.sourceOptions === "Collection") {
-      this.onCollectionChange(this.source?.collectionFields?.collectionId, this.source?.collectionFields?.pmql);
+      this.onCollectionChange(
+        this.source?.collectionFields?.collectionId,
+        this.getCollectionPmql()
+      );
     }
 
     this.setStyleMode(this.designerMode?.designerOptions);
@@ -580,20 +589,53 @@ export default {
       }
     },
     componentOutput(data) {
-      this.$emit('input',  data);
-    },
-    onRadioChange(selectedItem, index) {
-      const globalIndex = (this.currentPage - 1) * this.perPage + index;
-      if(this.source?.singleField) {
-        const singleField = normalizeCollectionFieldPath(
-          this.source.singleField
-        );
-        const valueOfColumn = selectedItem[singleField];
-        this.componentOutput(valueOfColumn);
-      } else {
-        selectedItem = { ...selectedItem, selectedRowIndex: globalIndex};
-        this.componentOutput(selectedItem);
+      // Avoid emitting undefined, which would leave the bound variable as null
+      // and lose the selection when submitting to the next task.
+      if (typeof data === "undefined") {
+        return;
       }
+      this.$emit("input", data);
+      // Also write directly to validationData (screen vdata). Submit reads vdata, and
+      // v-model/@input listener order can drop object selections before they sync.
+      this.persistValueToFormData(data);
+    },
+    persistValueToFormData(data) {
+      if (
+        !this.name ||
+        !this.validationData ||
+        typeof this.validationData !== "object"
+      ) {
+        return;
+      }
+      if (String(this.name).includes(".")) {
+        _.set(this.validationData, this.name, data);
+        const rootKey = String(this.name).split(".")[0];
+        this.$set(this.validationData, rootKey, this.validationData[rootKey]);
+        return;
+      }
+      this.$set(this.validationData, this.name, data);
+    },
+    getCollectionPmql() {
+      // PMQL can live on source.pmql and/or source.collectionFields.pmql depending
+      // on how the inspector synced the config; prefer the nested copy when present.
+      const nestedPmql = this.source?.collectionFields?.pmql;
+      if (typeof nestedPmql === "string") {
+        return nestedPmql;
+      }
+      return this.source?.pmql || "";
+    },
+    onRadioChange(selectedItem, pageRelativeIndex) {
+      // b-table cell slot `index` is page-relative; convert once here.
+      this.componentOutput(
+        buildRadioSelectionValue(
+          selectedItem,
+          pageRelativeIndex,
+          this.currentPage,
+          this.perPage,
+          this.source,
+          this.fields
+        )
+      );
     },
     onMultipleSelectionChange(selIndex) {
       this.collectionData.forEach((item, index) => {
@@ -732,14 +774,14 @@ export default {
         .catch(() => {
           this.collectionData = [];
         });
-
-      this.$emit("change", this.field);
     },
     changeCollectionColumns(collectionFieldsColumns, columnsSelected) {
-      const optionsList = columnsSelected.optionsList;
+      const optionsList = columnsSelected?.optionsList || [];
+      const singleField = this.source?.singleField;
+
       const mappedColumns = collectionFieldsColumns.map((column) => ({
         ...column,
-        data: mapCollectionRecordData(column.data, optionsList)
+        data: remapCollectionRowData(column.data, optionsList, singleField)
       }));
 
       this.setCollectionIntoList(mappedColumns);
@@ -813,29 +855,18 @@ export default {
     // Restore selectedRow after collection data (re)loads or when value prop changes.
     // Mirrors reapplyCollectionSelections for the single-record (radio) case.
     restoreRadioSelection(rows) {
-      if (!this.value || !Array.isArray(rows) || rows.length === 0) {
-        return;
-      }
-
-      if (this.source?.singleField) {
-        // singleField mode emits a scalar; find the row whose field matches
-        const singleField = normalizeCollectionFieldPath(
-          this.source.singleField
-        );
-        const match = rows.find(row => row[singleField] === this.value);
-        if (match) {
-          this.selectedRow = match;
-        }
-      } else if (typeof this.value === "object" && !Array.isArray(this.value)) {
-        // Regular single-record mode emits { ...item, selectedRowIndex: N }
-        const idx = this.value.selectedRowIndex;
-        if (idx != null && idx >= 0 && idx < rows.length) {
-          this.selectedRow = rows[idx];
-        }
+      const match = findRadioSelectionMatch(
+        this.value,
+        rows,
+        this.source,
+        this.fields
+      );
+      if (match) {
+        this.selectedRow = match;
       }
     },
     shouldPersistCollectionSelection() {
-      const pmql = this.source?.collectionFields?.pmql;
+      const pmql = this.getCollectionPmql();
       return (
         this.source?.sourceOptions === "Collection" &&
         this.source?.dataSelectionOptions === "multiple-records" &&
@@ -844,24 +875,7 @@ export default {
       );
     },
     getCollectionRowKey(item) {
-      if (!item || typeof item !== "object") {
-        return null;
-      }
-
-      const entries = Object.entries(item).filter(
-        ([key]) => key !== "selectedRowsIndex"
-      );
-
-      if (entries.length === 0) {
-        return null;
-      }
-
-      entries.sort(([keyA], [keyB]) => {
-        if (keyA > keyB) return 1;
-        if (keyA < keyB) return -1;
-        return 0;
-      });
-      return JSON.stringify(entries);
+      return getCollectionRowKey(item);
     },
     updateRowDataNamePrefix() {
       this.setUploadDataNamePrefix(this.currentRowIndex);
