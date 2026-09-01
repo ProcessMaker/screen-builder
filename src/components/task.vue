@@ -534,39 +534,47 @@ export default {
       // If the task has not an origin source it should re redirected top the tasks List as default.
       return document.referrer || '/tasks';
     },
-    loadNextAssignedTask(requestId = null) {
+    loadNextAssignedTask(requestId = null, taskId = null) {
       if (!requestId) {
         requestId = this.requestId;
       }
       if (!this.userId) {
-        return;
+        return false;
       }
       const timestamp = !window.Cypress ? `&t=${Date.now()}` : "";
-      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${timestamp}`;
+      const taskIdFilter = taskId ? `&task_id=${encodeURIComponent(taskId)}` : "";
+      const url = `?user_id=${this.userId}&status=ACTIVE&process_request_id=${requestId}&include_sub_tasks=1${taskIdFilter}${timestamp}`;
       return this.$dataProvider
         .getTasks(url).then((response) => {
           this.$emit("load-data-task", response);
-          if (response.data.data.length > 0) {
-            let task = response.data.data[0];
-            if (task.process_request_id !== this.requestId) {
-              // Next task is in a subprocess, do a hard redirect
+          const tasks = response.data.data;
+          const task = taskId
+            ? tasks.find(({ id }) => String(id) === String(taskId))
+            : tasks[0];
+          if (task) {
+            const requiresWebEntryFallback = this.isWebEntry
+              && task.web_entry_available === false;
+            if (task.process_request_id !== this.requestId || requiresWebEntryFallback) {
+              // Cross-request transitions and non-Web Entry tasks require a hard redirect.
               if (this.redirecting === task.process_request_id) {
-                return;
+                return true;
               }
               this.unsubscribeSocketListeners();
               this.redirecting = task.process_request_id;
-              this.$emit('redirect', task.id, true);
-              return;
+              // Screen Builder uses Vue 2, where emitted events have no runtime emits contract.
+              this.$emit('redirect', this.isWebEntry ? task : task.id, true); // NOSONAR
+              return true;
             } else {
               this.emitIfTaskCompleted(requestId);
             }
             this.taskId = task.id;
             this.nodeId = task.element_id;
             this.loadTask();
-          } else if (this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
+          } else if (!taskId && this.parentRequest && ['COMPLETED', 'CLOSED'].includes(this.task.process_request.status)) {
             this.$emit('completed', this.getAllowedRequestId());
           }
           this.disabled = false;
+          return Boolean(task);
         });
     },
     emitIfTaskCompleted(requestId) {
@@ -641,24 +649,27 @@ export default {
      * @param {Function} apiCall - The API call to be made.
      * @param {number} retries - The number of retry attempts.
      * @param {number} delay - The delay between retries in milliseconds.
+     * @param {Function} shouldRetry - Determines whether a successful response should be retried.
      * @returns {Promise} - The response from the API call.
      */
     // eslint-disable-next-line consistent-return
-    async retryApiCall(apiCall, retries = 3, delay = 1000) {
+    async retryApiCall(apiCall, retries = 3, delay = 1000, shouldRetry = () => false) {
       for (let attempt = 0; attempt < retries; attempt++) {
         try {
           // eslint-disable-next-line no-await-in-loop
           const response = await apiCall();
-          return response;
+          if (!shouldRetry(response) || attempt === retries - 1) {
+            return response;
+          }
         } catch (error) {
           if (attempt === retries - 1) {
             throw error;
           }
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise((resolve) => {
-            setTimeout(resolve, delay);
-          });
         }
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => {
+          setTimeout(resolve, delay);
+        });
       }
     },
     /**
@@ -919,6 +930,31 @@ export default {
       }
     },
 
+    async handleWebEntryTaskRedirect(data, tokenId) {
+      let taskHandled = false;
+      try {
+        taskHandled = await this.retryApiCall(
+          () => this.loadNextAssignedTask(this.requestId, tokenId),
+          3,
+          1000,
+          (handled) => handled !== true
+        );
+      } catch (error) {
+        taskHandled = false;
+      } finally {
+        if (!taskHandled) {
+          this.loadingTask = false;
+          this.disabled = false;
+        }
+      }
+
+      if (!taskHandled) {
+        const fallbackUrl = data?.params?.[0]?.payloadUrl
+          || (tokenId ? `/tasks/${tokenId}/edit` : `/requests/${this.requestId}`);
+        window.location.href = fallbackUrl;
+      }
+    },
+
     /**
      * Handles the 'redirectToTask' event by loading the specified task.
      * Updates the current task ID and reloads the task data.
@@ -947,6 +983,13 @@ export default {
             window.location.href = await this.getDestinationUrl();
             return;
           }
+
+          // Web Entry needs the complete task to preserve the target request context.
+          if (this.isWebEntry) {
+            await this.handleWebEntryTaskRedirect(data, tokenId);
+            return;
+          }
+
           this.nodeId = nodeId;
           this.taskId = tokenId;
   
