@@ -154,5 +154,8 @@
       ".js",
       ".vue"
     ]
+  },
+  "processmaker": {
+    "downstream": ["modeler"]
   }
 }
