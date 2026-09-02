@@ -156,6 +156,7 @@
     ]
   },
   "processmaker": {
-    "downstream": ["modeler"]
+    "downstream": ["modeler"],
+    "command": "build-bundle"
   }
 }
