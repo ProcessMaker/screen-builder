@@ -1,6 +1,8 @@
+/* eslint-disable no-loss-of-precision */
 describe("select list mustache", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.clearLocalStorage();
+    cy.clearCookies();
     cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/2",
@@ -76,7 +78,15 @@ describe("select list mustache", () => {
         }
       })
     ).as("executeScript");
+    cy.visit("/");
   });
+
+  function assertPreviewDataStable(expectedData) {
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedData);
+    });
+  }
 
   it("Verify select list mustache + collection", () => {
     cy.loadFromJson("select_list_collection.json", 0);
@@ -106,7 +116,7 @@ describe("select list mustache", () => {
     );
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: {
         dni: "1234",
         name: {
@@ -169,7 +179,7 @@ describe("select list mustache", () => {
       .click();
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: {
         dni: "1234",
         name: {
@@ -256,7 +266,7 @@ describe("select list mustache", () => {
       .click();
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",
@@ -361,7 +371,7 @@ describe("select list mustache", () => {
     ).click();
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",
@@ -543,7 +553,7 @@ describe("select list mustache", () => {
       .should("be.checked");
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: {
         dni: "1234",
         name: {
@@ -704,7 +714,7 @@ describe("select list mustache", () => {
       .should("be.checked");
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",
@@ -855,7 +865,7 @@ describe("select list mustache", () => {
     ).contains("John Doe");
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",
