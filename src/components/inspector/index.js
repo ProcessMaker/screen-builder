@@ -14,6 +14,7 @@ export { default as DefaultValueEditor } from "./default-value-editor.vue";
 export { default as DeviceVisibility } from "./device-visibility.vue";
 export { default as EditOption } from "./edit-option.vue";
 export { default as FormMultiselect } from "./form-multiselect.vue";
+export { default as HtmlContentWithMediaWarning } from "./html-content-with-media-warning.vue";
 export { default as ImageUpload } from "./image-upload.vue";
 export { default as ImageVariable } from "./image-variable.vue";
 export { default as InputVariable } from "./input-variable.vue";
