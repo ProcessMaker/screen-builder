@@ -1,4 +1,9 @@
 describe("Computed fields", () => {
+  beforeEach(() => {
+    cy.clearLocalStorage();
+    cy.clearCookies();
+  });
+
   function assertPreviewDataStable(expectedData) {
     cy.get("#screen-builder-container").should(($div) => {
       const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
