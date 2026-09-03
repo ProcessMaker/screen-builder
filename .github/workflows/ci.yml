@@ -53,6 +53,14 @@ jobs:
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
 
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Verify Chrome version
+        run: google-chrome --version
+
       - name: Link vue-form-elements
         if: ${{ env.VFE_BRANCH != '' }}
         run: npm link ./vue-form-elements
