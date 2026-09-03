@@ -1,5 +1,10 @@
 /* eslint-disable no-template-curly-in-string */
 describe("Default values", () => {
+  beforeEach(() => {
+    cy.clearLocalStorage();
+    cy.clearCookies();
+  });
+
   function assertPreviewDataStable(expectedData) {
     cy.get("#screen-builder-container").should(($div) => {
       const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
@@ -103,7 +108,9 @@ describe("Default values", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-defaultValue-js]").click();
-    cy.get("[data-cy=inspector-defaultValue-jsValue]").should("be.visible");
+    cy.get("[data-cy=inspector-defaultValue-jsValue]")
+      .scrollIntoView()
+      .should("be.visible");
     cy.setVueComponentValue(
       "[data-cy=inspector-defaultValue-jsValue]",
       "return `hello ${this.name}`;"

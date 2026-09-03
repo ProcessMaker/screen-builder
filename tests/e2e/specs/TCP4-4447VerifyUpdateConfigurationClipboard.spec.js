@@ -1,9 +1,7 @@
 describe("TCP4-4474 Verify that the configuration made in line controls", () => {
   beforeEach(() => {
-    // Step 1: Navigate to the homepage, show validation, and clear local storage
-    cy.visit("/"); // Visit the application homepage
-    cy.showValidationOnLoad(); // Show validation rules on page load
-    cy.clearLocalStorage(); // Clear local storage before each test to start fresh
+    cy.clearLocalStorage();
+    cy.clearCookies();
   });
 
   const verifyClipboardSync = (elementType, name, label) => {
@@ -15,10 +13,15 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
     cy.openAcordeonByLabel("Input Fields");
 
     // Step 3: Drag the specified control to the screen drop zone
-    cy.get(`[data-cy=controls-${elementType}]`).drag("[data-cy=screen-drop-zone]", { position: "bottom" });
+    cy.get(`[data-cy=controls-${elementType}]`).drag(
+      "[data-cy=screen-drop-zone]",
+      { position: "bottom" }
+    );
 
     // Step 4: Interact with the first screen element to open the inspector
-    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({ force: true });
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({
+      force: true
+    });
 
     // Step 5: Ensure the "Add to Clipboard" button is visible
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
@@ -30,9 +33,9 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
     // Step 7: Set validation rules in the inspector
     cy.get('[data-cy="inspector-validation"]')
       .find('input[type="checkbox"]')
-      .should('be.visible')
+      .should("be.visible")
       .check()
-      .should('be.checked');
+      .should("be.checked");
 
     // Step 8: Click the "Add to Clipboard" button
     cy.get('[data-cy="addToClipboard"]').click();
@@ -42,17 +45,21 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
     cy.get("[data-test=clipboard]").should("exist").click({ force: true });
 
     // Step 10: Verify the inspector fields after selecting the copied element
-    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({ force: true });
-    cy.get("[data-cy=inspector-name]").should('have.value', name); // Verify the name
-    cy.get("[data-cy=inspector-label]").should('have.value', label); // Verify the label
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({
+      force: true
+    });
+    cy.get("[data-cy=inspector-name]").should("have.value", name); // Verify the name
+    cy.get("[data-cy=inspector-label]").should("have.value", label); // Verify the label
     cy.get('[data-cy="inspector-validation"]')
       .find('input[type="checkbox"]')
-      .should('be.checked'); // Verify validation checkbox
+      .should("be.checked"); // Verify validation checkbox
 
     // Step 11: Navigate back to the original page and update the element name
     cy.get("[data-test=page-dropdown]").click();
     cy.get('[data-cy="page-0"]').should("exist").click({ force: true });
-    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({ force: true });
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({
+      force: true
+    });
     cy.get("[data-cy=inspector-name]").clear().type(`${name}Updated`).blur();
 
     // Step 12: Ensure the "Add to Clipboard" button is still visible after update
@@ -65,10 +72,12 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
 
   it("Verify FormCheckbox configuration updates sync with clipboard", () => {
     verifyClipboardSync("FormCheckbox", "checkboxTest", "Checkbox Test");
-    
+
     // Additional steps specific to FormCheckbox
-    cy.get('[data-cy="inspector-initiallyChecked"]').check().should('be.checked'); // Check Initially Checked
-    cy.get('[data-cy="inspector-disabled"]').check().should('be.checked'); // Check Disabled
+    cy.get('[data-cy="inspector-initiallyChecked"]')
+      .check()
+      .should("be.checked"); // Check Initially Checked
+    cy.get('[data-cy="inspector-disabled"]').check().should("be.checked"); // Check Disabled
   });
 
   it("Verify FormSelectList configuration updates sync with clipboard", () => {
@@ -78,7 +87,6 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
   it("Verify FormTextArea configuration updates sync with clipboard", () => {
     verifyClipboardSync("FormTextArea", "textTest", "Text Test");
   });
-
 
   it("Verify FormDatePicker configuration updates sync with clipboard", () => {
     verifyClipboardSync("FormDatePicker", "dateTest", "Date Test");
