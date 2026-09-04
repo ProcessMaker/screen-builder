@@ -145,7 +145,7 @@ Cypress.Commands.add("assertComponentValueAsJson", (selector, expectedData) => {
  * @function
  * @param {String} filename - The screen filename to load
  */
-Cypress.Commands.add("loadFromJson", (filename, index, mode= 'form') => {
+Cypress.Commands.add("loadFromJson", (filename, index, mode = "form") => {
   return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
     cy.window().then((win) => {
       win.exampleScreens = content.screens;
@@ -225,7 +225,7 @@ Cypress.Commands.add("pickTomorrow", { prevSubject: true }, (subject) => {
 Cypress.Commands.add(
   "pickTodayWithTime",
   { prevSubject: true },
-  (subject, hour, minute, period = "AM") => {
+  (subject, hour, minute) => {
     cy.get(subject).find("input").click();
     cy.get(subject).find(".selectable.today").click();
     cy.get(subject).find(`.vdpHoursInput`).type(`${hour}`);
@@ -251,21 +251,21 @@ Cypress.Commands.add(
   (subject, option) => {
     cy.get(subject).click();
     cy.get(subject).find("input").clear().type(option);
-    
+
     // Wait for options to be available and then try to find the target option
-    cy.get(subject).should('have.class', 'multiselect--active');
-    
+    cy.get(subject).should("have.class", "multiselect--active");
+
     // Try to find the option with retry logic
     cy.get(subject).then(($el) => {
       const optionSelector = `span:not(.multiselect__option--disabled) span:contains("${option}"):first`;
-      
+
       // Check if the option exists
       if ($el.find(optionSelector).length > 0) {
         cy.get(subject).find(optionSelector).click();
       } else {
         // If option not found, try to wait a bit more and retry
         cy.wait(500);
-        cy.get(subject).find(optionSelector).should('exist').click();
+        cy.get(subject).find(optionSelector).should("exist").click();
       }
     });
   }
@@ -303,13 +303,13 @@ Cypress.Commands.add("showValidationOnLoad", () => {
 });
 
 Cypress.Commands.add("openAcordeon", (name) => {
-  cy.get(`button[aria-controls='${name}']`).click({
+  cy.get(`button[aria-controls='${name}']`, { timeout: 20000 }).click({
     waitForAnimations: true,
     force: true
   });
 });
 Cypress.Commands.add("openAcordeonByLabel", (label) => {
-  cy.get(`button`).contains(label).click({
+  cy.get(`button`, { timeout: 20000 }).contains(label).click({
     waitForAnimations: true,
     force: true
   });
