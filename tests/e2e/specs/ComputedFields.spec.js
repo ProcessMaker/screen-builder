@@ -1,4 +1,4 @@
-describe("Computed fields", () => {
+describe("Computed fields", { testIsolation: true }, () => {
   beforeEach(() => {
     cy.clearLocalStorage();
     cy.clearCookies();
