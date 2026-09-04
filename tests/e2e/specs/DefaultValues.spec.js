@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-describe("Default values", () => {
+describe("Default values", { testIsolation: true }, () => {
   beforeEach(() => {
     cy.clearLocalStorage();
     cy.clearCookies();
