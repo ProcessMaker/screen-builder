@@ -6,7 +6,11 @@ describe("Loop control", () => {
   });
 
   function openLoopAccordion() {
-    cy.get("button[aria-controls='collapse-3']", { timeout: 10000 })
+    cy.get("#screen-builder-container", { timeout: 20000 }).should(
+      "be.visible"
+    );
+    cy.get("[data-cy=controls-FormLoop]", { timeout: 20000 }).should("exist");
+    cy.get("button[aria-controls='collapse-3']", { timeout: 20000 })
       .should("be.visible")
       .click({ force: true });
   }
