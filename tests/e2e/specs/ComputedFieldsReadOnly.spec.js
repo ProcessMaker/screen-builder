@@ -1,6 +1,4 @@
-import { waitUntilElementIsVisible } from "../support/utils";
-
-describe("Computed fields", () => {
+describe("Computed fields", { testIsolation: true }, () => {
   it("The user should not be able to change a FormInput assigned to a computed property", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-2");
