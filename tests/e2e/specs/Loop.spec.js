@@ -1,9 +1,16 @@
 /* eslint-disable max-len, no-return-assign */
 describe("Loop control", { testIsolation: true }, () => {
-  beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.clearCookies();
-  });
+  function visitBuilder() {
+    cy.visit("/", {
+      timeout: 120000,
+      onBeforeLoad(win) {
+        win.localStorage.clear();
+      }
+    });
+    cy.get("#screen-builder-container", { timeout: 60000 }).should(
+      "be.visible"
+    );
+  }
 
   function openLoopAccordion() {
     cy.get("#screen-builder-container", { timeout: 60000 }).should(
@@ -16,7 +23,7 @@ describe("Loop control", { testIsolation: true }, () => {
   }
 
   it("Input inside loop", () => {
-    cy.visit("/", { timeout: 120000 });
+    visitBuilder();
     openLoopAccordion();
     // Add loop control
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
@@ -90,7 +97,7 @@ describe("Loop control", { testIsolation: true }, () => {
   });
 
   it("Verify validation on visible fields", () => {
-    cy.visit("/", { timeout: 120000 });
+    visitBuilder();
     openLoopAccordion();
     // Add loop control
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
@@ -146,7 +153,7 @@ describe("Loop control", { testIsolation: true }, () => {
   });
 
   it("Runs validations on loops referencing same variable ", () => {
-    cy.visit("/", { timeout: 120000 });
+    visitBuilder();
 
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
@@ -171,7 +178,7 @@ describe("Loop control", { testIsolation: true }, () => {
   });
 
   it("Verify validation with multicolumn ", () => {
-    cy.visit("/", { timeout: 120000 });
+    visitBuilder();
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
 
@@ -241,7 +248,7 @@ describe("Loop control", { testIsolation: true }, () => {
   });
 
   it("Verify validation with nested loop ", () => {
-    cy.visit("/", { timeout: 120000 });
+    visitBuilder();
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
 
@@ -356,7 +363,7 @@ describe("Loop control", { testIsolation: true }, () => {
       })
     );
 
-    cy.visit("/", { timeout: 120000 });
+    visitBuilder();
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
     openLoopAccordion();
