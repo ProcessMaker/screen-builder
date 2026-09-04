@@ -1,6 +1,14 @@
-describe("Form Select List", () => {
+describe("Form Select List", { testIsolation: true }, () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit("/", {
+      timeout: 120000,
+      onBeforeLoad(win) {
+        win.localStorage.clear();
+      }
+    });
+    cy.get("#screen-builder-container", { timeout: 60000 }).should(
+      "be.visible"
+    );
     cy.openAcordeon("collapse-2");
     // Add loop control
     cy.get("[data-cy=controls-FormSelectList]").drag(

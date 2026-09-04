@@ -1,7 +1,30 @@
-describe("Loop control", () => {
+/* eslint-disable max-len, no-return-assign */
+describe("Loop control", { testIsolation: true }, () => {
+  function visitBuilder() {
+    cy.visit("/", {
+      timeout: 120000,
+      onBeforeLoad(win) {
+        win.localStorage.clear();
+      }
+    });
+    cy.get("#screen-builder-container", { timeout: 60000 }).should(
+      "be.visible"
+    );
+  }
+
+  function openLoopAccordion() {
+    cy.get("#screen-builder-container", { timeout: 60000 }).should(
+      "be.visible"
+    );
+    cy.get("[data-cy=controls-FormLoop]", { timeout: 60000 }).should("exist");
+    cy.get("button[aria-controls='collapse-3']", { timeout: 60000 })
+      .should("be.visible")
+      .click({ force: true });
+  }
+
   it("Input inside loop", () => {
-    cy.visit("/");
-    cy.openAcordeon("collapse-3");
+    visitBuilder();
+    openLoopAccordion();
     // Add loop control
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -74,8 +97,8 @@ describe("Loop control", () => {
   });
 
   it("Verify validation on visible fields", () => {
-    cy.visit("/");
-    cy.openAcordeon("collapse-3");
+    visitBuilder();
+    openLoopAccordion();
     // Add loop control
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
@@ -130,7 +153,7 @@ describe("Loop control", () => {
   });
 
   it("Runs validations on loops referencing same variable ", () => {
-    cy.visit("/");
+    visitBuilder();
 
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
@@ -142,7 +165,6 @@ describe("Loop control", () => {
 
     //  Add data to input field in last loop
     cy.get("[data-cy=screen-field-form_input_2]").type("bar");
-    cy.wait(1000);
 
     // Ensure the form cannot yet be submitted
     cy.get(":nth-child(4) > .form-group > .btn")
@@ -156,12 +178,12 @@ describe("Loop control", () => {
   });
 
   it("Verify validation with multicolumn ", () => {
-    cy.visit("/");
+    visitBuilder();
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
 
     // Add loop control
-    cy.openAcordeon("collapse-3");
+    openLoopAccordion();
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -226,12 +248,12 @@ describe("Loop control", () => {
   });
 
   it("Verify validation with nested loop ", () => {
-    cy.visit("/");
+    visitBuilder();
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
 
     // Add loop contro
-    cy.openAcordeon("collapse-3");
+    openLoopAccordion();
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
@@ -341,11 +363,10 @@ describe("Loop control", () => {
       })
     );
 
-    cy.visit("/");
-    cy.showValidationOnLoad();
+    visitBuilder();
     let alert = false;
     cy.on("window:alert", (msg) => (alert = msg));
-    cy.openAcordeon("collapse-3");
+    openLoopAccordion();
 
     // Add loop control
     cy.get("[data-cy=controls-FormLoop]").drag("[data-cy=screen-drop-zone]", {
@@ -360,11 +381,13 @@ describe("Loop control", () => {
       "[data-cy=screen-element-container] .column-draggable div",
       { position: "bottom" }
     );
-    cy.get(".m-2").click();
-    cy.get(".multiselect__tags")
-      .click()
-      .wait(1000)
-      .type("{downarrow}{enter}{esc}");
+    cy.get("[data-cy=screen-element-container]").last().click();
+    cy.get('[data-cy="inspector-screen"] div.multiselect').click();
+    cy.get(
+      '[data-cy="inspector-screen"] span:contains("Sub screen example"):first'
+    )
+      .should("be.visible")
+      .click();
 
     // Set Nested Screen Visibility Rule
     cy.get("[data-cy=accordion-Advanced]").click();
@@ -380,13 +403,15 @@ describe("Loop control", () => {
     cy.setPreviewDataInput('{"loop_1":[{"name": "bar"}, {"name": "foo"}]}');
 
     cy.get("[data-cy=mode-preview]").click();
+    cy.get("[data-cy=preview-content]").should("be.visible");
+    cy.get("[data-cy=screen-renderer-container]").should("be.visible");
+    cy.showValidationOnLoad();
     cy.get('[name="loop_1"] > :nth-child(2) > :nth-child(1)').should(
       "not.be.visible"
     );
-    cy.wait(1000);
-    cy.get(
-      ':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [data-cy="screen-field-Nested Screen"] > [data-cy=screen-renderer] > :nth-child(1) > .page > [selector="first-name"] > .form-group > [data-cy=screen-field-firstname]'
-    )
+    cy.get("[data-cy=screen-field-firstname]")
+      .filter(":visible")
+      .first()
       .parent()
       .find(".invalid-feedback")
       .should("be.visible");
@@ -397,9 +422,9 @@ describe("Loop control", () => {
       .then(() => expect(alert).to.equal(false));
 
     // Add data to input field
-    cy.get(
-      ':nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > [data-cy="screen-field-Nested Screen"] > [data-cy=screen-renderer] > :nth-child(1) > .page > [selector="first-name"] > .form-group > [data-cy=screen-field-firstname]'
-    )
+    cy.get("[data-cy=screen-field-firstname]")
+      .filter(":visible")
+      .first()
       .clear()
       .type("foobar")
       .blur();

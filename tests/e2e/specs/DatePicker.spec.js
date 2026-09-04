@@ -1,8 +1,20 @@
+/* eslint-disable no-param-reassign */
 import moment from "moment-timezone";
 
 moment.tz.setDefault("UTC");
 
+function utcIsoFromInputDate(mmDdYyyy) {
+  return moment.utc(mmDdYyyy, "MM/DD/YYYY").toISOString();
+}
+
 describe("Date Picker", () => {
+  function assertPreviewDataStable(expectedData) {
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedData);
+    });
+  }
+
   beforeEach(() => {
     cy.visit("/");
     cy.openAcordeon("collapse-2");
@@ -71,7 +83,7 @@ describe("Date Picker", () => {
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .selectable.today'
     ).click();
 
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: moment().format("YYYY-MM-DD")
     });
   });
@@ -93,7 +105,7 @@ describe("Date Picker", () => {
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] vdpClearInput'
     ).should("not.exist");
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: moment().format("YYYY-MM-DD")
     });
   });
@@ -120,7 +132,7 @@ describe("Date Picker", () => {
 
     const today = moment.utc({ hour: 8, minute: 15 });
 
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: today.toISOString()
     });
   });
@@ -170,7 +182,7 @@ describe("Date Picker", () => {
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent input'
     ).should("contain.value", date);
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: moment(date).format("YYYY-MM-DD")
     });
   });
@@ -212,14 +224,14 @@ describe("Date Picker", () => {
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input'
     ).click();
 
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: moment(date).format("YYYY-MM-DD"),
       form_date_picker_2: null
     });
   });
-  it("Date picker with maxDate greater than first datepicker should return null data", () => {
-    const date = moment(new Date()).format("MM/DD/YYYY");
-    const dateAfter = moment(new Date()).add(1, "days").format("MM/DD/YYYY");
+  it("Date picker with maxDate less than entered date should return null data", () => {
+    const date = moment().format("MM/DD/YYYY");
+    const dateAfter = moment().add(1, "days").format("MM/DD/YYYY");
 
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
@@ -234,16 +246,16 @@ describe("Date Picker", () => {
     cy.get("[data-cy=screen-element-container]").last().click();
     cy.setMultiselect("[data-cy=inspector-dataFormat]", "Date");
     cy.get("[data-cy=accordion-Configuration]").click();
-    cy.get("[data-cy=inspector-minDate]")
+    cy.get("[data-cy=inspector-maxDate]")
       .clear()
       .type("{{}{{}form_date_picker_1{}}{}}");
     cy.get("[data-cy=mode-preview]").click();
     cy.get(
-      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"]'
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
     cy.get(
-      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]'
+      '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).type(dateAfter);
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"]'
@@ -251,10 +263,15 @@ describe("Date Picker", () => {
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] input'
     ).click();
+    cy.get("[data-cy=preview-content]").click();
 
-    cy.assertPreviewData({
-      form_date_picker_1: moment(date).format("YYYY-MM-DD"),
+    const expectedPreviewData = {
+      form_date_picker_1: moment.utc(date, "MM/DD/YYYY").format("YYYY-MM-DD"),
       form_date_picker_2: null
+    };
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedPreviewData);
     });
   });
 
@@ -288,7 +305,7 @@ describe("Date Picker", () => {
     ).type(dateSame);
     cy.get("[data-cy=preview-content]").click();
 
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: moment(date).format("YYYY-MM-DD"),
       form_date_picker_2: moment(dateSame).format("YYYY-MM-DD")
     });
@@ -323,7 +340,7 @@ describe("Date Picker", () => {
     ).type(dateSame);
     cy.get("[data-cy=preview-content]").click();
 
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: moment(date).format("YYYY-MM-DD"),
       form_date_picker_2: moment(dateSame).format("YYYY-MM-DD")
     });
@@ -352,7 +369,7 @@ describe("Date Picker", () => {
     ).type(date);
     cy.get("[data-cy=preview-content]").click();
 
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: moment(date).format("YYYY-MM-DD")
     });
   });
@@ -394,8 +411,8 @@ describe("Date Picker", () => {
     ).click();
     cy.get("[data-cy=preview-content]").click();
 
-    cy.assertPreviewData({
-      form_date_picker_1: moment(date).toISOString(),
+    assertPreviewDataStable({
+      form_date_picker_1: utcIsoFromInputDate(date),
       form_date_picker_2: null
     });
   });
@@ -429,15 +446,12 @@ describe("Date Picker", () => {
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).type(dateSame);
     cy.get("[data-cy=preview-content]").click();
-    cy.assertPreviewData({
-      form_date_picker_1: moment(date).toISOString(),
-      form_date_picker_2: moment(dateSame).toISOString()
+    assertPreviewDataStable({
+      form_date_picker_1: utcIsoFromInputDate(date),
+      form_date_picker_2: utcIsoFromInputDate(dateSame)
     });
   });
   it("Date time picker validate when the user enter a string instead of a valid date", () => {
-    const date = moment(new Date()).format("MM/DD/YYYY");
-    const dateSame = moment(new Date()).format("MM/DD/YYYY");
-
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
       { position: "bottom" }
@@ -459,14 +473,13 @@ describe("Date Picker", () => {
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).click();
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: null,
       form_date_picker_2: null
     });
   });
   it("Date time picker validate enter a valid date + string", () => {
     const date = moment(new Date()).format("MM/DD/YYYY");
-    const dateSame = moment(new Date()).format("MM/DD/YYYY");
 
     cy.get("[data-cy=controls-FormDatePicker]").drag(
       "[data-cy=screen-drop-zone]",
@@ -492,8 +505,8 @@ describe("Date Picker", () => {
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_2"] .vdpComponent'
     ).click();
-    cy.assertPreviewData({
-      form_date_picker_1: moment(date).toISOString(),
+    assertPreviewDataStable({
+      form_date_picker_1: utcIsoFromInputDate(date),
       form_date_picker_2: null
     });
   });
@@ -521,16 +534,14 @@ describe("Date Picker", () => {
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).type(`${date}{enter}`);
     cy.get("[data-cy=preview-content]").click();
-    cy.wait(500);
     cy.get(".btn-primary").should("not.have.class", "disabled");
     cy.get(".vdpClearInput").click();
-    cy.wait(500);
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_date_picker_1"] .vdpComponent'
     ).should("not.contain.value", date);
     cy.get(".vdpComponent input").should("have.class", "is-invalid");
     cy.get(".btn-primary").should("have.class", "disabled");
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_date_picker_1: ""
     });
   });
