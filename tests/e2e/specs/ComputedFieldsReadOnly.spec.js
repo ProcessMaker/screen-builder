@@ -1,6 +1,18 @@
 describe("Computed fields", { testIsolation: true }, () => {
+  function visitBuilder() {
+    cy.visit("/", {
+      timeout: 120000,
+      onBeforeLoad(win) {
+        win.localStorage.clear();
+      }
+    });
+    cy.get("#screen-builder-container", { timeout: 60000 }).should(
+      "be.visible"
+    );
+  }
+
   it("The user should not be able to change a FormInput assigned to a computed property", () => {
-    cy.visit("/");
+    visitBuilder();
     cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
@@ -141,7 +153,7 @@ describe("Computed fields", { testIsolation: true }, () => {
   });
 
   it("The user should not be able to change a FormTextArea assigned to a computed property", () => {
-    cy.visit("/");
+    visitBuilder();
     cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormTextArea]").drag(
@@ -178,7 +190,7 @@ describe("Computed fields", { testIsolation: true }, () => {
   });
 
   it("The user should not be able to change a FormDatePicker assigned to a computed property", () => {
-    cy.visit("/");
+    visitBuilder();
     cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormDatePicker]").drag(
@@ -217,7 +229,7 @@ describe("Computed fields", { testIsolation: true }, () => {
   });
 
   it("The user should not be able to change a FormSelectList assigned to a computed property", () => {
-    cy.visit("/");
+    visitBuilder();
     cy.openAcordeon("collapse-2");
     // Add an input field
     cy.get("[data-cy=controls-FormSelectList]").drag(
@@ -272,7 +284,7 @@ describe("Computed fields", { testIsolation: true }, () => {
   });
 
   it("The user should not be able to change an input assigned to a sub property of a computed property", () => {
-    cy.visit("/");
+    visitBuilder();
     cy.openAcordeon("collapse-2");
 
     // Add an input field
