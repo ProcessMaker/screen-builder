@@ -19,7 +19,7 @@ describe("Loop control", { testIsolation: true }, () => {
     cy.get("[data-cy=controls-FormLoop]", { timeout: 60000 }).should("exist");
     cy.get("button[aria-controls='collapse-3']", { timeout: 60000 })
       .should("be.visible")
-      .click({ force: true });
+      .click();
   }
 
   it("Input inside loop", () => {

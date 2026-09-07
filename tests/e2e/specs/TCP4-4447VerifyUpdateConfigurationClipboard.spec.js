@@ -19,9 +19,7 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
     );
 
     // Step 4: Interact with the first screen element to open the inspector
-    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({
-      force: true
-    });
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
 
     // Step 5: Ensure the "Add to Clipboard" button is visible
     cy.get('[data-cy="addToClipboard"]').should("be.visible");
@@ -45,9 +43,7 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
     cy.get("[data-test=clipboard]").should("exist").click({ force: true });
 
     // Step 10: Verify the inspector fields after selecting the copied element
-    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({
-      force: true
-    });
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
     cy.get("[data-cy=inspector-name]").should("have.value", name); // Verify the name
     cy.get("[data-cy=inspector-label]").should("have.value", label); // Verify the label
     cy.get('[data-cy="inspector-validation"]')
@@ -57,9 +53,7 @@ describe("TCP4-4474 Verify that the configuration made in line controls", () => 
     // Step 11: Navigate back to the original page and update the element name
     cy.get("[data-test=page-dropdown]").click();
     cy.get('[data-cy="page-0"]').should("exist").click({ force: true });
-    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click({
-      force: true
-    });
+    cy.get(':nth-child(1) > [data-cy="screen-element-container"]').click();
     cy.get("[data-cy=inspector-name]").clear().type(`${name}Updated`).blur();
 
     // Step 12: Ensure the "Add to Clipboard" button is still visible after update
