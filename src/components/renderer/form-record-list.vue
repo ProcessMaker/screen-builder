@@ -174,7 +174,6 @@
       @shown="emitShownEvent"
     >
       <vue-form-renderer
-        v-if="addModalVisible"
         ref="addRenderer"
         :key="Array.isArray(value) ? value.length : 0"
         v-model="addItem"
@@ -204,7 +203,6 @@
       @shown="emitShownEvent"
     >
       <vue-form-renderer
-        v-if="editModalVisible"
         ref="editRenderer"
         :key="editFormVersion"
         v-model="editItem"
@@ -264,7 +262,6 @@ import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
-import { findRootScreen } from "@/mixins/DataReference";
 import {
   mapCollectionRecordData,
   normalizeCollectionFieldPath
@@ -339,11 +336,7 @@ export default {
       selectAll: false,
       styleMode: "Classic",
       isPopoverVisible: null,
-      popoverPosition: { top: '0px', left: '0px' },
-      // Mount modal renderers only while open so their required fields never
-      // leak into the parent screen validation rules / global error count.
-      addModalVisible: false,
-      editModalVisible: false
+      popoverPosition: { top: '0px', left: '0px' }
     };
   },
   computed: {
@@ -522,7 +515,6 @@ export default {
   },
   methods: {
     ...mapActions("globalErrorsModule", [
-      "validateNow",
       "close",
       "restartValidation",
       "hasSubmitted"
@@ -992,24 +984,23 @@ export default {
     },
     showEditForm(index, rowId) {
       const pageIndex = (this.currentPage - 1) * this.perPage + index;
-      // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(
+      const rowData = JSON.parse(
         JSON.stringify(_.find(this.tableData.data, { row_id: rowId }))
       );
       this.editIndex = pageIndex;
-      // rebuild the edit screen to avoid
+      this.editItem = rowData;
+      // rebuild the edit screen to avoid stale control state between edits
       this.editFormVersion++;
-      this.editModalVisible = true;
       this.$nextTick(() => {
+        // Remount can emit a stale @update with empty defaults; re-seed once
+        // after mount. Do not block later @update — loops need those events
+        // (RecordListWithLoops).
+        this.editItem = JSON.parse(JSON.stringify(rowData));
         this.setUploadDataNamePrefix(pageIndex);
         this.$refs.editModal.show();
       });
     },
     edit(event) {
-      if (!this.$refs.editRenderer) {
-        event.preventDefault();
-        return;
-      }
       this.$refs.editRenderer.hasSubmitted(true);
       if (
         this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid
@@ -1040,11 +1031,8 @@ export default {
         this.$refs.infoModal.show();
         return;
       }
-      this.addModalVisible = true;
-      // Open form after renderer is mounted
-      this.$nextTick(() => {
-        this.$refs.addModal.show();
-      });
+      // Open form
+      this.$refs.addModal.show();
 
       // eslint-disable-next-line no-unused-vars
       const { _parent, ...result } = this.addItem;
@@ -1052,35 +1040,23 @@ export default {
     },
     handleHideAddModal() {
       this.addItem = this.initFormValues;
-      if (this.$refs.addRenderer) {
-        this.$refs.addRenderer.hasSubmitted(false);
-      }
-      this.addModalVisible = false;
+      this.$refs.addRenderer.hasSubmitted(false);
       this.restoreParentValidationState();
     },
     handleHideEditModal() {
-      if (this.$refs.editRenderer) {
-        this.$refs.editRenderer.hasSubmitted(false);
-      }
-      this.editModalVisible = false;
+      this.$refs.editRenderer.hasSubmitted(false);
       this.restoreParentValidationState();
     },
     restoreParentValidationState() {
-      // Clear modal-driven global submit flags and refresh parent validity
-      // so required modal fields (e.g. FormCheckbox) never block parent submit.
+      // Isolated modals must not leave the parent in a "submitted"/invalid state.
+      // Avoid validateNow/loadValidationRules here — on large screens (ComplexScreen)
+      // that rebuild can race with Record List row data after Add/Edit.
       this.restartValidation();
       this.hasSubmitted(false);
       this.close();
-      const rootScreen = findRootScreen(this);
-      if (rootScreen && typeof rootScreen.loadValidationRules === "function") {
-        this.validateNow(rootScreen);
-      }
     },
     async handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
-      if (!this.$refs.addRenderer) {
-        return;
-      }
       this.$refs.addRenderer.hasSubmitted(true);
 
       if (
@@ -1089,13 +1065,15 @@ export default {
         return;
       }
 
-      // Add the item to our model and emit change
-      // @todo Also check that value is an array type, if not, reset it to an array
-      const data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      // Snapshot before reset/hide so remount/@update cannot alter the row.
       const item = JSON.parse(
         JSON.stringify({ ...this.addItem, _parent: undefined })
       );
       delete item._parent;
+
+      // Add the item to our model and emit change
+      // @todo Also check that value is an array type, if not, reset it to an array
+      const data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       data[data.length] = item;
 
       // Emit the newly updated data model

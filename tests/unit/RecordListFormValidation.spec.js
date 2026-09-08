@@ -252,4 +252,63 @@ describe("Record List form-page validation on parent submit", () => {
     expect(validations.loop_1.$each.form_checkbox_3).toBeDefined();
     expect(validations.loop_1.$each.form_checkbox_4).toBeDefined();
   });
+
+  it("keeps required rules for inputs inside Loop > MultiColumn (no false parent-hide)", async () => {
+    // Regression for Loop.spec "Verify validation with multicolumn":
+    // forwarding insideLoop through MultiColumn made parentVisibilityRule walk to
+    // missing `_parent` on $each rows, skip required, and allow invalid submit.
+    const screen = {
+      config: [
+        {
+          name: "page1",
+          items: [
+            {
+              component: "FormLoop",
+              config: {
+                name: "loop_1",
+                settings: { type: "existing", varname: "loop_1" }
+              },
+              items: [
+                {
+                  component: "FormMultiColumn",
+                  config: {
+                    conditionalHide: 'name != "foo"',
+                    items: [[], []]
+                  },
+                  items: [
+                    [
+                      {
+                        component: "FormInput",
+                        config: {
+                          name: "form_input_1",
+                          validation: [{ value: "required", content: "Required" }]
+                        }
+                      }
+                    ],
+                    []
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const validations = {};
+    await ValidationsFactory(screen, {
+      screen,
+      firstPage: 0,
+      data: { loop_1: [{ name: "bar" }, { name: "foo" }] }
+    }).addValidations(validations);
+
+    expect(validations.loop_1.$each.form_input_1.required).toBeDefined();
+
+    const ctx = ruleContext();
+    const rowBar = { name: "bar", form_input_1: "" };
+    // Required must still run (not skipped via false parent visibility).
+    expect(
+      validations.loop_1.$each.form_input_1.required.call(ctx, "", rowBar)
+    ).toBe(false);
+  });
 });

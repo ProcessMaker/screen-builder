@@ -313,11 +313,15 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
+    // Do not forward insideLoop to children. Historically multicolumn children
+    // evaluate parentVisibilityRule at the field data level (insideLoop: false).
+    // Forwarding insideLoop:true makes parent visibility walk to `_parent`, which
+    // $each row models often lack — the catch then treats the parent as hidden
+    // and skips required rules (Loop.spec "validation with multicolumn").
     await ValidationsFactory(this.element.items, {
       screen: this.screen,
       data: this.data,
       parentVisibilityRule: this.element.config.conditionalHide,
-      insideLoop: this.insideLoop,
       insideRecordListForm: this.insideRecordListForm
     }).addValidations(validations);
   }
