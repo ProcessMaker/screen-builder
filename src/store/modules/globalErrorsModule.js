@@ -5,42 +5,73 @@ const namespaced = true;
 
 function countErrors(obj) {
   let errors = 0;
-  if (typeof obj !== "object") {
+  if (typeof obj !== "object" || !obj) {
     return errors;
   }
   Object.entries(obj).forEach(([key, value]) => {
-    if (value) {
-      if (typeof value === "object" && "$each" in value) {
-        errors += countErrors(value.$each.$iter);
-        return;
-      }
-      if (
-        key !== "$iter" &&
-        typeof value === "object" &&
-        "$invalid" in value &&
-        value.$invalid &&
-        Number.isNaN(Number(key))
-      ) {
-        errors++;
-      }
-      if (key !== "$iter" && value) {
-        errors += countErrors(value);
-      }
+    if (!value || typeof value !== "object") {
+      return;
     }
+    if (key === "$iter") {
+      return;
+    }
+    if ("$each" in value) {
+      errors += countErrors(value.$each && value.$each.$iter);
+      return;
+    }
+    if ("$invalid" in value && Number.isNaN(Number(key))) {
+      // Nested group (object variable): count invalid children only.
+      const nestedFieldKeys = Object.keys(value).filter(
+        (childKey) =>
+          !childKey.startsWith("$") &&
+          value[childKey] &&
+          typeof value[childKey] === "object" &&
+          "$invalid" in value[childKey]
+      );
+      if (nestedFieldKeys.length > 0) {
+        errors += countErrors(value);
+      } else if (value.$invalid) {
+        // Leaf control — count once, do not recurse into vuelidate meta.
+        errors += 1;
+      }
+      return;
+    }
+    errors += countErrors(value);
   });
   return errors;
 }
 
+/**
+ * Record List add/edit modals use isolated vue-form-renderers. Their ScreenContent
+ * must never drive the parent screen's global submit/valid state.
+ */
+function isInsideIsolatedRenderer(component) {
+  let node = component;
+  while (node) {
+    if (node.isolated === true) {
+      return true;
+    }
+    node = node.$parent;
+  }
+  return false;
+}
+
 const updateValidationRules = async (screens, commit) => {
-  if (screens.length === 0) {
-    // When validation was restarted, the screens array is empty
-    // and we don't need to do anything
+  const usableScreens = (screens || []).filter(
+    (screen) => screen && !isInsideIsolatedRenderer(screen)
+  );
+  if (usableScreens.length === 0) {
+    // When validation was restarted, or only isolated (modal) screens were
+    // queued, do not touch the parent form's global valid/message state.
     return;
   }
-  const rootScreen = findRootScreen(screens[0]);
+  const rootScreen = findRootScreen(usableScreens[0]);
+  if (!rootScreen || isInsideIsolatedRenderer(rootScreen)) {
+    return;
+  }
   const awaitLoad = [];
-  screens.forEach((screen) => {
-    if (rootScreen !== screen) {
+  usableScreens.forEach((screen) => {
+    if (rootScreen !== screen && typeof screen.loadValidationRules === "function") {
       // refresh nested screen validation rules
       awaitLoad.push(screen.loadValidationRules());
     }
@@ -57,8 +88,10 @@ const updateValidationRules = async (screens, commit) => {
     let errors = 0;
     let message = "";
     if (validate.$invalid) {
+      // Count control rules in vdata only. Adding schema on top double-counts the
+      // same required checkboxes when vocabularies/json-schema mirror those fields
+      // (e.g. 4 controls → "8 validation errors"). Schema still affects $invalid.
       errors += countErrors(validate.vdata);
-      errors += countErrors(validate.schema);
       message =
         errors === 1
           ? "There is a validation error in your form."
@@ -85,6 +118,9 @@ const updateValidationRulesDebounced = debounce(updateValidationRules, 500);
 
 const screensToValidate = [];
 const queueUpdateValidationRules = (mainScreen, commit) => {
+  if (isInsideIsolatedRenderer(mainScreen)) {
+    return;
+  }
   if (!screensToValidate.includes(mainScreen)) {
     screensToValidate.push(mainScreen);
   }
@@ -132,12 +168,21 @@ const globalErrorsModule = {
   },
   actions: {
     restartValidation() {
+      if (typeof updateValidationRulesDebounced.cancel === "function") {
+        updateValidationRulesDebounced.cancel();
+      }
       screensToValidate.length = 0;
     },
     validate({ commit }, mainScreen) {
       queueUpdateValidationRules(mainScreen, commit);
     },
     async validateNow({ commit }, mainScreen) {
+      // Cancel any pending debounced modal/parent updates so they cannot
+      // overwrite this authoritative validation result.
+      if (typeof updateValidationRulesDebounced.cancel === "function") {
+        updateValidationRulesDebounced.cancel();
+      }
+      screensToValidate.length = 0;
       await updateValidationRules([mainScreen], commit);
     },
     close({ commit }) {

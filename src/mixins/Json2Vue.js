@@ -2,7 +2,9 @@ import _ from "lodash";
 import extensions from './extensions';
 import ScreenBase from './ScreenBase';
 import CountElements from '../CountElements';
-import ValidationsFactory from '../ValidationsFactory';
+import ValidationsFactory, {
+  collectRecordListFormPages
+} from '../ValidationsFactory';
 
 let screenRenderer;
 
@@ -122,8 +124,27 @@ export default {
       this.variables.splice(0);
       // Extensions.beforeload
       this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner, definition }));
+      const recordListFormPages = new Set();
+      if (Array.isArray(pages)) {
+        pages.forEach((page) => {
+          if (page && page.items) {
+            collectRecordListFormPages(page.items, recordListFormPages);
+          }
+        });
+      }
+      const currentPageIndex = String(parseInt(this.currentPage, 10) || 0);
       pages.forEach((page, index) => {
         if (page) {
+          // Record List "Record Form" pages render only inside the add/edit
+          // modal (popupConfig). Skip them on the parent screen tree so the
+          // modal's empty defaults cannot mount as root-level controls; parent
+          // submit still validates those fields via FormRecordListValidations.
+          if (
+            recordListFormPages.has(String(index)) &&
+            String(index) !== currentPageIndex
+          ) {
+            return;
+          }
           const component = this.createComponent("div", {
             name: page.name,
             class: "page",

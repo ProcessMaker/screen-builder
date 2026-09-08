@@ -174,6 +174,7 @@
       @shown="emitShownEvent"
     >
       <vue-form-renderer
+        v-if="addModalVisible"
         ref="addRenderer"
         :key="Array.isArray(value) ? value.length : 0"
         v-model="addItem"
@@ -182,6 +183,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :isolated="true"
         debug-context="Record List Add"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -198,10 +200,11 @@
       header-close-content="&times;"
       data-cy="modal-edit"
       @ok="edit"
-      @hidden="$refs.addRenderer.hasSubmitted(false)"
+      @hidden="handleHideEditModal"
       @shown="emitShownEvent"
     >
       <vue-form-renderer
+        v-if="editModalVisible"
         ref="editRenderer"
         :key="editFormVersion"
         v-model="editItem"
@@ -210,6 +213,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :isolated="true"
         debug-context="Record List Edit"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -254,11 +258,13 @@
 
 <script>
 import _ from "lodash";
+import { mapActions } from "vuex";
 import { dateUtils } from "@processmaker/vue-form-elements";
 import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
 import MustacheHelper from "../inspector/mustache-helper.vue";
 import Mustache from "mustache";
+import { findRootScreen } from "@/mixins/DataReference";
 import {
   mapCollectionRecordData,
   normalizeCollectionFieldPath
@@ -333,7 +339,11 @@ export default {
       selectAll: false,
       styleMode: "Classic",
       isPopoverVisible: null,
-      popoverPosition: { top: '0px', left: '0px' }
+      popoverPosition: { top: '0px', left: '0px' },
+      // Mount modal renderers only while open so their required fields never
+      // leak into the parent screen validation rules / global error count.
+      addModalVisible: false,
+      editModalVisible: false
     };
   },
   computed: {
@@ -511,6 +521,12 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    ...mapActions("globalErrorsModule", [
+      "validateNow",
+      "close",
+      "restartValidation",
+      "hasSubmitted"
+    ]),
     togglePopover(index, event, rowId) {
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
       this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
@@ -983,13 +999,18 @@ export default {
       this.editIndex = pageIndex;
       // rebuild the edit screen to avoid
       this.editFormVersion++;
+      this.editModalVisible = true;
       this.$nextTick(() => {
         this.setUploadDataNamePrefix(pageIndex);
         this.$refs.editModal.show();
       });
     },
     edit(event) {
-      this.$refs.addRenderer.hasSubmitted(true);
+      if (!this.$refs.editRenderer) {
+        event.preventDefault();
+        return;
+      }
+      this.$refs.editRenderer.hasSubmitted(true);
       if (
         this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid
       ) {
@@ -1019,8 +1040,11 @@ export default {
         this.$refs.infoModal.show();
         return;
       }
-      // Open form
-      this.$refs.addModal.show();
+      this.addModalVisible = true;
+      // Open form after renderer is mounted
+      this.$nextTick(() => {
+        this.$refs.addModal.show();
+      });
 
       // eslint-disable-next-line no-unused-vars
       const { _parent, ...result } = this.addItem;
@@ -1028,11 +1052,36 @@ export default {
     },
     handleHideAddModal() {
       this.addItem = this.initFormValues;
-      this.$refs.addRenderer.hasSubmitted(false);
+      if (this.$refs.addRenderer) {
+        this.$refs.addRenderer.hasSubmitted(false);
+      }
+      this.addModalVisible = false;
+      this.restoreParentValidationState();
+    },
+    handleHideEditModal() {
+      if (this.$refs.editRenderer) {
+        this.$refs.editRenderer.hasSubmitted(false);
+      }
+      this.editModalVisible = false;
+      this.restoreParentValidationState();
+    },
+    restoreParentValidationState() {
+      // Clear modal-driven global submit flags and refresh parent validity
+      // so required modal fields (e.g. FormCheckbox) never block parent submit.
+      this.restartValidation();
+      this.hasSubmitted(false);
+      this.close();
+      const rootScreen = findRootScreen(this);
+      if (rootScreen && typeof rootScreen.loadValidationRules === "function") {
+        this.validateNow(rootScreen);
+      }
     },
     async handleOk(bvModalEvt) {
-      this.$refs.addRenderer.hasSubmitted(true);
       bvModalEvt.preventDefault();
+      if (!this.$refs.addRenderer) {
+        return;
+      }
+      this.$refs.addRenderer.hasSubmitted(true);
 
       if (
         this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid

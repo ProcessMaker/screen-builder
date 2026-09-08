@@ -1,6 +1,6 @@
 import { validators } from './mixins/ValidationRules';
 import DataProvider from './DataProvider';
-import { get, set, merge } from 'lodash';
+import { get, set, merge, unset } from 'lodash';
 import { Parser } from 'expr-eval';
 
 let globalObject = typeof window === 'undefined'
@@ -8,6 +8,102 @@ let globalObject = typeof window === 'undefined'
   : window;
 
 let pagesValidated = [];
+
+/**
+ * Collect page indexes referenced by FormRecordList "Record Form" configs.
+ */
+export function collectRecordListFormPages(items, pages = new Set()) {
+  if (!Array.isArray(items)) {
+    return pages;
+  }
+  items.forEach((item) => {
+    if (!item) {
+      return;
+    }
+    if (item.component === 'FormRecordList' && item.config && item.config.form !== '' && item.config.form != null) {
+      pages.add(String(item.config.form));
+    }
+    if (item.items) {
+      collectRecordListFormPages(item.items, pages);
+    }
+  });
+  return pages;
+}
+
+/**
+ * Collect variable names from a tree of screen items.
+ */
+export function collectFieldNames(items, names = new Set()) {
+  if (!Array.isArray(items)) {
+    return names;
+  }
+  items.forEach((item) => {
+    if (!item) {
+      return;
+    }
+    if (item.config && typeof item.config.name === 'string' && item.config.name) {
+      names.add(item.config.name);
+    }
+    if (item.items) {
+      collectFieldNames(item.items, names);
+    }
+  });
+  return names;
+}
+
+/**
+ * Remove validation rules that belong only to Record List form pages so they
+ * never block parent-screen submit. Modal renderers (popupConfig with only the
+ * form page) keep their rules.
+ */
+export function stripRecordListFormPageValidations(definition, firstPage, validations) {
+  const config = definition && definition.config;
+  if (!Array.isArray(config) || !validations || typeof validations !== 'object') {
+    return validations;
+  }
+
+  const formPages = new Set();
+  config.forEach((page) => {
+    if (page && page.items) {
+      collectRecordListFormPages(page.items, formPages);
+    }
+  });
+  if (formPages.size === 0) {
+    return validations;
+  }
+
+  // Modal/popup case: config only has the record-form page → keep its rules.
+  const presentPages = config
+    .map((page, index) => (page ? String(index) : null))
+    .filter(Boolean);
+  if (
+    presentPages.length === 1 &&
+    formPages.has(presentPages[0]) &&
+    String(firstPage) === presentPages[0]
+  ) {
+    return validations;
+  }
+
+  const firstPageFields = collectFieldNames((config[firstPage] && config[firstPage].items) || []);
+
+  formPages.forEach((pageIndex) => {
+    if (String(pageIndex) === String(firstPage)) {
+      return;
+    }
+    const page = config[pageIndex];
+    if (!page || !page.items) {
+      return;
+    }
+    collectFieldNames(page.items).forEach((name) => {
+      if (!firstPageFields.has(name)) {
+        unset(validations, name);
+      }
+    });
+  });
+
+  return validations;
+}
+
 class Validations {
   screen = null;
   firstPage = 0;
@@ -221,6 +317,21 @@ class PageNavigateValidations extends Validations {
       return;
     }
     const screenNumber = this.element.config.eventData;
+    // Record List form pages validate only inside the add/edit modal.
+    const recordListFormPages = new Set();
+    if (Array.isArray(this.screen.config)) {
+      this.screen.config.forEach((page) => {
+        if (page && page.items) {
+          collectRecordListFormPages(page.items, recordListFormPages);
+        }
+      });
+    }
+    if (
+      recordListFormPages.has(String(screenNumber)) ||
+      recordListFormPages.has(String(parseInt(screenNumber, 10)))
+    ) {
+      return;
+    }
     let screenName = 'Empty Screen';
     if (this.screen.config[screenNumber] && this.screen.config[screenNumber].name) {
       screenName = this.screen.config[screenNumber].name;
@@ -232,6 +343,80 @@ class PageNavigateValidations extends Validations {
         await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
       }
     }
+  }
+}
+
+/**
+ * Validate Record List rows using the configured Record Form page.
+ *
+ * Rules are always namespaced as `${listName}__${fieldName}` so they never
+ * collide with root controls and are not double-counted against json-schema
+ * entries that use the bare field name. Validators read `listName[]` rows.
+ */
+class FormRecordListValidations extends Validations {
+  async addValidations(validations) {
+    if (!this.isVisible()) {
+      return;
+    }
+    // Collection / read-only lists do not use the add/edit record form.
+    if (this.element.config && this.element.config.editable === false) {
+      return;
+    }
+    const formIndex = this.element.config && this.element.config.form;
+    if (formIndex === '' || formIndex == null) {
+      return;
+    }
+    const listName = this.element.config && this.element.config.name;
+    if (!(listName && typeof listName === 'string')) {
+      return;
+    }
+    const formPage = this.screen && this.screen.config && this.screen.config[formIndex];
+    if (!formPage || !Array.isArray(formPage.items)) {
+      return;
+    }
+
+    const rowRules = {};
+    const rows = get(this.data, listName);
+    const firstRow = (Array.isArray(rows) && rows.length > 0) ? rows[0] : {};
+    await ValidationsFactory(formPage.items, {
+      screen: this.screen,
+      data: { _parent: this.data, ...firstRow },
+      parentVisibilityRule: this.element.config.conditionalHide,
+      insideLoop: true
+    }).addValidations(rowRules);
+
+    Object.keys(rowRules).forEach((fieldName) => {
+      if (fieldName === '$each') {
+        return;
+      }
+      const rules = rowRules[fieldName];
+      if (!rules || typeof rules !== 'object') {
+        return;
+      }
+      // Always namespace: bare field names are also validated by json-schema /
+      // vocabularies; sharing the same key doubles the submit error count.
+      const targetName = `${listName}__${fieldName}`.replace(/\./g, '_');
+      set(validations, targetName, get(validations, targetName, {}));
+      const target = get(validations, targetName);
+      Object.keys(rules).forEach((ruleName) => {
+        const originalFn = rules[ruleName];
+        if (typeof originalFn !== 'function') {
+          return;
+        }
+        target[ruleName] = function(...props) {
+          const data = props[1];
+          const listRows = get(data, listName);
+          // No rows yet: treat as empty field values (required/accepted fail).
+          if (!Array.isArray(listRows) || listRows.length === 0) {
+            return originalFn.apply(this, [undefined, data]);
+          }
+          // Every stored row must satisfy the Record Form rule.
+          return listRows.every((row) =>
+            originalFn.apply(this, [get(row, fieldName), { _parent: data, ...row }])
+          );
+        };
+      });
+    });
   }
 }
 
@@ -400,8 +585,9 @@ function ValidationsFactory(element, options) {
     return new FormLoopValidations(element, options);
   }
   if (element.component === 'FormRecordList') {
-    //not required
-    //return new FormRecordListValidations(element, screen);
+    // Validate Record Form fields against list rows on parent submit.
+    // Modal add/edit keeps its own isolated renderer validation.
+    return new FormRecordListValidations(element, options);
   }
   if (element.component === 'FormButton' && element.config.event === 'pageNavigate') {
     return new PageNavigateValidations(element, options);
