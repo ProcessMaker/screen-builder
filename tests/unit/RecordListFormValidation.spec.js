@@ -142,4 +142,114 @@ describe("Record List form-page validation on parent submit", () => {
       validations.form_record_list_1__rl_checkbox_2.required.call(ctx, undefined, data)
     ).toBe(true);
   });
+
+  it("ignores PageNavigate on the Record Form page (no ghost root rules)", async () => {
+    // Mirrors screens where RLcheck has "back to page 0" navigation: following
+    // that link while building rowRules used to namespace root checkboxes under
+    // form_record_list_1__* and inflate the submit error count (e.g. 10 vs 6).
+    const withPageNavigate = {
+      config: [
+        {
+          name: "screen check",
+          items: [
+            {
+              component: "FormCheckbox",
+              config: {
+                name: "form_checkbox_1",
+                validation: [{ value: "required", content: "Required" }]
+              }
+            },
+            {
+              component: "FormCheckbox",
+              config: {
+                name: "form_checkbox_2",
+                validation: [{ value: "required", content: "Required" }]
+              }
+            },
+            {
+              component: "FormLoop",
+              config: {
+                name: "loop_1",
+                settings: { add: true, type: "new", times: "1", varname: "loop_1" }
+              },
+              items: [
+                {
+                  component: "FormCheckbox",
+                  config: {
+                    name: "form_checkbox_3",
+                    validation: [{ value: "required", content: "Required" }]
+                  }
+                },
+                {
+                  component: "FormCheckbox",
+                  config: {
+                    name: "form_checkbox_4",
+                    validation: [{ value: "required", content: "Required" }]
+                  }
+                }
+              ]
+            },
+            {
+              component: "FormRecordList",
+              config: {
+                name: "form_record_list_1",
+                form: "1",
+                editable: true
+              }
+            },
+            {
+              component: "FormButton",
+              config: { event: "pageNavigate", eventData: "1", label: "Page Navigation" }
+            }
+          ]
+        },
+        {
+          name: "RLcheck",
+          items: [
+            {
+              component: "FormCheckbox",
+              config: {
+                name: "form_checkbox_5",
+                validation: [{ value: "required", content: "Required" }]
+              }
+            },
+            {
+              component: "FormCheckbox",
+              config: {
+                name: "form_checkbox_6",
+                validation: [{ value: "required", content: "Required" }]
+              }
+            },
+            {
+              component: "FormButton",
+              config: { event: "pageNavigate", eventData: "0", label: "Page Navigation" }
+            }
+          ]
+        }
+      ]
+    };
+
+    const validations = {};
+    await ValidationsFactory(withPageNavigate, {
+      screen: withPageNavigate,
+      firstPage: 0,
+      data: {}
+    }).addValidations(validations);
+
+    const keys = Object.keys(validations).sort();
+    expect(keys).toEqual([
+      "form_checkbox_1",
+      "form_checkbox_2",
+      "form_record_list_1__form_checkbox_5",
+      "form_record_list_1__form_checkbox_6",
+      "loop_1"
+    ]);
+    // Ghost keys from following PageNavigate back to page 0 must not appear.
+    expect(validations.form_record_list_1__form_checkbox_1).toBeUndefined();
+    expect(validations.form_record_list_1__form_checkbox_2).toBeUndefined();
+    expect(validations.form_record_list_1__form_record_list_1__form_checkbox_5).toBeUndefined();
+    expect(validations.form_record_list_1__form_record_list_1__form_checkbox_6).toBeUndefined();
+    expect(validations.loop_1.$each.form_checkbox_3).toBeDefined();
+    expect(validations.loop_1.$each.form_checkbox_4).toBeDefined();
+  });
 });

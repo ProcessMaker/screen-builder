@@ -109,6 +109,10 @@ class Validations {
   firstPage = 0;
   data = {};
   insideLoop = false;
+  // True while collecting field rules for a Record List Record Form page.
+  // PageNavigate must not follow links in that context (would pull the parent
+  // page into rowRules and create ghost/duplicate validation keys).
+  insideRecordListForm = false;
   constructor(element, options) {
     this.element = element;
     Object.assign(this, options);
@@ -158,7 +162,13 @@ class Validations {
 class ArrayOfFieldsValidations extends Validations {
   async addValidations(validations) {
     for (const item of this.element) {
-      await ValidationsFactory(item, { screen: this.screen, data: this.data, parentVisibilityRule: this.parentVisibilityRule, insideLoop: this.insideLoop }).addValidations(validations);
+      await ValidationsFactory(item, {
+        screen: this.screen,
+        data: this.data,
+        parentVisibilityRule: this.parentVisibilityRule,
+        insideLoop: this.insideLoop,
+        insideRecordListForm: this.insideRecordListForm
+      }).addValidations(validations);
     }
   }
 }
@@ -303,7 +313,13 @@ class FormMultiColumnValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
-    await ValidationsFactory(this.element.items, { screen: this.screen, data: this.data, parentVisibilityRule: this.element.config.conditionalHide }).addValidations(validations);
+    await ValidationsFactory(this.element.items, {
+      screen: this.screen,
+      data: this.data,
+      parentVisibilityRule: this.element.config.conditionalHide,
+      insideLoop: this.insideLoop,
+      insideRecordListForm: this.insideRecordListForm
+    }).addValidations(validations);
   }
 }
 
@@ -314,6 +330,12 @@ class PageNavigateValidations extends Validations {
   async addValidations(validations) {
     // Disable validations if field is hidden
     if (!this.isVisible()) {
+      return;
+    }
+    // Record Form pages may include Page Navigation buttons (e.g. back to the
+    // main page). Those must not pull destination-page rules into the Record
+    // List row validators — that duplicates root fields under listName__*.
+    if (this.insideRecordListForm) {
       return;
     }
     const screenNumber = this.element.config.eventData;
@@ -358,6 +380,11 @@ class FormRecordListValidations extends Validations {
     if (!this.isVisible()) {
       return;
     }
+    // Nested Record List while already collecting a Record Form's rules:
+    // do not recurse (avoids listName__listName__field ghost keys).
+    if (this.insideRecordListForm) {
+      return;
+    }
     // Collection / read-only lists do not use the add/edit record form.
     if (this.element.config && this.element.config.editable === false) {
       return;
@@ -382,7 +409,8 @@ class FormRecordListValidations extends Validations {
       screen: this.screen,
       data: { _parent: this.data, ...firstRow },
       parentVisibilityRule: this.element.config.conditionalHide,
-      insideLoop: true
+      insideLoop: true,
+      insideRecordListForm: true
     }).addValidations(rowRules);
 
     Object.keys(rowRules).forEach((fieldName) => {
