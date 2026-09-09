@@ -182,6 +182,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :isolated="true"
         debug-context="Record List Add"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -198,7 +199,7 @@
       header-close-content="&times;"
       data-cy="modal-edit"
       @ok="edit"
-      @hidden="$refs.addRenderer.hasSubmitted(false)"
+      @hidden="handleHideEditModal"
       @shown="emitShownEvent"
     >
       <vue-form-renderer
@@ -210,6 +211,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :isolated="true"
         debug-context="Record List Edit"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -254,6 +256,7 @@
 
 <script>
 import _ from "lodash";
+import { mapActions } from "vuex";
 import { dateUtils } from "@processmaker/vue-form-elements";
 import VueFormRenderer from "@/components/vue-form-renderer.vue";
 import mustacheEvaluation from "../../mixins/mustacheEvaluation";
@@ -511,6 +514,11 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    ...mapActions("globalErrorsModule", [
+      "close",
+      "restartValidation",
+      "hasSubmitted"
+    ]),
     togglePopover(index, event, rowId) {
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
       this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
@@ -976,20 +984,24 @@ export default {
     },
     showEditForm(index, rowId) {
       const pageIndex = (this.currentPage - 1) * this.perPage + index;
-      // Reset edit to be a copy of our data model item
-      this.editItem = JSON.parse(
+      const rowData = JSON.parse(
         JSON.stringify(_.find(this.tableData.data, { row_id: rowId }))
       );
       this.editIndex = pageIndex;
-      // rebuild the edit screen to avoid
+      this.editItem = rowData;
+      // rebuild the edit screen to avoid stale control state between edits
       this.editFormVersion++;
       this.$nextTick(() => {
+        // Remount can emit a stale @update with empty defaults; re-seed once
+        // after mount. Do not block later @update — loops need those events
+        // (RecordListWithLoops).
+        this.editItem = JSON.parse(JSON.stringify(rowData));
         this.setUploadDataNamePrefix(pageIndex);
         this.$refs.editModal.show();
       });
     },
     edit(event) {
-      this.$refs.addRenderer.hasSubmitted(true);
+      this.$refs.editRenderer.hasSubmitted(true);
       if (
         this.$refs.editRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid
       ) {
@@ -1029,10 +1041,23 @@ export default {
     handleHideAddModal() {
       this.addItem = this.initFormValues;
       this.$refs.addRenderer.hasSubmitted(false);
+      this.restoreParentValidationState();
+    },
+    handleHideEditModal() {
+      this.$refs.editRenderer.hasSubmitted(false);
+      this.restoreParentValidationState();
+    },
+    restoreParentValidationState() {
+      // Isolated modals must not leave the parent in a "submitted"/invalid state.
+      // Avoid validateNow/loadValidationRules here — on large screens (ComplexScreen)
+      // that rebuild can race with Record List row data after Add/Edit.
+      this.restartValidation();
+      this.hasSubmitted(false);
+      this.close();
     },
     async handleOk(bvModalEvt) {
-      this.$refs.addRenderer.hasSubmitted(true);
       bvModalEvt.preventDefault();
+      this.$refs.addRenderer.hasSubmitted(true);
 
       if (
         this.$refs.addRenderer.$refs.renderer.$refs.component.$v.vdata.$invalid
@@ -1040,13 +1065,15 @@ export default {
         return;
       }
 
-      // Add the item to our model and emit change
-      // @todo Also check that value is an array type, if not, reset it to an array
-      const data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
+      // Snapshot before reset/hide so remount/@update cannot alter the row.
       const item = JSON.parse(
         JSON.stringify({ ...this.addItem, _parent: undefined })
       );
       delete item._parent;
+
+      // Add the item to our model and emit change
+      // @todo Also check that value is an array type, if not, reset it to an array
+      const data = this.value ? JSON.parse(JSON.stringify(this.value)) : [];
       data[data.length] = item;
 
       // Emit the newly updated data model

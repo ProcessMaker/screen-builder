@@ -122,6 +122,10 @@ export default {
       this.variables.splice(0);
       // Extensions.beforeload
       this.extensions.forEach((ext) => ext.beforeload instanceof Function && ext.beforeload.bind(this)({ pages, owner, definition }));
+      // Keep every page in the tree (including Record Form pages). E2E fixtures
+      // like RecordListWithLoops expect root defaults from those pages
+      // (e.g. loop_1: [{}]). Parent submit validates list rows via
+      // FormRecordListValidations; modals stay isolated.
       pages.forEach((page, index) => {
         if (page) {
           const component = this.createComponent("div", {
