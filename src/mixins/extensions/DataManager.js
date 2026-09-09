@@ -8,16 +8,25 @@ export default {
         const { component } = v.element;
         const dataFormat = v.config.dataFormat || null;
         const safeDotName = this.safeDotName(v.name);
+        // For checkboxes, use explicit undefined checks to preserve false values
+        const isCheckbox = component === "FormCheckbox";
+        const vdataCheck = isCheckbox ? "vdataVal !== undefined" : "vdataVal";
+        const dataCheck = isCheckbox ? "dataVal !== undefined" : "dataVal";
         this.addData(
           screen,
           safeDotName,
           `
-            this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
-            this.getValue(${JSON.stringify(v.name)}, data) || 
-            this.initialValue(
-              '${component}',
-              '${dataFormat}',
-              ${JSON.stringify(v.config)})
+            (() => {
+              const vdataVal = this.getValue(${JSON.stringify(
+                v.name
+              )}, this.vdata);
+              if (${vdataCheck}) return vdataVal;
+              const dataVal = this.getValue(${JSON.stringify(v.name)}, data);
+              if (${dataCheck}) return dataVal;
+              return this.initialValue('${component}', '${dataFormat}', ${JSON.stringify(
+            v.config
+          )});
+            })()
           `,
           v.name
         );
