@@ -132,27 +132,19 @@ class Validations {
   }
 
   /**
-   * Check if element/container is visible.
+   * Check if element/container should contribute rules at build time.
+   *
+   * Device visibility is decided once (screen-level). Conditional Visibility
+   * Rules must NOT be applied here: they depend on live data and can change
+   * per row / after the user toggles another control. Those expressions are
+   * evaluated inside each validator at submit/validate time instead.
    */
   isVisible() {
-    // Disable validations if field is hidden
     const visibleInDevice =
       this.element.visibleInDevice === null || this.element.visibleInDevice === undefined
         ? true
         : this.element.visibleInDevice;
-    if (!visibleInDevice) {
-      return false;
-    }
-
-    let visible = true;
-    if (this.element.config.conditionalHide) {
-      try {
-        visible = !!Parser.evaluate(this.element.config.conditionalHide, this.data);
-      } catch (error) {
-        visible = false;
-      }
-    }
-    return visible;
+    return !!visibleInDevice;
   }
 }
 
@@ -407,11 +399,12 @@ class FormRecordListValidations extends Validations {
     }
 
     const rowRules = {};
-    const rows = get(this.data, listName);
-    const firstRow = (Array.isArray(rows) && rows.length > 0) ? rows[0] : {};
+    // Do not seed with the first list row: isVisible() / containers would omit
+    // fields hidden on that row even when later rows show them. Visibility is
+    // applied per row when the wrapped validators run.
     await ValidationsFactory(formPage.items, {
       screen: this.screen,
-      data: { _parent: this.data, ...firstRow },
+      data: { _parent: this.data },
       parentVisibilityRule: this.element.config.conditionalHide,
       insideLoop: true,
       insideRecordListForm: true
@@ -439,10 +432,13 @@ class FormRecordListValidations extends Validations {
           const data = props[1];
           const listRows = get(data, listName);
           // No rows yet: treat as empty field values (required/accepted fail).
+          // Use an empty row context so field/parent visibility rules evaluate
+          // against a row shape, not the root screen alone.
           if (!Array.isArray(listRows) || listRows.length === 0) {
-            return originalFn.apply(this, [undefined, data]);
+            return originalFn.apply(this, [undefined, { _parent: data }]);
           }
-          // Every stored row must satisfy the Record Form rule.
+          // Every stored row must satisfy the Record Form rule. originalFn
+          // already skips the check when the field/parent is hidden for that row.
           return listRows.every((row) =>
             originalFn.apply(this, [get(row, fieldName), { _parent: data, ...row }])
           );
