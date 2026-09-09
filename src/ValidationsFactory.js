@@ -157,7 +157,7 @@ class FormLoopValidations extends Validations {
         return;
       }
       page.items.filter(item => {
-        if (item.component === 'FormLoop' && item.config.name === this.element.config.name) {
+        if (item.component === 'FormLoop' && item.config.name === this.element.config.name && item !== this.element) {
           siblings.push(item);
         }
       });
@@ -239,31 +239,52 @@ class PageNavigateValidations extends Validations {
  * Add validations for a form element
  */
 class FormElementValidations extends Validations {
+  /**
+   * Returns true when this field should be skipped entirely (not validated).
+   * Inside loops, conditionalHide is per-row and handled by the runtime closure,
+   * so only the device-level visibleInDevice flag is checked statically.
+   */
+  shouldSkipValidation() {
+    if (this.insideLoop) {
+      const visibleInDevice =
+        this.element.visibleInDevice === null || this.element.visibleInDevice === undefined
+          ? true
+          : this.element.visibleInDevice;
+      return !visibleInDevice;
+    }
+    return !this.isVisible();
+  }
+
+  /**
+   * Returns true when the element has a usable config with a valid variable name
+   * and is neither readonly nor disabled.
+   */
+  isValidElement() {
+    const { config } = this.element;
+    if (!config || config.readonly || config.disabled) {
+      return false;
+    }
+    return config.name &&
+      typeof config.name === 'string' &&
+      config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/);
+  }
+
   async addValidations(validations) {
-    // Disable validations if field is hidden
-    if (!this.isVisible()) {
+    if (this.shouldSkipValidation()) {
       return;
     }
-    if (this.element.config && this.element.config.readonly) {
-      //readonly elements do not need validation
-      return;
-    }
-    if (this.element.config && this.element.config.disabled) {
-      //disabled elements do not need validation
-      return;
-    }
-    if (!(this.element.config && this.element.config.name && typeof this.element.config.name === 'string' && this.element.config.name.match(/^[a-zA-Z_][0-9a-zA-Z_.]*$/))) {
-      //element invalid
+    if (!this.isValidElement()) {
       return;
     }
     const fieldName = this.element.config.name;
     const validationConfig = this.element.config.validation;
-    const conditionalHide = this.element.config.conditionalHide;
-    const parentVisibilityRule = this.parentVisibilityRule;
-    const insideLoop = this.insideLoop || false;
-    const deviceConfig = this.element.config.deviceVisibility
-      ? this.element.config.deviceVisibility
-      : { showForDesktop: true, showForMobile: true };
+    const closureOptions = {
+      fieldName,
+      conditionalHide: this.element.config.conditionalHide,
+      parentVisibilityRule: this.parentVisibilityRule,
+      insideLoop: this.insideLoop || false,
+      deviceConfig: this.element.config.deviceVisibility || { showForDesktop: true, showForMobile: true },
+    };
 
     set(validations, fieldName, get(validations, fieldName, {}));
     const fieldValidation = get(validations, fieldName);
@@ -275,109 +296,77 @@ class FormElementValidations extends Validations {
         }
         let validationFn = validators[rule];
         if (!validationFn) {
-          // eslint-disable-next-line no-console
           return;
         }
         if (validation.configs instanceof Array) {
-          const params = [];
-          validation.configs.forEach((cnf) => {
-            params.push(cnf.value);
-          });
+          const params = validation.configs.map((cnf) => cnf.value);
           params.push(fieldName);
           validationFn = validationFn(...params);
         }
-        fieldValidation[rule] = function(...props) {
-          const data = props[1];
-          const level = fieldName.split('.').length - 1;
-          const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-          if (parentVisibilityRule) {
-            const nextParentLevel = insideLoop ? 1 : 0;
-            const parentDataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level + nextParentLevel);
-            let isParentVisible = true;
-            try {
-              isParentVisible = !!Parser.evaluate(parentVisibilityRule, parentDataWithParent);
-            } catch (error) {
-              isParentVisible = false;
-            }
-
-            if (!isParentVisible ) {
-              return true;
-            }
-          }
-
-          // Check Device Visibility
-          let visibleInDevice = true;
-          try {
-            const isMobileScreen = this.$root.$children[0].$refs.renderer.definition.isMobile;
-            visibleInDevice =
-              (isMobileScreen && deviceConfig.showForMobile) ||
-              (!isMobileScreen && deviceConfig.showForDesktop);
-          } catch (error) {
-            visibleInDevice = true;
-          }
-          if (!visibleInDevice) {
-            return true;
-          }
-
-          // Check Field Visibility
-          let visible = true;
-          if (conditionalHide) {
-            try {
-              visible = !!Parser.evaluate(conditionalHide, dataWithParent);
-            } catch (error) {
-              visible = false;
-            }
-          }
-          if (!visible) {
-            return true;
-          }
-          return validationFn.apply(this,props);
-        };
+        fieldValidation[rule] = this.buildClosure(validationFn, closureOptions);
       });
     } else if (typeof validationConfig === 'string' && validationConfig) {
-      let validationFn = validators[validationConfig];
+      const validationFn = validators[validationConfig];
       if (!validationFn) {
-        // eslint-disable-next-line no-console
         return;
       }
-      fieldValidation[validationConfig] = function(...props) {
-        const data = props[1];
-        const level = fieldName.split('.').length - 1;
-        const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
-        // Check Parent Visibility
-        if (parentVisibilityRule) {
-          const nextParentLevel = insideLoop ? 1 : 0;
-          const parentDataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level + nextParentLevel);
-          let isParentVisible = true;
-          try {
-            isParentVisible = !!Parser.evaluate(parentVisibilityRule, parentDataWithParent);
-          } catch (error) {
-            isParentVisible = false;
-          }
-
-          if (!isParentVisible) {
-            return true;
-          }
-        }
-        // Check Field Visibility
-        let visible = true;
-        if (conditionalHide) {
-          try {
-            visible = !!Parser.evaluate(conditionalHide, dataWithParent);
-          } catch (error) {
-            visible = false;
-          }
-        }
-        if (!visible) {
-          return true;
-        }
-        return validationFn.apply(this,props);
-      };
+      fieldValidation[validationConfig] = this.buildClosure(validationFn, closureOptions);
     }
     if (this.element.items) {
       ValidationsFactory(this.element.items, { screen: this.screen, data: this.data }).addValidations(validations);
     }
   }
+
+  buildClosure(validationFn, { fieldName, parentVisibilityRule, insideLoop, deviceConfig, conditionalHide }) {
+    return function (...props) {
+      const data = props[1];
+      const level = fieldName.split('.').length - 1;
+      const dataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level);
+
+      if (parentVisibilityRule) {
+        const nextParentLevel = insideLoop ? 1 : 0;
+        const parentDataWithParent = this.getDataAccordingToFieldLevel(this.getRootScreen().addReferenceToParents(data), level + nextParentLevel);
+        let isParentVisible = true;
+        try {
+          isParentVisible = !!Parser.evaluate(parentVisibilityRule, parentDataWithParent);
+        } catch (error) {
+          isParentVisible = false;
+        }
+        if (!isParentVisible) {
+          return true;
+        }
+      }
+
+      // Check Device Visibility
+      let visibleInDevice = true;
+      try {
+        const isMobileScreen = this.$root.$children[0].$refs.renderer.definition.isMobile;
+        visibleInDevice =
+          (isMobileScreen && deviceConfig.showForMobile) ||
+          (!isMobileScreen && deviceConfig.showForDesktop);
+      } catch (error) {
+        visibleInDevice = true;
+      }
+      if (!visibleInDevice) {
+        return true;
+      }
+
+      // Check Field Visibility
+      let visible = true;
+      if (conditionalHide) {
+        try {
+          visible = !!Parser.evaluate(conditionalHide, dataWithParent);
+        } catch (error) {
+          visible = false;
+        }
+      }
+      if (!visible) {
+        return true;
+      }
+      return validationFn.apply(this, props);
+    };
+  }
+
   camelCase(name) {
     return name.replace(/_\w/g, m => m.substr(1, 1).toUpperCase());
   }
