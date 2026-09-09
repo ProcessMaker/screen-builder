@@ -8,6 +8,7 @@
           v-model="collectionId"
           :options="collections"
           data-cy="inspector-collection"
+          @change="onCollectionIdChange"
         />
         <b-form-text class="mt-2">
         {{ $t("Collection Record Control is not available for Anonymous Web Entry") }}
@@ -29,8 +30,6 @@
 
 <script>
 import { debounce } from "lodash";
-import MustacheHelper from "./mustache-helper.vue";
-import ScreenVariableSelector from "../screen-variable-selector.vue";
 
 const CONFIG_FIELDS = [
   "collectionId",
@@ -40,10 +39,6 @@ const CONFIG_FIELDS = [
 ];
 
 export default {
-  components: {
-    MustacheHelper,
-    ScreenVariableSelector
-  },
   props: ["value"],
   data() {
     return {
@@ -111,13 +106,15 @@ export default {
     });
   },
   methods: {
-    onCollectionChange() {
+    onCollectionIdChange(collectionId) {
+      this.$emit("collection-id-changed", collectionId);
+    },
+    loadCollectionRecords() {
       this.$dataProvider
         .getCollectionRecordsList(this.collectionId)
         .then((response) => {
           this.dataRecordList = response.data;
         });
-      this.$emit('change', this.dataRecordList);
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
@@ -158,7 +155,7 @@ export default {
             value: field.field
           }));
 
-          this.onCollectionChange();
+          this.loadCollectionRecords();
         });
     },
     onNLQConversion(pmql) {

@@ -1,4 +1,5 @@
 const collectionId = 88;
+const emptyCollectionId = 89;
 const fieldNames = [
   "case_number",
   "claimant_name",
@@ -46,7 +47,10 @@ function findRecordList(config) {
   return null;
 }
 
-function configureCollectionRecordList() {
+function configureCollectionRecordList(
+  collectionName = "Synthetic Claims",
+  requests = ["@collectionFields", "@collectionRecords"]
+) {
   cy.openAcordeon("collapse-3");
   cy.openAcordeon("collapse-2");
   cy.get("[data-cy=controls-FormRecordList]").drag(
@@ -56,8 +60,38 @@ function configureCollectionRecordList() {
   cy.get("[data-cy=screen-element-container]").click();
   cy.get("[data-cy=accordion-Configuration]").click();
   cy.get("[data-cy=inspector-collection-data-source]").select("Collection");
-  cy.get("[data-cy=inspector-collection]").select("Synthetic Claims");
-  cy.wait(["@collectionFields", "@collectionRecords"]);
+  cy.get("[data-cy=inspector-collection]").select(collectionName);
+  cy.wait(requests);
+}
+
+function setPersistedConfiguration({ dataRecordList = [], options }) {
+  cy.get("#screen-builder-container").then((container) => {
+    const [{ __vue__: root }] = container;
+    const { builder } = root.$refs;
+    const recordList = findRecordList(builder.config);
+
+    recordList.config.source.collectionFields.dataRecordList = dataRecordList;
+    recordList.config.source.dataSelectionOptions = "single-field";
+    recordList.config.source.singleField = `data.${fieldNames[0]}`;
+    recordList.config.fields.optionsList = options;
+    recordList.config.fields.jsonData = JSON.stringify(options);
+  });
+}
+
+function expectPersistedConfiguration(options) {
+  cy.get("#screen-builder-container").then((container) => {
+    const [{ __vue__: root }] = container;
+    const { builder } = root.$refs;
+    const recordList = findRecordList(builder.config);
+
+    expect(recordList.config.source.dataSelectionOptions).to.equal(
+      "single-field"
+    );
+    expect(recordList.config.source.singleField).to.equal(
+      `data.${fieldNames[0]}`
+    );
+    expect(recordList.config.fields.optionsList).to.deep.equal(options);
+  });
 }
 
 describe("Collection record list columns", () => {
@@ -67,6 +101,12 @@ describe("Collection record list columns", () => {
         {
           id: collectionId,
           name: "Synthetic Claims",
+          read_screen_id: null,
+          create_screen_id: null
+        },
+        {
+          id: emptyCollectionId,
+          name: "Empty Claims",
           read_screen_id: null,
           create_screen_id: null
         }
@@ -85,6 +125,16 @@ describe("Collection record list columns", () => {
       ],
       meta: { total: 2 }
     }).as("collectionRecords");
+    cy.intercept("GET", `/api/1.0/collections/${emptyCollectionId}/columns*`, {
+      data: fieldNames.map((field) => ({
+        label: field,
+        field: `data.${field}`
+      }))
+    }).as("emptyCollectionFields");
+    cy.intercept("GET", `/api/1.0/collections/${emptyCollectionId}/records*`, {
+      data: [],
+      meta: { total: 0 }
+    }).as("emptyCollectionRecords");
     cy.visit("/");
   });
 
@@ -232,6 +282,80 @@ describe("Collection record list columns", () => {
         secondRecordData.case_number
       );
       expect(recordList.config.source.singleField).to.equal(legacySingleField);
+    });
+  });
+
+  it("preserves columns when an empty collection returns to Design mode", () => {
+    const persistedOptions = fieldNames.slice(0, 6).map((field) => ({
+      content: `data.${field}`,
+      key: `data.${field}`
+    }));
+
+    configureCollectionRecordList("Empty Claims", [
+      "@emptyCollectionFields",
+      "@emptyCollectionRecords"
+    ]);
+    setPersistedConfiguration({ options: persistedOptions });
+
+    cy.get("[data-cy=mode-preview]").click();
+    cy.wait("@emptyCollectionRecords");
+    cy.get("[data-cy=mode-editor]").click();
+    cy.wait(["@emptyCollectionFields", "@emptyCollectionRecords"]);
+
+    expectPersistedConfiguration(persistedOptions);
+    cy.get("[data-cy=inspector-collection-single-field]").should(
+      "have.value",
+      fieldNames[0]
+    );
+  });
+
+  it("preserves imported columns when cached records reference the old collection id", () => {
+    const persistedOptions = fieldNames.slice(0, 6).map((field) => ({
+      content: `data.${field}`,
+      key: `data.${field}`
+    }));
+    const staleRecords = [
+      {
+        id: recordData.id,
+        collection_id: 77,
+        data: recordData
+      }
+    ];
+
+    configureCollectionRecordList();
+    setPersistedConfiguration({
+      dataRecordList: staleRecords,
+      options: persistedOptions
+    });
+
+    cy.get("[data-cy=mode-preview]").click();
+    cy.wait("@collectionRecords");
+    cy.get("[data-cy=mode-editor]").click();
+    cy.wait(["@collectionFields", "@collectionRecords"]);
+
+    expectPersistedConfiguration(persistedOptions);
+    cy.get("[data-cy=inspector-collection-single-field]").should(
+      "have.value",
+      fieldNames[0]
+    );
+  });
+
+  it("clears columns when the user explicitly selects another collection", () => {
+    const persistedOptions = [{ content: fieldNames[0], key: fieldNames[0] }];
+
+    configureCollectionRecordList();
+    setPersistedConfiguration({ options: persistedOptions });
+    expectPersistedConfiguration(persistedOptions);
+
+    cy.get("[data-cy=inspector-collection]").select("Empty Claims");
+    cy.wait(["@emptyCollectionFields", "@emptyCollectionRecords"]);
+
+    cy.get("#screen-builder-container").then((container) => {
+      const [{ __vue__: root }] = container;
+      const { builder } = root.$refs;
+      const recordList = findRecordList(builder.config);
+
+      expect(recordList.config.fields.optionsList).to.deep.equal([]);
     });
   });
 });
