@@ -21,6 +21,9 @@ export default {
   },
   methods: {
     openLink() {
+      if (!this.url) {
+        return;
+      }
       window.open(this.url, "_blank");
     }
   }
