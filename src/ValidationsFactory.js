@@ -137,7 +137,8 @@ class Validations {
    * Device visibility is decided once (screen-level). Conditional Visibility
    * Rules must NOT be applied here: they depend on live data and can change
    * per row / after the user toggles another control. Those expressions are
-   * evaluated inside each validator at submit/validate time instead.
+   * evaluated inside each validator at submit/validate time instead
+   * (field conditionalHide, parentVisibilityRule from containers / PageNavigate).
    */
   isVisible() {
     const visibleInDevice =
@@ -146,6 +147,21 @@ class Validations {
         : this.element.visibleInDevice;
     return !!visibleInDevice;
   }
+}
+
+/**
+ * AND-combine visibility expressions so nested parents and the current control
+ * both gate child validators at validate time.
+ */
+function combineVisibilityRules(...rules) {
+  const parts = rules.filter((rule) => typeof rule === 'string' && rule.trim());
+  if (parts.length === 0) {
+    return undefined;
+  }
+  if (parts.length === 1) {
+    return parts[0];
+  }
+  return parts.map((rule) => `(${rule})`).join(' and ');
 }
 
 /**
@@ -358,7 +374,19 @@ class PageNavigateValidations extends Validations {
     if (pagesValidated.length > 0 && !pagesValidated.includes(screenPageId)) {
       if (this.screen.config[screenNumber] && this.screen.config[screenNumber].items) {
         pagesValidated.push(screenPageId);
-        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, { screen: this.screen, data: this.data }).addValidations(validations);
+        // Propagate the nav button's Visibility Rule (and any parent container
+        // rule) so destination required fields do not block submit while the
+        // page is unreachable. isVisible() no longer evaluates conditionalHide
+        // at build time, so this parentVisibilityRule is the runtime gate.
+        const parentVisibilityRule = combineVisibilityRules(
+          this.parentVisibilityRule,
+          this.element.config && this.element.config.conditionalHide
+        );
+        await ValidationsFactory(this.screen.config[this.element.config.eventData].items, {
+          screen: this.screen,
+          data: this.data,
+          parentVisibilityRule
+        }).addValidations(validations);
       }
     }
   }

@@ -723,4 +723,75 @@ describe("Record List form-page validation on parent submit", () => {
       true
     );
   });
+
+  it("does not let a hidden PageNavigate destination block submit", async () => {
+    // isVisible() ignores conditionalHide at build time so Record List/gated
+    // fields still register. PageNavigate must propagate its Visibility Rule as
+    // parentVisibilityRule, or an unreachable page's required fields would fail.
+    const screen = {
+      config: [
+        {
+          name: "page1",
+          items: [
+            {
+              component: "FormCheckbox",
+              config: { name: "show_page2", validation: [] }
+            },
+            {
+              component: "FormButton",
+              config: {
+                event: "pageNavigate",
+                eventData: "1",
+                label: "Go to page 2",
+                conditionalHide: "show_page2 == true"
+              }
+            }
+          ]
+        },
+        {
+          name: "page2",
+          items: [
+            {
+              component: "FormInput",
+              config: {
+                name: "page2_required",
+                validation: [{ value: "required", content: "Required" }]
+              }
+            }
+          ]
+        }
+      ]
+    };
+
+    const validations = {};
+    await ValidationsFactory(screen, {
+      screen,
+      firstPage: 0,
+      data: { show_page2: false, page2_required: "" }
+    }).addValidations(validations);
+
+    expect(validations.page2_required.required).toBeDefined();
+
+    const ctx = ruleContext();
+    // Nav button hidden → destination required must not block submit.
+    expect(
+      validations.page2_required.required.call(ctx, "", {
+        show_page2: false,
+        page2_required: ""
+      })
+    ).toBe(true);
+    // Nav button visible → empty destination field fails as usual.
+    expect(
+      validations.page2_required.required.call(ctx, "", {
+        show_page2: true,
+        page2_required: ""
+      })
+    ).toBe(false);
+    expect(
+      validations.page2_required.required.call(ctx, "ok", {
+        show_page2: true,
+        page2_required: "ok"
+      })
+    ).toBe(true);
+  });
 });
