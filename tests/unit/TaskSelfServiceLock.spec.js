@@ -133,6 +133,7 @@ describe('Task self-service lock', () => {
       screenVersion: null,
       beforeLoadTask: jest.fn().mockResolvedValue(),
       $dataProvider: { getTasks },
+      setVocabulariesSchemaUrl: jest.fn(),
       setSelfService,
       linkTask,
       checkTaskStatus,
@@ -149,5 +150,43 @@ describe('Task self-service lock', () => {
     expect(linkTask).toHaveBeenCalledWith(false);
     expect(checkTaskStatus).toHaveBeenCalled();
     expect(context.loadingTask).toBe(false);
+  });
+
+  test("setVocabulariesSchemaUrl invalidates cache when task changes", () => {
+    sandbox.window.ProcessMaker = {
+      packages: ["package-vocabularies"],
+      VocabulariesSchemaUrl: "vocabularies/task_schema/222",
+      VocabulariesSchemaCache: {
+        url: "vocabularies/task_schema/222",
+        data: { current: true }
+      }
+    };
+
+    Task.methods.setVocabulariesSchemaUrl.call({ taskId: 223 });
+
+    expect(sandbox.window.ProcessMaker.VocabulariesSchemaUrl).toBe(
+      "vocabularies/task_schema/223"
+    );
+    expect(sandbox.window.ProcessMaker.VocabulariesSchemaCache).toBeNull();
+  });
+
+  test("setVocabulariesSchemaUrl keeps cache when task has not changed", () => {
+    const cache = {
+      url: "vocabularies/task_schema/223",
+      data: { current: true }
+    };
+
+    sandbox.window.ProcessMaker = {
+      packages: ["package-vocabularies"],
+      VocabulariesSchemaUrl: "vocabularies/task_schema/223",
+      VocabulariesSchemaCache: cache
+    };
+
+    Task.methods.setVocabulariesSchemaUrl.call({ taskId: 223 });
+
+    expect(sandbox.window.ProcessMaker.VocabulariesSchemaUrl).toBe(
+      "vocabularies/task_schema/223"
+    );
+    expect(sandbox.window.ProcessMaker.VocabulariesSchemaCache).toBe(cache);
   });
 });
