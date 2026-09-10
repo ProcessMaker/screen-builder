@@ -86,6 +86,14 @@ export default {
         style.remove();
       });
 
+      doc.body.querySelectorAll("*").forEach((el) => {
+        Array.from(el.attributes).forEach((attr) => {
+          if (attr.name.startsWith("on") || /^javascript:/i.test(attr.value)) {
+            el.removeAttribute(attr.name);
+          }
+        });
+      });
+
       return doc.body.innerHTML;
     },
     changePage(page) {
