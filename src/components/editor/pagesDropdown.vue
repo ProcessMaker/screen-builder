@@ -21,7 +21,7 @@
       <!-- Icon for adding a new page -->
       <i class="fas fa-plus platform-dropdown-item-icon text-dark w-icon text-center"></i>
       <!-- Text for adding a new page -->
-      {{ $t("Create Page") }}
+      {{ $t("Create Page FOFOFOFOFOO") }}
     </b-dropdown-item>
 
     <!-- Option to see all pages -->
