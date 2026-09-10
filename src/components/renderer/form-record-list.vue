@@ -1028,6 +1028,7 @@ export default {
     },
     handleHideAddModal() {
       this.addItem = this.initFormValues;
+      window.ProcessMaker.EventBus.$emit("record-list-add-modal-hidden");
       this.$refs.addRenderer.hasSubmitted(false);
     },
     async handleOk(bvModalEvt) {
