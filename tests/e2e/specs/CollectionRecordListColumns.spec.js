@@ -207,10 +207,8 @@ describe("Collection record list columns", () => {
       recordList.config.source.singleField = legacySingleField;
       recordList.config.fields.optionsList = legacyOptions;
       recordList.config.fields.jsonData = JSON.stringify(legacyOptions);
-      root.previewInput = JSON.stringify({
-        claim_selection: recordData.case_number
-      });
     });
+    cy.setPreviewDataInput({ claim_selection: recordData.case_number });
 
     cy.get("[data-cy=mode-preview]").click();
     cy.wait("@collectionRecords");

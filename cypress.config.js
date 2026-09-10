@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const { defineConfig } = require("cypress");
 const { prepareAudit, lighthouse } = require("@cypress-audit/lighthouse");
 const { pa11y } = require("@cypress-audit/pa11y");
@@ -45,6 +47,22 @@ module.exports = defineConfig({
           console.log("found %d files, first one %s", list.length, list[0]);
 
           return list[0];
+        },
+        clearDownloads(folder) {
+          if (!folder) {
+            throw new Error("Missing downloads folder");
+          }
+
+          if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder, { recursive: true });
+            return null;
+          }
+
+          fs.readdirSync(folder).forEach((file) => {
+            fs.unlinkSync(path.join(folder, file));
+          });
+
+          return null;
         }
       });
       // It's IMPORTANT to return the config object
