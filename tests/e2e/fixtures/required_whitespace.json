@@ -1,0 +1,78 @@
+{
+  "type": "screen_package",
+  "version": "2",
+  "screens": [
+    {
+      "id": 32296,
+      "screen_category_id": "1",
+      "title": "Required Whitespace",
+      "description": "Required controls must reject whitespace-only values",
+      "type": "FORM",
+      "config": [
+        {
+          "name": "Required Whitespace",
+          "items": [
+            {
+              "label": "Line Input",
+              "component": "FormInput",
+              "config": {
+                "name": "required_input",
+                "type": "text",
+                "label": "Required Input",
+                "readonly": false,
+                "dataFormat": "string",
+                "validation": [
+                  {
+                    "value": "required",
+                    "content": "Required"
+                  }
+                ]
+              },
+              "inspector": [],
+              "editor-control": "FormInput",
+              "editor-component": "FormInput"
+            },
+            {
+              "label": "Text Area",
+              "component": "FormTextArea",
+              "config": {
+                "name": "required_textarea",
+                "label": "Required Textarea",
+                "readonly": false,
+                "richtext": false,
+                "rows": 3,
+                "validation": [
+                  {
+                    "value": "required",
+                    "content": "Required"
+                  }
+                ]
+              },
+              "inspector": [],
+              "editor-control": "FormTextArea",
+              "editor-component": "FormTextArea"
+            },
+            {
+              "label": "Submit Button",
+              "component": "FormButton",
+              "config": {
+                "name": "submit_button",
+                "event": "submit",
+                "label": "Submit",
+                "variant": "primary",
+                "fieldValue": null,
+                "defaultSubmit": true
+              },
+              "inspector": [],
+              "editor-control": "FormButton",
+              "editor-component": "FormButton"
+            }
+          ]
+        }
+      ],
+      "computed": [],
+      "watchers": [],
+      "custom_css": null
+    }
+  ]
+}

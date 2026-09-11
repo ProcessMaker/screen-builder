@@ -487,6 +487,12 @@ describe("Validation Rules", () => {
     ).click();
     cy.shouldHaveValidationErrors("screen-field-form_input_2");
 
+    // Whitespace-only values should not satisfy the active rule
+    cy.get(
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_2"]'
+    ).type("   ", { parseSpecialCharSequences: false });
+    cy.shouldHaveValidationErrors("screen-field-form_input_2");
+
     // Uncheck box 1
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
@@ -513,6 +519,12 @@ describe("Validation Rules", () => {
     cy.get(
       '[data-cy=preview-content] [data-cy="screen-field-form_checkbox_1"]'
     ).click();
+    cy.shouldHaveValidationErrors("screen-field-form_input_2");
+
+    // Whitespace-only values should not satisfy the active rule
+    cy.get(
+      '[data-cy=preview-content] [data-cy="screen-field-form_input_2"]'
+    ).type("   ", { parseSpecialCharSequences: false });
     cy.shouldHaveValidationErrors("screen-field-form_input_2");
 
     // Uncheck box 1
