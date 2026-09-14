@@ -146,12 +146,6 @@ Cypress.Commands.add("assertComponentValueAsJson", (selector, expectedData) => {
  * @param {String} filename - The screen filename to load
  */
 Cypress.Commands.add("loadFromJson", (filename, index, mode = "form") => {
-  cy.get("#screen-builder-container", { timeout: 60000 })
-    .should("be.visible")
-    .should(($el) => {
-      expect(Boolean($el[0] && $el[0].__vue__)).to.eq(true);
-    });
-
   return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
     cy.window().then((win) => {
       win.exampleScreens = content.screens;
@@ -160,6 +154,12 @@ Cypress.Commands.add("loadFromJson", (filename, index, mode = "form") => {
       cy.intercept(`/api/1.0/screens/${screen.id}`, JSON.stringify(screen));
     });
     if (index !== undefined) {
+      cy.get("#screen-builder-container", { timeout: 60000 })
+        .should("be.visible")
+        .should(($el) => {
+          expect(Boolean($el[0] && $el[0].__vue__)).to.eq(true);
+        });
+
       const screen = content.screens[index];
       cy.setVueComponentProperty(
         "#screen-builder-container",
