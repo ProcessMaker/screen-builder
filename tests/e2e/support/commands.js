@@ -148,8 +148,8 @@ Cypress.Commands.add("assertComponentValueAsJson", (selector, expectedData) => {
 Cypress.Commands.add("loadFromJson", (filename, index, mode = "form") => {
   cy.get("#screen-builder-container", { timeout: 60000 })
     .should("be.visible")
-    .and(($el) => {
-      expect($el[0].__vue__).to.exist;
+    .should(($el) => {
+      expect(Boolean($el[0] && $el[0].__vue__)).to.eq(true);
     });
 
   return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
