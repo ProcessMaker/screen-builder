@@ -146,6 +146,12 @@ Cypress.Commands.add("assertComponentValueAsJson", (selector, expectedData) => {
  * @param {String} filename - The screen filename to load
  */
 Cypress.Commands.add("loadFromJson", (filename, index, mode = "form") => {
+  cy.get("#screen-builder-container", { timeout: 60000 })
+    .should("be.visible")
+    .and(($el) => {
+      expect($el[0].__vue__).to.exist;
+    });
+
   return cy.readFile(`tests/e2e/fixtures/${filename}`).then((content) => {
     cy.window().then((win) => {
       win.exampleScreens = content.screens;
