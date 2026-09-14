@@ -70,6 +70,10 @@ module.exports = defineConfig({
       return config;
     },
     testIsolation: false,
+    retries: {
+      runMode: 2,
+      openMode: 0
+    },
     baseUrl: "http://localhost:5173",
     specPattern: "tests/e2e/specs/**/*.{js,jsx,ts,tsx}",
     supportFile: "tests/e2e/support/index.js",
