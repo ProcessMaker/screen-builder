@@ -1,35 +1,12 @@
 /* eslint-disable max-len, no-return-assign */
 describe("Loop control", { testIsolation: true, retries: 2 }, () => {
-  function visitBuilder(attempt = 1) {
+  function visitBuilder() {
     cy.visit("/", {
       timeout: 120000,
       onBeforeLoad(win) {
         win.localStorage.clear();
       }
     });
-
-    cy.window({ timeout: 30000 }).then((win) => {
-      return new Cypress.Promise((resolve) => {
-        const startedAt = Date.now();
-        const poll = () => {
-          if (win.document.querySelector("#screen-builder-container")) {
-            resolve(true);
-            return;
-          }
-          if (Date.now() - startedAt > 8000) {
-            resolve(false);
-            return;
-          }
-          setTimeout(poll, 200);
-        };
-        poll();
-      });
-    }).then((didMount) => {
-      if (!didMount && attempt < 3) {
-        visitBuilder(attempt + 1);
-      }
-    });
-
     cy.get("#screen-builder-container", { timeout: 60000 }).should(
       "be.visible"
     );
