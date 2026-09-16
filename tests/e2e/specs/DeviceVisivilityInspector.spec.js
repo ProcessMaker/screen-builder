@@ -5,8 +5,8 @@ import {
   previewScreenWebMobile,
   addControlInsideTable,
   goToDesigner
-} from "../support/utils.js";
-import { nodeControls } from "../support/constants.js";
+} from "../support/utils";
+import { nodeControls } from "../support/constants";
 
 describe("Device Visiblility Inspector", () => {
   it("Verify if an input has device visiblility settings", () => {
@@ -321,29 +321,21 @@ describe("Device Visiblility Inspector", () => {
       .then(($lis) => {
         expect($lis).to.have.length(2); // true
       });
-    cy.wait(200);
     cy.get("[data-cy=inspector-deviceVisibility]")
       .children()
       .children(".custom-control")
+      .should("have.length", 2)
       .each((control) => {
-        // GET INPUT
-        expect(control.children("input")).to.have.length(1);
-        // get label
-        expect(control.children("label")).to.have.length(1);
-        // get Window reference from element
-        const win = control.children("label")[0].ownerDocument.defaultView;
-        // use getComputedStyle to read the pseudo selector
-        const before = win.getComputedStyle(
-          control.children("label")[0],
-          "before"
-        );
-        // read the value of the `content` CSS property
-        const contentValue = before.getPropertyValue("background-color");
-        // the returned value will have double quotes around it, but this is correct
-        expect(contentValue).to.eq("rgb(255, 255, 255)");
-      })
-      .then(($lis) => {
-        expect($lis).to.have.length(2); // true
+        cy.wrap(control).find("input").should("have.length", 1);
+        cy.wrap(control)
+          .find("label")
+          .should(($label) => {
+            const win = $label[0].ownerDocument.defaultView;
+            const before = win.getComputedStyle($label[0], "before");
+            const contentValue = before.getPropertyValue("background-color");
+
+            expect(contentValue).to.eq("rgb(255, 255, 255)");
+          });
       });
   });
   it("Verify Device Visibility of controls inside a loop", () => {

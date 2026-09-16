@@ -399,7 +399,10 @@ describe("Validation Rules", () => {
 
   it("Access to Request _parent variables", () => {
     cy.loadFromJson("test_parent_in_validations.json", 0);
-    cy.setPreviewDataInput({ _parent: { user_name: "from_parent_request" } });
+    cy.get("[data-cy=screen-element-container]").should(
+      "have.length.at.least",
+      3
+    );
 
     // Change validation rule to Same (input 1)
     cy.get("[data-cy=screen-element-container]").eq(1).click();
@@ -420,6 +423,9 @@ describe("Validation Rules", () => {
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
+    cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').should(
+      "not.be.visible"
+    );
 
     // Change validation rule to Same (input 1 inside loop)
     cy.get("[data-cy=screen-element-container]").eq(2).click();
@@ -440,41 +446,32 @@ describe("Validation Rules", () => {
     cy.get(
       '[data-cy="inspector-validation"] [data-cy="update-rule"]:visible'
     ).click();
+    cy.get('[data-cy="inspector-validation"] input[name="variable-name"]').should(
+      "not.be.visible"
+    );
 
+    cy.setPreviewDataInput({ _parent: { user_name: "from_parent_request" } });
+    cy.get("#screen-builder-container").should(($div) => {
+      const previewInput = JSON.parse($div[0].__vue__.previewInput);
+      expect(previewInput._parent.user_name).to.eq("from_parent_request");
+    });
     cy.get("[data-cy=mode-preview]").click();
-    cy.get('[data-cy=preview-content] [name="form_input_1"]')
-      .parent()
-      .find(".invalid-feedback")
-      .should("be.visible");
-    cy.get('[data-cy=preview-content] [name="form_input_1"]').type("abc");
-    cy.get('[data-cy=preview-content] [name="form_input_1"]')
-      .parent()
-      .find(".invalid-feedback")
-      .should("be.visible");
-    cy.get('[data-cy=preview-content] [name="form_input_1"]')
-      .clear()
-      .type("from_parent_request");
-    cy.get('[data-cy=preview-content] [name="form_input_1"]')
-      .parent()
-      .find(".invalid-feedback")
-      .should("not.exist");
 
-    cy.get('[data-cy=preview-content] [name="form_input_2"]')
-      .parent()
-      .find(".invalid-feedback")
-      .should("be.visible");
+    cy.shouldHaveValidationErrors("screen-field-form_input_1");
+    cy.get('[data-cy=preview-content] [name="form_input_1"]').type("abc");
+    cy.shouldHaveValidationErrors("screen-field-form_input_1");
+    cy.get('[data-cy=preview-content] [name="form_input_1"]')
+      .clear()
+      .type("from_parent_request");
+    cy.shouldNotHaveValidationErrors("screen-field-form_input_1");
+
+    cy.shouldHaveValidationErrors("screen-field-form_input_2");
     cy.get('[data-cy=preview-content] [name="form_input_2"]').type("abc");
-    cy.get('[data-cy=preview-content] [name="form_input_2"]')
-      .parent()
-      .find(".invalid-feedback")
-      .should("be.visible");
+    cy.shouldHaveValidationErrors("screen-field-form_input_2");
     cy.get('[data-cy=preview-content] [name="form_input_2"]')
       .clear()
       .type("from_parent_request");
-    cy.get('[data-cy=preview-content] [name="form_input_2"]')
-      .parent()
-      .find(".invalid-feedback")
-      .should("not.exist");
+    cy.shouldNotHaveValidationErrors("screen-field-form_input_2");
   });
 
   it("Required IF with boolean values", () => {

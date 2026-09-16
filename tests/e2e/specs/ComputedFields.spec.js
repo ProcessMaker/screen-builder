@@ -1,4 +1,16 @@
-describe("Computed fields", () => {
+describe("Computed fields", { testIsolation: true }, () => {
+  beforeEach(() => {
+    cy.clearLocalStorage();
+    cy.clearCookies();
+  });
+
+  function assertPreviewDataStable(expectedData) {
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedData);
+    });
+  }
+
   function setupConsoleStubs(stubs) {
     cy.visit("/", {
       onBeforeLoad(win) {
@@ -12,6 +24,7 @@ describe("Computed fields", () => {
   function loadAndPreview(jsonFile) {
     cy.loadFromJson(jsonFile, 0);
     cy.get("[data-cy=mode-preview]").click();
+    cy.get("[data-cy=preview-content]").should("be.visible");
   }
 
   it("Make sure new rows can be added to the loop, even with a javascript-driven computed field", () => {
@@ -25,12 +38,14 @@ describe("Computed fields", () => {
     cy.get("[data-cy=loop-loop_1-add]").click();
     cy.get("[data-cy=loop-loop_1-add]").click();
     cy.get("[data-cy=loop-loop_1-add]").click();
+    cy.get("[data-cy=screen-field-form_input_1]").should("have.length", 3);
 
     cy.get("[data-cy=screen-field-form_input_1]")
       .first()
       .clear()
-      .type("First input");
-    cy.assertPreviewData({
+      .type("First input")
+      .blur();
+    assertPreviewDataStable({
       loop_1: [
         {
           form_input_1: "First input"
@@ -48,13 +63,19 @@ describe("Computed fields", () => {
   it("Make sure that calc log was displayed with success result", () => {
     setupConsoleStubs({ log: "consoleLog", error: "consoleError" });
     loadAndPreview("FOUR-5139.json");
-    cy.get("@consoleLog").should("be.calledWith", "%c✅ %cCalc \"loop_1\" has %cRUN");
+    cy.get("@consoleLog").should(
+      "be.calledWith",
+      '%c✅ %cCalc "loop_1" has %cRUN'
+    );
   });
 
   it("Make sure that calc log was displayed with ERROR result", () => {
     setupConsoleStubs({ log: "consoleLog", groupCollapsed: "groupCollapsed" });
     loadAndPreview("FOUR-5139-calcError.json");
-    cy.get("@groupCollapsed").should("be.calledWith", "%c❌ %cCalc \"loop_1\" has %cFAILED");
+    cy.get("@groupCollapsed").should(
+      "be.calledWith",
+      '%c❌ %cCalc "loop_1" has %cFAILED'
+    );
   });
 
   it("CRUD of computed fields", () => {
@@ -72,8 +93,9 @@ describe("Computed fields", () => {
       .clear()
       .type("pow(form_input_2, 2)");
     cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-table"]').should('contain.text', 'form_input_1');
+    cy.get('[data-cy="calcs-table"]').should("contain.text", "form_input_1");
     cy.get('[data-cy="calcs-modal"] .close').click();
+    cy.get('[data-cy="calcs-modal"]').should("not.be.visible");
 
     // Edit the created calculated property
     cy.get('[data-cy="topbar-calcs"]').click();
@@ -87,8 +109,9 @@ describe("Computed fields", () => {
       .clear()
       .type("form_input_1 * 100");
     cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-table"]').should('contain.text', 'form_input_2');
+    cy.get('[data-cy="calcs-table"]').should("contain.text", "form_input_2");
     cy.get('[data-cy="calcs-modal"] .close').click();
+    cy.get('[data-cy="calcs-modal"]').should("not.be.visible");
 
     // Delete the created calculated property
     cy.get('[data-cy="topbar-calcs"]').click();
@@ -113,10 +136,7 @@ describe("Computed fields", () => {
       .clear()
       .type("pow(form_input_2, 2)");
     cy.get('[data-cy="calcs-button-save"]').click();
-    cy.get('[data-cy="calcs-table"]').should(
-      "contain.text",
-      "form_input_1"
-    );
+    cy.get('[data-cy="calcs-table"]').should("contain.text", "form_input_1");
     cy.get('[data-cy="calcs-modal"] .close').click();
 
     // Create a duplicated calculated property
@@ -165,18 +185,20 @@ describe("Computed fields", () => {
     );
     cy.get('[data-cy="calcs-button-save"]').click();
     cy.get('[data-cy="calcs-modal"] .close').click();
+    cy.get('[data-cy="calcs-modal"]').should("not.be.visible");
     cy.get("[data-cy=mode-preview]").click();
 
     cy.get("[data-cy=preview-content] [name=form_input_2]")
       .clear()
-      .type("name");
+      .type("name")
+      .blur();
 
     // Assertion: Check the form_input_1 is the upper case of form_input_2
     cy.get("[data-cy=preview-content] [name=form_input_1]").should(
       "have.value",
       "NAME"
     );
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_input_1: "NAME",
       form_input_2: "name"
     });
@@ -214,14 +236,17 @@ describe("Computed fields", () => {
     cy.get('[data-cy="calcs-modal"] .close').click();
     cy.get("[data-cy=mode-preview]").click();
 
-    cy.get("[data-cy=preview-content] [name=form_input_2]").clear().type("4");
+    cy.get("[data-cy=preview-content] [name=form_input_2]")
+      .clear()
+      .type("4")
+      .blur();
 
     // Assertion: Check the form_input_1 is the upper case of form_input_2
     cy.get("[data-cy=preview-content] [name=form_input_1]").should(
       "have.value",
       "16"
     );
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_input_1: 16,
       form_input_2: 4
     });
