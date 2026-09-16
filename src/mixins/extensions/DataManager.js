@@ -8,12 +8,15 @@ export default {
         const { component } = v.element;
         const dataFormat = v.config.dataFormat || null;
         const safeDotName = this.safeDotName(v.name);
+        // Use nullish coalescing so valid falsy values (0, '', [], false) are preserved.
+        // The previous `||` chain treated those as missing and fell back to initialValue
+        // (e.g. FormRecordList collection radio/single-field selections became null).
         this.addData(
           screen,
           safeDotName,
           `
-            this.getValue(${JSON.stringify(v.name)}, this.vdata) || 
-            this.getValue(${JSON.stringify(v.name)}, data) || 
+            this.getValue(${JSON.stringify(v.name)}, this.vdata) ??
+            this.getValue(${JSON.stringify(v.name)}, data) ??
             this.initialValue(
               '${component}',
               '${dataFormat}',
