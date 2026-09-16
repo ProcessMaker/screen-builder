@@ -32,6 +32,7 @@
             :key="refreshScreen"
             :loop-context="loopContext"
             :taskdraft="this.task"
+            :read-only="isFormReadOnly"
             @update-page-task="pageUpdate"
             @update="onUpdate"
             @after-submit="afterSubmit"
@@ -132,6 +133,7 @@ export default {
       loadingTask: false,
       loadingListeners: this.waitLoadingListeners,
       isSelfService: false,
+      forceFormReadOnly: false,
     };
   },
   watch: {
@@ -205,6 +207,18 @@ export default {
     },
   },
   computed: {
+    isFormReadOnly() {
+      if (this.forceFormReadOnly) {
+        return true;
+      }
+      const status = this.task?.status;
+      return Boolean(
+        this.taskPreview
+        && status
+        && ["CLOSED", "COMPLETED", "TRIGGERED"].includes(status)
+        && !this.alwaysAllowEditing
+      );
+    },
     shouldAddSubmitButton() {
       if (!this.task) {
         return false;
@@ -239,7 +253,11 @@ export default {
         }
       }
       if (json.config !== undefined) {
+        // Align with nested-screen / collection controls: Record List uses
+        // `editable`, and Signature/File-like controls may check readonly.
         json.config.disabled = true;
+        json.config.readonly = true;
+        json.config.editable = false;
       }
       if (json.items !== undefined) {
         this.disableForm(json.items);
@@ -337,9 +355,13 @@ export default {
           }
         }
       }
-      if (this.taskPreview && this.task.status === "CLOSED") {
+      if (
+        this.taskPreview
+        && ["CLOSED", "COMPLETED", "TRIGGERED"].includes(this.task.status)
+      ) {
         this.task.interstitial_screen['_interstitial'] = false;
         if (!this.alwaysAllowEditing) {
+          this.forceFormReadOnly = true;
           this.task.screen.config = this.disableForm(this.task.screen.config);
         }
         this.screen = this.task.screen;

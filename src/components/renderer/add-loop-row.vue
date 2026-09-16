@@ -7,7 +7,7 @@
     </b-row>
 
     <b-row
-      v-if="value && config.settings.add"
+      v-if="canAddOrRemove"
       class="justify-content-md-center"
     >
       <b-col md="auto">
@@ -44,15 +44,41 @@ export default {
     config: Object,
     error: String
   },
+  computed: {
+    isDisabled() {
+      return Boolean(
+        this.config
+        && (this.config.disabled || this.config.readonly || this.config.editable === false)
+      );
+    },
+    canAddOrRemove() {
+      return Boolean(
+        this.value
+        && this.config
+        && this.config.settings
+        && this.config.settings.add
+        && !this.isDisabled
+      );
+    }
+  },
   methods: {
     async add() {
+      if (this.isDisabled) {
+        return;
+      }
       this.value.push({});
     },
     remove() {
+      if (this.isDisabled) {
+        return;
+      }
       const removed = this.value.pop();
       this.$root.$emit("removed-loop", this, removed);
     },
     removeConfirm() {
+      if (this.isDisabled) {
+        return;
+      }
       const message = this.$t("Are you sure you want to delete this?");
       window.ProcessMaker.confirmModal(this.$t("Caution!"), message, "", () => {
         this.remove();

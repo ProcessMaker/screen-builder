@@ -6,7 +6,7 @@
       </div>
       <div v-if="styleMode === 'Classic'" class="col text-right">
         <button
-          v-if="editable && !selfReferenced"
+          v-if="canEditRecords && !selfReferenced"
           class="btn btn-primary"
           data-cy="add-row"
           @click="showAddForm"
@@ -40,6 +40,7 @@
           <template #head(checkbox)="data">
             <b-form-checkbox
               v-model="allRowsSelected"
+              :disabled="!canChangeSelection"
               @change="selectAllRows"
               :indeterminate="indeterminate"
               aria-label="Select All"
@@ -50,6 +51,7 @@
             <b-form-checkbox
               v-model="selectedRows"
               :value="item"
+              :disabled="!canChangeSelection"
               @change="onMultipleSelectionChange(index)"
             />
           </template>
@@ -58,6 +60,7 @@
             <b-form-radio
               v-model="selectedRow"
               :value="item"
+              :disabled="!canChangeSelection"
               @change="onRadioChange(item, index)"
 
             />
@@ -82,7 +85,7 @@
 
           </template>
           <template #cell(__actions)="{ index, item }">
-            <div class="actions">
+            <div v-if="canEditRecords" class="actions">
               <div
                 class="btn-group btn-group-sm"
                 role="group"
@@ -148,7 +151,7 @@
           </div>
           <div v-if="styleMode === 'Modern'" class="col text-right">
             <button
-              v-if="editable && !selfReferenced"
+              v-if="canEditRecords && !selfReferenced"
               class="btn btn-link text-primary class-button-modern"
               data-cy="add-row"
               @click="showAddForm"
@@ -160,7 +163,7 @@
     </template>
 
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="addModal"
       :static="true"
       size="lg"
@@ -188,7 +191,7 @@
       />
     </b-modal>
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="editModal"
       :static="true"
       size="lg"
@@ -216,7 +219,7 @@
       />
     </b-modal>
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="deleteModal"
       size="lg"
       :ok-title="$t('Delete')"
@@ -229,7 +232,7 @@
       <p>{{ $t("Are you sure you want to remove this record?") }}</p>
     </b-modal>
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="infoModal"
       size="sm"
       :ok-title="$t('OK')"
@@ -242,7 +245,7 @@
       <p>{{ $t("The form to be displayed is not assigned.") }}</p>
     </b-modal>
 
-    <div v-if="editable && selfReferenced" class="alert alert-danger">
+    <div v-if="canEditRecords && selfReferenced" class="alert alert-danger">
       {{
         $t(
           "The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records."
@@ -277,12 +280,20 @@ export default {
     MustacheHelper
   },
   mixins: [mustacheEvaluation],
+  inject: {
+    formReadOnlyState: {
+      default: () => ({ value: false })
+    }
+  },
   props: [
     "name",
     "label",
     "fields",
     "value",
     "editable",
+    "disabled",
+    "readonly",
+    "config",
     "_config",
     "form",
     "validationData",
@@ -337,6 +348,26 @@ export default {
     };
   },
   computed: {
+    canEditRecords() {
+      if (this.isFormReadOnlyContext()) {
+        return false;
+      }
+      const cfg = this.config || this._config;
+      if (
+        this.disabled
+        || this.readonly
+        || (cfg && (cfg.disabled || cfg.readonly || cfg.editable === false))
+      ) {
+        return false;
+      }
+      return Boolean(this.editable);
+    },
+    // Collection radio/checkbox selection must stay active in Screen Builder
+    // preview and active tasks. Block only in Tasks Preview Pane for
+    // CLOSED/COMPLETED (formReadOnlyState / forceFormReadOnly).
+    canChangeSelection() {
+      return !this.isFormReadOnlyContext();
+    },
     tableClassModern() {
       if (this.styleMode === 'Modern') {
         switch (this.bgcolormodern) {
@@ -425,14 +456,17 @@ export default {
     },
     // The fields used for our vue table
     tableFields() {
-      const fields = this.getTableFieldsFromDataSource();
+      const fields = this.getTableFieldsFromDataSource().filter(
+        (field) => field.key !== "__actions"
+      );
 
-      if (this.editable && !this.selfReferenced) {
+      if (this.canEditRecords && !this.selfReferenced) {
         fields.push(jsonOptionsActionsColumn);
       }
 
-      // Adds radio buttons or checkbox to the table depending selected option
-      if(this.source?.sourceOptions === "Collection") {
+      // Selection controls stay visible so the chosen record remains obvious;
+      // they are disabled when the form is read-only (closed/completed preview).
+      if (this.source?.sourceOptions === "Collection") {
         if (['single-field', 'single-record'].includes(this.source?.dataSelectionOptions)) {
           fields.unshift({
             key: 'radio',
@@ -511,7 +545,28 @@ export default {
     this.$root.$emit("record-list-option", this.source?.sourceOptions);
   },
   methods: {
+    isFormReadOnlyContext() {
+      if (this.formReadOnlyState && this.formReadOnlyState.value) {
+        return true;
+      }
+      let parent = this.$parent;
+      let depth = 0;
+      while (parent && depth < 30) {
+        if (parent.formReadOnlyState && parent.formReadOnlyState.value) {
+          return true;
+        }
+        if (parent.forceFormReadOnly || parent.isFormReadOnly) {
+          return true;
+        }
+        parent = parent.$parent;
+        depth += 1;
+      }
+      return false;
+    },
     togglePopover(index, event, rowId) {
+      if (!this.canEditRecords) {
+        return;
+      }
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
       this.isPopoverVisible = this.isPopoverVisible === index ? null : index;
       if (this.isPopoverVisible !== null) {
@@ -563,6 +618,9 @@ export default {
       this.styleMode = value ? value : "Classic";
     },
     selectAllRows() {
+      if (!this.canChangeSelection) {
+        return;
+      }
       if (this.allRowsSelected) {
         const updatedRows = this.tableData.data.map((item, index) => {
           return {
@@ -583,6 +641,9 @@ export default {
       this.$emit('input',  data);
     },
     onRadioChange(selectedItem, index) {
+      if (!this.canChangeSelection) {
+        return;
+      }
       const globalIndex = (this.currentPage - 1) * this.perPage + index;
       if(this.source?.singleField) {
         const singleField = normalizeCollectionFieldPath(
@@ -596,6 +657,9 @@ export default {
       }
     },
     onMultipleSelectionChange(selIndex) {
+      if (!this.canChangeSelection) {
+        return;
+      }
       this.collectionData.forEach((item, index) => {
           this.selectedRows.forEach((selectedItem) => {
               // Compares both objects all keys and values
@@ -975,6 +1039,9 @@ export default {
       }
     },
     showEditForm(index, rowId) {
+      if (!this.canEditRecords) {
+        return;
+      }
       const pageIndex = (this.currentPage - 1) * this.perPage + index;
       // Reset edit to be a copy of our data model item
       this.editItem = JSON.parse(
@@ -1011,6 +1078,9 @@ export default {
       this.$emit("input", data);
     },
     showAddForm() {
+      if (!this.canEditRecords) {
+        return;
+      }
       const uniqueId =
         Math.random().toString(36).substring(2) + Date.now().toString(36);
       this.$set(this.addItem, "row_id", uniqueId);
@@ -1060,6 +1130,9 @@ export default {
       });
     },
     showDeleteConfirmation(index, rowId) {
+      if (!this.canEditRecords) {
+        return;
+      }
       this.deleteIndex = _.find(this.tableData.data, { row_id: rowId });
       this.$refs.deleteModal.show();
     },
@@ -1094,6 +1167,9 @@ export default {
       });
     },
     remove() {
+      if (!this.canEditRecords) {
+        return;
+      }
       // Add the item to our model and emit change
       // @todo Also check that value is an array type, if not, reset it to an array
       const data = this.tableData.data
