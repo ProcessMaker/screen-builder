@@ -28,8 +28,7 @@ export default {
             items: element.items
           }
         ],
-        watchers: definition.watchers,
-        isMobile: definition.isMobile
+        watchers: definition.watchers
       };
 
       let loopContext = "";
@@ -42,6 +41,7 @@ export default {
       const child = this.createComponent("ScreenRenderer", {
         ":definition": this.byRef(nested),
         ":value": "loopRow",
+        ":is-mobile": "isMobile",
         ":loop-context": `'${loopContext}.' + index`,
         ":_parent": "getValidationData()",
         ":components": this.byRef(this.components),

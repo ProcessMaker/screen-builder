@@ -182,6 +182,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :is-mobile="isMobile"
         debug-context="Record List Add"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -210,6 +211,7 @@
         :current-page="form"
         :computed="formComputed"
         :watchers="formWatchers"
+        :is-mobile="isMobile"
         debug-context="Record List Edit"
         :_parent="validationData"
         @update="updateRowDataNamePrefix"
@@ -296,7 +298,8 @@ export default {
     "source",
     "paginationOption",
     "designerMode",
-    "bgcolormodern"
+    "bgcolormodern",
+    "isMobile"
   ],
   data() {
     return {
