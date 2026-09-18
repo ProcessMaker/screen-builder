@@ -753,7 +753,7 @@ export default [
       'editor-control': 'FormSubmit',
       config: {
         icon: 'fas fa-share-square',
-        label: 'New Submit',
+        label: 'New Submit FOOOO',
         variant: 'primary',
         event: 'submit',
         loading: false,
