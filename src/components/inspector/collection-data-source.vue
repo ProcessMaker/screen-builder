@@ -17,7 +17,7 @@
       <CollectionRecordsList
         v-model="collectionFields"
         :record-pmql="pmql"
-        @change="collectionChanged"
+        @collection-id-changed="collectionIdChanged"
       />
       <pmql-input
         v-model="pmql"
@@ -39,6 +39,7 @@
         v-model="dataSelectionOptions"
         :options="dataSelectionDisplayOptions"
         data-cy="inspector-collection-data-selection"
+        @change="dataSelectionChanged"
       />
       <small class="mt-3 form-text text-muted">
         {{ $t("The user can select specific data to be stored into a variable") }}
@@ -47,7 +48,7 @@
         <label for="single-columns">{{ $t("Column") }}</label>
         <b-form-select
           id="single-columns"
-          v-model="singleField"
+          v-model="normalizedSingleField"
           :options="singleFieldOptions"
           data-cy="inspector-collection-single-field"
         >
@@ -58,9 +59,11 @@
   </div>
 </template>
 <script>
-import { cloneDeep } from "lodash";
 import CollectionRecordsList from "./collection-records-list.vue";
-import { getCollectionFieldOptions } from "../../collectionFieldUtils";
+import {
+  getCollectionFieldOptions,
+  normalizeCollectionFieldPath
+} from "../../collectionFieldUtils";
 
 const CONFIG_FIELDS = [
   "collectionFields",
@@ -124,6 +127,14 @@ export default {
       return Object.fromEntries(
         CONFIG_FIELDS.map((field) => [field, this[field]])
       );
+    },
+    normalizedSingleField: {
+      get() {
+        return normalizeCollectionFieldPath(this.singleField);
+      },
+      set(value) {
+        this.singleField = value;
+      }
     }
   },
   watch: {
@@ -133,6 +144,7 @@ export default {
           return;
         }
         CONFIG_FIELDS.forEach((field) => (this[field] = value[field]));
+        this.getCollectionColumns(this.collectionFields);
       },
       immediate: true
     },
@@ -161,9 +173,6 @@ export default {
         this.$emit("input", this.options);
       },
       deep: true
-    },
-    dataSelectionOptions() {
-      this.singleField = null;
     }
   },
   mounted() {
@@ -176,14 +185,11 @@ export default {
       this.pmql = null;
       this.$root.$emit("collection-changed", true);
     },
-    collectionChanged(data) {
-      if (Array.isArray(data)) {
-        const [firstItem] = data;
-        const collectionId = firstItem?.collection_id;
-        if (collectionId !== this.collectionFields.collectionId) {
-          this.$root.$emit("collection-changed", true);
-        }
-      }
+    collectionIdChanged() {
+      this.$root.$emit("collection-changed", true);
+    },
+    dataSelectionChanged() {
+      this.singleField = null;
     },
     getCollectionColumns(records) {
       this.singleFieldOptions = getCollectionFieldOptions(records);
