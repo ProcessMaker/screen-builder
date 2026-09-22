@@ -141,7 +141,7 @@ export default {
             this.hideSubmitButtons(this.config);
             this.computed = response.data.computed;
             this.customCSS = response.data.custom_css;
-            this.watchers = this.isInScreenBuilder() ? [] : (response.data.watchers || []);
+            this.watchers = this.isInScreenBuilder() ? [] : response.data.watchers;
             this.screenTitle = response.data.title;
 
             if (this.$attrs['disabled']) {
