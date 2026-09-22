@@ -75,7 +75,8 @@ export default {
     isInScreenBuilder() {
       let parent = this.$parent;
       while (parent) {
-        if (parent.$options._componentTag === 'VueFormBuilder') {
+        const { _componentTag: tag, name } = parent.$options;
+        if (tag === 'vue-form-builder' || tag === 'VueFormBuilder' || name === 'VueFormBuilder') {
           return true;
         }
         parent = parent.$parent;
