@@ -33,6 +33,9 @@ export default {
     return {
       ValidationRules__: {},
       hiddenFields__: [],
+      // Used by isolated Record List modals so Ok/Add can show field errors
+      // without flipping the parent screen's global "submitted" flag.
+      modalSubmitted__: false,
     };
   },
   props: {
@@ -59,6 +62,10 @@ export default {
       disableSubmit__: "disableSubmit",
     }),
     ...mapGetters("globalErrorsModule", ["showValidationErrors"]),
+    // Parent screens keep the store getter untouched; modals OR in local flag.
+    showValidationErrorsEffective() {
+      return this.showValidationErrors || !!this.modalSubmitted__;
+    },
     references__() {
       return this.$parent && this.$parent.references__;
     },
