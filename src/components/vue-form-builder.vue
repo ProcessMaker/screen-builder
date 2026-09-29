@@ -563,6 +563,7 @@ import Sortable from './sortable/Sortable.vue';
 import ClipboardButton from './ClipboardButton.vue';
 import ScreenTemplates from './ScreenTemplates.vue';
 import CodeEditor from "./inspector/code-editor.vue";
+import { buildVibeScreenControlFields } from "../vibe/services/vibeUseScreenControl";
 
 // To include another language in the Validator with variable processmaker
 const globalObject = typeof window === "undefined" ? global : window;
@@ -1627,6 +1628,30 @@ export default {
       this.config[this.currentPage].items.push(clone);
       this.updateState();
       this.inspect(clone);
+    },
+    addVibeScreenControl(screenPath) {
+      const vueControl = this.controls.find(
+        (control) => control.component === "VueComponentRenderTemplate"
+      );
+
+      if (!vueControl) {
+        return false;
+      }
+
+      const fields = buildVibeScreenControlFields(screenPath);
+      const clone = this.cloneControl(vueControl);
+
+      clone.config.contentVue = fields.contentVue;
+      clone.config.handlerVue = fields.handlerVue;
+      clone.config.componentName = fields.componentName;
+      clone.config.label = fields.label;
+      clone.config.interactive = fields.interactive;
+      clone.config.ignoreMustache = fields.ignoreMustache;
+
+      this.config[this.currentPage].items.push(clone);
+      this.updateState();
+      this.inspect(clone);
+      return true;
     },
     /**
      * Compares a config with an array and updates UUIDs if different.

@@ -4,6 +4,7 @@ import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { resolve } from "path";
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
 import istanbulPlugin from "vite-plugin-istanbul";
+import vibeProjectPlugin from "./src/vite/vibeProjectPlugin.js";
 
 const libraryName = "VueFormBuilder";
 const monacoLanguages = ["editorWorkerService", "typescript", "css", "json"];
@@ -14,13 +15,14 @@ export default defineConfig({
     "process.env": {}
   },
   plugins: [
+    vibeProjectPlugin(),
     vue(),
     // https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21
     monacoEditorPlugin({ languageWorkers: monacoLanguages }),
     viteCommonjs(),
     istanbulPlugin({
       include: "src/**",
-      exclude: ["node_modules", "test/"],
+      exclude: ["node_modules", "test/", "src/vibe/**", "src/vibe-project/**"],
       extension: [".js", ".ts", ".vue"],
       requireEnv: true
     })
@@ -30,6 +32,10 @@ export default defineConfig({
       {
         find: "@",
         replacement: resolve(__dirname, "src")
+      },
+      {
+        find: "@vibe-project",
+        replacement: resolve(__dirname, "src/vibe-project")
       },
       {
         find: "vue",
@@ -62,7 +68,8 @@ export default defineConfig({
         "@processmaker/vue-multiselect",
         "vue-monaco",
         "monaco-editor",
-        "SharedComponents"
+        "SharedComponents",
+        /^@vibe-project\//
       ],
       output: {
         exports: "named",
