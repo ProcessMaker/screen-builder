@@ -11,11 +11,7 @@ const stringFormats = ['string', 'datetime', 'date', 'password'];
 const parentReference = [];
 
 const getVocabulariesSchema = () => {
-  if (
-    window.ProcessMaker &&
-    window.ProcessMaker.packages &&
-    window.ProcessMaker.packages.includes("package-vocabularies")
-  ) {
+  if (window.ProcessMaker?.packages?.includes("package-vocabularies")) {
     if (window.ProcessMaker.VocabulariesSchemaUrl) {
       const schemaUrl = window.ProcessMaker.VocabulariesSchemaUrl;
       const cache = window.ProcessMaker.VocabulariesSchemaCache;
