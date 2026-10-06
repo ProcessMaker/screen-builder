@@ -60,6 +60,7 @@
 <script>
 import { cloneDeep } from "lodash";
 import CollectionRecordsList from "./collection-records-list.vue";
+import { getCollectionFieldOptions } from "../../collectionFieldUtils";
 
 const CONFIG_FIELDS = [
   "collectionFields",
@@ -185,16 +186,7 @@ export default {
       }
     },
     getCollectionColumns(records) {
-      const [firstRecord] = records?.dataRecordList || [];
-
-      if (firstRecord?.data) {
-        this.singleFieldOptions = [];
-        const dataObject = firstRecord.data;
-
-        for (const [key] of Object.entries(dataObject)) {
-          this.singleFieldOptions.push({ text: key, value: key });
-        }
-      }
+      this.singleFieldOptions = getCollectionFieldOptions(records);
     }
   }
 };

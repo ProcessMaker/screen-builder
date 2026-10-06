@@ -30,7 +30,6 @@ describe("Task component", () => {
         win.Echo = {};
       }
     });
-    cy.wait(2000);
   });
 
   it("Task inside a Request", () => {
@@ -83,7 +82,6 @@ describe("Task component", () => {
       }
     });
 
-    cy.wait(2000);
     cy.get("[data-cy=screen-field-firstname]").should("be.visible");
     cy.get("[data-cy=screen-field-lastname]").should("be.visible");
   });
@@ -143,7 +141,6 @@ describe("Task component", () => {
       }
     });
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
       function () {
@@ -220,7 +217,6 @@ describe("Task component", () => {
         cy.stub(win, "alert").as("windowAlert");
       }
     });
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
       function () {
@@ -421,7 +417,6 @@ describe("Task component", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
 
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
@@ -466,7 +461,6 @@ describe("Task component", () => {
           responseDataTask2
         );
 
-        cy.wait(2000);
         cy.reload();
       }
     );
@@ -497,7 +491,6 @@ describe("Task component", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
 
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
@@ -568,7 +561,6 @@ describe("Task component", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
 
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
@@ -612,7 +604,6 @@ describe("Task component", () => {
           responseDataTask2
         );
 
-        cy.wait(2000);
         cy.reload();
       }
     );
@@ -643,7 +634,6 @@ describe("Task component", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
 
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
@@ -662,7 +652,6 @@ describe("Task component", () => {
           responseDataTask1
         );
 
-        cy.wait(2000);
         cy.reload();
       }
     );
@@ -693,7 +682,6 @@ describe("Task component", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
 
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
@@ -752,7 +740,6 @@ describe("Task component", () => {
 
     cy.visit("/?scenario=TaskRedirect", {});
 
-    cy.wait(2000);
     cy.get(".form-group").find("button").click();
 
     cy.intercept("PUT", "http://localhost:5173/api/1.1/tasks/1").then(
@@ -780,7 +767,6 @@ describe("Task component", () => {
           "http://localhost:5173/api/1.1/tasks?user_id=1&status=ACTIVE&process_request_id=1&include_sub_tasks=1"
         );
 
-        cy.wait(2000);
         cy.reload();
       }
     );
@@ -829,7 +815,6 @@ describe("Task component", () => {
       }
     });
 
-    cy.wait(2000);
     cy.get("[data-cy=screen-field-firstname]").should("be.visible");
     cy.get("[data-cy=screen-field-lastname]").should("be.visible");
     
@@ -890,7 +875,6 @@ describe("Task component", () => {
       }
     });
 
-    cy.wait(2000);
     cy.get("[data-cy=screen-field-firstname]").should("be.visible");
     cy.get("[data-cy=screen-field-lastname]").should("be.visible");
     
@@ -946,7 +930,6 @@ describe("Task component", () => {
       }
     });
 
-    cy.wait(2000);
     cy.get("[data-cy=screen-field-firstname]").should("be.visible");
     cy.get("[data-cy=screen-field-lastname]").should("be.visible");
     

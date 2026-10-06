@@ -1,4 +1,35 @@
 describe("Custom CSS", () => {
+  beforeEach(() => {
+    cy.clearLocalStorage();
+    cy.clearCookies();
+  });
+
+  function openCustomCssEditor() {
+    cy.get("[data-cy=topbar-css]").click();
+    cy.get("#custom-css").should("be.visible");
+    cy.get("[data-cy=monaco-editor]").scrollIntoView().should("be.visible");
+  }
+
+  function assertCustomCss(value) {
+    cy.get("[data-cy=monaco-editor]").should(($editor) => {
+      const { __vue__: vue } = $editor[0];
+      const { editor } = vue;
+      if (!editor) {
+        throw new Error("Monaco editor is not ready");
+      }
+      expect(editor.getValue()).to.equal(value);
+    });
+  }
+
+  function setCustomCss(value) {
+    cy.get("[data-cy=monaco-editor]").then(($editor) => {
+      const { __vue__: vue } = $editor[0];
+      const { editor } = vue;
+      editor.setValue(value);
+    });
+    assertCustomCss(value);
+  }
+
   it("Shows Modal", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-2");
@@ -8,8 +39,7 @@ describe("Custom CSS", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-customCssSelector]").type("new_input_css");
-    cy.get("[data-cy=topbar-css]").click();
-    cy.get("#custom-css").should("be.visible");
+    openCustomCssEditor();
   });
 
   it("Closes Modal", () => {
@@ -21,9 +51,7 @@ describe("Custom CSS", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-customCssSelector]").type("new_input_css");
-    cy.get("[data-cy=topbar-css]").click();
-    cy.get("#custom-css").should("be.visible");
-    cy.wait(1000);
+    openCustomCssEditor();
     cy.get("#custom-css___BV_modal_header_ > .close").click();
     cy.get("#custom-css").should("not.exist");
   });
@@ -37,16 +65,14 @@ describe("Custom CSS", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-customCssSelector]").type("new_input_css");
-    cy.get("[data-cy=topbar-css]").click();
-    cy.wait(1000);
-    cy.get("[data-cy=monaco-editor]").type(
-      "div[selector='new_input_css'] {background-color:red;padding:10px;}",
-      { parseSpecialCharSequences: false }
+    openCustomCssEditor();
+    setCustomCss(
+      "div[selector='new_input_css'] {background-color:red;padding:10px;}"
     );
     cy.get("[data-cy=cancel-button]").click();
-    cy.get("[data-cy=topbar-css]").click();
-    cy.wait(1000);
-    cy.assertComponentValue("[data-cy=monaco-editor]", "");
+    cy.get("#custom-css").should("not.exist");
+    openCustomCssEditor();
+    assertCustomCss("");
   });
 
   it("Saves Custom CSS", () => {
@@ -58,18 +84,17 @@ describe("Custom CSS", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-customCssSelector]").type("new_input_css");
-    cy.get("[data-cy=topbar-css]").click();
-    cy.wait(1000);
-    cy.get("[data-cy=monaco-editor]").type(
-      "div[selector='new_input_css'] {background-color:red;padding:10px;}",
-      { parseSpecialCharSequences: false }
+    openCustomCssEditor();
+    setCustomCss(
+      "div[selector='new_input_css'] {background-color:red;padding:10px;}"
+    );
+    assertCustomCss(
+      "div[selector='new_input_css'] {background-color:red;padding:10px;}"
     );
     cy.get("[data-cy=save-button]").click();
-    cy.wait(1000);
-    cy.get("[data-cy=topbar-css]").click();
-    cy.wait(1000);
-    cy.assertComponentValue(
-      "[data-cy=monaco-editor]",
+    cy.get("#custom-css").should("not.exist");
+    openCustomCssEditor();
+    assertCustomCss(
       "div[selector='new_input_css'] {background-color:red;padding:10px;}"
     );
   });
@@ -83,10 +108,9 @@ describe("Custom CSS", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-customCssSelector]").type("new_input_css");
-    cy.get("[data-cy=topbar-css]").click();
-    cy.get("#custom-css").type(
-      "div[selector='new_input_css'] {background-color:red;padding:10px;}",
-      { parseSpecialCharSequences: false }
+    openCustomCssEditor();
+    setCustomCss(
+      "div[selector='new_input_css'] {background-color:red;padding:10px;}"
     );
     cy.get("[data-cy=save-button]").click();
     cy.get("[data-cy=mode-preview]").click();
@@ -107,10 +131,9 @@ describe("Custom CSS", () => {
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-customCssSelector]").type("new_input_css");
-    cy.get("[data-cy=topbar-css]").click();
-    cy.get("#custom-css").type(
-      "div[selector='new_input_css'] {background-color:red;padding:10px;}",
-      { parseSpecialCharSequences: false }
+    openCustomCssEditor();
+    setCustomCss(
+      "div[selector='new_input_css'] {background-color:red;padding:10px;}"
     );
     cy.get("[data-cy=save-button]").click();
     cy.get("[data-cy=mode-preview]").click();

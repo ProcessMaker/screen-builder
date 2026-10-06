@@ -1,4 +1,17 @@
-describe("Default values", () => {
+/* eslint-disable no-template-curly-in-string */
+describe("Default values", { testIsolation: true }, () => {
+  beforeEach(() => {
+    cy.clearLocalStorage();
+    cy.clearCookies();
+  });
+
+  function assertPreviewDataStable(expectedData) {
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedData);
+    });
+  }
+
   it("Basic default value", () => {
     cy.visit("/");
     cy.openAcordeon("collapse-2");
@@ -15,7 +28,7 @@ describe("Default values", () => {
       "have.value",
       "initial value"
     );
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_input_1: "initial value"
     });
   });
@@ -37,7 +50,7 @@ describe("Default values", () => {
       "have.value",
       "initial value"
     );
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       people: {
         firstName: "initial value"
       }
@@ -74,7 +87,7 @@ describe("Default values", () => {
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-defaultValue-basicValue]").clear().type("two");
     cy.get("[data-cy=mode-preview]").click();
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       number: {
         int: "two"
       }
@@ -82,27 +95,39 @@ describe("Default values", () => {
   });
 
   it("Javascript default value", () => {
+    const expectedPreviewData = {
+      name: "world",
+      form_input_1: "hello world"
+    };
+
     cy.visit("/");
     cy.openAcordeon("collapse-2");
-    cy.setPreviewDataInput({ name: "world" });
     cy.get("[data-cy=controls-FormInput]").drag("[data-cy=screen-drop-zone]", {
       position: "bottom"
     });
     cy.get("[data-cy=screen-element-container]").click();
     cy.get("[data-cy=accordion-Advanced]").click();
     cy.get("[data-cy=inspector-defaultValue-js]").click();
+    cy.get("[data-cy=inspector-defaultValue-jsValue]")
+      .scrollIntoView()
+      .should("be.visible");
     cy.setVueComponentValue(
       "[data-cy=inspector-defaultValue-jsValue]",
       "return `hello ${this.name}`;"
     );
+    cy.setPreviewDataInput({ name: "world" });
+    cy.get("#screen-builder-container").should(($div) => {
+      const previewInput = JSON.parse($div[0].__vue__.previewInput);
+      expect(previewInput.name).to.eq("world");
+    });
     cy.get("[data-cy=mode-preview]").click();
     cy.get("[data-cy=preview-content] [name=form_input_1]").should(
       "have.value",
       "hello world"
     );
-    cy.assertPreviewData({
-      name: "world",
-      form_input_1: "hello world"
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedPreviewData);
     });
   });
   it("Initially checked checkbox", () => {
@@ -119,7 +144,7 @@ describe("Default values", () => {
       "have.prop",
       "checked"
     );
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_checkbox_1: true
     });
   });
@@ -144,14 +169,15 @@ describe("Default values", () => {
         parseSpecialCharSequences: false
       });
     cy.get("[data-cy=mode-preview]").click();
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_input_2: "",
       form_input_1: "initial value - "
     });
     cy.get("[data-cy=preview-content] [name=form_input_2]")
       .clear()
-      .type("next value");
-    cy.assertPreviewData({
+      .type("next value")
+      .blur();
+    assertPreviewDataStable({
       form_input_2: "next value",
       form_input_1: "initial value - next value"
     });
@@ -177,14 +203,15 @@ describe("Default values", () => {
       'return `initial value - ${this.form_input_2 || ""}`;'
     );
     cy.get("[data-cy=mode-preview]").click();
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_input_2: "",
       form_input_1: "initial value - "
     });
     cy.get("[data-cy=preview-content] [name=form_input_2]")
       .clear()
-      .type("next value");
-    cy.assertPreviewData({
+      .type("next value")
+      .blur();
+    assertPreviewDataStable({
       form_input_2: "next value",
       form_input_1: "initial value - next value"
     });

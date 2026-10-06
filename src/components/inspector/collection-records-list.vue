@@ -35,7 +35,8 @@ import ScreenVariableSelector from "../screen-variable-selector.vue";
 const CONFIG_FIELDS = [
   "collectionId",
   "pmql",
-  "dataRecordList"
+  "dataRecordList",
+  "fields"
 ];
 
 export default {
@@ -144,22 +145,18 @@ export default {
     },
     getFields() {
       if (!this.collectionId) {
+        this.fields = [];
         return;
       }
 
       this.$dataProvider
         .getCollectionFields(this.collectionId)
         .then((response) => {
-          this.fields = [
-            { value: null, text: this.$t("Select a field") },
-            { value: "id", text: this.$t("Collection Record ID") },
-            ...response.data.data.map((field) => {
-              return {
-                text: field.label,
-                value: field.field
-              };
-            })
-          ];
+          const dataColumns = response?.data?.data || [];
+          this.fields = dataColumns.map((field) => ({
+            text: field.label || field.field,
+            value: field.field
+          }));
 
           this.onCollectionChange();
         });

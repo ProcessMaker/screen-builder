@@ -50,21 +50,24 @@ export default {
           // `person.content` when `person`=null
           const safeDotName = this.safeDotName(element.config.name);
           properties["v-model"] = safeDotName;
-          // Debounce input from FormTextArea and FormInput
+          // Debounce input from FormTextArea and FormInput.
+          // Pass $event on @input so vdata is updated with the emitted value even
+          // if this handler runs before the v-model assignment (listener order race).
+          // Keep @change without $event: change payloads are not always the field value.
           if (
             componentName === "FormTextArea" ||
             componentName === "FormInput"
           ) {
             properties[
               "@input"
-            ] = `updateScreenData('${safeDotName}', '${element.config.name}')`;
+            ] = `updateScreenData('${safeDotName}', '${element.config.name}', $event)`;
             properties[
               "@change"
             ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
           } else {
             properties[
               "@input"
-            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}', true, $event)`;
             properties[
               "@change"
             ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
