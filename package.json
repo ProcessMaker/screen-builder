@@ -62,7 +62,7 @@
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@panter/vue-i18next": "^0.15.2",
     "@processmaker/vue-form-elements": "0.65.11",
-    "@processmaker/vue-multiselect": "2.3.2",
+    "@processmaker/vue-multiselect": "2.3.3",
     "@storybook/addon-essentials": "^7.6.13",
     "@storybook/addon-interactions": "^7.6.13",
     "@storybook/addon-links": "^7.6.13",
@@ -156,6 +156,8 @@
     ]
   },
   "processmaker": {
-    "downstream": ["modeler"]
+    "downstream": [
+      "modeler"
+    ]
   }
 }
