@@ -203,6 +203,17 @@ window.ProcessMaker = {
               }
             }
           });
+        } else if (url === "/requests/data_sources/1/resources/list/data") {
+          resolve({
+            data: {
+              response: [
+                { value: 1, content: "James" },
+                { value: 2, content: "John" },
+                { value: 3, content: "Mary" },
+                { value: 4, content: "Patricia" }
+              ]
+            }
+          });
         } else if (url === "/data_sources") {
           resolve({
             data: {
