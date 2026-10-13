@@ -1,6 +1,22 @@
 export const MAX_MOBILE_WIDTH = 480;
 export const originalDevicePixelRatio = window.devicePixelRatio;
 export default {
+  props: {
+    isMobile: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      detectedIsMobile: false
+    };
+  },
+  computed: {
+    responsiveIsMobile() {
+      return this.isMobile || this.detectedIsMobile;
+    }
+  },
   created() {
     window.addEventListener("resize", this.resizeHandler);
   },
@@ -17,10 +33,10 @@ export default {
       this.checkIfIsMobile();
     },
     checkIfIsMobile() {
-      const renderer = document.getElementById("vue-form-renderer");
+      const renderer = this.$refs.formRendererContainer;
       const isModelerInspector = this.data && this.data.$type && this.data.$type.startsWith("bpmn:");
-      if (this.definition && !isModelerInspector) {
-        this.definition.isMobile =
+      if (!isModelerInspector) {
+        this.detectedIsMobile =
           renderer &&
           renderer.offsetWidth <= MAX_MOBILE_WIDTH &&
           originalDevicePixelRatio === window.devicePixelRatio;

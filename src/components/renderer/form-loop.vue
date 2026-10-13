@@ -7,6 +7,7 @@
         :computed="null"
         :custom-css="null"
         :watchers="null"
+        :is-mobile="isMobile"
         :is-loop="true"
         :debug-context="'Loop #' + loopIndex"
         :mode="mode"
@@ -54,7 +55,9 @@ export default {
     VueFormRenderer
   },
   mixins: [],
-  props: ["value", "config", "transientData", "name", "mode", "formConfig"],
+  // Renderer props stay untyped because legacy screens may pass non-canonical runtime types.
+  // eslint-disable-next-line prettier/prettier
+  props: ["value", "config", "transientData", "name", "mode", "formConfig", "isMobile"], // NOSONAR
   data() {
     return {
       matrix: [],

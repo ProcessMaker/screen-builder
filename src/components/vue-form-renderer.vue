@@ -12,6 +12,7 @@
       :value="data"
       :_parent="_parent || data?._parent"
       :definition="definition"
+      :is-mobile="responsiveIsMobile"
       :current-page="currentPage"
       data-cy="screen-renderer"
       :show-errors="showErrors"
@@ -72,8 +73,7 @@ export default {
         config: this.config,
         computed: this.computed,
         customCss: this.customCss,
-        watchers: this.watchers,
-        isMobile: false
+        watchers: this.watchers
       },
       formSubmitErrorClass: "",
       // watcher URLs
@@ -114,7 +114,8 @@ export default {
         }
       },
       scrollable: null,
-      containerObserver: null
+      containerObserver: null,
+      containerObserverFrame: null
     };
   },
   computed: {
@@ -187,6 +188,12 @@ export default {
     
     // Initialize the clipboard module
     this.$store.dispatch('clipboardModule/initializeClipboard');
+  },
+  beforeDestroy() {
+    this.containerObserver.disconnect();
+    if (this.containerObserverFrame) {
+      cancelAnimationFrame(this.containerObserverFrame);
+    }
   },
   methods: {
     ...mapActions("globalErrorsModule", [
@@ -367,10 +374,15 @@ export default {
       this.$emit("update-page-task");
       this.$refs.renderer.setCurrentPage(page);
     },
-    onContainerObserver(entries) {
-      // Control coordinates
-      const controlEl = entries[0].target.getBoundingClientRect();
-      this.parseCss();
+    onContainerObserver() {
+      if (this.containerObserverFrame) {
+        cancelAnimationFrame(this.containerObserverFrame);
+      }
+      this.containerObserverFrame = requestAnimationFrame(() => {
+        this.containerObserverFrame = null;
+        this.checkIfIsMobile();
+        this.parseCss();
+      });
     },
     saveClipboarToLocalStorage(items){
       localStorage.setItem("savedClipboard", JSON.stringify(items));

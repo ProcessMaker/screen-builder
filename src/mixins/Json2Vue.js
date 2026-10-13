@@ -448,6 +448,7 @@ export default {
         await ValidationsFactory(definition, {
           screen: definition,
           firstPage,
+          isMobile: this.isMobile,
           data: {
             _parent: this._parent,
             ...this.vdata

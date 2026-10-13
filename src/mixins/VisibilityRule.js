@@ -2,10 +2,10 @@ import { Parser } from 'expr-eval';
 
 export default {
   methods: {
-    visibilityRuleIsVisible(rule, name, deviceVisibility) {
-      const visibility = deviceVisibility || { showForDesktop: true, showForMobile: true, isMobile: false };
+    visibilityRuleIsVisible(rule, name, deviceVisibility, isMobile = false) {
+      const visibility = deviceVisibility || { showForDesktop: true, showForMobile: true };
       const visibleInDevice =
-        (visibility.isMobile && visibility.showForMobile) || (!visibility.isMobile && visibility.showForDesktop);
+        (isMobile && visibility.showForMobile) || (!isMobile && visibility.showForDesktop);
 
       try {
         if (rule && rule.trim().length > 0) {
