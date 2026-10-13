@@ -615,6 +615,7 @@ const defaultGroupOrder = {
 const DEFAULT_GROUP = "Advanced";
 
 export default {
+  name: 'VueFormBuilder',
   components: {
     TabsBar,
     draggable,

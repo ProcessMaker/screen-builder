@@ -72,6 +72,17 @@ export default {
     },
   },
   methods: {
+    isInScreenBuilder() {
+      let parent = this.$parent;
+      while (parent) {
+        const { _componentTag: tag, name } = parent.$options;
+        if (tag === 'vue-form-builder' || tag === 'VueFormBuilder' || name === 'VueFormBuilder') {
+          return true;
+        }
+        parent = parent.$parent;
+      }
+      return false;
+    },
     isSubmitButton(item) {
       return item.config && item.component === 'FormButton' && item.config.event === 'submit';
     },
@@ -130,7 +141,7 @@ export default {
             this.hideSubmitButtons(this.config);
             this.computed = response.data.computed;
             this.customCSS = response.data.custom_css;
-            this.watchers = response.data.watchers;
+            this.watchers = this.isInScreenBuilder() ? [] : response.data.watchers;
             this.screenTitle = response.data.title;
 
             if (this.$attrs['disabled']) {
