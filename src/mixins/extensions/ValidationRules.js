@@ -17,8 +17,8 @@ export default {
               console.error("Invalid variable name");
             }
           } else {
-            properties[':class'] = `{ 'form-group--error': (showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && $v.vdata.${element.config.name}.$invalid || (showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.schema.' + element.config.name)} && $v.schema.${element.config.name}.$invalid }`;
-            properties[':error'] = `(showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || (showValidationErrors || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`;
+            properties[':class'] = `{ 'form-group--error': (showValidationErrorsEffective || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && $v.vdata.${element.config.name}.$invalid || (showValidationErrorsEffective || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.schema.' + element.config.name)} && $v.schema.${element.config.name}.$invalid }`;
+            properties[':error'] = `(showValidationErrorsEffective || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.vdata.' + element.config.name)} && validationMessage($v.vdata.${element.config.name}) || (showValidationErrorsEffective || ${this.fieldValidationShow(element)}) && ${this.checkVariableExists('$v.schema.' + element.config.name)} && validationMessage($v.schema.${element.config.name})`;
           }
         }
       },
