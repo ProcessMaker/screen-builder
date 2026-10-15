@@ -614,6 +614,12 @@ export default {
         this.onUpdate(Object.assign({}, this.requestData, formData));
       }
 
+      // Attach the CSRF token to the submitted payload so the resulting API
+      // call can be validated against forged cross-site submissions.
+      if (this.csrfToken) {
+        safeFormData._token = this.csrfToken;
+      }
+
       if (loading) {
         this.loadingButton = true;
       } else {
