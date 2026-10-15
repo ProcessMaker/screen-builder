@@ -1,0 +1,256 @@
+scenarios:
+  - name: "Booking screen loads with search form and summary"
+    description: "Verifies main layout elements render on initial load"
+    when: []
+    then:
+      - assert: visible
+        target: flight-booking-screen
+      - assert: visible
+        target: flight-origin
+      - assert: visible
+        target: flight-destination
+      - assert: visible
+        target: departure-date
+      - assert: visible
+        target: return-date
+      - assert: visible
+        target: passengers
+      - assert: visible
+        target: cabin-class
+      - assert: visible
+        target: search-flights
+      - assert: visible
+        target: flight-summary
+      - assert: visible
+        target: trip-type-round-trip
+      - assert: visible
+        target: trip-type-one-way
+
+  - name: "Search without departure date shows validation error"
+    description: "Submitting the form without a departure date sets errorMessage"
+    when:
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: errorMessage
+        equals: "Select a departure date."
+      - assert: data
+        field: hasSearched
+        equals: false
+
+  - name: "Round trip requires return date"
+    description: "Round-trip search without a return date shows validation error"
+    when:
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: errorMessage
+        equals: "Select a return date for round-trip flights."
+
+  - name: "Origin and destination must differ"
+    description: "Searching with the same origin and destination shows validation error"
+    when:
+      - action: fill
+        field: flight-origin
+        value: "New York (JFK)"
+      - action: fill
+        field: flight-destination
+        value: "New York (JFK)"
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: fill
+        field: return-date
+        value: "2026-07-22"
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: errorMessage
+        equals: "Origin and destination must be different."
+
+  - name: "Return date must be on or after departure"
+    description: "Return date before departure shows validation error"
+    when:
+      - action: fill
+        field: departure-date
+        value: "2026-07-20"
+      - action: fill
+        field: return-date
+        value: "2026-07-10"
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: errorMessage
+        equals: "Return date must be on or after the departure date."
+
+  - name: "Successful search shows matching economy flights"
+    description: "Valid JFK to LAX search displays economy flight results"
+    when:
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: fill
+        field: return-date
+        value: "2026-07-22"
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: hasSearched
+        equals: true
+      - assert: data
+        field: errorMessage
+        equals: ""
+      - assert: visible
+        target: flight-SR 204
+      - assert: visible
+        target: flight-PW 118
+
+  - name: "Swap airports exchanges origin and destination"
+    description: "Clicking swap reverses route before search updates criteria"
+    when:
+      - action: click
+        target: swap-airports
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: fill
+        field: return-date
+        value: "2026-07-22"
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: hasSearched
+        equals: true
+      - assert: data
+        field: errorMessage
+        equals: ""
+
+  - name: "Search alternate route shows route flights"
+    description: "Searching SFO to SEA displays Coastal Jet flight"
+    when:
+      - action: fill
+        field: flight-origin
+        value: "San Francisco (SFO)"
+      - action: fill
+        field: flight-destination
+        value: "Seattle (SEA)"
+      - action: fill
+        field: departure-date
+        value: "2026-08-01"
+      - action: fill
+        field: return-date
+        value: "2026-08-08"
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: hasSearched
+        equals: true
+      - assert: visible
+        target: flight-CJ 501
+
+  - name: "One way search and booking confirms correct total"
+    description: "One-way trip books first flight at single-passenger price"
+    when:
+      - action: click
+        target: trip-type-one-way
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: click
+        target: search-flights
+      - action: click
+        target: select-flight
+      - action: click
+        target: confirm-booking
+    then:
+      - assert: visible
+        target: booking-success
+      - assert: data
+        field: bookingConfirmed
+        equals: true
+      - assert: data
+        field: confirmationMessage
+        equals: "Your one-way flight on SkyRoute Air (SR 204) is confirmed for 1 passenger(s). Total: $289.00."
+
+  - name: "Round trip booking confirms doubled total"
+    description: "Round-trip booking doubles the selected flight price"
+    when:
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: fill
+        field: return-date
+        value: "2026-07-22"
+      - action: click
+        target: search-flights
+      - action: click
+        target: select-flight
+      - action: click
+        target: confirm-booking
+    then:
+      - assert: visible
+        target: booking-success
+      - assert: data
+        field: bookingConfirmed
+        equals: true
+      - assert: data
+        field: confirmationMessage
+        equals: "Your round-trip flight on SkyRoute Air (SR 204) is confirmed for 1 passenger(s). Total: $578.00."
+
+  - name: "Clear selection resets booking state"
+    description: "Clearing a selected flight removes confirmation state"
+    when:
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: fill
+        field: return-date
+        value: "2026-07-22"
+      - action: click
+        target: search-flights
+      - action: click
+        target: select-flight
+      - action: click
+        target: clear-selection
+    then:
+      - assert: data
+        field: bookingConfirmed
+        equals: false
+      - assert: data
+        field: confirmationMessage
+        equals: ""
+
+  - name: "New search clears previous booking confirmation"
+    description: "Running a new search resets bookingConfirmed and confirmationMessage"
+    when:
+      - action: fill
+        field: departure-date
+        value: "2026-07-15"
+      - action: fill
+        field: return-date
+        value: "2026-07-22"
+      - action: click
+        target: search-flights
+      - action: click
+        target: select-flight
+      - action: click
+        target: confirm-booking
+      - action: click
+        target: search-flights
+    then:
+      - assert: data
+        field: bookingConfirmed
+        equals: false
+      - assert: data
+        field: confirmationMessage
+        equals: ""

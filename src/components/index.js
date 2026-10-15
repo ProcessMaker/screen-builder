@@ -54,6 +54,10 @@ import { LinkButton, CaseProgressBar } from "./renderer";
 import "../assets/css/tabs.css";
 import FormCollectionRecordControl from "./renderer/form-collection-record-control.vue";
 import FormCollectionViewControl from "./renderer/form-collection-view-control.vue";
+import VibeAppShell from "../vibe/VibeAppShell.vue";
+import VibeProjectScreen from "../vibe/components/VibeProjectScreen.vue";
+import { extractUsedVibeScreenPaths } from "../vibe/services/vibeUseScreenControl";
+import { invalidateVibeScreenRuntimeCache } from "../vibe/services/vibeProjectScreenLoader";
 
 const rendererComponents = {
   ...renderer,
@@ -105,7 +109,10 @@ export {
   DataFormatProperty,
   globalErrorsModule,
   accordions,
-  VariableNameGenerator
+  VariableNameGenerator,
+  VibeAppShell,
+  extractUsedVibeScreenPaths,
+  invalidateVibeScreenRuntimeCache,
 };
 export * from "./inspector";
 export * from "./renderer";
@@ -174,6 +181,8 @@ export default {
     Vue.component("CaseProgressBar", CaseProgressBar);
     Vue.component("FormCollectionRecordControl", FormCollectionRecordControl);
     Vue.component("FormCollectionViewControl", FormCollectionViewControl);
+    Vue.component("VibeAppShell", VibeAppShell);
+    Vue.component("VibeProjectScreen", VibeProjectScreen);
     const store = new Vuex.Store({
       modules: {
         globalErrorsModule,

@@ -1,0 +1,109 @@
+scenarios:
+  - name: "POS screen loads with catalog and empty cart"
+    description: "Verifies main layout elements render on initial load"
+    when: []
+    then:
+      - assert: visible
+        target: pos-product-selection-screen
+      - assert: visible
+        target: product-search
+      - assert: visible
+        target: pos-cart
+      - assert: visible
+        target: category-all
+      - assert: visible
+        target: category-Bebidas
+
+  - name: "Search filters products by name"
+    description: "Typing in search updates searchQuery and keeps matching products visible"
+    when:
+      - action: fill
+        field: product-search
+        value: "Café"
+    then:
+      - assert: data
+        field: searchQuery
+        equals: "Café"
+      - assert: visible
+        target: add-product
+
+  - name: "Category filter selects Bebidas"
+    description: "Clicking Bebidas category updates activeCategory"
+    when:
+      - action: click
+        target: category-Bebidas
+    then:
+      - assert: data
+        field: activeCategory
+        equals: "Bebidas"
+
+  - name: "Category filter selects Panadería"
+    description: "Clicking Panadería category updates activeCategory"
+    when:
+      - action: click
+        target: category-Panadería
+    then:
+      - assert: data
+        field: activeCategory
+        equals: "Panadería"
+
+  - name: "Add product to cart shows totals"
+    description: "Adding a product from catalog displays cart item and checkout controls"
+    when:
+      - action: click
+        target: add-product
+    then:
+      - assert: visible
+        target: cart-item
+      - assert: visible
+        target: cart-subtotal
+      - assert: visible
+        target: cart-tax
+      - assert: visible
+        target: cart-total
+      - assert: visible
+        target: checkout
+      - assert: visible
+        target: clear-cart
+
+  - name: "Checkout single item completes sale"
+    description: "Completing checkout shows success alert with correct message"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: checkout
+    then:
+      - assert: visible
+        target: checkout-success
+      - assert: data
+        field: checkoutMessage
+        equals: "Venta completada: 1 artículo(s) por US$ 4,24 (IVA incluido)."
+
+  - name: "Checkout multiple units of same product"
+    description: "Adding the same product twice records correct item count and total"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: add-product
+      - action: click
+        target: checkout
+    then:
+      - assert: visible
+        target: checkout-success
+      - assert: data
+        field: checkoutMessage
+        equals: "Venta completada: 2 artículo(s) por US$ 8,47 (IVA incluido)."
+
+  - name: "Clear cart empties checkout state"
+    description: "Vaciar removes items and leaves checkout message unset"
+    when:
+      - action: click
+        target: add-product
+      - action: click
+        target: clear-cart
+    then:
+      - assert: data
+        field: checkoutMessage
+        equals: ""
