@@ -6,7 +6,7 @@
       </div>
       <div v-if="styleMode === 'Classic'" class="col text-right">
         <button
-          v-if="editable && !selfReferenced"
+          v-if="canEditRecords && !selfReferenced"
           class="btn btn-primary"
           data-cy="add-row"
           @click="showAddForm"
@@ -82,7 +82,7 @@
 
           </template>
           <template #cell(__actions)="{ index, item }">
-            <div class="actions">
+            <div v-if="canEditRecords && !selfReferenced" class="actions">
               <div
                 class="btn-group btn-group-sm"
                 role="group"
@@ -148,7 +148,7 @@
           </div>
           <div v-if="styleMode === 'Modern'" class="col text-right">
             <button
-              v-if="editable && !selfReferenced"
+              v-if="canEditRecords && !selfReferenced"
               class="btn btn-link text-primary class-button-modern"
               data-cy="add-row"
               @click="showAddForm"
@@ -160,7 +160,7 @@
     </template>
 
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="addModal"
       :static="true"
       size="lg"
@@ -188,7 +188,7 @@
       />
     </b-modal>
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="editModal"
       :static="true"
       size="lg"
@@ -216,7 +216,7 @@
       />
     </b-modal>
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="deleteModal"
       size="lg"
       :ok-title="$t('Delete')"
@@ -229,7 +229,7 @@
       <p>{{ $t("Are you sure you want to remove this record?") }}</p>
     </b-modal>
     <b-modal
-      v-if="editable && !selfReferenced"
+      v-if="canEditRecords && !selfReferenced"
       ref="infoModal"
       size="sm"
       :ok-title="$t('OK')"
@@ -242,7 +242,7 @@
       <p>{{ $t("The form to be displayed is not assigned.") }}</p>
     </b-modal>
 
-    <div v-if="editable && selfReferenced" class="alert alert-danger">
+    <div v-if="canEditRecords && selfReferenced" class="alert alert-danger">
       {{
         $t(
           "The Record List control is not allowed to reference other controls on its own page to add or edit records. Specify a secondary page with controls to enter records."
@@ -340,6 +340,9 @@ export default {
     };
   },
   computed: {
+    canEditRecords() {
+      return this.editable === true && this.source?.sourceOptions === "Variable";
+    },
     tableClassModern() {
       if (this.styleMode === 'Modern') {
         switch (this.bgcolormodern) {
@@ -430,7 +433,7 @@ export default {
     tableFields() {
       const fields = this.getTableFieldsFromDataSource();
 
-      if (this.editable && !this.selfReferenced) {
+      if (this.canEditRecords && !this.selfReferenced) {
         fields.push(jsonOptionsActionsColumn);
       }
 
