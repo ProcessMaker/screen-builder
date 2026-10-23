@@ -29,6 +29,9 @@ import {
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 import LinkButton from "./components/renderer/link-button.vue";
 import CaseProgressBar from "./components/renderer/case-progress-bar.vue";
+import VueRenderEditor from './components/renderer/vueRender/VueRenderEditor.vue';
+import VueRenderPreview from './components/renderer/vueRender/VueRenderPreview.vue';
+import EditorFieldInspector from './components/inspector/vueRender/EditorFieldInspector.vue';
 
 import {
   bgcolorProperty,
@@ -56,11 +59,76 @@ import {
   variantStyleProperty
 } from './form-control-common-properties';
 
+const VueComponentEditorConfig = {
+  editorComponent: 'VueRenderEditor',
+  editorBinding: 'VueRenderEditor',
+  rendererComponent: 'VueRenderPreview',
+  rendererBinding: 'VueRenderPreview',
+  control: {
+    popoverContent: 'Use a Rich Text Editor to add HTML-formatted',
+    order: 2.0,
+    group: 'Content Fields',
+    label: 'Vue component Editor',
+    component: 'VueRenderPreview',
+    'editor-component': 'VueRenderEditor',
+    'editor-control': 'VueRenderPreview',
+    config: {
+      icon: 'fas fa-pencil-ruler',
+      interactive: true,
+      templateVue: '<p>Vue component editor</p>',
+      handlerVue: 'return {}',
+      renderVarHtml: null,
+      ignoreMustache: true,
+    },
+    inspector: [
+      {
+        type: 'FormInput',
+        field: 'componentName',
+        config: {
+          label: 'Component Name',
+          helper: 'Name of the component',
+        },
+      },
+      {
+        type: EditorFieldInspector,
+        field: 'templateVue',
+        config: {
+          rows: 5,
+          label: 'Template Vue',
+          helper: 'The template vue component to display',
+          value: '<p>Vue component editor</p>',
+          language: 'html',
+          enablePopup: true,
+          openPopupLabel: 'Open in popup',
+          popupTitle: 'Edit template',
+          cancelPopupLabel: 'Cancel',
+          savePopupLabel: 'Save',
+        },
+      },
+      {
+        type: EditorFieldInspector,
+        field: 'handlerVue',
+        config: {
+          label: 'Handler Vue',
+          helper: 'The code vue component to display',
+          value: 'return {}',
+          language: 'javascript',
+          enablePopup: true,
+          openPopupLabel: 'Open in popup',
+          popupTitle: 'Edit script',
+          cancelPopupLabel: 'Cancel',
+          savePopupLabel: 'Save',
+        },
+      },
+    ],
+  },
+};
+
 export default [
   {
-    editorComponent: FormHtmlEditor,
+    editorComponent: 'FormHtmlEditor',
     editorBinding: 'FormHtmlEditor',
-    rendererComponent: FormHtmlEditor,
+    rendererComponent: 'FormHtmlEditor',
     rendererBinding: 'FormHtmlEditor',
     control: {
       popoverContent: "Use a Rich Text Editor to add HTML-formatted",
@@ -1292,5 +1360,6 @@ export default [
       },
       inspector: [],
     }
-  }
+  },
+  VueComponentEditorConfig
 ];
