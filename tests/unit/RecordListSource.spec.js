@@ -49,6 +49,20 @@ function expectEditing(wrapper, enabled) {
 }
 
 describe.each(['Classic', 'Modern'])('Record List source in %s style', style => {
+  describe.each([
+    { label: 'missing source', value: undefined },
+    { label: 'null source', value: null },
+    { label: 'empty source', value: {} },
+    { label: 'null source option', value: { sourceOptions: null } },
+  ])('legacy configuration with $label', ({ value: legacySource }) => {
+    test.each([true, false])('preserves editable set to %p', editable => {
+      const wrapper = renderList(style, 'Variable', editable, { source: legacySource });
+      expectEditing(wrapper, editable);
+      expect(wrapper.text()).toContain('Saved record');
+      wrapper.destroy();
+    });
+  });
+
   test('previously saved Collection configuration does not expose Variable editing', () => {
     const saved = JSON.parse(JSON.stringify({ source: source('Collection'), editable: true }));
     const wrapper = renderList(style, 'Collection', true, saved);

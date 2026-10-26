@@ -341,7 +341,8 @@ export default {
   },
   computed: {
     canEditRecords() {
-      return this.editable === true && this.source?.sourceOptions === "Variable";
+      const sourceOptions = this.source?.sourceOptions ?? "Variable";
+      return this.editable === true && sourceOptions === "Variable";
     },
     tableClassModern() {
       if (this.styleMode === 'Modern') {
