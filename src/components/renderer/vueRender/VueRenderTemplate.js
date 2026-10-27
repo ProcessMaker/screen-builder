@@ -82,9 +82,8 @@ export default {
       }
 
       try {
-        // eslint-disable-next-line no-new-func -- handlerVue is authored in the screen designer
-        // NOSONAR -- This is a valid use of new Function
-        const evaluated = new Function(this.handlerVue)();
+        // eslint-disable-next-line no-new-func -- handlerVue is screen-authored in Screen Builder
+        const evaluated = new Function(this.handlerVue)(); // NOSONAR. Intentional: handlerVue is JS configured by authorized screen authors; result must be a plain object and only methods/computed/watch/components/data are used after sanitization.
         if (!isPlainObject(evaluated)) {
           return {
             ...empty,
@@ -124,7 +123,7 @@ export default {
     try {
       component = createElement({
         components: {
-          ...(this.components || {}),
+          ...this.components,
           ...handlerOptions.components,
         },
         template: templateSource,
@@ -149,7 +148,7 @@ export default {
         computed: {
           ...handlerOptions.computed,
           transientData: {
-            get: () => getTransientData() || {},
+            get: () => getTransientData(),
             set(value) {
               const target = getTransientData();
               if (target && typeof target === 'object') {
