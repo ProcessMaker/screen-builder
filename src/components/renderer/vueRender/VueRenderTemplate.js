@@ -83,6 +83,7 @@ export default {
 
       try {
         // eslint-disable-next-line no-new-func -- handlerVue is authored in the screen designer
+        // NOSONAR -- This is a valid use of new Function
         const evaluated = new Function(this.handlerVue)();
         if (!isPlainObject(evaluated)) {
           return {
@@ -115,8 +116,9 @@ export default {
   },
   render(createElement) {
     const handlerOptions = this.resolveHandlerOptions();
-    const self = this;
     const templateSource = this.resolveTemplateSource();
+    const getTransientData = () => this.resolveTransientData();
+    const emitSubmit = () => this.$emit('submit');
 
     let component;
     try {
@@ -128,7 +130,7 @@ export default {
         template: templateSource,
         data() {
           const base = {
-            data: self.resolveTransientData() || {},
+            data: getTransientData(),
           };
           if (!handlerOptions.dataFn) {
             return base;
@@ -147,11 +149,9 @@ export default {
         computed: {
           ...handlerOptions.computed,
           transientData: {
-            get() {
-              return self.resolveTransientData() || {};
-            },
+            get: () => getTransientData() || {},
             set(value) {
-              const target = self.resolveTransientData();
+              const target = getTransientData();
               if (target && typeof target === 'object') {
                 Object.assign(target, value);
               }
@@ -161,7 +161,7 @@ export default {
         watch: {
           ...handlerOptions.watch,
           data(value) {
-            const target = self.resolveTransientData();
+            const target = getTransientData();
             if (!target || !value || typeof value !== 'object' || value === target) {
               return;
             }
@@ -171,12 +171,8 @@ export default {
         },
         methods: {
           ...handlerOptions.methods,
-          submit() {
-            self.$emit('submit');
-          },
-          getData() {
-            return self.resolveTransientData() || {};
-          },
+          submit: () => emitSubmit(),
+          getData: () => getTransientData() || {},
           updateTransientData(value) {
             this.transientData = value;
           },

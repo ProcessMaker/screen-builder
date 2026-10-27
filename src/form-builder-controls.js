@@ -29,8 +29,6 @@ import {
 import { dataSourceValues } from '@/components/inspector/data-source-types';
 import LinkButton from "./components/renderer/link-button.vue";
 import CaseProgressBar from "./components/renderer/case-progress-bar.vue";
-import VueRenderEditor from './components/renderer/vueRender/VueRenderEditor.vue';
-import VueRenderPreview from './components/renderer/vueRender/VueRenderPreview.vue';
 import EditorFieldInspector from './components/inspector/vueRender/EditorFieldInspector.vue';
 
 import {

@@ -119,6 +119,7 @@ export default {
       default: 'Edit source code',
     },
   },
+  emits: ['input'],
   data() {
     return {
       mode: 'basic',
