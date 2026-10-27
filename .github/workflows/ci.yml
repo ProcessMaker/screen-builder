@@ -72,7 +72,7 @@ jobs:
       #        run: npm run test
 
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7.4.8
         with:
           browser: chrome
           install: false
