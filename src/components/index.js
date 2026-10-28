@@ -54,6 +54,8 @@ import { LinkButton, CaseProgressBar } from "./renderer";
 import "../assets/css/tabs.css";
 import FormCollectionRecordControl from "./renderer/form-collection-record-control.vue";
 import FormCollectionViewControl from "./renderer/form-collection-view-control.vue";
+import VueRenderPreview from "./renderer/vueRender/VueRenderPreview.vue";
+import VueRenderEditor from "./renderer/vueRender/VueRenderEditor.vue";
 
 const rendererComponents = {
   ...renderer,
@@ -161,6 +163,8 @@ export default {
     Vue.component("VueFormRenderer", VueFormRenderer);
     Vue.component("DefaultLoadingSpinner", DefaultLoadingSpinner);
     Vue.use(VueFormElements);
+    Vue.component("VueRenderPreview", VueRenderPreview);
+    Vue.component("VueRenderEditor", VueRenderEditor);
     Vue.component("FormButton", FormButton);
     Vue.component("FileUpload", FileUpload);
     Vue.component("FileDownload", FileDownload);
