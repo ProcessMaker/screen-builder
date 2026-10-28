@@ -61,7 +61,7 @@ export default {
       return this.$attrs['transient-data']
         || this.$attrs.transientData
         || this.validationData
-        || null;
+        || {};
     },
     resolveTemplateSource() {
       const template = this.templateVue && String(this.templateVue).trim();
