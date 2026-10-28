@@ -124,9 +124,9 @@ const VueComponentEditorConfig = {
 
 export default [
   {
-    editorComponent: 'FormHtmlEditor',
+    editorComponent: FormHtmlEditor,
     editorBinding: 'FormHtmlEditor',
-    rendererComponent: 'FormHtmlEditor',
+    rendererComponent: FormHtmlEditor,
     rendererBinding: 'FormHtmlEditor',
     control: {
       popoverContent: "Use a Rich Text Editor to add HTML-formatted",
