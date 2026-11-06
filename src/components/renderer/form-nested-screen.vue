@@ -11,6 +11,7 @@
     :computed="computed"
     :custom-css="customCSS"
     :watchers="watchers"
+    :is-mobile="isMobile"
     debug-context="Nested Screen"
     @css-errors="cssErrors = $event"
     :_parent="_parent"
@@ -42,6 +43,7 @@ export default {
     validationData: null,
     _parent: null,
     ancestorScreens: {type: Array, default: () => []},
+    isMobile: {type: Boolean, default: false},
   },
   data() {
     return {

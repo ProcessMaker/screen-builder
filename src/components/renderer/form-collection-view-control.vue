@@ -9,6 +9,7 @@
     :computed="computed"
     :custom-css="customCss"
     :watchers="watchers"
+    :is-mobile="isMobile"
     :_parent="_parent"
   />
 </template>
@@ -38,6 +39,7 @@ export default {
       type: Object
     },
     taskdraft: Object,
+    isMobile: {type: Boolean, default: false},
   },
   data() {
     return {
