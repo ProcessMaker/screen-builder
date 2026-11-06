@@ -107,17 +107,42 @@ export default {
   },
   computed: {
     noDataUrl() {
-      return `${window.ProcessMaker?.app?.url}/cases`;
+      return `${window.ProcessMaker?.app?.url || ""}/cases`;
+    },
+    currentUser() {
+      return {
+        ...(window.Processmaker?.user || {}),
+        ...(window.ProcessMaker?.user || {})
+      };
     }
   },
   mounted() {
     this.setupColumns();
-    this.pmql = `requester = "${Processmaker.user.username}"`;
-    this.fetch();
+    const username = this.currentUser.username;
+    if (username) {
+      this.pmql = `requester = "${username}"`;
+      this.fetch();
+    } else {
+      this.showTable = false;
+      this.emitDataControls(0);
+    }
     this.$root.$on("dropdownSelectionRequest", this.fetchData);
     this.$root.$on("searchRequest", this.fetchSearch);
   },
   methods: {
+    emitDataControls(count = 0) {
+      const dataControls = {
+        count: `${count}`,
+        showControl: true,
+        showAvatar: true,
+        variant: "primary",
+        textColor: "text-primary",
+        colorText: "color: #1572C2",
+        url: "/cases",
+        dropdownShow: "requests"
+      };
+      this.$emit("requestsCount", { dataControls, tasksDropdown: [] });
+    },
     fetch() {
       Vue.nextTick(() => {
         let pmql = "";
@@ -169,21 +194,12 @@ export default {
             }
             this.tableData = response.data;
             this.countResponse = this.tableData.meta.total;
-            const dataControls = {
-              count: `${this.countResponse}`,
-              showControl: true,
-              showAvatar: true,
-              variant: "primary",
-              textColor: "text-primary",
-              colorText: "color: #1572C2",
-              url: "/cases",
-              dropdownShow: "requests"
-            };
-            const tasksDropdown = [];
-            this.$emit("requestsCount", { dataControls, tasksDropdown });
+            this.emitDataControls(this.countResponse);
           })
           .catch(() => {
             this.tableData = [];
+            this.showTable = false;
+            this.emitDataControls(0);
           });
       });
     },
@@ -239,17 +255,23 @@ export default {
         : "text-dark";
     },
     fetchData(selectedOptions) {
+      const { id: userId, username } = this.currentUser;
+      if (!userId && !username) {
+        this.showTable = false;
+        this.emitDataControls(0);
+        return;
+      }
       if (selectedOptions[0] === "by_me" && selectedOptions[1] !== "View All") {
-        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND (status = "${selectedOptions[1]}")`;
+        this.pmql = `(user_id = ${userId}) AND (status = "${selectedOptions[1]}")`;
       }
       if (
         selectedOptions[0] === "as_participant" &&
         selectedOptions[1] !== "View All"
       ) {
-        this.pmql = `(status = "${selectedOptions[1]}") AND (participant = "${Processmaker.user.username}")`;
+        this.pmql = `(status = "${selectedOptions[1]}") AND (participant = "${username}")`;
       }
       if (selectedOptions[1] === "View All") {
-        this.pmql = `(user_id = ${ProcessMaker.user.id}) AND ((status = "In Progress") OR (status = "Completed"))`;
+        this.pmql = `(user_id = ${userId}) AND ((status = "In Progress") OR (status = "Completed"))`;
       }
       this.fetch();
     },
