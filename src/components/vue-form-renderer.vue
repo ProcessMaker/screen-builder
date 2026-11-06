@@ -64,7 +64,10 @@ export default {
     "showErrors",
     "testScreenDefinition",
     "deviceScreen",
-    "taskdraft"
+    "taskdraft",
+    // When true, local $v is still used (e.g. record list modals) but data
+    // changes do not update the parent form's global valid/submit state.
+    "isolated"
   ],
   data() {
     return {
@@ -152,6 +155,9 @@ export default {
       deep: true,
       handler() {
         this.$emit("update", this.data);
+        if (this.isolated) {
+          return;
+        }
         const mainScreen = this.getMainScreen();
         if (mainScreen) {
           this.validate(mainScreen);
@@ -189,12 +195,29 @@ export default {
     this.$store.dispatch('clipboardModule/initializeClipboard');
   },
   methods: {
-    ...mapActions("globalErrorsModule", [
-      "validate",
-      "hasSubmitted",
-      "showValidationOnLoad",
-      "restartValidation"
-    ]),
+    ...mapActions("globalErrorsModule", {
+      validate: "validate",
+      hasSubmittedAction: "hasSubmitted",
+      showValidationOnLoad: "showValidationOnLoad",
+      restartValidation: "restartValidation"
+    }),
+    /**
+     * Isolated renderers (Record List modals) must not flip the parent form's
+     * global submitted flag; keep that state on the modal ScreenContent only.
+     */
+    hasSubmitted(value) {
+      if (this.isolated) {
+        const screen = this.getMainScreen();
+        if (screen) {
+          this.$set(screen, "modalSubmitted__", !!value);
+          if (value && screen.$v) {
+            screen.$v.$touch();
+          }
+        }
+        return;
+      }
+      return this.hasSubmittedAction(value);
+    },
     getMainScreen() {
       return this.$refs.renderer && this.$refs.renderer.$refs.component;
     },
