@@ -9,6 +9,7 @@
     :computed="computed"
     :custom-css="customCss"
     :watchers="watchers"
+    :is-mobile="isMobile"
     :_parent="_parent"
     :read-only="isDisabled"
   />
@@ -46,6 +47,7 @@ export default {
       type: Object
     },
     taskdraft: Object,
+    isMobile: {type: Boolean, default: false},
     disabled: {
       type: [Boolean, String],
       default: false
