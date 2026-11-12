@@ -65,10 +65,23 @@ export default {
     "showErrors",
     "testScreenDefinition",
     "deviceScreen",
-    "taskdraft"
+    "taskdraft",
+    "readOnly"
   ],
+  inject: {
+    parentFormReadOnlyState: {
+      from: "formReadOnlyState",
+      default: () => ({ value: false })
+    }
+  },
+  provide() {
+    return {
+      formReadOnlyState: this.formReadOnlyState
+    };
+  },
   data() {
     return {
+      formReadOnlyState: { value: false },
       definition: {
         config: this.config,
         computed: this.computed,
@@ -136,6 +149,18 @@ export default {
     }
   },
   watch: {
+    readOnly: {
+      immediate: true,
+      handler() {
+        this.syncFormReadOnly();
+      }
+    },
+    "parentFormReadOnlyState.value": {
+      immediate: true,
+      handler() {
+        this.syncFormReadOnly();
+      }
+    },
     customCss(customCss) {
       this.definition.customCss = customCss;
       this.parseCss();
@@ -196,6 +221,12 @@ export default {
     }
   },
   methods: {
+    syncFormReadOnly() {
+      const fromParent = Boolean(
+        this.parentFormReadOnlyState && this.parentFormReadOnlyState.value
+      );
+      this.formReadOnlyState.value = Boolean(this.readOnly) || fromParent;
+    },
     ...mapActions("globalErrorsModule", [
       "validate",
       "hasSubmitted",

@@ -1,82 +1,99 @@
+/* eslint-disable no-loss-of-precision */
 describe("select list mustache", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.clearLocalStorage();
+    cy.clearCookies();
+    const dataSourceResponse = {
+      status: 200,
+      response: {
+        data: [
+          {
+            id: 1,
+            created_by_id: 2,
+            updated_by_id: 2,
+            created_at: "2021-11-08 10:29:56",
+            updated_at: "2021-11-08 10:29:56",
+            data: {
+              dni: "1234",
+              name: {
+                last: "Smith",
+                first: "Oliver"
+              },
+              id: 1
+            },
+            collection_id: 1,
+            title: "1",
+            created_by: {
+              id: 2,
+              email: "admin@processmaker.com"
+            },
+            updated_by: {
+              id: 2,
+              email: "admin@processmaker.com"
+            }
+          },
+          {
+            id: 2,
+            created_by_id: 2,
+            updated_by_id: 2,
+            created_at: "2021-11-08 10:29:56",
+            updated_at: "2021-11-08 10:29:56",
+            data: {
+              dni: "5678",
+              name: {
+                last: "Doe",
+                first: "John"
+              },
+              id: 2
+            },
+            collection_id: 1,
+            title: "2",
+            created_by: {
+              id: 2,
+              email: "admin@processmaker.com"
+            },
+            updated_by: {
+              id: 2,
+              email: "admin@processmaker.com"
+            }
+          }
+        ],
+        meta: {
+          filter: "",
+          sort_by: "",
+          sort_order: "",
+          count: 2,
+          total_pages: 1,
+          current_page: 1,
+          from: 1,
+          last_page: 1,
+          path: "/api/1.0/collections/1/records",
+          per_page: 9223372036854775807,
+          to: 2,
+          total: 2
+        }
+      }
+    };
+
     cy.intercept(
       "POST",
       "/api/1.0/requests/data_sources/2",
-      JSON.stringify({
-        status: 200,
-        response: {
-          data: [
-            {
-              id: 1,
-              created_by_id: 2,
-              updated_by_id: 2,
-              created_at: "2021-11-08 10:29:56",
-              updated_at: "2021-11-08 10:29:56",
-              data: {
-                dni: "1234",
-                name: {
-                  last: "Smith",
-                  first: "Oliver"
-                },
-                id: 1
-              },
-              collection_id: 1,
-              title: "1",
-              created_by: {
-                id: 2,
-                email: "admin@processmaker.com"
-              },
-              updated_by: {
-                id: 2,
-                email: "admin@processmaker.com"
-              }
-            },
-            {
-              id: 2,
-              created_by_id: 2,
-              updated_by_id: 2,
-              created_at: "2021-11-08 10:29:56",
-              updated_at: "2021-11-08 10:29:56",
-              data: {
-                dni: "5678",
-                name: {
-                  last: "Doe",
-                  first: "John"
-                },
-                id: 2
-              },
-              collection_id: 1,
-              title: "2",
-              created_by: {
-                id: 2,
-                email: "admin@processmaker.com"
-              },
-              updated_by: {
-                id: 2,
-                email: "admin@processmaker.com"
-              }
-            }
-          ],
-          meta: {
-            filter: "",
-            sort_by: "",
-            sort_order: "",
-            count: 2,
-            total_pages: 1,
-            current_page: 1,
-            from: 1,
-            last_page: 1,
-            path: "/api/1.0/collections/1/records",
-            per_page: 9223372036854775807,
-            to: 2,
-            total: 2
-          }
-        }
-      })
+      JSON.stringify(dataSourceResponse)
     ).as("executeScript");
+    cy.intercept(
+      "GET",
+      "/api/1.0/requests/data_sources/2/resources/ListAll/data*",
+      JSON.stringify(dataSourceResponse)
+    ).as("executeScript");
+    cy.visit("/");
   });
+
+  function assertPreviewDataStable(expectedData) {
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedData);
+    });
+  }
 
   it("Verify select list mustache + collection", () => {
     cy.loadFromJson("select_list_collection.json", 0);
@@ -106,7 +123,7 @@ describe("select list mustache", () => {
     );
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: {
         dni: "1234",
         name: {
@@ -169,7 +186,7 @@ describe("select list mustache", () => {
       .click();
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: {
         dni: "1234",
         name: {
@@ -256,7 +273,7 @@ describe("select list mustache", () => {
       .click();
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",
@@ -361,7 +378,7 @@ describe("select list mustache", () => {
     ).click();
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",
@@ -415,8 +432,7 @@ describe("select list mustache", () => {
   });
 
   it("Verify Load values in select list mustache + collection", () => {
-    cy.loadFromJson("select_list_collection.json", 0);
-    cy.setPreviewDataInput({
+    const expectedPreviewData = {
       form_select_list_1: {
         dni: "1234",
         name: {
@@ -440,131 +456,39 @@ describe("select list mustache", () => {
       form_select_list_4: "1",
       form_select_list_5: "Oliver Smith",
       form_select_list_6: "1"
-    });
+    };
 
+    cy.loadFromJson("select_list_collection.json", 0);
+    cy.setPreviewDataInput(expectedPreviewData);
+    cy.get("#screen-builder-container").should(($div) => {
+      const previewInput = JSON.parse($div[0].__vue__.previewInput);
+      expect(previewInput.form_select_list_4).to.eq("1");
+    });
     cy.get("[data-cy=mode-preview]").click();
+    cy.wait("@executeScript");
 
     cy.get(
       '[data-cy="screen-field-form_select_list_1"] .multiselect__single'
-    ).contains("1234");
+    ).should("contain.text", "1234");
     cy.get(
       '[data-cy="screen-field-form_select_list_2"] .multiselect__single'
-    ).contains("Oliver");
+    ).should("contain.text", "Oliver");
     cy.get(
       '[data-cy="screen-field-form_select_list_3"] .multiselect__single'
-    ).contains("DNI: 1234 Name: Oliver Smith");
+    ).should("contain.text", "DNI: 1234 Name: Oliver Smith");
     cy.get(
       '[data-cy="screen-field-form_select_list_4"] .multiselect__single'
-    ).contains("Oliver Smith");
+    ).should("contain.text", "Oliver Smith");
     cy.get(
       '[data-cy="screen-field-form_select_list_5"] .multiselect__single'
-    ).contains("Oliver Smith");
+    ).should("contain.text", "Oliver Smith");
     cy.get(
       '[data-cy="screen-field-form_select_list_6"] .multiselect__single'
-    ).contains("Oliver Smith");
+    ).should("contain.text", "Oliver Smith");
 
-    // Check the data of the screen
-    cy.assertPreviewData({
-      form_select_list_1: {
-        dni: "1234",
-        name: {
-          last: "Smith",
-          first: "Oliver"
-        },
-        id: 1
-      },
-      form_select_list_2: {
-        last: "Smith",
-        first: "Oliver"
-      },
-      form_select_list_3: {
-        dni: "1234",
-        name: {
-          last: "Smith",
-          first: "Oliver"
-        },
-        id: 1
-      },
-      form_select_list_4: "1",
-      form_select_list_5: "Oliver Smith",
-      form_select_list_6: "1"
-    });
-  });
-
-  it("Verify Load values in select list mustache + collection", () => {
-    cy.loadFromJson("select_list_collection.json", 0);
-    cy.setPreviewDataInput({
-      form_select_list_1: {
-        dni: "1234",
-        name: {
-          last: "Smith",
-          first: "Oliver"
-        },
-        id: 1
-      },
-      form_select_list_2: {
-        last: "Smith",
-        first: "Oliver"
-      },
-      form_select_list_3: {
-        dni: "1234",
-        name: {
-          last: "Smith",
-          first: "Oliver"
-        },
-        id: 1
-      },
-      form_select_list_4: "1",
-      form_select_list_5: "Oliver Smith",
-      form_select_list_6: "1"
-    });
-
-    cy.get("[data-cy=mode-preview]").click();
-
-    cy.get(
-      '[data-cy="screen-field-form_select_list_1"] .multiselect__single'
-    ).contains("1234");
-    cy.get(
-      '[data-cy="screen-field-form_select_list_2"] .multiselect__single'
-    ).contains("Oliver");
-    cy.get(
-      '[data-cy="screen-field-form_select_list_3"] .multiselect__single'
-    ).contains("DNI: 1234 Name: Oliver Smith");
-    cy.get(
-      '[data-cy="screen-field-form_select_list_4"] .multiselect__single'
-    ).contains("Oliver Smith");
-    cy.get(
-      '[data-cy="screen-field-form_select_list_5"] .multiselect__single'
-    ).contains("Oliver Smith");
-    cy.get(
-      '[data-cy="screen-field-form_select_list_6"] .multiselect__single'
-    ).contains("Oliver Smith");
-
-    // Check the data of the screen
-    cy.assertPreviewData({
-      form_select_list_1: {
-        dni: "1234",
-        name: {
-          last: "Smith",
-          first: "Oliver"
-        },
-        id: 1
-      },
-      form_select_list_2: {
-        last: "Smith",
-        first: "Oliver"
-      },
-      form_select_list_3: {
-        dni: "1234",
-        name: {
-          last: "Smith",
-          first: "Oliver"
-        },
-        id: 1
-      },
-      form_select_list_4: "1",
-      form_select_list_5: "Oliver Smith",
-      form_select_list_6: "1"
+    cy.get("#screen-builder-container").should(($div) => {
+      const data = JSON.parse(JSON.stringify($div[0].__vue__.previewData));
+      expect(data).to.eql(expectedPreviewData);
     });
   });
 
@@ -636,7 +560,7 @@ describe("select list mustache", () => {
       .should("be.checked");
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: {
         dni: "1234",
         name: {
@@ -797,7 +721,7 @@ describe("select list mustache", () => {
       .should("be.checked");
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",
@@ -948,7 +872,7 @@ describe("select list mustache", () => {
     ).contains("John Doe");
 
     // Check the data of the screen
-    cy.assertPreviewData({
+    assertPreviewDataStable({
       form_select_list_1: [
         {
           dni: "1234",

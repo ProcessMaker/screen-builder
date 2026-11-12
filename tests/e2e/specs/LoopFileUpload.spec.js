@@ -78,7 +78,7 @@ describe("FOUR-2164 Loop FileUpload", () => {
     );
     cy.wait("@uploadFile3");
     // Check global variable
-    cy.window().then((win) => {
+    cy.window().should((win) => {
       const expected = {
         "loop_1.0.fileLoppPaola": [
           {

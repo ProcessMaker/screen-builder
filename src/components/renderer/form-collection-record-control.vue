@@ -11,6 +11,7 @@
     :watchers="watchers"
     :is-mobile="isMobile"
     :_parent="_parent"
+    :read-only="isDisabled"
   />
 </template>
 
@@ -18,6 +19,7 @@
 import _ from "lodash";
 import VueFormRenderer from "../vue-form-renderer.vue";
 import CollectionRecordsList from "../inspector/collection-records-list.vue";
+import resolveCollectionMode from "./collection-record-mode";
 
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -45,7 +47,15 @@ export default {
       type: Object
     },
     taskdraft: Object,
-    isMobile: {type: Boolean, default: false}
+    isMobile: {type: Boolean, default: false},
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    readonly: {
+      type: [Boolean, String],
+      default: false
+    }
   },
   data() {
     return {
@@ -70,6 +80,16 @@ export default {
     };
   },
   computed: {
+    isDisabled() {
+      return Boolean(
+        this.disabled === true
+        || this.disabled === "true"
+        || this.disabled === ""
+        || this.readonly === true
+        || this.readonly === "true"
+        || this.readonly === ""
+      );
+    },
     validatedConfig() {
       return this.config && this.config[0] ? this.config : defaultConfig;
     },
@@ -81,6 +101,9 @@ export default {
         return this.localData;
       },
       set(data) {
+        if (this.isDisabled) {
+          return;
+        }
         Object.keys(data).forEach((variable) => {
           this.validationData &&
             this.$set(this.validationData, variable, data[variable]);
@@ -122,7 +145,7 @@ export default {
         this.loadRecordCollection(
           this.collection.collectionId,
           record,
-          this.selDisplayMode
+          this.getCollectionMode()
         );
       } else {
         if (this.isMustache(record)) {
@@ -140,6 +163,15 @@ export default {
         this.selRecordId,
         this.selDisplayMode
       );
+    },
+    isDisabled() {
+      if (this.selCollectionId && this.selRecordId) {
+        this.loadRecordCollection(
+          this.selCollectionId,
+          this.selRecordId,
+          this.selDisplayMode
+        );
+      }
     }
   },
   mounted() {
@@ -156,7 +188,7 @@ export default {
         this.hasMustache = true;
       }
 
-      const collectionMode = this.collectionmode?.modeId ?? this.defaultCollectionMode;
+      const collectionMode = this.getCollectionMode();
 
       this.loadRecordCollection(
         this.collection.collectionId,
@@ -166,6 +198,12 @@ export default {
     }
   },
   methods: {
+    getCollectionMode() {
+      return resolveCollectionMode(
+        this.collectionmode,
+        this.defaultCollectionMode
+      );
+    },
     isSubmitButton(item) {
       return (
         item.config &&
@@ -226,7 +264,7 @@ export default {
           this.watchers = response.data.watchers;
           this.screenTitle = response.data.title;
 
-          if (this.$attrs.disabled) {
+          if (this.isDisabled) {
             this.disableForm(this.config);
           }
         });
@@ -244,6 +282,8 @@ export default {
       this.selCollectionId = collectionId;
       this.selRecordId = recordId;
       this.selDisplayMode = modeId;
+      // Completed/closed task previews must not load the editable collection screen.
+      const effectiveMode = this.isDisabled ? "View" : modeId;
       this.$dataProvider
         .getCollectionRecordsView(collectionId, recordId)
         .then((response) => {
@@ -252,14 +292,12 @@ export default {
           const viewScreen = response.collection.read_screen_id;
           const editScreen = response.collection.update_screen_id;
           // Choose screen id regarding of the display Mode
-          this.screenCollectionId =
-            typeof this.selDisplayMode === "function"
-              ? this.collectionmode.modeId === "View"
-                ? viewScreen
-                : editScreen
-              : this.selDisplayMode === "View"
-              ? viewScreen
-              : editScreen;
+          let useViewScreen = effectiveMode === "View";
+          if (typeof this.selDisplayMode === "function") {
+            useViewScreen =
+              this.collectionmode.modeId === "View" || this.isDisabled;
+          }
+          this.screenCollectionId = useViewScreen ? viewScreen : editScreen;
           this.loadScreen(this.screenCollectionId);
 
           // This section validates if Collection has draft data
@@ -267,6 +305,7 @@ export default {
             this.taskDraft?.draft?.data == null ||
             this.taskDraft.draft.data === "" ||
             !this.enableDraft
+            || this.isDisabled
           ) {
             this.localData = respData;
           } else {
