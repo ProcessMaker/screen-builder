@@ -54,6 +54,8 @@ describe("SelectList - Watcher", () => {
       '[data-cy=preview-content] [id^="form_select_list_2-John-"]'
     ).click();
 
+    cy.wait("@getWatcherResponse");
+
     // Select "Mary" option in select list "form_select_list_3"
     cy.get(
       "[data-cy=preview-content] [data-cy=screen-field-form_select_list_3]"

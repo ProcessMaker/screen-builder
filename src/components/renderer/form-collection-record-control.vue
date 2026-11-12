@@ -18,6 +18,7 @@
 import _ from "lodash";
 import VueFormRenderer from "../vue-form-renderer.vue";
 import CollectionRecordsList from "../inspector/collection-records-list.vue";
+import resolveCollectionMode from "./collection-record-mode";
 
 const globalObject = typeof window === "undefined" ? global : window;
 
@@ -142,7 +143,7 @@ export default {
         this.loadRecordCollection(
           this.collection.collectionId,
           record,
-          this.selDisplayMode
+          this.getCollectionMode()
         );
       } else {
         if (this.isMustache(record)) {
@@ -185,7 +186,7 @@ export default {
         this.hasMustache = true;
       }
 
-      const collectionMode = this.collectionmode?.modeId ?? this.defaultCollectionMode;
+      const collectionMode = this.getCollectionMode();
 
       this.loadRecordCollection(
         this.collection.collectionId,
@@ -195,6 +196,12 @@ export default {
     }
   },
   methods: {
+    getCollectionMode() {
+      return resolveCollectionMode(
+        this.collectionmode,
+        this.defaultCollectionMode
+      );
+    },
     isSubmitButton(item) {
       return (
         item.config &&

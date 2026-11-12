@@ -216,6 +216,7 @@ import draggable from 'vuedraggable';
 import { dataSources, dataSourceValues } from './data-source-types';
 import MonacoEditor from 'vue-monaco';
 import { cloneDeep } from "lodash";
+import { getCollectionFieldOptions } from "../../collectionFieldUtils";
 
 export default {
   components: {
@@ -394,16 +395,10 @@ export default {
       }
     },
     getCollectionColumns(collection) {
-      this.collectionOptions = [{ text: "All columns", value: "all" }];
-      const [firstRecord] = collection?.dataRecordList || [];
-
-      if (firstRecord?.data) {
-        const dataObject = firstRecord.data;
-
-        for (const [key, value] of Object.entries(dataObject)) {
-          this.collectionOptions.push({ text: key, value: key });
-        }
-      }
+      this.collectionOptions = [
+        { text: "All columns", value: "all" },
+        ...getCollectionFieldOptions(collection)
+      ];
     },
     initData() {
       this.dataSource = this.options.dataSource;

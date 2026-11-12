@@ -8,6 +8,7 @@
           v-model="collectionId"
           :options="collections"
           data-cy="inspector-collection"
+          @change="onCollectionIdChange"
         />
         <b-form-text class="mt-2">
         {{ $t("Collection Record Control is not available for Anonymous Web Entry") }}
@@ -29,20 +30,15 @@
 
 <script>
 import { debounce } from "lodash";
-import MustacheHelper from "./mustache-helper.vue";
-import ScreenVariableSelector from "../screen-variable-selector.vue";
 
 const CONFIG_FIELDS = [
   "collectionId",
   "pmql",
-  "dataRecordList"
+  "dataRecordList",
+  "fields"
 ];
 
 export default {
-  components: {
-    MustacheHelper,
-    ScreenVariableSelector
-  },
   props: ["value"],
   data() {
     return {
@@ -110,13 +106,15 @@ export default {
     });
   },
   methods: {
-    onCollectionChange() {
+    onCollectionIdChange(collectionId) {
+      this.$emit("collection-id-changed", collectionId);
+    },
+    loadCollectionRecords() {
       this.$dataProvider
         .getCollectionRecordsList(this.collectionId)
         .then((response) => {
           this.dataRecordList = response.data;
         });
-      this.$emit('change', this.dataRecordList);
     },
     getCollections() {
       this.$dataProvider.getCollections().then((response) => {
@@ -144,24 +142,20 @@ export default {
     },
     getFields() {
       if (!this.collectionId) {
+        this.fields = [];
         return;
       }
 
       this.$dataProvider
         .getCollectionFields(this.collectionId)
         .then((response) => {
-          this.fields = [
-            { value: null, text: this.$t("Select a field") },
-            { value: "id", text: this.$t("Collection Record ID") },
-            ...response.data.data.map((field) => {
-              return {
-                text: field.label,
-                value: field.field
-              };
-            })
-          ];
+          const dataColumns = response?.data?.data || [];
+          this.fields = dataColumns.map((field) => ({
+            text: field.label || field.field,
+            value: field.field
+          }));
 
-          this.onCollectionChange();
+          this.loadCollectionRecords();
         });
     },
     onNLQConversion(pmql) {

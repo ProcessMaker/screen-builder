@@ -221,6 +221,10 @@ export default {
       } else if (component === "FormLoop") {
         value = this.emptyLoopValue(config);
       }
+      // FormRecordList keeps the default `null` empty state (Variable and Collection).
+      // Do not initialize Variable mode as []: historical screens/tests/processes treat
+      // an untouched record list as null. Collection radio/checkbox selection also
+      // relies on null until the user selects a row.
       return value;
     },
     emptyLoopValue(config) {
@@ -234,16 +238,33 @@ export default {
       }
       return loopVariable;
     },
-    updateScreenData(safeDotName, variable) {
+    updateScreenData(safeDotName, variable, eventValue) {
       this[`${safeDotName}_was_filled__`] = true;
       this.blockUpdate(safeDotName, 210);
-      this.setValueDebounced(variable, this[safeDotName], this.vdata);
+      // Prefer $event from @input so we don't depend on v-model listener order.
+      // Without this, updateScreenData can run before v-model assigns and write
+      // the previous value (e.g. []/null) back into vdata, wiping the selection.
+      const hasEventValue = arguments.length >= 3;
+      const value = hasEventValue ? eventValue : this[safeDotName];
+      if (hasEventValue) {
+        this[safeDotName] = eventValue;
+      }
+      this.setValueDebounced(variable, value, this.vdata);
     },
-    updateScreenDataNow(safeDotName, variable, setWasFilled = true) {
+    updateScreenDataNow(safeDotName, variable, setWasFilled = true, eventValue = undefined) {
       if (setWasFilled) {
         this[`${safeDotName}_was_filled__`] = true;
       }
-      this.setValue(variable, this[safeDotName], this.vdata);
+      // Prefer $event from @input so we don't depend on v-model listener order.
+      // Without this, updateScreenDataNow can run before v-model assigns and write
+      // the previous value (e.g. []/null) back into vdata, wiping the selection.
+      // Use arguments.length so explicit falsy values (0, '', false, null) are kept.
+      const hasEventValue = arguments.length >= 4;
+      const value = hasEventValue ? eventValue : this[safeDotName];
+      if (hasEventValue) {
+        this[safeDotName] = eventValue;
+      }
+      this.setValue(variable, value, this.vdata);
       this.unblockUpdate(safeDotName);
     },
     blockUpdate(safeDotName, time) {

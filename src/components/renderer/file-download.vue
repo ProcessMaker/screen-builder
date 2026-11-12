@@ -121,6 +121,9 @@ export default {
     this.setFilesInfo();
   },
   methods: {
+    isWebEntryTemporaryFileId(fileId) {
+      return typeof fileId === "string" && fileId.startsWith("webentry_");
+    },
     downloadFile(file) {
       if (this.collection) {
         this.downloadCollectionFile(file);
@@ -209,6 +212,12 @@ export default {
       const fileId = this.value
         ? this.value
         : _.get(this.requestData, this.fileDataName, null);
+
+      if (this.isWebEntryTemporaryFileId(fileId)) {
+        this.filesInfo = [];
+        return;
+      }
+
       let { endpoint } = this;
 
       if (this.requestFiles) {
