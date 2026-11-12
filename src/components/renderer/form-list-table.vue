@@ -184,7 +184,11 @@ export default {
       this.dataControl = data.dataControls;
     },
     openExternalLink() {
-      window.open(this.dataControl.url, "_blank");
+      const url = this.dataControl?.url;
+      if (!url) {
+        return;
+      }
+      window.open(url, "_blank");
     },
     handleDropdownSelection(listType, valueSelected) {
       const combinedFilter = [];
