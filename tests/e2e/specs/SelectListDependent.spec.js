@@ -1,13 +1,37 @@
 describe("select list mustache", () => {
   beforeEach(() => {
     cy.visit("/");
+    const getOutboundConfigValue = (req) => {
+      const config = JSON.parse(req.query.pmds_config || "{}");
+      return config.outboundConfig && config.outboundConfig[0]
+        ? config.outboundConfig[0].value
+        : null;
+    };
+
+    const dataSourceResponse = (data, path) => ({
+      data,
+      meta: {
+        filter: "",
+        sort_by: "",
+        sort_order: "",
+        count: data.length,
+        total_pages: 1,
+        current_page: 1,
+        from: 1,
+        last_page: 1,
+        path,
+        per_page: 9223372036854775807,
+        to: data.length,
+        total: data.length
+      }
+    });
+
     cy.intercept(
-      "POST",
-      "/api/1.0/requests/data_sources/3",
-      JSON.stringify({
-        status: 200,
-        response: {
-          data: [
+      "GET",
+      "/api/1.0/requests/data_sources/3/resources/ListAll/data*",
+      {
+        response: dataSourceResponse(
+          [
             {
               id: 1,
               created_by_id: 2,
@@ -51,22 +75,9 @@ describe("select list mustache", () => {
               }
             }
           ],
-          meta: {
-            filter: "",
-            sort_by: "",
-            sort_order: "",
-            count: 2,
-            total_pages: 1,
-            current_page: 1,
-            from: 1,
-            last_page: 1,
-            path: "/api/1.0/collections/3/records",
-            per_page: 9223372036854775807,
-            to: 2,
-            total: 2
-          }
-        }
-      })
+          "/api/1.0/collections/3/records"
+        )
+      }
     ).as("executeScript");
     // Bolivia Cities
     const BoliviaCities = [
@@ -159,8 +170,8 @@ describe("select list mustache", () => {
       }
     ];
     let cities = [];
-    cy.intercept("POST", "/api/1.0/requests/data_sources/4", (req) => {
-      switch (req.body.config.outboundConfig[0].value) {
+    cy.intercept("GET", "/api/1.0/requests/data_sources/4/resources/ListAll/data*", (req) => {
+      switch (getOutboundConfigValue(req)) {
         case "data.country_id=1":
           cities = BoliviaCities;
           break;
@@ -170,23 +181,7 @@ describe("select list mustache", () => {
         default:
           cities = [];
       }
-      const response = {
-        data: cities,
-        meta: {
-          filter: "",
-          sort_by: "",
-          sort_order: "",
-          count: cities.length,
-          total_pages: 1,
-          current_page: 1,
-          from: 1,
-          last_page: 1,
-          path: "/api/1.0/collections/4/records",
-          per_page: 9223372036854775807,
-          to: cities.length,
-          total: cities.length
-        }
-      };
+      const response = dataSourceResponse(cities, "/api/1.0/collections/4/records");
       req.reply({
         headers: {
           "X-Cypress-Response": `"response":${JSON.stringify(response)}}`
@@ -381,8 +376,8 @@ describe("select list mustache", () => {
     ];
 
     let addresses = [];
-    cy.intercept("POST", "/api/1.0/requests/data_sources/5", (req) => {
-      switch (req.body.config.outboundConfig[0].value) {
+    cy.intercept("GET", "/api/1.0/requests/data_sources/5/resources/ListAll/data*", (req) => {
+      switch (getOutboundConfigValue(req)) {
         case "data.city_id=1":
           addresses = LaPazAddresses;
           break;
@@ -398,23 +393,7 @@ describe("select list mustache", () => {
         default:
           addresses = [];
       }
-      const response = {
-        data: addresses,
-        meta: {
-          filter: "",
-          sort_by: "",
-          sort_order: "",
-          count: addresses.length,
-          total_pages: 1,
-          current_page: 1,
-          from: 1,
-          last_page: 1,
-          path: "/api/1.0/collections/5/records",
-          per_page: 9223372036854775807,
-          to: addresses.length,
-          total: addresses.length
-        }
-      };
+      const response = dataSourceResponse(addresses, "/api/1.0/collections/5/records");
       req.reply({
         headers: {
           "X-Cypress-Response": `"response":${JSON.stringify(response)}}`

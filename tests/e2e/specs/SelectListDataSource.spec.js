@@ -2,8 +2,8 @@ describe("Select List with DataSource", () => {
   beforeEach(() => {
     cy.visit("/");
     cy.intercept(
-      "POST",
-      "/api/1.0/requests/data_sources/2",
+      "GET",
+      "/api/1.0/requests/data_sources/2/resources/ListAll/data*",
       JSON.stringify({
         status: 200,
         response: {
