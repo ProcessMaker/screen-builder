@@ -20,8 +20,7 @@ export default {
             items: element.items,
           }
         ],
-        watchers: [], 
-        isMobile: false
+        watchers: []
       };
     },
 
@@ -57,6 +56,7 @@ export default {
       return this.createComponent("ScreenRenderer", {
         ":definition": this.byRef(nested),
         ":value": valueExpression,
+        ":is-mobile": "isMobile",
         ":loop-context": loopContextExpression,
         ":_parent": "getValidationData()",
         ":components": this.byRef(this.components),

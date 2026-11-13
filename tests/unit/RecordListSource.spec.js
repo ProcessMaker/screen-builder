@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { BTable, BFormSelect } from 'bootstrap-vue';
+import Vue from 'vue';
+import { BTable, BFormSelect, BFormCheckbox, BFormRadio } from 'bootstrap-vue';
 import RecordList from '@/components/renderer/form-record-list.vue';
 import CollectionDataSource from '@/components/inspector/collection-data-source.vue';
 
@@ -15,7 +16,7 @@ const source = sourceOptions => ({
   dataSelectionOptions: 'no-selection',
 });
 
-function renderList(style, sourceOptions, editable = true, extraProps = {}) {
+function renderList(style, sourceOptions, editable = true, extraProps = {}, mountOptions = {}) {
   return mount(RecordList, {
     propsData: {
       source: source(sourceOptions),
@@ -32,11 +33,14 @@ function renderList(style, sourceOptions, editable = true, extraProps = {}) {
     mocks: { $t: text => text },
     stubs: {
       'b-table': BTable,
+      'b-form-checkbox': BFormCheckbox,
+      'b-form-radio': BFormRadio,
       'b-modal': { template: '<div><slot /></div>' },
       'b-pagination': true,
       'vue-form-renderer': true,
     },
     methods: { onCollectionChange: jest.fn() },
+    ...mountOptions,
   });
 }
 
@@ -100,6 +104,141 @@ describe.each(['Classic', 'Modern'])('Record List source in %s style', style => 
     expect(wrapper.find('.alert-danger').exists()).toBe(true);
     wrapper.destroy();
   });
+
+  test.each([
+    { disabled: true },
+    { readonly: true },
+    { config: { disabled: true } },
+    { config: { readonly: true } },
+    { config: { editable: false } },
+    { _config: { disabled: true } },
+    { _config: { readonly: true } },
+    { _config: { editable: false } },
+  ])('respects editing restrictions %p', restrictions => {
+    const wrapper = renderList(style, 'Variable', true, restrictions);
+    expectEditing(wrapper, false);
+    wrapper.destroy();
+  });
+
+  test('reacts to inherited read-only state without losing Variable records', async () => {
+    const state = Vue.observable({ value: false });
+    const wrapper = renderList(style, 'Variable', true, {}, {
+      provide: { formReadOnlyState: state },
+    });
+    expectEditing(wrapper, true);
+    state.value = true;
+    await wrapper.vm.$nextTick();
+    expectEditing(wrapper, false);
+    expect(wrapper.text()).toContain('Saved record');
+    state.value = false;
+    await wrapper.vm.$nextTick();
+    expectEditing(wrapper, true);
+    wrapper.destroy();
+  });
+
+  test.each(['forceFormReadOnly', 'isFormReadOnly', 'formReadOnlyState'])(
+    'respects ancestor %s', flag => {
+      const wrapper = renderList(style, 'Variable', true, {}, {
+        parentComponent: {
+          data: () => ({
+            currentPage: 1,
+            [flag]: flag === 'formReadOnlyState' ? { value: true } : true,
+          }),
+        },
+      });
+      expectEditing(wrapper, false);
+      expect(wrapper.vm.canChangeSelection).toBe(false);
+      wrapper.destroy();
+    },
+  );
+
+  test.each(['Collection', 'read-only Variable'])(
+    'blocks editing method entry points for %s', mode => {
+      const wrapper = renderList(style, mode === 'Collection' ? 'Collection' : 'Variable', true,
+        mode === 'Collection' ? {} : { readonly: true });
+      const records = JSON.parse(JSON.stringify(wrapper.vm.value));
+      wrapper.vm.showAddForm();
+      wrapper.vm.showEditForm(0, 'saved');
+      wrapper.vm.showDeleteConfirmation(0, 'saved');
+      wrapper.vm.togglePopover(0, {}, 'saved');
+      wrapper.vm.remove();
+      expect(wrapper.vm.addItem).toEqual({});
+      expect(wrapper.vm.editItem).toEqual({});
+      expect(wrapper.vm.isPopoverVisible).toBeNull();
+      expect(wrapper.vm.value).toEqual(records);
+      expect(wrapper.emitted('input')).toBeUndefined();
+      wrapper.destroy();
+    },
+  );
+
+  test.each(['single-field', 'single-record', 'multiple-records'])(
+    'keeps Collection %s selection independent of editing and locks it reactively', async mode => {
+      const state = Vue.observable({ value: false });
+      const records = [{ name: 'First' }, { name: 'Second' }];
+      const wrapper = renderList(style, 'Collection', true, {
+        name: 'selectedRecords',
+        fields: { jsonData: '[{"key":"name","label":"Name"}]' },
+        source: { ...source('Collection'), dataSelectionOptions: mode, singleField: 'name' },
+        value: mode === 'multiple-records' ? [] : null,
+      }, { provide: { formReadOnlyState: state } });
+      await wrapper.setData({ collectionData: records });
+      expectEditing(wrapper, false);
+      const controls = () => wrapper.findAllComponents(
+        mode === 'multiple-records' ? BFormCheckbox : BFormRadio,
+      ).wrappers;
+      expect(controls().length).toBeGreaterThan(0);
+      expect(controls().every(control => !control.props('disabled'))).toBe(true);
+      await wrapper.setProps({ editable: false, disabled: true, readonly: true });
+      expect(controls().every(control => !control.props('disabled'))).toBe(true);
+
+      if (mode === 'multiple-records') {
+        await wrapper.setData({ selectedRows: [records[1]] });
+        wrapper.vm.onMultipleSelectionChange(1);
+        expect(wrapper.emitted('input').slice(-1)[0][0]).toEqual([
+          { name: 'Second', selectedRowsIndex: 1 },
+        ]);
+        wrapper.vm.allRowsSelected = true;
+        wrapper.vm.selectAllRows();
+        expect(wrapper.emitted('input').slice(-1)[0][0]).toEqual([
+          { name: 'First', selectedRowsIndex: 0 },
+          { name: 'Second', selectedRowsIndex: 1 },
+        ]);
+      } else {
+        await wrapper.setData({ selectedRow: records[1] });
+        wrapper.vm.onRadioChange(records[1], 1);
+        expect(wrapper.emitted('input').slice(-1)[0][0]).toEqual(
+          mode === 'single-field' ? 'Second' : { name: 'Second', selectedRowIndex: 1 },
+        );
+      }
+
+      state.value = true;
+      await wrapper.vm.$nextTick();
+      const saved = JSON.parse(JSON.stringify({
+        selectedRow: wrapper.vm.selectedRow,
+        selectedRows: wrapper.vm.selectedRows,
+        collectionData: wrapper.vm.collectionData,
+        validationData: wrapper.vm.validationData,
+      }));
+      const emittedCount = wrapper.emitted('input').length;
+      expect(controls().every(control => control.props('disabled'))).toBe(true);
+      wrapper.vm.onRadioChange(records[0], 0);
+      wrapper.vm.onMultipleSelectionChange(0);
+      wrapper.vm.selectAllRows();
+      expect(wrapper.emitted('input')).toHaveLength(emittedCount);
+      expect({
+        selectedRow: wrapper.vm.selectedRow,
+        selectedRows: wrapper.vm.selectedRows,
+        collectionData: wrapper.vm.collectionData,
+        validationData: wrapper.vm.validationData,
+      }).toEqual(saved);
+      expect(wrapper.text()).toContain('Second');
+
+      state.value = false;
+      await wrapper.vm.$nextTick();
+      expect(controls().every(control => !control.props('disabled'))).toBe(true);
+      wrapper.destroy();
+    },
+  );
 });
 
 describe('Record List source inspector', () => {

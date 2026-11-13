@@ -7,6 +7,7 @@
         :computed="null"
         :custom-css="null"
         :watchers="null"
+        :is-mobile="isMobile"
         :is-loop="true"
         :debug-context="'Loop #' + loopIndex"
         :mode="mode"
@@ -17,7 +18,7 @@
         @update="setMatrixValue(loopIndex, $event)"
       />
     </form>
-    <b-row v-if="config.settings.add" class="justify-content-md-center">
+    <b-row v-if="canAddOrRemove" class="justify-content-md-center">
       <b-col md="auto">
         <b-button
           size="sm"
@@ -54,7 +55,9 @@ export default {
     VueFormRenderer
   },
   mixins: [],
-  props: ["value", "config", "transientData", "name", "mode", "formConfig"],
+  // Renderer props stay untyped because legacy screens may pass non-canonical runtime types.
+  // eslint-disable-next-line prettier/prettier
+  props: ["value", "config", "transientData", "name", "mode", "formConfig", "isMobile", "disabled", "readonly"], // NOSONAR
   data() {
     return {
       matrix: [],
@@ -65,6 +68,21 @@ export default {
     };
   },
   computed: {
+    isDisabled() {
+      return Boolean(
+        this.disabled
+        || this.readonly
+        || (this.config && (this.config.disabled || this.config.readonly || this.config.editable === false))
+      );
+    },
+    canAddOrRemove() {
+      return Boolean(
+        this.config
+        && this.config.settings
+        && this.config.settings.add
+        && !this.isDisabled
+      );
+    },
     parentLoopContext() {
       let parent = this.$parent;
       let i = 0;
@@ -191,6 +209,9 @@ export default {
       return context;
     },
     add() {
+      if (this.isDisabled) {
+        return;
+      }
       if (this.config.settings.type === "existing") {
         this.setMatrixValue(this.matrix.length, {});
       } else {
@@ -198,6 +219,9 @@ export default {
       }
     },
     remove() {
+      if (this.isDisabled) {
+        return;
+      }
       if (this.config.settings.type === "existing") {
         this.$delete(this.matrix, this.matrix.length - 1);
       } else {
@@ -205,6 +229,9 @@ export default {
       }
     },
     removeConfirm() {
+      if (this.isDisabled) {
+        return;
+      }
       const message = this.$t("Are you sure you want to delete this?");
       window.ProcessMaker.confirmModal(this.$t("Caution!"), message, "", () => {
         this.remove();

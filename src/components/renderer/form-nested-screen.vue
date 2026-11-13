@@ -11,9 +11,11 @@
     :computed="computed"
     :custom-css="customCSS"
     :watchers="watchers"
+    :is-mobile="isMobile"
     debug-context="Nested Screen"
     @css-errors="cssErrors = $event"
     :_parent="_parent"
+    :read-only="isDisabled"
   />
 </template>
 
@@ -42,6 +44,9 @@ export default {
     validationData: null,
     _parent: null,
     ancestorScreens: {type: Array, default: () => []},
+    isMobile: {type: Boolean, default: false},
+    disabled: { type: [Boolean, String], default: false },
+    readonly: { type: [Boolean, String], default: false },
   },
   data() {
     return {
@@ -54,6 +59,17 @@ export default {
     };
   },
   computed: {
+    isDisabled() {
+      return Boolean(
+        this.disabled === true
+        || this.disabled === "true"
+        || this.disabled === ""
+        || this.readonly === true
+        || this.readonly === "true"
+        || this.readonly === ""
+        || this.$attrs.disabled
+      );
+    },
     validatedConfig() {
       return this.config && this.config[0] ? this.config : defaultConfig;
     },
@@ -133,7 +149,7 @@ export default {
             this.watchers = response.data.watchers;
             this.screenTitle = response.data.title;
 
-            if (this.$attrs['disabled']) {
+            if (this.isDisabled) {
               this.disableForm(this.config);
             }
 

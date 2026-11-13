@@ -1,4 +1,12 @@
 /* eslint-disable no-param-reassign */
+const RESPONSIVE_COMPONENTS = new Set([
+  "FormLoop",
+  "FormRecordList",
+  "FormNestedScreen",
+  "FormCollectionRecordControl",
+  "FormCollectionViewControl"
+]);
+
 export default {
   data() {
     return {
@@ -6,6 +14,11 @@ export default {
     };
   },
   methods: {
+    addResponsiveProperties(properties, componentName) {
+      if (RESPONSIVE_COMPONENTS.has(componentName)) {
+        properties[":is-mobile"] = "isMobile";
+      }
+    },
     searchForRecordList(items) {
       items.forEach((item) => {
         if (item instanceof Array) {
@@ -27,56 +40,58 @@ export default {
         }
       });
     },
+    bindFieldVariable(properties, element, componentName) {
+      if (componentName === "FormImage") {
+        this.registerVariable(element.config.variableName, element);
+        delete properties.image;
+        properties[":image"] = this.byRef(element.config.image);
+        return;
+      }
+      if (!this.validVariableName(element.config.name)) {
+        return;
+      }
+      this.registerVariable(element.config.name, element);
+      // v-model are not assigned directly to the field name, to prevent invalid references like:
+      // `person.content` when `person`=null
+      const safeDotName = this.safeDotName(element.config.name);
+      properties["v-model"] = safeDotName;
+      // Debounce input from FormTextArea and FormInput.
+      // Pass $event on @input so vdata is updated with the emitted value even
+      // if this handler runs before the v-model assignment (listener order race).
+      // Keep @change without $event: change payloads are not always the field value.
+      if (componentName === "FormTextArea" || componentName === "FormInput") {
+        properties[
+          "@input"
+        ] = `updateScreenData('${safeDotName}', '${element.config.name}', $event)`;
+        properties[
+          "@change"
+        ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+      } else {
+        properties[
+          "@input"
+        ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}', true, $event)`;
+        properties[
+          "@change"
+        ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
+      }
+      // Process the FormSelectList@reset event
+      properties[
+        "@reset"
+      ] = `resetValue('${safeDotName}', '${element.config.name}')`;
+    },
     loadFieldProperties({
       properties,
       element,
       componentName,
       definition,
-      formIndex,
-      screen
+      formIndex
     }) {
       properties.class = this.elementCssClass(element);
       properties[":validation-data"] = "getValidationData()";
 
       // verify if component is defined in popup
       if (!this.popups.includes(formIndex)) {
-        if (componentName === "FormImage") {
-          this.registerVariable(element.config.variableName, element);
-          delete properties.image;
-          properties[":image"] = this.byRef(element.config.image);
-        } else if (this.validVariableName(element.config.name)) {
-          this.registerVariable(element.config.name, element);
-          // v-model are not assigned directly to the field name, to prevent invalid references like:
-          // `person.content` when `person`=null
-          const safeDotName = this.safeDotName(element.config.name);
-          properties["v-model"] = safeDotName;
-          // Debounce input from FormTextArea and FormInput.
-          // Pass $event on @input so vdata is updated with the emitted value even
-          // if this handler runs before the v-model assignment (listener order race).
-          // Keep @change without $event: change payloads are not always the field value.
-          if (
-            componentName === "FormTextArea" ||
-            componentName === "FormInput"
-          ) {
-            properties[
-              "@input"
-            ] = `updateScreenData('${safeDotName}', '${element.config.name}', $event)`;
-            properties[
-              "@change"
-            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-          } else {
-            properties[
-              "@input"
-            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}', true, $event)`;
-            properties[
-              "@change"
-            ] = `updateScreenDataNow('${safeDotName}', '${element.config.name}')`;
-          }
-          // Process the FormSelectList@reset event
-          properties[
-            "@reset"
-          ] = `resetValue('${safeDotName}', '${element.config.name}')`;
-        }
+        this.bindFieldVariable(properties, element, componentName);
       }
       // Do not replace mustache in RichText control, it is replaced by the control
       if (
@@ -89,6 +104,7 @@ export default {
       if (componentName === "FormNestedScreen") {
         properties[":_parent"] = "_parent";
       }
+      this.addResponsiveProperties(properties, componentName);
       // Add cypress testing tags
       if (element.config.name) {
         properties["data-cy"] = `screen-field-${element.config.name}`;
@@ -110,6 +126,15 @@ export default {
       );
       properties[":readonly"] = isCalcProp || element.config.readonly;
       properties[":disabled"] = isCalcProp || element.config.disabled;
+      // Record List must read editability from the live config object so
+      // disableForm() mutations (completed/closed preview) take effect.
+      if (componentName === "FormRecordList") {
+        const configRef = this.byRef(element.config);
+        delete properties.editable;
+        // Avoid "&&" in attribute expressions: owner.innerHTML escapes & to &amp;.
+        properties[":editable"] =
+          `(${configRef}.editable)?!(${configRef}.disabled||${configRef}.readonly):false`;
+      }
       // Events
       properties["@submit"] = "submitForm";
       // Add handler event if Button
