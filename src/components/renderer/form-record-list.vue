@@ -965,7 +965,7 @@ export default {
       let checkWebEntryValue = content;
 
       if (Array.isArray(content)) {
-        checkWebEntryValue = content[0].file;
+        checkWebEntryValue = content[0]?.file;
       }
 
       return regex.test(checkWebEntryValue);
@@ -1115,7 +1115,15 @@ export default {
     },
     handleHideAddModal() {
       this.addItem = this.initFormValues;
-      window.ProcessMaker.EventBus.$emit("record-list-add-modal-hidden");
+      // Pass the Add modal element so listeners can clear only controls inside it
+      // (e.g. SignaturePad), not unrelated fields on the parent screen.
+      const modalEl =
+        this.$refs.addModal && this.$refs.addModal.$el
+          ? this.$refs.addModal.$el
+          : null;
+      window.ProcessMaker.EventBus.$emit("record-list-add-modal-hidden", {
+        modalEl,
+      });
       this.$refs.addRenderer.hasSubmitted(false);
     },
     async handleOk(bvModalEvt) {
