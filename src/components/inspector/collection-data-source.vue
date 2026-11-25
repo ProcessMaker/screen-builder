@@ -78,7 +78,7 @@ export default {
   components: {
     CollectionRecordsList
   },
-  props: ["value", "screenType"],
+  props: ["value", "screenType", "selectedControl"],
   data() {
     return {
       fields: [],
@@ -180,6 +180,9 @@ export default {
   },
   methods: {
     displayOptionChange() {
+      if (this.sourceOptions === "Collection" && this.selectedControl?.config) {
+        this.$set(this.selectedControl.config, "editable", false);
+      }
       this.collectionFields = [];
       this.collectionFieldsColumns = [];
       this.pmql = null;

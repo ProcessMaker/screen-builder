@@ -85,7 +85,7 @@
 
           </template>
           <template #cell(__actions)="{ index, item }">
-            <div v-if="canEditRecords" class="actions">
+            <div v-if="canEditRecords && !selfReferenced" class="actions">
               <div
                 class="btn-group btn-group-sm"
                 role="group"
@@ -366,7 +366,8 @@ export default {
       ) {
         return false;
       }
-      return Boolean(this.editable);
+      const sourceOptions = this.source?.sourceOptions ?? "Variable";
+      return this.editable === true && sourceOptions === "Variable";
     },
     // Collection radio/checkbox selection must stay active in Screen Builder
     // preview and active tasks. Block only in Tasks Preview Pane for
