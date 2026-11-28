@@ -144,7 +144,7 @@ export default [
       },
       inspector: [
         {
-          type: 'FormTextArea',
+          type: 'HtmlContentWithMediaWarning',
           field: 'content',
           config: {
             rows: 5,
